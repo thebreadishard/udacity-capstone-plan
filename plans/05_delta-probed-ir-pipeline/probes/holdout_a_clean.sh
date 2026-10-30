@@ -18,14 +18,14 @@ if [ "${1:-}" = "--check-only" ]; then
   exit 0
 fi
 for s in 0 1 2; do
-  rec="out/E7_rungC_chain35_analytic_eval_a8_seed$s.json"
+  rec="out/E7_rungC_chain35_analytic_a8read_seed$s.json"   # not <stem>_eval_*: accuracy.evaluation_records must find one record per model
   if [ -f "$rec" ] && python -c "import json,sys; json.load(open(sys.argv[1], encoding='utf-8'))" "$rec"; then
     mark "seed $s already read ($rec)"
     continue
   fi
   mark "seed $s starting"
-  python ../../probes/rungC_eval_saved.py "out/E7_rungC_chain35_analytic_model_n750_seed$s.pt" "out/E7_rungC_chain35_analytic_eval_a8_seed$s" "${FLAGS[@]}"
+  python ../../probes/rungC_eval_saved.py "out/E7_rungC_chain35_analytic_model_n750_seed$s.pt" "out/E7_rungC_chain35_analytic_a8read_seed$s" "${FLAGS[@]}"
   mark "seed $s done"
 done
-python ../../probes/holdout_a_clean_read.py out/E7_rungC_chain35_analytic_eval_a8_seed{0,1,2}.json > out/holdout_a_clean_read_2026-10-30.md
+python ../../probes/holdout_a_clean_read.py out/E7_rungC_chain35_analytic_a8read_seed{0,1,2}.json > out/holdout_a_clean_read_2026-10-30.md
 mark "run done"

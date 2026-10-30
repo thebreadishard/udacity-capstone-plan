@@ -1,0 +1,3 @@
+/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/pipeline_rehearsal_2026-10-30/cinnoline b3lyp: APT from the Hessian's response: CPHF residual 1.0e-04 -> 5.6e-07 in 1 rounds, sum rule 2.2e-05, 216.8 s
+/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/pipeline_rehearsal_2026-10-30/cinnoline b3lyp: 1204 s; no corpus psi4 file to compare with; lowest vib [176.0, 183.0, 376.7] cm-1
+/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/pipeline_rehearsal_2026-10-30/cinnoline: analytic-only folder, imaginary modes {'b3lyp': 0} written to result.json

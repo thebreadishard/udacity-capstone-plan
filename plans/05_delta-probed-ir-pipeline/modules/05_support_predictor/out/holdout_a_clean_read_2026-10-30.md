@@ -11,4 +11,4 @@ Seed means over 3 seeds, cm⁻¹; licence line 3.0 cm⁻¹ on both hold-outs (de
 
 Licence changed by the clean (a8): none.
 
-Records: E7_rungC_chain35_analytic_eval_a8_seed0.json, E7_rungC_chain35_analytic_eval_a8_seed1.json, E7_rungC_chain35_analytic_eval_a8_seed2.json
+Records: E7_rungC_chain35_analytic_a8read_seed0.json, E7_rungC_chain35_analytic_a8read_seed1.json, E7_rungC_chain35_analytic_a8read_seed2.json (written as …_eval_a8_seed*, renamed 30 Oct 19:5x out of the evaluation records' glob)
