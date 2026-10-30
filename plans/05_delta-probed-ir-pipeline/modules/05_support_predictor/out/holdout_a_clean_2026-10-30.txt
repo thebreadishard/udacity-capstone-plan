@@ -1,0 +1,10 @@
+# hold-out (a) of the v1.3 seeds without the molecules they trained on as layer-B twins (TASKS 157, 30 Oct 2026; m08.seen.leaks):
+# dropped A_07cadc7923, A_3100da3761
+A_08dde334d8
+A_428228e5a5
+A_541c53d1a5
+A_72b86c2331
+A_8448043181
+A_bce5bae234
+A_e72997e726
+A_fdc27f1bd1
