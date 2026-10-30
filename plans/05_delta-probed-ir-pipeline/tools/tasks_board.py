@@ -9,9 +9,10 @@ closed rows were struck through instead of moved).
 Rules of `check`: a row number appears once on the board and once in the archive, never in both; no board row is closed by its own words
 (a struck title, or the phrase that promises removal at the next tidy); every open row opens with its class in brackets (PROOF, PRODUCT,
 DELIVERABLE, OPS, LATER — whether it matters for the end product is said by the row itself) and its topic in a second pair (TOPICS; the
-user, 30 Oct 2026), and names its next check (`*Next:*`). It prints the next free number for a new row.
+user, 30 Oct 2026) and its state in a third (STATES: Now, or waiting for the User or an Event, which a waiting row names with `*Waits
+for:*`), and names its next check (`*Next:*`). It prints the next free number for a new row.
 
-    python tools/tasks_board.py view                                    # the open rows by topic: number, class, title, next check
+    python tools/tasks_board.py view [--by state|topic]                 # the open rows grouped: number, tags, title, next check
 """
 from __future__ import annotations
 
@@ -34,7 +35,10 @@ STAMP = re.compile(r"^\d{4}-\d{2}-\d{2} \d{2}:\dx$")
 CLOSED_WORDS = ("Row removed at the next tidy", "Row closes with the next TASKS pass")
 CLASSES = ("PROOF", "PRODUCT", "DELIVERABLE", "OPS", "LATER")
 TOPICS = ("Accuracy", "Third-party", "Documentation", "Udacity", "Literature", "Pipeline", "Supervisor", "Operations")
-ROW_TAGS = re.compile(r"^\d+\. \*\*\[(" + "|".join(CLASSES) + r")\]\[(" + "|".join(TOPICS) + r")\] ")
+STATES = ("Now", "User", "Event")
+CLASS_TOPIC = re.compile(r"^\d+\. \*\*\[(" + "|".join(CLASSES) + r")\]\[(" + "|".join(TOPICS) + r")\] ")
+ROW_TAGS = re.compile(r"^\d+\. \*\*\[(" + "|".join(CLASSES) + r")\]\[(" + "|".join(TOPICS) + r")\]\[(" + "|".join(STATES) + r")\] ")
+WAIT_MARK = "*Waits for:*"
 NEXT_MARK = "*Next:*"
 
 
@@ -89,8 +93,12 @@ def problems(board: str, archive: str) -> list[str]:
         if body.startswith("~~"):
             out.append(f"row {r.number} has a struck title: closed rows move to {ARCHIVE.name} (tools/tasks_board.py archive)")
         out += [f"row {r.number} says '{w}': archive it" for w in CLOSED_WORDS if w in r.text]
-        if not ROW_TAGS.match(r.text):
-            out.append(f"row {r.number} opens without its class and topic: '{r.number}. **[<{'|'.join(CLASSES)}>][<{'|'.join(TOPICS)}>] Title.**'")
+        tags = ROW_TAGS.match(r.text)
+        if not tags:
+            out.append(f"row {r.number} opens without its class, topic and state: "
+                       f"'{r.number}. **[<{'|'.join(CLASSES)}>][<{'|'.join(TOPICS)}>][<{'|'.join(STATES)}>] Title.**'")
+        elif (tags.group(3) == "Now") == (WAIT_MARK in r.text):
+            out.append(f"row {r.number}: a Now row names nothing it waits for, a User or Event row names it ({WAIT_MARK})")
         if NEXT_MARK not in r.text:
             out.append(f"row {r.number} names no next check ({NEXT_MARK})")
     return out
@@ -136,21 +144,25 @@ def check() -> int:
     return 1 if found else 0
 
 
-def by_topic(board: str) -> dict[str, list[str]]:
-    """The open rows under each topic, in board order: '<number> [<class>] <title> — <next check>'; a row without its tags raises."""
-    out: dict[str, list[str]] = {t: [] for t in TOPICS}
+def grouped(board: str, by: str) -> dict[str, list[str]]:
+    """The open rows under each state or topic, in board order: '<number> [<class>][<other tag>] <title> — <what it waits for, or its next
+    check>'; a row without its tags raises."""
+    groups, key, other = (STATES, 3, 2) if by == "state" else (TOPICS, 2, 3)
+    out: dict[str, list[str]] = {g: [] for g in groups}
     for r in desk_rows(board):
         m = ROW_TAGS.match(r.text)
         if m is None:
-            raise SystemExit(f"row {r.number} opens without its class and topic (run check)")
+            raise SystemExit(f"row {r.number} opens without its class, topic and state (run check)")
         title = r.text[m.end():].split("**", 1)[0].strip()
-        nxt = " ".join(r.text.split(NEXT_MARK, 1)[1].split()) if NEXT_MARK in r.text else ""
-        out[m.group(2)].append(f"{r.number} [{m.group(1)}] {title} — {nxt.split(' | ', 1)[0]}")
+        mark = WAIT_MARK if WAIT_MARK in r.text else NEXT_MARK
+        tail = " ".join(r.text.split(mark, 1)[1].split()) if mark in r.text else ""
+        tail = tail.split(NEXT_MARK, 1)[0].split(" | ", 1)[0].strip()
+        out[m.group(key)].append(f"{r.number} [{m.group(1)}][{m.group(other)}] {title} — {tail}")
     return out
 
 
-def view() -> int:
-    for topic, lines in by_topic(BOARD.read_text(encoding="utf-8")).items():
+def view(by: str) -> int:
+    for topic, lines in grouped(BOARD.read_text(encoding="utf-8"), by).items():
         print(f"## {topic} ({len(lines)})")
         for line in lines:
             print(f"- {line}")
@@ -161,13 +173,14 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("check")
-    sub.add_parser("view")
+    v = sub.add_parser("view")
+    v.add_argument("--by", choices=("state", "topic"), default="state")
     a = sub.add_parser("archive")
     a.add_argument("reasons", type=Path)
     a.add_argument("--stamp", required=True, help="python tools/stamp.py --date")
     args = ap.parse_args(argv)
     if args.cmd == "view":
-        return view()
+        return view(args.by)
     return check() if args.cmd == "check" else archive(args.reasons, args.stamp)
 
 
