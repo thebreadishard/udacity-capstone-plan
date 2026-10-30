@@ -40,9 +40,9 @@ class DemoMolecule:
 
 
 DEMO = (
-    DemoMolecule(RESULTS / "pipeline_benzene_certified_2026-10-29" / "benzene", "from its SMILES; the corpus holds its ωB97X truth"),
-    DemoMolecule(RESULTS / "pipeline_demo_2026-10-30" / "phenanthrene", "from its SMILES; the corpus holds its ωB97X truth"),
-    DemoMolecule(RESULTS / "pipeline_demo_2026-10-30" / "candidate06",
+    DemoMolecule(RESULTS / "pipeline_demo_v04_2026-10-30" / "benzene", "from its SMILES; the corpus holds its ωB97X truth"),
+    DemoMolecule(RESULTS / "pipeline_demo_v04_2026-10-30" / "phenanthrene", "from its SMILES; the corpus holds its ωB97X truth"),
+    DemoMolecule(RESULTS / "pipeline_demo_v04_2026-10-30" / "candidate06",
                  "drawn from module 06's generator (seed 0): the first valid fused-aromatic molecule that is not in the corpus"),
 )
 
@@ -180,12 +180,11 @@ def _legend(p: Panel) -> str:
 
 def molecule_section(p: Panel) -> str:
     m = p.certificate["molecule"]
-    hold = p.vs_corpus["against_truth"]["evaluation"]["holdout"] if p.vs_corpus is not None else None
-    role = f"hold-out ({hold}): the network never trained on it" if hold else "outside the corpus"
     svg = svg_spectrum(p.grid, p.curves, f'{m["name"]}: infrared spectra, relative absorbance against wavenumber')
     return (f'<section class="mol" id="{_e(m["name"])}"><header><h2>{_e(m["name"])}</h2>'
-            f'<p class="meta"><code>{_e(m["smiles"])}</code> · {_e(m["formula"])} · {m["n_atoms"]} atoms · {_e(role)} · '
-            f'pipeline {_e(p.certificate["pipeline_version"])}</p><p class="meta">{_e(p.demo.origin)}</p></header>'
+            f'<p class="meta"><code>{_e(m["smiles"])}</code> · {_e(m["formula"])} · {m["n_atoms"]} atoms · '
+            f'pipeline {_e(p.certificate["pipeline_version"])}</p><p class="meta">{_e(p.demo.origin)}</p>'
+            f'<p class="meta">The network: {_e(m["seen"]["text"])}.</p></header>'
             f'<div class="tiles">{_tiles(p)}</div><figure class="plot">{svg}<figcaption>{_legend(p)}'
             f'<span class="lg note">Lorentzian, FWHM 10 cm⁻¹; heights from the B3LYP APT; each panel scaled to its largest peak</span>'
             f"</figcaption></figure>{_family_table(p)}</section>")

@@ -1,0 +1,64 @@
+{
+ "result": "C:\\Users\\thebr\\Documents\\CapstonePlan\\plans\\05_delta-probed-ir-pipeline\\probes\\results_m1\\pipeline_demo_v04_2026-10-30\\benzene",
+ "corpus": "C:\\Users\\thebr\\Documents\\CapstonePlan\\plans\\05_delta-probed-ir-pipeline\\modules\\05_support_predictor\\corpus\\molecules\\A_8448043181",
+ "models": [
+  "E7_rungC_chain35_analytic_model_n750_seed0.pt",
+  "E7_rungC_chain35_analytic_model_n750_seed1.pt",
+  "E7_rungC_chain35_analytic_model_n750_seed2.pt"
+ ],
+ "geometry_max_abs_bohr": 2.2084157347279643e-07,
+ "b3lyp_freq_max_abs_cm": 0.0003,
+ "network_spectrum": {
+  "n": 30,
+  "max_abs_omega_cm": 0.0,
+  "max_abs_km_mol": 0.07
+ },
+ "baseline_spectrum": {
+  "n": 30,
+  "max_abs_omega_cm": 0.0,
+  "max_abs_km_mol": 0.07
+ },
+ "against_truth": {
+  "truth": "A_8448043181/hessian_wb97x_analytic.npz",
+  "all_modes": {
+   "network": 1.27,
+   "B3LYP": 25.14
+  },
+  "per_family": {
+   "CH-oop": {
+    "n_modes": 6,
+    "network": 1.97,
+    "B3LYP": 23.99
+   },
+   "CH-stretch": {
+    "n_modes": 6,
+    "network": 0.92,
+    "B3LYP": 42.92
+   },
+   "other": {
+    "n_modes": 5,
+    "network": 0.47,
+    "B3LYP": 10.03
+   },
+   "ring-ip": {
+    "n_modes": 13,
+    "network": 1.2,
+    "B3LYP": 17.45
+   }
+  },
+  "spectrum_overlap": {
+   "network": 0.9848,
+   "B3LYP": 0.3238
+  },
+  "height_error": {
+   "network": 0.001,
+   "B3LYP": 0.018
+  },
+  "evaluation": {
+   "holdout": "a",
+   "corrected_freq_rms": 1.6565,
+   "spectrum_overlap": 0.9823,
+   "intensity_rel_rms_matched": 0.0012
+  }
+ }
+}
