@@ -18,8 +18,9 @@ reading the ledger. Only grep the ledger when the digest points at something spe
 Then read `plans/05_delta-probed-ir-pipeline/TASKS.md` (since 26 September 2026): one row per open task with its reason, place and
 next check. Keep it current — a task that starts or ends changes a row, with the clock's stamp; the ledger keeps the outcome, and a
 closed row moves to `TASKS_closed.md` with `tools/tasks_board.py archive` (since 27 October 2026; `check` runs in pre-commit). Every
-open row opens with its class — PROOF, PRODUCT (the end product's quality: never dropped), DELIVERABLE, OPS, LATER — and names its
-next check; it says where things stand, not its history; a duplicate is merged, a decision of the user's is a line in 'Waiting'.
+open row opens with its class — PROOF, PRODUCT (the end product's quality: never dropped), DELIVERABLE, OPS, LATER — and its topic
+(since 30 October 2026: Accuracy, Third-party, Documentation, Udacity, Literature, Pipeline, Supervisor, Operations; `tasks_board.py view`
+lists them by topic), and names its next check; it says where things stand, not its history; a duplicate is merged, a decision of the user's is a line in 'Waiting'.
 
 ## Editing
 One python patch script per edit round, in the scratchpad, built on `plans/05_delta-probed-ir-pipeline/tools/patch_file.py`
