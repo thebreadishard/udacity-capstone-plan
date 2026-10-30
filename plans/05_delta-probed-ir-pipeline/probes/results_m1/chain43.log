@@ -6,3 +6,4 @@
 === (C43) waiting 2026-10-22 18:55:25
 === (C43) armed (pid 12464), 23 steps 2026-10-22 19:21:42
 === (C43) waiting 2026-10-22 19:21:42
+=== (C43) RUN FAILED: stopped on the user's word (30 Oct 2026, "Stop chain 43 maar"): it waited for rung 4's rows and rung 4 was dropped on 17 Oct, so it could never start; not a failure of its own 2026-10-30 13:14:39
