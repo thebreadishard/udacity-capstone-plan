@@ -1,0 +1,12 @@
+{"name": "c1_reread", "purpose": "TASKS 145: arm (c)'s C1 read again with the anchor count's early-stopped fine-tune R2 (body1_es, cap 120) - the same base (c), random draws and covers at k 5/10/20, seeds 0-2 (probes/c1_reread_plan.py; registration GoalGathering/notes/PreRegistration_2026-10-30_C1_Reread.md)",
+ "host": "laptop", "workdir": "probes/results_m1", "command": "python ../chain_runner.py probes/runs/c1_reread.json",
+ "sources": [{"local": "probes/chain_runner.py"}, {"local": "probes/runs/c1_reread.json"}, {"local": "probes/c1_reread_plan.py"},
+             {"local": "probes/anchor_count_plan.py"}, {"local": "probes/anchor_recipe_plan.py"}, {"local": "probes/anchor_price_plan.py"},
+             {"local": "probes/proxy_check_plan.py"}, {"local": "modules/05_support_predictor/m05/proxy_transfer_check.py"},
+             {"local": "modules/05_support_predictor/m05/rungC_train.py"}, {"local": "modules/05_support_predictor/m05/rungC_cc_transfer.py"},
+             {"local": "modules/05_support_predictor/m05/holdout_twins.py"}],
+ "progress": {"regex": "^=== \\(C1R\\) progress: |^\\(C1R\\) .* done ", "max_gap_minutes": 60, "start_regex": "^=== \\(C1R\\) starting: "},
+ "marker_regex": "^=== \\(C1R\\) (armed|starting|resuming|RUN FAILED|run done)",
+ "end_regex": "^=== \\(C1R\\) run done", "dry_run_args": "--dry-run", "resumable": true,
+ "estimate": {"hours": 3.0, "basis": "arm (c) on 28 Oct: random fine-tunes at k 5-20 about 7 min per run of three draws (9 runs), covers about 5 min per run (27 runs)"},
+ "memory": {"peak_gb": 7.7, "basis": "the anchor count's bound for the same jobs (proxy_transfer_check.py loads the corpus and about 550 molecules' tensors); nothing runs beside it"}}
