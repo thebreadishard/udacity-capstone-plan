@@ -1,4 +1,4 @@
-# Architecture of plan 05 (for the authors; first version 19 September 2026, English since 21 September; every sheet brought to the state of 7 October 2026, sheets 0, 1, 2, 4, 6, 7 and 8 to that of 26 October 2026)
+# Architecture of plan 05 (for the authors; first version 19 September 2026, English since 21 September; every sheet brought to the state of 7 October 2026, sheets 0, 1, 2, 4, 6 and 7 to that of 26 October 2026, sheet 8 to the built pipeline of 30 October 2026)
 
 **Four kinds of diagram, kept apart (agreement of 20 September).**
 
@@ -7,7 +7,7 @@
 | **Data creation** | processes that make data: the corpus step (DFT pairs and proxy correction; sheet 3) and the label factory (coupled-cluster corrections per molecule; sheet 4) | 3, 4 |
 | **The ΔH model** | the components of the carried network (sheet 5); its code is `modules/05_support_predictor/m05/rungC_equivariant.py` (the equivariant body) and `m05/rungC_hybrid.py` (the pair head, the class scales, ΔH = Bᵀ ΔF B); sheet 5b is the mode-token design of 20 September, kept as module 05's baseline | 5, 5b |
 | **Training and assessment** | training: from corpus records and labels comes the trained ΔH model (sheet 6); test and licence: from that model and the test set come the licence table and the calibration, with the score against the laboratory columns and the opponents (sheet 7); the weights no longer change there. The spectrum pipeline uses the trained model of sheet 6 and the table and calibration of sheet 7; on sheet 8 itself those are not drawn as input objects (agreement 20 September); the measured label is drawn there, as the second source of ΔH next to the model (agreement 20 September, evening). Sheet 6 runs per model version, not per molecule, and contains the validation loop | 6, 7 |
-| **Spectrum pipeline** | molecule and observation conditions in, spectrum with error margin and licence status out; ΔH from two sources — the measured label of sheet 4 (exists for the molecules with a label) or the ΔH model (for all others) — and one shared tail (H = H₀ + ΔH, VPT2, intensities, profile) | 8 |
+| **Spectrum pipeline** | a molecule in, its certified spectrum out (`m08/pipeline.py`): admission, DFT geometry and Hessian, the ΔH model's forward pass, H = H₀ + ΔH, positions, heights and profile, then the certificate — per band its family, licence, measured error and laboratory tolerance; planned: reuse of a corpus Hessian, the training-set check, the geometry term and the anharmonic step | 8 |
 | **Research process** | the tests that decide whether all of this gets built this way; the only kind of sheet in which data, decisions and experiment numbers are allowed | 1, 2 |
 
 The overview (sheet 0) shows the kinds of process and the data objects that connect them. **Numbering (20 September):** the file numbers follow the order in which the steps are traversed: first the research process that decides on the rest (1, 2), then corpus (3), labels (4), the ΔH model (5, code 5b), training (6), test and licence (7), spectrum pipeline (8). Compute location is not in yet; it comes later per box.
@@ -496,61 +496,73 @@ flowchart LR
 ## 8. Spectrum pipeline (`80_spectrum_pipeline.mmd`)
 
 ```mermaid
-%% Spectrum pipeline (level 3): molecule in, spectrum with error margin out. ΔH comes from two sources: measured (the label of sheet 4, for molecules with a label) or predicted (the ΔH model, for all others); the tail is the same. Target architecture.
+%% Spectrum pipeline (level 3): a molecule in, its certified infrared spectrum out. As built: modules/08_industry_synthesis/m08/pipeline.py, pipeline 0.4 (versions in modules/PIPELINE.md).
 %% Rectangle = process step (operation + software); rounded ends = data object (the thing). Every step yields one data object. Dashed = not built yet.
-%% 7 October 2026: the label's name is the one sheet 4 gives it, and the licence filter is the only way from ΔH to the applied blocks.
-%% 26 October 2026: the forward pass exists (the carried hybrid model and the fit on all anchors); the geometry term and the anharmonic
-%% correction exist for benzene only, not as pipeline steps; the 5–6 µm region needs overtones and combination bands.
+%% 30 October 2026: brought to the built pipeline (TASKS 153). The licence enters at the certificate, per family and band (decision 65), not as a filter on ΔH
+%% blocks: the whole ΔH is applied and every band says whether its family is licensed. A measured label (sheet 4) is not a ΔH source here, and observation
+%% conditions (temperature, emission) are later work (TASKS 11). Planned: reuse of a corpus Hessian (TASKS 150), the training-set check (TASKS 155), the
+%% geometry term and the anharmonic step (TASKS 53).
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
   classDef data fill:#e9ecef,stroke:#555,color:#111
 
-  MOL(["Molecule: geometry, charge, multiplicity"]):::data
-  COND(["Observation conditions: internal energy after UV absorption (emission) or temperature (absorption); resolution of the instrument"]):::data
-
-  DFT["DFT (psi4)"]
+  MOL(["Molecule: SMILES, neutral and closed shell"]):::data
+  ADM["Admission (own software, RDKit)"]
+  ADMM(["Admitted molecule: canonical SMILES, start geometry, carried members"]):::data
+  OPT["Geometry optimisation (DFT, psi4)"]
+  GEO(["Optimised geometry"]):::data
+  DFT["Hessian and dipole derivatives (DFT, pyscf, analytic)"]
+  CORP(["Corpus records: Hessians and dipole derivatives of computed molecules"]):::data
+  REUSE["Reuse in the canonical atom order (own software)"]:::planned
   SK(["Hessian H0 and dipole derivatives"]):::data
-  VPT["VPT2 (pyVPT2 on pyscf Hessians)"]
-  ANHC(["Anharmonic constants, with route difference per constant"]):::data
   MODE["Mode analysis (own software)"]
-  MODES(["Normal modes: L, frequencies, families, symmetry blocks"]):::data
+  MODES(["Normal modes: L, frequencies, families"]):::data
   LOCC["Local-coordinate features (own software, geomeTRIC)"]
   PF(["Primitive pairs with their features; atoms and coordinates"]):::data
-  FWD["Forward pass (ΔH model: equivariant body and hybrid pair head, then projection onto the modes; PyTorch)"]
-  DH(["ΔH blocks per family, with ensemble uncertainty"]):::data
-  LAB(["Label: ΔH blocks with error margin per family and geometry term per mode, sealed"]):::data
-  LICF["Licence filter (own software)"]:::planned
-  DHL(["Applied and refused ΔH blocks, with reason"]):::data
+  FWD["Forward pass (ΔH model: equivariant body and hybrid pair head, ΔH = Bᵀ ΔF B; PyTorch)"]
+  DH(["ΔH of each member and their mean"]):::data
   APPLY["Assembly of H (own software)"]
-  H(["Force constants H = H0 + ΔH on licensed blocks, H0 elsewhere; licence status per family"]):::data
+  H(["Force constants H = H0 + ΔH"]):::data
   EIG["Diagonalisation (own software)"]
-  POS(["Band positions with margin and licence status per family"]):::data
+  POS(["Band positions with the members' range"]):::data
+  INT["Intensity calculation, double harmonic (own software)"]
+  INTS(["Band heights"]):::data
+  VPT["VPT2 (pyVPT2 on pyscf Hessians)"]:::planned
+  ANHC(["Anharmonic constants, with route difference per constant"]):::data
   GEOP["Geometry term (own software)"]:::planned
-  POSG(["Band positions with geometry term, margin and licence status per family"]):::data
-  INT["Intensity calculation (own software)"]
-  INTS(["Band intensities, redistributed over resonance polyads"]):::data
+  POSG(["Band positions with geometry term"]):::data
   ANH["Anharmonic correction (own software)"]:::planned
   ANHS(["Anharmonic shifts per band, overtones and combination bands"]):::data
   SHAPE["Profile formation (own software)"]
+  SPEC0(["Spectrum: bands with position, height and Lorentzian profile"]):::data
+  TSET(["Training set of the carried members"]):::data
+  TCHK["Training-set check (own software)"]:::planned
+  TFLAG(["Trained on or unseen, with the ωB97X truth where the corpus holds it"]):::data
+  LICT(["Licence table and measured errors per family (sheet 7)"]):::data
+  LTOL(["Laboratory tolerance per spectral region"]):::data
+  CERT["Certificate (own software)"]
+  SPEC(["Certified spectrum: per band position, height, members' range, family, licence, measured error, laboratory tolerance"]):::data
 
-  SPEC(["Spectrum: bands with position, intensity, profile and error margin; licence status per family"]):::data
-
-  MOL --> DFT --> SK
+  MOL --> ADM --> ADMM --> OPT --> GEO --> DFT --> SK
+  ADMM --> REUSE
+  CORP --> REUSE --> SK
   SK --> MODE --> MODES
-  SK --> VPT --> ANHC
-  SK --> LOCC --> PF --> FWD --> DH --> LICF
+  SK --> LOCC --> PF --> FWD --> DH --> APPLY --> H --> EIG --> POS --> SHAPE
   MODES --> FWD
-  LICF --> DHL --> APPLY --> H --> EIG --> POS --> GEOP --> POSG --> SHAPE
-  DHL --> GEOP
-  ANHC --> GEOP
-  LAB --> LICF
+  ADMM --> FWD
   SK --> APPLY
-  SK --> INT
-  MODES --> INT --> INTS --> SHAPE
-  ANHC --> ANH
-  ANHC --> INT
-  MODES --> ANH --> ANHS --> SHAPE
-  COND --> SHAPE
-  SHAPE --> SPEC
+  H --> INT
+  SK --> INT --> INTS --> SHAPE
+  SK --> VPT --> ANHC
+  POS --> GEOP --> POSG --> SHAPE
+  ANHC --> GEOP
+  ANHC --> ANH --> ANHS --> SHAPE
+  MODES --> ANH
+  SHAPE --> SPEC0 --> CERT --> SPEC
+  ADMM --> TCHK
+  TSET --> TCHK --> TFLAG --> CERT
+  MODES --> CERT
+  LICT --> CERT
+  LTOL --> CERT
 ```
