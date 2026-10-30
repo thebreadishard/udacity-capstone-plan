@@ -1,0 +1,22 @@
+{
+ "a": "probes\\results_m1\\pipeline_demo_2026-10-30\\phenanthrene",
+ "b": "modules\\05_support_predictor\\corpus\\molecules\\A_541c53d1a5",
+ "models": [
+  "E7_rungC_chain35_analytic_model_n750_seed0.pt",
+  "E7_rungC_chain35_analytic_model_n750_seed1.pt",
+  "E7_rungC_chain35_analytic_model_n750_seed2.pt"
+ ],
+ "geometry_max_diff_bohr": 9.917534899575586e-05,
+ "primitives": {
+  "Distance": 26,
+  "Angle": 28,
+  "OutOfPlane": 14,
+  "Dihedral": 64
+ },
+ "jumps": {
+  "Dihedral": 21
+ },
+ "largest_smooth_diff_rad": 4.550281804808965e-05,
+ "network_max_diff_cm": 1.2123,
+ "network_max_diff_cm_one_sided": 0.0076
+}

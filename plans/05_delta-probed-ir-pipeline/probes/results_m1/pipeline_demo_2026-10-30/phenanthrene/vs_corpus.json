@@ -1,0 +1,64 @@
+{
+ "result": "C:\\Users\\thebr\\Documents\\CapstonePlan\\plans\\05_delta-probed-ir-pipeline\\probes\\results_m1\\pipeline_demo_2026-10-30\\phenanthrene",
+ "corpus": "C:\\Users\\thebr\\Documents\\CapstonePlan\\plans\\05_delta-probed-ir-pipeline\\modules\\05_support_predictor\\corpus\\molecules\\A_541c53d1a5",
+ "models": [
+  "E7_rungC_chain35_analytic_model_n750_seed0.pt",
+  "E7_rungC_chain35_analytic_model_n750_seed1.pt",
+  "E7_rungC_chain35_analytic_model_n750_seed2.pt"
+ ],
+ "geometry_max_abs_bohr": 9.917534899575586e-05,
+ "b3lyp_freq_max_abs_cm": 0.0074,
+ "network_spectrum": {
+  "n": 66,
+  "max_abs_omega_cm": 1.2,
+  "max_abs_km_mol": 0.53
+ },
+ "baseline_spectrum": {
+  "n": 66,
+  "max_abs_omega_cm": 0.1,
+  "max_abs_km_mol": 0.02
+ },
+ "against_truth": {
+  "truth": "A_541c53d1a5/hessian_wb97x_analytic.npz",
+  "all_modes": {
+   "network": 1.17,
+   "B3LYP": 23.48
+  },
+  "per_family": {
+   "CH-oop": {
+    "n_modes": 11,
+    "network": 1.39,
+    "B3LYP": 24.33
+   },
+   "CH-stretch": {
+    "n_modes": 10,
+    "network": 0.29,
+    "B3LYP": 43.87
+   },
+   "other": {
+    "n_modes": 20,
+    "network": 1.33,
+    "B3LYP": 9.51
+   },
+   "ring-ip": {
+    "n_modes": 25,
+    "network": 1.14,
+    "B3LYP": 18.8
+   }
+  },
+  "spectrum_overlap": {
+   "network": 0.9963,
+   "B3LYP": 0.2871
+  },
+  "height_error": {
+   "network": 0.077,
+   "B3LYP": 0.176
+  },
+  "evaluation": {
+   "holdout": "a",
+   "corrected_freq_rms": 1.3807,
+   "spectrum_overlap": 0.9936,
+   "intensity_rel_rms_matched": 0.0865
+  }
+ }
+}
