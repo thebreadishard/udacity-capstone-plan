@@ -19,3 +19,4 @@ leaves this list; the pipeline version that carries it is named in `modules/PIPE
 | The laptop's Hessian time for large molecules | the analytic Hessian is the step that grows fastest with size | 146 | after |
 | Promotion into `src/dpir` and the product repository | the forkable product of 2027 | 73 | after |
 | The demo molecules re-run at the meeting's pipeline version | the page shows each molecule at the version that ran it (benzene 0.1, phenanthrene 0.2, the candidate 0.3); 0.3 reproduces the first two to the bit, but one version on the page reads cleaner; laptop: about 6 min, 77 min and 3.7 h | 146 | before |
+| Reuse of the corpus's B3LYP Hessian and APT, and the training flag in the certificate (0.5) | the Hessian is 3.6 of the candidate's 3.7 h; 862 corpus molecules hold one; a molecule the network trained on must not be read by the hold-out error | 150 | before |
