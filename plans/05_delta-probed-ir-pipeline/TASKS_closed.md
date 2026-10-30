@@ -725,7 +725,7 @@ have no candidate that small (quintet on three-ring systems — a phenyl on a la
 
 ## Archived 2026-10-30 15:5x
 
-151. **[DELIVERABLE][Pipeline][Now] The run time known before a live run: which molecules fit half an hour** (30 Oct 14:2x; the user's demo plan: the pipeline's architecture, then the supervisor picks a molecule the network has not seen that computes in at most half an hour, the project explained while it runs, the result read at the end of the hour). Measured on the laptop: benzene 12 atoms 356 s, phenanthrene 24 atoms ≈ 77 min, module 06's candidate 30 atoms 3.7 h, the analytic B3LYP Hessian and APT nearly all of it. Done 30 Oct 16:0x: `m08/runtime.py`, half an hour ≈ 170 basis functions (ledger). *Next:* none; archived. | `m08/pipeline.py`, `probes/compute_prices.py` |
-   → archived 2026-10-30 15:5x: m08/runtime.py: the laptop time printed before a run; half an hour ≈ 170 basis functions (ledger 30 Oct 16:0x)
+151. **[DELIVERABLE][Pipeline][Now] The run time known before a live run: which molecules fit half an hour** (30 Oct 14:2x; the user's demo plan: the pipeline's architecture, then the supervisor picks a molecule the network has not seen that computes in at most half an hour, the project explained while it runs, the result read at the end of the hour). Measured on the laptop: benzene 12 atoms 356 s, phenanthrene 24 atoms ≈ 77 min, module 06's candidate 30 atoms 3.7 h, the analytic B3LYP Hessian and APT nearly all of it. Done 30 Oct 15:5x: `m08/runtime.py`, half an hour ≈ 170 basis functions (ledger). *Next:* none; archived. | `m08/pipeline.py`, `probes/compute_prices.py` |
+   → archived 2026-10-30 15:5x: m08/runtime.py: the laptop time printed before a run; half an hour ≈ 170 basis functions (ledger 30 Oct 15:5x)
 
 <!-- tasks_board.py archive: new entries go above this line -->
