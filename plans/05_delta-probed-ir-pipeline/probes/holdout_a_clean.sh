@@ -5,6 +5,7 @@
 # modules/05_support_predictor by its run spec (probes/runspecs/holdout_a_clean.json). --check-only compiles the two Python files and checks
 # the inputs exist, nothing is read. The v1.3 model files are only read.
 set -euo pipefail
+export PYTHONUTF8=1      # the eval prints ω; cp1252 stopped seed 0 after its record (30 Oct 18:5x)
 IDS=out/holdout_a_clean_2026-10-30.txt
 FLAGS=(--use-analytic --threads 4 --holdout-b-file corpus/holdout_b_frozen_2026-10-08.txt --eval-ids-file "a8=$IDS")
 mark() { echo "=== (HAC) $* $(date '+%F %T')"; }
@@ -17,6 +18,11 @@ if [ "${1:-}" = "--check-only" ]; then
   exit 0
 fi
 for s in 0 1 2; do
+  rec="out/E7_rungC_chain35_analytic_eval_a8_seed$s.json"
+  if [ -f "$rec" ] && python -c "import json,sys; json.load(open(sys.argv[1], encoding='utf-8'))" "$rec"; then
+    mark "seed $s already read ($rec)"
+    continue
+  fi
   mark "seed $s starting"
   python ../../probes/rungC_eval_saved.py "out/E7_rungC_chain35_analytic_model_n750_seed$s.pt" "out/E7_rungC_chain35_analytic_eval_a8_seed$s" "${FLAGS[@]}"
   mark "seed $s done"
