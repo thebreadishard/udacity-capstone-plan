@@ -1,0 +1,29 @@
+
+  Memory set to   3.725 GiB by Python driver.
+  Threads set to 6 by Python driver.
+Some dependencies such as QCElemental have not yet finished migration to pydantic v2. If issues are encountered please downgrade pydantic or upgrade QCElemental as appropriate
+	Unable to completely converge to displaced geometry.
+	RMS(dx):  3.725e-06 	Max(dx):  1.391e-05 	RMS(dq):  2.101e-05
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 2.08e-05
+
+	Unable to completely converge to displaced geometry.
+	RMS(dx):  1.270e-05 	Max(dx):  4.574e-05 	RMS(dq):  6.493e-06
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 5.36e-06
+
+	Unable to completely converge to displaced geometry.
+	RMS(dx):  5.762e-06 	Max(dx):  2.259e-05 	RMS(dq):  6.296e-06
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 5.63e-06
+
+	Unable to completely converge to displaced geometry.
+	RMS(dx):  6.993e-06 	Max(dx):  2.648e-05 	RMS(dq):  6.632e-06
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 5.42e-06
+
+Optimizer: Optimization complete!

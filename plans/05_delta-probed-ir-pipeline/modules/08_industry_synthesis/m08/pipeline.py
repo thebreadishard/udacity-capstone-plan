@@ -47,7 +47,7 @@ from scale_factor_baseline import PAHDB_FACTORS, pahdb_region  # noqa: E402
 
 from dpir.provenance import provenance  # noqa: E402
 
-PIPELINE_VERSION = "0.1"               # modules/PIPELINE.md
+PIPELINE_VERSION = "0.2"               # modules/PIPELINE.md
 NETWORK = "ΔH-network"
 CORPUS = M05 / "corpus" / "molecules"
 PSI4_WORKER = M05 / "corpus" / "psi4_worker.py"
@@ -231,11 +231,21 @@ def admit(cfg: PipelineConfig) -> Admission:
                      tuple(entries))
 
 
+def canonical_smiles(smiles: str) -> str:
+    """RDKit's canonical form: parsed again it numbers the atoms the same way for every writing of the molecule."""
+    from rdkit import Chem
+
+    return Chem.MolToSmiles(Chem.MolFromSmiles(smiles))
+
+
 def start_geometry(cfg: PipelineConfig) -> tuple[list[list], dict | None]:
-    """(atoms as [symbol, x, y, z] in Å, the optimiser options): the corpus's start geometry and options from a SMILES, or the xyz as given."""
+    """(atoms as [symbol, x, y, z] in Å, the optimiser options): the corpus's start geometry and options from the canonical SMILES —
+    the network's answer depends on the atom order (up to 2.9 cm⁻¹ between two writings of phenanthrene, probes/network_invariance_check.py,
+    30 Oct 2026), so every writing must reach it in one order — or the xyz as given."""
     if cfg.smiles is not None:
-        xyz, _optimise = RC.start_geometry({"layer": "A", "smiles": cfg.smiles})
-        return xyz, RC.opt_options_for({"smiles": cfg.smiles})
+        smiles = canonical_smiles(cfg.smiles)
+        xyz, _optimise = RC.start_geometry({"layer": "A", "smiles": smiles})
+        return xyz, RC.opt_options_for({"smiles": smiles})
     lines = cfg.xyz.read_text(encoding="utf-8").split("\n")
     n = int(lines[0])
     return [[w[0], float(w[1]), float(w[2]), float(w[3])] for w in (ln.split() for ln in lines[2:2 + n])], None

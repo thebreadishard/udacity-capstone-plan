@@ -101,6 +101,13 @@ def test_the_xyz_input_is_read_as_given(tmp_path, pin_registry):
     assert options is None and [a[0] for a in atoms] == g["symbols"] and abs(atoms[0][1] - g["coords_bohr"][0][0] * b) < 1e-7
 
 
+def test_two_writings_of_a_molecule_start_from_one_geometry(tmp_path):
+    """Pipeline 0.2: the atom order comes from the canonical SMILES, so the network sees one order whatever the request's writing."""
+    a, _ = P.start_geometry(config(tmp_path, smiles="c1ccc2c(c1)ccc1ccccc12"))
+    b, _ = P.start_geometry(config(tmp_path, smiles="c1ccc2c3ccccc3ccc2c1"))
+    assert a == b and P.canonical_smiles("c1ccc2c3ccccc3ccc2c1") == "c1ccc2c(c1)ccc1ccccc12"
+
+
 def test_the_optimisation_job_is_deck_v1_without_hessians(tmp_path, monkeypatch):
     cfg = config(tmp_path, threads=3, psi4_memory_gb=5)
     cfg.folder.mkdir()

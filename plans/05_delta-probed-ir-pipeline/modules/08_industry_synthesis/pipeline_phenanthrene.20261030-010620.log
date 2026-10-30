@@ -1,0 +1,4 @@
+[pipeline] optimisation (psi4): exit 0 (psi4_worker.log)
+[pipeline] analytic B3LYP Hessian and APT (WSL pyscf): exit 0 (analytic.log)
+[pipeline] done: 66 bands, C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\pipeline_demo_2026-10-29\phenanthrene\pipeline.json (4695 s)
+[pipeline] certificate: C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\pipeline_demo_2026-10-29\phenanthrene\certificate.md

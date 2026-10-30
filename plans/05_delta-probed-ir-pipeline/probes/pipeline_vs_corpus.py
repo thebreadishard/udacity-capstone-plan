@@ -23,6 +23,7 @@ from m08 import pipeline as P  # noqa: E402
 from rungC_intensities import MATCHED, intensity_readout, match_modes, mode_intensities  # noqa: E402  (on the path through m08.pipeline)
 
 TRUTH = "hessian_wb97x_analytic.npz"
+SAME_FRAME_BOHR = 1e-3                 # above it the atoms are in another order or frame than the corpus folder's
 
 
 def geometry(d: Path) -> tuple[list[str], np.ndarray]:
@@ -135,7 +136,10 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("corpus_id")
     a = ap.parse_args(argv)
     c = compare(a.result.resolve(), P.CORPUS / a.corpus_id)
-    if (P.CORPUS / a.corpus_id / TRUTH).exists():
+    if c["geometry_max_abs_bohr"] > SAME_FRAME_BOHR:
+        print(f"no truth read: the atoms differ from the corpus folder's by {c['geometry_max_abs_bohr']:.2g} bohr — another order or frame "
+              "(pipeline 0.2 starts from the canonical SMILES)", flush=True)
+    elif (P.CORPUS / a.corpus_id / TRUTH).exists():
         c["against_truth"] = against_truth(a.result.resolve(), P.CORPUS / a.corpus_id)
     P.write_json(a.result / "vs_corpus.json", c)
     text = report(c)
