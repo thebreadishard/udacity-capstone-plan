@@ -56,3 +56,7 @@ may again be lower (it was, 0.90 cm⁻¹, under the fixed budget), which is one 
 (chain_runner, memory bound 7.7 GB as the count's, nothing beside it), its dry run, then the launch on the user's word. Measured on arm (c)
 (28 Oct): its random fine-tunes at k = 5–20 took ≈ 7 min per run of three draws, its covers ≈ 5 min per run with two modes → ≈ 1 h + ≈ 2 h,
 about three laptop hours. The read follows the chain's end.
+
+## Read (30 October 2026, 23:1x)
+
+Chain C1R ran 21:07–23:03, 36 of 36 outputs; `out/c1_reread_2026-10-30/c1_reread.md`. CH-oop, random draws against covers (mean ± se over seeds × draws): k = 5 7.51 ± 0.27 against 6.51 ± 0.13 (below), k = 10 5.92 ± 0.14 against 6.19 ± 0.34, k = 20 4.75 ± 0.24 against 4.72 ± 0.08 — below at one size, the rule asks two. **C1 does not hold on R2**, as predicted, and as under the fixed budget. One fine-tune of 54 reached its best epoch near the cap (rd_k5_seed1, 115 of 120); more epochs could only lower the random draws at k = 5, so the verdict does not depend on it. The anchor plan keeps the reservoir's mix.

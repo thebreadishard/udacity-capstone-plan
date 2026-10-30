@@ -1,0 +1,7 @@
+analytic second-route Hessians substituted for 862 molecules
+atomic polar tensors found for 471 molecules: intensity read-outs on (lever 5, registered 2 Oct 2026 06:5x)
+base base_c_model_n750_seed1.pt (status candidate); reservoir 5, read 343; k 5; modes ['body1_es']
+  [body1_es k5]     epoch 10/120: loss 0.1086, validation 0.4218 (best 0.4168 at 8)
+  [body1_es k5]     epoch 20/120: loss 0.05285, validation 0.4065 (best 0.4005 at 15)
+k 5 draw 0 body1_es: CH-oop 6.41 other 9.28 (13 s)
+wrote out/c1_reread_2026-10-30/cv_k5_d1_seed1.json/.md in 151 s
