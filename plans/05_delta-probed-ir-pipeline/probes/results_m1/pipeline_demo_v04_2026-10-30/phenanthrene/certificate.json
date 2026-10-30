@@ -1,6 +1,6 @@
 {
  "kind": "live certificate",
- "date": "2026-10-30 18:19",
+ "date": "2026-10-30 20:39",
  "pipeline_version": "0.4",
  "molecule": {
   "name": "phenanthrene",
@@ -69,69 +69,69 @@
   "higher_level": "ωB97X/6-31G* (the DFT proxy: the network's ΔH is trained on ωB97X − B3LYP Hessians)",
   "holdouts": {
    "a": {
-    "description": "hold-out (a): layer-A molecules held out on 19 Sep 2026 (benzene, phenanthrene, fluoranthene, benzonitrile, benzophenone, …), never trained",
-    "n_molecules": 10,
+    "description": "hold-out (a) without its two trained twins (2-naphthoic acid and benzonitrile were trained on as layer-B molecules; TASKS 157): eight layer-A molecules held out on 19 Sep 2026, never trained on under any id",
+    "n_molecules": 8,
     "readouts": {
      "ring-ip": {
-      "mean": 1.66,
+      "mean": 1.77,
       "seeds": [
-       1.82,
-       1.59,
-       1.59
+       1.95,
+       1.68,
+       1.7
       ],
       "target": 3.0,
       "within_target": true
      },
      "CH-stretch": {
-      "mean": 1.15,
+      "mean": 1.19,
       "seeds": [
-       0.87,
-       1.62,
-       0.97
+       0.91,
+       1.74,
+       0.91
       ],
       "target": 3.0,
       "within_target": true
      },
      "CH-oop": {
-      "mean": 1.99,
+      "mean": 2.17,
       "seeds": [
-       2.22,
-       1.9,
-       1.86
+       2.47,
+       2.06,
+       1.99
       ],
       "target": 3.0,
       "within_target": true
      },
      "other": {
-      "mean": 3.35,
+      "mean": 3.62,
       "seeds": [
-       3.79,
-       3.02,
-       3.24
+       4.09,
+       3.27,
+       3.51
       ],
       "target": 3.0,
       "within_target": false
      },
      "coupling_ratio": {
-      "mean": 0.172,
+      "mean": 0.184,
       "seeds": [
-       0.18,
-       0.164,
-       0.17
+       0.193,
+       0.176,
+       0.183
       ],
       "target": 0.25,
       "within_target": true
      }
     },
     "shape": {
-     "n_molecules": 10,
+     "n_molecules": 8,
      "cheap": {
-      "spectrum_overlap": 0.27,
-      "intensity_error": 0.296
+      "spectrum_overlap": 0.277,
+      "intensity_error": 0.227
      },
      "corrected": {
-      "spectrum_overlap": 0.982,
-      "intensity_error": 0.087
+      "spectrum_overlap": 0.979,
+      "intensity_error": 0.097
      }
     }
    },
@@ -207,7 +207,10 @@
   "sources": [
    "E7_rungC_chain35_analytic_eval_frozenb_seed0.json",
    "E7_rungC_chain35_analytic_eval_frozenb_seed1.json",
-   "E7_rungC_chain35_analytic_eval_frozenb_seed2.json"
+   "E7_rungC_chain35_analytic_eval_frozenb_seed2.json",
+   "E7_rungC_chain35_analytic_a8read_seed0.json",
+   "E7_rungC_chain35_analytic_a8read_seed1.json",
+   "E7_rungC_chain35_analytic_a8read_seed2.json"
   ],
   "definitions": {
    "family": "rms over the family's modes of the corrected frequency's error against the higher level (cm⁻¹); families by module 05's rule (m05/learning_curve_layerA.molecule_features)",
@@ -230,7 +233,7 @@
    "family": "other",
    "licensed": false,
    "error_cm": {
-    "a": 3.35,
+    "a": 3.62,
     "b": 3.89
    },
    "lab_region": "low / skeletal",
@@ -248,7 +251,7 @@
    "family": "other",
    "licensed": false,
    "error_cm": {
-    "a": 3.35,
+    "a": 3.62,
     "b": 3.89
    },
    "lab_region": "low / skeletal",
@@ -266,7 +269,7 @@
    "family": "other",
    "licensed": false,
    "error_cm": {
-    "a": 3.35,
+    "a": 3.62,
     "b": 3.89
    },
    "lab_region": "low / skeletal",
@@ -284,7 +287,7 @@
    "family": "other",
    "licensed": false,
    "error_cm": {
-    "a": 3.35,
+    "a": 3.62,
     "b": 3.89
    },
    "lab_region": "low / skeletal",
@@ -302,7 +305,7 @@
    "family": "other",
    "licensed": false,
    "error_cm": {
-    "a": 3.35,
+    "a": 3.62,
     "b": 3.89
    },
    "lab_region": "low / skeletal",
@@ -320,7 +323,7 @@
    "family": "other",
    "licensed": false,
    "error_cm": {
-    "a": 3.35,
+    "a": 3.62,
     "b": 3.89
    },
    "lab_region": "low / skeletal",
@@ -338,7 +341,7 @@
    "family": "other",
    "licensed": false,
    "error_cm": {
-    "a": 3.35,
+    "a": 3.62,
     "b": 3.89
    },
    "lab_region": "low / skeletal",
@@ -356,7 +359,7 @@
    "family": "other",
    "licensed": false,
    "error_cm": {
-    "a": 3.35,
+    "a": 3.62,
     "b": 3.89
    },
    "lab_region": "low / skeletal",
@@ -374,7 +377,7 @@
    "family": "other",
    "licensed": false,
    "error_cm": {
-    "a": 3.35,
+    "a": 3.62,
     "b": 3.89
    },
    "lab_region": "low / skeletal",
@@ -392,7 +395,7 @@
    "family": "other",
    "licensed": false,
    "error_cm": {
-    "a": 3.35,
+    "a": 3.62,
     "b": 3.89
    },
    "lab_region": "low / skeletal",
@@ -410,7 +413,7 @@
    "family": "other",
    "licensed": false,
    "error_cm": {
-    "a": 3.35,
+    "a": 3.62,
     "b": 3.89
    },
    "lab_region": "low / skeletal",
@@ -428,7 +431,7 @@
    "family": "other",
    "licensed": false,
    "error_cm": {
-    "a": 3.35,
+    "a": 3.62,
     "b": 3.89
    },
    "lab_region": "low / skeletal",
@@ -446,7 +449,7 @@
    "family": "other",
    "licensed": false,
    "error_cm": {
-    "a": 3.35,
+    "a": 3.62,
     "b": 3.89
    },
    "lab_region": "low / skeletal",
@@ -464,7 +467,7 @@
    "family": "other",
    "licensed": false,
    "error_cm": {
-    "a": 3.35,
+    "a": 3.62,
     "b": 3.89
    },
    "lab_region": "low / skeletal",
@@ -482,7 +485,7 @@
    "family": "other",
    "licensed": false,
    "error_cm": {
-    "a": 3.35,
+    "a": 3.62,
     "b": 3.89
    },
    "lab_region": "low / skeletal",
@@ -500,7 +503,7 @@
    "family": "other",
    "licensed": false,
    "error_cm": {
-    "a": 3.35,
+    "a": 3.62,
     "b": 3.89
    },
    "lab_region": "CH-oop (10.5-15 um; benzene nu11 at 673 included)",
@@ -518,7 +521,7 @@
    "family": "other",
    "licensed": false,
    "error_cm": {
-    "a": 3.35,
+    "a": 3.62,
     "b": 3.89
    },
    "lab_region": "CH-oop (10.5-15 um; benzene nu11 at 673 included)",
@@ -536,7 +539,7 @@
    "family": "other",
    "licensed": false,
    "error_cm": {
-    "a": 3.35,
+    "a": 3.62,
     "b": 3.89
    },
    "lab_region": "CH-oop (10.5-15 um; benzene nu11 at 673 included)",
@@ -554,7 +557,7 @@
    "family": "CH-oop",
    "licensed": true,
    "error_cm": {
-    "a": 1.99,
+    "a": 2.17,
     "b": 2.7
    },
    "lab_region": "CH-oop (10.5-15 um; benzene nu11 at 673 included)",
@@ -572,7 +575,7 @@
    "family": "CH-oop",
    "licensed": true,
    "error_cm": {
-    "a": 1.99,
+    "a": 2.17,
     "b": 2.7
    },
    "lab_region": "CH-oop (10.5-15 um; benzene nu11 at 673 included)",
@@ -590,7 +593,7 @@
    "family": "CH-oop",
    "licensed": true,
    "error_cm": {
-    "a": 1.99,
+    "a": 2.17,
     "b": 2.7
    },
    "lab_region": "CH-oop (10.5-15 um; benzene nu11 at 673 included)",
@@ -608,7 +611,7 @@
    "family": "CH-oop",
    "licensed": true,
    "error_cm": {
-    "a": 1.99,
+    "a": 2.17,
     "b": 2.7
    },
    "lab_region": "CH-oop (10.5-15 um; benzene nu11 at 673 included)",
@@ -626,7 +629,7 @@
    "family": "other",
    "licensed": false,
    "error_cm": {
-    "a": 3.35,
+    "a": 3.62,
     "b": 3.89
    },
    "lab_region": "CH-oop (10.5-15 um; benzene nu11 at 673 included)",
@@ -644,7 +647,7 @@
    "family": "other",
    "licensed": false,
    "error_cm": {
-    "a": 3.35,
+    "a": 3.62,
     "b": 3.89
    },
    "lab_region": "CH-oop (10.5-15 um; benzene nu11 at 673 included)",
@@ -662,7 +665,7 @@
    "family": "CH-oop",
    "licensed": true,
    "error_cm": {
-    "a": 1.99,
+    "a": 2.17,
     "b": 2.7
    },
    "lab_region": "CH-oop (10.5-15 um; benzene nu11 at 673 included)",
@@ -680,7 +683,7 @@
    "family": "CH-oop",
    "licensed": true,
    "error_cm": {
-    "a": 1.99,
+    "a": 2.17,
     "b": 2.7
    },
    "lab_region": "CH-oop (10.5-15 um; benzene nu11 at 673 included)",
@@ -698,7 +701,7 @@
    "family": "CH-oop",
    "licensed": true,
    "error_cm": {
-    "a": 1.99,
+    "a": 2.17,
     "b": 2.7
    },
    "lab_region": "ring / CH-ip (9-10.5 um)",
@@ -716,7 +719,7 @@
    "family": "CH-oop",
    "licensed": true,
    "error_cm": {
-    "a": 1.99,
+    "a": 2.17,
     "b": 2.7
    },
    "lab_region": "ring / CH-ip (9-10.5 um)",
@@ -734,7 +737,7 @@
    "family": "CH-oop",
    "licensed": true,
    "error_cm": {
-    "a": 1.99,
+    "a": 2.17,
     "b": 2.7
    },
    "lab_region": "ring / CH-ip (9-10.5 um)",
@@ -752,7 +755,7 @@
    "family": "CH-oop",
    "licensed": true,
    "error_cm": {
-    "a": 1.99,
+    "a": 2.17,
     "b": 2.7
    },
    "lab_region": "ring / CH-ip (9-10.5 um)",
@@ -770,7 +773,7 @@
    "family": "CH-oop",
    "licensed": true,
    "error_cm": {
-    "a": 1.99,
+    "a": 2.17,
     "b": 2.7
    },
    "lab_region": "ring / CH-ip (9-10.5 um)",
@@ -788,7 +791,7 @@
    "family": "ring-ip",
    "licensed": true,
    "error_cm": {
-    "a": 1.66,
+    "a": 1.77,
     "b": 2.12
    },
    "lab_region": "ring / CH-ip (9-10.5 um)",
@@ -806,7 +809,7 @@
    "family": "ring-ip",
    "licensed": true,
    "error_cm": {
-    "a": 1.66,
+    "a": 1.77,
     "b": 2.12
    },
    "lab_region": "ring / CH-ip (9-10.5 um)",
@@ -824,7 +827,7 @@
    "family": "ring-ip",
    "licensed": true,
    "error_cm": {
-    "a": 1.66,
+    "a": 1.77,
     "b": 2.12
    },
    "lab_region": "ring / CH-ip (9-10.5 um)",
@@ -842,7 +845,7 @@
    "family": "ring-ip",
    "licensed": true,
    "error_cm": {
-    "a": 1.66,
+    "a": 1.77,
     "b": 2.12
    },
    "lab_region": "CH-ip-bend (8.6 um)",
@@ -860,7 +863,7 @@
    "family": "ring-ip",
    "licensed": true,
    "error_cm": {
-    "a": 1.66,
+    "a": 1.77,
     "b": 2.12
    },
    "lab_region": "CH-ip-bend (8.6 um)",
@@ -878,7 +881,7 @@
    "family": "ring-ip",
    "licensed": true,
    "error_cm": {
-    "a": 1.66,
+    "a": 1.77,
     "b": 2.12
    },
    "lab_region": "CH-ip-bend (8.6 um)",
@@ -896,7 +899,7 @@
    "family": "ring-ip",
    "licensed": true,
    "error_cm": {
-    "a": 1.66,
+    "a": 1.77,
     "b": 2.12
    },
    "lab_region": "CH-ip-bend (8.6 um)",
@@ -914,7 +917,7 @@
    "family": "ring-ip",
    "licensed": true,
    "error_cm": {
-    "a": 1.66,
+    "a": 1.77,
     "b": 2.12
    },
    "lab_region": "CH-ip-bend (8.6 um)",
@@ -932,7 +935,7 @@
    "family": "ring-ip",
    "licensed": true,
    "error_cm": {
-    "a": 1.66,
+    "a": 1.77,
     "b": 2.12
    },
    "lab_region": "CH-ip-bend (8.6 um)",
@@ -950,7 +953,7 @@
    "family": "ring-ip",
    "licensed": true,
    "error_cm": {
-    "a": 1.66,
+    "a": 1.77,
     "b": 2.12
    },
    "lab_region": "CC-stretch/CH-ip (7.7 um)",
@@ -968,7 +971,7 @@
    "family": "ring-ip",
    "licensed": true,
    "error_cm": {
-    "a": 1.66,
+    "a": 1.77,
     "b": 2.12
    },
    "lab_region": "CC-stretch/CH-ip (7.7 um)",
@@ -986,7 +989,7 @@
    "family": "ring-ip",
    "licensed": true,
    "error_cm": {
-    "a": 1.66,
+    "a": 1.77,
     "b": 2.12
    },
    "lab_region": "CC-stretch/CH-ip (7.7 um)",
@@ -1004,7 +1007,7 @@
    "family": "ring-ip",
    "licensed": true,
    "error_cm": {
-    "a": 1.66,
+    "a": 1.77,
     "b": 2.12
    },
    "lab_region": "CC-stretch/CH-ip (7.7 um)",
@@ -1022,7 +1025,7 @@
    "family": "ring-ip",
    "licensed": true,
    "error_cm": {
-    "a": 1.66,
+    "a": 1.77,
     "b": 2.12
    },
    "lab_region": "CC-stretch/CH-ip (7.7 um)",
@@ -1040,7 +1043,7 @@
    "family": "ring-ip",
    "licensed": true,
    "error_cm": {
-    "a": 1.66,
+    "a": 1.77,
     "b": 2.12
    },
    "lab_region": "CC-stretch/CH-ip (7.7 um)",
@@ -1058,7 +1061,7 @@
    "family": "ring-ip",
    "licensed": true,
    "error_cm": {
-    "a": 1.66,
+    "a": 1.77,
     "b": 2.12
    },
    "lab_region": "CC-stretch/CH-ip (7.7 um)",
@@ -1076,7 +1079,7 @@
    "family": "ring-ip",
    "licensed": true,
    "error_cm": {
-    "a": 1.66,
+    "a": 1.77,
     "b": 2.12
    },
    "lab_region": "CC-stretch/CH-ip (7.7 um)",
@@ -1094,7 +1097,7 @@
    "family": "ring-ip",
    "licensed": true,
    "error_cm": {
-    "a": 1.66,
+    "a": 1.77,
     "b": 2.12
    },
    "lab_region": "CC-stretch (6.2 um)",
@@ -1112,7 +1115,7 @@
    "family": "ring-ip",
    "licensed": true,
    "error_cm": {
-    "a": 1.66,
+    "a": 1.77,
     "b": 2.12
    },
    "lab_region": "CC-stretch (6.2 um)",
@@ -1130,7 +1133,7 @@
    "family": "ring-ip",
    "licensed": true,
    "error_cm": {
-    "a": 1.66,
+    "a": 1.77,
     "b": 2.12
    },
    "lab_region": "CC-stretch (6.2 um)",
@@ -1148,7 +1151,7 @@
    "family": "ring-ip",
    "licensed": true,
    "error_cm": {
-    "a": 1.66,
+    "a": 1.77,
     "b": 2.12
    },
    "lab_region": "CC-stretch (6.2 um)",
@@ -1166,7 +1169,7 @@
    "family": "ring-ip",
    "licensed": true,
    "error_cm": {
-    "a": 1.66,
+    "a": 1.77,
     "b": 2.12
    },
    "lab_region": "overtone / combination region",
@@ -1184,7 +1187,7 @@
    "family": "ring-ip",
    "licensed": true,
    "error_cm": {
-    "a": 1.66,
+    "a": 1.77,
     "b": 2.12
    },
    "lab_region": "overtone / combination region",
@@ -1202,7 +1205,7 @@
    "family": "ring-ip",
    "licensed": true,
    "error_cm": {
-    "a": 1.66,
+    "a": 1.77,
     "b": 2.12
    },
    "lab_region": "overtone / combination region",
@@ -1220,7 +1223,7 @@
    "family": "ring-ip",
    "licensed": true,
    "error_cm": {
-    "a": 1.66,
+    "a": 1.77,
     "b": 2.12
    },
    "lab_region": "overtone / combination region",
@@ -1238,7 +1241,7 @@
    "family": "CH-stretch",
    "licensed": true,
    "error_cm": {
-    "a": 1.15,
+    "a": 1.19,
     "b": 2.5
    },
    "lab_region": "above 3200",
@@ -1256,7 +1259,7 @@
    "family": "CH-stretch",
    "licensed": true,
    "error_cm": {
-    "a": 1.15,
+    "a": 1.19,
     "b": 2.5
    },
    "lab_region": "above 3200",
@@ -1274,7 +1277,7 @@
    "family": "CH-stretch",
    "licensed": true,
    "error_cm": {
-    "a": 1.15,
+    "a": 1.19,
     "b": 2.5
    },
    "lab_region": "above 3200",
@@ -1292,7 +1295,7 @@
    "family": "CH-stretch",
    "licensed": true,
    "error_cm": {
-    "a": 1.15,
+    "a": 1.19,
     "b": 2.5
    },
    "lab_region": "above 3200",
@@ -1310,7 +1313,7 @@
    "family": "CH-stretch",
    "licensed": true,
    "error_cm": {
-    "a": 1.15,
+    "a": 1.19,
     "b": 2.5
    },
    "lab_region": "above 3200",
@@ -1328,7 +1331,7 @@
    "family": "CH-stretch",
    "licensed": true,
    "error_cm": {
-    "a": 1.15,
+    "a": 1.19,
     "b": 2.5
    },
    "lab_region": "above 3200",
@@ -1346,7 +1349,7 @@
    "family": "CH-stretch",
    "licensed": true,
    "error_cm": {
-    "a": 1.15,
+    "a": 1.19,
     "b": 2.5
    },
    "lab_region": "above 3200",
@@ -1364,7 +1367,7 @@
    "family": "CH-stretch",
    "licensed": true,
    "error_cm": {
-    "a": 1.15,
+    "a": 1.19,
     "b": 2.5
    },
    "lab_region": "above 3200",
@@ -1382,7 +1385,7 @@
    "family": "CH-stretch",
    "licensed": true,
    "error_cm": {
-    "a": 1.15,
+    "a": 1.19,
     "b": 2.5
    },
    "lab_region": "above 3200",
@@ -1400,7 +1403,7 @@
    "family": "CH-stretch",
    "licensed": true,
    "error_cm": {
-    "a": 1.15,
+    "a": 1.19,
     "b": 2.5
    },
    "lab_region": "above 3200",
@@ -1458,7 +1461,7 @@
   "rule": "modules/03_lab_scoreboard/build_lab_tables.py FAMILY_RULE (12 Sep 2026)"
  },
  "licence": {
-  "statement": "licensed at the DFT proxy: ring-ip (1.66 / 2.12), CH-stretch (1.15 / 2.5), CH-oop (1.99 / 2.7); not licensed: other (3.35 / 3.89) — seed-mean error on hold-outs (a) / (b) in cm⁻¹ against 3; no coupled-cluster licence",
+  "statement": "licensed at the DFT proxy: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7); not licensed: other (3.62 / 3.89) — seed-mean error on hold-outs (a) / (b) in cm⁻¹ against 3; no coupled-cluster licence",
   "rule_source": "README.md, decision 65",
   "licensed_families": [
    "ring-ip",
@@ -1483,7 +1486,7 @@
   "result": "C:\\Users\\thebr\\Documents\\CapstonePlan\\plans\\05_delta-probed-ir-pipeline\\probes\\results_m1\\pipeline_demo_v04_2026-10-30\\phenanthrene",
   "run_commit": "87145510fec5782d7bdb1b22176215182446a84c",
   "run_dirty": "no",
-  "certificate_commit": "c8015316",
+  "certificate_commit": "ea24fc20",
   "deck_sha16": "9e27bf8e934893f3",
   "low_level_software": {
    "pyscf": "2.14.0",

@@ -132,7 +132,7 @@ def listing(smiles: str, b3lyp_cm: list[float], catalog: Catalog) -> dict | None
 def certificate(folder: Path, catalog: Catalog) -> dict:
     r = load_result(folder)
     rec, adm = r.record, r.record["admission"]
-    accuracy = A.network_accuracy(A.evaluation_records(r.models))
+    accuracy = A.network_accuracy(A.evaluation_records(r.models), A.clean_a_records(r.models))
     w_low = RINT.mode_intensities(r.H_low, r.masses, r.apt)[0]
     listed = listing(adm["smiles"], [float(w) for w in w_low], catalog)
     tolerance = catalog.u_band(listed["name"] if listed else rec["name"])

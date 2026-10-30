@@ -11,6 +11,7 @@
     "epochs": 3,
     "head": "hybrid",
     "hinge_feature": false,
+    "holdout_twins": "drop",
     "hybrid_hidden": 256,
     "inner_val": 0.15,
     "kdiag_mode": "family",
@@ -776,6 +777,8 @@
     "A2_1b389dc1d8"
    ],
    "holdout_s": [],
+   "holdout_twins": "drop",
+   "holdout_twins_dropped": [],
    "hybrid_hidden": 256,
    "inner_val": 0.15,
    "kdiag_mode": "family",
@@ -904,6 +907,7 @@
     "epochs": 2,
     "head": "hybrid",
     "hinge_feature": false,
+    "holdout_twins": "drop",
     "hybrid_hidden": 256,
     "inner_val": 0.15,
     "kdiag_mode": "family",
@@ -1739,6 +1743,8 @@
     "A_541c53d1a5",
     "A_7a57a52879"
    ],
+   "holdout_twins": "drop",
+   "holdout_twins_dropped": [],
    "hybrid_hidden": 256,
    "inner_val": 0.15,
    "kdiag_mode": "family",

@@ -27,6 +27,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "src"))
 import e6_learning_curve as E6
 import e7_t2_posthoc as PH
 import e7_t2_sqm as T2
+import holdout_twins as HT
 import rungC_intensities as RI
 from e7_rungB_pairs import molecule_pairs, readouts
 from rungC_config import KRING_WEIGHT, SMOKE_HOLDOUT, SMOKE_POOL, TrainConfig, parse_config
@@ -730,6 +731,7 @@ class Corpus:
     n_atoms: dict
     excluded: list = field(default_factory=list)
     substituted: list = field(default_factory=list)
+    twins: list = field(default_factory=list)      # pool ids dropped as a hold-out molecule under another id (TASKS 157)
 
 
 def select_corpus(cfg: TrainConfig, log) -> Corpus:
@@ -765,7 +767,19 @@ def select_corpus(cfg: TrainConfig, log) -> Corpus:
             raise SystemExit(f"--overfit-one {cfg.overfit_one}: not an admitted molecule of this corpus")
         pool, sizes, test_a, test_b = [cfg.overfit_one], [1], [cfg.overfit_one], [cfg.overfit_one]
     tests = {"a": test_a, "b": test_b} | ({"s": test_s} if test_s else {}) | ({"sel": test_sel} if test_sel else {})
-    return Corpus(mols=mols, pool=pool, tests=tests, cores=cores, sizes=sizes, seeds=seeds, n_atoms=nat, excluded=excluded, substituted=substituted)
+    pool, twins = drop_twins(cfg, pool, [*test_a, *test_b, *test_s], log)
+    return Corpus(mols=mols, pool=pool, tests=tests, cores=cores, sizes=sizes, seeds=seeds, n_atoms=nat, excluded=excluded, substituted=substituted,
+                  twins=twins)
+
+
+def drop_twins(cfg: TrainConfig, pool: list, held: list, log) -> tuple[list, list]:
+    """Without --holdout-twins keep, the pool loses every molecule that is a hold-out (a, b, s) molecule under another id."""
+    if cfg.holdout_twins == "keep":
+        return pool, []
+    found = HT.twins(pool, held, HT.manifest_keys(cfg.molecules))
+    if found:
+        log(f"hold-out twins: {len(found)} pool molecules are hold-out molecules under another id and leave the pool ({', '.join(found)})")
+    return [i for i in pool if i not in found], found
 
 
 def distort_blocks(dH: np.ndarray, masses: np.ndarray, V: np.ndarray, w: np.ndarray, family: list,
@@ -830,6 +844,7 @@ def new_record(cfg: TrainConfig, corpus: Corpus, target_residuals: dict) -> dict
     return dict(date=datetime.now().strftime("%Y-%m-%d %H:%M"), smoke=cfg.smoke, provenance=provenance(),
                 model="rungC_equivariant C1 (from scratch; output scaled by the training set's RMS ΔH, or per entry class)",
                 excluded_ids=corpus.excluded, exclude_ids_file=cfg.exclude_ids_file, size_test_min_atoms=cfg.size_test_min_atoms,
+                holdout_twins=cfg.holdout_twins, holdout_twins_dropped=corpus.twins,
                 pool_max_atoms=cfg.pool_max_atoms, holdout_s=t.get("s", []),
                 n_molecules=len(corpus.mols), holdout_a=t["a"], holdout_b=t["b"], scaffold_cores=corpus.cores, pool=len(corpus.pool),
                 pool_ids=corpus.pool, pool_layers=cfg.pool_layers, sizes=corpus.sizes, seeds=corpus.seeds, epochs=cfg.epochs, lr=cfg.lr,

@@ -28,6 +28,7 @@ import torch
 
 PLAN = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PLAN / "modules" / "05_support_predictor" / "m05"))
+import holdout_twins as HT  # noqa: E402
 import model_registry as MR  # noqa: E402
 import rungC_intensities as RI  # noqa: E402
 from rungC_equivariant import load_molecule  # noqa: E402
@@ -50,8 +51,9 @@ def split_holdout_b(test_b: list, frozen: list, admitted) -> tuple[list, list]:
     return sorted(i for i in keep if i in admitted), [i for i in test_b if i not in keep]
 
 
-def eval_sets(specs: list, admitted, train_ids, substituted=()) -> dict:
-    """{NAME: {"ids", "dropped", "file", "n_analytic"}} from NAME=FILE specs (one id per line, '#' comments); see --eval-ids-file."""
+def eval_sets(specs: list, admitted, train_ids, keys: dict, substituted=()) -> dict:
+    """{NAME: {"ids", "dropped", "file", "n_analytic"}} from NAME=FILE specs (one id per line, '#' comments); see --eval-ids-file.
+    `keys` (`holdout_twins.manifest_keys`) finds a listed molecule the model trained on under another id."""
     out = {}
     trained, analytic = set(train_ids), set(substituted)
     for spec in specs:
@@ -64,6 +66,10 @@ def eval_sets(specs: list, admitted, train_ids, substituted=()) -> dict:
         overlap = sorted(set(listed) & trained)
         if overlap:
             raise SystemExit(f"--eval-ids-file {name}: {len(overlap)} ids are in the model's training set ({', '.join(overlap[:5])}) — not a test")
+        twins = HT.twins(sorted(trained), listed, keys)
+        if twins:
+            raise SystemExit(f"--eval-ids-file {name}: the training set holds {len(twins)} of its molecules under other ids "
+                             f"({', '.join(twins[:5])}) — not a test (TASKS 157)")
         ids = [i for i in listed if i in admitted]
         if not ids:
             raise SystemExit(f"--eval-ids-file {name}: none of its {len(listed)} ids is an admitted molecule")
@@ -96,7 +102,7 @@ def main() -> int:
     if a.holdout_b_file:
         frozen = [s.strip() for s in open(a.holdout_b_file, encoding="utf-8") if s.strip() and not s.startswith("#")]
         test_b, b_plus = split_holdout_b(test_b, frozen, mols)
-    extra = eval_sets(a.eval_ids_file, mols, tr, substituted)
+    extra = eval_sets(a.eval_ids_file, mols, tr, HT.manifest_keys(a.molecules), substituted)
     extra_ids = [i for s in extra.values() for i in s["ids"]]
     tensors = {i: molecule_tensors(i, load_molecule(Path(a.molecules) / i, use_analytic=a.use_analytic), mols[i], Path(a.molecules) / i, cfg,
                                    Path(a.out_prefix).parent / "ls_targets") for i in dict.fromkeys(test_a + test_b + b_plus + extra_ids)}

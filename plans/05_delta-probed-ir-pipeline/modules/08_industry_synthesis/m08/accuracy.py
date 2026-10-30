@@ -21,6 +21,9 @@ TARGET_SOURCE = ("3 cm⁻¹ per family — decision 53's line for ring-ip, CH-oo
                  "and the coupling ratio ≤ 0.25 of chain 35's T1 line (probes/chain35_read.py)")
 HOLDOUTS = {"a": "hold-out (a): layer-A molecules held out on 19 Sep 2026 (benzene, phenanthrene, fluoranthene, benzonitrile, benzophenone, …), never trained",
             "b": "hold-out (b): every substituted molecule of two scaffold cores, frozen on 8 Oct 2026 — scaffolds the network never saw"}
+CLEAN_SET = "a8"                       # probes/holdout_a_clean.sh's extra test set
+CLEAN_A = ("hold-out (a) without its two trained twins (2-naphthoic acid and benzonitrile were trained on as layer-B molecules; TASKS 157): "
+           "eight layer-A molecules held out on 19 Sep 2026, never trained on under any id")
 HIGHER_LEVEL = "ωB97X/6-31G* (the DFT proxy: the network's ΔH is trained on ωB97X − B3LYP Hessians)"
 CC_NOTE = ("not measured for this network version: the coupled-cluster reads (T3) were made on chain 34, and tests on the 9–11 existing "
            "anchors wait for the anchor decision of November 2026")
@@ -50,28 +53,54 @@ def evaluation_records(models: tuple[str, ...]) -> list[Path]:
     return out
 
 
+def clean_a_records(models: tuple[str, ...]) -> list[Path] | None:
+    """Each model's clean hold-out (a) read (`probes/holdout_a_clean.sh`: `<stem>_a8read_<seed>.json`), or None where no model has one;
+    some models with one and some without is refused, since the error stated would mix two hold-outs."""
+    hits = []
+    for name in models:
+        stem, sep, tail = name.partition("_model_")
+        if not sep:
+            raise ValueError(f"{name}: not a rung-C model file name (…_model_…)")
+        seed = tail.removesuffix(".pt").rsplit("_", 1)[-1]
+        hits.append([p for p in sorted(M05_OUT.glob(f"{stem}_a8read_{seed}.json")) if _model_of(p) == name])
+    if not any(hits):
+        return None
+    if any(len(h) != 1 for h in hits):
+        raise ValueError(f"clean hold-out (a) reads for some models only ({[len(h) for h in hits]}): one per model or none")
+    return [h[0] for h in hits]
+
+
 def _model_of(record: Path) -> str:
     with open(record, encoding="utf-8") as f:
         return Path(json.load(f)["model"]).name
 
 
-def network_accuracy(records: list[Path]) -> dict:
-    """Per hold-out: each read-out's seed mean and seed values as reported, its target and whether the mean is within it, and the spectral
-    shape (overlap and height error, uncorrected → corrected) over the molecules with an APT."""
-    arm = load_eval_arm(records)
-    recs = []
-    for p in records:
+def _records(paths: list[Path]) -> list[dict]:
+    out = []
+    for p in paths:
         with open(p, encoding="utf-8") as f:
-            recs.append(json.load(f))
+            out.append(json.load(f))
+    return out
+
+
+def network_accuracy(records: list[Path], clean: list[Path] | None = None) -> dict:
+    """Per hold-out: each read-out's seed mean and seed values as reported, its target and whether the mean is within it, and the spectral
+    shape (overlap and height error, uncorrected → corrected) over the molecules with an APT. With `clean` (`clean_a_records`), hold-out
+    (a) is read on the molecules never trained on under any id."""
+    sources = {h: (load_eval_arm(records), _records(records), h) for h in HOLDOUTS}
+    if clean is not None:
+        sources["a"] = (load_eval_arm(clean, holdouts=(CLEAN_SET, "b")), _records(clean), CLEAN_SET)
     holdouts = {}
     for h, description in HOLDOUTS.items():
+        arm, recs, key = sources[h]
         rows = {}
         for q in QUANTITIES:
-            mean = reported(arm.mean(h, q), q)
-            rows[q] = dict(mean=mean, seeds=[reported(x, q) for x in arm.values[h][q]], target=TARGETS[q], within_target=mean <= TARGETS[q])
-        holdouts[h] = dict(description=description, n_molecules=len(recs[0][h]["per_molecule"]), readouts=rows, shape=shape_accuracy(recs, h))
-    return dict(higher_level=HIGHER_LEVEL, holdouts=holdouts, target_source=TARGET_SOURCE, sources=[p.name for p in records],
-                definitions=DEFINITIONS, coupled_cluster=CC_NOTE)
+            mean = reported(arm.mean(key, q), q)
+            rows[q] = dict(mean=mean, seeds=[reported(x, q) for x in arm.values[key][q]], target=TARGETS[q], within_target=mean <= TARGETS[q])
+        holdouts[h] = dict(description=CLEAN_A if key == CLEAN_SET else description, n_molecules=len(recs[0][key]["per_molecule"]),
+                           readouts=rows, shape=shape_accuracy(recs, key))
+    return dict(higher_level=HIGHER_LEVEL, holdouts=holdouts, target_source=TARGET_SOURCE,
+                sources=[p.name for p in records] + [p.name for p in clean or []], definitions=DEFINITIONS, coupled_cluster=CC_NOTE)
 
 
 def carried_version() -> str:
@@ -84,4 +113,5 @@ def carried_version() -> str:
 
 def carried_accuracy() -> dict:
     """The error of the carried version: the evaluation records of the registry's carried ΔH-network files."""
-    return network_accuracy(evaluation_records(tuple(m.name for m in P.carried_models()))) | {"version": carried_version()}
+    names = tuple(m.name for m in P.carried_models())
+    return network_accuracy(evaluation_records(names), clean_a_records(names)) | {"version": carried_version()}

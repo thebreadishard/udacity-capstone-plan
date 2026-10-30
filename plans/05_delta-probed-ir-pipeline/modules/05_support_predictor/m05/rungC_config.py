@@ -64,6 +64,7 @@ class TrainConfig(BaseModel):
     size_test_min_atoms: int = Field(0, ge=0)
     pool_max_atoms: int = Field(0, ge=0)
     exclude_ids_file: str | None = None
+    holdout_twins: Literal["drop", "keep"] = "drop"       # TASKS 157: a hold-out molecule's twin leaves the pool; keep = v1.3's pool
     aux: Literal["all", "pattern", "kring", "both"] = "all"
     zero_hlow: bool = False
     tensor_input: bool = False
@@ -340,6 +341,8 @@ def build_parser(description: str) -> argparse.ArgumentParser:
     ap.add_argument("--size-test-min-atoms", type=int, default=0, help="pool molecules with at least this many atoms become hold-out (s) and never train")
     ap.add_argument("--pool-max-atoms", type=int, default=0, help="train only on pool molecules with at most this many atoms")
     ap.add_argument("--exclude-ids-file", default=None, help="coverage ablation: ids (one per line) dropped from the training pool; hold-outs untouched")
+    ap.add_argument("--holdout-twins", default="drop", choices=["drop", "keep"],
+                    help="TASKS 157 (30 Oct 2026): drop pool molecules that are a hold-out molecule under another id (default); keep = v1.3's pool")
     ap.add_argument("--aux", default="all", choices=["all", "pattern", "kring", "both"],
                     help="internal term: 'all' (registered) = every entry of B⁺ᵀ ΔH B⁺; 'pattern' = the pair model's pattern only, one "
                          "standardisation scale per pair class; 'kring' = the ring-mode block of K; 'both' = pattern + kring")

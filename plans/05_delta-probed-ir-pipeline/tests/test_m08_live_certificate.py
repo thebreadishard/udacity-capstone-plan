@@ -59,6 +59,24 @@ def test_the_licence_follows_the_error_of_the_files_that_ran(accuracy):
     assert s["licensed_families"] == ["ring-ip", "CH-stretch", "CH-oop"] and "not licensed: other (3.35 / 3.89)" in s["statement"]
 
 
+def test_the_clean_hold_out_a_replaces_a_and_keeps_the_licence():
+    """TASKS 157 (the user, 30 Oct 2026): hold-out (a) read on the eight molecules never trained on under any id."""
+    clean = A.clean_a_records(V13)
+    assert [p.name for p in clean] == [f"E7_rungC_chain35_analytic_a8read_seed{s}.json" for s in range(3)]
+    acc = A.network_accuracy(A.evaluation_records(V13), clean)
+    mean = {h: {q: v["mean"] for q, v in acc["holdouts"][h]["readouts"].items() if q != "coupling_ratio"} for h in ("a", "b")}
+    assert mean["a"] == {"ring-ip": 1.77, "CH-stretch": 1.19, "CH-oop": 2.17, "other": 3.62}
+    assert mean["b"] == {"ring-ip": 2.12, "CH-stretch": 2.5, "CH-oop": 2.7, "other": 3.89}
+    assert acc["holdouts"]["a"]["n_molecules"] == 8 and acc["holdouts"]["a"]["description"] == A.CLEAN_A
+    assert licence.state(acc)["licensed_families"] == ["ring-ip", "CH-stretch", "CH-oop"]
+
+
+def test_clean_reads_for_some_models_only_are_refused():
+    assert A.clean_a_records(("E7_rungC_nochain_model_n750_seed0.pt",)) is None
+    with pytest.raises(ValueError, match="some models only"):
+        A.clean_a_records((V13[0], "E7_rungC_nochain_model_n750_seed1.pt"))
+
+
 def test_a_family_on_the_line_is_licensed_and_one_above_it_is_not(accuracy):
     acc = copy.deepcopy(accuracy)
     for h in ("a", "b"):

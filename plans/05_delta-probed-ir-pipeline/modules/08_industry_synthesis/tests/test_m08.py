@@ -40,7 +40,7 @@ def test_the_licence_follows_the_carried_networks_error():
     """Decision 65 (29 Oct 2026) on v1.3's evaluation records."""
     s = licence_state()
     assert s["licensed_families"] == ["ring-ip", "CH-stretch", "CH-oop"] and s["rule_source"] == "README.md, decision 65"
-    assert "other (3.35 / 3.89)" in s["statement"] and "no coupled-cluster licence" in s["statement"]
+    assert "other (3.62 / 3.89)" in s["statement"] and "no coupled-cluster licence" in s["statement"]   # clean (a), TASKS 157
 
 
 def rung_one_parent(cat) -> str:
@@ -99,7 +99,7 @@ def test_spectral_shape_heights_only_with_an_apt(cat):
     assert b["n_ir_active"] == 7                                            # a2u + 3 × e1u (degenerate pairs); FD leakage below 0.5 % ignored
     acc = b["accuracy"]
     a = acc["holdouts"]["a"]["shape"]
-    assert acc["version"] == "1.3" and a["n_molecules"] == 10 and a["corrected"]["spectrum_overlap"] > a["cheap"]["spectrum_overlap"]
+    assert acc["version"] == "1.3" and a["n_molecules"] == 8 and a["corrected"]["spectrum_overlap"] > a["cheap"]["spectrum_overlap"]  # clean (a)
     assert a["corrected"]["intensity_error"] < a["cheap"]["intensity_error"] and acc["coupled_cluster"].startswith("not measured")
     n = certificate(cat.find("naphthalene"), cat)
     assert n["spectral_shape"]["kind"] == "positions only" and "Positions only" in to_markdown(n)
@@ -158,5 +158,5 @@ def test_the_live_certificate_agrees_with_benzenes_export_certificate(cat):
     gap = max(abs(a - b) for a, b in zip(listed, ours, strict=True))
     assert abs(gap - m["listed"]["b3lyp_max_abs_diff_cm"]) <= 0.15
     page = LC.to_markdown(live)
-    assert "not measured for this network version" in page and "| other | 3.35 (" in page
+    assert "not measured for this network version" in page and "| other | 3.62 (" in page          # clean (a), TASKS 157
     assert live["licence"]["licensed_families"] == ["ring-ip", "CH-stretch", "CH-oop"]

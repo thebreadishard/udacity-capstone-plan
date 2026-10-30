@@ -60,9 +60,10 @@ def apt_passed(d: Path) -> bool:
 
 def candidates(corpus: Path) -> list[dict]:
     """Every admissible molecule with what the rule needs to know about it."""
-    names = {}
     with open(corpus / "manifest.csv", newline="", encoding="utf-8") as f:
-        names = {r["id"]: r["name"] for r in csv.DictReader(f)}
+        rows = {r["id"]: r for r in csv.DictReader(f)}
+    names = {i: r["name"] for i, r in rows.items()}
+    smiles = {i: r["smiles"] for i, r in rows.items()}
     excluded = frozen_ids(corpus / "holdout_c.txt") | frozen_ids(corpus / "holdout_rung4_test.txt")
     out = []
     for d in sorted(p for p in (corpus / "molecules").iterdir() if p.is_dir()):
@@ -73,8 +74,9 @@ def candidates(corpus: Path) -> list[dict]:
         if layer not in LAYERS or r.get("n_imaginary_b3lyp", 0) or r.get("n_imaginary_wb97x", 0):
             continue
         n_atoms = len(json.loads((d / "geometry.json").read_text(encoding="utf-8"))["symbols"])
-        out.append({"id": d.name, "dir": d, "layer": layer, "name": names.get(d.name, d.name), "core": names.get(d.name, d.name).split("+")[0],
-                    "atoms": n_atoms, "analytic": all((d / f).exists() for f in FILES[4:6]), "apt": apt_passed(d)})
+        out.append({"id": d.name, "dir": d, "layer": layer, "name": names.get(d.name, d.name), "smiles": smiles[d.name],
+                    "core": names.get(d.name, d.name).split("+")[0], "atoms": n_atoms,
+                    "analytic": all((d / f).exists() for f in FILES[4:6]), "apt": apt_passed(d)})
     return sorted(out, key=lambda m: sha1(m["id"]))
 
 
@@ -128,8 +130,8 @@ def main() -> int:
                 files[f"{m['id']}/{name}"] = sha256(dst / name)
     with open(OUT / "manifest.csv", "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
-        w.writerow(["id", "name"])
-        w.writerows([m["id"], m["name"]] for m in picks)
+        w.writerow(["id", "name", "layer", "smiles"])               # layer and SMILES: the trainer's hold-out twin check (TASKS 157)
+        w.writerows([m["id"], m["name"], m["layer"], m["smiles"]] for m in picks)
     pool = pool_of(picks)
     atoms = {m["id"]: m["atoms"] for m in picks}
     size_min = sorted((atoms[i] for i in pool), reverse=True)[2]
