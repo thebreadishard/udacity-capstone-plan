@@ -22,7 +22,7 @@ from m08 import live_certificate as LC  # noqa: E402
 from m08 import pipeline as P  # noqa: E402
 from rungC_intensities import MATCHED, intensity_readout, match_modes, mode_intensities  # noqa: E402  (on the path through m08.pipeline)
 
-TRUTH = "hessian_wb97x_analytic.npz"
+TRUTH = P.TRUTH_HESSIAN
 SAME_FRAME_BOHR = 1e-3                 # above it the atoms are in another order or frame than the corpus folder's
 
 

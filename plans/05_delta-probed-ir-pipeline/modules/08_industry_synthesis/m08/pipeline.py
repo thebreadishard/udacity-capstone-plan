@@ -60,6 +60,7 @@ PYSCF_HEADROOM_MB = 584                # pyscf's max_memory below the cap: probe
 KILLED_AT_CAP = (137, 143)             # wsl_capped.sh's kill, and the systemd scope's (probes/cation_oom_check.sh)
 APT_FAILED = 3                         # analytic_hessians.py: the Hessian is written, the APT failed its checks
 CORRECTION = "correction.npz"
+TRUTH_HESSIAN = "hessian_wb97x_analytic.npz"   # a corpus folder's ωB97X Hessian: the network's target
 HARMONIC_NOTE = "harmonic positions: the anharmonic shift is not in this version (backlog; TASKS 53)"
 
 
