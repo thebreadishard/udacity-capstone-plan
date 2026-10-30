@@ -1,0 +1,15 @@
+[pipeline] optimisation (psi4): exit 0 (psi4_worker.log)
+[pipeline] analytic B3LYP Hessian and APT (WSL pyscf): exit 0 (analytic.log)
+Traceback (most recent call last):
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\08_industry_synthesis\m08\pipeline.py", line 431, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\08_industry_synthesis\m08\pipeline.py", line 419, in main
+    rec = run(cfg)
+  File "C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\08_industry_synthesis\m08\pipeline.py", line 381, in run
+    out = spectra(d, dH, dH_seeds)
+  File "C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\08_industry_synthesis\m08\pipeline.py", line 346, in spectra
+    raise RuntimeError("a seed's spectrum has a different number of vibrational modes than the mean's")
+RuntimeError: a seed's spectrum has a different number of vibrational modes than the mean's
