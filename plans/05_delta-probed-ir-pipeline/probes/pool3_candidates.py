@@ -196,11 +196,17 @@ def append_manifest(rows: list[dict], manifest_path: Path) -> int:
         for r in rows:
             if r["id"] in have:
                 continue
-            note = f"pool3 {r['family']}" + (f"; parent {r['parent_id']}" if r["parent_id"] else "") + (f"; charge {r['charge']} mult {r['multiplicity']}" if r["charge"] else "")
-            w.writerow(dict(id=r["id"], layer=r["layer"], priority=sha(r["smiles"]), name=r["name"], smiles=r["smiles"], qm9_label="", n_heavy=r["n_heavy"],
-                            n_atoms=r["n_atoms"], status="pending", machine="", deck="", note=note))
+            w.writerow(manifest_row(r))
             added += 1
     return added
+
+
+def manifest_row(r: dict) -> dict:
+    """A candidate's manifest row (status pending, deck empty); the note is the row's own or `pool3 <family>; parent <id>; charge q mult m`."""
+    note = r.get("note") or (f"pool3 {r['family']}" + (f"; parent {r['parent_id']}" if r["parent_id"] else "")
+                             + (f"; charge {r['charge']} mult {r['multiplicity']}" if r["charge"] else ""))
+    return dict(id=r["id"], layer=r["layer"], priority=sha(r["smiles"]), name=r["name"], smiles=r["smiles"], qm9_label="", n_heavy=r["n_heavy"],
+                n_atoms=r["n_atoms"], status="pending", machine="", deck="", note=note)
 
 
 def main() -> int:
