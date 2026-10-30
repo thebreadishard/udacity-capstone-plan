@@ -47,9 +47,9 @@ from learning_curve_layerA import normal_modes  # noqa: E402
 from rungC_intensities import mode_intensities  # noqa: E402
 from scale_factor_baseline import PAHDB_FACTORS, pahdb_region  # noqa: E402
 
-from dpir.provenance import provenance  # noqa: E402
+from dpir.provenance import git_state, provenance  # noqa: E402
 
-PIPELINE_VERSION = "0.3"               # modules/PIPELINE.md
+PIPELINE_VERSION = "0.4"               # modules/PIPELINE.md
 NETWORK = "ΔH-network"
 CORPUS = M05 / "corpus" / "molecules"
 PSI4_WORKER = M05 / "corpus" / "psi4_worker.py"
@@ -377,6 +377,7 @@ def run(cfg: PipelineConfig) -> dict:
     import torch
 
     adm = admit(cfg)
+    launched = provenance()          # before the first step: a commit made during the run must not be named as the code that ran
     torch.set_num_threads(cfg.threads)
     d = cfg.folder
     d.mkdir(parents=True, exist_ok=True)
@@ -396,7 +397,8 @@ def run(cfg: PipelineConfig) -> dict:
     rec = {"pipeline_version": PIPELINE_VERSION, "name": cfg.name, "input": {"smiles": cfg.smiles, "xyz": cfg.xyz},
            "settings": cfg.model_dump(mode="json"), "admission": vars(adm) | {"inside_training_sizes": adm.inside_training_sizes},
            "deck": {"file": str(RC.DECK), "sha16": sha16(RC.DECK)}, "optimisation": {k: psi4.get(k) for k in ("e_opt", "timings_s", "opt_options")},
-           "low_level": check, "seconds": seconds, "spectra": out, "provenance": provenance()}
+           "low_level": check, "seconds": seconds, "spectra": out, "provenance": launched,
+           "commit_at_end": git_state(str(Path(__file__).parent)).get("commit")}
     write_json(d / "pipeline.json", rec)
     return rec
 

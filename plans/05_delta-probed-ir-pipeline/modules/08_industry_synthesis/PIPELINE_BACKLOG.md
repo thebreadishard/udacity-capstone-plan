@@ -18,5 +18,4 @@ leaves this list; the pipeline version that carries it is named in `modules/PIPE
 | The CC anchors' fine-tune | after November's anchor decision; the fine-tune is R2 (body1_es, cap 120), the anchor count's registered meaning | 82, 145 | after |
 | The laptop's Hessian time for large molecules | the analytic Hessian is the step that grows fastest with size | 146 | after |
 | Promotion into `src/dpir` and the product repository | the forkable product of 2027 | 73 | after |
-| The run's commit stamped at launch | `pipeline.json` takes the commit when the run ends (candidate06: 94d8981e, launched at fe941b7f); a commit between launch and end would name code that did not run | 146 | before |
 | The demo molecules re-run at the meeting's pipeline version | the page shows each molecule at the version that ran it (benzene 0.1, phenanthrene 0.2, the candidate 0.3); 0.3 reproduces the first two to the bit, but one version on the page reads cleaner; laptop: about 6 min, 77 min and 3.7 h | 146 | before |

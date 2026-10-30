@@ -229,3 +229,19 @@ def test_a_refusal_exits_2_with_its_reasons(tmp_path, pin_registry, pin_defaults
 def test_the_output_folder_is_absolute(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     assert config(Path("rel")).out_root == (tmp_path / "rel").resolve()
+
+
+def test_the_record_names_the_commit_at_launch_and_the_commit_at_the_end(tmp_path, pin_registry, monkeypatch):
+    calls: list[str] = []
+    monkeypatch.setattr(P, "provenance", lambda: calls.append("provenance") or {"commit": "launch", "dirty": "no"})
+    monkeypatch.setattr(P, "git_state", lambda cwd=None: {"commit": "end", "dirty": "no"})
+    monkeypatch.setattr(P, "start_geometry", lambda cfg: calls.append("start_geometry") or ([], None))
+    monkeypatch.setattr(P, "optimise", lambda cfg, xyz, opt: {})
+    monkeypatch.setattr(P, "low_level", lambda cfg: {})
+    monkeypatch.setattr(P, "correction", lambda models, d: (np.zeros(1), []))
+    monkeypatch.setattr(P, "save_correction", lambda *a: None)
+    monkeypatch.setattr(P, "spectra", lambda d, dH, dH_seeds: {})
+    rec = P.run(config(tmp_path))
+    assert calls == ["provenance", "start_geometry"]
+    assert rec["provenance"]["commit"] == "launch" and rec["commit_at_end"] == "end"
+    assert json.loads((tmp_path / "mol" / "pipeline.json").read_text(encoding="utf-8"))["commit_at_end"] == "end"
