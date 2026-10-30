@@ -654,6 +654,8 @@ def _cmd_list(_: argparse.Namespace, __: Shell) -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
+    # markers quote run logs verbatim; a '≈' in one stopped the watch's check under Windows' cp1252 console (30 Oct 2026)
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     sub = ap.add_subparsers(dest="cmd", required=True)
     for name in ("validate", "launch"):
