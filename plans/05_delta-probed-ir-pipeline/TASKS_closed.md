@@ -705,7 +705,7 @@ have no candidate that small (quintet on three-ring systems — a phenyl on a la
 
 ## Archived 2026-10-30 14:4x
 
-153. **[DELIVERABLE][Documentation] Architecture sheet 80 brought to the built pipeline** (30 Oct 14:2x; the user's demo plan: the pipeline's architecture, then the supervisor picks a molecule the network has not seen that computes in at most half an hour, the project explained while it runs, the result read at the end of the hour). `GoalGathering/architecture/80_spectrum_pipeline.mmd` dates from 26 Oct, before `m08/pipeline.py` was built (0.1 on 29 Oct, 0.4 on 30 Oct). Done 30 Oct 15:0x: the sheet draws pipeline 0.4 with the planned steps dashed; render check all nine sheets OK (ledger). *Next:* none; archived. | `GoalGathering/architecture/` |
-   → archived 2026-10-30 14:4x: sheet 80 draws the built pipeline 0.4, render-checked (ledger 30 Oct 15:0x)
+153. **[DELIVERABLE][Documentation] Architecture sheet 80 brought to the built pipeline** (30 Oct 14:2x; the user's demo plan: the pipeline's architecture, then the supervisor picks a molecule the network has not seen that computes in at most half an hour, the project explained while it runs, the result read at the end of the hour). `GoalGathering/architecture/80_spectrum_pipeline.mmd` dates from 26 Oct, before `m08/pipeline.py` was built (0.1 on 29 Oct, 0.4 on 30 Oct). Done 30 Oct 14:4x: the sheet draws pipeline 0.4 with the planned steps dashed; render check all nine sheets OK (ledger). *Next:* none; archived. | `GoalGathering/architecture/` |
+   → archived 2026-10-30 14:4x: sheet 80 draws the built pipeline 0.4, render-checked (ledger 30 Oct 14:4x)
 
 <!-- tasks_board.py archive: new entries go above this line -->
