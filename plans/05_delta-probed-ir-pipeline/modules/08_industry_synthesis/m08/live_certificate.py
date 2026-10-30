@@ -22,6 +22,7 @@ import numpy as np
 from . import accuracy as A
 from . import pipeline as P
 from . import prices
+from . import seen as S
 from .catalog import FAMILY_SOURCE, Catalog
 from .catalog import family as lab_region
 from .certify import commit_hash
@@ -137,10 +138,13 @@ def certificate(folder: Path, catalog: Catalog) -> dict:
     tolerance = catalog.u_band(listed["name"] if listed else rec["name"])
     version = {m["version"] for m in adm["models"]}.pop()
     lic = licence_state(accuracy)
+    seen = S.status(adm["smiles"], S.load(tuple(Path(m["path"]) for m in adm["models"])), listed["id"] if listed else None)
+    truth = S.truth_beside(listed["id"], rec["spectra"]["network"]["sticks"]) if listed else None
     return dict(
         kind="live certificate", date=time.strftime("%Y-%m-%d %H:%M"), pipeline_version=rec["pipeline_version"],
         molecule=dict(name=rec["name"], smiles=adm["smiles"], formula=adm["formula"], n_atoms=adm["n_atoms"], elements=adm["elements"],
-                      training_atoms=adm["training_atoms"], inside_training_sizes=adm["inside_training_sizes"], listed=listed),
+                      training_atoms=adm["training_atoms"], inside_training_sizes=adm["inside_training_sizes"], listed=listed,
+                      seen=seen, truth=truth),
         network=dict(name=P.NETWORK, version=version, models=adm["models"], predicts=A.HIGHER_LEVEL),
         accuracy=accuracy, bands=bands(r, accuracy, tolerance, lic["licensed_families"]),
         tolerance=dict(per_region=tolerance, rule=FAMILY_SOURCE),
@@ -152,7 +156,7 @@ def certificate(folder: Path, catalog: Catalog) -> dict:
         statement=(f"{rec['name']}: the harmonic infrared spectrum of {P.NETWORK} v{version} ({len(r.models)} seeds) — B3LYP/6-31G* corrected "
                    f"toward {A.HIGHER_LEVEL.split(' (')[0]} — with the error measured on molecules the network never saw; licensed for "
                    f"{', '.join(lic['licensed_families']) or 'no family'} (decision 65), each band marked; at the coupled-cluster level "
-                   f"{A.CC_NOTE}. The scaled B3LYP spectrum is shown as the baseline only."))
+                   f"{A.CC_NOTE}. The scaled B3LYP spectrum is shown as the baseline only. This molecule: {seen['text']}."))
 
 
 def _band_lines(c: dict) -> list[str]:
@@ -182,6 +186,15 @@ def _accuracy_lines(a: dict) -> list[str]:
             f"*Sources:* {'; '.join(a['sources'])}."]
 
 
+def _truth_lines(t: dict | None) -> list[str]:
+    if t is None:
+        return []
+    rank = f"positions paired by rank, rms {t['rms_by_rank_cm']} cm⁻¹" if t["rms_by_rank_cm"] is not None else "band counts differ, no rank pairing"
+    shape = f"spectrum overlap {t['overlap']}" if t["overlap"] is not None else "no APT in the corpus folder, no overlap"
+    return [f"- the ωB97X truth is in the corpus ({t['source']}, {t['n_bands']} bands): the network against it, {shape}; {rank} "
+            "(both independent of the atom order)"]
+
+
 def to_markdown(c: dict) -> str:
     m, n, k, p = c["molecule"], c["network"], c["cost"], c["provenance"]
     listed = m["listed"]
@@ -190,6 +203,7 @@ def to_markdown(c: dict) -> str:
          f"{m['training_atoms'][0]}–{m['training_atoms'][1]} atoms: {'inside' if m['inside_training_sizes'] else 'OUTSIDE'}",
          "- catalogue: " + (f"listed as {listed['id']} ({listed['name']}, rung {listed['rung']}); its export's B3LYP positions lie within "
                             f"{listed.get('b3lyp_max_abs_diff_cm', '—')} cm⁻¹ of this run's ({listed['source']})" if listed else "not listed"),
+         f"- the network: {m['seen']['text']}", *_truth_lines(m["truth"]),
          "", f"## Spectrum, band by band ({n['name']} v{n['version']}, {len(n['models'])} seeds)", "", *_band_lines(c), "",
          f"*Laboratory region and u_band:* {c['tolerance']['rule']}. *Positions:* {p['note']}.", "",
          "## How well the network is known (its own evaluation records)", "", *_accuracy_lines(c["accuracy"]), "",

@@ -255,7 +255,8 @@ def page(panels: list[Panel]) -> str:
     cert = panels[0].certificate
     lead = (f'A molecule goes in as a SMILES string; out comes its infrared spectrum: B3LYP/6-31G* corrected toward ωB97X/6-31G* by the '
             f'{_e(cert["network"]["name"])} v{_e(cert["network"]["version"])}, with a certificate that says per band how well the network '
-            f'is known there. Pipeline {_e(P.PIPELINE_VERSION)}; built from the result folders listed at the end.')
+            f'is known there. Pipeline {_e(", ".join(sorted({p.certificate["pipeline_version"] for p in panels})))}; built from the result '
+            f'folders listed at the end.')
     limits = "".join(f"<li>{_e(x)}</li>" for x in LIMITS)
     return (f'<title>Spectrum Pipeline Demo</title><meta name="claude:viewport-fit-sides" content="cover">{STYLE}'
             f'<main class="wrap"><header class="top"><p class="eyebrow">Module 08 · the pipeline</p><h1>From a SMILES string to an infrared '

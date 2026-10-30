@@ -131,7 +131,7 @@ def anchor_series(mid: str) -> dict | None:
     return dict(s, level=e["level"], tier=e.get("tier"), apt_level=apt_level, registry_sha16=e.get("sha16"))
 
 
-def _overlap(a: list[dict], b: list[dict]) -> float:
+def overlap(a: list[dict], b: list[dict]) -> float:
     ri = _ri()
     grid = np.arange(GRID[0], GRID[1], 1.0)
     cur = lambda s: ri.broadened(np.array([x["omega_cm"] for x in s]), np.array([x["km_mol"] for x in s]), grid, FWHM)   # noqa: E731
@@ -151,7 +151,7 @@ def test_prediction(mid: str, anchor: dict) -> dict | None:
         z = np.load(f)
         s = series(f, masses, PLAN / anchor["apt_source"], H=z["H_low"] + z["dH_pred"])
         seeds.append(dict(file=_rel(f), mode=str(z["mode"]), low_level=str(z["low_level"]), sticks=s["sticks"],
-                          spectrum_overlap=_overlap(s["sticks"], anchor["sticks"])))
+                          spectrum_overlap=overlap(s["sticks"], anchor["sticks"])))
     ov = [s["spectrum_overlap"] for s in seeds]
     return dict(label="test of the network, not a served prediction: the anchor was left out of the fine-tune (T3, chain 34's models — "
                       "v1.1, superseded, a fixed-step fine-tune — "
@@ -172,8 +172,9 @@ def comparison(mid: str, anchor: dict) -> dict:
     c = series(cheap_hessian(mid), np.asarray(_geometry(mid)["masses_amu"], float), apt)
     fa = np.array([x["omega_cm"] for x in anchor["sticks"]]); fc = np.array([x["omega_cm"] for x in c["sticks"]])
     rms = round(float(np.sqrt(np.mean((fa - fc) ** 2))), 1) if len(fa) == len(fc) else None
-    overlap = _overlap(c["sticks"], anchor["sticks"]) if apt is not None else None
-    return dict(cheap=c, spectrum_overlap=overlap, freq_rms_cm=rms, note="the cheap Hessian with the anchor's dipole derivatives: the curves differ only by the Hessian")
+    shape = overlap(c["sticks"], anchor["sticks"]) if apt is not None else None
+    return dict(cheap=c, spectrum_overlap=shape, freq_rms_cm=rms,
+                note="the cheap Hessian with the anchor's dipole derivatives: the curves differ only by the Hessian")
 
 
 def broadened(sticks: list[dict], step: float = 1.0) -> tuple[np.ndarray, np.ndarray]:

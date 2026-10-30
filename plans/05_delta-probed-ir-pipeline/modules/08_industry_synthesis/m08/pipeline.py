@@ -49,7 +49,7 @@ from scale_factor_baseline import PAHDB_FACTORS, pahdb_region  # noqa: E402
 
 from dpir.provenance import git_state, provenance  # noqa: E402
 
-PIPELINE_VERSION = "0.4"               # modules/PIPELINE.md
+PIPELINE_VERSION = "0.5"               # modules/PIPELINE.md
 NETWORK = "ΔH-network"
 CORPUS = M05 / "corpus" / "molecules"
 PSI4_WORKER = M05 / "corpus" / "psi4_worker.py"
@@ -167,16 +167,21 @@ def rdkit_molecule(cfg: PipelineConfig):
     return m
 
 
-def training_set(models: tuple[Path, ...]) -> tuple[tuple[str, ...], tuple[int, int]]:
-    """The elements and the atom-count range of the molecules the models were trained on, from each checkpoint's train_ids and the corpus."""
+def train_ids(models: tuple[Path, ...]) -> set[str]:
+    """Every molecule a model fitted or stopped on (its checkpoint's train_ids, the inner validation included), over all models."""
     import torch
 
     ids: set[str] = set()
     for p in models:
         ids |= set(torch.load(p, map_location="cpu", weights_only=False)["train_ids"])
+    return ids
+
+
+def training_set(models: tuple[Path, ...]) -> tuple[tuple[str, ...], tuple[int, int]]:
+    """The elements and the atom-count range of the molecules the models were trained on, from each checkpoint's train_ids and the corpus."""
     elements: set[str] = set()
     sizes = []
-    for i in sorted(ids):
+    for i in sorted(train_ids(models)):
         g = CORPUS / i / "geometry.json"
         if not g.is_file():
             raise FileNotFoundError(f"{i}, a training molecule of the carried models, has no {g}")
