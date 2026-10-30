@@ -26,12 +26,12 @@ from .catalog import FAMILY_SOURCE, Catalog
 from .catalog import family as lab_region
 from .certify import commit_hash
 from .licence import state as licence_state
-from .spectrum import cheap_apt
+from .spectrum import cheap_apt, vib_min_cm
 
 # isort: split
 # module 05's code and probes/, on the path through m08.pipeline
 import rungC_intensities as RINT
-from learning_curve_layerA import molecule_features
+from learning_curve_layerA import molecule_features, normal_modes
 from promotion_read import QUANTITIES
 
 STICK_TOL_CM = 0.051                   # the record rounds positions to 0.1 cm⁻¹
@@ -66,38 +66,53 @@ def load_result(folder: Path) -> Result:
     return Result(folder, rec, masses, H_low, apt, dH, models)
 
 
-def mode_families(r: Result, w_low: np.ndarray) -> list[str]:
-    """The family of each B3LYP mode by the rule the network's error is measured in (`molecule_features`, which also reads the folder's
-    geometry); its modes must be the spectrum's."""
+def rule_modes(r: Result, w_low: np.ndarray) -> tuple[np.ndarray, np.ndarray, list[str], np.ndarray]:
+    """The B3LYP vibrational modes of the rule the network's error is measured in (`normal_modes`: all but the six of smallest |ω|) —
+    positions, mass-weighted shapes, each one's family (`molecule_features`, which also reads the folder's geometry) — and which of them the
+    spectrum lists (above the line of `mode_intensities`); those must be the spectrum's modes `w_low`."""
+    _, w_rule, V_rule, _ = normal_modes(r.H_low, r.masses)
     feats = molecule_features(r.folder, lo=r.H_low, hi=r.H_low)
-    if len(feats["freq"]) != len(w_low) or np.abs(np.asarray(feats["freq"]) - w_low).max() > 1e-6:
-        raise RuntimeError(f"{r.folder.name}: the family rule's modes are not the spectrum's")
-    return list(feats["family"])
+    if np.abs(np.asarray(feats["freq"]) - w_rule).max() > 1e-6:
+        raise RuntimeError(f"{r.folder.name}: the family rule's modes are not its normal modes")
+    above = np.abs(w_rule) > vib_min_cm()
+    if above.sum() != len(w_low) or np.abs(w_rule[above] - w_low).max() > 1e-6:
+        raise RuntimeError(f"{r.folder.name}: the family rule's modes above the line are not the spectrum's")
+    return w_rule, V_rule, list(feats["family"]), above
+
+
+def mode_families(r: Result, w_low: np.ndarray) -> list[str]:
+    """The family of each listed B3LYP mode `w_low` by the rule the network's error is measured in."""
+    _, _, families, above = rule_modes(r, w_low)
+    return [f for f, a in zip(families, above, strict=True) if a]
 
 
 def bands(r: Result, accuracy: dict, tolerance: dict[str, dict], licensed: list[str]) -> list[dict]:
-    """One row per corrected mode, sorted by position, paired with the B3LYP mode of largest overlap (`rungC_intensities.match_modes`, the
-    evaluation's pairing): its family, the B3LYP, baseline and network positions, the height, the seeds' range as the record holds it, the
-    measured error of its family on both hold-outs, whether that family is licensed, and the laboratory tolerance of its region."""
-    w_low, _, L_low = RINT.mode_intensities(r.H_low, r.masses, r.apt, return_modes=True)
+    """One row per corrected mode, sorted by position, paired with the B3LYP mode of largest overlap among all its modes
+    (`rungC_intensities.match_modes`, the evaluation's pairing): its family, the B3LYP, baseline and network positions, the height, the seeds'
+    range as the record holds it, the measured error of its family on both hold-outs, whether that family is licensed, and the laboratory
+    tolerance of its region. The B3LYP partner is sought among the family rule's modes (`rule_modes`), so a corrected mode whose partner lies
+    under the line of `mode_intensities` (a near-free rotor the network stiffens) keeps its family; it has no baseline, which lists the B3LYP
+    spectrum's bands."""
+    w_low = RINT.mode_intensities(r.H_low, r.masses, r.apt)[0]
+    w_rule, V_rule, families, above = rule_modes(r, w_low)
+    listed = np.cumsum(above) - 1                                  # a mode's index among the listed B3LYP modes, where it is one
     w_net, k_net, L_net = RINT.mode_intensities(r.H_low + r.dH, r.masses, r.apt, return_modes=True)
     sticks = r.record["spectra"]["network"]["sticks"]
     if len(sticks) != len(w_net) or max(abs(s["omega_cm"] - w) for s, w in zip(sticks, np.sort(w_net), strict=True)) > STICK_TOL_CM:
         raise RuntimeError(f"{r.folder.name}: the recorded network spectrum is not the one H_low + ΔH gives")
-    families = mode_families(r, w_low)
     baseline = r.record["spectra"]["baseline"]["sticks"]           # in the B3LYP modes' order (ascending), as the pipeline scaled them
     if len(baseline) != len(w_low):
         raise RuntimeError(f"{r.folder.name}: the recorded baseline has {len(baseline)} bands, the B3LYP Hessian {len(w_low)}")
     rank = np.argsort(np.argsort(w_net))
     readouts = {h: accuracy["holdouts"][h]["readouts"] for h in A.HOLDOUTS}
     rows = []
-    for i, j in enumerate(RINT.match_modes(L_low, L_net)):
-        fam, region = families[i], lab_region(float(w_net[j]))
+    for j, k in enumerate(RINT.match_modes(L_net, V_rule)):
+        fam, region = families[k], lab_region(float(w_net[j]))
         rows.append(dict(network_cm=round(float(w_net[j]), 1), km_mol=round(float(k_net[j]), 2), seed_range_cm=sticks[rank[j]]["seed_range_cm"],
-                         b3lyp_cm=round(float(w_low[i]), 1), baseline_cm=baseline[i]["omega_cm"], family=fam,
-                         licensed=fam in licensed, error_cm={h: readouts[h][fam]["mean"] for h in A.HOLDOUTS}, lab_region=region,
+                         b3lyp_cm=round(float(w_rule[k]), 1), baseline_cm=baseline[int(listed[k])]["omega_cm"] if above[k] else None,
+                         family=fam, licensed=fam in licensed, error_cm={h: readouts[h][fam]["mean"] for h in A.HOLDOUTS}, lab_region=region,
                          u_band_cm=tolerance.get(region, {}).get("u_band")))
-    return sorted(rows, key=lambda b: b["network_cm"])
+    return [row for _, row in sorted(zip(rank, rows, strict=True), key=lambda t: t[0])]      # the record's stick order
 
 
 def listing(smiles: str, b3lyp_cm: list[float], catalog: Catalog) -> dict | None:
@@ -145,7 +160,8 @@ def _band_lines(c: dict) -> list[str]:
          "laboratory region | u_band (cm⁻¹) |", "|---|---|---|---|---|---|---|---|---|---|"]
     for b in c["bands"]:
         lo, hi = b["seed_range_cm"]
-        L.append(f"| {b['network_cm']} | {b['km_mol']} | {lo}–{hi} | {b['b3lyp_cm']} | {b['baseline_cm']} | {b['family']} | "
+        baseline = b["baseline_cm"] if b["baseline_cm"] is not None else f"— (B3LYP under {vib_min_cm():g} cm⁻¹)"
+        L.append(f"| {b['network_cm']} | {b['km_mol']} | {lo}–{hi} | {b['b3lyp_cm']} | {baseline} | {b['family']} | "
                  f"{'yes' if b['licensed'] else 'no'} | {b['error_cm']['a']} / {b['error_cm']['b']} | {b['lab_region']} | "
                  f"{b['u_band_cm'] if b['u_band_cm'] is not None else '—'} |")
     return L

@@ -43,11 +43,13 @@ import rungC_infer as RI  # noqa: E402
 import rungC_train as RT  # noqa: E402
 from anchor_registry import sha16  # noqa: E402
 from rungC_equivariant import Z_OF  # noqa: E402
+from learning_curve_layerA import normal_modes  # noqa: E402
+from rungC_intensities import mode_intensities  # noqa: E402
 from scale_factor_baseline import PAHDB_FACTORS, pahdb_region  # noqa: E402
 
 from dpir.provenance import provenance  # noqa: E402
 
-PIPELINE_VERSION = "0.2"               # modules/PIPELINE.md
+PIPELINE_VERSION = "0.3"               # modules/PIPELINE.md
 NETWORK = "ΔH-network"
 CORPUS = M05 / "corpus" / "molecules"
 PSI4_WORKER = M05 / "corpus" / "psi4_worker.py"
@@ -331,6 +333,20 @@ def scaled_baseline(sticks: list[dict]) -> list[dict]:
     return [dict(s, omega_cm=round(float(x), 1)) for s, x in zip(sticks, f * w, strict=True)]
 
 
+def seed_ranges(H_low: np.ndarray, masses: np.ndarray, dH: np.ndarray, dH_seeds: list[np.ndarray]) -> list[list[float]]:
+    """Each band's range over the seeds, bands in the mean's order of ascending position: the seeds' modes paired with the mean's by rank
+    among all 3N−6 vibrational modes (the family rule's `normal_modes`), not among those above the line of `mode_intensities`, so that a mode
+    one seed alone leaves under the line keeps its partner (by shape, a degenerate pair would be split arbitrarily)."""
+    zero = np.zeros((3, H_low.shape[0]))
+    w_listed = np.sort(mode_intensities(H_low + dH, masses, zero)[0])
+    w_mean = np.sort(normal_modes(H_low + dH, masses)[1])
+    listed = np.isin(w_mean, w_listed)
+    if listed.sum() != len(w_listed):
+        raise RuntimeError("the listed modes of the mean are not among its 3N−6 vibrational modes")
+    paired = np.round(np.array([np.sort(normal_modes(H_low + x, masses)[1])[listed] for x in dH_seeds]), 1)
+    return [[float(lo), float(hi)] for lo, hi in zip(paired.min(0), paired.max(0), strict=True)]
+
+
 def spectra(d: Path, dH: np.ndarray, dH_seeds: list[np.ndarray]) -> dict:
     """Step 5: the network's spectrum (seed-mean ΔH) with each stick's range over the seeds, and the scaled B3LYP baseline."""
     hessian = d / RI.LOW_HESSIAN
@@ -341,12 +357,8 @@ def spectra(d: Path, dH: np.ndarray, dH_seeds: list[np.ndarray]) -> dict:
     with np.load(hessian) as z:
         H_low = z["H_projected"]
     net = series(hessian, masses, apt, H=H_low + dH)
-    seeds = [series(hessian, masses, apt, H=H_low + x)["sticks"] for x in dH_seeds]
-    if any(len(s) != len(net["sticks"]) for s in seeds):
-        raise RuntimeError("a seed's spectrum has a different number of vibrational modes than the mean's")
-    for i, stick in enumerate(net["sticks"]):
-        w = [s[i]["omega_cm"] for s in seeds]
-        stick["seed_range_cm"] = [min(w), max(w)]
+    for stick, span in zip(net["sticks"], seed_ranges(H_low, masses, dH, dH_seeds), strict=True):
+        stick["seed_range_cm"] = span
     b3lyp = series(hessian, masses, apt)
     baseline = dict(b3lyp, sticks=scaled_baseline(b3lyp["sticks"]),
                     label=f"baseline only: B3LYP/6-31G* scaled by PAHdb's factors {list(PAHDB_FACTORS)} per region (probes/scale_factor_baseline.py)")

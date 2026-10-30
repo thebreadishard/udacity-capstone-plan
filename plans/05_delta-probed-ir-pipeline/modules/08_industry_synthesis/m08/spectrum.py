@@ -78,7 +78,7 @@ def cheap_apt(d: Path) -> Path | None:
     return None
 
 
-def _vib_min_cm() -> float:
+def vib_min_cm() -> float:
     """The vibrational threshold of `rungC_intensities.mode_intensities` (its default), so the listed modes are cut where the spectrum is."""
     return float(inspect.signature(_ri().mode_intensities).parameters["vib_min_cm"].default)
 
@@ -95,10 +95,10 @@ def shape(mid: str, listed_cm: list[float] | None = None) -> dict:
     check = None
     listed = None if listed_cm is None else np.sort(np.asarray(listed_cm, float))
     if listed is not None:
-        listed = listed[np.abs(listed) > _vib_min_cm()]
+        listed = listed[np.abs(listed) > vib_min_cm()]
     if listed is not None and len(listed) == len(freq):
         check = round(float(np.abs(listed - freq).max()), 2)
-    return dict(s, max_dev_from_listed_cm=check, vib_min_cm=_vib_min_cm())
+    return dict(s, max_dev_from_listed_cm=check, vib_min_cm=vib_min_cm())
 
 
 def carried_anchor(mid: str) -> dict | None:

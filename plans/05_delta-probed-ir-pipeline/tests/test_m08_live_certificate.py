@@ -103,6 +103,37 @@ def test_the_bands_carry_the_recorded_positions_and_seed_ranges(result, accuracy
     assert {b["u_band_cm"] for b in rows if b["lab_region"] == "CH-stretch"} == {9.9}
 
 
+def with_mode_at(H: np.ndarray, masses: np.ndarray, k: int, cm: float) -> np.ndarray:
+    """H with its k-th vibrational mode (ascending) moved to `cm`, its shape kept."""
+    import rungC_intensities as RINT
+
+    s = np.sqrt(np.repeat(masses * RINT.AMU2AU, 3))
+    lam, V = np.linalg.eigh(H / np.outer(s, s))
+    vib = np.flatnonzero(np.abs(np.sign(lam) * np.sqrt(np.abs(lam)) * RINT.HARTREE2CM) > 1.0)
+    lam[vib[k]] = (cm / RINT.HARTREE2CM) ** 2
+    return np.outer(s, s) * ((V * lam) @ V.T)
+
+
+def test_a_mode_lifted_over_the_line_keeps_its_partner(result, accuracy):
+    """Module 06's candidate: a B3LYP rotor under the 20 cm⁻¹ line that the network lifts over it, and one seed leaves under it."""
+    masses = np.asarray(json.loads((result / "geometry.json").read_text(encoding="utf-8"))["masses_amu"], float)
+    hessian = result / P.RI.LOW_HESSIAN
+    with np.load(hessian) as z:
+        arrays = {k: z[k] for k in z.files}
+    H = with_mode_at(arrays["H_projected"], masses, 0, 10.0)
+    np.savez(hessian, **(arrays | {"H_projected": H}))
+    seeds = [with_mode_at(H, masses, 0, cm) - H for cm in (37.0, 19.0)]
+    record(result, np.mean(seeds, 0), seeds)
+    rows = LC.bands(LC.load_result(result), accuracy, {}, [])
+    lifted = [b for b in rows if b["baseline_cm"] is None]
+    assert len(rows) == 30 and len(lifted) == 1
+    assert lifted[0]["b3lyp_cm"] == 10.0 and lifted[0]["network_cm"] == round(float(np.sqrt((37.0 ** 2 + 19.0 ** 2) / 2)), 1)
+    assert lifted[0]["seed_range_cm"] == [19.0, 37.0]
+    assert lifted[0]["family"] == "other" and lifted[0]["error_cm"]["a"] == accuracy["holdouts"]["a"]["readouts"]["other"]["mean"]
+    assert all(b["seed_range_cm"][0] == b["seed_range_cm"][1] == b["network_cm"] for b in rows if b is not lifted[0])
+    assert "— (B3LYP under 20 cm⁻¹)" in "\n".join(LC._band_lines({"bands": rows}))
+
+
 def test_a_record_that_is_not_its_correction_is_refused(result, accuracy):
     record(result, ZERO, [ZERO])
     rec = json.loads((result / "pipeline.json").read_text(encoding="utf-8"))
