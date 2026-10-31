@@ -58,7 +58,9 @@ def scf_in_field(mol, settings, F, dm0=None):
     mf.xc = settings["xc"]
     mf.grids.atom_grid = settings["grid"]
     mf.grids.prune = None
-    mf.conv_tol = 1e-11
+    # The orbital gradient binds (the density error goes as |g|, the energy's as |g|²). An energy limit of 1e-11 sits on the noise floor
+    # of a 1228 Eh energy: ovalene's SCF drifted by 1e-10 a cycle at |g| = 5e-9 for 32 cycles and was refused (31 Oct).
+    mf.conv_tol = 1e-9
     mf.conv_tol_grad = 1e-8                       # as the FD route (2 Oct: the default left 1.5e-4 e in the APT)
     h = mf.get_hcore() + np.einsum("t,tij->ij", F, mol.intor("int1e_r", comp=3))
     mf.get_hcore = lambda *a: h

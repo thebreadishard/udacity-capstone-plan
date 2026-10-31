@@ -116,6 +116,13 @@ def test_endings_and_failures(obs, end_regex, expect):
     assert st.status == ("ended" if obs.exit_code is not None else "running")
 
 
+def test_a_relaunch_that_ends_the_same_way_gets_its_own_text():
+    s, obs = spec(), R.Observation(exit_code=1)
+    first, _ = R.assess(s, run_state(), obs, T0 + timedelta(minutes=5))
+    again, _ = R.assess(s, run_state(started_at=T0 + timedelta(minutes=30)), obs, T0 + timedelta(minutes=40))
+    assert first[-1] != again[-1] and again[-1].endswith("(launched 15 Oct 18:30)")
+
+
 def test_unreachable_once_is_quiet_twice_is_an_anomaly():
     s, st = spec(), run_state()
     ev, st = R.assess(s, st, R.Observation(reachable=False), T0)
@@ -253,7 +260,7 @@ def test_check_reports_events_once_per_run_and_skips_ended_runs(tmp_path):
     out = R.check(FakeShell(probe_out="exit=\nalive=1\nprogress=0\n"), T0 + timedelta(minutes=61), specs, state)
     assert out == ["ANOMALY run demo: no progress line since 15 Oct 18:00 (the spec allows 60 min)", "QUIET demo 0 lines, last 18:00"]
     out = R.check(FakeShell(probe_out="exit=0\nalive=0\nprogress=4\n"), T0 + timedelta(minutes=70), specs, state)
-    assert out == ["MARKER run demo ended (exit 0)", "QUIET demo ended"]
+    assert out == ["MARKER run demo ended (exit 0) (launched 15 Oct 18:00)", "QUIET demo ended"]
     assert R.check(FakeShell(), T0, specs, state) == ["QUIET no runs"]
 
 
@@ -404,9 +411,9 @@ def test_a_peek_leaves_the_state_and_its_one_time_events_to_the_watch(tmp_path):
     write_spec(specs, spec())
     R.save_state("demo", run_state(), state)
     ended = FakeShell(probe_out="exit=0\nalive=0\nprogress=4\n")
-    assert R.check(ended, T0, specs, state, peek=True)[0] == "MARKER run demo ended (exit 0)"
+    assert R.check(ended, T0, specs, state, peek=True)[0] == "MARKER run demo ended (exit 0) (launched 15 Oct 18:00)"
     assert R.load_state("demo", state).status == "running"
-    assert R.check(ended, T0, specs, state)[0] == "MARKER run demo ended (exit 0)"      # the watch still sees the end
+    assert R.check(ended, T0, specs, state)[0] == "MARKER run demo ended (exit 0) (launched 15 Oct 18:00)"   # the watch still sees it
     assert R.load_state("demo", state).status == "ended"
 
 
@@ -449,7 +456,7 @@ def test_an_interrupted_run_gets_the_resume_grace_and_is_not_ended():
     ev, st = R.assess(s, st, obs, T0 + timedelta(minutes=41))
     assert ev == ["ANOMALY run demo gone since 15 Oct 18:00 and not resumed (see probes/watch_state/resume.log)"] and st.status == "running"
     ev, st = R.assess(s, run_state(), R.Observation(exit_code=1, lived_s=3600, failed_marker=True), T0)
-    assert ev == ["ANOMALY run demo ended with exit 1"] and st.status == "ended"
+    assert ev == ["ANOMALY run demo ended with exit 1 (launched 15 Oct 18:00)"] and st.status == "ended"
 
 
 def test_resume_relaunches_an_interrupted_run_and_names_why(tmp_path):

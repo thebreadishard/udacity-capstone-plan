@@ -211,14 +211,16 @@ def interrupted(spec: RunSpec, obs: Observation) -> bool:
 
 
 def _ended(spec: RunSpec, state: RunState, obs: Observation, events: list[str]) -> tuple[list[str], RunState]:
-    """A run with an exit file: ended, cleanly or not."""
+    """A run with an exit file: ended, cleanly or not. The launch time is in the text: the watch reports a text once, and a relaunch
+    that ends the same way must be reported again (l5_apt_field, 31 Oct: the second exit 1 went unreported)."""
     who = f"run {spec.name}"
+    launched = f" (launched {state.started_at:%d %b %H:%M})"
     state = replace(state, status="ended")
     if obs.exit_code != 0:
-        return [*events, f"ANOMALY {who} ended with exit {obs.exit_code}"], state
+        return [*events, f"ANOMALY {who} ended with exit {obs.exit_code}{launched}"], state
     if spec.end_regex and not obs.ended_marker:
-        return [*events, f"ANOMALY {who} exited 0 without its end line /{spec.end_regex}/"], state
-    return [*events, f"MARKER {who} ended (exit 0)"], state
+        return [*events, f"ANOMALY {who} exited 0 without its end line /{spec.end_regex}/{launched}"], state
+    return [*events, f"MARKER {who} ended (exit 0){launched}"], state
 
 
 def _vanished(spec: RunSpec, state: RunState, events: list[str], now: datetime) -> tuple[list[str], RunState]:
