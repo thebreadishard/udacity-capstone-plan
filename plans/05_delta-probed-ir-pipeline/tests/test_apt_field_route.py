@@ -9,13 +9,13 @@ import numpy as np
 import pytest
 
 pytest.importorskip("pyscf")
-from pyscf import gto  # noqa: E402
+from pyscf import gto
 
 PLAN = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PLAN / "probes"))
 sys.path.insert(0, str(PLAN / "modules" / "05_support_predictor" / "corpus"))
 from apt import apt_from_mo1, hessian_with_response, refine_response, solve_response, sum_rule  # noqa: E402
-from apt_field_route import apt_field, scf_in_field  # noqa: E402
+from apt_field_route import apt_field, save_checkpoint, scf_in_field  # noqa: E402
 
 WATER = [("O", (0.0, 0.0, 0.2217)), ("H", (0.0, 1.4309, -0.8867)), ("H", (0.0, -1.4309, -0.8867))]
 
@@ -55,3 +55,19 @@ def test_the_refined_response_puts_route_c_on_the_field_route_for_dft():
     P_r = apt_from_mo1(mf, refine_response(hobj, resp.mo1, resp.h1ao)[0])
     P_no = apt_field(mol, settings, 1e-3, log=lambda *a, **k: None)[0]
     assert np.abs(P_r - P_no).max() < 2e-5 < np.abs(P_c - P_no).max()
+
+
+def test_a_restart_resumes_from_the_checkpoint_and_refuses_another_field(tmp_path):
+    mol = _mol()
+    settings = {"xc": "hf", "grid": (50, 194)}
+    quiet = lambda *a, **k: None  # noqa: E731  (a no-op log)
+    full = apt_field(mol, settings, 1e-3, log=quiet)
+    ck = str(tmp_path / "ck.npz")
+    save_checkpoint(ck, 1e-3, 2, {False: full[0].copy(), True: full[1].copy()})       # two components done, as after an interruption
+    lines = []
+    resumed = apt_field(mol, settings, 1e-3, log=lambda s, **k: lines.append(s), checkpoint=ck)
+    assert lines[0].startswith("  resuming after field component 2/3")
+    assert sum("component 3/3 done" in s for s in lines) == 1 and not any("component 1/3" in s for s in lines)
+    assert np.abs(resumed[0] - full[0]).max() < 1e-9 and np.abs(resumed[1] - full[1]).max() < 1e-9
+    with pytest.raises(ValueError, match="another run"):
+        apt_field(mol, settings, 2e-3, log=quiet, checkpoint=ck)

@@ -1,0 +1,12 @@
+{"name": "l5_apt_field", "purpose": "TASKS 49 (the user, 31 Oct: 'doe maar op de laptop'): the field route with grid response for the large PAHs whose labels-route APT failed its sum rule on l5_small (ovalene 7.9e-4, peropyrene 5.2e-4 against 5e-4; coronene appended if it fails) - chain 42's registered risk 4, the APT's second route; F = 1e-3 and 2e-3 for Richardson (L4's D1), label settings, inputs fetched from the CCX53 with sha256 checked",
+ "host": "laptop", "workdir": "probes/results_m1/l5_apt_field_2026-10-31",
+ "command": "MSYS_NO_PATHCONV=1 wsl -e bash /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/l5_apt_field_run.sh",
+ "sources": [{"local": "probes/l5_apt_field_run.sh"}, {"local": "probes/apt_field_route.py"}, {"local": "probes/library_log.py"},
+             {"local": "probes/wsl_capped.sh"}, {"local": "modules/05_support_predictor/corpus/apt.py"},
+             {"local": "probes/results_m1/l5_apt_field_2026-10-31/ids.tsv"}],
+ "progress": {"regex": "^  field component [0-9]/3|^  resuming after field component|^=== \\(L5F\\) ", "max_gap_minutes": 60,
+              "start_regex": "^=== \\(L5F\\) start: ", "heartbeat_glob": "*/pyscf.log"},
+ "marker_regex": "^=== \\(L5F\\) (start|STOPPED|all done)", "end_regex": "^=== \\(L5F\\) all done",
+ "dry_run_args": "--dry-run", "resumable": true, "threads": 8,
+ "estimate": {"hours": 36, "basis": "L4's field-route timings on the laptop (16 Oct, 4 threads, 211-237 functions, 2278-2890 s per field) scaled as n^3.0-3.4: ovalene (508) 17-23 h and peropyrene (418) 9-12 h for both fields at 4 threads; 8 threads expected faster, not measured; coronene (384) adds 7-9 h if it fails"},
+ "memory": {"peak_gb": 8.0, "basis": "the probes/wsl_capped.sh cgroup cap of 8192 MB (pyscf max_memory 6144 MB inside it); nothing else runs on the laptop"}}
