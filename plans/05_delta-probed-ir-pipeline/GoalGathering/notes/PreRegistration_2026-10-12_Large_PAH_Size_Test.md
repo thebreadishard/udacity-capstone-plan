@@ -145,4 +145,6 @@ not moved after the fact.
 
 ## Outcome
 
-*(appended after the run)*
+**Outcome of the risk-4 amendment (31 Oct 2026, 19:1x; `probes/results_m1/l5_apt_field_2026-10-31/l5_apt_field_read.{json,md}`, run `l5_apt_field` exit 0 at 19:13).** ovalene (T_c874e3c6cf) A 1.4e-9 e, B 4.4e-6 e; peropyrene (T_2f846bd4a9) A 4.5e-10 e, B 3.5e-6 e — both lines hold for both, so `<id>/dipole_b3lyp_field.npz` is their APT for the intensity read. The labels-route APTs (sum rule 7.9e-4 and 5.2e-4) lie within 7.4e-5 and 9.5e-5 e of the field APTs; the strong bands' heights (34 a molecule) move by 0.02 % and 0.03 % rms (max 0.04 % and 0.09 %), so the miss was the grid response's share of the sum rule and not the intensities. Peropyrene's single-F differences fall with F at slope 4.0 (the read's diagnosis: field-route truncation, removed by Richardson). Coronene's APT is read at l5_small's end.
+
+*(chain 42: appended after the run)*

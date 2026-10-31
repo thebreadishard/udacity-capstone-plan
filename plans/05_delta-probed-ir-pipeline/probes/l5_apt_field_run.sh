@@ -8,7 +8,10 @@
 # Memory: pyscf's grid-response gradient does not follow max_memory — grids_response_becke holds dpbecke, natm² × 3 × the points of one
 # atom's grid (ovalene: 3.0 GB), beside that grid's AOs with second derivatives (2.4 GB); at an 8 GB cap ovalene was killed in its first
 # grid-response gradient (31 Oct). So max_memory stays at 6 GB and the cap leaves the rest to the grid response.
+# stderr goes to stdout here, inside WSL: through `wsl -e` the two streams kept their own offsets in one log file and pyscf's warnings
+# overwrote the start lines (31 Oct).
 set -euo pipefail
+exec 2>&1
 PLAN=$(cd "$(dirname "$0")/.." && pwd)
 DIR=${L5F_DIR:-$PLAN/probes/results_m1/l5_apt_field_2026-10-31}
 PY=${L5F_PYTHON:-/home/thebreadishard/qc05/bin/python}
