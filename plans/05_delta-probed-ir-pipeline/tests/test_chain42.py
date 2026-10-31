@@ -39,7 +39,17 @@ def test_ready_needs_every_file_and_a_minimum(tmp_path):
     (d / "result.json").write_text(json.dumps({"labels": "analytic_only", "n_imaginary_b3lyp": 1, "n_imaginary_wb97x": 0}))
     assert LR.state(d).startswith("IMAGINARY")
     (d / "result.json").write_text(json.dumps({"labels": "analytic_only", "n_imaginary_b3lyp": 0, "n_imaginary_wb97x": 0}))
-    assert LR.state(d) == "ready"
+    assert LR.state(d) == "ready" and LR.apt_passed(d)
+
+
+def test_a_failed_apt_does_not_hold_the_run_and_is_named(tmp_path):
+    d = tmp_path / "T_x"
+    d.mkdir()
+    for f in ("geometry.json", "hessian_b3lyp_analytic.npz", "hessian_wb97x_analytic.npz"):
+        (d / f).write_text("{}")
+    np.savez(d / "dipole_b3lyp_cphf.npz", passed=False, sum_rule_max=7.9e-4)
+    (d / "result.json").write_text(json.dumps({"labels": "analytic_only", "n_imaginary_b3lyp": 0, "n_imaginary_wb97x": 0}))
+    assert LR.state(d) == "ready" and not LR.apt_passed(d)
 
 
 def test_the_frozen_lists_hold_the_four_and_the_six():
