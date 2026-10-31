@@ -152,7 +152,8 @@ def certificate(folder: Path, catalog: Catalog) -> dict:
         cost=dict(steps_s=rec["seconds"], **prices.price_of_run(sum(rec["seconds"].values()), rec["provenance"]["host"])),
         provenance=dict(result=str(folder), run_commit=rec["provenance"]["commit"], run_dirty=rec["provenance"]["dirty"],
                         certificate_commit=commit_hash(), deck_sha16=rec["deck"]["sha16"], low_level_software=rec["low_level"]["b3lyp"].get("software"),
-                        host=rec["provenance"]["host"], note=rec["spectra"]["note"]),
+                        host=rec["provenance"]["host"], note=rec["spectra"]["note"],
+                        reused_from=rec["reuse"]["source"] if "reuse" in rec and rec["reuse"]["reused"] else None),
         statement=(f"{rec['name']}: the harmonic infrared spectrum of {P.NETWORK} v{version} ({len(r.models)} seeds) — B3LYP/6-31G* corrected "
                    f"toward {A.HIGHER_LEVEL.split(' (')[0]} — with the error measured on molecules the network never saw; licensed for "
                    f"{', '.join(lic['licensed_families']) or 'no family'} (decision 65), each band marked; at the coupled-cluster level "

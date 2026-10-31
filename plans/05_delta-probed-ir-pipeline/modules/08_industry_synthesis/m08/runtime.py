@@ -20,11 +20,13 @@ HALF_HOUR_S = 1800.0                   # the demo's live run (the user's demo pl
 
 
 def timed_runs(threads: int, results: Path = RESULTS) -> list[tuple[int, float, str]]:
-    """(basis functions, total seconds, folder) of every finished pipeline run on the laptop at this thread count."""
+    """(basis functions, total seconds, folder) of every finished pipeline run on the laptop at this thread count that computed its
+    Hessian (a run that reused the corpus's took seconds, TASKS 150)."""
     out = []
     for p in sorted(results.glob("pipeline_*/*/pipeline.json")):
         rec = json.loads(p.read_text(encoding="utf-8"))
-        if host_class(rec["provenance"]["host"]) != "laptop" or rec["settings"]["threads"] != threads:
+        reused = "reuse" in rec and rec["reuse"]["reused"]          # records before 0.5 have no reuse entry: they computed
+        if reused or host_class(rec["provenance"]["host"]) != "laptop" or rec["settings"]["threads"] != threads:
             continue
         n = AP.basis_functions(rec["input"]["smiles"], AP.BASIS_FUNCTIONS_631GS)   # the given SMILES: 0.1 records lack the canonical one
         out.append((n, float(sum(rec["seconds"].values())), p.parent.relative_to(results).as_posix()))

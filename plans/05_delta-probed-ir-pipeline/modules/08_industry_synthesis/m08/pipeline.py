@@ -4,6 +4,8 @@
 Each step is one function on existing code:
 
 1. `start_geometry` — the corpus's own start geometry (`corpus/run_corpus.start_geometry`: RDKit ETKDG + MMFF, seed 0), or the given xyz;
+   then `from_corpus` (`m08/reuse.py`, TASKS 150): a molecule the corpus computed at these settings takes its optimised geometry,
+   Hessian and APT from there, in the canonical atom order, and skips steps 2–3; the record says which folder, or why not;
 2. `optimise` — `corpus/psi4_worker.py` with deck v1 and "hessians": false, in the Windows conda env `qc` (psi4 1.11, the deck's engine);
 3. `low_level` — `corpus/analytic_hessians.py --functionals b3lyp` in WSL pyscf under `probes/wsl_capped.sh`: the analytic B3LYP Hessian
    and its APT;
@@ -14,7 +16,7 @@ Each step is one function on existing code:
 Every refusal — the charge state, a radical, no aromatic ring, an element the carried models never saw, a model that is not carried, an
 output folder in use — comes before step 1. The positions are harmonic: no anharmonic shift (the backlog), and the record says so.
 
-    python -m m08.pipeline --name benzene --smiles c1ccccc1 --out <folder> [--threads 4] [--psi4-python <qc env python>]
+    python -m m08.pipeline --name benzene --smiles c1ccccc1 --out <folder> [--threads 4] [--psi4-python <qc env python>] [--no-reuse]
 """
 from __future__ import annotations
 
@@ -31,6 +33,7 @@ from pathlib import Path, PureWindowsPath
 import numpy as np
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
+from . import reuse as R
 from .catalog import PLAN, Catalog
 from .spectrum import cheap_apt, series
 
@@ -42,25 +45,29 @@ import run_corpus as RC  # noqa: E402
 import rungC_infer as RI  # noqa: E402
 import rungC_train as RT  # noqa: E402
 from anchor_registry import sha16  # noqa: E402
-from rungC_equivariant import Z_OF  # noqa: E402
+from apt import CPHF_BOUND, SUM_RULE_LIMIT  # noqa: E402
 from learning_curve_layerA import normal_modes  # noqa: E402
+from rungC_equivariant import Z_OF  # noqa: E402
 from rungC_intensities import mode_intensities  # noqa: E402
 from scale_factor_baseline import PAHDB_FACTORS, pahdb_region  # noqa: E402
 
 from dpir.provenance import git_state, provenance  # noqa: E402
 
-PIPELINE_VERSION = "0.5"               # modules/PIPELINE.md
+PIPELINE_VERSION = "0.6"               # modules/PIPELINE.md
 NETWORK = "ΔH-network"
-CORPUS = M05 / "corpus" / "molecules"
+CORPUS_ROOT = M05 / "corpus"
+CORPUS = CORPUS_ROOT / "molecules"
 PSI4_WORKER = M05 / "corpus" / "psi4_worker.py"
 ANALYTIC = M05 / "corpus" / "analytic_hessians.py"
 WSL_CAPPED = PLAN / "probes" / "wsl_capped.sh"
 WSL_PYSCF = "~/qc05/bin/python"
+LOW_GRID = (99, 590)                   # the analytic Hessian's and APT's grid: the corpus's labels, so a reused folder is what step 3 computes
 PYSCF_HEADROOM_MB = 584                # pyscf's max_memory below the cap: probes/cation_analytic_all.sh's measured margin (19 Oct 2026)
 KILLED_AT_CAP = (137, 143)             # wsl_capped.sh's kill, and the systemd scope's (probes/cation_oom_check.sh)
 APT_FAILED = 3                         # analytic_hessians.py: the Hessian is written, the APT failed its checks
 CORRECTION = "correction.npz"
 TRUTH_HESSIAN = "hessian_wb97x_analytic.npz"   # a corpus folder's ωB97X Hessian: the network's target
+REUSE_SETTINGS = R.Settings(deck=RC.DECK, grid=LOW_GRID, cphf_bound=CPHF_BOUND, sum_rule_limit=SUM_RULE_LIMIT)
 HARMONIC_NOTE = "harmonic positions: the anharmonic shift is not in this version (backlog; TASKS 53)"
 
 
@@ -100,6 +107,8 @@ class PipelineConfig(BaseModel):
     threads: int = Field(4, ge=1, le=32)
     psi4_memory_gb: int = Field(4, ge=1, le=64)
     wsl_cap_mb: int = Field(6144, ge=2048, le=65536)
+    reuse_corpus: bool = True                # TASKS 150: steps 2–3 from the corpus where it holds the molecule at these settings
+    corpus: Path = CORPUS_ROOT               # its manifest.csv and molecules/
 
     @field_validator("models")
     @classmethod
@@ -294,7 +303,8 @@ def low_level_command(cfg: PipelineConfig) -> list[str]:
     q = shlex.quote
     inner = (f"export PYSCF_TMPDIR=$HOME/qc_tmp TMPDIR=$HOME/qc_tmp OMP_NUM_THREADS={cfg.threads} PYTHONUNBUFFERED=1; mkdir -p $HOME/qc_tmp; "
              f"cd {q(wsl_path(ANALYTIC.parent))} && bash {q(wsl_path(WSL_CAPPED))} {cfg.wsl_cap_mb} -- {cfg.pyscf_python} {ANALYTIC.name} "
-             f"{q(wsl_path(cfg.folder))} --functionals b3lyp --threads {cfg.threads} --max-memory {cfg.wsl_cap_mb - PYSCF_HEADROOM_MB}")
+             f"{q(wsl_path(cfg.folder))} --functionals b3lyp --grid {LOW_GRID[0]},{LOW_GRID[1]} --threads {cfg.threads} "
+             f"--max-memory {cfg.wsl_cap_mb - PYSCF_HEADROOM_MB}")
     return ["wsl.exe", "-e", "bash", "-lc", inner]
 
 
@@ -312,6 +322,36 @@ def low_level(cfg: PipelineConfig) -> dict:
     if n_imag:
         raise RuntimeError(f"{n_imag} imaginary B3LYP mode(s): the optimised geometry is not a minimum, so no spectrum is drawn")
     return json.loads((d / "analytic_check.json").read_text(encoding="utf-8"))
+
+
+def from_corpus(cfg: PipelineConfig, xyz: list[list], opt_options: dict | None) -> dict:
+    """Steps 2–3 from the corpus (`m08/reuse.py`) when it holds the molecule as these steps would compute it: the record of what was
+    reused, or why it was not."""
+    if not cfg.reuse_corpus:
+        return {"reused": False, "why": ["switched off (--no-reuse)"]}
+    if cfg.smiles is None:
+        return {"reused": False, "why": ["an xyz input is optimised from its own geometry"]}
+    start = R.Start(np.asarray([row[1:] for row in xyz], float), opt_options)
+    return R.reuse(canonical_smiles(cfg.smiles), start, cfg.folder, cfg.corpus, REUSE_SETTINGS)
+
+
+def low_level_files(cfg: PipelineConfig, seconds: dict[str, float]) -> tuple[dict, dict, dict]:
+    """Steps 1–3: (the optimisation's result, the analytic check, the reuse record), from the corpus or computed; each step's seconds."""
+    t = time.time()
+    xyz, opt_options = start_geometry(cfg)
+    reused = from_corpus(cfg, xyz, opt_options)
+    if reused["reused"]:
+        seconds["reuse"] = round(time.time() - t, 1)
+        d = cfg.folder
+        return (json.loads((d / "result.json").read_text(encoding="utf-8")),
+                json.loads((d / "analytic_check.json").read_text(encoding="utf-8")), reused)
+    print(f"[pipeline] computed, not reused: {'; '.join(reused['why'])}", flush=True)
+    psi4 = optimise(cfg, xyz, opt_options)
+    seconds["optimise"] = round(time.time() - t, 1)
+    t = time.time()
+    check = low_level(cfg)
+    seconds["low_level"] = round(time.time() - t, 1)
+    return psi4, check, reused
 
 
 def correction(models: tuple[Path, ...], d: Path) -> tuple[np.ndarray, list[np.ndarray]]:
@@ -387,13 +427,7 @@ def run(cfg: PipelineConfig) -> dict:
     d = cfg.folder
     d.mkdir(parents=True, exist_ok=True)
     seconds: dict[str, float] = {}
-    t = time.time()
-    xyz, opt_options = start_geometry(cfg)
-    psi4 = optimise(cfg, xyz, opt_options)
-    seconds["optimise"] = round(time.time() - t, 1)
-    t = time.time()
-    check = low_level(cfg)
-    seconds["low_level"] = round(time.time() - t, 1)
+    psi4, check, reused = low_level_files(cfg, seconds)
     t = time.time()
     dH, dH_seeds = correction(cfg.models, d)
     save_correction(d, dH, dH_seeds, cfg.models)
@@ -402,7 +436,7 @@ def run(cfg: PipelineConfig) -> dict:
     rec = {"pipeline_version": PIPELINE_VERSION, "name": cfg.name, "input": {"smiles": cfg.smiles, "xyz": cfg.xyz},
            "settings": cfg.model_dump(mode="json"), "admission": vars(adm) | {"inside_training_sizes": adm.inside_training_sizes},
            "deck": {"file": str(RC.DECK), "sha16": sha16(RC.DECK)}, "optimisation": {k: psi4.get(k) for k in ("e_opt", "timings_s", "opt_options")},
-           "low_level": check, "seconds": seconds, "spectra": out, "provenance": launched,
+           "low_level": check, "reuse": reused, "seconds": seconds, "spectra": out, "provenance": launched,
            "commit_at_end": git_state(str(Path(__file__).parent)).get("commit")}
     write_json(d / "pipeline.json", rec)
     return rec
@@ -419,6 +453,8 @@ def parse_args(argv: list[str] | None) -> argparse.Namespace:
     ap.add_argument("--threads", type=int, default=4)
     ap.add_argument("--psi4-memory-gb", type=int, default=4)
     ap.add_argument("--wsl-cap-mb", type=int, default=6144)
+    ap.add_argument("--no-reuse", action="store_true", help="compute steps 2-3 even where the corpus holds the molecule (TASKS 150)")
+    ap.add_argument("--corpus", type=Path, help="the corpus folder to reuse from (default: module 05's)")
     ap.add_argument("--check-only", action="store_true", help="the refusal checks alone (a run spec's dry run): nothing is computed or written")
     return ap.parse_args(argv)
 
@@ -428,8 +464,9 @@ def main(argv: list[str] | None = None) -> int:
     from .runtime import announce
 
     a = parse_args(argv)
-    given = {k: v for k, v in dict(smiles=a.smiles, xyz=a.xyz, psi4_python=a.psi4_python).items() if v is not None}
-    cfg = PipelineConfig(name=a.name, out_root=a.out, threads=a.threads, psi4_memory_gb=a.psi4_memory_gb, wsl_cap_mb=a.wsl_cap_mb, **given)
+    given = {k: v for k, v in dict(smiles=a.smiles, xyz=a.xyz, psi4_python=a.psi4_python, corpus=a.corpus).items() if v is not None}
+    cfg = PipelineConfig(name=a.name, out_root=a.out, threads=a.threads, psi4_memory_gb=a.psi4_memory_gb, wsl_cap_mb=a.wsl_cap_mb,
+                         reuse_corpus=not a.no_reuse, **given)
     try:
         if a.check_only:
             adm = admit(cfg)
