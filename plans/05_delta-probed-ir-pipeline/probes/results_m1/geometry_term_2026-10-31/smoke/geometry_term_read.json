@@ -1,0 +1,49 @@
+{
+ "molecules": 1,
+ "modes_read": 3,
+ "rms_shift": 53.56017424767388,
+ "rms_residual_true": 0.47769960528857447,
+ "rms_residual_newton": 0.5506319227417935,
+ "rms_residual_g_curvature": 1.7501300288746142,
+ "molecules_helped": 1,
+ "lines": {
+  "A": true,
+  "B": true,
+  "C": true,
+  "D": false
+ },
+ "passed": false,
+ "windows": {
+  "1000-1900": {
+   "modes": 1,
+   "rms_shift": 14.873676050557378,
+   "rms_residual_true": 0.6079101735579204,
+   "rms_residual_newton": 0.5068504302070203,
+   "read": false
+  },
+  "X-H stretch": {
+   "modes": 2,
+   "rms_shift": 64.74894036610422,
+   "rms_residual_true": 0.39688534840893197,
+   "rms_residual_newton": 0.5712657807124157,
+   "read": false
+  }
+ },
+ "per_molecule": {
+  "water": {
+   "modes": 3,
+   "rms_shift": 53.56017424767388,
+   "rms_residual_true": 0.47769960528857447,
+   "rms_residual_newton": 0.5506319227417935,
+   "min_overlap": 0.99998623668912,
+   "max_shift": 66.56009940042532
+  }
+ },
+ "thresholds": {
+  "min_shift_cm": 1.0,
+  "A": 0.3,
+  "B": 0.35,
+  "D": 16,
+  "min_window_modes": 10
+ }
+}

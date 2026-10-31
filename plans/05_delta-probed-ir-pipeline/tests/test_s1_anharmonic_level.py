@@ -80,5 +80,12 @@ def test_a_setting_that_cannot_run_is_refused_before_any_computation(grid, threa
         S.PyscfSetting("6-31g*", grid, threads, io.StringIO(), diis_cycles=diis)
 
 
+def test_the_setting_names_its_functional_b3lyp_by_default():
+    assert S.PyscfSetting("6-31g*", "75,302", 2, io.StringIO()).xc == "b3lyp"
+    assert S.PyscfSetting("6-31g*", "75,302", 2, io.StringIO(), xc="wb97x").xc == "wb97x"
+    with pytest.raises(ValueError, match="no functional"):
+        S.PyscfSetting("6-31g*", "75,302", 2, io.StringIO(), xc=" ")
+
+
 def test_a_valid_setting_gives_its_grid_as_integers():
     assert S.PyscfSetting("6-31g*", "75,302", 2, io.StringIO()).atom_grid == (75, 302)

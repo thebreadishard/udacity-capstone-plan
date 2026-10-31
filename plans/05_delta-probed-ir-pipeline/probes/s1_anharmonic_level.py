@@ -54,11 +54,14 @@ class PyscfSetting:
     log_stream: TextIO
     diis_cycles: int = DIIS_CYCLES
     log_level: int = HEARTBEAT_LEVEL
+    xc: str = "b3lyp"                # S1 and S2 run B3LYP; the geometry-term check (TASKS 156) optimises at ωB97X
 
     def __post_init__(self) -> None:
         parts = self.grid.split(",")
         if len(parts) != 2 or not all(p.strip().isdigit() and int(p) > 0 for p in parts):
             raise ValueError(f"grid {self.grid!r} is not 'radial,angular' with two positive integers")
+        if not self.xc.strip():
+            raise ValueError("no functional given")
         if self.threads < 1 or self.diis_cycles < 1:
             raise ValueError(f"threads ({self.threads}) and diis_cycles ({self.diis_cycles}) must be positive")
 
@@ -83,22 +86,26 @@ def internal_gradient(x: np.ndarray, g: np.ndarray) -> np.ndarray:
     return gf - T @ (T.T @ gf)
 
 
+def newton_step(x: np.ndarray, g: np.ndarray, H: np.ndarray) -> np.ndarray:
+    """One Newton step (n, 3) in the internal space: −W (Wᵀ H W)⁻¹ Wᵀ g, W an orthonormal basis of the complement of the rigid motions."""
+    n = len(x)
+    T = external_basis(x)
+    W = np.linalg.svd(np.eye(3 * n) - T @ T.T)[0][:, : 3 * n - T.shape[1]]
+    Hi = W.T @ (0.5 * (H + H.T)) @ W
+    return (-W @ np.linalg.solve(Hi, W.T @ np.asarray(g, float).reshape(-1))).reshape(n, 3)
+
+
 def newton_polish(x, energy_gradient_hessian, gtol=GTOL, max_steps=6, log=log_line):
     """Newton steps in the internal space only: x ← x − W (Wᵀ H W)⁻¹ Wᵀ g, W an orthonormal basis of the complement of the rigid translations
     and rotations. (A pseudo-inverse of the full H does not do: without grid response the external eigenvalues are ~1e-4, not 0, and the net
     force divided by them gave 0.024-bohr translations on water while the internal gradient stayed.)"""
-    n = len(x)
     for k in range(max_steps):
         e, g, H = energy_gradient_hessian(x)
         gmax = float(np.abs(internal_gradient(x, g)).max())
         log(f"  Newton {k}: E = {e:.10f}, max |g_internal| = {gmax:.1e}, net force {np.abs(np.asarray(g).sum(axis=0)).max():.1e}")
         if gmax <= gtol:
             return x, float(e), gmax, k
-        T = external_basis(x)
-        W = np.linalg.svd(np.eye(3 * n) - T @ T.T)[0][:, : 3 * n - T.shape[1]]
-        Hi = W.T @ (0.5 * (H + H.T)) @ W
-        step = -W @ np.linalg.solve(Hi, W.T @ np.asarray(g, float).reshape(-1))
-        x = x + step.reshape(n, 3)
+        x = x + newton_step(x, g, H)
     e, g, _ = energy_gradient_hessian(x)
     return x, float(e), float(np.abs(internal_gradient(x, g)).max()), max_steps
 
@@ -143,7 +150,7 @@ def pyscf_energy_and_gradient(symbols, setting: PyscfSetting, hessian=False):
         mol = pyscf_mole(setting.log_stream, setting.log_level, atom=[(s, tuple(p)) for s, p in zip(symbols, x, strict=True)], unit="Bohr",
                          basis=setting.basis, symmetry=False)
         mf = dft.RKS(mol)
-        mf.xc = "b3lyp"
+        mf.xc = setting.xc
         mf.grids.atom_grid = setting.atom_grid
         mf.grids.prune = None
         mf.conv_tol = 1e-11

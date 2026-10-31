@@ -1,0 +1,1035 @@
+
+
+******** <class 'pyscf.dft.rks.RKS'> ********
+method = RKS
+initial guess = minao
+damping factor = 0
+level_shift factor = 0
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 8
+diis_damp = 0
+SCF conv_tol = 1e-11
+SCF conv_tol_grad = 1e-08
+SCF max_cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmp0j4wayao
+max_memory 4000 MB (current use 107 MB)
+XC library pyscf.dft.libxc version 7.0.0
+    S. Lehtola, C. Steigemann, M. J.T. Oliveira, and M. A.L. Marques.,  SoftwareX 7, 1–5 (2018)
+XC functionals = wb97x
+    J.-D. Chai and M. Head-Gordon.,  J. Chem. Phys. 128, 084106 (2008)
+radial grids: 
+    Treutler-Ahlrichs [JCP 102, 346 (1995); DOI:10.1063/1.469408] (M4) radial grids
+    
+becke partition: Becke, JCP 88, 2547 (1988); DOI:10.1063/1.454033
+pruning grids: None
+grids dens level: 3
+symmetrized grids: False
+atomic radii adjust function: <function treutler_atomic_radii_adjust at 0x7a9c0dd45440>
+User specified grid scheme (99, 590)
+small_rho_cutoff = 0
+Initial guess from minao.
+atom O rad-grids = 99, ang-grids = [590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590]
+atom H rad-grids = 99, ang-grids = [590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590]
+tot_boxes 990, boxes in each direction [7 9 8]
+Padding 2 grids
+tot grids = 175232
+    CPU time for setting up grids      0.24 sec, wall time      0.21 sec
+nelec by numeric integration = 9.984687073283654
+    CPU time for vxc      0.40 sec, wall time      0.15 sec
+    CPU time for init_direct_scf      0.00 sec, wall time      0.00 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.01 sec
+E1 = -121.41011323192652  E2 = 36.08658484951924  Ecoul = 45.139805665377956  Exc = -9.053220815858712
+init E= -76.2357995021601
+cond(S) = 53.64115045121794
+    CPU time for initialize scf      0.71 sec, wall time      0.40 sec
+  HOMO = -0.459247766731607  LUMO = 0.0768581118706866  gap/eV = 14.58818
+  mo_energy =
+[-19.4418615   -1.36121527  -0.68744226  -0.55378869  -0.45924777
+   0.07685811   0.17155926   0.824544     0.87162535   0.88033111
+   0.95809401   1.06638224   1.39208043   1.71102979   1.72626209
+   1.75162826   2.29015595   2.58219855]
+nelec by numeric integration = 10.000000012927279
+    CPU time for vxc      0.41 sec, wall time      0.14 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.01 sec
+E1 = -124.45894585388264  E2 = 39.05244226423019  Ecoul = 48.58345977151455  Exc = -9.53101750728436
+cycle= 1 E= -76.3187747094053  delta_E= -0.083  |g|= 0.597  |ddm|=  1.2
+    CPU time for cycle= 1      0.44 sec, wall time      0.15 sec
+  HOMO = -0.26847894639642  LUMO = 0.195058193209981  gap/eV = 12.61349
+  mo_energy =
+[-18.8312072   -1.01105609  -0.54185484  -0.34686808  -0.26847895
+   0.19505819   0.28985428   0.91625913   1.01933025   1.12453507
+   1.15944788   1.29797079   1.58220023   1.94121747   1.95618528
+   1.99420295   2.48681886   2.7791775 ]
+nelec by numeric integration = 10.000000017112171
+    CPU time for vxc      0.27 sec, wall time      0.09 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+E1 = -121.30588279709738  E2 = 35.88458099255667  Ecoul = 45.00205706478287  Exc = -9.117476072226196
+cycle= 2 E= -76.3335729242936  delta_E= -0.0148  |g|= 0.551  |ddm|= 0.67
+    CPU time for cycle= 2      0.30 sec, wall time      0.10 sec
+  HOMO = -0.405925190259834  LUMO = 0.167211285541472  gap/eV = 15.59584
+  mo_energy =
+[-19.21225114  -1.13111175  -0.63477118  -0.48285715  -0.40592519
+   0.16721129   0.2539904    0.88170476   0.97201051   1.005228
+   1.0462071    1.18135876   1.49245127   1.83767615   1.85367616
+   1.88905577   2.39858191   2.68870089]
+nelec by numeric integration = 10.00000001550991
+    CPU time for vxc      0.42 sec, wall time      0.14 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.01 sec
+E1 = -122.97070711419745  E2 = 37.49654879299311  Ecoul = 46.82972759699442  Exc = -9.333178804001305
+cycle= 3 E= -76.3864294409572  delta_E= -0.0529  |g|= 0.023  |ddm|= 0.323
+    CPU time for cycle= 3      0.46 sec, wall time      0.16 sec
+  HOMO = -0.399432601876979  LUMO = 0.174655480779817  gap/eV = 15.62173
+  mo_energy =
+[-19.19669589  -1.12012132  -0.6261243   -0.48035835  -0.3994326
+   0.17465548   0.26076174   0.88889779   0.98281695   1.01063595
+   1.0485026    1.18666579   1.50030596   1.84367819   1.86020697
+   1.89499192   2.40493951   2.69528108]
+nelec by numeric integration = 10.000000015593631
+    CPU time for vxc      0.39 sec, wall time      0.13 sec
+    CPU time for vj and vk      0.02 sec, wall time      0.01 sec
+E1 = -122.92341629262961  E2 = 37.44915499527596  Ecoul = 46.7765019447469  Exc = -9.327346949470932
+cycle= 4 E= -76.3865324171065  delta_E= -0.000103  |g|= 0.00338  |ddm|= 0.0135
+    CPU time for cycle= 4      0.45 sec, wall time      0.15 sec
+  HOMO = -0.399853638136195  LUMO = 0.174840461790377  gap/eV = 15.63822
+  mo_energy =
+[-19.19745319  -1.12055422  -0.62616282  -0.48032457  -0.39985364
+   0.17484046   0.26125142   0.88938237   0.98307612   1.01039591
+   1.04868379   1.18671607   1.50005061   1.84387389   1.86029064
+   1.89503307   2.40513043   2.69557848]
+nelec by numeric integration = 10.00000001560534
+    CPU time for vxc      0.27 sec, wall time      0.09 sec
+    CPU time for vj and vk      0.00 sec, wall time      0.00 sec
+E1 = -122.9282372622497  E2 = 37.453972184539296  Ecoul = 46.78224205468329  Exc = -9.328269870143991
+cycle= 5 E= -76.3865361974633  delta_E= -3.78e-06  |g|= 0.000396  |ddm|= 0.00377
+    CPU time for cycle= 5      0.30 sec, wall time      0.10 sec
+  HOMO = -0.399921834724654  LUMO = 0.174764362111408  gap/eV = 15.63801
+  mo_energy =
+[-19.19756842  -1.12065626  -0.62617924  -0.48038576  -0.39992183
+   0.17476436   0.26115757   0.88931254   0.98300867   1.01031658
+   1.04860191   1.18661939   1.49996341   1.84374139   1.86016532
+   1.89491555   2.40503004   2.69546727]
+nelec by numeric integration = 10.00000001560473
+    CPU time for vxc      0.21 sec, wall time      0.07 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+E1 = -122.92858871707537  E2 = 37.45432357873502  Ecoul = 46.78264736913434  Exc = -9.328323790399317
+cycle= 6 E= -76.3865362580932  delta_E= -6.06e-08  |g|= 5.76e-05  |ddm|= 0.00067
+    CPU time for cycle= 6      0.24 sec, wall time      0.08 sec
+  HOMO = -0.39994019686748  LUMO = 0.174755766999209  gap/eV = 15.63827
+  mo_energy =
+[-19.19759441  -1.12067507  -0.62619954  -0.48040688  -0.3999402
+   0.17475577   0.2611492    0.88930387   0.98299906   1.01030439
+   1.04858686   1.18660622   1.49995368   1.84372707   1.86015474
+   1.89490356   2.40501887   2.69545277]
+nelec by numeric integration = 10.000000015604645
+    CPU time for vxc      0.35 sec, wall time      0.12 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+E1 = -122.92862540182465  E2 = 37.45436026135151  Ecoul = 46.78269045360612  Exc = -9.32833019225461
+cycle= 7 E= -76.386536260226  delta_E= -2.13e-09  |g|= 1.12e-05  |ddm|= 0.000155
+    CPU time for cycle= 7      0.38 sec, wall time      0.13 sec
+  HOMO = -0.399943292320628  LUMO = 0.174754833499275  gap/eV = 15.63833
+  mo_energy =
+[-19.19759659  -1.12067791  -0.62620087  -0.4804087   -0.39994329
+   0.17475483   0.26114769   0.88930346   0.98299815   1.01030167
+   1.04858468   1.18660429   1.4999513    1.84372337   1.8601519
+   1.89489974   2.40501678   2.69545043]
+nelec by numeric integration = 10.000000015604622
+    CPU time for vxc      0.32 sec, wall time      0.11 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+E1 = -122.92863302617911  E2 = 37.45436788559692  Ecoul = 46.78269930275489  Exc = -9.328331417157969
+cycle= 8 E= -76.3865362603351  delta_E= -1.09e-10  |g|= 1.12e-06  |ddm|= 4.08e-05
+    CPU time for cycle= 8      0.36 sec, wall time      0.12 sec
+  HOMO = -0.399943161416258  LUMO = 0.174754954551555  gap/eV = 15.63833
+  mo_energy =
+[-19.19759656  -1.1206778   -0.62620095  -0.48040856  -0.39994316
+   0.17475495   0.26114778   0.88930359   0.98299824   1.01030183
+   1.0485848    1.18660442   1.49995146   1.84372357   1.86015219
+   1.89489996   2.40501699   2.6954506 ]
+nelec by numeric integration = 10.000000015604627
+    CPU time for vxc      0.31 sec, wall time      0.10 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+E1 = -122.92863217123053  E2 = 37.45436703064709  Ecoul = 46.78269836787224  Exc = -9.32833133722515
+cycle= 9 E= -76.3865362603363  delta_E= -1.25e-12  |g|= 9.88e-08  |ddm|= 3.86e-06
+    CPU time for cycle= 9      0.35 sec, wall time      0.12 sec
+  HOMO = -0.399943118706933  LUMO = 0.174754973352601  gap/eV = 15.63833
+  mo_energy =
+[-19.19759652  -1.12067776  -0.62620091  -0.48040851  -0.39994312
+   0.17475497   0.26114779   0.8893036    0.98299826   1.01030185
+   1.04858482   1.18660444   1.49995148   1.84372359   1.86015221
+   1.89489998   2.40501701   2.69545062]
+nelec by numeric integration = 10.000000015604629
+    CPU time for vxc      0.32 sec, wall time      0.12 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+E1 = -122.92863213420524  E2 = 37.45436699362195  Ecoul = 46.78269832246924  Exc = -9.328331328847282
+cycle= 10 E= -76.3865362603362  delta_E= 1.42e-13  |g|= 8.15e-09  |ddm|= 1.97e-07
+    CPU time for cycle= 10      0.35 sec, wall time      0.12 sec
+  HOMO = -0.399943116143695  LUMO = 0.174754973914751  gap/eV = 15.63833
+  mo_energy =
+[-19.19759651  -1.12067776  -0.62620091  -0.48040851  -0.39994312
+   0.17475497   0.26114779   0.8893036    0.98299826   1.01030185
+   1.04858482   1.18660444   1.49995148   1.84372359   1.86015221
+   1.89489998   2.40501701   2.69545062]
+nelec by numeric integration = 10.000000015604627
+    CPU time for vxc      0.32 sec, wall time      0.11 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+E1 = -122.92863211805168  E2 = 37.454366977468396  Ecoul = 46.78269830402353  Exc = -9.328331326555135
+Extra cycle  E= -76.3865362603362  delta_E= 1.42e-14  |g|= 3.26e-09  |ddm|= 9.95e-09
+    CPU time for scf_cycle      4.68 sec, wall time      1.76 sec
+    CPU time for SCF      4.69 sec, wall time      1.79 sec
+converged SCF energy = -76.3865362603362
+
+
+******** <class 'pyscf.grad.rks.Gradients'> for <class 'pyscf.dft.rks.RKS'> ********
+unit = Eh/Bohr
+max_memory 4000 MB (current use 131 MB)
+grid_response = False
+Computing Gradients of NR-HF Coulomb repulsion
+    CPU time for vxc      0.51 sec, wall time      0.26 sec
+    CPU time for vj and vk      0.03 sec, wall time      0.02 sec
+    CPU time for gradients of 2e part      0.56 sec, wall time      0.30 sec
+gradients of electronic part
+         x                y                z
+0 O    -0.0000000000     0.0000000000     2.9505341601
+1 H    -0.0000000000     2.0034032316    -1.4752719160
+2 H    -0.0000000000    -2.0034032316    -1.4752719160
+    CPU time for SCF gradients      0.67 sec, wall time      0.36 sec
+--------------- RKS gradients ---------------
+         x                y                z
+0 O    -0.0000000000    -0.0000000000     0.0063110170
+1 H    -0.0000000000     0.0033414184    -0.0031603445
+2 H    -0.0000000000    -0.0033414184    -0.0031603445
+----------------------------------------------
+    CPU time for RHF partial hessian      0.19 sec, wall time      0.16 sec
+    CPU time for RKS partial hessian      3.55 sec, wall time      1.94 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.01 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.01 sec
+    CPU time for RHF hessian      8.43 sec, wall time      4.44 sec
+
+
+******** <class 'pyscf.dft.rks.RKS'> ********
+method = RKS
+initial guess = minao
+damping factor = 0
+level_shift factor = 0
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 8
+diis_damp = 0
+SCF conv_tol = 1e-11
+SCF conv_tol_grad = 1e-08
+SCF max_cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmp12dujrh9
+max_memory 4000 MB (current use 176 MB)
+XC library pyscf.dft.libxc version 7.0.0
+    S. Lehtola, C. Steigemann, M. J.T. Oliveira, and M. A.L. Marques.,  SoftwareX 7, 1–5 (2018)
+XC functionals = wb97x
+    J.-D. Chai and M. Head-Gordon.,  J. Chem. Phys. 128, 084106 (2008)
+radial grids: 
+    Treutler-Ahlrichs [JCP 102, 346 (1995); DOI:10.1063/1.469408] (M4) radial grids
+    
+becke partition: Becke, JCP 88, 2547 (1988); DOI:10.1063/1.454033
+pruning grids: None
+grids dens level: 3
+symmetrized grids: False
+atomic radii adjust function: <function treutler_atomic_radii_adjust at 0x7a9c0dd45440>
+User specified grid scheme (99, 590)
+small_rho_cutoff = 0
+Initial guess from minao.
+atom O rad-grids = 99, ang-grids = [590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590]
+atom H rad-grids = 99, ang-grids = [590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590]
+tot_boxes 990, boxes in each direction [7 9 8]
+Padding 2 grids
+tot grids = 175232
+    CPU time for setting up grids      0.25 sec, wall time      0.25 sec
+nelec by numeric integration = 9.984681884396366
+    CPU time for vxc      0.24 sec, wall time      0.10 sec
+    CPU time for init_direct_scf      0.00 sec, wall time      0.00 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+E1 = -121.48515242989264  E2 = 36.1087055474846  Ecoul = 45.16713778241336  Exc = -9.058432234928768
+init E= -76.2433007202463
+cond(S) = 54.31974908821118
+    CPU time for initialize scf      0.55 sec, wall time      0.39 sec
+  HOMO = -0.460429013627744  LUMO = 0.0784443590229484  gap/eV = 14.66349
+  mo_energy =
+[-19.4432363   -1.36495268  -0.69144157  -0.55427727  -0.46042901
+   0.07844436   0.17381121   0.82674179   0.87259859   0.8797145
+   0.95798909   1.06723491   1.39136784   1.71023593   1.7242389
+   1.75069555   2.29554923   2.5905449 ]
+nelec by numeric integration = 10.000000013122254
+    CPU time for vxc      0.24 sec, wall time      0.08 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+E1 = -124.537688427171  E2 = 39.085424395849444  Ecoul = 48.62110100072099  Exc = -9.53567660487155
+cycle= 1 E= -76.3191178691598  delta_E= -0.0758  |g|= 0.597  |ddm|=  1.2
+    CPU time for cycle= 1      0.27 sec, wall time      0.09 sec
+  HOMO = -0.269289142155067  LUMO = 0.196456842978792  gap/eV = 12.67359
+  mo_energy =
+[-18.83070792  -1.0131493   -0.54450909  -0.34663457  -0.26928914
+   0.19645684   0.29148872   0.92063475   1.02317798   1.12413377
+   1.15781836   1.29919092   1.58215334   1.94087479   1.95411378
+   1.99338952   2.49230095   2.78782141]
+nelec by numeric integration = 10.000000017072871
+    CPU time for vxc      0.22 sec, wall time      0.07 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+E1 = -121.39869066536104  E2 = 35.93126135888835  Ecoul = 45.05467550006299  Exc = -9.123414141174639
+cycle= 2 E= -76.334283144311  delta_E= -0.0152  |g|= 0.548  |ddm|= 0.666
+    CPU time for cycle= 2      0.25 sec, wall time      0.08 sec
+  HOMO = -0.406249470040575  LUMO = 0.168886472641415  gap/eV = 15.65025
+  mo_energy =
+[-19.21111805  -1.13290697  -0.63750345  -0.48250206  -0.40624947
+   0.16888647   0.25607395   0.88547449   0.9757682    1.00522501
+   1.04483982   1.18287713   1.49253932   1.83778097   1.85210994
+   1.88870536   2.40446216   2.69776486]
+nelec by numeric integration = 10.000000015565197
+    CPU time for vxc      0.19 sec, wall time      0.06 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+E1 = -123.05277598244989  E2 = 37.533154191304995  Ecoul = 46.871169576930384  Exc = -9.338015385625392
+cycle= 3 E= -76.3864756289832  delta_E= -0.0522  |g|= 0.0229  |ddm|= 0.321
+    CPU time for cycle= 3      0.21 sec, wall time      0.07 sec
+  HOMO = -0.399741247278114  LUMO = 0.176249013498496  gap/eV = 15.67349
+  mo_energy =
+[-19.19562897  -1.12191753  -0.62883045  -0.47996145  -0.39974125
+   0.17624901   0.26277792   0.8925999    0.98650134   1.0106483
+   1.04727376   1.1882384    1.50034564   1.84379395   1.85867014
+   1.89465667   2.410803     2.70435965]
+nelec by numeric integration = 10.000000015644298
+    CPU time for vxc      0.18 sec, wall time      0.06 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+E1 = -123.00570423241186  E2 = 37.48598042127741  Ecoul = 46.81818134380808  Exc = -9.332200922530669
+cycle= 4 E= -76.3865776489727  delta_E= -0.000102  |g|= 0.00331  |ddm|= 0.0135
+    CPU time for cycle= 4      0.20 sec, wall time      0.07 sec
+  HOMO = -0.400129771551013  LUMO = 0.176432187101626  gap/eV = 15.68905
+  mo_energy =
+[-19.19635883  -1.12232888  -0.62885031  -0.47989727  -0.40012977
+   0.17643219   0.26326207   0.89308458   0.98675735   1.0104339
+   1.04747528   1.1883108    1.50010665   1.84401269   1.85878212
+   1.89472212   2.41101549   2.70467581]
+nelec by numeric integration = 10.000000015655855
+    CPU time for vxc      0.27 sec, wall time      0.09 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+E1 = -123.01035457675017  E2 = 37.49062710004579  Ecoul = 46.82372391071411  Exc = -9.333096810668316
+cycle= 5 E= -76.3865813145427  delta_E= -3.67e-06  |g|= 0.000385  |ddm|= 0.00373
+    CPU time for cycle= 5      0.31 sec, wall time      0.11 sec
+  HOMO = -0.400193213649473  LUMO = 0.176358481214585  gap/eV = 15.68877
+  mo_energy =
+[-19.19647017  -1.12242748  -0.62886644  -0.47995501  -0.40019321
+   0.17635848   0.26317084   0.89301558   0.98669063   1.0103587
+   1.04739745   1.18821728   1.50002253   1.84388526   1.85866144
+   1.89460929   2.41091833   2.70456845]
+nelec by numeric integration = 10.000000015655464
+    CPU time for vxc      0.31 sec, wall time      0.11 sec
+    CPU time for vj and vk      0.02 sec, wall time      0.01 sec
+E1 = -123.0106907933733  E2 = 37.49096325823197  Ecoul = 46.82411210630756  Exc = -9.333148848075586
+cycle= 6 E= -76.3865813729796  delta_E= -5.84e-08  |g|= 5.68e-05  |ddm|= 0.000665
+    CPU time for cycle= 6      0.36 sec, wall time      0.12 sec
+  HOMO = -0.40021113597941  LUMO = 0.176350181744175  gap/eV = 15.68903
+  mo_energy =
+[-19.19649559  -1.12244583  -0.62888624  -0.47997557  -0.40021114
+   0.17635018   0.26316273   0.89300722   0.98668133   1.01034687
+   1.04738286   1.18820452   1.50001308   1.84387138   1.85865128
+   1.89459767   2.41090754   2.70455442]
+nelec by numeric integration = 10.000000015655408
+    CPU time for vxc      0.31 sec, wall time      0.10 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+E1 = -123.01072654268751  E2 = 37.490999005424605  Ecoul = 46.824154115714244  Exc = -9.33315511028964
+cycle= 7 E= -76.3865813751012  delta_E= -2.12e-09  |g|= 1.11e-05  |ddm|= 0.000156
+    CPU time for cycle= 7      0.35 sec, wall time      0.12 sec
+  HOMO = -0.400214115952938  LUMO = 0.176349285538912  gap/eV = 15.68909
+  mo_energy =
+[-19.19649767  -1.12244857  -0.62888749  -0.47997728  -0.40021412
+   0.17634929   0.26316127   0.89300684   0.98668044   1.01034423
+   1.0473808    1.18820268   1.50001076   1.84386778   1.85864853
+   1.89459396   2.41090554   2.70455217]
+nelec by numeric integration = 10.000000015655393
+    CPU time for vxc      0.22 sec, wall time      0.07 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+E1 = -123.01073376725437  E2 = 37.491006229884576  Ecoul = 46.82416251540911  Exc = -9.33315628552453
+cycle= 8 E= -76.3865813752081  delta_E= -1.07e-10  |g|= 1.07e-06  |ddm|= 4.08e-05
+    CPU time for cycle= 8      0.24 sec, wall time      0.08 sec
+  HOMO = -0.400213984592204  LUMO = 0.176349405251625  gap/eV = 15.68909
+  mo_energy =
+[-19.19649763  -1.12244846  -0.62888756  -0.47997714  -0.40021398
+   0.17634941   0.26316136   0.89300697   0.98668054   1.01034439
+   1.04738092   1.18820281   1.50001093   1.84386798   1.85864881
+   1.89459417   2.41090574   2.70455235]
+nelec by numeric integration = 10.000000015655395
+    CPU time for vxc      0.25 sec, wall time      0.08 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.01 sec
+E1 = -123.01073292441932  E2 = 37.4910053870486  Ecoul = 46.824161591968874  Exc = -9.333156204920272
+cycle= 9 E= -76.386581375209  delta_E= -9.24e-13  |g|= 9.55e-08  |ddm|= 3.66e-06
+    CPU time for cycle= 9      0.30 sec, wall time      0.11 sec
+  HOMO = -0.400213943084893  LUMO = 0.176349423490977  gap/eV = 15.68909
+  mo_energy =
+[-19.19649759  -1.12244842  -0.62888752  -0.4799771   -0.40021394
+   0.17634942   0.26316137   0.89300698   0.98668055   1.01034441
+   1.04738094   1.18820283   1.50001095   1.843868     1.85864883
+   1.89459419   2.41090576   2.70455237]
+nelec by numeric integration = 10.000000015655395
+    CPU time for vxc      0.29 sec, wall time      0.10 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+E1 = -123.01073288797943  E2 = 37.491005350608745  Ecoul = 46.82416154734772  Exc = -9.333156196738978
+cycle= 10 E= -76.386581375209  delta_E= 2.84e-14  |g|= 8.04e-09  |ddm|= 1.92e-07
+    CPU time for cycle= 10      0.32 sec, wall time      0.11 sec
+  HOMO = -0.40021394054219  LUMO = 0.176349424065947  gap/eV = 15.68909
+  mo_energy =
+[-19.19649759  -1.12244842  -0.62888752  -0.47997709  -0.40021394
+   0.17634942   0.26316137   0.89300698   0.98668055   1.01034441
+   1.04738094   1.18820283   1.50001095   1.843868     1.85864883
+   1.89459419   2.41090576   2.70455237]
+nelec by numeric integration = 10.000000015655395
+    CPU time for vxc      0.28 sec, wall time      0.09 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+E1 = -123.01073287207426  E2 = 37.491005334703594  Ecoul = 46.824161529185794  Exc = -9.333156194482202
+Extra cycle  E= -76.3865813752089  delta_E= 1.42e-14  |g|= 3.22e-09  |ddm|= 9.86e-09
+    CPU time for scf_cycle      3.66 sec, wall time      1.46 sec
+    CPU time for SCF      3.67 sec, wall time      1.48 sec
+converged SCF energy = -76.3865813752089
+
+
+******** <class 'pyscf.grad.rks.Gradients'> for <class 'pyscf.dft.rks.RKS'> ********
+unit = Eh/Bohr
+max_memory 4000 MB (current use 176 MB)
+grid_response = False
+Computing Gradients of NR-HF Coulomb repulsion
+    CPU time for vxc      0.59 sec, wall time      0.27 sec
+    CPU time for vj and vk      0.03 sec, wall time      0.02 sec
+    CPU time for gradients of 2e part      0.64 sec, wall time      0.31 sec
+gradients of electronic part
+         x                y                z
+0 O    -0.0000000000     0.0000000007     2.9601210199
+1 H     0.0000000000     2.0253121175    -1.4800645928
+2 H    -0.0000000000    -2.0253121181    -1.4800645937
+    CPU time for SCF gradients      0.65 sec, wall time      0.32 sec
+--------------- RKS gradients ---------------
+         x                y                z
+0 O    -0.0000000000    -0.0000000002    -0.0000765086
+1 H     0.0000000000    -0.0000677051     0.0000341709
+2 H    -0.0000000000     0.0000677053     0.0000341711
+----------------------------------------------
+
+
+******** <class 'pyscf.dft.rks.RKS'> ********
+method = RKS
+initial guess = minao
+damping factor = 0
+level_shift factor = 0
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 8
+diis_damp = 0
+SCF conv_tol = 1e-11
+SCF conv_tol_grad = 1e-08
+SCF max_cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmp2lgiagqb
+max_memory 4000 MB (current use 175 MB)
+XC library pyscf.dft.libxc version 7.0.0
+    S. Lehtola, C. Steigemann, M. J.T. Oliveira, and M. A.L. Marques.,  SoftwareX 7, 1–5 (2018)
+XC functionals = wb97x
+    J.-D. Chai and M. Head-Gordon.,  J. Chem. Phys. 128, 084106 (2008)
+radial grids: 
+    Treutler-Ahlrichs [JCP 102, 346 (1995); DOI:10.1063/1.469408] (M4) radial grids
+    
+becke partition: Becke, JCP 88, 2547 (1988); DOI:10.1063/1.454033
+pruning grids: None
+grids dens level: 3
+symmetrized grids: False
+atomic radii adjust function: <function treutler_atomic_radii_adjust at 0x7a9c0dd45440>
+User specified grid scheme (99, 590)
+small_rho_cutoff = 0
+Initial guess from minao.
+atom O rad-grids = 99, ang-grids = [590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590]
+atom H rad-grids = 99, ang-grids = [590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590]
+tot_boxes 990, boxes in each direction [7 9 8]
+Padding 2 grids
+tot grids = 175232
+    CPU time for setting up grids      0.15 sec, wall time      0.14 sec
+nelec by numeric integration = 9.984682025351773
+    CPU time for vxc      0.20 sec, wall time      0.07 sec
+    CPU time for init_direct_scf      0.00 sec, wall time      0.00 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.01 sec
+E1 = -121.48394629280727  E2 = 36.108350127650674  Ecoul = 45.166696002221535  Exc = -9.058345874570861
+init E= -76.2431775733496
+cond(S) = 54.305497043793736
+    CPU time for initialize scf      0.40 sec, wall time      0.25 sec
+  HOMO = -0.460410461979739  LUMO = 0.0784184134943247  gap/eV = 14.66228
+  mo_energy =
+[-19.44321476  -1.36488754  -0.69140644  -0.55424835  -0.46041046
+   0.07841841   0.17377872   0.82674297   0.872578     0.87972394
+   0.95793773   1.06722946   1.39135562   1.71027387   1.7242605
+   1.75071944   2.29546606   2.59043285]
+nelec by numeric integration = 10.000000013122653
+    CPU time for vxc      0.27 sec, wall time      0.09 sec
+    CPU time for vj and vk      0.02 sec, wall time      0.01 sec
+E1 = -124.53647243709197  E2 = 39.08493818960338  Ecoul = 48.62054509573985  Exc = -9.535606906136476
+cycle= 1 E= -76.3191156556816  delta_E= -0.0759  |g|= 0.597  |ddm|=  1.2
+    CPU time for cycle= 1      0.31 sec, wall time      0.11 sec
+  HOMO = -0.269273523100624  LUMO = 0.196439447004899  gap/eV = 12.67270
+  mo_energy =
+[-18.83070978  -1.01310278  -0.54448718  -0.34661641  -0.26927352
+   0.19643945   0.29146782   0.92061727   1.02305897   1.12414204
+   1.15783293   1.29918034   1.58214037   1.94091495   1.95413496
+   1.99341549   2.49222126   2.78770014]
+nelec by numeric integration = 10.000000017079694
+    CPU time for vxc      0.31 sec, wall time      0.10 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.01 sec
+E1 = -121.39727609316247  E2 = 35.93058225585938  Ecoul = 45.05390676142053  Exc = -9.123324505561147
+cycle= 2 E= -76.3342752454961  delta_E= -0.0152  |g|= 0.548  |ddm|= 0.666
+    CPU time for cycle= 2      0.35 sec, wall time      0.12 sec
+  HOMO = -0.406240556476871  LUMO = 0.168863094987313  gap/eV = 15.64937
+  mo_energy =
+[-19.21112853  -1.13286853  -0.6374803   -0.482485    -0.40624056
+   0.16886309   0.2560461    0.88545954   0.97567346   1.00522778
+   1.04483385   1.18286361   1.4925203    1.83781397   1.85212489
+   1.88872452   2.40437453   2.6976403 ]
+nelec by numeric integration = 10.000000015569313
+    CPU time for vxc      0.29 sec, wall time      0.10 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+E1 = -123.0515023536812  E2 = 37.532608131513065  Ecoul = 46.8705490684616  Exc = -9.337940936948533
+cycle= 3 E= -76.3864756303611  delta_E= -0.0522  |g|= 0.0229  |ddm|= 0.321
+    CPU time for cycle= 3      0.32 sec, wall time      0.11 sec
+  HOMO = -0.399732966605896  LUMO = 0.17622641271411  gap/eV = 15.67265
+  mo_energy =
+[-19.19563959  -1.12188012  -0.62880796  -0.47994511  -0.39973297
+   0.17622641   0.26275066   0.89258548   0.98640909   1.0106506
+   1.04726419   1.18822365   1.50032679   1.84382634   1.8586847
+   1.89467527   2.41071509   2.70423526]
+nelec by numeric integration = 10.000000015648519
+    CPU time for vxc      0.20 sec, wall time      0.07 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+E1 = -123.00442913303344  E2 = 37.485432881739726  Ecoul = 46.817559507091346  Exc = -9.332126625351618
+cycle= 4 E= -76.3865776594867  delta_E= -0.000102  |g|= 0.00331  |ddm|= 0.0135
+    CPU time for cycle= 4      0.23 sec, wall time      0.08 sec
+  HOMO = -0.400121866765212  LUMO = 0.176409626663877  gap/eV = 15.68822
+  mo_energy =
+[-19.19636968  -1.12229173  -0.62882795  -0.47988126  -0.40012187
+   0.17640963   0.26323487   0.89307025   0.98666531   1.01043589
+   1.04746534   1.18829583   1.50008758   1.8440447    1.8587964
+   1.89474037   2.41092741   2.70455121]
+nelec by numeric integration = 10.000000015660088
+    CPU time for vxc      0.20 sec, wall time      0.07 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+E1 = -123.00908129878394  E2 = 37.490081380191185  Ecoul = 46.82310420696334  Exc = -9.33302282677216
+cycle= 5 E= -76.3865813267858  delta_E= -3.67e-06  |g|= 0.000386  |ddm|= 0.00373
+    CPU time for cycle= 5      0.22 sec, wall time      0.08 sec
+  HOMO = -0.400185386626743  LUMO = 0.176335883754172  gap/eV = 15.68794
+  mo_energy =
+[-19.1964811   -1.12239039  -0.6288441   -0.47993905  -0.40018539
+   0.17633588   0.26314359   0.89300124   0.9865986    1.01036063
+   1.04738742   1.18820226   1.50000341   1.84391719   1.85867565
+   1.89462746   2.41083019   2.70444378]
+nelec by numeric integration = 10.000000015659694
+    CPU time for vxc      0.35 sec, wall time      0.12 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+E1 = -123.00941771209196  E2 = 37.49041773497118  Ecoul = 46.82349263239881  Exc = -9.33307489742763
+cycle= 6 E= -76.3865813853138  delta_E= -5.85e-08  |g|= 5.69e-05  |ddm|= 0.000665
+    CPU time for cycle= 6      0.38 sec, wall time      0.13 sec
+  HOMO = -0.400203323989593  LUMO = 0.176327578456362  gap/eV = 15.68820
+  mo_energy =
+[-19.19650654  -1.12240876  -0.62886392  -0.47995963  -0.40020332
+   0.17632758   0.26313548   0.89299287   0.9865893    1.01034879
+   1.04737282   1.18818948   1.49999395   1.84390329   1.85866548
+   1.89461583   2.41081939   2.70442975]
+nelec by numeric integration = 10.000000015659634
+    CPU time for vxc      0.30 sec, wall time      0.10 sec
+    CPU time for vj and vk      0.02 sec, wall time      0.01 sec
+E1 = -123.0094534867815  E2 = 37.49045350753447  Ecoul = 46.8235346724687  Exc = -9.333081164934233
+cycle= 7 E= -76.38658138744  delta_E= -2.13e-09  |g|= 1.11e-05  |ddm|= 0.000156
+    CPU time for cycle= 7      0.34 sec, wall time      0.12 sec
+  HOMO = -0.400206305222294  LUMO = 0.176326682536549  gap/eV = 15.68826
+  mo_energy =
+[-19.19650861  -1.1224115   -0.62886517  -0.47996134  -0.40020631
+   0.17632668   0.26313402   0.89299249   0.98658841   1.01034614
+   1.04737076   1.18818764   1.49999163   1.8438997    1.85866273
+   1.89461211   2.41081738   2.7044275 ]
+nelec by numeric integration = 10.000000015659616
+    CPU time for vxc      0.33 sec, wall time      0.11 sec
+    CPU time for vj and vk      0.02 sec, wall time      0.01 sec
+E1 = -123.00946071404383  E2 = 37.49046073468977  Ecoul = 46.823543075338414  Exc = -9.333082340648645
+cycle= 8 E= -76.3865813875471  delta_E= -1.07e-10  |g|= 1.08e-06  |ddm|= 4.08e-05
+    CPU time for cycle= 8      0.37 sec, wall time      0.13 sec
+  HOMO = -0.400206173499225  LUMO = 0.176326802467876  gap/eV = 15.68826
+  mo_energy =
+[-19.19650858  -1.12241139  -0.62886524  -0.4799612   -0.40020617
+   0.1763268    0.26313411   0.89299261   0.98658851   1.0103463
+   1.04737087   1.18818777   1.49999179   1.8438999    1.85866301
+   1.89461232   2.41081759   2.70442767]
+nelec by numeric integration = 10.000000015659621
+    CPU time for vxc      0.23 sec, wall time      0.08 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+E1 = -123.00945987002332  E2 = 37.49045989066832  Ecoul = 46.82354215056693  Exc = -9.333082259898612
+cycle= 9 E= -76.386581387548  delta_E= -9.52e-13  |g|= 9.55e-08  |ddm|= 3.66e-06
+    CPU time for cycle= 9      0.26 sec, wall time      0.09 sec
+  HOMO = -0.400206131964183  LUMO = 0.176326820718652  gap/eV = 15.68826
+  mo_energy =
+[-19.19650854  -1.12241135  -0.6288652   -0.47996115  -0.40020613
+   0.17632682   0.26313411   0.89299263   0.98658852   1.01034633
+   1.0473709    1.18818779   1.49999181   1.84389991   1.85866303
+   1.89461234   2.41081761   2.70442769]
+nelec by numeric integration = 10.000000015659623
+    CPU time for vxc      0.18 sec, wall time      0.06 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+E1 = -123.0094598335422  E2 = 37.49045985418718  Ecoul = 46.82354210589568  Exc = -9.333082251708507
+cycle= 10 E= -76.386581387548  delta_E= -1.42e-14  |g|= 8.04e-09  |ddm|= 1.92e-07
+    CPU time for cycle= 10      0.21 sec, wall time      0.07 sec
+  HOMO = -0.400206129419674  LUMO = 0.17632682129405  gap/eV = 15.68826
+  mo_energy =
+[-19.19650853  -1.12241135  -0.6288652   -0.47996115  -0.40020613
+   0.17632682   0.26313411   0.89299263   0.98658853   1.01034633
+   1.0473709    1.18818779   1.49999181   1.84389992   1.85866303
+   1.89461234   2.41081761   2.70442769]
+nelec by numeric integration = 10.000000015659621
+    CPU time for vxc      0.36 sec, wall time      0.12 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+E1 = -123.00945981762425  E2 = 37.4904598382692  Ecoul = 46.82354208771917  Exc = -9.333082249449967
+Extra cycle  E= -76.386581387548  delta_E= -2.84e-14  |g|= 3.22e-09  |ddm|= 9.86e-09
+    CPU time for scf_cycle      3.81 sec, wall time      1.42 sec
+    CPU time for SCF      3.82 sec, wall time      1.44 sec
+converged SCF energy = -76.386581387548
+
+
+******** <class 'pyscf.grad.rks.Gradients'> for <class 'pyscf.dft.rks.RKS'> ********
+unit = Eh/Bohr
+max_memory 4000 MB (current use 175 MB)
+grid_response = False
+Computing Gradients of NR-HF Coulomb repulsion
+    CPU time for vxc      0.56 sec, wall time      0.26 sec
+    CPU time for vj and vk      0.03 sec, wall time      0.02 sec
+    CPU time for gradients of 2e part      0.62 sec, wall time      0.30 sec
+gradients of electronic part
+         x                y                z
+0 O    -0.0000000000     0.0000000000     2.9595827522
+1 H     0.0000000000     2.0251150300    -1.4797954531
+2 H    -0.0000000000    -2.0251150301    -1.4797954532
+    CPU time for SCF gradients      0.63 sec, wall time      0.31 sec
+--------------- RKS gradients ---------------
+         x                y                z
+0 O    -0.0000000000    -0.0000000000     0.0000003407
+1 H     0.0000000000     0.0000021282    -0.0000042475
+2 H    -0.0000000000    -0.0000021282    -0.0000042475
+----------------------------------------------
+
+
+******** <class 'pyscf.dft.rks.RKS'> ********
+method = RKS
+initial guess = minao
+damping factor = 0
+level_shift factor = 0
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 8
+diis_damp = 0
+SCF conv_tol = 1e-11
+SCF conv_tol_grad = 1e-08
+SCF max_cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmpt_5c90tw
+max_memory 4000 MB (current use 175 MB)
+XC library pyscf.dft.libxc version 7.0.0
+    S. Lehtola, C. Steigemann, M. J.T. Oliveira, and M. A.L. Marques.,  SoftwareX 7, 1–5 (2018)
+XC functionals = wb97x
+    J.-D. Chai and M. Head-Gordon.,  J. Chem. Phys. 128, 084106 (2008)
+radial grids: 
+    Treutler-Ahlrichs [JCP 102, 346 (1995); DOI:10.1063/1.469408] (M4) radial grids
+    
+becke partition: Becke, JCP 88, 2547 (1988); DOI:10.1063/1.454033
+pruning grids: None
+grids dens level: 3
+symmetrized grids: False
+atomic radii adjust function: <function treutler_atomic_radii_adjust at 0x7a9c0dd45440>
+User specified grid scheme (99, 590)
+small_rho_cutoff = 0
+Initial guess from minao.
+atom O rad-grids = 99, ang-grids = [590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590]
+atom H rad-grids = 99, ang-grids = [590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590]
+tot_boxes 990, boxes in each direction [7 9 8]
+Padding 2 grids
+tot grids = 175232
+    CPU time for setting up grids      0.18 sec, wall time      0.17 sec
+nelec by numeric integration = 9.984682021426769
+    CPU time for vxc      0.27 sec, wall time      0.10 sec
+    CPU time for init_direct_scf      0.01 sec, wall time      0.00 sec
+    CPU time for vj and vk      0.02 sec, wall time      0.01 sec
+E1 = -121.48398854199914  E2 = 36.10836256762001  Ecoul = 45.16671142255475  Exc = -9.058348854934737
+init E= -76.2431818380129
+cond(S) = 54.305939077418905
+    CPU time for initialize scf      0.52 sec, wall time      0.31 sec
+  HOMO = -0.460411120610097  LUMO = 0.0784193117425738  gap/eV = 14.66232
+  mo_energy =
+[-19.44321553  -1.36488974  -0.69140818  -0.554249    -0.46041112
+   0.07841931   0.17377992   0.82674357   0.87257862   0.8797236
+   0.95793862   1.0672298    1.39135565   1.71027298   1.72425955
+   1.75071876   2.29546904   2.59043714]
+nelec by numeric integration = 10.000000013122673
+    CPU time for vxc      0.31 sec, wall time      0.10 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+E1 = -124.53651592348622  E2 = 39.084956011398184  Ecoul = 48.620565453142675  Exc = -9.53560944174449
+cycle= 1 E= -76.3191157757218  delta_E= -0.0759  |g|= 0.597  |ddm|=  1.2
+    CPU time for cycle= 1      0.33 sec, wall time      0.12 sec
+  HOMO = -0.2692740226814  LUMO = 0.196440143590183  gap/eV = 12.67273
+  mo_energy =
+[-18.8307096   -1.01310418  -0.54448831  -0.34661666  -0.26927402
+   0.19644014   0.29146864   0.92061881   1.02306214   1.12414178
+   1.15783223   1.29918088   1.5821406    1.94091415   1.95413401
+   1.99341481   2.49222421   2.78770468]
+nelec by numeric integration = 10.000000017079532
+    CPU time for vxc      0.19 sec, wall time      0.06 sec
+    CPU time for vj and vk      0.00 sec, wall time      0.00 sec
+E1 = -121.3973269215193  E2 = 35.93060721843952  Ecoul = 45.05393495822896  Exc = -9.123327739789438
+cycle= 2 E= -76.3342755667135  delta_E= -0.0152  |g|= 0.548  |ddm|= 0.666
+    CPU time for cycle= 2      0.22 sec, wall time      0.08 sec
+  HOMO = -0.406240805128415  LUMO = 0.16886397296974  gap/eV = 15.64940
+  mo_energy =
+[-19.21112803  -1.13286971  -0.63748147  -0.4824852   -0.40624081
+   0.16886397   0.25604717   0.88546086   0.97567618   1.00522773
+   1.04483358   1.18286427   1.49252067   1.83781342   1.85212419
+   1.88872408   2.40437772   2.69764502]
+nelec by numeric integration = 10.000000015569228
+    CPU time for vxc      0.18 sec, wall time      0.06 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+E1 = -123.05154775036536  E2 = 37.53262798315373  Ecoul = 46.87057158446992  Exc = -9.337943601316194
+cycle= 3 E= -76.3864756308454  delta_E= -0.0522  |g|= 0.0229  |ddm|= 0.321
+    CPU time for cycle= 3      0.21 sec, wall time      0.07 sec
+  HOMO = -0.399733199983469  LUMO = 0.176227254299599  gap/eV = 15.67268
+  mo_energy =
+[-19.19563911  -1.12188128  -0.62880911  -0.47994529  -0.3997332
+   0.17622725   0.2627517    0.89258678   0.98641174   1.01065056
+   1.04726402   1.18822435   1.50032714   1.8438258    1.85868401
+   1.89467485   2.41071828   2.70423998]
+nelec by numeric integration = 10.000000015648428
+    CPU time for vxc      0.29 sec, wall time      0.10 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+E1 = -123.0044746184897  E2 = 37.485452822580996  Ecoul = 46.81758211472631  Exc = -9.332129292145309
+cycle= 4 E= -76.3865776595424  delta_E= -0.000102  |g|= 0.00331  |ddm|= 0.0135
+    CPU time for cycle= 4      0.32 sec, wall time      0.11 sec
+  HOMO = -0.400122084592871  LUMO = 0.176410466999355  gap/eV = 15.68825
+  mo_energy =
+[-19.19636918  -1.12229288  -0.62882909  -0.47988143  -0.40012208
+   0.17641047   0.2632359    0.89307155   0.98666796   1.01043586
+   1.04746518   1.18829654   1.50008794   1.84404417   1.85879573
+   1.89473996   2.41093061   2.70455593]
+nelec by numeric integration = 10.000000015659996
+    CPU time for vxc      0.30 sec, wall time      0.10 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+E1 = -123.00912670549904  E2 = 37.490101242352964  Ecoul = 46.82312672298106  Exc = -9.333025480628093
+cycle= 5 E= -76.3865813267798  delta_E= -3.67e-06  |g|= 0.000386  |ddm|= 0.00373
+    CPU time for cycle= 5      0.33 sec, wall time      0.11 sec
+  HOMO = -0.400185601762758  LUMO = 0.176336725408162  gap/eV = 15.68797
+  mo_energy =
+[-19.1964806   -1.12239154  -0.62884525  -0.47993922  -0.4001856
+   0.17633673   0.26314463   0.89300253   0.98660125   1.0103606
+   1.04738726   1.18820297   1.50000377   1.84391667   1.85867498
+   1.89462705   2.4108334    2.70444851]
+nelec by numeric integration = 10.000000015659603
+    CPU time for vxc      0.34 sec, wall time      0.11 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+E1 = -123.00946311118676  E2 = 37.49043758951487  Ecoul = 46.823515139696184  Exc = -9.333077550181319
+cycle= 6 E= -76.3865813853056  delta_E= -5.85e-08  |g|= 5.69e-05  |ddm|= 0.000665
+    CPU time for cycle= 6      0.38 sec, wall time      0.13 sec
+  HOMO = -0.400203538734138  LUMO = 0.176328420296111  gap/eV = 15.68823
+  mo_energy =
+[-19.19650604  -1.12240991  -0.62886506  -0.47995979  -0.40020354
+   0.17632842   0.26313651   0.89299416   0.98659196   1.01034876
+   1.04737267   1.18819019   1.49999431   1.84390277   1.85866481
+   1.89461542   2.4108226    2.70443447]
+nelec by numeric integration = 10.000000015659538
+    CPU time for vxc      0.23 sec, wall time      0.07 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+E1 = -123.00949888515754  E2 = 37.49047336135961  Ecoul = 46.82355717891338  Exc = -9.333083817553769
+cycle= 7 E= -76.3865813874317  delta_E= -2.13e-09  |g|= 1.11e-05  |ddm|= 0.000156
+    CPU time for cycle= 7      0.26 sec, wall time      0.09 sec
+  HOMO = -0.400206519912091  LUMO = 0.17632752438146  gap/eV = 15.68829
+  mo_energy =
+[-19.19650812  -1.12241265  -0.62886631  -0.4799615   -0.40020652
+   0.17632752   0.26313505   0.89299378   0.98659106   1.01034612
+   1.0473706    1.18818836   1.49999199   1.84389917   1.85866206
+   1.8946117    2.41082059   2.70443222]
+nelec by numeric integration = 10.000000015659525
+    CPU time for vxc      0.30 sec, wall time      0.10 sec
+    CPU time for vj and vk      0.02 sec, wall time      0.01 sec
+E1 = -123.0095061122618  E2 = 37.49048058835677  Ecoul = 46.82356558160264  Exc = -9.333084993245869
+cycle= 8 E= -76.3865813875388  delta_E= -1.07e-10  |g|= 1.08e-06  |ddm|= 4.08e-05
+    CPU time for cycle= 8      0.34 sec, wall time      0.12 sec
+  HOMO = -0.400206388195599  LUMO = 0.176327644308433  gap/eV = 15.68829
+  mo_energy =
+[-19.19650808  -1.12241254  -0.62886639  -0.47996136  -0.40020639
+   0.17632764   0.26313515   0.89299391   0.98659116   1.01034628
+   1.04737072   1.18818848   1.49999215   1.84389937   1.85866234
+   1.89461192   2.4108208    2.7044324 ]
+nelec by numeric integration = 10.00000001565953
+    CPU time for vxc      0.34 sec, wall time      0.11 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.01 sec
+E1 = -123.0095052682662  E2 = 37.49047974436024  Ecoul = 46.82356465685856  Exc = -9.333084912498318
+cycle= 9 E= -76.3865813875397  delta_E= -9.09e-13  |g|= 9.55e-08  |ddm|= 3.66e-06
+    CPU time for cycle= 9      0.38 sec, wall time      0.13 sec
+  HOMO = -0.400206346661427  LUMO = 0.176327662558808  gap/eV = 15.68829
+  mo_energy =
+[-19.19650804  -1.1224125   -0.62886634  -0.47996132  -0.40020635
+   0.17632766   0.26313515   0.89299392   0.98659118   1.0103463
+   1.04737074   1.1881885    1.49999217   1.84389939   1.85866236
+   1.89461193   2.41082082   2.70443242]
+nelec by numeric integration = 10.00000001565953
+    CPU time for vxc      0.34 sec, wall time      0.11 sec
+    CPU time for vj and vk      0.02 sec, wall time      0.01 sec
+E1 = -123.00950523178616  E2 = 37.49047970788019  Ecoul = 46.82356461218863  Exc = -9.333084904308441
+cycle= 10 E= -76.3865813875397  delta_E= -2.84e-14  |g|= 8.04e-09  |ddm|= 1.92e-07
+    CPU time for cycle= 10      0.38 sec, wall time      0.13 sec
+  HOMO = -0.400206344116952  LUMO = 0.176327663134223  gap/eV = 15.68829
+  mo_energy =
+[-19.19650803  -1.1224125   -0.62886634  -0.47996132  -0.40020634
+   0.17632766   0.26313515   0.89299392   0.98659118   1.01034631
+   1.04737074   1.18818851   1.49999218   1.84389939   1.85866236
+   1.89461193   2.41082082   2.70443242]
+nelec by numeric integration = 10.00000001565953
+    CPU time for vxc      0.28 sec, wall time      0.09 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+E1 = -123.00950521586847  E2 = 37.49047969196252  Ecoul = 46.82356459401247  Exc = -9.333084902049944
+Extra cycle  E= -76.3865813875397  delta_E= 2.84e-14  |g|= 3.22e-09  |ddm|= 9.86e-09
+    CPU time for scf_cycle      3.98 sec, wall time      1.50 sec
+    CPU time for SCF      3.98 sec, wall time      1.52 sec
+converged SCF energy = -76.3865813875397
+
+
+******** <class 'pyscf.grad.rks.Gradients'> for <class 'pyscf.dft.rks.RKS'> ********
+unit = Eh/Bohr
+max_memory 4000 MB (current use 175 MB)
+grid_response = False
+Computing Gradients of NR-HF Coulomb repulsion
+    CPU time for vxc      0.42 sec, wall time      0.19 sec
+    CPU time for vj and vk      0.03 sec, wall time      0.02 sec
+    CPU time for gradients of 2e part      0.50 sec, wall time      0.25 sec
+gradients of electronic part
+         x                y                z
+0 O    -0.0000000000    -0.0000000000     2.9595949388
+1 H     0.0000000000     2.0251246291    -1.4798015464
+2 H    -0.0000000000    -2.0251246291    -1.4798015464
+    CPU time for SCF gradients      0.51 sec, wall time      0.25 sec
+--------------- RKS gradients ---------------
+         x                y                z
+0 O    -0.0000000000     0.0000000000    -0.0000028119
+1 H     0.0000000000    -0.0000000748    -0.0000026710
+2 H    -0.0000000000     0.0000000748    -0.0000026710
+----------------------------------------------
+
+
+******** <class 'pyscf.dft.rks.RKS'> ********
+method = RKS
+initial guess = minao
+damping factor = 0
+level_shift factor = 0
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 8
+diis_damp = 0
+SCF conv_tol = 1e-11
+SCF conv_tol_grad = 1e-08
+SCF max_cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmpm7sb4lbj
+max_memory 4000 MB (current use 175 MB)
+XC library pyscf.dft.libxc version 7.0.0
+    S. Lehtola, C. Steigemann, M. J.T. Oliveira, and M. A.L. Marques.,  SoftwareX 7, 1–5 (2018)
+XC functionals = wb97x
+    J.-D. Chai and M. Head-Gordon.,  J. Chem. Phys. 128, 084106 (2008)
+radial grids: 
+    Treutler-Ahlrichs [JCP 102, 346 (1995); DOI:10.1063/1.469408] (M4) radial grids
+    
+becke partition: Becke, JCP 88, 2547 (1988); DOI:10.1063/1.454033
+pruning grids: None
+grids dens level: 3
+symmetrized grids: False
+atomic radii adjust function: <function treutler_atomic_radii_adjust at 0x7a9c0dd45440>
+User specified grid scheme (99, 590)
+small_rho_cutoff = 0
+Initial guess from minao.
+atom O rad-grids = 99, ang-grids = [590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590]
+atom H rad-grids = 99, ang-grids = [590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590, 590]
+tot_boxes 990, boxes in each direction [7 9 8]
+Padding 2 grids
+tot grids = 175232
+    CPU time for setting up grids      0.19 sec, wall time      0.18 sec
+nelec by numeric integration = 9.984682021426769
+    CPU time for vxc      0.36 sec, wall time      0.14 sec
+    CPU time for init_direct_scf      0.00 sec, wall time      0.00 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.01 sec
+E1 = -121.48398854199914  E2 = 36.10836256762001  Ecoul = 45.16671142255475  Exc = -9.058348854934737
+init E= -76.2431818380129
+cond(S) = 54.305939077418905
+    CPU time for initialize scf      0.63 sec, wall time      0.36 sec
+  HOMO = -0.460411120610098  LUMO = 0.078419311742572  gap/eV = 14.66232
+  mo_energy =
+[-19.44321553  -1.36488974  -0.69140818  -0.554249    -0.46041112
+   0.07841931   0.17377992   0.82674357   0.87257862   0.8797236
+   0.95793862   1.0672298    1.39135565   1.71027298   1.72425955
+   1.75071876   2.29546904   2.59043714]
+nelec by numeric integration = 10.000000013122675
+    CPU time for vxc      0.33 sec, wall time      0.11 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.01 sec
+E1 = -124.53651592348632  E2 = 39.084956011398205  Ecoul = 48.6205654531427  Exc = -9.535609441744496
+cycle= 1 E= -76.3191157757219  delta_E= -0.0759  |g|= 0.597  |ddm|=  1.2
+    CPU time for cycle= 1      0.36 sec, wall time      0.12 sec
+  HOMO = -0.2692740226814  LUMO = 0.196440143590184  gap/eV = 12.67273
+  mo_energy =
+[-18.8307096   -1.01310418  -0.54448831  -0.34661666  -0.26927402
+   0.19644014   0.29146864   0.92061881   1.02306214   1.12414178
+   1.15783223   1.29918088   1.5821406    1.94091415   1.95413401
+   1.99341481   2.49222421   2.78770468]
+nelec by numeric integration = 10.000000017079532
+    CPU time for vxc      0.40 sec, wall time      0.13 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+E1 = -121.39732692151922  E2 = 35.93060721843953  Ecoul = 45.053934958228965  Exc = -9.123327739789435
+cycle= 2 E= -76.3342755667134  delta_E= -0.0152  |g|= 0.548  |ddm|= 0.666
+    CPU time for cycle= 2      0.43 sec, wall time      0.15 sec
+  HOMO = -0.406240805128415  LUMO = 0.168863972969742  gap/eV = 15.64940
+  mo_energy =
+[-19.21112803  -1.13286971  -0.63748147  -0.4824852   -0.40624081
+   0.16886397   0.25604717   0.88546086   0.97567618   1.00522773
+   1.04483358   1.18286427   1.49252067   1.83781342   1.85212419
+   1.88872408   2.40437772   2.69764502]
+nelec by numeric integration = 10.000000015569226
+    CPU time for vxc      0.29 sec, wall time      0.09 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+E1 = -123.05154775036529  E2 = 37.53262798315369  Ecoul = 46.87057158446988  Exc = -9.337943601316187
+cycle= 3 E= -76.3864756308453  delta_E= -0.0522  |g|= 0.0229  |ddm|= 0.321
+    CPU time for cycle= 3      0.32 sec, wall time      0.11 sec
+  HOMO = -0.39973319998347  LUMO = 0.176227254299593  gap/eV = 15.67268
+  mo_energy =
+[-19.19563911  -1.12188128  -0.62880911  -0.47994529  -0.3997332
+   0.17622725   0.2627517    0.89258678   0.98641174   1.01065056
+   1.04726402   1.18822435   1.50032714   1.8438258    1.85868401
+   1.89467485   2.41071828   2.70423998]
+nelec by numeric integration = 10.000000015648432
+    CPU time for vxc      0.19 sec, wall time      0.06 sec
+    CPU time for vj and vk      0.00 sec, wall time      0.00 sec
+E1 = -123.00447461848962  E2 = 37.485452822581  Ecoul = 46.817582114726314  Exc = -9.332129292145313
+cycle= 4 E= -76.3865776595424  delta_E= -0.000102  |g|= 0.00331  |ddm|= 0.0135
+    CPU time for cycle= 4      0.21 sec, wall time      0.07 sec
+  HOMO = -0.400122084592864  LUMO = 0.176410466999364  gap/eV = 15.68825
+  mo_energy =
+[-19.19636918  -1.12229288  -0.62882909  -0.47988143  -0.40012208
+   0.17641047   0.2632359    0.89307155   0.98666796   1.01043586
+   1.04746518   1.18829654   1.50008794   1.84404417   1.85879573
+   1.89473996   2.41093061   2.70455593]
+nelec by numeric integration = 10.00000001566
+    CPU time for vxc      0.21 sec, wall time      0.07 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+E1 = -123.0091267054991  E2 = 37.49010124235301  Ecoul = 46.82312672298111  Exc = -9.333025480628097
+cycle= 5 E= -76.3865813267798  delta_E= -3.67e-06  |g|= 0.000386  |ddm|= 0.00373
+    CPU time for cycle= 5      0.25 sec, wall time      0.09 sec
+  HOMO = -0.400185601762755  LUMO = 0.176336725408165  gap/eV = 15.68797
+  mo_energy =
+[-19.1964806   -1.12239154  -0.62884525  -0.47993922  -0.4001856
+   0.17633673   0.26314463   0.89300253   0.98660125   1.0103606
+   1.04738726   1.18820297   1.50000377   1.84391667   1.85867498
+   1.89462705   2.4108334    2.70444851]
+nelec by numeric integration = 10.000000015659605
+    CPU time for vxc      0.35 sec, wall time      0.11 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+E1 = -123.00946311118679  E2 = 37.49043758951487  Ecoul = 46.823515139696184  Exc = -9.333077550181319
+cycle= 6 E= -76.3865813853057  delta_E= -5.85e-08  |g|= 5.69e-05  |ddm|= 0.000665
+    CPU time for cycle= 6      0.38 sec, wall time      0.13 sec
+  HOMO = -0.400203538734132  LUMO = 0.176328420296111  gap/eV = 15.68823
+  mo_energy =
+[-19.19650604  -1.12240991  -0.62886506  -0.47995979  -0.40020354
+   0.17632842   0.26313651   0.89299416   0.98659196   1.01034876
+   1.04737267   1.18819019   1.49999431   1.84390277   1.85866481
+   1.89461542   2.4108226    2.70443447]
+nelec by numeric integration = 10.000000015659541
+    CPU time for vxc      0.30 sec, wall time      0.10 sec
+    CPU time for vj and vk      0.02 sec, wall time      0.01 sec
+E1 = -123.00949888515756  E2 = 37.49047336135962  Ecoul = 46.8235571789134  Exc = -9.333083817553774
+cycle= 7 E= -76.3865813874317  delta_E= -2.13e-09  |g|= 1.11e-05  |ddm|= 0.000156
+    CPU time for cycle= 7      0.34 sec, wall time      0.11 sec
+  HOMO = -0.400206519912088  LUMO = 0.176327524381457  gap/eV = 15.68829
+  mo_energy =
+[-19.19650812  -1.12241265  -0.62886631  -0.4799615   -0.40020652
+   0.17632752   0.26313505   0.89299378   0.98659106   1.01034612
+   1.0473706    1.18818836   1.49999199   1.84389917   1.85866206
+   1.8946117    2.41082059   2.70443222]
+nelec by numeric integration = 10.000000015659527
+    CPU time for vxc      0.34 sec, wall time      0.11 sec
+    CPU time for vj and vk      0.02 sec, wall time      0.01 sec
+E1 = -123.00950611226185  E2 = 37.4904805883568  Ecoul = 46.82356558160267  Exc = -9.333084993245869
+cycle= 8 E= -76.3865813875388  delta_E= -1.07e-10  |g|= 1.08e-06  |ddm|= 4.08e-05
+    CPU time for cycle= 8      0.38 sec, wall time      0.13 sec
+  HOMO = -0.400206388195617  LUMO = 0.176327644308417  gap/eV = 15.68829
+  mo_energy =
+[-19.19650808  -1.12241254  -0.62886639  -0.47996136  -0.40020639
+   0.17632764   0.26313515   0.89299391   0.98659116   1.01034628
+   1.04737072   1.18818848   1.49999215   1.84389937   1.85866234
+   1.89461192   2.4108208    2.7044324 ]
+nelec by numeric integration = 10.000000015659532
+    CPU time for vxc      0.25 sec, wall time      0.08 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+E1 = -123.00950526826628  E2 = 37.49047974436033  Ecoul = 46.82356465685866  Exc = -9.333084912498329
+cycle= 9 E= -76.3865813875397  delta_E= -9.09e-13  |g|= 9.55e-08  |ddm|= 3.66e-06
+    CPU time for cycle= 9      0.27 sec, wall time      0.09 sec
+  HOMO = -0.400206346661426  LUMO = 0.176327662558821  gap/eV = 15.68829
+  mo_energy =
+[-19.19650804  -1.1224125   -0.62886634  -0.47996132  -0.40020635
+   0.17632766   0.26313515   0.89299392   0.98659118   1.0103463
+   1.04737074   1.1881885    1.49999217   1.84389939   1.85866236
+   1.89461193   2.41082082   2.70443242]
+nelec by numeric integration = 10.00000001565953
+    CPU time for vxc      0.25 sec, wall time      0.09 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.01 sec
+E1 = -123.00950523178618  E2 = 37.49047970788017  Ecoul = 46.823564612188605  Exc = -9.33308490430844
+cycle= 10 E= -76.3865813875397  delta_E= -5.68e-14  |g|= 8.04e-09  |ddm|= 1.92e-07
+    CPU time for cycle= 10      0.28 sec, wall time      0.10 sec
+  HOMO = -0.400206344116953  LUMO = 0.176327663134216  gap/eV = 15.68829
+  mo_energy =
+[-19.19650803  -1.1224125   -0.62886634  -0.47996132  -0.40020634
+   0.17632766   0.26313515   0.89299392   0.98659118   1.01034631
+   1.04737074   1.18818851   1.49999218   1.84389939   1.85866236
+   1.89461193   2.41082082   2.70443242]
+nelec by numeric integration = 10.000000015659529
+    CPU time for vxc      0.25 sec, wall time      0.08 sec
+    CPU time for vj and vk      0.02 sec, wall time      0.01 sec
+E1 = -123.00950521586849  E2 = 37.49047969196254  Ecoul = 46.82356459401249  Exc = -9.333084902049947
+Extra cycle  E= -76.3865813875397  delta_E= 5.68e-14  |g|= 3.22e-09  |ddm|= 9.86e-09
+    CPU time for scf_cycle      4.16 sec, wall time      1.57 sec
+    CPU time for SCF      4.16 sec, wall time      1.60 sec
+converged SCF energy = -76.3865813875397
+
+
+******** <class 'pyscf.grad.rks.Gradients'> for <class 'pyscf.dft.rks.RKS'> ********
+unit = Eh/Bohr
+max_memory 4000 MB (current use 175 MB)
+grid_response = False
+Computing Gradients of NR-HF Coulomb repulsion
+    CPU time for vxc      0.55 sec, wall time      0.25 sec
+    CPU time for vj and vk      0.03 sec, wall time      0.02 sec
+    CPU time for gradients of 2e part      0.60 sec, wall time      0.30 sec
+gradients of electronic part
+         x                y                z
+0 O    -0.0000000000    -0.0000000000     2.9595949388
+1 H     0.0000000000     2.0251246291    -1.4798015464
+2 H    -0.0000000000    -2.0251246291    -1.4798015464
+    CPU time for SCF gradients      0.61 sec, wall time      0.30 sec
+--------------- RKS gradients ---------------
+         x                y                z
+0 O    -0.0000000000     0.0000000000    -0.0000028119
+1 H     0.0000000000    -0.0000000748    -0.0000026710
+2 H    -0.0000000000     0.0000000748    -0.0000026710
+----------------------------------------------
+    CPU time for RHF partial hessian      0.23 sec, wall time      0.19 sec
+    CPU time for RKS partial hessian      3.69 sec, wall time      2.04 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.01 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.01 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+    CPU time for vj and vk      0.01 sec, wall time      0.00 sec
+    CPU time for RHF hessian      8.47 sec, wall time      4.47 sec

@@ -1,0 +1,11 @@
+{"name": "geometry_term", "purpose": "TASKS 156 (d), PreRegistration_2026-10-31_Geometry_Term.md: the first-order geometry term beyond benzene - for the 18 force fields at G (S2), wB97X/6-31G* Hessians at G's minimum and at its own (probes/geometry_term_check.py run); waits for the laptop field route's end (l5_apt_field.exit), the two together exceed the laptop budget",
+ "host": "laptop", "workdir": "probes/results_m1/geometry_term_2026-10-31",
+ "command": "MSYS_NO_PATHCONV=1 wsl -e bash /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/geometry_term_run.sh",
+ "sources": [{"local": "probes/geometry_term_run.sh"}, {"local": "probes/geometry_term_check.py"}, {"local": "probes/s1_anharmonic_level.py"},
+             {"local": "probes/library_log.py"}, {"local": "probes/scf_converge.py"}, {"local": "probes/wsl_capped.sh"}, {"local": "src/dpir/qff.py"}],
+ "progress": {"regex": "^  \\[geometry term\\] |^=== \\(GT\\) ", "max_gap_minutes": 90,
+              "start_regex": "^=== \\(GT\\) start: ", "heartbeat_glob": "runs/*/pyscf.log"},
+ "marker_regex": "^=== \\(GT\\) (armed|start|STOPPED|all done)", "end_regex": "^=== \\(GT\\) all done",
+ "dry_run_args": "--dry-run", "resumable": true, "threads": 8,
+ "estimate": {"hours": 30, "basis": "two wB97X analytic Hessians a molecule at 99/590 and three gradients; pipeline 0.4's B3LYP Hessian of phenanthrene (212 functions) took about 1 h on the laptop at 6 threads, the 18 molecules have 120-200 functions; wB97X costs more than B3LYP; water smoke 19 s"},
+ "memory": {"peak_gb": 6.0, "basis": "the probes/wsl_capped.sh cgroup cap of 6144 MB; it starts after the field route (12 GB) has ended"}}
