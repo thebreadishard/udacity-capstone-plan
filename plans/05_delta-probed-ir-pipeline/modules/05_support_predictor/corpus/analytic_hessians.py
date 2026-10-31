@@ -39,7 +39,16 @@ from typing import Any, TextIO
 
 import numpy as np
 import pyscf
-from apt import CPHF_BOUND, apt_from_mo1, hessian_with_response, intensities, refine_response, solve_response, sum_rule
+from apt import (
+    CPHF_BOUND,
+    SUM_RULE_LIMIT,
+    apt_from_mo1,
+    hessian_with_response,
+    intensities,
+    refine_response,
+    solve_response,
+    sum_rule,
+)
 from pyscf import dft, lib
 
 sys.path.insert(1, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "probes"))
@@ -48,7 +57,6 @@ from library_log import PYSCF_LOG_NAME, pyscf_mole
 AMU2AU = 1822.888486209
 AU2CM = 219474.6313705
 APT_FILE = "dipole_b3lyp_cphf.npz"     # the name the export and module 08 read; route B writes it too
-SUM_RULE_LIMIT = 5e-4                  # e; route B's limit (benzene: CPHF vs FD differ by 4.4e-4 e at most)
 FUNCTIONALS = (("b3lyp", "b3lyp"), ("wb97x", "wb97x"))
 IMAGINARY_BELOW = -10.0                # cm⁻¹, psi4_worker's own count
 SPIN_CONTAMINATION = 0.05              # |<S²> − S(S+1)| above which a warning is printed

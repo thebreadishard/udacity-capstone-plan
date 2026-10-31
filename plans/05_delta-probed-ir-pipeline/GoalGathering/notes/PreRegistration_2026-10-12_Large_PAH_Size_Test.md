@@ -141,6 +141,8 @@ affected. Only the intensity read-out beside them would lose that molecule. Coro
 fail the limit, the field route with grid response (`probes/apt_field_route.py`, exact sum rule) is their APT's second route. The limit is
 not moved after the fact.
 
+**Amendment to risk 4 (31 Oct 2026, 09:19, before any output of the field route).** On l5_small the labels-route APT of ovalene (7.9e-4) and peropyrene (5.2e-4) missed the limit at a converged response; the D molecules passed. The field route runs on the laptop (run spec `l5_apt_field`, F = 1e-3 and 2e-3), and `probes/l5_apt_field_read.py` reads it with two lines: **A** the Richardson APT with grid response meets the same 5e-4 e limit; **B** the Richardson APT without grid response lies within 1e-4 e of the labels-route APT (L4's line: the same derivative on a fixed grid, so the miss is the grid response, not the response). Both hold → that APT (`dipole_b3lyp_field.npz`) is the molecule's APT for the intensity read; either fails → the read loses the molecule. `large_pah_ready.py` no longer holds chain 42 on a failed APT and names it. Tests on synthetic records: `tests/test_l5_apt_field_read.py`.
+
 ## Outcome
 
 *(appended after the run)*

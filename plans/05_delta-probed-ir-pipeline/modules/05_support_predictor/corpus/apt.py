@@ -26,6 +26,7 @@ AMU2AU = 1822.888486209
 HARTREE2CM = 219474.6313705
 # A_k [km/mol] = 974.8802 · |∂μ/∂Q_k|² with ∂μ/∂Q in e/√amu: 1 e/√amu → (2.541746 D / 0.529177 Å)² × 42.2561 km/mol per (D/Å)²/amu = 974.88 km/mol.
 KM_PER_MOL = 974.8802
+SUM_RULE_LIMIT = 5e-4  # e; route B's limit (benzene: CPHF vs FD differ by 4.4e-4 e at most)
 CPHF_BOUND = 1e-6   # max |residual| of the refined response; 3.75e-5 e on benzene's APT was reached at 7.8e-8 (design note, 12 Oct 2026)
 
 
