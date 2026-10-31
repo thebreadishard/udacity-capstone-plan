@@ -8,5 +8,5 @@
               "start_regex": "^=== \\(L5F\\) start: ", "heartbeat_glob": "*/pyscf.log"},
  "marker_regex": "^=== \\(L5F\\) (start|STOPPED|all done)", "end_regex": "^=== \\(L5F\\) all done",
  "dry_run_args": "--dry-run", "resumable": true, "threads": 8,
- "estimate": {"hours": 36, "basis": "L4's field-route timings on the laptop (16 Oct, 4 threads, 211-237 functions, 2278-2890 s per field) scaled as n^3.0-3.4: ovalene (508) 17-23 h and peropyrene (418) 9-12 h for both fields at 4 threads; 8 threads expected faster, not measured; coronene (384) adds 7-9 h if it fails"},
- "memory": {"peak_gb": 8.0, "basis": "the probes/wsl_capped.sh cgroup cap of 8192 MB (pyscf max_memory 6144 MB inside it); nothing else runs on the laptop"}}
+ "estimate": {"hours": 14, "basis": "measured on ovalene's first attempt (31 Oct, 8 threads): SCF 448 s and a gradient without grid response 315 s wall; a grid-response gradient assumed at twice that (not yet measured): about 1 h per field component, 6 h for ovalene's two fields, about 4 h for peropyrene's (n^3 scaling), coronene about 3 h more if it fails"},
+ "memory": {"peak_gb": 12.0, "basis": "the probes/wsl_capped.sh cgroup cap of 12288 MB (pyscf max_memory 6144 MB; the grid response's dpbecke and AO arrays, about 5.4 GB for ovalene, lie outside it; killed at 8192 MB on 31 Oct); nothing else runs on the laptop"}}
