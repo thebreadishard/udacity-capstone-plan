@@ -23,6 +23,7 @@ from m08 import pipeline as P  # noqa: E402
 from m08 import reuse as R  # noqa: E402
 
 UNLIMITED = 1e9
+LIMIT = R.SAME_START_ANGSTROM      # the survey measures beyond it and counts at it
 
 
 def reason_class(why: str) -> str:
@@ -50,12 +51,14 @@ def summary(recs: list[dict]) -> dict:
     reasons = collections.Counter(reason_class(r["why"][-1]) for r in recs if not r["reused"])
     fits = sorted((r["start_rmsd_angstrom"], r["id"]) for r in recs if "start_rmsd_angstrom" in r)
     d = np.array([f for f, _ in fits])
-    reordered = sum(1 for r in recs if r["reused"] and r["order"] != sorted(r["order"]))
-    return {"rows": len(recs), "reused": sum(r["reused"] for r in recs), "reused_with_atoms_reordered": reordered,
+    reused = [r for r in recs if r["reused"] and r["start_rmsd_angstrom"] <= LIMIT]
+    reordered = sum(1 for r in reused if r["order"] != sorted(r["order"]))
+    return {"rows": len(recs), "reused": len(reused), "other_start_beyond_limit": sum(1 for r in recs if r["reused"]) - len(reused),
+            "reused_with_atoms_reordered": reordered,
             "first_refusal_reasons": dict(reasons.most_common()),
             "start_rmsd_angstrom": {"n": len(d), "median": float(np.median(d)), "p95": float(np.quantile(d, 0.95)),
                                     "p99": float(np.quantile(d, 0.99)), "max": float(d.max()), "largest": fits[-10:]} if len(d) else None,
-            "limit_angstrom": R.SAME_START_ANGSTROM}
+            "limit_angstrom": LIMIT}
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -67,9 +70,9 @@ def main(argv: list[str] | None = None) -> int:
     t = time.time()
     recs = survey(a.corpus)
     s = summary(recs) | {"seconds": round(time.time() - t, 1), "corpus": str(a.corpus)}
-    s["limit_angstrom"] = "unlimited in the survey"
     a.out.mkdir(parents=True, exist_ok=True)
-    for name, obj in (("pipeline_reuse_survey.json", {"summary": s, "molecules": recs}),):
+    for name, obj in (("pipeline_reuse_survey.json", {"summary": s, "note": "each molecule's 'reused' is read without the start "
+                       "limit; the summary counts at it", "molecules": recs}),):
         tmp = a.out / (name + ".tmp")
         tmp.write_text(json.dumps(obj, indent=1, ensure_ascii=False), encoding="utf-8")
         os.replace(tmp, a.out / name)

@@ -1,0 +1,38 @@
+{
+ "limit_cm": 0.01,
+ "rotation_limit_cm": 0.001,
+ "models": [
+  "E7_rungC_chain35_analytic_model_n750_seed0.pt",
+  "E7_rungC_chain35_analytic_model_n750_seed1.pt",
+  "E7_rungC_chain35_analytic_model_n750_seed2.pt"
+ ],
+ "molecules": {
+  "benzene": {
+   "source": "A_8448043181",
+   "start_rmsd_angstrom": 0.0,
+   "apt_refusals": [
+    "A_8448043181: the APT's route is 'cphf', computed before the residual check (hessian_response_refined is reused)"
+   ],
+   "modes": 30,
+   "max_diff_to_computed_cm_as_built": 0.00025807272368183476,
+   "max_diff_to_computed_cm_one_sided": 0.0002581303369879606,
+   "passed": true,
+   "max_diff_rotated_cm": 4.076898790117411e-06,
+   "rotation_passed": true
+  },
+  "phenanthrene": {
+   "source": "A_541c53d1a5",
+   "start_rmsd_angstrom": 1.7e-05,
+   "apt_refusals": [
+    "A_541c53d1a5: the APT's route is 'cphf', computed before the residual check (hessian_response_refined is reused)"
+   ],
+   "modes": 66,
+   "max_diff_to_computed_cm_as_built": 1.2216373577092554,
+   "max_diff_to_computed_cm_one_sided": 0.009076448772702861,
+   "passed": true,
+   "max_diff_rotated_cm": 6.3880916627567785e-06,
+   "rotation_passed": true
+  }
+ },
+ "passed": true
+}
