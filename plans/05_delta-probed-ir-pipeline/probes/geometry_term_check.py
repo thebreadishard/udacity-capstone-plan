@@ -6,8 +6,8 @@ An anchor's Hessian is computed at the B3LYP geometry, not at its own level's mi
 whose force fields exist at the anharmonic level G (S2, B3LYP/6-31G*, grid 75/302): the higher level is ωB97X/6-31G* (the proxy's).
 
     run  <s2 molecule dir>/G <out dir> [--xc wb97x --basis 6-31g* --grid 99,590 --threads 8]   (WSL, pyscf)
-         ωB97X's analytic Hessian at G's minimum x0, Newton steps (S1's `newton_step`) with that Hessian held to its own minimum x_T,
-         and its Hessian at x_T. One line per evaluation; pyscf's log beside it.
+         ωB97X's analytic Hessian at G's minimum x0, Newton steps (S1's `newton_step`) with that Hessian held to its own minimum x_T
+         (refreshed where a step fails to halve the gradient), and its Hessian at x_T. One line per evaluation; pyscf's log beside it.
     read <s2 root> <runs root> [--out <dir>]                                                     (no pyscf)
          per molecule: measured Δω (ωB97X at x_T minus at x0, modes paired by overlap, then to G's modes) against the term with Δq from
          the true displacement and from the first Newton step at x0 (what a product could compute), and the registered lines.
@@ -38,6 +38,7 @@ MIN_WINDOW_MODES = 10
 LINE_A, LINE_B, LINE_D = 0.30, 0.35, 16      # residual / shift (true Δq), (Newton Δq); molecules where the term helps
 OMEGA_CHECK_CM = 0.01              # the reference Hessian's ω against the force field's own
 MAX_STEPS = 12                     # Newton steps on the held Hessian before the run is refused
+REFRESH_RATIO = 0.5                # a step that leaves more of |g| than this refreshes the Hessian where it stands
 
 
 def sha256(p: Path) -> str:
@@ -54,9 +55,16 @@ def read_reference(g_dir: Path) -> tuple[list[str], np.ndarray, np.ndarray]:
 
 # ---------------------------------------------------------------- run (WSL, pyscf)
 
+def needs_refresh(gmax_before: float, gmax_after: float) -> bool:
+    """Whether the held Hessian has stopped describing the surface: A_8f6ed7c002's steps on x0's Hessian (1 Nov) slid along a soft
+    coordinate for ten steps, |g| growing from 4.5e-5 to 4.2e-4 while the energy fell by 1e-6 E_h a step."""
+    return gmax_after > REFRESH_RATIO * gmax_before
+
+
 def run(g_dir: Path, out: Path, xc: str, basis: str, grid: str, threads: int) -> None:
     """ωB97X's Hessian at x0, Newton steps with that Hessian held (gradients only: x0 is a few thousandths of an ångström from x_T, so the
-    steps converge in a few and a Hessian per step would triple the cost), and the Hessian again at x_T."""
+    steps converge in a few and a Hessian per step would triple the cost) and refreshed where a step fails to halve |g|, and the Hessian
+    again at x_T. H0 stays x0's Hessian in the record: line B's Newton step is taken on it."""
     from library_log import PYSCF_LOG_NAME
     from s1_anharmonic_level import GTOL, PyscfSetting, internal_gradient, log_line, newton_step, pyscf_energy_and_gradient
 
@@ -78,20 +86,26 @@ def run(g_dir: Path, out: Path, xc: str, basis: str, grid: str, threads: int) ->
         setting = PyscfSetting(basis, grid, threads, lib_log, xc=xc)
         eg, egh = pyscf_energy_and_gradient(sym, setting), pyscf_energy_and_gradient(sym, setting, hessian=True)
         (e0, g0, H0), gmax = timed(egh, x0, "Hessian at G's minimum")
-        x, g, steps = x0.copy(), g0, 0
+        x, g, H, steps, refreshes = x0.copy(), g0, H0, 0, 0
         while gmax > GTOL:
             if steps == MAX_STEPS:
                 raise SystemExit(f"{name}: not converged, max |g| {gmax:.1e} > {GTOL:g} after {steps} steps on the held Hessian")
-            x = x + newton_step(x, g, H0)
+            x = x + newton_step(x, g, H)
             steps += 1
+            gmax_before = gmax
             (_, g), gmax = timed(eg, x, f"gradient after step {steps}")
+            if gmax > GTOL and needs_refresh(gmax_before, gmax):
+                (_, g, H), gmax = timed(egh, x, f"Hessian refreshed after step {steps}")
+                refreshes += 1
         (e_t, g_t, H_t), gmax = timed(egh, x, "Hessian at its own minimum")
     tmp = out / (RUN_FILE + ".tmp.npz")
     np.savez(tmp, symbols=np.array(sym), x0=x0, g0=g0, H0=H0, e0=e0, x_t=x, g_t=g_t, H_t=H_t, e_t=e_t, max_gradient=gmax,
-             newton_steps=steps, evaluation_seconds=np.array(seconds), xc=xc, basis=basis, grid=grid, seconds=time.time() - t_start,
+             newton_steps=steps, hessian_refreshes=refreshes, evaluation_seconds=np.array(seconds), xc=xc, basis=basis, grid=grid,
+             seconds=time.time() - t_start,
              ref_sha256=sha256(g_dir / "ref.json"), qff_sha256=sha256(g_dir / "qff_report.npz"))
     os.replace(tmp, out / RUN_FILE)
-    log_line(f"  [geometry term] {name} done: {steps} steps, max |g| {gmax:.1e}, {time.time() - t_start:.0f} s")
+    log_line(f"  [geometry term] {name} done: {steps} steps, {refreshes} Hessian refreshes, max |g| {gmax:.1e}, "
+             f"{time.time() - t_start:.0f} s")
 
 
 # ---------------------------------------------------------------- read (no pyscf)

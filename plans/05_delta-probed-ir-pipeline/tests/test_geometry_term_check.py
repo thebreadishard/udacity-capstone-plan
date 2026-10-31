@@ -58,6 +58,12 @@ def write_molecule(s2: Path, runs: Path, mol_id: str, sign: float = 1.0) -> None
              ref_sha256=G.sha256(g_dir / "ref.json"), qff_sha256=G.sha256(g_dir / "qff_report.npz"))
 
 
+def test_a_step_that_does_not_halve_the_gradient_refreshes_the_hessian():
+    assert not G.needs_refresh(1.3e-4, 4.5e-5)
+    assert G.needs_refresh(4.5e-5, 9.3e-5)
+    assert G.needs_refresh(1e-4, 0.6e-4) and not G.needs_refresh(1e-4, 0.5e-4)
+
+
 def test_the_term_is_found_through_the_true_displacement_and_the_newton_step(tmp_path):
     write_molecule(tmp_path / "s2", tmp_path / "runs", "M")
     m = G.molecule("M", tmp_path / "s2" / "M" / "G", tmp_path / "runs" / "M" / G.RUN_FILE)
