@@ -15,7 +15,7 @@ import os
 import sys
 import time
 from dataclasses import dataclass
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 
 import numpy as np
 
@@ -62,7 +62,8 @@ def load_result(folder: Path) -> Result:
         apt = np.asarray(z["apt"], float)
     with np.load(folder / P.CORRECTION) as z:
         dH, models = z["dH"], tuple(str(m) for m in z["models"])
-    if models != tuple(Path(m["path"]).name for m in rec["admission"]["models"]):
+    # the recorded paths are the laptop's (Windows); PureWindowsPath splits on both separators, so the names read alike on Linux (CI)
+    if models != tuple(PureWindowsPath(m["path"]).name for m in rec["admission"]["models"]):
         raise RuntimeError(f"{folder}: {P.CORRECTION} names other models than pipeline.json")
     return Result(folder, rec, masses, H_low, apt, dH, models)
 
