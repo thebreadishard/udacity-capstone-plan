@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # mp2_rows_queue_ccx53.sh (7 Oct 2026; TASKS 28). The MP2 basis step for every cc-pVDZ anchor: MP2 rows at cc-pVDZ and cc-pVTZ for each
 # symmetry-unique displacement, as a queue of single-displacement jobs pulled by W workers (8 threads each), so the CCX53 stays evenly loaded and a
-# restart loses at most the jobs in flight (a job whose rows file exists is skipped; a job is claimed by an atomic mkdir).
+# restart loses at most the jobs in flight (a job whose rows file exists is skipped; a job is claimed by an O_EXCL lock file).
 # Inputs in ~/e8/composite: jobs.txt (one line per job: name|mol_id|basis|k|geometry file, largest first; written on the laptop by
 # probes/mp2_rows_jobs.py), the geometries, cc_composite_full_check.py, cc_composite_basis_check.py, e8_symmetry.py.
 # Outputs: rows/<name>_<basis>_k<k>.npz; at the end merged files mp2_rows_<name>_<basis>.npz (anthracene: with the out-of-plane rows of test 3).
@@ -18,7 +18,8 @@ PY=/root/miniforge3/envs/qc05/bin/python
 cd "$D" || exit 1
 mkdir -p rows locks
 t() { date -u '+%F %T UTC'; }
-grep -q $'' jobs.txt && { echo "=== QUEUE REFUSED: jobs.txt has CR line endings $(t)"; exit 1; }
+grep -q $'
+' jobs.txt && { echo "=== QUEUE REFUSED: jobs.txt has CR line endings $(t)"; exit 1; }
 echo "=== QUEUE start: $(grep -c . jobs.txt) jobs, $W workers x 8 threads, max_memory $MEM $(t)"
 
 worker() {
@@ -27,7 +28,8 @@ worker() {
     [ -z "$name" ] && continue
     out=rows/${name}_${basis/-/}_k${k}.npz
     [ -f "$out" ] && continue
-    mkdir "locks/${name}_${basis}_${k}" 2>/dev/null || continue
+    # bash's own O_EXCL create: uutils' mkdir (Ubuntu 26.04's coreutils) let two callers both claim (software ledger 54)
+    (set -C; : > "locks/${name}_${basis}_${k}") 2>/dev/null || continue
     if OMP_NUM_THREADS=8 $PY cc_composite_full_check.py compute "$geom" "$out.part.npz" --basis "$basis" --threads 8 --max-memory "$MEM" --ks "$k" \
          >> "worker_$w.log" 2>&1; then
       mv "$out.part.npz" "$out"
