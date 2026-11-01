@@ -74,16 +74,16 @@ def to_internal(H, B):
     return F, float(np.sqrt(np.mean((rec - H) ** 2)) / (np.sqrt(np.mean(H ** 2)) + 1e-30))
 
 
-def load(mdir, analytic_only_ok=False):
+def load(mdir, analytic_only_ok=False, settings: IC.PrimitiveSettings = IC.CARRIED):
     """E6's corpus with the internal-coordinate quantities; `analytic_only_ok` admits analytic-only folders (TASKS 49; the trainer under
-    --use-analytic)."""
+    --use-analytic); `settings` builds B (`internal_coords`)."""
     mols = E6.load_corpus(Path(mdir), analytic_only_ok)  # tokens, family, freq, K, layer, core, imaginary
     for i, m in mols.items():
         d = Path(mdir) / i
         g = json.load(open(d / "geometry.json")); masses = np.asarray(g["masses_amu"]); coords = np.asarray(g["coords_bohr"])
         lo, hi, _ = E6.hessian_pair(d, analytic_only_ok)
         w, f, V, _ = normal_modes(lo, masses)
-        B, types = internals(g["symbols"], coords)
+        B, types = internals(g["symbols"], coords, settings)
         Fl, rec_l = to_internal(lo, B); Fh, rec_h = to_internal(hi, B)
         m.update(masses=masses, V=V, w=w, B=B, types=types, F_low=Fl, F_high=Fh, H_low=lo, dH_true=hi - lo, rec_err=max(rec_l, rec_h))
     return mols

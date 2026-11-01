@@ -17,6 +17,7 @@ from typing import Literal
 
 from learning_curve_layerA import FAMILIES
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from internal_coords import PrimitiveSettings
 from rungC_equivariant import AGGREGATION, AGGREGATIONS, AUX_WEIGHT, N_BLOCKS, N_S
 from rungC_targets import LAM_REL
 
@@ -74,6 +75,8 @@ class TrainConfig(BaseModel):
     parity_odd_mixed: bool = False
     hybrid_hidden: int = Field(HYBRID_HIDDEN, ge=1)
     pattern: Literal["c", "d", "e", "f"] = "c"
+    angle_choice: Literal["geometric", "canonical"] = "geometric"      # TASKS 149: v1.5's candidate is canonical with dihedral cos
+    dihedral_encoding: Literal["raw", "cos", "cossin"] = "raw"
     aux_target: Literal["projected", "ls", "kfit"] = "projected"
     ls_lam: float = Field(LAM_REL, ge=0)
     body_blocks: int = Field(N_BLOCKS, ge=1)
@@ -138,6 +141,11 @@ class TrainConfig(BaseModel):
         """Every combination in which an option would do nothing, or something other than its name says."""
         hybrid_only = [f"{flag} works only with --head hybrid" for field, flag in HYBRID_ONLY.items() if self.head != "hybrid" and getattr(self, field)]
         return hybrid_only + [reason for applies, reason in CONFLICTS if applies(self)]
+
+    @property
+    def primitives(self) -> PrimitiveSettings:
+        """How the primitives are built and how a dihedral enters the pair features (`internal_coords`)."""
+        return PrimitiveSettings(angle_choice=self.angle_choice, dihedral_encoding=self.dihedral_encoding)
 
     def missing_files(self) -> list[str]:
         """Input files the run names that do not exist — checked before the corpus is loaded."""
@@ -299,6 +307,8 @@ CONFLICTS: tuple[tuple[Callable[[TrainConfig], object], str], ...] = (   # (trut
      "--selection-split draws from the e6 pool; --split layerB builds its own"),
     (lambda c: c.selection_split and c.overfit_one,
      "--overfit-one trains and reads one molecule; a selection set needs a pool"),
+    (lambda c: c.dihedral_encoding != "raw" and not c.pair_features,
+     "--dihedral-encoding changes rung B's pair features; without --pair-features no head reads them"),
     (lambda c: c.family_scale and c.distortion_file,
      "--family-scale and --distortion-file both distort the training label; choose one"),
 )
@@ -357,6 +367,12 @@ def build_parser(description: str) -> argparse.ArgumentParser:
     ap.add_argument("--hybrid-hidden", type=int, default=HYBRID_HIDDEN, help="hybrid head: width of its MLP")
     ap.add_argument("--pattern", default="c", choices=["c", "d", "e", "f"], help="'c' = the registered pattern; 'd' = (c) + disjoint pairs one bond "
                     "apart; 'e' / 'f' = up to two / three bonds apart")
+    ap.add_argument("--angle-choice", default="geometric", choices=["geometric", "canonical"],
+                    help="TASKS 149: 'canonical' builds the primitives on the atoms in canonical order, so the answer does not depend on how the "
+                         "molecule was written; 'geometric' = geomeTRIC's own choice (the carried models)")
+    ap.add_argument("--dihedral-encoding", default="raw", choices=["raw", "cos", "cossin"],
+                    help="TASKS 149: a dihedral's value in rung B's pair features — 'cos' = cos φ, continuous across ±π and reflection-even "
+                         "(v1.5's candidate, with --angle-choice canonical); 'cossin' adds sin φ; 'raw' = φ (the carried models)")
     ap.add_argument("--aux-target", default="projected", choices=["projected", "ls", "kfit"],
                     help="target of the pattern term — 'projected' = B⁺ᵀ ΔH B⁺ on the pattern (registered), 'ls' = the mass-weighted least-squares "
                          "ΔF supported on the pattern, 'kfit' = the same in the read-out's metric, the mode-basis K; both ridge-anchored by --ls-lam")

@@ -27,6 +27,7 @@ import torch
 import torch.nn as nn
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import internal_coords as IC
 from rungC_equivariant import AGGREGATION, N_BLOCKS, N_S, N_V, DeltaHessianModel  # noqa: E402
 
 N_PAIR_CLASSES = 9          # e7_rungB_pairs: diag bond, diag angle, diag dihedral, diag other, off bond–bond, off other, off at set distance 1 / 2 / 3 (patterns d/e/f, 1 Oct 2026)
@@ -44,11 +45,15 @@ def primitive_pool_matrix(prim_atoms: list[set[int]], n_atoms: int, dtype=torch.
     return M
 
 
-def primitive_parity(symbols: list, coords_bohr) -> tuple:
-    """(odd (K,) bool, s (K,) float): which primitives are parity-odd, and sin(value) of each — in geomeTRIC's primitive order, the order of the
-    pattern builder's B. Decided numerically, not by type: the B row at the geometry reflected through z = 0 is compared with the reflected B row
-    (−1 → odd), so linear-angle components are classified too. s is the pseudo-scalar the odd member of a mixed pair carries (0 when planar)."""
+def primitive_parity(symbols: list, coords_bohr, settings: IC.PrimitiveSettings = IC.CARRIED) -> tuple:
+    """(odd (K,) bool, s (K,) float): which primitives are parity-odd, and sin(value) of each — in the pattern builder's primitive order under
+    the same `settings` (the canonical choice builds on the atoms in canonical order, so the parities follow its rows). Decided numerically,
+    not by type: the B row at the geometry reflected through z = 0 is compared with the reflected B row (−1 → odd), so linear-angle
+    components are classified too. s is the pseudo-scalar the odd member of a mixed pair carries (0 when planar)."""
     import numpy as np
+    if settings.angle_choice == "canonical":
+        order = IC.canonical_order(symbols, coords_bohr)
+        return primitive_parity([symbols[k] for k in order], np.asarray(coords_bohr, float)[order])
     from geometric.internal import PrimitiveInternalCoordinates
     from geometric.molecule import Molecule
     x = np.asarray(coords_bohr, float)

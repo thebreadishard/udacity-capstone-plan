@@ -28,6 +28,7 @@ import e6_learning_curve as E6
 import e7_t2_posthoc as PH
 import e7_t2_sqm as T2
 import holdout_twins as HT
+import internal_coords as IC
 import rungC_intensities as RI
 from e7_rungB_pairs import molecule_pairs, readouts
 from rungC_config import KRING_WEIGHT, SMOKE_HOLDOUT, SMOKE_POOL, TrainConfig, parse_config
@@ -88,24 +89,25 @@ PAIR_CLASS_NAMES = ("diag_bond", "diag_angle", "diag_dihedral", "diag_other", "o
 PATTERN_SCALE_FLOOR = 0.1   # no class scale below this fraction of the largest: unfloored scales let the Cartesian head fit noise (1 Oct 2026)
 
 
-def _checked_pairs(mol_dir: Path, m: dict, pattern: str, what: str, return_atoms: bool = False) -> tuple[dict, tuple]:
+def _checked_pairs(mol_dir: Path, m: dict, pattern: str, what: str, return_atoms: bool = False,
+                   settings: IC.PrimitiveSettings = IC.CARRIED) -> tuple[dict, tuple]:
     """(geometry, molecule_pairs output): the pair model's pattern on the molecule's own geometry. Its Wilson B must equal the loader's (same
-    geomeTRIC construction) — a mismatch is refused, not tolerated."""
+    geomeTRIC construction and the same `settings`) — a mismatch is refused, not tolerated."""
     g = json.loads((mol_dir / "geometry.json").read_text(encoding="utf-8"))
     out = molecule_pairs(g["symbols"], np.asarray(g["coords_bohr"], float), np.asarray(m["F_low"], float), return_atoms=return_atoms,
-                         pattern=pattern)
+                         pattern=pattern, settings=settings)
     B = out[3]
     if B.shape != np.asarray(m["B"]).shape or not np.allclose(B, m["B"], atol=1e-8):
         raise ValueError(f"{mol_dir.name}: the pattern builder's primitives differ from the loader's B matrix — {what} refused")
     return g, out
 
 
-def hybrid_tensors(mol_dir: Path, m: dict, pattern: str = "c") -> dict:
+def hybrid_tensors(mol_dir: Path, m: dict, pattern: str = "c", settings: IC.PrimitiveSettings = IC.CARRIED) -> dict:
     """The hybrid head's inputs for one molecule: pattern pairs (P, 2) and their classes (P,), the (K, N) primitive mean-pooling matrix, the
     internal low-level force constants F_int (K, K), the Wilson B matrix (K, 3N) and the primitives' parities, in the primitive order of the
     loader's B."""
-    g, (pairs, feat, pcls, B, atoms) = _checked_pairs(mol_dir, m, pattern, "hybrid head", return_atoms=True)
-    podd, psin = primitive_parity(g["symbols"], np.asarray(g["coords_bohr"], float))
+    g, (pairs, feat, pcls, B, atoms) = _checked_pairs(mol_dir, m, pattern, "hybrid head", return_atoms=True, settings=settings)
+    podd, psin = primitive_parity(g["symbols"], np.asarray(g["coords_bohr"], float), settings)
     if len(podd) != B.shape[0]:
         raise ValueError(f"{mol_dir.name}: {len(podd)} parities for {B.shape[0]} primitives")
     return dict(podd=torch.as_tensor(podd), psin=torch.as_tensor(psin, dtype=torch.float32), pairs=torch.as_tensor(pairs, dtype=torch.long),
@@ -114,10 +116,10 @@ def hybrid_tensors(mol_dir: Path, m: dict, pattern: str = "c") -> dict:
                 B=torch.as_tensor(B, dtype=torch.float32))
 
 
-def pattern_classes(mol_dir: Path, m: dict, pattern: str = "c") -> torch.Tensor:
+def pattern_classes(mol_dir: Path, m: dict, pattern: str = "c", settings: IC.PrimitiveSettings = IC.CARRIED) -> torch.Tensor:
     """K × K long tensor: the pair model's pattern with its class on every entry of the pattern (both triangles) and −1 elsewhere, in the
     primitive order of `m["B"]`."""
-    _g, (pairs, _feat, pcls, B) = _checked_pairs(mol_dir, m, pattern, "pattern term")
+    _g, (pairs, _feat, pcls, B) = _checked_pairs(mol_dir, m, pattern, "pattern term", settings=settings)
     K = B.shape[0]
     cls = torch.full((K, K), -1, dtype=torch.long)
     for (i, j), c in zip(pairs.tolist(), pcls.tolist(), strict=True):
@@ -540,11 +542,11 @@ def record_paths(prefix) -> tuple[Path, Path]:
     return Path(f"{prefix}.json"), Path(f"{prefix}.md")
 
 
-def load_corpus(molecules: str, use_analytic: bool, log=print) -> tuple:
+def load_corpus(molecules: str, use_analytic: bool, log=print, settings: IC.PrimitiveSettings = IC.CARRIED) -> tuple:
     """The corpus as the trainer sees it: the rung-B loader's entries, E6's splits, the analytic second-route Hessians substituted where both exist
     (`--use-analytic`), molecules with an imaginary mode dropped, and the atomic polar tensors attached where a passed file exists (CPHF route first).
-    Returns (mols, test_a, test_b, cores, pool, substituted)."""
-    mols = T2.load(molecules, analytic_only_ok=use_analytic)                # analytic-only folders only under --use-analytic (TASKS 49)
+    Returns (mols, test_a, test_b, cores, pool, substituted). `settings` builds each entry's B (the model's, for a saved model's read)."""
+    mols = T2.load(molecules, analytic_only_ok=use_analytic, settings=settings)   # analytic-only folders only under --use-analytic (TASKS 49)
     test_a, test_b, cores, pool = E6.splits(mols)
     substituted = []
     if use_analytic:
@@ -585,9 +587,9 @@ def input_tensors(m: dict, mol: dict, mol_dir: Path, cfg) -> dict:
     t["qidx"] = torch.tensor(int(mol.get("qidx", 0)), dtype=torch.long)       # charge state of the row (pool 3)
     t["hidx"] = torch.as_tensor(m["hidx"] if "hidx" in m else hinge_classes(m["symbols"], m["pos"]), dtype=torch.long)
     if cfg.aux in ("pattern", "both") or cfg.head == "hybrid":            # the hybrid's class scales need the pattern classes under any aux term
-        t["pat_cls"] = pattern_classes(mol_dir, mol, cfg.pattern)
+        t["pat_cls"] = pattern_classes(mol_dir, mol, cfg.pattern, cfg.primitives)
     if cfg.head == "hybrid":
-        t.update(hybrid_tensors(mol_dir, mol, cfg.pattern))
+        t.update(hybrid_tensors(mol_dir, mol, cfg.pattern, cfg.primitives))
     if cfg.zero_hlow:
         t["H_low"] = torch.zeros_like(t["H_low"])
     return t
@@ -632,7 +634,7 @@ class PatternTarget:
 def pattern_target(i: str, m: dict, mol: dict, t: dict, cfg, cache_dir: Path) -> PatternTarget:
     """The ls or kfit target on the pattern (cached), refused when its entries outgrow the projected target's."""
     mask = (t["pat_cls"] >= 0).numpy()
-    X, cached = cached_pattern_target(cache_dir, i, cfg.pattern, m["dH_true"], mol["B"], m["masses"], mask, lam_rel=cfg.ls_lam,
+    X, cached = cached_pattern_target(cache_dir, i, cache_pattern(cfg), m["dH_true"], mol["B"], m["masses"], mask, lam_rel=cfg.ls_lam,
                                       kind=cfg.aux_target, w=mol["w"], V=mol["V"])
     projected = np.where(mask, t["dF_true"].numpy(), 0.0)
     ratio = scale_ratio(X, projected)                                 # the cache refuses to store such a target; a stale file is caught here
@@ -640,6 +642,14 @@ def pattern_target(i: str, m: dict, mol: dict, t: dict, cfg, cache_dir: Path) ->
         raise RuntimeError(f"{i}: {cfg.aux_target} target entries {ratio:.3g}× the projected target's (cached: {cached}) — the blow-ups of 1 Oct "
                            f"11:4x / 12:2x; delete the cache file or raise --ls-lam (now {cfg.ls_lam:g})")
     return PatternTarget(X=X, projected=projected, ratio=ratio, cached=cached)
+
+
+PRIMITIVE_KEYS = ("angle_choice", "dihedral_encoding")   # in a record only together, and only when not the carried recipe
+
+
+def cache_pattern(cfg) -> str:
+    """The target cache's pattern name: the pattern, and the angle choice where it is not geomeTRIC's (it changes B, so the targets)."""
+    return cfg.pattern if cfg.primitives.angle_choice == "geometric" else f"{cfg.pattern}-{cfg.primitives.angle_choice}"
 
 
 def save_hybrid_model(model: HybridDeltaFModel, loss: LossSettings, path: Path, args: dict, n: int, seed: int,   # noqa: PLR0913  the record's fields
@@ -654,6 +664,7 @@ def save_hybrid_model(model: HybridDeltaFModel, loss: LossSettings, path: Path, 
                 "aux_class_scale": None if loss.class_scale is None else loss.class_scale.clone(),
                 "kring_weight": float(loss.kring_weight), "kdiag_weight": float(loss.kdiag_weight), "kdiag_mode": loss.kdiag_mode,
                 "pattern": args["pattern"], "aux_target": args["aux_target"], "ls_lam": args["ls_lam"], "head": args["head"],
+                **{k: args[k] for k in PRIMITIVE_KEYS if k in args},
                 "n": n, "seed": seed, "args": args, "provenance": provenance(),
                 "train_ids": None if train_ids is None else list(train_ids)}, path)
 
@@ -683,12 +694,24 @@ class TensorSettings:
     aux_target: str | None
     ls_lam: float | None
     zero_hlow: bool = False
+    primitives: IC.PrimitiveSettings = IC.CARRIED
+
+
+def record_primitives(record: dict) -> IC.PrimitiveSettings:
+    """A saved model's primitive settings. Records saved before the switches existed (1 Nov 2026) carry neither key and were built the
+    carried way; a record with one key and not the other is refused."""
+    keys = {"angle_choice", "dihedral_encoding"} & record.keys()
+    if not keys:
+        return IC.CARRIED
+    if len(keys) == 1:
+        raise ValueError(f"the model record names {sorted(keys)} without the other primitive setting")
+    return IC.PrimitiveSettings(angle_choice=record["angle_choice"], dihedral_encoding=record["dihedral_encoding"])
 
 
 def tensor_config(record: dict) -> TensorSettings:
     """The tensor settings of a saved model (`load_hybrid_model`'s record), with the low level as it is."""
     return TensorSettings(aux=record["aux_mode"], head=record["head"], pattern=record["pattern"], aux_target=record["aux_target"],
-                          ls_lam=record["ls_lam"])
+                          ls_lam=record["ls_lam"], primitives=record_primitives(record))
 
 
 def freeze_for_transfer(model: HybridDeltaFModel) -> list:
@@ -736,7 +759,7 @@ class Corpus:
 
 def select_corpus(cfg: TrainConfig, log) -> Corpus:
     """The corpus, its pool and hold-outs under the run's split, ablations and modes (--smoke, --overfit-one)."""
-    mols, test_a, test_b, cores, pool, substituted = load_corpus(cfg.molecules, cfg.use_analytic, log)
+    mols, test_a, test_b, cores, pool, substituted = load_corpus(cfg.molecules, cfg.use_analytic, log, cfg.primitives)
     nat = {i: len(m["masses"]) for i, m in mols.items()}
     if cfg.split == "e6" and cfg.pool_layers:
         keep = set(cfg.pool_layers.split(","))
@@ -858,6 +881,7 @@ def new_record(cfg: TrainConfig, corpus: Corpus, target_residuals: dict) -> dict
                 target_residuals=target_residuals, pair_class_names=list(PAIR_CLASS_NAMES), substituted_analytic=corpus.substituted,
                 curve={}, zero_rule={h: zero_rule(corpus.mols, ids, corpus.pool) for h, ids in t.items() if ids},
                 **({"family_scale": cfg.family_scale} if cfg.family_scale else {}),
+                **({k: getattr(cfg.primitives, k) for k in PRIMITIVE_KEYS} if cfg.primitives != IC.CARRIED else {}),
                 **({"distortion_file": cfg.distortion_file} if cfg.distortion_file else {}),
                 **({"selection_split": cfg.selection_split, "holdout_sel": t["sel"]} if "sel" in t else {}))
 
@@ -875,6 +899,8 @@ def table_header(cfg: TrainConfig, date: str) -> list[str]:
         recipe += f"; hybrid head{' + SQM α' if cfg.sqm_scale else ''}{' + rung B pair features' if cfg.pair_features else ''}"
     if cfg.pattern != "c":
         recipe += f"; pattern {cfg.pattern}"
+    if cfg.primitives != IC.CARRIED:
+        recipe += f"; primitives {cfg.angle_choice}, dihedrals {cfg.dihedral_encoding}"
     if cfg.aux_target in ("ls", "kfit"):
         recipe += f"; {cfg.aux_target} pattern target (λ_rel {cfg.ls_lam:g})"
     return [f"# Rung C (equivariant ΔH, C1 from scratch) — {cfg.out_prefix} ({date}){' — SMOKE, not a result' if cfg.smoke else ''}", "",
@@ -907,6 +933,7 @@ def train_and_read(cfg: TrainConfig, corpus: Corpus, tensors: dict, n: int, seed
         # an optional key only when used, so checkpoints without it keep their settings
         unused = {k for k, v in (("family_scale", cfg.family_scale), ("distortion_file", cfg.distortion_file),
                                  ("selection_split", cfg.selection_split)) if v is None}
+        unused |= set(PRIMITIVE_KEYS) if cfg.primitives == IC.CARRIED else set()
         save_hybrid_model(model, trained.loss, path, cfg.model_dump(exclude=unused), n, seed, train_ids=tr)
         log(f"  model saved: {path}")
     out = {"seed": seed, "train_history": trained.history, "output_scale": trained.output_scale, "class_scale": trained.class_scale,

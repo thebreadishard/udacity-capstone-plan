@@ -22,7 +22,6 @@ import sys
 import time
 from datetime import datetime
 from pathlib import Path
-from types import SimpleNamespace
 
 import torch
 
@@ -32,7 +31,16 @@ import holdout_twins as HT  # noqa: E402
 import model_registry as MR  # noqa: E402
 import rungC_intensities as RI  # noqa: E402
 from rungC_equivariant import load_molecule  # noqa: E402
-from rungC_train import load_corpus, load_hybrid_model, molecule_tensors, per_molecule_readouts, predictor, readouts, record_paths  # noqa: E402
+from rungC_train import (  # noqa: E402
+    load_corpus,
+    load_hybrid_model,
+    molecule_tensors,
+    per_molecule_readouts,
+    predictor,
+    readouts,
+    record_paths,
+    tensor_config,
+)
 
 
 def training_ids(ck: dict, pool: list, admitted) -> tuple[list, str]:
@@ -92,8 +100,8 @@ def main() -> int:
     t0 = time.time()
     MR.require_carried(Path(a.model), allow=a.allow_any_model)                     # decision 55: reads run on carried models
     model, ck = load_hybrid_model(Path(a.model))
-    cfg = SimpleNamespace(aux=ck["aux_mode"], head=ck["head"], pattern=ck["pattern"], aux_target=ck["aux_target"], ls_lam=ck["ls_lam"], zero_hlow=False)
-    mols, test_a, test_b, _, pool, substituted = load_corpus(a.molecules, a.use_analytic)
+    cfg = tensor_config(ck)
+    mols, test_a, test_b, _, pool, substituted = load_corpus(a.molecules, a.use_analytic, settings=cfg.primitives)   # B as the model built it
     layers = ck["args"].get("pool_layers")
     if layers:                                                              # the trainer's --pool-layers filter, so `tr` is the training pool of the record
         pool = [i for i in pool if mols[i]["layer"] in set(layers.split(","))]
