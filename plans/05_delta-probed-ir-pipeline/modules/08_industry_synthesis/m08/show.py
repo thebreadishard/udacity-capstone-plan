@@ -2,15 +2,19 @@
 its carbon count, the pipeline in the middle as a metro map whose stations light up while the molecule travels through it, its spectrum
 and certificate on the right. Replay mode: every run on the page is a pipeline result folder, and every number is read from its records
 (`pipeline.json`, `certificate.json`) or computed from its arrays; the page types none in. The page is `show_template.html` with the data
-put in.
+put in. A molecule the Spectrum Atlas lists links to its Atlas page from the certificate (TASKS 161); --check-links asks the live site for
+every such page after the build and fails when one is missing.
 
-    python -m m08.show [--runs <result folder> ...] [--out modules/08_industry_synthesis/out/pipeline_show.html]
+    python -m m08.show [--runs <result folder> ...] [--out modules/08_industry_synthesis/out/pipeline_show.html] [--check-links]
 """
 from __future__ import annotations
 
 import argparse
 import json
 import re
+import urllib.error
+import urllib.request
+from collections.abc import Callable
 from pathlib import Path
 
 import numpy as np
@@ -32,6 +36,8 @@ DEFAULT_RUNS = (RESULTS / "pipeline_demo_v04_2026-10-30" / "benzene", RESULTS / 
 FAMILY_ORDER = ("CH-stretch", "ring-ip", "CH-oop", "other")
 PLOT_STEP_CM = 4.0                    # the drawn curve's step (a 720-unit-wide plot); the read-outs use module 05's 1 cm⁻¹ grid
 DATA_MARK = "/*__DATA__*/null"
+ATLAS_URL = "https://thebreadishard.github.io/spectrum-atlas"   # website/site/astro.config.mjs: site + base
+ATLAS_PAGE_RUNG = 1                   # the Atlas builds a page for every catalogue row from this rung (pages/molecule/[id].astro)
 STATIONS = (
     {"icon": "molecule", "title": "Molecule", "tool": "RDKit · canonical SMILES"},
     {"icon": "geometry", "title": "Start geometry", "tool": "RDKit ETKDG + MMFF"},
@@ -159,6 +165,27 @@ def families(bands: list[dict]) -> list[dict]:
     return rows
 
 
+def atlas_link(listed: dict | None) -> str | None:
+    """The Atlas page of the catalogue row the certificate found, or None when the molecule is not listed or listed without a page."""
+    if listed is None or int(listed["rung"]) < ATLAS_PAGE_RUNG:
+        return None
+    return f"{ATLAS_URL}/molecule/{listed['id']}/"
+
+
+def http_status(url: str) -> int:
+    """The live site's answer to a HEAD request for the page."""
+    try:
+        with urllib.request.urlopen(urllib.request.Request(url, method="HEAD"), timeout=20) as response:
+            return int(response.status)
+    except urllib.error.HTTPError as exc:
+        return int(exc.code)
+
+
+def dead_links(data: dict, status: Callable[[str], int] = http_status) -> list[str]:
+    """Every Atlas link of the page's molecules that the live site does not serve, with its answer."""
+    return [f"{m['name']}: {m['atlas']} answered {code}" for m in data["molecules"] if m["atlas"] and (code := status(m["atlas"])) != 200]
+
+
 def molecule(folder: Path) -> dict:
     r = LC.load_result(folder)
     cert = json.loads((folder / "certificate.json").read_text(encoding="utf-8"))
@@ -169,6 +196,7 @@ def molecule(folder: Path) -> dict:
             "n_atoms": adm["n_atoms"], "n_c": carbon_count(adm["formula"]),
             "hetero": sorted(e for e in adm["elements"] if e not in ("C", "H")),
             "status": {"role": seen["role"], "text": seen["text"]}, "depiction": depiction(adm["smiles"]),
+            "atlas": atlas_link(cert["molecule"]["listed"]),
             "route": "reused" if reused(rec) else "computed", "pipeline_version": rec["pipeline_version"],
             "stations": stations(rec), "real_time": real_time(rec), "spectrum": spectrum(r, cert), "families": families(cert["bands"]),
             "truth": {"rms_cm": truth["rms_by_rank_cm"], "overlap": truth["overlap"]} if truth else None,
@@ -196,13 +224,20 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--runs", nargs="*", type=Path, default=list(DEFAULT_RUNS))
     ap.add_argument("--out", type=Path, default=OUT)
+    ap.add_argument("--check-links", action="store_true", help="after the build, ask the live Atlas for every page the show links to")
     a = ap.parse_args(argv)
-    html_text = page(payload(tuple(a.runs)))
+    data = payload(tuple(a.runs))
+    html_text = page(data)
     a.out.parent.mkdir(parents=True, exist_ok=True)
     tmp = a.out.with_suffix(".tmp")
     tmp.write_text(html_text, encoding="utf-8")
     tmp.replace(a.out)
     print(f"wrote {a.out} ({len(html_text) / 1024:.0f} KB, {len(a.runs)} runs)")
+    if a.check_links:
+        dead = dead_links(data)
+        if dead:
+            raise SystemExit("Atlas links the live site does not serve:\n  " + "\n  ".join(dead))
+        print(f"every Atlas link answers 200 ({sum(bool(m['atlas']) for m in data['molecules'])} links)")
     return 0
 
 

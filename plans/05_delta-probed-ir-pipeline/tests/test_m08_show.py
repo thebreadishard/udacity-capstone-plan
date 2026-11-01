@@ -65,6 +65,19 @@ def test_the_curves_share_one_scale_and_the_drawing_takes_the_text_colour(folder
     assert "currentColor" in m["depiction"] and "#000000" not in m["depiction"] and m["depiction"].startswith("<svg")
 
 
+def test_a_listed_molecule_links_to_its_atlas_page_and_no_other_does():
+    assert S.atlas_link({"id": "A_8448043181", "rung": 4}) == f"{S.ATLAS_URL}/molecule/A_8448043181/"
+    assert S.atlas_link({"id": "G_0001", "rung": 0}) is None and S.atlas_link(None) is None
+    assert S.molecule(NO_TRUTH[0])["atlas"] is None                       # module 06's candidate is not in the catalogue
+
+
+def test_check_links_reports_every_page_the_live_site_does_not_serve():
+    data = {"molecules": [{"name": "benzene", "atlas": "https://x/molecule/A/"}, {"name": "carbazole", "atlas": "https://x/molecule/B/"},
+                          {"name": "candidate06", "atlas": None}]}
+    answers = {"https://x/molecule/A/": 200, "https://x/molecule/B/": 404}
+    assert S.dead_links(data, answers.__getitem__) == ["carbazole: https://x/molecule/B/ answered 404"]
+
+
 def test_the_real_time_adds_up_the_record():
     rec, _ = record(NO_TRUTH[1])                                    # cinnoline: the ledger's 30 Oct rehearsal, 1,262 s
     assert S.real_time(rec) == f"Real time: {S.duration(sum(rec['seconds'].values()))} on the laptop in all" == "Real time: 21 min on the laptop in all"
