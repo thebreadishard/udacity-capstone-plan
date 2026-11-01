@@ -1,0 +1,12 @@
+{"name": "holdout_a_apt",
+ "purpose": "TASKS 146 (the user, 1 Nov: the clean hold-out (a) joins the pipeline show; the run approved at about 12 h, 16:0x): the eight molecules' APTs on the refined, residual-checked response so that the pipeline's reuse accepts their folders - seven route-B APTs through probes/apt_recompute_refined.py, benzene (A_8448043181) through analytic_hessians.py whole (B3LYP; its Hessian file predates the charge and spin fields); outputs beside the corpus, put in by probes/holdout_a_apt_install.py after the read",
+ "host": "laptop", "workdir": "probes/results_m1/holdout_a_apt_2026-11-01",
+ "command": "MSYS_NO_PATHCONV=1 wsl -e bash /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/holdout_a_apt_run.sh",
+ "sources": [{"local": "probes/holdout_a_apt_run.sh"}, {"local": "probes/apt_recompute_refined.py"}, {"local": "probes/wsl_capped.sh"},
+             {"local": "probes/library_log.py"}, {"local": "modules/05_support_predictor/corpus/analytic_hessians.py"},
+             {"local": "modules/05_support_predictor/corpus/apt.py"}, {"local": "probes/results_m1/holdout_a_apt_2026-11-01/ids.tsv"}],
+ "progress": {"regex": "^=== \\(HAA\\) ", "max_gap_minutes": 60, "heartbeat_glob": "*/pyscf.log"},
+ "marker_regex": "^=== \\(HAA\\) (start|STOPPED|all done)|FAILED", "end_regex": "^=== \\(HAA\\) all done", "fail_regex": "^=== \\(HAA\\) STOPPED",
+ "dry_run_args": "--dry-run", "resumable": true, "threads": 8,
+ "estimate": {"hours": 12, "basis": "the 12 Oct recompute on the laptop at 4 threads (probes/results_m1/apt_refine_install_2026-10-12/recompute/recompute.jsonl): median 8670 s at 21 atoms, 9767 s at 22; scaled by n^3 to 20-26 atoms and shared over two lanes largest first: 12.2 h; benzene's Hessian minutes; water smoke 14 and 17 s"},
+ "memory": {"peak_gb": 12.0, "basis": "two steps at once, each under a probes/wsl_capped.sh cgroup cap of 6144 MB (pyscf max_memory 4096 MB)"}}

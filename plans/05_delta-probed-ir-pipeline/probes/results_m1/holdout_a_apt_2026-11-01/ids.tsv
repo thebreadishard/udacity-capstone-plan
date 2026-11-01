@@ -1,0 +1,10 @@
+# The clean hold-out (a) (modules/05_support_predictor/out/holdout_a_clean_2026-10-30.txt) for probes/holdout_a_apt_run.sh, largest first:
+# id <tab> step (apt: the APT alone through apt_recompute_refined.py; hessian: analytic_hessians.py whole) <tab> atoms
+A_428228e5a5	apt	26
+A_08dde334d8	apt	24
+A_541c53d1a5	apt	24
+A_bce5bae234	apt	23
+A_e72997e726	apt	23
+A_fdc27f1bd1	apt	22
+A_72b86c2331	apt	20
+A_8448043181	hessian	12

@@ -1,6 +1,7 @@
 """probes/apt_recompute_refined.py (TASKS 44 (b), 12 Oct 2026): the refined APT of a labels molecule whose file came from route C before the
 refinement, without the Hessian; the input folder is not touched, a refined file that passed is refused, and since 13 Oct 2026 (78293273) a
-refined file that failed the guard is recomputed.
+refined file that failed the guard is recomputed. Since 1 Nov 2026 route B files are redone, a Hessian without its charge and spin
+fields is refused, --check-only computes nothing and --max-memory reaches pyscf.
 Water at a small grid; needs pyscf, so it runs in WSL and is skipped elsewhere."""
 import json
 import sys
@@ -61,7 +62,7 @@ def _refined_copy(fetched, folder, passed):
 
 def test_a_refined_file_that_passed_is_refused(fetched, tmp_path):
     other = _refined_copy(fetched, tmp_path / "other", passed=True)
-    with pytest.raises(ValueError, match="neither unrefined route C nor a failed refined one"):
+    with pytest.raises(ValueError, match="neither an unrefined route"):
         R.recompute(str(other), str(tmp_path / "out"), grid=GRID)
 
 
@@ -69,6 +70,53 @@ def test_a_refined_file_that_failed_the_guard_is_recomputed(fetched, tmp_path):
     failed = _refined_copy(fetched, tmp_path / "failed", passed=False)
     row = R.recompute(str(failed), str(tmp_path / "out"), grid=GRID)
     assert row["passed"] and row["residual_after"] <= AH.CPHF_BOUND
+
+
+def _copy_with(fetched, folder, route=None, drop_hessian_fields=()):
+    """A copy of the fetched folder with the APT file's route replaced and the named fields left out of the B3LYP Hessian file."""
+    folder.mkdir()
+    (folder / "geometry.json").write_text(json.dumps(WATER))
+    z = dict(np.load(fetched / AH.APT_FILE))
+    if route is not None:
+        z["route"] = np.array(route)
+    np.savez_compressed(folder / AH.APT_FILE, **z)
+    h = {k: v for k, v in np.load(fetched / "hessian_b3lyp_analytic.npz").items() if k not in drop_hessian_fields}
+    np.savez_compressed(folder / "hessian_b3lyp_analytic.npz", **h)
+    return folder
+
+
+def test_a_route_b_file_is_recomputed(fetched, tmp_path):
+    route_b = _copy_with(fetched, tmp_path / "route_b", route="cphf")
+    row = R.recompute(str(route_b), str(tmp_path / "out"), grid=GRID)
+    assert row["passed"] and str(np.load(tmp_path / "out" / AH.APT_FILE)["route"]) == "hessian_response_refined"
+
+
+def test_a_hessian_without_charge_and_spin_is_refused(fetched, tmp_path):
+    old = _copy_with(fetched, tmp_path / "old_hessian", drop_hessian_fields=("charge", "spin"))
+    with pytest.raises(ValueError, match="predates its charge and spin fields"):
+        R.source_files(str(old), GRID)
+
+
+def test_check_only_computes_nothing(fetched, tmp_path, monkeypatch, capsys):
+    route_b = _copy_with(fetched, tmp_path / "route_b", route="cphf")
+    monkeypatch.setattr(R, "source_files", lambda src, grid=GRID: (np.load(Path(src) / AH.APT_FILE), None))
+    monkeypatch.setattr(R, "recompute", lambda *a, **k: pytest.fail("--check-only computed"))
+    monkeypatch.setattr(sys, "argv", ["apt_recompute_refined.py", str(route_b), "--out", str(tmp_path / "out"), "--check-only"])
+    R.main()
+    assert "route_b: route cphf, to be refined" in capsys.readouterr().out and not (tmp_path / "out").exists()
+
+
+def test_max_memory_reaches_pyscf(fetched, tmp_path, monkeypatch):
+    seen = []
+    labels_mol = AH.labels_mol
+
+    def spy(g, log, charge, spin, max_memory):
+        seen.append(max_memory)
+        return labels_mol(g, log, charge, spin, max_memory)
+
+    monkeypatch.setattr(AH, "labels_mol", spy)
+    R.recompute(str(fetched), str(tmp_path / "out"), grid=GRID, max_memory=1234)
+    assert seen == [1234]
 
 
 def test_height_change_is_relative_to_the_strongest_old_band():
