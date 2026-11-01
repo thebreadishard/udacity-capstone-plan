@@ -128,5 +128,55 @@
     3238.9
    ]
   }
+ },
+ "T_94b3a9d13a": {
+  "line_A": {
+   "sum_rule_e": 2.4688932842575895e-10,
+   "limit_e": 0.0005,
+   "holds": true
+  },
+  "line_B": {
+   "max_diff_richardson_e": 1.1701008619802167e-06,
+   "line_e": 0.0001,
+   "holds": true,
+   "diagnosis": {
+    "verdict": "unexplained",
+    "slope": NaN,
+    "entries_over_line": 0,
+    "max_diff_F_e": 2.8088406607520988e-05,
+    "max_diff_2F_e": 0.00011200946693069869,
+    "max_diff_richardson_e": 1.1701008619802167e-06,
+    "line_e": 0.0001
+   }
+  },
+  "passed": true,
+  "labels_sum_rule_e": 0.000676983238928508,
+  "max_diff_to_labels_apt_e": 8.073959110959511e-05,
+  "heights": {
+   "strong_bands": 19,
+   "rel_rms": 0.00017214143931157836,
+   "rel_max": 0.000428880597809683,
+   "strong_band_cm": [
+    129.3,
+    384.8,
+    384.9,
+    569.8,
+    785.1,
+    785.1,
+    879.4,
+    1167.1,
+    1167.1,
+    1346.5,
+    1346.5,
+    1549.3,
+    1549.3,
+    1669.0,
+    1669.0,
+    3175.9,
+    3175.9,
+    3195.8,
+    3195.8
+   ]
+  }
  }
 }
