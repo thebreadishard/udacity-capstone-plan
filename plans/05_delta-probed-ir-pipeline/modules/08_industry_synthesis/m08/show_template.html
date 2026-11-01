@@ -322,7 +322,10 @@ function select(key) {
   place(geometry().main[0]);
 }
 function place(p) { const t = $("#token"); t.style.left = p[0] + "px"; t.style.top = p[1] + "px"; }
-function resetResult() { $("#result").innerHTML = '<p class="empty">Press Start: the spectrum appears here when the molecule leaves the pipeline.</p>'; }
+function resetResult() {
+  const lead = state.mode === "live" ? "The run's spectrum" : "Press Start: the spectrum";
+  $("#result").innerHTML = `<p class="empty">${lead} appears here when the molecule leaves the pipeline.</p>`;
+}
 function later(fn, ms) { state.timers.push(setTimeout(fn, ms)); }
 function setStation(i, st, text) {
   if (i === "C") state.corpusStop = st;
