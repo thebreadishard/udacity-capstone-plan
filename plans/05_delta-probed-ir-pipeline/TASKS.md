@@ -40,7 +40,7 @@ Dec–Feb (the modules, paper D, the product repository v0).
 | **Vats 2026: a parser and a registration** for the 5–6 µm combination bands (TASKS 53) | a measured test of CH-oop at CC level through the anharmonic step | the SI tables in `Papers/Vats_2026_ACSESC10_1685_SI_band_tables.pdf` | the user's go |
 | **Mai 2026: the code-licence issue (the user's post) and the application-pool licence** (TASKS 118) | CC BY-NC-SA data cannot enter the CC BY Atlas | a draft issue; options (our own geometries, or a separate NC-SA release) | before any build on their geometries |
 | **Module 06's seed-2 reproduction and module 07's Vocareum key** (TASKS 20) | both modules before submission | the dated follow-up plan; the run command | before submission |
-| **Links between the Spectrum Atlas and the pipeline show** (TASKS 161; the user asked on 1 Nov) | neither page reaches the other today; a link from the show's certificate to the Atlas page is small, publishing the show's replay inside the Atlas is a deploy | three options in TASKS 161 | now, or after TASKS 146's batch |
+| **Links between the Spectrum Atlas and the pipeline show** (TASKS 161; the user asked on 1 Nov) | neither page reaches the other today; a link from the show's certificate to the Atlas page is small, publishing the show's replay inside the Atlas is a deploy | three options (details in TASKS 161 below): (1) the show links each catalogue molecule to its Atlas page; (2) the show's replay published as an Atlas page with links from the molecule pages (a deploy, on the user's word); (3) both | now, or after TASKS 146's batch |
 
 ## Fixed appointments
 
