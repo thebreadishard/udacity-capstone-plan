@@ -81,20 +81,30 @@ h2 { margin: 0; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; tex
 .current .pic svg { width: 100%; height: 100%; }
 .current .title { font-size: 1.6rem; font-weight: 700; text-transform: capitalize; line-height: 1.1; }
 .current .facts { color: var(--fg-muted); }
-.start { margin-left: auto; border: 0; border-radius: 999px; padding: 0.7rem 1.8rem; background: var(--accent); color: var(--bg); font-weight: 700;
-         font-size: 1.1rem; cursor: pointer; box-shadow: 0 6px 18px -8px var(--accent); }
+.start { position: absolute; transform: translate(-50%, -100%); border: 0; border-radius: 999px; padding: 0.65rem 1.6rem; background: var(--accent);
+         color: var(--bg); font-weight: 700; font-size: 1.1rem; cursor: pointer; box-shadow: 0 6px 18px -8px var(--accent); z-index: 2; white-space: nowrap; }
 .start:disabled { opacity: 0.45; cursor: default; box-shadow: none; }
 .map { position: relative; flex: 1; min-height: 0; }
 .map svg.lines { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-.lines .base { fill: none; stroke: var(--line); stroke-width: 10; stroke-linecap: round; stroke-linejoin: round; }
-.lines .branch { fill: none; stroke: var(--corpus-soft); stroke-width: 10; stroke-linecap: round; stroke-linejoin: round; }
-.lines .run { fill: none; stroke: var(--accent); stroke-width: 10; stroke-linecap: round; stroke-linejoin: round; }
-.lines .run.corpus { stroke: var(--corpus); }
-.lines .dot { fill: var(--bg-elev); stroke: var(--line); stroke-width: 4; }
-.lines .dot.done { stroke: var(--accent); fill: var(--accent); }
+/* two metro lines, each always in its own colour; the stretch a molecule has travelled is drawn over it at full strength with a glow */
+.lines .base, .lines .branch, .lines .run { fill: none; stroke-width: 11; stroke-linecap: round; stroke-linejoin: round; }
+.lines .base { stroke: var(--accent); opacity: 0.32; }
+.lines .branch { stroke: var(--corpus); opacity: 0.38; }
+.lines .run { stroke: var(--accent); filter: drop-shadow(0 0 6px var(--accent)); }
+.lines .run.corpus { stroke: var(--corpus); filter: drop-shadow(0 0 6px var(--corpus)); }
+.lines .dot { fill: var(--bg-elev); stroke: var(--fg); stroke-width: 4; }
+.lines .dot.interchange { stroke-width: 5.5; }
+.lines .dot.done { fill: var(--accent); stroke: var(--fg); }
+.lines .dot.corpus-stop.done { fill: var(--corpus); }
 .lines .dot.active { stroke: var(--accent); }
-.lines .dot.skipped { stroke-dasharray: 4 4; }
-.lines .branch-label { fill: var(--corpus); font-size: 0.85rem; font-weight: 600; letter-spacing: 0.04em; }
+.lines .dot.skipped { stroke-dasharray: 4 4; stroke: var(--fg-muted); }
+.lines .stop-label { fill: var(--corpus); font-size: 0.9rem; font-weight: 700; }
+.lines .stop-sub { fill: var(--fg-muted); font-size: 0.78rem; }
+.badges { position: absolute; top: 0; left: 0; display: flex; gap: 0.6rem; flex-wrap: wrap; font-size: 0.85rem; z-index: 1; }
+.badge-line { display: inline-flex; align-items: center; gap: 0.45rem; border: 1px solid var(--line); border-radius: 999px; padding: 0.2rem 0.7rem;
+              background: var(--bg-elev); }
+.badge-line i { width: 1.6rem; height: 0.45rem; border-radius: 999px; display: inline-block; }
+.realtime { margin-top: 0.2rem; font-weight: 600; color: var(--fg); }
 .ring { fill: none; stroke: var(--accent); stroke-width: 3; opacity: 0; transform-box: fill-box; transform-origin: center; }
 .ring.on { animation: pulse 1.4s ease-out infinite; }
 @keyframes pulse { 0% { opacity: 0.8; transform: scale(1); } 100% { opacity: 0; transform: scale(2.4); } }
@@ -183,7 +193,7 @@ h2 { margin: 0; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; tex
 </main>
 <script>
 const DATA = /*__DATA__*/null;
-const STEP_DWELL = 1900, STEP_TRAVEL = 700, BRANCH_TRAVEL = 1500;   /* ms: about 15 s for the whole ride */
+const STEP_DWELL = 1900, STEP_TRAVEL = 700, CORPUS_DWELL = 1200;   /* ms: about 15 s for the whole ride */
 const ICONS = {
   molecule: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l8.66 5v10L12 22l-8.66-5V7z"/><circle cx="12" cy="12" r="3"/></svg>',
   geometry: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8"/></svg>',
@@ -238,17 +248,34 @@ function geometry() {
   const d = Math.min(H * 0.40, (xs[4] - xs[1]) / 3), cards = Math.min(H * 0.32, 12 * parseFloat(getComputedStyle(document.documentElement).fontSize));
   const yMain = Math.max(d + 40, (H + d - cards) / 2), yBranch = yMain - d;
   const main = xs.map((x) => [x, yMain]);
-  const corpus = [main[0], main[1], [xs[1] + d, yBranch], [xs[4] - d, yBranch], main[4], main[5]];
-  return { W, H, xs, yMain, yBranch, main, corpus };
+  const stop = [(xs[2] + xs[3]) / 2, yBranch];                      /* the corpus line's own stop: the corpus record */
+  const corpus = [main[0], main[1], [xs[1] + d, yBranch], stop, [xs[4] - d, yBranch], main[4], main[5]];
+  return { W, H, xs, yMain, yBranch, main, corpus, stop };
 }
 function pathD(pts) { return pts.map((p, i) => (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1)).join(" "); }
 function drawMap(mol) {
   const g = geometry();
   const branch = [g.main[1], [g.xs[1] + (g.yMain - g.yBranch), g.yBranch], [g.xs[4] - (g.yMain - g.yBranch), g.yBranch], g.main[4]];
-  $("#lines").innerHTML = `<path class="branch" d="${pathD(branch)}"/>
-    <text class="branch-label" x="${(g.xs[2] + g.xs[3]) / 2}" y="${g.yBranch - 14}" text-anchor="middle">FROM THE CORPUS · steps 3–4 already computed</text>
-    <path class="base" d="${pathD(g.main)}"/><path class="run" id="run" d=""/>
-    ${g.main.map((p, i) => `<circle class="ring" id="ring${i}" cx="${p[0]}" cy="${p[1]}" r="14"/><circle class="dot" id="dot${i}" cx="${p[0]}" cy="${p[1]}" r="12"/>`).join("")}`;
+  const ix = (i) => (i === 1 || i === 4 ? " interchange" : "");
+  $("#lines").innerHTML = `<path class="branch" d="${pathD(branch)}"/><path class="base" d="${pathD(g.main)}"/><path class="run" id="run" d=""/>
+    <circle class="ring" id="ringC" cx="${g.stop[0]}" cy="${g.stop[1]}" r="12"/><circle class="dot corpus-stop" id="dotC" cx="${g.stop[0]}" cy="${g.stop[1]}" r="10"/>
+    <text class="stop-label" x="${g.stop[0]}" y="${g.stop[1] - 22}" text-anchor="middle">Corpus record</text>
+    <text class="stop-sub" x="${g.stop[0]}" y="${g.stop[1] + 30}" text-anchor="middle">steps 3–4 computed earlier</text>
+    ${g.main.map((p, i) => `<circle class="ring" id="ring${i}" cx="${p[0]}" cy="${p[1]}" r="${i === 1 || i === 4 ? 16 : 14}"/><circle class="dot${ix(i)}" id="dot${i}" cx="${p[0]}" cy="${p[1]}" r="${i === 1 || i === 4 ? 15 : 12}"/>`).join("")}`;
+  if (!$("#badges")) {
+    const b = document.createElement("div"); b.className = "badges"; b.id = "badges";
+    b.innerHTML = '<span class="badge-line"><i style="background:var(--accent)"></i>Main line · every step computed</span>'
+      + '<span class="badge-line"><i style="background:var(--corpus)"></i>Corpus line · steps 3–4 taken from the corpus</span>';
+    $("#map").appendChild(b);
+  }
+  document.querySelectorAll(".start").forEach((s) => s.remove());
+  if (mol) {
+    const btn = document.createElement("button");
+    btn.type = "button"; btn.className = "start"; btn.id = "start"; btn.textContent = "Start ▶"; btn.disabled = state.running;
+    btn.style.left = g.xs[0] + "px"; btn.style.top = (g.yMain - 52) + "px";
+    btn.addEventListener("click", () => ride(mol));
+    $("#map").appendChild(btn);
+  }
   document.querySelectorAll(".station").forEach((s) => s.remove());
   const stations = mol ? mol.stations : DATA.station_titles.map((t) => ({ ...t, time: "" }));
   stations.forEach((s, i) => {
@@ -260,6 +287,7 @@ function drawMap(mol) {
     $("#map").appendChild(el);
   });
   state.stations.forEach((s, i) => setStation(i, s.st, s.text));
+  if (state.corpusStop) setStation("C", state.corpusStop);
   if (mol && state.finished) {
     const route = mol.route === "reused" ? g.corpus : g.main;
     $("#run").setAttribute("class", "run" + (mol.route === "reused" ? " corpus" : ""));
@@ -278,10 +306,9 @@ function select(key) {
   state.key = key; renderPicker();
   const m = DATA.molecules.find((x) => x.key === key);
   $("#current").innerHTML = `<div class="pic">${m.depiction}</div><div><div class="title">${esc(m.name)}</div>
-    <div class="facts"><span class="mono">${esc(m.formula)}</span> · ${m.n_atoms} atoms · ${esc(m.status.text)}</div></div>
-    <button class="start" id="start" type="button">Start ▶</button>`;
-  $("#start").addEventListener("click", () => ride(m));
-  state.stations = []; state.finished = false;
+    <div class="facts"><span class="mono">${esc(m.formula)}</span> · ${m.n_atoms} atoms · ${esc(m.status.text)}</div>
+    <div class="realtime" id="realtime"></div></div>`;
+  state.stations = []; state.corpusStop = null; state.finished = false;
   const tok = $("#token"); tok.innerHTML = m.depiction; tok.hidden = false;
   drawMap(m); resetResult();
   place(geometry().main[0]);
@@ -290,11 +317,13 @@ function place(p) { const t = $("#token"); t.style.left = p[0] + "px"; t.style.t
 function resetResult() { $("#result").innerHTML = '<p class="empty">Press Start: the spectrum appears here when the molecule leaves the pipeline.</p>'; }
 function later(fn, ms) { state.timers.push(setTimeout(fn, ms)); }
 function setStation(i, st, text) {
-  state.stations[i] = { st, text: text !== undefined ? text : (state.stations[i] || {}).text };
+  if (i === "C") state.corpusStop = st;
+  else state.stations[i] = { st, text: text !== undefined ? text : (state.stations[i] || {}).text };
   const el = $("#st" + i); if (el) el.dataset.state = st;
-  const dot = $("#dot" + i); if (dot) dot.setAttribute("class", "dot " + st);
+  const base = i === "C" ? "dot corpus-stop" : (i === 1 || i === 4 ? "dot interchange" : "dot");
+  const dot = $("#dot" + i); if (dot) dot.setAttribute("class", base + " " + st);
   const ring = $("#ring" + i); if (ring) ring.classList.toggle("on", st === "active");
-  if (text !== undefined) $("#time" + i).textContent = text;
+  const time = $("#time" + i); if (text !== undefined && time) time.textContent = text;
 }
 function animateTo(from, to, ms, run, done) {
   /* frames move the token; a timer finishes the leg in any case, because frames stop in a hidden tab while timers go on */
@@ -313,33 +342,36 @@ function animateTo(from, to, ms, run, done) {
 }
 function ride(m) {
   if (state.running) return;
-  state.running = true; state.finished = false; $("#start").disabled = true; resetResult();
+  state.running = true; state.finished = false; $("#start").disabled = true; resetResult(); $("#realtime").textContent = "";
   const g = geometry(), reused = m.route === "reused";
+  /* each route point's station (C: the corpus line's stop, null: a bend) and each leg's travel time */
   const route = reused ? g.corpus : g.main;
-  const legs = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5]];
+  const stops = reused ? [0, 1, null, "C", null, 4, 5] : [0, 1, 2, 3, 4, 5];
+  const travel = reused ? [STEP_TRAVEL, 550, 450, 450, 550, STEP_TRAVEL] : Array(5).fill(STEP_TRAVEL);
   const trail = [route[0]];
   const runPath = $("#run");
-  runPath.setAttribute("class", "run" + (reused ? " corpus" : ""));
+  runPath.setAttribute("class", "run" + (reused ? " corpus" : "")); runPath.setAttribute("d", "");
   for (let i = 0; i < 6; i++) setStation(i, "pending", "");
-  let t = 0;
-  const stationOf = (k) => (reused ? [0, 1, null, null, 4, 5][k] : k);
-  const enter = (k) => {
-    const s = stationOf(k);
-    if (s === null) return;
+  setStation("C", "pending");
+  const enter = (s) => {
+    if (s === null) return 0;
+    if (s === "C") { setStation("C", "active"); later(() => setStation("C", "done"), CORPUS_DWELL); return CORPUS_DWELL; }
     setStation(s, "active", "running…");
     later(() => setStation(s, "done", m.stations[s].time), STEP_DWELL);
+    return STEP_DWELL;
   };
-  enter(0); t += STEP_DWELL;
-  legs.forEach(([a, b], idx) => {
-    const ms = reused && (idx === 1 || idx === 3) ? BRANCH_TRAVEL / 2 : reused && idx === 2 ? BRANCH_TRAVEL : STEP_TRAVEL;
+  let t = enter(0);
+  travel.forEach((ms, k) => {
     later(() => {
-      if (reused && idx === 1) { setStation(2, "skipped", m.stations[2].time); setStation(3, "skipped", m.stations[3].time); }
+      if (reused && k === 1) { setStation(2, "skipped", m.stations[2].time); setStation(3, "skipped", m.stations[3].time); }
       const base = trail.slice();
-      animateTo(route[a], route[b], ms, (p) => runPath.setAttribute("d", pathD(base.concat([p]))), () => { trail.push(route[b]); enter(b); });
+      animateTo(route[k], route[k + 1], ms, (p) => runPath.setAttribute("d", pathD(base.concat([p]))), () => { trail.push(route[k + 1]); enter(stops[k + 1]); });
     }, t);
-    t += ms + (stationOf(b) === null ? 0 : STEP_DWELL);
+    t += ms + (stops[k + 1] === null ? 0 : stops[k + 1] === "C" ? CORPUS_DWELL : STEP_DWELL);
   });
-  later(() => { showResult(m); state.running = false; state.finished = true; $("#start").disabled = false; }, t);
+  later(() => {
+    showResult(m); $("#realtime").textContent = m.real_time; state.running = false; state.finished = true; $("#start").disabled = false;
+  }, t);
 }
 
 /* the result */

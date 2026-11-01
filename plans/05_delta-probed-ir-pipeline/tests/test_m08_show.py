@@ -63,6 +63,14 @@ def test_the_curves_share_one_scale_and_the_drawing_takes_the_text_colour(folder
     assert "currentColor" in m["depiction"] and "#000000" not in m["depiction"] and m["depiction"].startswith("<svg")
 
 
+def test_the_real_time_adds_up_the_record():
+    rec, _ = record(NO_TRUTH[1])                                    # cinnoline: the ledger's 30 Oct rehearsal, 1,262 s
+    assert S.real_time(rec) == f"Real time: {S.duration(sum(rec['seconds'].values()))} on the laptop in all" == "Real time: 21 min on the laptop in all"
+    reused_rec = {"name": "x", "pipeline_version": "0.6", "reuse": {"reused": True}, "seconds": {"reuse": 0.6, "correction_and_spectra": 2.8},
+                  "optimisation": {"timings_s": {"optimise": 30.5}}, "low_level": {"b3lyp": {"seconds": 3212}}}
+    assert S.real_time(reused_rec) == "Real time: 3.4 s on the laptop, steps 3–4 from the corpus (54 min when they were computed)"
+
+
 def test_the_page_carries_the_data_once_and_reads_back():
     data = S.payload(NO_TRUTH)
     html = S.page(data)

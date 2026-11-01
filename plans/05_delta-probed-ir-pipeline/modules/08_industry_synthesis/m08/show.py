@@ -111,6 +111,16 @@ def stations(rec: dict) -> list[dict]:
     return [{**s, "time": times[i], "detail": details[i]} for i, s in enumerate(STATIONS)]
 
 
+def real_time(rec: dict) -> str:
+    """The run's total real time from its record: the laptop's seconds, and for a reused run the corpus's for steps 3–4 beside them."""
+    sec = rec["seconds"]
+    if reused(rec):
+        corpus = rec["optimisation"]["timings_s"]["optimise"] + rec["low_level"]["b3lyp"]["seconds"]
+        return (f"Real time: {duration(sec['reuse'] + sec['correction_and_spectra'])} on the laptop, steps 3–4 from the corpus "
+                f"({duration(corpus)} when they were computed)")
+    return f"Real time: {duration(sum(sec.values()))} on the laptop in all"
+
+
 def _sticks(H: np.ndarray, masses: np.ndarray, apt: np.ndarray) -> list[dict]:
     w, a = mode_intensities(H, masses, apt)
     return [{"omega_cm": float(x), "km_mol": float(y)} for x, y in zip(w, a, strict=True)]
@@ -160,7 +170,7 @@ def molecule(folder: Path) -> dict:
             "hetero": sorted(e for e in adm["elements"] if e not in ("C", "H")),
             "status": {"role": seen["role"], "text": seen["text"]}, "depiction": depiction(adm["smiles"]),
             "route": "reused" if reused(rec) else "computed", "pipeline_version": rec["pipeline_version"],
-            "stations": stations(rec), "spectrum": spectrum(r, cert), "families": families(cert["bands"]),
+            "stations": stations(rec), "real_time": real_time(rec), "spectrum": spectrum(r, cert), "families": families(cert["bands"]),
             "truth": {"rms_cm": truth["rms_by_rank_cm"], "overlap": truth["overlap"]} if truth else None,
             "seed_spread_cm": max(b["seed_range_cm"][1] - b["seed_range_cm"][0] for b in cert["bands"])}
 
