@@ -8,6 +8,8 @@ on:
       - "plans/05_delta-probed-ir-pipeline/probes/*.py"
       - "plans/05_delta-probed-ir-pipeline/probes/*.sh"   # 10 Oct 2026: tests cover watch.sh and cations_after_fivering.sh
       - "plans/05_delta-probed-ir-pipeline/tools/**"
+      - "plans/05_delta-probed-ir-pipeline/modules/**/*.py"   # 1 Nov 2026: the tests cover m05 and m08; a fix there started no run
+      - "plans/05_delta-probed-ir-pipeline/modules/08_industry_synthesis/m08/*.html"
       - "plans/05_delta-probed-ir-pipeline/probes/results_vpt2/**"
       - "plans/05_delta-probed-ir-pipeline/pyproject.toml"
       - ".github/workflows/plan05-ci.yml"
