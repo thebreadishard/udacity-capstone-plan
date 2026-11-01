@@ -21,7 +21,6 @@ import time
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from types import SimpleNamespace
 
 import numpy as np
 
@@ -36,7 +35,7 @@ from pp import core as C  # noqa: E402
 from pp import scorer as S  # noqa: E402
 from qc_common import project_tr  # noqa: E402
 from rungC_equivariant import load_molecule  # noqa: E402
-from rungC_train import console_utf8_safe, load_corpus, load_hybrid_model, molecule_tensors  # noqa: E402
+from rungC_train import console_utf8_safe, load_corpus, load_hybrid_model, molecule_tensors, tensor_config  # noqa: E402
 
 FAMILIES = ("ring-ip", "CH-stretch", "CH-oop", "other")
 LIMIT_CM, LIMIT_RATIO = 1.0, 0.05
@@ -149,7 +148,7 @@ def network_correction(a, m: dict, mol_dir: Path, shape) -> tuple[np.ndarray, li
     for mp in a.models:
         st = MR.require_carried(Path(mp))
         model, ck = load_hybrid_model(Path(mp))
-        cfg = SimpleNamespace(aux=ck["aux_mode"], head=ck["head"], pattern=ck["pattern"], aux_target=ck["aux_target"], ls_lam=ck["ls_lam"], zero_hlow=False)
+        cfg = tensor_config(ck)
         t = molecule_tensors(a.mol_id, load_molecule(mol_dir, use_analytic=True), m, mol_dir, cfg, Path(a.out_prefix).parent / "ls_targets")
         model.eval()
         with torch.no_grad():

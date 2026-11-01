@@ -11,7 +11,6 @@ import json
 import sys
 from datetime import datetime
 from pathlib import Path
-from types import SimpleNamespace
 
 import numpy as np
 
@@ -19,7 +18,7 @@ PLAN = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PLAN / "modules" / "05_support_predictor" / "m05"))
 import model_registry as MR  # noqa: E402
 from rungC_equivariant import load_molecule  # noqa: E402
-from rungC_train import load_corpus, load_hybrid_model, molecule_tensors  # noqa: E402
+from rungC_train import load_corpus, load_hybrid_model, molecule_tensors, tensor_config  # noqa: E402
 
 
 def network_delta(mol_id: str, molecules: Path, models: list[Path], cache_dir: Path) -> tuple[np.ndarray, list[dict]]:
@@ -31,7 +30,7 @@ def network_delta(mol_id: str, molecules: Path, models: list[Path], cache_dir: P
     for mp in models:
         st = MR.require_carried(mp)
         model, ck = load_hybrid_model(mp)
-        cfg = SimpleNamespace(aux=ck["aux_mode"], head=ck["head"], pattern=ck["pattern"], aux_target=ck["aux_target"], ls_lam=ck["ls_lam"], zero_hlow=False)
+        cfg = tensor_config(ck)
         t = molecule_tensors(mol_id, load_molecule(mol_dir, use_analytic=True), m, mol_dir, cfg, cache_dir)
         model.eval()
         with torch.no_grad():

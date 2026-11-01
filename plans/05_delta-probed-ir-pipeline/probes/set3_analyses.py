@@ -17,7 +17,6 @@ from __future__ import annotations
 import json
 import sys
 from pathlib import Path
-from types import SimpleNamespace
 
 import numpy as np
 
@@ -30,7 +29,7 @@ import e7_rungB_reread_analytic as RR  # noqa: E402
 import e7_t2_sqm as T2  # noqa: E402
 import rungC_cc_transfer as CT  # noqa: E402
 import set3_diagnosis as D  # noqa: E402
-from rungC_train import load_hybrid_model, predictor  # noqa: E402
+from rungC_train import load_hybrid_model, predictor, tensor_config  # noqa: E402
 
 FAMS = ("CH-oop", "other", "ring-ip", "CH-stretch")
 OOP_FAMS = ("CH-oop", "other")
@@ -109,7 +108,7 @@ def alignment(an_cc: CT.Anchors, an_px: CT.Anchors) -> dict:
 def network_vs_proxy(an_px: CT.Anchors, mdir: Path) -> dict:
     """The carried chain-34 seed-0 network as it is, read against the ωB97X truth."""
     model, ck = load_hybrid_model(M05 / D.MODEL.format(chain=D.CHAIN34, seed=0))
-    cfg = SimpleNamespace(aux=ck["aux_mode"], head=ck["head"], pattern=ck["pattern"], aux_target=ck["aux_target"], ls_lam=ck["ls_lam"], zero_hlow=False)
+    cfg = tensor_config(ck)
     with_tensors = CT.prepare_anchors(mdir, {i: str(mdir / i / "hessian_wb97x_analytic.npz") for i in an_px.ids}, [], cfg,
                                       mdir.parent.parent / "ls_targets_proxy")
     return mean_read(an_px, predictor(model, with_tensors.tensors, with_tensors.mols))[0]

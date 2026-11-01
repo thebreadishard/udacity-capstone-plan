@@ -13,7 +13,6 @@ import json
 import sys
 from datetime import datetime
 from pathlib import Path
-from types import SimpleNamespace
 
 import numpy as np
 
@@ -24,7 +23,7 @@ import e7_t2_posthoc as PH  # noqa: E402
 import e7_t2_sqm as T2  # noqa: E402
 import model_registry as MR  # noqa: E402
 from rungC_equivariant import load_molecule  # noqa: E402
-from rungC_train import console_utf8_safe, load_corpus, load_hybrid_model, molecule_tensors, predictor  # noqa: E402
+from rungC_train import console_utf8_safe, load_corpus, load_hybrid_model, molecule_tensors, predictor, tensor_config  # noqa: E402
 
 GROUPS = ("ring-ip", "CH-stretch", "CH-oop", "other-low", "other-mid")
 
@@ -61,6 +60,19 @@ def fmt(v) -> str:
     return "—" if v is None or (isinstance(v, float) and np.isnan(v)) else f"{v:.2f}"
 
 
+def baseline_row(i: str, m: dict, d: Path, low: float) -> dict:
+    """One hold-out molecule's row before any model: mode counts, the zero rule's rms and, where both routes exist, the FD floor's."""
+    row = {"id": i, "n_atoms": len(m["masses"]), "pred": {}, "pred_models": []}
+    zero_err, grp = mode_errors(m, np.zeros_like(m["K"]), low)
+    row["n"] = counts(grp)
+    row["zero"] = rms_by_group(zero_err, grp)
+    if (d / "hessian_b3lyp_analytic.npz").exists() and (d / "hessian_wb97x_analytic.npz").exists() and (d / "hessian_wb97x.npz").exists():
+        dH_fd = np.load(d / "hessian_wb97x.npz")["H_projected"] - np.load(d / "hessian_b3lyp.npz")["H_projected"]
+        fe, fg = mode_errors(m, T2.K_from_dH(m, dH_fd), low)
+        row["floor"] = rms_by_group(fe, fg)
+    return row
+
+
 def main() -> int:
     console_utf8_safe()
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
@@ -74,23 +86,11 @@ def main() -> int:
     torch.set_num_threads(a.threads)
     molecules = Path(a.molecules)
     mols, test_a, _, _, _, substituted = load_corpus(a.molecules, True, log=lambda *_: None)
-    rows = []
-    for i in test_a:
-        m = mols[i]
-        row = {"id": i, "n_atoms": len(m["masses"]), "pred": {}, "pred_models": []}
-        zero_err, grp = mode_errors(m, np.zeros_like(m["K"]), a.low)
-        row["n"] = counts(grp)
-        row["zero"] = rms_by_group(zero_err, grp)
-        d = molecules / i
-        if (d / "hessian_b3lyp_analytic.npz").exists() and (d / "hessian_wb97x_analytic.npz").exists() and (d / "hessian_wb97x.npz").exists():
-            dH_fd = np.load(d / "hessian_wb97x.npz")["H_projected"] - np.load(d / "hessian_b3lyp.npz")["H_projected"]
-            fe, fg = mode_errors(m, T2.K_from_dH(m, dH_fd), a.low)
-            row["floor"] = rms_by_group(fe, fg)
-        rows.append(row)
+    rows = [baseline_row(i, mols[i], molecules / i, a.low) for i in test_a]
     for mp in a.models:
         MR.require_carried(Path(mp), allow=True)
         model, ck = load_hybrid_model(Path(mp))
-        cfg = SimpleNamespace(aux=ck["aux_mode"], head=ck["head"], pattern=ck["pattern"], aux_target=ck["aux_target"], ls_lam=ck["ls_lam"], zero_hlow=False)
+        cfg = tensor_config(ck)
         tensors = {i: molecule_tensors(i, load_molecule(molecules / i, use_analytic=True), mols[i], molecules / i, cfg, Path(a.out_prefix).parent / "ls_targets") for i in test_a}
         dF_of = predictor(model, tensors, mols)
         for row in rows:

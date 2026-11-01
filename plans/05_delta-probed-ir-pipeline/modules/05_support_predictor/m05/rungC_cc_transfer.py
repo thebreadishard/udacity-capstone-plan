@@ -27,7 +27,6 @@ import time
 from dataclasses import dataclass, replace
 from datetime import datetime
 from pathlib import Path
-from types import SimpleNamespace
 
 import numpy as np
 import torch
@@ -53,6 +52,7 @@ from rungC_train import (
     predictor,
     readouts,
     record_paths,
+    tensor_config,
 )
 
 LORA_SEED = 0          # the adapter's random start; torch's default generator is seeded from the clock (16 Oct 2026: 14.44 / 14.05 cm⁻¹)
@@ -675,8 +675,7 @@ def main() -> int:
     MR.require_carried(Path(a.model), allow=a.allow_any_model)                    # decision 55: reads run on carried models
     model0, ck = load_hybrid_model(Path(a.model))
     loss_cfg = loss_settings(ck)
-    cfg = SimpleNamespace(aux=ck["aux_mode"], head=ck["head"], pattern=ck["pattern"], aux_target=ck["aux_target"], ls_lam=ck["ls_lam"],
-                          zero_hlow=False)
+    cfg = tensor_config(ck)
     print(f"model {Path(a.model).name}: pattern {cfg.pattern}, aux {cfg.aux}, target {cfg.aux_target}; anchors {sorted(anchors)}", flush=True)
     an = prepare_anchors(mdir, anchors, a.apt, cfg, Path(a.out_prefix).parent / "ls_targets")
     registry = {i: (dict(level=e["level"], tier=e["tier"], sha16=e["sha16"]) if e else "not carried (--allow-any-anchor)") for i, e in found.items()}
