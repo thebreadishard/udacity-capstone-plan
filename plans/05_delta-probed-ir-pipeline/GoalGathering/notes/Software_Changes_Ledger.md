@@ -839,6 +839,8 @@ Sep). Size: one module of ≈ 150 lines plus tests; decided by the user.
 
 > Also seen on Ubuntu 26.04 LTS under WSL2 with rust-coreutils 0.8.0-0ubuntu3. Two background subshells ran plain `mkdir DIR` on one new path, 200 trials per filesystem: both exited 0 in 81 trials on tmpfs and in 7 on a 9p mount (/mnt/c). With bash's noclobber create (`(set -C; : > FILE)`) as the lock, none of 200 on either. We found it when a smoke test of a two-lane job queue ran one job in both lanes. The 0.10.0 update offered for 26.04 still has the bug, so the backport of bf423f3 is what fixes it.
 
+The user marked the bug 'affects me' on 1 Nov (16:4x); the comment was not posted. Launchpad's API still counted one affected user right after (it may lag).
+
 ## How to use this ledger
 
 - Add a row the day a change is made; never after the fact from memory.
