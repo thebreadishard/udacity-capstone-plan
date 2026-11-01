@@ -5,6 +5,8 @@ the whole default set where the corpus holds the truth Hessians."""
 from __future__ import annotations
 
 import json
+import shutil
+import subprocess
 import sys
 
 import pytest
@@ -78,6 +80,19 @@ def test_the_page_carries_the_data_once_and_reads_back():
     start = html.index("const DATA = ") + len("const DATA = ")
     back = json.loads(html[start:html.index(";\n", start)].replace("<\\/", "</"))
     assert back == json.loads(json.dumps(data))
+
+
+def test_the_page_s_script_parses(tmp_path):
+    """A syntax error stops the whole page (1 Nov: a second `const r` left the picker and the map empty); node checks the script."""
+    node = shutil.which("node")
+    if node is None:
+        pytest.skip("node is not installed")
+    html = S.page(S.payload(NO_TRUTH))
+    script = html[html.index("<script>") + len("<script>"):html.index("</script>")]
+    js = tmp_path / "show.js"
+    js.write_text(script, encoding="utf-8")
+    out = subprocess.run([node, "--check", str(js)], capture_output=True, text=True, check=False)
+    assert out.returncode == 0, out.stderr
 
 
 def test_the_whole_default_set_where_the_corpus_holds_the_truth():

@@ -240,17 +240,19 @@ $("#list").addEventListener("click", (e) => { const b = e.target.closest(".item"
 
 /* the metro map: positions in pixels from the map's size, recomputed on resize */
 function geometry() {
-  const r = $("#map").getBoundingClientRect();
-  const W = r.width, H = r.height, n = 6;
+  const box = $("#map").getBoundingClientRect();
+  const W = box.width, H = box.height, n = 6;
   const xs = [...Array(n)].map((_, i) => W * (i + 0.5) / n);
   /* the branch rises and falls at 45°, so its height may be at most a third of the run from station 2 to station 5; the branch, the line
      and the station cards below it are centred in the map together */
-  const d = Math.min(H * 0.40, (xs[4] - xs[1]) / 3), cards = Math.min(H * 0.32, 12 * parseFloat(getComputedStyle(document.documentElement).fontSize));
-  const yMain = Math.max(d + 40, (H + d - cards) / 2), yBranch = yMain - d;
+  const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+  const r = 2.3 * rem, gap = 1.1 * rem;                               /* the token's radius (.token is 4.6rem) and the space around it */
+  const d = Math.min(H * 0.40, (xs[4] - xs[1]) / 3), cards = Math.min(H * 0.32, 12 * rem);
+  const yMain = Math.max(d + 40, (H + d - cards - r - gap) / 2), yBranch = yMain - d;
   const main = xs.map((x) => [x, yMain]);
   const stop = [(xs[2] + xs[3]) / 2, yBranch];                      /* the corpus line's own stop: the corpus record */
   const corpus = [main[0], main[1], [xs[1] + d, yBranch], stop, [xs[4] - d, yBranch], main[4], main[5]];
-  return { W, H, xs, yMain, yBranch, main, corpus, stop };
+  return { W, H, xs, yMain, yBranch, main, corpus, stop, r, gap };
 }
 function pathD(pts) { return pts.map((p, i) => (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1)).join(" "); }
 function drawMap(mol) {
@@ -272,7 +274,7 @@ function drawMap(mol) {
   if (mol) {
     const btn = document.createElement("button");
     btn.type = "button"; btn.className = "start"; btn.id = "start"; btn.textContent = "Start ▶"; btn.disabled = state.running;
-    btn.style.left = g.xs[0] + "px"; btn.style.top = (g.yMain - 52) + "px";
+    btn.style.left = g.xs[0] + "px"; btn.style.top = (g.yMain - g.r - g.gap) + "px";
     btn.addEventListener("click", () => ride(mol));
     $("#map").appendChild(btn);
   }
@@ -281,7 +283,7 @@ function drawMap(mol) {
   stations.forEach((s, i) => {
     const el = document.createElement("button");
     el.type = "button"; el.className = "station"; el.dataset.state = "pending"; el.id = "st" + i;
-    el.style.left = g.xs[i] + "px"; el.style.top = (g.yMain + 30) + "px";
+    el.style.left = g.xs[i] + "px"; el.style.top = (g.yMain + g.r + g.gap) + "px";
     el.innerHTML = `<div class="icon">${ICONS[s.icon]}</div><div class="t">${esc(s.title)}</div><div class="tool">${esc(s.tool)}</div><div class="time" id="time${i}"></div>`;
     el.addEventListener("click", () => showDetail(s));
     $("#map").appendChild(el);
