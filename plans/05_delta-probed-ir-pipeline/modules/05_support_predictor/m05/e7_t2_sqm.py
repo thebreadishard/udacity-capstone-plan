@@ -24,6 +24,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import e6_learning_curve as E6  # noqa: E402
+import internal_coords as IC
 from learning_curve_layerA import AMU2AU, FAMILIES, HARTREE2CM, normal_modes  # noqa: E402
 from learning_curve_layerA_v2_descriptors import bond_graph, rings  # noqa: E402
 
@@ -32,7 +33,13 @@ BOHR2ANG = 0.529177210903
 
 
 # ------------------------------------------------------------------------------------------------------- internal coordinates
-def internals(symbols, coords_bohr):
+def internals(symbols, coords_bohr, settings: IC.PrimitiveSettings = IC.CARRIED):
+    """(Wilson B, primitive types) of geomeTRIC's redundant primitives; `settings.angle_choice` as in `internal_coords` (`canonical`:
+    built on the atoms in canonical order, B's columns back in the input order). The encoding does not enter B."""
+    if settings.angle_choice == "canonical":
+        order = IC.canonical_order(symbols, coords_bohr)
+        B, types = internals([symbols[k] for k in order], np.asarray(coords_bohr, float)[order])
+        return IC.to_input_order_B(B, order), types
     from geometric.internal import Angle, Dihedral, Distance, LinearAngle, OutOfPlane, PrimitiveInternalCoordinates
     from geometric.molecule import Molecule
     symbols = [s.capitalize() for s in symbols]           # the corpus writes upper-case symbols ("CL"); geomeTRIC's table wants "Cl"
