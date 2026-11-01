@@ -21,6 +21,7 @@ import argparse
 import json
 import sys
 import time
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 
@@ -32,6 +33,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import e6_learning_curve as E6  # noqa: E402
 import e7_t2_posthoc as PH  # noqa: E402
 import e7_t2_sqm as T2  # noqa: E402
+import internal_coords as IC
 from learning_curve_layerA import FAMILIES  # noqa: E402
 from learning_curve_layerA_v2_descriptors import C_CLASSES, H_CLASSES, X_CLASSES, atom_classes, bond_graph, rings  # noqa: E402
 from rungC_targets import LAM_REL, cached_pattern_ls_target  # noqa: E402
@@ -40,6 +42,7 @@ RING = "ring-ip"
 ELEMS = ["H", "C", "N", "O", "S", "F", "Cl"]
 CLASSES = H_CLASSES + C_CLASSES + X_CLASSES
 PRIM_CLASSES = ["Distance", "Angle", "Dihedral", "OutOfPlane", "LinearAngle", "other"]
+N_PRIM_BASE = len(PRIM_CLASSES) + len(ELEMS) + 1 + 1 + 1 + len(CLASSES) + 1   # a primitive's vector; `cossin` adds one sine slot
 PAIR_CLASS = ["diag_bond", "diag_angle", "diag_dihedral", "diag_other", "off_bondbond", "off_other", "off_twobond", "off_dist2", "off_dist3"]   # classes 0–8 (6–8: patterns d/e/f, 1 Oct 2026)
 
 
@@ -76,93 +79,186 @@ def graph_distances(adj: dict, n: int) -> np.ndarray:
     return D
 
 
-def molecule_pairs(symbols_raw, coords_bohr, F_low, return_atoms=False, pattern="c"):
-    """Primitive feature vectors, the pattern pairs with pair features, and metadata. With return_atoms=True (30 Sep 2026, the hybrid head of
-    rung C) a fifth value: the atom set of every primitive, in the primitive order of the B matrix. pattern (1 Oct 2026, lever 1): "c" = the
-    registered pattern (diagonal, shared-atom pairs, same-ring bond–bond pairs); "d" = (c) plus pairs whose atom sets are disjoint but joined by one
-    bond (the between-branch's 'two bonds apart'), pair class 6; "e" / "f" (12:1x) = (d) plus disjoint pairs whose atom sets are two / up to three bonds
-    apart (classes 7 / 8). PATTERN_REACH holds the rule."""
-    if pattern not in PATTERN_REACH:
-        raise ValueError(f"pattern must be one of {sorted(PATTERN_REACH)}, got {pattern!r}")
-    from geometric.internal import Angle, Dihedral, Distance, LinearAngle, OutOfPlane, PrimitiveInternalCoordinates
-    from geometric.molecule import Molecule
-    symbols = [s.capitalize() for s in symbols_raw]; coords = np.asarray(coords_bohr, float)
-    M = Molecule(); M.elem = list(symbols); M.xyzs = [coords * T2.BOHR2ANG]
-    ic = PrimitiveInternalCoordinates(M, build=True, connect=True, addcart=False)
-    prims = ic.Internals; xyz = coords.flatten(); n = len(prims)
-    adj = bond_graph(symbols, coords); R = rings(adj); cycles = ring_cycles(adj, R)
+@dataclass(frozen=True)
+class _Topology:
+    """What the pair builder reads of the bond graph: capitalised symbols, atom classes, ring count per atom, every ring bond with its
+    position in each ring cycle it belongs to, the cycles, and the all-pairs graph distances (patterns d/e/f only)."""
+
+    symbols: list[str]
+    cls: list
+    nring_atom: np.ndarray
+    ring_bonds: dict
+    cycles: list
+    dist: np.ndarray | None
+
+
+@dataclass(frozen=True)
+class _Primitives:
+    """Per primitive, in the B matrix's order: its atom set, its feature vector, its class (PRIM_CLASSES index) and, for a bond, its edge."""
+
+    atoms: list[set[int]]
+    feats: np.ndarray
+    pclass: list[int]
+    bond_edge: list[frozenset | None]
+
+
+def _topology(symbols: list[str], coords: np.ndarray, pattern: str) -> _Topology:
+    adj = bond_graph(symbols, coords)
+    R = rings(adj)
+    cycles = ring_cycles(adj, R)
     dist = graph_distances(adj, len(symbols)) if PATTERN_REACH[pattern] > 0 else None   # patterns d/e/f: set distances
     cls, _ = atom_classes(symbols, coords)
     nring_atom = np.zeros(len(symbols), int)
     for r in R:
         for a_ in r:
             nring_atom[a_] += 1
-    ring_bonds = {}
+    ring_bonds: dict = {}
     for ri, cyc in enumerate(cycles):
         L = len(cyc)
         for k in range(L):
-            e = frozenset((cyc[k], cyc[(k + 1) % L])); ring_bonds.setdefault(e, {})[ri] = k
-    atoms, feats, pclass, is_bond, bond_edge = [], [], [], [], []
-    for p in prims:
-        at = [getattr(p, k) for k in ("a", "b", "c", "d") if hasattr(p, k)]
-        if isinstance(p, Distance):
-            pc = 0; ringflag = frozenset((p.a, p.b)) in ring_bonds
-        elif isinstance(p, Angle):
-            pc = 1; ringflag = frozenset((p.a, p.b)) in ring_bonds and frozenset((p.b, p.c)) in ring_bonds
-        elif isinstance(p, Dihedral):
-            pc = 2; ringflag = frozenset((p.b, p.c)) in ring_bonds
-        elif isinstance(p, OutOfPlane):
-            pc = 3; ringflag = nring_atom[p.a] > 0
-        elif isinstance(p, LinearAngle):
-            pc = 4; ringflag = False
-        else:
-            pc = 5; ringflag = False
-        try:
-            val = float(p.value(xyz))
-        except Exception:  # noqa: BLE001
-            val = 0.0
-        f = np.zeros(len(PRIM_CLASSES) + len(ELEMS) + 1 + 1 + 1 + len(CLASSES) + 1, np.float32)
-        f[pc] = 1.0
-        for a_ in at:
-            e = symbols[a_]
-            if e in ELEMS:
-                f[len(PRIM_CLASSES) + ELEMS.index(e)] += 1.0
-            if cls[a_] in CLASSES:
-                f[len(PRIM_CLASSES) + len(ELEMS) + 3 + CLASSES.index(cls[a_])] += 1.0
-            f[-1] += nring_atom[a_]
-        f[len(PRIM_CLASSES) + len(ELEMS)] = float(ringflag)
-        f[len(PRIM_CLASSES) + len(ELEMS) + 1] = val
-        f[len(PRIM_CLASSES) + len(ELEMS) + 2] = float(F_low[len(atoms), len(atoms)])
-        atoms.append(set(at)); feats.append(f); pclass.append(pc); is_bond.append(pc == 0); bond_edge.append(frozenset(at) if pc == 0 else None)
-    feats = np.stack(feats)
+            ring_bonds.setdefault(frozenset((cyc[k], cyc[(k + 1) % L])), {})[ri] = k
+    return _Topology(symbols, cls, nring_atom, ring_bonds, cycles, dist)
+
+
+def _primitive_class(p: object, topo: _Topology) -> tuple[int, bool]:
+    """(PRIM_CLASSES index, ring flag) of one geomeTRIC primitive."""
+    from geometric.internal import Angle, Dihedral, Distance, LinearAngle, OutOfPlane
+
+    if isinstance(p, Distance):
+        return 0, frozenset((p.a, p.b)) in topo.ring_bonds
+    if isinstance(p, Angle):
+        return 1, frozenset((p.a, p.b)) in topo.ring_bonds and frozenset((p.b, p.c)) in topo.ring_bonds
+    if isinstance(p, Dihedral):
+        return 2, frozenset((p.b, p.c)) in topo.ring_bonds
+    if isinstance(p, OutOfPlane):
+        return 3, topo.nring_atom[p.a] > 0
+    if isinstance(p, LinearAngle):
+        return 4, False
+    return 5, False
+
+
+def _primitive_vector(p: object, k: int, topo: _Topology, F_low: np.ndarray, xyz: np.ndarray, encoding: str) -> tuple[np.ndarray, int]:
+    """(Primitive k's feature vector, its PRIM_CLASSES index). The vector: class, element counts, ring flag, value (a dihedral's under
+    `encoding`), F_low,kk, atom classes, ring counts, and the sine slot under `cossin`."""
+    pc, ringflag = _primitive_class(p, topo)
+    try:
+        val = float(p.value(xyz))
+    except Exception:  # noqa: BLE001
+        val = 0.0
+    sin_val = 0.0
+    if pc == 2:
+        val, sin_val = IC.torsion_values(val, encoding)
+    f = np.zeros(N_PRIM_BASE + (encoding == "cossin"), np.float32)
+    if encoding == "cossin":
+        f[N_PRIM_BASE] = sin_val
+    f[pc] = 1.0
+    for a_ in (getattr(p, key) for key in ("a", "b", "c", "d") if hasattr(p, key)):
+        e = topo.symbols[a_]
+        if e in ELEMS:
+            f[len(PRIM_CLASSES) + ELEMS.index(e)] += 1.0
+        if topo.cls[a_] in CLASSES:
+            f[len(PRIM_CLASSES) + len(ELEMS) + 3 + CLASSES.index(topo.cls[a_])] += 1.0
+        f[N_PRIM_BASE - 1] += topo.nring_atom[a_]
+    f[len(PRIM_CLASSES) + len(ELEMS)] = float(ringflag)
+    f[len(PRIM_CLASSES) + len(ELEMS) + 1] = val
+    f[len(PRIM_CLASSES) + len(ELEMS) + 2] = float(F_low[k, k])
+    return f, pc
+
+
+def _primitives(prims: list, topo: _Topology, F_low: np.ndarray, xyz: np.ndarray, encoding: str) -> _Primitives:
+    atoms, feats, pclass, bond_edge = [], [], [], []
+    for k, p in enumerate(prims):
+        at = [getattr(p, key) for key in ("a", "b", "c", "d") if hasattr(p, key)]
+        f, pc = _primitive_vector(p, k, topo, F_low, xyz, encoding)
+        atoms.append(set(at))
+        feats.append(f)
+        pclass.append(pc)
+        bond_edge.append(frozenset(at) if pc == 0 else None)
+    return _Primitives(atoms, np.stack(feats), pclass, bond_edge)
+
+
+def _same_ring(prim: _Primitives, topo: _Topology, i: int, j: int) -> tuple[int, int]:
+    """(same-ring flag, ring-path distance) of two distinct bonds; (0, 0) for anything else."""
+    if not (prim.pclass[i] == 0 and prim.pclass[j] == 0 and i != j):
+        return 0, 0
+    ri_ = topo.ring_bonds.get(prim.bond_edge[i], {})
+    rj_ = topo.ring_bonds.get(prim.bond_edge[j], {})
+    common = set(ri_) & set(rj_)
+    if not common:
+        return 0, 0
+    return 1, min(min(abs(ri_[r] - rj_[r]), len(topo.cycles[r]) - abs(ri_[r] - rj_[r])) for r in common)
+
+
+def _pair_class(prim: _Primitives, topo: _Topology, pattern: str, i: int, j: int) -> tuple[int, int, int, int] | None:
+    """(pair class, shared atoms, same-ring flag, ring-path distance) of a pair the pattern holds; None for a pair outside it."""
+    shared = len(prim.atoms[i] & prim.atoms[j])
+    same_ring, rdist = _same_ring(prim, topo, i, j)
+    far_class = None
+    if topo.dist is not None and i != j and shared == 0 and not same_ring:
+        d_sets = min(topo.dist[a_, b] for a_ in prim.atoms[i] for b in prim.atoms[j])
+        if 1 <= d_sets <= PATTERN_REACH[pattern]:
+            far_class = DIST_CLASS[d_sets]
+    if not (i == j or shared > 0 or same_ring or far_class is not None):
+        return None
+    if i == j:
+        pc_pair = {0: 0, 1: 1, 2: 2}.get(prim.pclass[i], 3)
+    elif far_class is not None:
+        pc_pair = far_class
+    else:
+        pc_pair = 4 if (prim.pclass[i] == 0 and prim.pclass[j] == 0) else 5
+    return pc_pair, shared, same_ring, rdist
+
+
+def _pattern_pairs(prim: _Primitives, topo: _Topology, F_low: np.ndarray, pattern: str) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """The pattern's pairs (i ≤ j), their feature vectors and classes."""
+    feats = prim.feats
     pairs, pfeat, pcls = [], [], []
-    for i in range(n):
-        for j in range(i, n):
-            shared = len(atoms[i] & atoms[j]); same_ring = 0; rdist = 0
-            if is_bond[i] and is_bond[j] and i != j:
-                ri_ = ring_bonds.get(bond_edge[i], {}); rj_ = ring_bonds.get(bond_edge[j], {})
-                common = set(ri_) & set(rj_)
-                if common:
-                    same_ring = 1
-                    rdist = min(min(abs(ri_[r] - rj_[r]), len(cycles[r]) - abs(ri_[r] - rj_[r])) for r in common)
-            far_class = None
-            if dist is not None and i != j and shared == 0 and not same_ring:
-                d_sets = min(dist[a_, b] for a_ in atoms[i] for b in atoms[j])
-                if 1 <= d_sets <= PATTERN_REACH[pattern]:
-                    far_class = DIST_CLASS[d_sets]
-            if not (i == j or shared > 0 or same_ring or far_class is not None):
+    for i in range(len(prim.atoms)):
+        for j in range(i, len(prim.atoms)):
+            held = _pair_class(prim, topo, pattern, i, j)
+            if held is None:
                 continue
-            if i == j:
-                pc_pair = {0: 0, 1: 1, 2: 2}.get(pclass[i], 3)
-            elif far_class is not None:
-                pc_pair = far_class
-            else:
-                pc_pair = 4 if (is_bond[i] and is_bond[j]) else 5
-            extra = np.array([shared, same_ring, float(rdist == 1), float(rdist == 2), float(rdist >= 3), F_low[i, j], F_low[i, i] * F_low[j, j], float(i == j)], np.float32)
-            pairs.append((i, j)); pfeat.append(np.concatenate([feats[i] + feats[j], np.abs(feats[i] - feats[j]), extra])); pcls.append(pc_pair)
+            pc_pair, shared, same_ring, rdist = held
+            extra = np.array([shared, same_ring, float(rdist == 1), float(rdist == 2), float(rdist >= 3), F_low[i, j], F_low[i, i] * F_low[j, j],
+                              float(i == j)], np.float32)
+            pairs.append((i, j))
+            pfeat.append(np.concatenate([feats[i] + feats[j], np.abs(feats[i] - feats[j]), extra]))
+            pcls.append(pc_pair)
+    return np.array(pairs), np.stack(pfeat).astype(np.float32), np.array(pcls)
+
+
+def molecule_pairs(symbols_raw, coords_bohr, F_low, return_atoms=False, pattern="c", settings: IC.PrimitiveSettings = IC.CARRIED):
+    """Primitive feature vectors, the pattern pairs with pair features, and metadata. With return_atoms=True (30 Sep 2026, the hybrid head of
+    rung C) a fifth value: the atom set of every primitive, in the primitive order of the B matrix. pattern (1 Oct 2026, lever 1): "c" = the
+    registered pattern (diagonal, shared-atom pairs, same-ring bond–bond pairs); "d" = (c) plus pairs whose atom sets are disjoint but joined by one
+    bond (the between-branch's 'two bonds apart'), pair class 6; "e" / "f" (12:1x) = (d) plus disjoint pairs whose atom sets are two / up to three bonds
+    apart (classes 7 / 8). PATTERN_REACH holds the rule. `settings` (TASKS 149; the default is the carried recipe) as in `internal_coords`:
+    the `canonical` angle choice builds everything on the atoms in canonical order and returns B's columns and the atom sets in the input
+    order; a `cos` or `cossin` encoding changes a dihedral's value slot, `cossin` adding a sine slot at the end."""
+    if pattern not in PATTERN_REACH:
+        raise ValueError(f"pattern must be one of {sorted(PATTERN_REACH)}, got {pattern!r}")
+    if settings.angle_choice == "canonical":
+        order = IC.canonical_order(symbols_raw, coords_bohr)
+        geometric = IC.PrimitiveSettings(angle_choice="geometric", dihedral_encoding=settings.dihedral_encoding)
+        pairs, pfeat, pcls, B, atoms = molecule_pairs([symbols_raw[k] for k in order], np.asarray(coords_bohr, float)[order], F_low,
+                                                      return_atoms=True, pattern=pattern, settings=geometric)
+        B = IC.to_input_order_B(np.asarray(B), order)
+        return (pairs, pfeat, pcls, B, IC.to_input_order_atoms(atoms, order)) if return_atoms else (pairs, pfeat, pcls, B)
+    from geometric.internal import PrimitiveInternalCoordinates
+    from geometric.molecule import Molecule
+    symbols = [s.capitalize() for s in symbols_raw]
+    coords = np.asarray(coords_bohr, float)
+    M = Molecule()
+    M.elem = list(symbols)
+    M.xyzs = [coords * T2.BOHR2ANG]
+    ic = PrimitiveInternalCoordinates(M, build=True, connect=True, addcart=False)
+    xyz = coords.flatten()
+    topo = _topology(symbols, coords, pattern)
+    prim = _primitives(ic.Internals, topo, F_low, xyz, settings.dihedral_encoding)
+    pairs, pfeat, pcls = _pattern_pairs(prim, topo, F_low, pattern)
     if return_atoms:
-        return np.array(pairs), np.stack(pfeat).astype(np.float32), np.array(pcls), ic.wilsonB(xyz), atoms
-    return np.array(pairs), np.stack(pfeat).astype(np.float32), np.array(pcls), ic.wilsonB(xyz)
+        return pairs, pfeat, pcls, ic.wilsonB(xyz), prim.atoms
+    return pairs, pfeat, pcls, ic.wilsonB(xyz)
 
 
 # ------------------------------------------------------------------------------------------------------------------ models

@@ -16,6 +16,7 @@ import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import e7_t2_sqm as T2
+import internal_coords as IC
 from learning_curve_layerA import normal_modes
 from rungC_equivariant import low_level_inputs
 from rungC_train import TensorSettings, input_tensors
@@ -23,7 +24,7 @@ from rungC_train import TensorSettings, input_tensors
 LOW_HESSIAN = "hessian_b3lyp_analytic.npz"
 
 
-def low_level(d: Path) -> tuple[dict, dict]:
+def low_level(d: Path, settings: IC.PrimitiveSettings = IC.CARRIED) -> tuple[dict, dict]:
     """(m, mol) of one folder, as the trainer's loader builds them under --use-analytic: the Cartesian inputs, and the internal-coordinate
     entry — Wilson B and its primitive types, the low level's internal force constants F_low, the masses, its normal modes (w, freq, V)
     and the charge index."""
@@ -33,7 +34,7 @@ def low_level(d: Path) -> tuple[dict, dict]:
     with np.load(path) as z:
         lo = z["H_projected"]
     m = low_level_inputs(d, lo)
-    B, types = T2.internals(m["symbols"], m["pos"])
+    B, types = T2.internals(m["symbols"], m["pos"], settings)
     F_low, _ = T2.to_internal(lo, B)
     w, freq, V, _ = normal_modes(lo, m["masses"])
     return m, {"B": B, "types": types, "F_low": F_low, "masses": m["masses"], "w": w, "freq": freq, "V": V, "qidx": m["qidx"]}
@@ -41,7 +42,7 @@ def low_level(d: Path) -> tuple[dict, dict]:
 
 def input_tensors_of(d: Path, cfg: TensorSettings) -> dict:
     """The network's input tensors for one folder (`rungC_train.input_tensors` on `low_level`)."""
-    m, mol = low_level(d)
+    m, mol = low_level(d, cfg.primitives)
     return input_tensors(m, mol, d, cfg)
 
 
