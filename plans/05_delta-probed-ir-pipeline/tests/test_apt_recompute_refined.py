@@ -119,5 +119,15 @@ def test_max_memory_reaches_pyscf(fetched, tmp_path, monkeypatch):
     assert seen == [1234]
 
 
+def test_an_error_before_the_apt_file_is_written_is_raised_with_its_cause(fetched, tmp_path, monkeypatch):
+    """1 Nov 2026: A_428228e5a5's step died on the missing file, and the error that kept write_apt from writing it was lost."""
+    def broken(*args, **kwargs):
+        raise ValueError("operands could not be broadcast")
+    monkeypatch.setattr(AH, "write_apt", broken)
+    with pytest.raises(RuntimeError, match=r"raised before writing .*operands could not be broadcast") as info:
+        R.recompute(str(fetched), str(tmp_path / "W_water"), grid=GRID)
+    assert isinstance(info.value.__cause__, ValueError)
+
+
 def test_height_change_is_relative_to_the_strongest_old_band():
     assert R.height_change([100.0, 10.0], [99.0, 10.5]) == pytest.approx(0.01)

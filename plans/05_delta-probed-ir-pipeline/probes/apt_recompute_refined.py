@@ -69,11 +69,15 @@ def recompute(src, out_dir, grid=LABELS_GRID, stamp=None, max_memory=AH.MAX_MEMO
         mf, _ = AH.labels_scf(mol, "b3lyp", grid)
         hobj = mf.Hessian()
         response = solve_response(hobj)
+    cause = None
     try:
         message, error = AH.write_apt(out_dir, hobj, response, hz["H_projected"], np.array(g["masses_amu"]), grid, stamp or AH.software()), ""
-    except ValueError as exc:
-        message, error = "", str(exc)
-    new = np.load(os.path.join(out_dir, AH.APT_FILE))
+    except ValueError as exc:      # write_apt writes the file, marked failed, before it raises for a failed sum rule or residual
+        message, error, cause = "", str(exc), exc
+    apt_path = os.path.join(out_dir, AH.APT_FILE)
+    if not os.path.exists(apt_path):
+        raise RuntimeError(f"{src}: write_apt raised before writing {AH.APT_FILE}: {error}") from cause
+    new = np.load(apt_path)
     return {"id": os.path.basename(os.path.normpath(src)), "passed": bool(new["passed"]), "error": error, "message": message,
             "residual_before": float(new["cphf_residual_before"]), "residual_after": float(new["cphf_residual_after"]),
             "rounds": int(new["cphf_refine_rounds"]), "apt_change_max": float(np.abs(new["apt"] - old["apt"]).max()),
