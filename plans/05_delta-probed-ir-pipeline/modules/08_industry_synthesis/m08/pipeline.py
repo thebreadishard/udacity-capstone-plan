@@ -3,7 +3,8 @@
 
 Each step is one function on existing code:
 
-1. `start_geometry` — the corpus's own start geometry (`corpus/run_corpus.start_geometry`: RDKit ETKDG + MMFF, seed 0), or the given xyz;
+1. `start_geometry` — the corpus's own start geometry (`corpus/run_corpus.start_geometry`: RDKit ETKDG + MMFF, seed 0), or the given xyz
+   with its atoms in the order the canonical SMILES gives (`smiles_route_order`);
    then `from_corpus` (`m08/reuse.py`, TASKS 150): a molecule the corpus computed at these settings takes its optimised geometry,
    Hessian and APT from there, in the canonical atom order, and skips steps 2–3; the record says which folder, or why not;
 2. `optimise` — `corpus/psi4_worker.py` with deck v1 and "hessians": false, in the Windows conda env `qc` (psi4 1.11, the deck's engine);
@@ -53,7 +54,7 @@ from scale_factor_baseline import PAHDB_FACTORS, pahdb_region  # noqa: E402
 
 from dpir.provenance import git_state, provenance  # noqa: E402
 
-PIPELINE_VERSION = "0.6"               # modules/PIPELINE.md
+PIPELINE_VERSION = "0.7"               # modules/PIPELINE.md
 NETWORK = "ΔH-network"
 CORPUS_ROOT = M05 / "corpus"
 CORPUS = CORPUS_ROOT / "molecules"
@@ -255,17 +256,48 @@ def canonical_smiles(smiles: str) -> str:
     return Chem.MolToSmiles(Chem.MolFromSmiles(smiles))
 
 
+def smiles_route_order(m) -> list[int]:
+    """The atoms of an RDKit molecule with explicit hydrogens in the order the SMILES route numbers them: the heavy atoms as the canonical
+    SMILES writes them (parsed again, RDKit numbers them in that order), then the hydrogens as AddHs appends them, heavy atom by heavy
+    atom. Hydrogens on one heavy atom (a methyl's) are equivalent in the bond graph and keep their order in the input."""
+    from rdkit import Chem
+
+    heavy = [a.GetIdx() for a in m.GetAtoms() if a.GetAtomicNum() > 1]
+    skeleton = Chem.RemoveHs(m)                                        # the heavy atoms keep their relative order
+    Chem.MolToSmiles(skeleton)
+    written = [heavy[k] for k in skeleton.GetPropsAsDict(True, True)["_smilesAtomOutputOrder"]]
+    hydrogens = [h.GetIdx() for c in written for h in sorted(m.GetAtomWithIdx(c).GetNeighbors(), key=lambda a: a.GetIdx())
+                 if h.GetAtomicNum() == 1]
+    if sorted(written + hydrogens) != list(range(m.GetNumAtoms())):
+        raise ValueError("the SMILES route's order does not cover every atom once (a hydrogen bonded to no heavy atom?)")
+    return written + hydrogens
+
+
+def xyz_order(cfg: PipelineConfig) -> list[int]:
+    """The xyz file's atom index of each atom the pipeline computes, in the SMILES route's order (`smiles_route_order`)."""
+    m = rdkit_molecule(cfg)
+    if m is None:
+        raise ValueError(f"{cfg.xyz}: does not parse as a molecule")
+    return smiles_route_order(m)
+
+
+def xyz_atoms(path: Path) -> list[list]:
+    """An xyz file's atoms as [symbol, x, y, z] in Å, in the file's order."""
+    lines = path.read_text(encoding="utf-8").split("\n")
+    n = int(lines[0])
+    return [[w[0], float(w[1]), float(w[2]), float(w[3])] for w in (ln.split() for ln in lines[2:2 + n])]
+
+
 def start_geometry(cfg: PipelineConfig) -> tuple[list[list], dict | None]:
     """(atoms as [symbol, x, y, z] in Å, the optimiser options): the corpus's start geometry and options from the canonical SMILES —
     the network's answer depends on the atom order (up to 2.9 cm⁻¹ between two writings of phenanthrene, probes/network_invariance_check.py,
-    30 Oct 2026), so every writing must reach it in one order — or the xyz as given."""
+    30 Oct 2026), so every writing must reach it in one order — or the xyz's own geometry, its atoms put in that same order (0.7)."""
     if cfg.smiles is not None:
         smiles = canonical_smiles(cfg.smiles)
         xyz, _optimise = RC.start_geometry({"layer": "A", "smiles": smiles})
         return xyz, RC.opt_options_for({"smiles": smiles})
-    lines = cfg.xyz.read_text(encoding="utf-8").split("\n")
-    n = int(lines[0])
-    return [[w[0], float(w[1]), float(w[2]), float(w[3])] for w in (ln.split() for ln in lines[2:2 + n])], None
+    atoms = xyz_atoms(cfg.xyz)
+    return [atoms[k] for k in xyz_order(cfg)], None
 
 
 def _run(argv: list[str], log: Path, what: str) -> int:
@@ -433,7 +465,8 @@ def run(cfg: PipelineConfig) -> dict:
     save_correction(d, dH, dH_seeds, cfg.models)
     out = spectra(d, dH, dH_seeds)
     seconds["correction_and_spectra"] = round(time.time() - t, 1)
-    rec = {"pipeline_version": PIPELINE_VERSION, "name": cfg.name, "input": {"smiles": cfg.smiles, "xyz": cfg.xyz},
+    rec = {"pipeline_version": PIPELINE_VERSION, "name": cfg.name,
+           "input": {"smiles": cfg.smiles, "xyz": cfg.xyz, "xyz_atom_order": xyz_order(cfg) if cfg.xyz is not None else None},
            "settings": cfg.model_dump(mode="json"), "admission": vars(adm) | {"inside_training_sizes": adm.inside_training_sizes},
            "deck": {"file": str(RC.DECK), "sha16": sha16(RC.DECK)}, "optimisation": {k: psi4.get(k) for k in ("e_opt", "timings_s", "opt_options")},
            "low_level": check, "reuse": reused, "seconds": seconds, "spectra": out, "provenance": launched,

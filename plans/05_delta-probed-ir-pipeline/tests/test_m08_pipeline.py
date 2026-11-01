@@ -89,16 +89,49 @@ def test_benzene_is_admitted_with_its_size_against_the_training_range(tmp_path, 
     assert adm.smiles == "c1ccccc1" and adm.formula == "C6H6"
 
 
-def test_the_xyz_input_is_read_as_given(tmp_path, pin_registry):
-    g = json.loads((PIN_CORPUS / "molecules" / BENZENE / "geometry.json").read_text(encoding="utf-8"))
+def write_xyz(path: Path, atoms: list[list]) -> Path:
+    path.write_text(f"{len(atoms)}\nrequest\n" + "\n".join(f"{s} {x:.10f} {y:.10f} {z:.10f}" for s, x, y, z in atoms) + "\n",
+                    encoding="utf-8")
+    return path
+
+
+def bond_graph(atoms: list[list]) -> tuple[list[str], np.ndarray]:
+    """(element per position, adjacency matrix) of atoms as [symbol, x, y, z] in Å."""
+    from rdkit import Chem
+    from rdkit.Chem import rdDetermineBonds
+
+    m = Chem.MolFromXYZBlock(f"{len(atoms)}\n\n" + "\n".join(f"{s} {x} {y} {z}" for s, x, y, z in atoms))
+    rdDetermineBonds.DetermineConnectivity(m)
+    return [a.GetSymbol() for a in m.GetAtoms()], Chem.GetAdjacencyMatrix(m)
+
+
+def corpus_atoms(mol_id: str) -> list[list]:
+    g = json.loads((PIN_CORPUS / "molecules" / mol_id / "geometry.json").read_text(encoding="utf-8"))
     b = 0.529177210903
-    rows = [f"{s} {x * b:.8f} {y * b:.8f} {z * b:.8f}" for s, (x, y, z) in zip(g["symbols"], g["coords_bohr"], strict=True)]
-    xyz = tmp_path / "benzene.xyz"
-    xyz.write_text(f"{len(rows)}\nbenzene\n" + "\n".join(rows) + "\n", encoding="utf-8")
-    cfg = config(tmp_path, smiles=None, xyz=xyz)
-    assert P.admit(cfg).elements == ("C", "H")
-    atoms, options = P.start_geometry(cfg)
-    assert options is None and [a[0] for a in atoms] == g["symbols"] and abs(atoms[0][1] - g["coords_bohr"][0][0] * b) < 1e-7
+    return [[s.capitalize(), x * b, y * b, z * b] for s, (x, y, z) in zip(g["symbols"], g["coords_bohr"], strict=True)]
+
+
+@pytest.mark.parametrize("smiles, mol_id", [("c1ccc2c(c1)ccc1ccccc12", "A_541c53d1a5"), ("Cc1ccccc1", None)],
+                         ids=["phenanthrene", "toluene"])
+def test_an_xyz_input_takes_the_smiles_route_s_order(tmp_path, pin_registry, smiles, mol_id):
+    """Pipeline 0.7: any order of an xyz file reaches the SMILES route's order — the same element at every position and the same bond
+    graph as the canonical SMILES's start geometry — with the file's own coordinates."""
+    reference, _ = P.start_geometry(config(tmp_path, smiles=smiles))
+    atoms = corpus_atoms(mol_id) if mol_id else [[s, *map(float, xyz)] for s, *xyz in reference]
+    ref_graph = bond_graph(reference)
+    rng = np.random.default_rng(0)
+    for trial in range(4):
+        file_order = rng.permutation(len(atoms))
+        xyz = write_xyz(tmp_path / f"request{trial}.xyz", [atoms[k] for k in file_order])
+        cfg = config(tmp_path, smiles=None, xyz=xyz)
+        assert P.admit(cfg).smiles == P.canonical_smiles(smiles)
+        out, options = P.start_geometry(cfg)
+        assert options is None
+        elements, adjacency = bond_graph(out)
+        assert elements == ref_graph[0] and (adjacency == ref_graph[1]).all()
+        order = P.xyz_order(cfg)
+        written = P.xyz_atoms(xyz)
+        assert out == [written[k] for k in order]                       # the file's coordinates, only renumbered
 
 
 def test_two_writings_of_a_molecule_start_from_one_geometry(tmp_path):
