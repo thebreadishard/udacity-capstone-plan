@@ -61,6 +61,12 @@ below 1000 cm⁻¹, where the shifts are small and G's cubics for soft rotors ar
 
 A_8f6ed7c002 (C₈H₈, the fifth of the 18) did not converge: after x0's Hessian the held-Hessian steps took |g| from 9.4e-3 to 4.5e-5 in two, then slid along a soft coordinate for ten more, |g| growing to 4.2e-4 while the energy fell by about 1e-6 E_h a step, and the run stopped at MAX_STEPS (exit 1, 00:11). The optimiser now refreshes the Hessian where it stands when a step fails to halve max |g| (`needs_refresh`, REFRESH_RATIO 0.5, test); the record keeps H0 as x0's Hessian, so line B's Newton step is unchanged, and counts the refreshes. Only the route to x_T changes, not x_T (still max |g| ≤ 1e-6) nor any line. The four molecules done never met the rule's condition (each step at least halved |g|), so their records stand. Water smoke with the new code: 3 steps, 0 refreshes, 9.4e-8. If x_T of a molecule turns out to be another conformer (an imaginary mode at x0's ωB97X Hessian along that coordinate), the read reports it with the molecule; the lines stay as registered.
 
+## Amendment 2 (1 November 2026, 20:3x, before any read; all 18 runs done; agreed with the user)
+
+All 18 runs reached x_T (max |g| ≤ 8e-7). The first read stopped before any line was computed: `harmonic` refused ωB97X's Hessian at x_T for A_8f6ed7c002 (styrene) and B_190a33a33e (ethynylstyrene), the two runs whose optimisation refreshed the Hessian (4 and 2 times, amendment 1). In each one mode is imaginary at x_T, the vinyl torsion (41.1i and 43.1i cm⁻¹): ωB97X's planar stationary point is a saddle along that twist, its minimum slightly non-planar. That mode has no measured shift.
+
+The rule: for those two molecules only, the mode paired with the imaginary torsion at x_T leaves the read; every other mode of all 18 molecules is read, and lines A–D, their thresholds and the 1 cm⁻¹ floor are unchanged (D still counts 18 molecules). As a check, not as the registered verdict, the read also reports A, B and C and the number of molecules helped without the two. The read refuses an imaginary mode at x_T in any other molecule, and either of the two without exactly one (`IMAGINARY_AT_XT`, `modes_at_target`, four tests). Not chosen: optimising the two to their non-planar minimum. The displacement would then be mostly a large move along the softest mode, which a first-order term in Δq is not meant to carry, and the registered x_T (the minimum the held-Hessian Newton route reaches) would change after the runs.
+
 ## Outcome
 
 (after the run)

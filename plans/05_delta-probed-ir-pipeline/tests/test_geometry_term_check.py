@@ -1,7 +1,8 @@
 """The geometry-term read (`probes/geometry_term_check.py`, TASKS 156 (d)) on synthetic records, before any run: a water-like molecule whose
 higher level's Hessian at its own minimum is built so that every band moves by exactly ½ Σ_k φ_iik Δq_k — the read must find the term,
 equal through the true displacement and the Newton step — and the cases it must fail or refuse: the cubic constants of the wrong sign, a
-missing run, a run made on another force field, a reference whose ω are not the force field's."""
+missing run, a run made on another force field, a reference whose ω are not the force field's; amendment 2's imaginary mode at x_T,
+left out for a registered molecule and refused elsewhere."""
 from __future__ import annotations
 
 import json
@@ -26,18 +27,19 @@ DQ = np.array([0.04, -0.03, 0.02])
 
 
 def hessian(x: np.ndarray, omega_cm: np.ndarray, q: np.ndarray | None = None) -> tuple[np.ndarray, np.ndarray]:
-    """A Cartesian Hessian with these frequencies; its mass-weighted modes q (the internal space's at x unless given)."""
+    """A Cartesian Hessian with these frequencies (a negative one is imaginary); its mass-weighted modes q (the internal space's at x
+    unless given)."""
     m = atomic_masses_me(SYM)
     if q is None:
         P = translation_rotation_projector(x, m)
         w, v = np.linalg.eigh(P)
         q = v[:, w > 0.5]
-    F = q @ np.diag((omega_cm / HARTREE_CM) ** 2) @ q.T
+    F = q @ np.diag(np.sign(omega_cm) * (omega_cm / HARTREE_CM) ** 2) @ q.T
     mh = np.repeat(np.sqrt(m), 3)
     return mh[:, None] * F * mh[None, :], q
 
 
-def write_molecule(s2: Path, runs: Path, mol_id: str, sign: float = 1.0) -> None:
+def write_molecule(s2: Path, runs: Path, mol_id: str, sign: float = 1.0, bend_imaginary_at_target: bool = False) -> None:
     H_g, _ = hessian(X0, OMEGA_CM)
     hg = harmonic(H_g, SYM, X0)
     phi = np.zeros((3, 3, 3))
@@ -51,6 +53,8 @@ def write_molecule(s2: Path, runs: Path, mol_id: str, sign: float = 1.0) -> None
     dx = (hg.A @ DQ).reshape(3, 3)
     x_t = X0 + dx
     moved = hg.omega_cm + 0.5 * PHI_DIAG @ DQ               # the true cubics: the sign test's report lies about them
+    if bend_imaginary_at_target:
+        moved[0] = -45.0
     H_t, _ = hessian(x_t, moved, q=hg.q)
     run_dir = runs / mol_id
     run_dir.mkdir(parents=True)
@@ -90,6 +94,37 @@ def test_cubic_constants_of_the_wrong_sign_fail(tmp_path):
     s2, runs = molecules(tmp_path, 18, sign=-1.0)
     s = G.read(s2, runs, tmp_path / "out")
     assert not s["lines"]["A"] and not s["lines"]["C"] and not s["passed"]
+
+
+def test_the_modes_at_the_target_are_harmonic_s_on_a_minimum():
+    H, _ = hessian(X0, OMEGA_CM)
+    w, q = G.modes_at_target(H, SYM, X0, "M")
+    assert np.allclose(w, harmonic(H, SYM, X0).omega_cm, atol=1e-6) and q.shape == (9, 3)
+
+
+def test_amendment_2_leaves_out_the_registered_imaginary_mode_and_reports_the_check(tmp_path, monkeypatch):
+    monkeypatch.setattr(G, "IMAGINARY_AT_XT", {"M00": 1})
+    write_molecule(tmp_path / "s2", tmp_path / "runs", "M00", bend_imaginary_at_target=True)
+    for k in range(1, 18):
+        write_molecule(tmp_path / "s2", tmp_path / "runs", f"M{k:02d}")
+    s = G.read(tmp_path / "s2", tmp_path / "runs", tmp_path / "out")
+    assert s["per_molecule"]["M00"]["modes"] == 2 and s["modes_read"] == 53
+    assert list(s["dropped"]) == ["M00"] and np.allclose(s["dropped"]["M00"], [OMEGA_CM[0]], atol=1e-3)
+    assert s["passed"] and s["check_without_dropped"]["molecules"] == 17 and set(s["check_without_dropped"]["lines"]) == {"A", "B", "C"}
+    assert "Check without those molecules" in (tmp_path / "out" / "geometry_term_read.md").read_text(encoding="utf-8")
+
+
+def test_an_imaginary_mode_outside_amendment_2_is_refused(tmp_path):
+    write_molecule(tmp_path / "s2", tmp_path / "runs", "M00", bend_imaginary_at_target=True)
+    with pytest.raises(SystemExit, match="1 imaginary mode"):
+        G.read(tmp_path / "s2", tmp_path / "runs", tmp_path / "out")
+
+
+def test_a_registered_molecule_without_its_imaginary_mode_is_refused(tmp_path, monkeypatch):
+    monkeypatch.setattr(G, "IMAGINARY_AT_XT", {"M00": 1})
+    s2, runs = molecules(tmp_path, 1)
+    with pytest.raises(SystemExit, match="0 imaginary mode"):
+        G.read(s2, runs, tmp_path / "out")
 
 
 def test_a_force_field_without_its_run_is_refused(tmp_path):

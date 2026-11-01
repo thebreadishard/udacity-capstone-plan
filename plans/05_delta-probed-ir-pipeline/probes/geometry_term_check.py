@@ -11,6 +11,8 @@ whose force fields exist at the anharmonic level G (S2, B3LYP/6-31G*, grid 75/30
     read <s2 root> <runs root> [--out <dir>]                                                     (no pyscf)
          per molecule: measured Δω (ωB97X at x_T minus at x0, modes paired by overlap, then to G's modes) against the term with Δq from
          the true displacement and from the first Newton step at x0 (what a product could compute), and the registered lines.
+         Amendment 2: a mode imaginary at x_T leaves the read for the molecules in IMAGINARY_AT_XT only; the lines are also
+         reported without those molecules, as a check.
 """
 from __future__ import annotations
 
@@ -29,13 +31,16 @@ from scipy.optimize import linear_sum_assignment
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent / "src"))
 sys.path.insert(0, str(HERE))
-from dpir.qff import harmonic  # noqa: E402
+from dpir.qff import HARTREE_CM, atomic_masses_me, harmonic, translation_rotation_projector  # noqa: E402
 
 RUN_FILE = "geometry_term_run.npz"
 MIN_SHIFT_CM = 1.0                 # modes the geometry moves by less are below what the lines read
 WINDOWS = (("below 1000", 0.0, 1000.0), ("1000-1900", 1000.0, 1900.0), ("1900-2700", 1900.0, 2700.0), ("X-H stretch", 2700.0, 1e9))
 MIN_WINDOW_MODES = 10
 LINE_A, LINE_B, LINE_D = 0.30, 0.35, 16      # residual / shift (true Δq), (Newton Δq); molecules where the term helps
+IMAGINARY_EIGENVALUE = 1e-8                  # `harmonic`'s bound on the projected mass-weighted Hessian (a.u.)
+# amendment 2: ωB97X's vinyl torsion at the planar x_T (41.1i and 43.1i cm⁻¹); that mode leaves the read, nothing else does
+IMAGINARY_AT_XT = {"A_8f6ed7c002": 1, "B_190a33a33e": 1}
 OMEGA_CHECK_CM = 0.01              # the reference Hessian's ω against the force field's own
 MAX_STEPS = 12                     # Newton steps on the held Hessian before the run is refused
 REFRESH_RATIO = 0.5                # a step that leaves more of |g| than this refreshes the Hessian where it stands
@@ -115,6 +120,23 @@ def reduced(h, dx: np.ndarray) -> np.ndarray:
     return np.sqrt(h.omega) * (h.q.T @ (dx.reshape(-1) / h.Minvh))
 
 
+def modes_at_target(H: np.ndarray, sym: list[str], x: np.ndarray, mol_id: str) -> tuple[np.ndarray, np.ndarray]:
+    """ωB97X's 3N-6 modes at x_T: (ω in cm⁻¹, negative for an imaginary mode; mass-weighted modes as columns). `harmonic` refuses an
+    imaginary mode; amendment 2 lets exactly the registered count through for the molecules in IMAGINARY_AT_XT, and none elsewhere."""
+    m = atomic_masses_me(sym)
+    Minvh = np.repeat(1.0 / np.sqrt(m), 3)
+    P = translation_rotation_projector(x, m)
+    lam, q = np.linalg.eigh(P @ (Minvh[:, None] * H * Minvh[None, :]) @ P)
+    vib = np.linalg.norm(P @ q, axis=0) > 0.5            # translations and rotations lie in P's null space
+    if vib.sum() != 3 * len(sym) - 6:
+        raise SystemExit(f"{mol_id}: {vib.sum()} internal modes at x_T, expected {3 * len(sym) - 6}")
+    lam, q = lam[vib], q[:, vib]
+    n_imaginary = int((lam < -IMAGINARY_EIGENVALUE).sum())
+    if n_imaginary != IMAGINARY_AT_XT.get(mol_id, 0):
+        raise SystemExit(f"{mol_id}: {n_imaginary} imaginary mode(s) at x_T, {IMAGINARY_AT_XT.get(mol_id, 0)} registered (amendment 2)")
+    return np.sign(lam) * np.sqrt(np.abs(lam)) * HARTREE_CM, q
+
+
 def paired(qa: np.ndarray, qb: np.ndarray) -> tuple[np.ndarray, float]:
     """For every mode of a, the mode of b with the largest total overlap (an assignment); the smallest overlap² taken."""
     s = (qa.T @ qb) ** 2
@@ -139,6 +161,7 @@ class Molecule:
     predicted_newton: np.ndarray
     predicted_g_curvature: np.ndarray
     min_overlap: float
+    dropped_g_cm: tuple[float, ...]     # G's ω of the modes amendment 2 leaves out
 
 
 def molecule(mol_id: str, g_dir: Path, run_file: Path) -> Molecule:
@@ -157,14 +180,17 @@ def molecule(mol_id: str, g_dir: Path, run_file: Path) -> Molecule:
     if np.abs(hg.omega_cm - omega_ff).max() > OMEGA_CHECK_CM:
         raise SystemExit(f"{mol_id}: the reference Hessian's ω differ from the force field's by {np.abs(hg.omega_cm - omega_ff).max():.3f} cm⁻¹")
     cubic = np.einsum("iik->ik", phi)
-    h0, ht = harmonic(H0, sym, x0), harmonic(H_t, sym, x_t)
-    t_of_t0, ov1 = paired(h0.q, ht.q)              # ωB97X's modes at x_T paired with its modes at x0 ...
+    h0 = harmonic(H0, sym, x0)
+    omega_t, q_t = modes_at_target(H_t, sym, x_t, mol_id)
+    t_of_t0, ov1 = paired(h0.q, q_t)               # ωB97X's modes at x_T paired with its modes at x0 ...
     t0_of_g, ov2 = paired(hg.q, h0.q)              # ... and those with G's
-    measured = (ht.omega_cm[t_of_t0] - h0.omega_cm)[t0_of_g]
+    imaginary = (omega_t[t_of_t0] < 0)[t0_of_g]
+    measured = np.where(imaginary, np.nan, (omega_t[t_of_t0] - h0.omega_cm)[t0_of_g])
     dq_true = reduced(hg, x_t - x0)
     dq_newton = reduced(hg, newton_step(x0, g0, H0))
     dq_curv = -(hg.A.T @ g0.reshape(-1)) / hg.omega
-    return Molecule(mol_id, hg.omega_cm, measured, 0.5 * cubic @ dq_true, 0.5 * cubic @ dq_newton, 0.5 * cubic @ dq_curv, min(ov1, ov2))
+    return Molecule(mol_id, hg.omega_cm, measured, 0.5 * cubic @ dq_true, 0.5 * cubic @ dq_newton, 0.5 * cubic @ dq_curv, min(ov1, ov2),
+                    tuple(float(w) for w in hg.omega_cm[imaginary]))
 
 
 def rms(x: np.ndarray) -> float:
@@ -189,7 +215,7 @@ def summary(mols: list[Molecule]) -> dict:
         k = np.abs(m.measured) >= MIN_SHIFT_CM
         per_mol[m.id] = {"modes": int(k.sum()), "rms_shift": rms(m.measured[k]), "rms_residual_true": rms((m.measured - m.predicted_true)[k]),
                          "rms_residual_newton": rms((m.measured - m.predicted_newton)[k]), "min_overlap": m.min_overlap,
-                         "max_shift": float(np.abs(m.measured).max())}
+                         "max_shift": float(np.nanmax(np.abs(m.measured))), "dropped_g_cm": list(m.dropped_g_cm)}
     helped = sum(1 for v in per_mol.values() if v["modes"] and v["rms_residual_true"] < v["rms_shift"])
     res_true, res_newton = rms((meas - pt)[keep]), rms((meas - pn)[keep])
     lines = {"A": res_true <= LINE_A * shift, "B": res_newton <= LINE_B * shift,
@@ -200,6 +226,19 @@ def summary(mols: list[Molecule]) -> dict:
             "thresholds": {"min_shift_cm": MIN_SHIFT_CM, "A": LINE_A, "B": LINE_B, "D": LINE_D, "min_window_modes": MIN_WINDOW_MODES}}
 
 
+def amendment_2_lines(s: dict, ok: dict) -> list[str]:
+    """The modes amendment 2 leaves out and the lines without those molecules (a check; the registered read is the full set)."""
+    c = s["check_without_dropped"]
+    if c is None:
+        return []
+    dropped = "; ".join(f"{k}: G mode at {', '.join(f'{w:.1f}' for w in v)} cm⁻¹" for k, v in s["dropped"].items())
+    return [f"Amendment 2 — left out, imaginary at x_T: {dropped}.", "",
+            f"Check without those molecules (not the registered read): {c['molecules']} molecules, {c['modes_read']} modes; rms shift "
+            f"{c['rms_shift']:.2f}, residual {c['rms_residual_true']:.2f} (true Δq) / {c['rms_residual_newton']:.2f} (Newton Δq) cm⁻¹; "
+            f"A {ok[c['lines']['A']]}, B {ok[c['lines']['B']]}, C {ok[c['lines']['C']]}; the term helps in {c['molecules_helped']} of "
+            f"{c['molecules']}.", ""]
+
+
 def report(s: dict) -> str:
     ok = {True: "holds", False: "fails"}
     lines = [f"# Geometry term beyond benzene — {s['molecules']} molecules, {s['modes_read']} modes moved by ≥ {MIN_SHIFT_CM:g} cm⁻¹", "",
@@ -208,8 +247,9 @@ def report(s: dict) -> str:
              f"- **A** (true Δq, residual ≤ {LINE_A} × shift): {ok[s['lines']['A']]}",
              f"- **B** (Newton Δq, residual ≤ {LINE_B} × shift): {ok[s['lines']['B']]}",
              f"- **C** (no window of ≥ {MIN_WINDOW_MODES} modes made worse): {ok[s['lines']['C']]}",
-             f"- **D** (the term helps in ≥ {LINE_D} molecules): {ok[s['lines']['D']]} ({s['molecules_helped']})", "",
-             "| window | modes | rms shift | residual (true) | residual (Newton) |", "|---|---|---|---|---|"]
+             f"- **D** (the term helps in ≥ {LINE_D} molecules): {ok[s['lines']['D']]} ({s['molecules_helped']})", ""]
+    lines += amendment_2_lines(s, ok)
+    lines += ["| window | modes | rms shift | residual (true) | residual (Newton) |", "|---|---|---|---|---|"]
     lines += [f"| {k} | {v['modes']} | {v['rms_shift']:.2f} | {v['rms_residual_true']:.2f} | {v['rms_residual_newton']:.2f} |"
               for k, v in s["windows"].items()]
     lines += ["", "| molecule | modes | rms shift | residual (true) | residual (Newton) | max shift | min overlap² |", "|---|---|---|---|---|---|---|"]
@@ -225,6 +265,12 @@ def read(s2_root: Path, runs_root: Path, out: Path) -> dict:
         raise SystemExit(f"no run for {', '.join(missing)}: the lines read all the force fields at G")
     mols = [molecule(i, s2_root / i / "G", runs_root / i / RUN_FILE) for i in ids]
     s = summary(mols)
+    s["dropped"] = {m.id: list(m.dropped_g_cm) for m in mols if m.dropped_g_cm}
+    plain = [m for m in mols if not m.dropped_g_cm]
+    check = summary(plain) if len(plain) < len(mols) else None   # D's 16 is registered for 18 molecules: the check reports the count
+    s["check_without_dropped"] = None if check is None else {
+        **{k: check[k] for k in ("molecules", "modes_read", "rms_shift", "rms_residual_true", "rms_residual_newton", "molecules_helped")},
+        "lines": {k: v for k, v in check["lines"].items() if k != "D"}}
     out.mkdir(parents=True, exist_ok=True)
     for name, text in (("geometry_term_read.json", json.dumps(s, indent=1)), ("geometry_term_read.md", report(s))):
         tmp = out / (name + ".tmp")
