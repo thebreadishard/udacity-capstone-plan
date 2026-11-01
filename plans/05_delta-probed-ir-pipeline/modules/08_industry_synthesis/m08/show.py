@@ -182,7 +182,7 @@ def payload(runs: tuple[Path, ...]) -> dict:
     if len(networks) != 1:
         raise ValueError(f"the runs carry different network versions: {sorted(networks)}")
     return {"molecules": sorted(mols, key=lambda m: (m["n_c"], m["name"])), "network": networks.pop(),
-            "licence_line_cm": 3, "station_titles": [dict(s) for s in STATIONS]}
+            "licence_line_cm": 3, "station_titles": [dict(s) for s in STATIONS], "live": False}
 
 
 def page(data: dict) -> str:

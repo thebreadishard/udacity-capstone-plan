@@ -32,6 +32,7 @@
   color-scheme: dark;
 }
 *, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }      /* the picker's chips and list are flex boxes: hidden must win over their display */
 /* type grows with the screen in both directions: about 16 px at 1920×1200, 24 px at 3440×1440, so a wide monitor reads from a distance */
 html { font-family: var(--font-sans); font-size: clamp(13px, calc(0.6vh + 0.45vw), 26px); line-height: 1.4; }
 body { margin: 0; height: 100dvh; overflow: hidden; background: var(--bg); color: var(--fg); display: grid; grid-template-rows: auto 1fr; }
@@ -61,6 +62,8 @@ h2 { margin: 0; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; tex
         font-family: var(--font-mono); font-size: 0.9rem; }
 .chip[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); font-weight: 600; }
 .list { list-style: none; margin: 0; padding: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem; min-height: 0; }
+.livecard { border: 1px solid var(--accent); border-radius: var(--radius); background: var(--bg-elev); padding: 0.9rem 1rem; }
+.livecard p { margin: 0.4rem 0 0; } .livecard code { font-size: 0.85em; overflow-wrap: anywhere; }
 .item { display: grid; grid-template-columns: 4.2rem 1fr; gap: 0.8rem; align-items: center; padding: 0.5rem 0.7rem; border: 1px solid var(--line);
         border-radius: var(--radius); background: var(--bg-elev); cursor: pointer; text-align: left; width: 100%; }
 .item:hover { border-color: var(--accent); }
@@ -160,8 +163,8 @@ h2 { margin: 0; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; tex
   <span class="sub" id="sub"></span>
   <span class="spacer"></span>
   <span class="seg" role="group" aria-label="Mode">
-    <button type="button" aria-pressed="true">Replay</button>
-    <button type="button" disabled title="Live mode: coming with pipeline 0.8">Live</button>
+    <button type="button" id="modeReplay" aria-pressed="true">Replay</button>
+    <button type="button" id="modeLive" aria-pressed="false" disabled title="Live mode: open the page through python -m m08.show_live">Live</button>
   </span>
   <span class="seg" role="group" aria-label="Theme">
     <button type="button" data-theme-choice="light">Light</button>
@@ -174,6 +177,9 @@ h2 { margin: 0; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; tex
     <div class="chips" id="chips"></div>
     <div class="chips" id="filters"></div>
     <ul class="list" id="list" role="listbox" aria-label="Molecules"></ul>
+    <div class="livecard" id="livecard" hidden><b>Live</b><p id="livestate">Waiting for the server…</p>
+      <p class="muted">The page follows the newest run in the folder this server watches; start one in a terminal, e.g.
+      <code class="mono">python -m m08.pipeline --name … --smiles … --out &lt;that folder&gt;</code>.</p></div>
   </section>
   <section aria-label="The pipeline">
     <h2>Pipeline</h2>
@@ -205,7 +211,7 @@ const ICONS = {
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 /* stations: each station's state and time text, kept so that a redraw (a resized window) restores them; finished: the ride reached the end */
-let state = { carbon: null, hetero: false, key: null, running: false, timers: [], stations: [], finished: false };
+let state = { carbon: null, hetero: false, key: null, running: false, timers: [], stations: [], finished: false, mode: "replay" };
 
 /* theme */
 function setTheme(t) {
@@ -271,7 +277,7 @@ function drawMap(mol) {
     $("#map").appendChild(b);
   }
   document.querySelectorAll(".start").forEach((s) => s.remove());
-  if (mol) {
+  if (mol && state.mode !== "live") {
     const btn = document.createElement("button");
     btn.type = "button"; btn.className = "start"; btn.id = "start"; btn.textContent = "Start ▶"; btn.disabled = state.running;
     btn.style.left = g.xs[0] + "px"; btn.style.top = (g.yMain - g.r - g.gap) + "px";
@@ -407,15 +413,93 @@ function showResult(m) {
 
 window.addEventListener("resize", () => {
   if (state.running) return;
+  if (state.mode === "live") {
+    if (!live.mol) return;
+    drawMap(live.mol);
+    const route = liveRoute();
+    $("#run").setAttribute("class", "run" + (live.mol.route === "reused" ? " corpus" : ""));
+    $("#run").setAttribute("d", pathD(route.slice(0, live.at + 1)));
+    place(route[live.at]);
+    return;
+  }
   const m = DATA.molecules.find((x) => x.key === state.key);
   drawMap(m);
   if (m && !state.finished) place(geometry().main[0]);
 });
 $("#sub").textContent = `${DATA.molecules.length} molecules · each run recorded by the pipeline · times are the real ones`;
 renderPicker(); drawMap(null);
+/* live mode (the page served by m08.show_live): follow the newest run's progress.json once a second; the page starts no run */
+const LIVE_POLL = 1000;
+const ROUTE_INDEX = { computed: [0, 1, 2, 3, 4, 5], reused: [0, 1, null, null, 5, 6] };   /* station → its point on the route */
+let live = { folder: null, at: 0, moving: false, shown: false, timer: null, mol: null };
+function placeholder() {
+  $("#current").innerHTML = '<p class="muted">Choose a molecule on the left; it travels through the six stations below, or along the corpus line where the corpus computed steps 3–4 already.</p>';
+}
+function setMode(mode) {
+  state.mode = mode;
+  $("#modeReplay").setAttribute("aria-pressed", String(mode === "replay"));
+  $("#modeLive").setAttribute("aria-pressed", String(mode === "live"));
+  ["#chips", "#filters", "#list"].forEach((s) => { $(s).hidden = mode === "live"; });
+  $("#livecard").hidden = mode !== "live";
+  state.timers.forEach(clearTimeout); state.timers = []; state.running = false; state.finished = false;
+  clearInterval(live.timer);
+  state.key = null; state.stations = []; state.corpusStop = null; $("#token").hidden = true; resetResult(); placeholder(); drawMap(null);
+  if (mode === "live") {
+    live = { folder: null, at: 0, moving: false, shown: false, timer: setInterval(liveTick, LIVE_POLL), mol: null };
+    liveTick();
+  } else {
+    renderPicker();
+  }
+}
+async function liveTick() {
+  let p;
+  try { p = await (await fetch("/progress", { cache: "no-store" })).json(); } catch (e) { $("#livestate").textContent = "The live server does not answer."; return; }
+  if (!p) { $("#livestate").textContent = "No run yet: start one, and it appears here."; return; }
+  if (p.folder !== live.folder) liveStart(p);
+  $("#livestate").textContent = `${p.name} · pipeline ${p.pipeline_version} · ${p.finished ? "finished" : "running"}`;
+  live.mol.route = p.route === "reused" ? "reused" : "computed";
+  p.stations.forEach((s, i) => setStation(i, s.state === "reused" ? "skipped" : s.state, s.time));
+  if (p.route === "reused") setStation("C", "done");
+  liveMoveTo(Math.max(0, ...p.stations.map((s, i) => (s.state === "done" || s.state === "active" ? i : 0))));
+  if (p.finished && !live.shown) {
+    live.shown = true;
+    const r = await fetch(`/result?folder=${encodeURIComponent(p.folder)}`, { cache: "no-store" });
+    if (!r.ok) { live.shown = false; return; }
+    const m = await r.json();
+    showResult(m); $("#realtime").textContent = m.real_time; state.finished = true;
+  }
+}
+function liveStart(p) {
+  live.folder = p.folder; live.at = 0; live.shown = false; live.moving = false;
+  live.mol = { key: "live:" + p.folder, name: p.name, route: "computed",
+               stations: DATA.station_titles.map((t) => ({ ...t, time: "", detail: t.tool })) };
+  state.key = live.mol.key; state.stations = []; state.corpusStop = null; state.finished = false;
+  $("#current").innerHTML = `<div class="pic">${p.molecule.depiction}</div><div><div class="title">${esc(p.name)}</div>
+    <div class="facts"><span class="mono">${esc(p.molecule.formula || "")}</span> · ${p.molecule.n_atoms} atoms · live run</div>
+    <div class="realtime" id="realtime"></div></div>`;
+  const tok = $("#token"); tok.innerHTML = p.molecule.depiction; tok.hidden = false;
+  drawMap(live.mol); resetResult(); place(geometry().main[0]);
+}
+function liveRoute() { const g = geometry(); return live.mol.route === "reused" ? g.corpus : g.main; }
+function liveMoveTo(station) {
+  if (live.moving) return;
+  const route = liveRoute(), target = ROUTE_INDEX[live.mol.route][station];
+  if (target === null || target <= live.at) return;
+  live.moving = true;
+  const run = $("#run"); run.setAttribute("class", "run" + (live.mol.route === "reused" ? " corpus" : ""));
+  const step = () => {
+    if (live.at >= target) { live.moving = false; return; }
+    const base = route.slice(0, live.at + 1);
+    animateTo(route[live.at], route[live.at + 1], STEP_TRAVEL, (pt) => run.setAttribute("d", pathD(base.concat([pt]))), () => { live.at += 1; step(); });
+  };
+  step();
+}
+$("#modeReplay").addEventListener("click", () => setMode("replay"));
+if (DATA.live) { $("#modeLive").disabled = false; $("#modeLive").title = "Follow the newest run on this machine"; $("#modeLive").addEventListener("click", () => setMode("live")); }
 /* a link may open a molecule (#phenanthrene) or start its ride at once (#phenanthrene!) */
 (function () {
   const h = decodeURIComponent(location.hash.slice(1)); if (!h) return;
+  if (h === "live") { if (DATA.live) setMode("live"); return; }      /* #live opens the live mode where the server serves the page */
   const play = h.endsWith("!"), want = play ? h.slice(0, -1) : h;
   const m = DATA.molecules.find((x) => x.key === want || x.name === want); if (!m) return;
   select(m.key); if (play) ride(m);
