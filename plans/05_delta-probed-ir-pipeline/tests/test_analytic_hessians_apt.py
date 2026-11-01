@@ -1,7 +1,8 @@
 """The labels route's APT (11 Oct 2026, TASKS 44 route C): analytic_hessians.py writes dipole_b3lyp_cphf.npz from the response its B3LYP Hessian
 solves (after refine_response, 12 Oct 2026: residual before/after in the file, a residual above the bound fails it); it keeps an existing
 APT file, --no-apt turns it off, analytic_check.json keeps one entry per functional (the export reads it so), and a failed APT costs neither
-Hessian but ends with exit status 3. Water at a small grid; needs pyscf, so it runs in WSL and is skipped elsewhere."""
+Hessian but ends with exit status 3; --newton-finish converges a stalled SCF to the same Hessian. Water at a small grid; needs pyscf, so
+it runs in WSL and is skipped elsewhere."""
 import json
 import sys
 from pathlib import Path
@@ -127,3 +128,28 @@ def test_b3lyp_alone_writes_the_full_runs_b3lyp_files_and_no_wb97x(tmp_path, mon
 def test_an_empty_repeated_or_unknown_functional_list_is_refused(functionals):
     with pytest.raises(ValueError, match="functionals"):
         AH.LabelsRun(grid=(50, 194), charge=0, spin=0, compare_only=False, apt=True, stamp={}, functionals=functionals)
+
+
+def test_newton_finish_converges_a_stalled_scf_and_keeps_the_hessian(tmp_path, monkeypatch):
+    """A DIIS run stopped after two cycles stands in for HBC's stall: off, it is refused; on, the second-order finish and the plain restart
+    converge it, and the Hessian equals the one from an ordinary converged SCF."""
+    mol = AH.labels_mol(WATER, sys.stdout)
+    full, e_full = AH.labels_scf(mol, "b3lyp", (50, 194))
+    real = AH.labels_ks
+
+    def two_cycles(*args):
+        mf = real(*args)
+        mf.max_cycle = 2
+        return mf
+
+    monkeypatch.setattr(AH, "labels_ks", two_cycles)
+    with pytest.raises(RuntimeError, match="SCF not converged"):
+        AH.labels_scf(mol, "b3lyp", (50, 194))
+    mf, e = AH.labels_scf(mol, "b3lyp", (50, 194), newton_finish=True)
+    assert mf.converged and type(mf) is type(full) and abs(e - e_full) < 1e-9
+    assert np.abs(mf.Hessian().kernel() - full.Hessian().kernel()).max() < 1e-6
+
+
+def test_newton_finish_and_compare_only_do_not_combine():
+    with pytest.raises(ValueError, match="--newton-finish and --compare-only"):
+        AH.LabelsRun(grid=(50, 194), charge=0, spin=0, compare_only=True, apt=True, stamp={}, newton_finish=True)

@@ -1,0 +1,22 @@
+{"name": "hbc_wb97x",
+ "purpose": "TASKS 49, step 1 of the user's order of 1 Nov ('Akkoord, bereid stap 1 voor'): HBC's (T_76dfc434db, 60 atoms, 666 functions) wB97X labels again, its B3LYP Hessian reused, with analytic_hessians.py --newton-finish (the DIIS SCF of l5_large stalled at |g| 1.5e-8 with the energy still falling 1.3e-10 a cycle against conv_tol 1e-11; the second-order finish follows pyscf's examples/scf/22-newton.py). Alone on the CCX53 after tasks74_labels ends (its four lanes hold about 88 GB and all 32 cores), at l5_large's settings, under which HBC's B3LYP Hessian peaked at 42 GB",
+ "host": "labels",
+ "workdir": "/root/l5b",
+ "command": "CODE=/root/l5b/modules/05_support_predictor/corpus IDS_FILE=ids_hbc.tsv LANES=1 THREADS=32 CAP_MB=112640 LABEL_ARGS='--max-memory 100000 --reuse-existing --newton-finish' bash probes/labels_batch_ccx53.sh /root/l5b HBC /root/t74/tasks74_labels.log '^=== \\(T74\\) all done'",
+ "sources": [
+  {"local": "probes/labels_batch_ccx53.sh", "remote": "/root/l5b/probes/labels_batch_ccx53.sh"},
+  {"local": "probes/wsl_capped.sh", "remote": "/root/l5b/probes/wsl_capped.sh"},
+  {"local": "probes/cation_oom_check.sh", "remote": "/root/l5b/probes/cation_oom_check.sh"},
+  {"local": "probes/library_log.py", "remote": "/root/l5b/probes/library_log.py"},
+  {"local": "modules/05_support_predictor/corpus/psi4_worker.py", "remote": "/root/l5b/modules/05_support_predictor/corpus/psi4_worker.py"},
+  {"local": "modules/05_support_predictor/corpus/analytic_hessians.py", "remote": "/root/l5b/modules/05_support_predictor/corpus/analytic_hessians.py"},
+  {"local": "modules/05_support_predictor/corpus/apt.py", "remote": "/root/l5b/modules/05_support_predictor/corpus/apt.py"},
+  {"local": "probes/results_m1/l5b_2026-11-01/ids_hbc.tsv", "remote": "/root/l5b/ids_hbc.tsv"}
+ ],
+ "progress": {"regex": "^  T_76dfc434db (labels started|labelled|KILLED|LABELS)", "max_gap_minutes": 120,
+              "start_regex": "^=== \\(HBC\\) start: ", "heartbeat_glob": "molecules/T_76dfc434db/pyscf.log"},
+ "marker_regex": "^=== \\(HBC\\) (start|all done|STOPPED)|^  T_76dfc434db (KILLED|LABELS)",
+ "end_regex": "^=== \\(HBC\\) all done: 0 failures",
+ "dry_run_args": "--dry-run",
+ "threads": 32,
+ "estimate": {"hours": 7, "basis": "after tasks74_labels: HBC's B3LYP Hessian took 20,673 s at 32 threads under these settings (l5_large, 1 Nov); the wB97X Hessian taken as the same, plus its SCF (about 50 cycles of 26 s) and the second-order finish if it stalls again"}}
