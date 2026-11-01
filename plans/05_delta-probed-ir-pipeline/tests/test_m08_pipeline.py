@@ -15,6 +15,7 @@ from pin_tools import DATA, PIN_CORPUS, PLAN, require_frozen_corpus
 
 sys.path.insert(0, str(PLAN / "modules" / "08_industry_synthesis"))
 from m08 import pipeline as P
+from m08.progress import Progress
 from m08.spectrum import series
 
 PIN_MODEL = DATA / "rungC_cc_pin_model.pt"
@@ -264,7 +265,9 @@ def test_reuse_only_refuses_a_molecule_the_corpus_cannot_give_before_computing(t
     monkeypatch.setattr(P, "optimise", computed)
     monkeypatch.setattr(P, "low_level", computed)
     with pytest.raises(P.Refused, match="--reuse-only: the corpus cannot give steps 2–3 — no corpus folder holds it"):
-        P.low_level_files(config(tmp_path, reuse_only=True), {})
+        cfg = config(tmp_path, reuse_only=True)
+        cfg.folder.mkdir(parents=True)
+        P.low_level_files(cfg, {}, Progress(cfg.folder, cfg.name, P.PIPELINE_VERSION, {}))
 
 
 def test_a_refusal_exits_2_with_its_reasons(tmp_path, pin_registry, pin_defaults, capsys):

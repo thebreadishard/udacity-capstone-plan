@@ -19,11 +19,18 @@ sys.path.insert(0, str(PLAN / "modules" / "08_industry_synthesis"))
 from m08 import pipeline as P
 from m08 import reuse as R
 from m08 import runtime as RT
+from m08.progress import Progress
 
 PIN_MODEL = DATA / "rungC_cc_pin_model.pt"
 BENZENE, PHENANTHRENE = "A_8448043181", "A_541c53d1a5"
 SMILES = "c1ccccc1"
 PHEN_CANONICAL, PHEN_OTHER = "c1ccc2c(c1)ccc1ccccc12", "c1ccc2c3ccccc3ccc2c1"
+
+
+def progress_of(cfg: P.PipelineConfig) -> Progress:
+    """A run folder's progress record, as run() makes it before steps 1–3."""
+    cfg.folder.mkdir(parents=True, exist_ok=True)
+    return Progress(cfg.folder, cfg.name, P.PIPELINE_VERSION, {})
 
 
 def pipeline_start(canonical: str) -> R.Start:
@@ -60,7 +67,7 @@ def write_source(d: Path, mol_id: str = BENZENE, canonical: str = SMILES, perm: 
     a.update({k: np.array(v) for k, v in apt_over.items()})
     np.savez(d / R.APT, **a)
     shutil.copy(src / R.RESULT, d / R.RESULT)
-    (d / R.CHECK).write_text(json.dumps({"b3lyp": {"freq_analytic": [1.0]}}), encoding="utf-8")
+    (d / R.CHECK).write_text(json.dumps({"b3lyp": {"freq_analytic": [1.0], "seconds": 1.0}}), encoding="utf-8")   # as every corpus check does
     start = pipeline_start(canonical)
     (d / R.JOB).write_text(json.dumps({"xyz_angstrom": [[s, *map(float, r)] for s, r in zip(g["symbols"], start.xyz_angstrom[p], strict=True)]}),
                            encoding="utf-8")
@@ -215,7 +222,7 @@ def test_a_reused_run_skips_the_optimisation_and_the_low_level(tmp_path, frozen,
     monkeypatch.setattr(P, "optimise", lambda *a: pytest.fail("optimised although the corpus holds the molecule"))
     monkeypatch.setattr(P, "low_level", lambda *a: pytest.fail("computed the low level although the corpus holds it"))
     seconds: dict[str, float] = {}
-    psi4, check, reused = P.low_level_files(cfg, seconds)
+    psi4, check, reused = P.low_level_files(cfg, seconds, progress_of(cfg))
     assert reused["reused"] and list(seconds) == ["reuse"] and psi4["status"] == "done" and "b3lyp" in check
     assert (cfg.folder / P.RI.LOW_HESSIAN).is_file() and P.cheap_apt(cfg.folder) is not None
 
@@ -225,7 +232,7 @@ def test_a_refused_corpus_computes_and_says_why(tmp_path, frozen, monkeypatch, c
     monkeypatch.setattr(P, "optimise", lambda *a: {"status": "done"})
     monkeypatch.setattr(P, "low_level", lambda cfg: {"b3lyp": {}})
     seconds: dict[str, float] = {}
-    _, _, reused = P.low_level_files(cfg, seconds)
+    _, _, reused = P.low_level_files(cfg, seconds, progress_of(cfg))
     assert not reused["reused"] and set(seconds) == {"optimise", "low_level"}
     assert "computed, not reused" in capsys.readouterr().out
 

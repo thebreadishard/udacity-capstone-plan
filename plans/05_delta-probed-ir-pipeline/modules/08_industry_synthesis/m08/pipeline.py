@@ -35,6 +35,7 @@ import numpy as np
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from . import reuse as R
+from .progress import Progress
 from .catalog import PLAN, Catalog
 from .spectrum import cheap_apt, series
 
@@ -54,7 +55,7 @@ from scale_factor_baseline import PAHDB_FACTORS, pahdb_region  # noqa: E402
 
 from dpir.provenance import git_state, provenance  # noqa: E402
 
-PIPELINE_VERSION = "0.8"               # modules/PIPELINE.md
+PIPELINE_VERSION = "0.9"               # modules/PIPELINE.md
 NETWORK = "ΔH-network"
 CORPUS_ROOT = M05 / "corpus"
 CORPUS = CORPUS_ROOT / "molecules"
@@ -370,23 +371,33 @@ def from_corpus(cfg: PipelineConfig, xyz: list[list], opt_options: dict | None) 
     return R.reuse(canonical_smiles(cfg.smiles), start, cfg.folder, cfg.corpus, REUSE_SETTINGS)
 
 
-def low_level_files(cfg: PipelineConfig, seconds: dict[str, float]) -> tuple[dict, dict, dict]:
-    """Steps 1–3: (the optimisation's result, the analytic check, the reuse record), from the corpus or computed; each step's seconds."""
+def low_level_files(cfg: PipelineConfig, seconds: dict[str, float], progress: Progress) -> tuple[dict, dict, dict]:
+    """Steps 1–3: (the optimisation's result, the analytic check, the reuse record), from the corpus or computed; each step's seconds,
+    and each station's state in `progress`."""
     t = time.time()
+    progress.start("geometry")
     xyz, opt_options = start_geometry(cfg)
+    progress.done("geometry")
     reused = from_corpus(cfg, xyz, opt_options)
     if reused["reused"]:
         seconds["reuse"] = round(time.time() - t, 1)
         d = cfg.folder
-        return (json.loads((d / "result.json").read_text(encoding="utf-8")),
-                json.loads((d / "analytic_check.json").read_text(encoding="utf-8")), reused)
+        psi4 = json.loads((d / "result.json").read_text(encoding="utf-8"))
+        check = json.loads((d / "analytic_check.json").read_text(encoding="utf-8"))
+        progress.reused("optimise", psi4["timings_s"]["optimise"])
+        progress.reused("hessian", check["b3lyp"]["seconds"])
+        return psi4, check, reused
     if cfg.reuse_only:
         raise Refused([f"--reuse-only: the corpus cannot give steps 2–3 — {'; '.join(reused['why'])}"])
     print(f"[pipeline] computed, not reused: {'; '.join(reused['why'])}", flush=True)
+    progress.start("optimise")
     psi4 = optimise(cfg, xyz, opt_options)
+    progress.done("optimise")
     seconds["optimise"] = round(time.time() - t, 1)
     t = time.time()
+    progress.start("hessian")
     check = low_level(cfg)
+    progress.done("hessian")
     seconds["low_level"] = round(time.time() - t, 1)
     return psi4, check, reused
 
@@ -463,12 +474,19 @@ def run(cfg: PipelineConfig) -> dict:
     torch.set_num_threads(cfg.threads)
     d = cfg.folder
     d.mkdir(parents=True, exist_ok=True)
+    progress = Progress(d, cfg.name, PIPELINE_VERSION, {"smiles": adm.smiles, "formula": adm.formula, "n_atoms": adm.n_atoms})
+    progress.start("molecule")
+    progress.done("molecule")                               # admitted before the folder existed
     seconds: dict[str, float] = {}
-    psi4, check, reused = low_level_files(cfg, seconds)
+    psi4, check, reused = low_level_files(cfg, seconds, progress)
     t = time.time()
+    progress.start("network")
     dH, dH_seeds = correction(cfg.models, d)
     save_correction(d, dH, dH_seeds, cfg.models)
+    progress.done("network")
+    progress.start("spectrum")
     out = spectra(d, dH, dH_seeds)
+    progress.done("spectrum")
     seconds["correction_and_spectra"] = round(time.time() - t, 1)
     rec = {"pipeline_version": PIPELINE_VERSION, "name": cfg.name,
            "input": {"smiles": cfg.smiles, "xyz": cfg.xyz, "xyz_atom_order": xyz_order(cfg) if cfg.xyz is not None else None},
@@ -522,6 +540,7 @@ def main(argv: list[str] | None = None) -> int:
     n = len(rec["spectra"]["network"]["sticks"])
     print(f"[pipeline] done: {n} bands, {cfg.folder / 'pipeline.json'} ({sum(rec['seconds'].values()):.0f} s)", flush=True)
     _, md = write(certificate(cfg.folder, catalog), cfg.folder)
+    Progress.load(cfg.folder).finish()
     print(f"[pipeline] certificate: {md}", flush=True)
     return 0
 
