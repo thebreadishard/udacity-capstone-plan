@@ -76,3 +76,21 @@ list, in the first free laptop slot (the laptop runs geometry_term today). Estim
 phenanthrene B3LYP Hessian took about an hour at six threads) plus an optimisation of 10–30 gradients, so about 2–3 h for a molecule of
 20–26 atoms and 15–22 laptop hours for the eight; benzene's timing replaces this estimate before the others start. Through
 `tools/runspec.py launch` with the memory budget of 13 GB for all laptop runs together.
+
+## Amendment (1 November 2026, 11:4x, before any computation of the pyscf route)
+
+Written with the run script `probes/engine_check.py` (`prepare`, `optimise`, `evaluate`), before the first pyscf optimisation.
+
+1. **The compared psi4 route is an analytic-only folder per molecule** (the corpus geometry and its two analytic Hessians, result.json
+   labelled analytic-only), as the pyscf route's folders are. The licence's recorded read loaded the corpus folders with psi4's FD pair
+   and substituted the analytic one, keeping the mode-family labels from the FD pair (`e7_rungB_reread_analytic.substitute`); a
+   pyscf folder has no FD pair and is labelled from its analytic Hessian. Both compared routes now go through the same loader path.
+   **Check 0** runs on exact copies of the eight corpus folders (`check0/`, the recorded read's path). Measured with v1.3's three seeds
+   (only as the mechanics' test; the deciding models are v1.5's): check 0 = 0.0 cm⁻¹ at four threads, and the analytic-only psi4 route
+   gives the same seed means to 1e-4 (ring-ip 1.7733, CH-stretch 1.1857, CH-oop 2.1729, other 3.6240), so the family labels agree for
+   these eight molecules (`probes/results_m1/engine_check_2026-11-01/psi4.json`).
+2. **torch runs at four threads** in `evaluate`, as the recorded reads ran (`probes/holdout_a_clean.sh`): at the default count check 0
+   was 3.1e-8 cm⁻¹, float32 sums following the thread count; at four it is 0.
+3. **geomeTRIC is not installed in the laptop's WSL `qc05`** (nor networkx, which it needs); the servers' qc05 has it. The water smoke
+   stopped at the import. It is installed (geomeTRIC 1.1.1, as CI pins it) after geometry_term ends — that run uses the same
+   environment, and software changes only between runs — and the smoke runs then, before benzene.
