@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pipeline Show</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+/* The Spectrum Atlas tokens (website/site/src/styles/tokens.css), with the show's own additions below. */
+:root {
+  --bg: oklch(0.99 0.004 260); --bg-elev: oklch(1 0 0); --fg: oklch(0.22 0.02 260); --fg-muted: oklch(0.48 0.02 260);
+  --line: oklch(0.90 0.01 260); --accent: oklch(0.50 0.16 275); --accent-soft: oklch(0.94 0.04 275); --ok: oklch(0.55 0.14 150);
+  --warn: oklch(0.70 0.15 70); --focus: oklch(0.55 0.20 275); --corpus: oklch(0.60 0.12 200); --corpus-soft: oklch(0.94 0.03 200);
+  --radius: 14px;
+  --font-sans: "Source Sans 3", "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: oklch(0.17 0.015 260); --bg-elev: oklch(0.21 0.015 260); --fg: oklch(0.93 0.01 260); --fg-muted: oklch(0.70 0.015 260);
+    --line: oklch(0.32 0.015 260); --accent: oklch(0.78 0.12 275); --accent-soft: oklch(0.30 0.06 275); --ok: oklch(0.75 0.13 150);
+    --warn: oklch(0.80 0.14 70); --focus: oklch(0.80 0.16 275); --corpus: oklch(0.76 0.10 200); --corpus-soft: oklch(0.30 0.05 200);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: oklch(0.17 0.015 260); --bg-elev: oklch(0.21 0.015 260); --fg: oklch(0.93 0.01 260); --fg-muted: oklch(0.70 0.015 260);
+  --line: oklch(0.32 0.015 260); --accent: oklch(0.78 0.12 275); --accent-soft: oklch(0.30 0.06 275); --ok: oklch(0.75 0.13 150);
+  --warn: oklch(0.80 0.14 70); --focus: oklch(0.80 0.16 275); --corpus: oklch(0.76 0.10 200); --corpus-soft: oklch(0.30 0.05 200);
+  color-scheme: dark;
+}
+*, *::before, *::after { box-sizing: border-box; }
+/* type grows with the screen in both directions: about 16 px at 1920×1200, 24 px at 3440×1440, so a wide monitor reads from a distance */
+html { font-family: var(--font-sans); font-size: clamp(13px, calc(0.6vh + 0.45vw), 26px); line-height: 1.4; }
+body { margin: 0; height: 100dvh; overflow: hidden; background: var(--bg); color: var(--fg); display: grid; grid-template-rows: auto 1fr; }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.muted { color: var(--fg-muted); }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 6px; }
+
+header { display: flex; align-items: center; gap: 1.2rem; padding: 0.8rem 1.6rem; border-bottom: 1px solid var(--line); }
+header h1 { margin: 0; font-size: 1.35rem; font-weight: 700; letter-spacing: -0.01em; }
+header .sub { color: var(--fg-muted); font-size: 0.95rem; }
+header .spacer { flex: 1; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+.seg button { background: none; border: 0; padding: 0.35rem 0.9rem; cursor: pointer; color: var(--fg-muted); }
+.seg button[aria-pressed="true"] { background: var(--accent-soft); color: var(--fg); font-weight: 600; }
+.seg button:disabled { cursor: not-allowed; opacity: 0.5; }
+
+main { display: grid; grid-template-columns: minmax(16rem, 20%) minmax(0, 1fr) minmax(22rem, 31%); min-height: 0; }
+@media (min-aspect-ratio: 2/1) { main { grid-template-columns: minmax(16rem, 17%) minmax(0, 1fr) minmax(24rem, 32%); } }
+section { min-height: 0; display: flex; flex-direction: column; padding: 1.2rem 1.4rem; gap: 1rem; }
+section + section { border-left: 1px solid var(--line); }
+h2 { margin: 0; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-muted); }
+
+/* left: the picker */
+.chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.chip { border: 1px solid var(--line); background: var(--bg-elev); border-radius: 999px; padding: 0.2rem 0.75rem; cursor: pointer;
+        font-family: var(--font-mono); font-size: 0.9rem; }
+.chip[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); font-weight: 600; }
+.list { list-style: none; margin: 0; padding: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem; min-height: 0; }
+.item { display: grid; grid-template-columns: 4.2rem 1fr; gap: 0.8rem; align-items: center; padding: 0.5rem 0.7rem; border: 1px solid var(--line);
+        border-radius: var(--radius); background: var(--bg-elev); cursor: pointer; text-align: left; width: 100%; }
+.item:hover { border-color: var(--accent); }
+.item[aria-selected="true"] { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.item .pic { width: 4.2rem; height: 3.4rem; color: var(--fg); display: grid; place-items: center; }
+.item .pic svg { width: 100%; height: 100%; }
+.item .name { font-weight: 600; text-transform: capitalize; }
+.item .meta { font-size: 0.85rem; color: var(--fg-muted); display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+.badge { font-size: 0.75rem; border-radius: 999px; padding: 0.05rem 0.5rem; border: 1px solid var(--line); white-space: nowrap; }
+.badge[data-role="a"], .badge[data-role="b"] { border-color: var(--ok); color: var(--ok); }
+.badge[data-role="unseen"], .badge[data-role="catalogue"] { border-color: var(--accent); color: var(--accent); }
+.badge[data-role="trained"], .badge[data-role="trained_and_held_out"] { color: var(--fg-muted); }
+
+/* middle: the metro map */
+.stage { position: relative; display: flex; flex-direction: column; gap: 1rem; min-height: 0; flex: 1; }
+.current { display: flex; align-items: center; gap: 1.2rem; }
+.current .pic { width: 7rem; height: 5.5rem; color: var(--fg); }
+.current .pic svg { width: 100%; height: 100%; }
+.current .title { font-size: 1.6rem; font-weight: 700; text-transform: capitalize; line-height: 1.1; }
+.current .facts { color: var(--fg-muted); }
+.start { margin-left: auto; border: 0; border-radius: 999px; padding: 0.7rem 1.8rem; background: var(--accent); color: var(--bg); font-weight: 700;
+         font-size: 1.1rem; cursor: pointer; box-shadow: 0 6px 18px -8px var(--accent); }
+.start:disabled { opacity: 0.45; cursor: default; box-shadow: none; }
+.map { position: relative; flex: 1; min-height: 0; }
+.map svg.lines { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.lines .base { fill: none; stroke: var(--line); stroke-width: 10; stroke-linecap: round; stroke-linejoin: round; }
+.lines .branch { fill: none; stroke: var(--corpus-soft); stroke-width: 10; stroke-linecap: round; stroke-linejoin: round; }
+.lines .run { fill: none; stroke: var(--accent); stroke-width: 10; stroke-linecap: round; stroke-linejoin: round; }
+.lines .run.corpus { stroke: var(--corpus); }
+.lines .dot { fill: var(--bg-elev); stroke: var(--line); stroke-width: 4; }
+.lines .dot.done { stroke: var(--accent); fill: var(--accent); }
+.lines .dot.active { stroke: var(--accent); }
+.lines .dot.skipped { stroke-dasharray: 4 4; }
+.lines .branch-label { fill: var(--corpus); font-size: 0.85rem; font-weight: 600; letter-spacing: 0.04em; }
+.ring { fill: none; stroke: var(--accent); stroke-width: 3; opacity: 0; transform-box: fill-box; transform-origin: center; }
+.ring.on { animation: pulse 1.4s ease-out infinite; }
+@keyframes pulse { 0% { opacity: 0.8; transform: scale(1); } 100% { opacity: 0; transform: scale(2.4); } }
+.station { position: absolute; transform: translateX(-50%); width: min(15%, 14rem); min-height: 10.5rem; padding: 0.7rem 0.8rem; border: 1px solid var(--line);
+           border-radius: var(--radius); background: var(--bg-elev); transition: border-color 0.3s, box-shadow 0.3s, opacity 0.3s; cursor: pointer; text-align: left; }
+.station .icon { width: 1.8rem; height: 1.8rem; color: var(--fg-muted); }
+.station .t { font-weight: 700; margin-top: 0.3rem; }
+.station .tool { font-size: 0.82rem; color: var(--fg-muted); }
+.station .time { margin-top: 0.4rem; font-size: 0.85rem; min-height: 2.4em; color: var(--fg-muted); }
+.station[data-state="active"] { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+.station[data-state="active"] .icon, .station[data-state="done"] .icon { color: var(--accent); }
+.station[data-state="done"] .time { color: var(--fg); }
+.station[data-state="done"] .t::after { content: " ✓"; color: var(--accent); }
+.station[data-state="skipped"] { opacity: 0.55; border-style: dashed; }
+.station[data-state="skipped"] .time { color: var(--corpus); }
+.token { position: absolute; width: 4.6rem; height: 4.6rem; margin: -2.3rem 0 0 -2.3rem; border-radius: 50%; background: var(--bg-elev);
+         border: 3px solid var(--accent); box-shadow: 0 8px 24px -10px var(--accent); display: grid; place-items: center; color: var(--fg); padding: 0.45rem; }
+.token svg { width: 100%; height: 100%; }
+.token[hidden] { display: none; }
+.note { position: absolute; left: 0; right: 0; bottom: 0; font-size: 0.9rem; color: var(--fg-muted); }
+.detail { position: absolute; left: 0; right: 0; bottom: 2rem; padding: 0.8rem 1rem; border: 1px solid var(--line); border-radius: var(--radius);
+          background: var(--bg-elev); font-size: 0.95rem; }
+
+/* right: the result */
+.result { display: flex; flex-direction: column; gap: 1rem; min-height: 0; overflow-y: auto; }
+.empty { margin: auto; text-align: center; color: var(--fg-muted); max-width: 22rem; }
+.spec { border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg-elev); padding: 0.8rem; }
+.spec svg { width: 100%; height: auto; display: block; }
+.spec .axis { stroke: var(--line); stroke-width: 1; }
+.spec .tl { fill: var(--fg-muted); font-size: 11px; font-family: var(--font-mono); text-anchor: middle; }
+.spec .c-network { fill: none; stroke: var(--accent); stroke-width: 2; }
+.spec .c-b3lyp { fill: none; stroke: var(--fg-muted); stroke-width: 1.2; opacity: 0.7; }
+.spec .c-truth { fill: none; stroke: var(--ok); stroke-width: 1.4; stroke-dasharray: 5 3; }
+.legend { display: flex; gap: 1rem; flex-wrap: wrap; font-size: 0.85rem; color: var(--fg-muted); }
+.legend i { display: inline-block; width: 1.4rem; height: 0; border-top: 3px solid; vertical-align: middle; margin-right: 0.35rem; }
+.cert { border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg-elev); padding: 0.9rem 1rem; display: flex; flex-direction: column; gap: 0.6rem; }
+.cert table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+.cert th, .cert td { text-align: left; padding: 0.3rem 0.4rem; border-bottom: 1px solid var(--line); }
+.cert th { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--fg-muted); font-weight: 600; }
+.cert td.num { text-align: right; font-family: var(--font-mono); }
+.lic { font-size: 0.75rem; border-radius: 999px; padding: 0.05rem 0.55rem; border: 1px solid; white-space: nowrap; }
+.lic.yes { color: var(--ok); } .lic.no { color: var(--warn); }
+.facts-row { display: flex; gap: 1.2rem; flex-wrap: wrap; font-size: 0.9rem; }
+.facts-row b { font-family: var(--font-mono); font-weight: 600; }
+.fade-in { animation: fade 0.6s ease both; }
+@keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>ΔH pipeline</h1>
+  <span class="sub" id="sub"></span>
+  <span class="spacer"></span>
+  <span class="seg" role="group" aria-label="Mode">
+    <button type="button" aria-pressed="true">Replay</button>
+    <button type="button" disabled title="Live mode: coming with pipeline 0.8">Live</button>
+  </span>
+  <span class="seg" role="group" aria-label="Theme">
+    <button type="button" data-theme-choice="light">Light</button>
+    <button type="button" data-theme-choice="dark">Dark</button>
+  </span>
+</header>
+<main>
+  <section aria-label="Choose a molecule">
+    <h2>Molecule · carbon atoms</h2>
+    <div class="chips" id="chips"></div>
+    <div class="chips" id="filters"></div>
+    <ul class="list" id="list" role="listbox" aria-label="Molecules"></ul>
+  </section>
+  <section aria-label="The pipeline">
+    <h2>Pipeline</h2>
+    <div class="stage">
+      <div class="current" id="current"><p class="muted">Choose a molecule on the left; it travels through the six stations below, or along the
+        corpus line where the corpus computed steps 3–4 already.</p></div>
+      <div class="map" id="map">
+        <svg class="lines" id="lines" aria-hidden="true"></svg>
+        <div class="token" id="token" hidden></div>
+      </div>
+    </div>
+  </section>
+  <section aria-label="Result">
+    <h2>Spectrum and certificate</h2>
+    <div class="result" id="result"><p class="empty">Choose a molecule and press Start: its spectrum appears here when it leaves the pipeline.</p></div>
+  </section>
+</main>
+<script>
+const DATA = /*__DATA__*/null;
+const STEP_DWELL = 1900, STEP_TRAVEL = 700, BRANCH_TRAVEL = 1500;   /* ms: about 15 s for the whole ride */
+const ICONS = {
+  molecule: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l8.66 5v10L12 22l-8.66-5V7z"/><circle cx="12" cy="12" r="3"/></svg>',
+  geometry: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8"/></svg>',
+  optimise: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 5c4 0 5 14 9 14s5-14 9-14"/><circle cx="12" cy="19" r="1.6" fill="currentColor"/></svg>',
+  hessian: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>',
+  network: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="5" cy="6" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="19" cy="18" r="2"/><path d="M7 6l3 5M7 18l3-5M14 12l3-5M14 12l3 5"/></svg>',
+  spectrum: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 20h20M4 20l2-9 2 9M9 20l2-15 2 15M14 20l2-6 2 6"/></svg>',
+};
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+/* stations: each station's state and time text, kept so that a redraw (a resized window) restores them; finished: the ride reached the end */
+let state = { carbon: null, hetero: false, key: null, running: false, timers: [], stations: [], finished: false };
+
+/* theme */
+function setTheme(t) {
+  try { localStorage.setItem("show-theme", t); } catch (e) { /* storage may be blocked */ }
+  document.documentElement.setAttribute("data-theme", t);
+  document.querySelectorAll("[data-theme-choice]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.themeChoice === t)));
+}
+document.querySelectorAll("[data-theme-choice]").forEach((b) => b.addEventListener("click", () => setTheme(b.dataset.themeChoice)));
+(function () {
+  let t = null; try { t = localStorage.getItem("show-theme"); } catch (e) { /* none */ }
+  const sys = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  document.querySelectorAll("[data-theme-choice]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.themeChoice === (t || sys))));
+  if (t) document.documentElement.setAttribute("data-theme", t);
+})();
+
+/* picker */
+const ROLE_LABEL = { a: "hold-out (a)", b: "hold-out (b)", unseen: "unseen", catalogue: "not trained", trained: "trained", trained_and_held_out: "trained" };
+function renderPicker() {
+  const counts = [...new Set(DATA.molecules.map((m) => m.n_c))].sort((x, y) => x - y);
+  $("#chips").innerHTML = ['<button class="chip" data-c="all" aria-pressed="' + (state.carbon === null) + '">All</button>']
+    .concat(counts.map((c) => `<button class="chip" data-c="${c}" aria-pressed="${state.carbon === c}">C${c}</button>`)).join("");
+  $("#filters").innerHTML = `<button class="chip" data-f="hetero" aria-pressed="${state.hetero}">with N, O, S</button>`;
+  const shown = DATA.molecules.filter((m) => (state.carbon === null || m.n_c === state.carbon) && (!state.hetero || m.hetero.length));
+  $("#list").innerHTML = shown.map((m) => `<li><button class="item" role="option" data-key="${m.key}" aria-selected="${m.key === state.key}">
+      <span class="pic">${m.depiction}</span><span><span class="name">${esc(m.name)}</span>
+      <span class="meta"><span class="mono">${esc(m.formula)}</span><span class="badge" data-role="${m.status.role}">${ROLE_LABEL[m.status.role] || m.status.role}</span></span></span>
+    </button></li>`).join("") || '<li class="muted">No molecule with this filter.</li>';
+}
+$("#chips").addEventListener("click", (e) => { const b = e.target.closest(".chip"); if (!b) return; state.carbon = b.dataset.c === "all" ? null : Number(b.dataset.c); renderPicker(); });
+$("#filters").addEventListener("click", (e) => { if (!e.target.closest(".chip")) return; state.hetero = !state.hetero; renderPicker(); });
+$("#list").addEventListener("click", (e) => { const b = e.target.closest(".item"); if (!b || state.running) return; select(b.dataset.key); });
+
+/* the metro map: positions in pixels from the map's size, recomputed on resize */
+function geometry() {
+  const r = $("#map").getBoundingClientRect();
+  const W = r.width, H = r.height, n = 6;
+  const xs = [...Array(n)].map((_, i) => W * (i + 0.5) / n);
+  /* the branch rises and falls at 45°, so its height may be at most a third of the run from station 2 to station 5; the branch, the line
+     and the station cards below it are centred in the map together */
+  const d = Math.min(H * 0.40, (xs[4] - xs[1]) / 3), cards = Math.min(H * 0.32, 12 * parseFloat(getComputedStyle(document.documentElement).fontSize));
+  const yMain = Math.max(d + 40, (H + d - cards) / 2), yBranch = yMain - d;
+  const main = xs.map((x) => [x, yMain]);
+  const corpus = [main[0], main[1], [xs[1] + d, yBranch], [xs[4] - d, yBranch], main[4], main[5]];
+  return { W, H, xs, yMain, yBranch, main, corpus };
+}
+function pathD(pts) { return pts.map((p, i) => (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1)).join(" "); }
+function drawMap(mol) {
+  const g = geometry();
+  const branch = [g.main[1], [g.xs[1] + (g.yMain - g.yBranch), g.yBranch], [g.xs[4] - (g.yMain - g.yBranch), g.yBranch], g.main[4]];
+  $("#lines").innerHTML = `<path class="branch" d="${pathD(branch)}"/>
+    <text class="branch-label" x="${(g.xs[2] + g.xs[3]) / 2}" y="${g.yBranch - 14}" text-anchor="middle">FROM THE CORPUS · steps 3–4 already computed</text>
+    <path class="base" d="${pathD(g.main)}"/><path class="run" id="run" d=""/>
+    ${g.main.map((p, i) => `<circle class="ring" id="ring${i}" cx="${p[0]}" cy="${p[1]}" r="14"/><circle class="dot" id="dot${i}" cx="${p[0]}" cy="${p[1]}" r="12"/>`).join("")}`;
+  document.querySelectorAll(".station").forEach((s) => s.remove());
+  const stations = mol ? mol.stations : DATA.station_titles.map((t) => ({ ...t, time: "" }));
+  stations.forEach((s, i) => {
+    const el = document.createElement("button");
+    el.type = "button"; el.className = "station"; el.dataset.state = "pending"; el.id = "st" + i;
+    el.style.left = g.xs[i] + "px"; el.style.top = (g.yMain + 30) + "px";
+    el.innerHTML = `<div class="icon">${ICONS[s.icon]}</div><div class="t">${esc(s.title)}</div><div class="tool">${esc(s.tool)}</div><div class="time" id="time${i}"></div>`;
+    el.addEventListener("click", () => showDetail(s));
+    $("#map").appendChild(el);
+  });
+  state.stations.forEach((s, i) => setStation(i, s.st, s.text));
+  if (mol && state.finished) {
+    const route = mol.route === "reused" ? g.corpus : g.main;
+    $("#run").setAttribute("class", "run" + (mol.route === "reused" ? " corpus" : ""));
+    $("#run").setAttribute("d", pathD(route));
+    place(route[route.length - 1]);
+  }
+}
+function showDetail(s) {
+  let box = $("#detail");
+  if (!box) { box = document.createElement("div"); box.className = "detail fade-in"; box.id = "detail"; $("#map").appendChild(box); }
+  box.innerHTML = `<b>${esc(s.title)}</b> — ${esc(s.detail || s.tool)}`;
+}
+
+/* selection and the ride */
+function select(key) {
+  state.key = key; renderPicker();
+  const m = DATA.molecules.find((x) => x.key === key);
+  $("#current").innerHTML = `<div class="pic">${m.depiction}</div><div><div class="title">${esc(m.name)}</div>
+    <div class="facts"><span class="mono">${esc(m.formula)}</span> · ${m.n_atoms} atoms · ${esc(m.status.text)}</div></div>
+    <button class="start" id="start" type="button">Start ▶</button>`;
+  $("#start").addEventListener("click", () => ride(m));
+  state.stations = []; state.finished = false;
+  const tok = $("#token"); tok.innerHTML = m.depiction; tok.hidden = false;
+  drawMap(m); resetResult();
+  place(geometry().main[0]);
+}
+function place(p) { const t = $("#token"); t.style.left = p[0] + "px"; t.style.top = p[1] + "px"; }
+function resetResult() { $("#result").innerHTML = '<p class="empty">Press Start: the spectrum appears here when the molecule leaves the pipeline.</p>'; }
+function later(fn, ms) { state.timers.push(setTimeout(fn, ms)); }
+function setStation(i, st, text) {
+  state.stations[i] = { st, text: text !== undefined ? text : (state.stations[i] || {}).text };
+  const el = $("#st" + i); if (el) el.dataset.state = st;
+  const dot = $("#dot" + i); if (dot) dot.setAttribute("class", "dot " + st);
+  const ring = $("#ring" + i); if (ring) ring.classList.toggle("on", st === "active");
+  if (text !== undefined) $("#time" + i).textContent = text;
+}
+function animateTo(from, to, ms, run, done) {
+  /* frames move the token; a timer finishes the leg in any case, because frames stop in a hidden tab while timers go on */
+  const t0 = performance.now();
+  let finished = false;
+  const finish = () => { if (finished) return; finished = true; place(to); run(to); done(); };
+  function frame(now) {
+    if (finished) return;
+    const k = Math.min(1, (now - t0) / ms), e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+    const p = [from[0] + (to[0] - from[0]) * e, from[1] + (to[1] - from[1]) * e];
+    place(p); run(p);
+    if (k < 1) requestAnimationFrame(frame); else finish();
+  }
+  requestAnimationFrame(frame);
+  later(finish, ms + 30);
+}
+function ride(m) {
+  if (state.running) return;
+  state.running = true; state.finished = false; $("#start").disabled = true; resetResult();
+  const g = geometry(), reused = m.route === "reused";
+  const route = reused ? g.corpus : g.main;
+  const legs = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5]];
+  const trail = [route[0]];
+  const runPath = $("#run");
+  runPath.setAttribute("class", "run" + (reused ? " corpus" : ""));
+  for (let i = 0; i < 6; i++) setStation(i, "pending", "");
+  let t = 0;
+  const stationOf = (k) => (reused ? [0, 1, null, null, 4, 5][k] : k);
+  const enter = (k) => {
+    const s = stationOf(k);
+    if (s === null) return;
+    setStation(s, "active", "running…");
+    later(() => setStation(s, "done", m.stations[s].time), STEP_DWELL);
+  };
+  enter(0); t += STEP_DWELL;
+  legs.forEach(([a, b], idx) => {
+    const ms = reused && (idx === 1 || idx === 3) ? BRANCH_TRAVEL / 2 : reused && idx === 2 ? BRANCH_TRAVEL : STEP_TRAVEL;
+    later(() => {
+      if (reused && idx === 1) { setStation(2, "skipped", m.stations[2].time); setStation(3, "skipped", m.stations[3].time); }
+      const base = trail.slice();
+      animateTo(route[a], route[b], ms, (p) => runPath.setAttribute("d", pathD(base.concat([p]))), () => { trail.push(route[b]); enter(b); });
+    }, t);
+    t += ms + (stationOf(b) === null ? 0 : STEP_DWELL);
+  });
+  later(() => { showResult(m); state.running = false; state.finished = true; $("#start").disabled = false; }, t);
+}
+
+/* the result */
+function spectrumSVG(sp) {
+  const W = 720, H = 300, L = 12, R = 12, T = 12, B = 34, hi = sp.x_hi, lo = sp.x_lo;
+  const x = (cm) => L + (hi - cm) / (hi - lo) * (W - L - R), y = (v) => H - B - v * (H - T - B);
+  const curve = (key) => {
+    const ys = sp.curves[key]; if (!ys) return "";
+    const pts = ys.map((v, i) => x(sp.start + i * sp.step).toFixed(1) + "," + y(v).toFixed(1)).join(" ");
+    return `<polyline class="c-${key} draw" points="${pts}"/>`;
+  };
+  let ticks = "";
+  for (let cm = lo; cm <= hi; cm += 500) ticks += `<line class="axis" x1="${x(cm)}" x2="${x(cm)}" y1="${H - B}" y2="${H - B + 5}"/><text class="tl" x="${x(cm)}" y="${H - B + 18}">${cm}</text>`;
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Infrared spectrum"><line class="axis" x1="${L}" x2="${W - R}" y1="${H - B}" y2="${H - B}"/>${ticks}
+    <text class="tl" x="${W / 2}" y="${H - 2}">wavenumber (cm⁻¹)</text>${curve("b3lyp")}${curve("truth")}${curve("network")}</svg>`;
+}
+function showResult(m) {
+  const fam = m.families.map((f) => `<tr><td>${esc(f.family)}</td><td class="num">${f.bands}</td><td class="num">${f.error_a.toFixed(2)}</td><td class="num">${f.error_b.toFixed(2)}</td>
+    <td><span class="lic ${f.licensed ? "yes" : "no"}">${f.licensed ? "licensed" : "not licensed"}</span></td></tr>`).join("");
+  const truth = m.truth ? `<span>against ωB97X <b>${m.truth.rms_cm.toFixed(2)} cm⁻¹</b> rms</span><span>overlap <b>${m.truth.overlap.toFixed(3)}</b></span>` : `<span class="muted">no ωB97X truth: the molecule is not in the corpus</span>`;
+  $("#result").innerHTML = `<div class="spec fade-in">${spectrumSVG(m.spectrum)}
+      <div class="legend"><span><i style="border-color:var(--accent)"></i>network (corrected)</span><span><i style="border-color:var(--fg-muted)"></i>B3LYP (input)</span>${m.spectrum.curves.truth ? '<span><i style="border-color:var(--ok);border-top-style:dashed"></i>ωB97X truth</span>' : ""}</div></div>
+    <div class="cert fade-in"><div class="facts-row">${truth}<span>seeds agree within <b>${m.seed_spread_cm.toFixed(1)} cm⁻¹</b></span></div>
+      <table><thead><tr><th>family</th><th class="num">bands</th><th class="num">error (a)</th><th class="num">error (b)</th><th>licence (≤ ${DATA.licence_line_cm} cm⁻¹)</th></tr></thead><tbody>${fam}</tbody></table>
+      <div class="facts-row muted"><span>pipeline ${esc(m.pipeline_version)}</span><span>${esc(DATA.network)}</span><span>errors: the network's seed means on molecules it never saw (cm⁻¹)</span></div></div>`;
+  document.querySelectorAll(".spec polyline.draw").forEach((p) => {
+    const len = p.getTotalLength(); p.style.strokeDasharray = len; p.style.strokeDashoffset = len;
+    p.getBoundingClientRect(); p.style.transition = "stroke-dashoffset 1.6s ease"; p.style.strokeDashoffset = "0";
+  });
+}
+
+window.addEventListener("resize", () => {
+  if (state.running) return;
+  const m = DATA.molecules.find((x) => x.key === state.key);
+  drawMap(m);
+  if (m && !state.finished) place(geometry().main[0]);
+});
+$("#sub").textContent = `${DATA.molecules.length} molecules · each run recorded by the pipeline · times are the real ones`;
+renderPicker(); drawMap(null);
+/* a link may open a molecule (#phenanthrene) or start its ride at once (#phenanthrene!) */
+(function () {
+  const h = decodeURIComponent(location.hash.slice(1)); if (!h) return;
+  const play = h.endsWith("!"), want = play ? h.slice(0, -1) : h;
+  const m = DATA.molecules.find((x) => x.key === want || x.name === want); if (!m) return;
+  select(m.key); if (play) ride(m);
+})();
+</script>
+</body>
+</html>
