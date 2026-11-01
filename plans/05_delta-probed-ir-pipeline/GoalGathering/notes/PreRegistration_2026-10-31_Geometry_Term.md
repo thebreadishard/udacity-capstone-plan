@@ -69,4 +69,8 @@ The rule: for those two molecules only, the mode paired with the imaginary torsi
 
 ## Outcome
 
-(after the run)
+Read 1 Nov 20:3x (`probes/results_m1/geometry_term_2026-10-31/read/`, on commit ac7c0f44 with amendment 2): **all four lines hold.** 18 molecules, 758 modes moved by ≥ 1 cm⁻¹; rms shift 10.99 cm⁻¹, residual after the term 2.41 through the true Δq (0.22 × shift, line A ≤ 0.30) and 2.41 through the Newton Δq (0.22, line B ≤ 0.35); through G's curvature 2.47 (printed, not read). Windows (shift → residual, true Δq): below 1000 8.40 → 2.19 (332 modes), 1000–1900 13.99 → 3.10 (289), 1900–2700 21.94 → 1.12 (6, not read), X–H stretch 8.12 → 0.36 (131); none made worse (C). The term helps in 18 of 18 (D); per molecule the residual runs from 0.72 to 4.69 cm⁻¹. Amendment 2 left out G's modes at 39.9 cm⁻¹ (A_8f6ed7c002) and 41.0 cm⁻¹ (B_190a33a33e); without the two molecules: 16 molecules, 680 modes, 11.16 → 2.39 cm⁻¹, A, B and C hold, helped in 16 of 16.
+
+Against the prediction: the four lines hold as predicted, and the Newton estimate equals the true displacement (2.41 both, pooled). The predicted reason did not hold: the shift is largest in 1000–1900 (13.99 cm⁻¹ rms), not in the X–H stretches (8.12), though the term removes the stretches' shift almost entirely. What the read does not show: in five molecules the smallest pairing overlap² is below 0.5 (lowest 0.324, B_a41f4cff9d, which also has the largest residual), so part of the residual may be modes mixing between the two geometries rather than a failure of the term; and this is DFT to DFT (B3LYP cubics, ωB97X's minimum), not the CC anchors.
+
+Validated: the first-order geometry term against ωB97X's own minimum on 18 molecules beyond benzene, residual 2.41 of 10.99 cm⁻¹ rms (0.22 × shift), the one-step Newton estimate the same. It enters the product's design (TASKS 53) with each molecule's cubic constants and a gradient at the anchor level.

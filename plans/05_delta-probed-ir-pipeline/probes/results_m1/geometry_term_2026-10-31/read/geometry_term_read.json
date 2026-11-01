@@ -1,0 +1,242 @@
+{
+ "molecules": 18,
+ "modes_read": 758,
+ "rms_shift": 10.985124877590268,
+ "rms_residual_true": 2.4068657561531945,
+ "rms_residual_newton": 2.412807497745986,
+ "rms_residual_g_curvature": 2.4703183519203025,
+ "molecules_helped": 18,
+ "lines": {
+  "A": true,
+  "B": true,
+  "C": true,
+  "D": true
+ },
+ "passed": true,
+ "windows": {
+  "below 1000": {
+   "modes": 332,
+   "rms_shift": 8.396437280378965,
+   "rms_residual_true": 2.193814744642604,
+   "rms_residual_newton": 2.207479680458365,
+   "read": true
+  },
+  "1000-1900": {
+   "modes": 289,
+   "rms_shift": 13.985546541029098,
+   "rms_residual_true": 3.0951654103059596,
+   "rms_residual_newton": 3.0973804315853637,
+   "read": true
+  },
+  "1900-2700": {
+   "modes": 6,
+   "rms_shift": 21.943574045128752,
+   "rms_residual_true": 1.1193917455726696,
+   "rms_residual_newton": 1.5837952961248418,
+   "read": false
+  },
+  "X-H stretch": {
+   "modes": 131,
+   "rms_shift": 8.124898945994696,
+   "rms_residual_true": 0.3611522430554741,
+   "rms_residual_newton": 0.23653928520984893,
+   "read": true
+  }
+ },
+ "per_molecule": {
+  "A_01f3186607": {
+   "modes": 44,
+   "rms_shift": 10.357533619951855,
+   "rms_residual_true": 0.9441674580118274,
+   "rms_residual_newton": 0.8862727228507032,
+   "min_overlap": 0.9283363552108005,
+   "max_shift": 32.69442683837997,
+   "dropped_g_cm": []
+  },
+  "A_45187bb7c8": {
+   "modes": 50,
+   "rms_shift": 10.973097817699866,
+   "rms_residual_true": 1.2030555276043444,
+   "rms_residual_newton": 1.1291402541389282,
+   "min_overlap": 0.8085700127848695,
+   "max_shift": 37.28284780617719,
+   "dropped_g_cm": []
+  },
+  "A_72b86c2331": {
+   "modes": 51,
+   "rms_shift": 9.967972316185596,
+   "rms_residual_true": 0.7218445532343858,
+   "rms_residual_newton": 0.7236064815698644,
+   "min_overlap": 0.9467999676136697,
+   "max_shift": 27.145627297091096,
+   "dropped_g_cm": []
+  },
+  "A_7aa232d4e9": {
+   "modes": 37,
+   "rms_shift": 12.39393500580554,
+   "rms_residual_true": 1.443688457675743,
+   "rms_residual_newton": 1.510669873998682,
+   "min_overlap": 0.8338700608311137,
+   "max_shift": 32.90674431413004,
+   "dropped_g_cm": []
+  },
+  "A_8f6ed7c002": {
+   "modes": 38,
+   "rms_shift": 7.810118489528204,
+   "rms_residual_true": 1.9450455383626408,
+   "rms_residual_newton": 2.0026848625722513,
+   "min_overlap": 0.6869218776469662,
+   "max_shift": 21.27139726245059,
+   "dropped_g_cm": [
+    39.85385738004043
+   ]
+  },
+  "A_90df3e4aa9": {
+   "modes": 42,
+   "rms_shift": 8.807458538224221,
+   "rms_residual_true": 1.8648119600500674,
+   "rms_residual_newton": 1.8648330702748899,
+   "min_overlap": 0.46417971277153,
+   "max_shift": 23.268586480899558,
+   "dropped_g_cm": []
+  },
+  "A_a848c04a21": {
+   "modes": 34,
+   "rms_shift": 11.309714464940374,
+   "rms_residual_true": 2.1203974082983637,
+   "rms_residual_newton": 2.124119331599164,
+   "min_overlap": 0.5223772145395573,
+   "max_shift": 30.010684996486816,
+   "dropped_g_cm": []
+  },
+  "A_d295f2fa80": {
+   "modes": 41,
+   "rms_shift": 11.39918441562043,
+   "rms_residual_true": 1.2913632882397805,
+   "rms_residual_newton": 1.2750471210254326,
+   "min_overlap": 0.6999369590839943,
+   "max_shift": 29.37063690478294,
+   "dropped_g_cm": []
+  },
+  "A_d9139359ab": {
+   "modes": 45,
+   "rms_shift": 9.769447137624656,
+   "rms_residual_true": 3.201956145464568,
+   "rms_residual_newton": 3.1985317231678723,
+   "min_overlap": 0.5985357197594888,
+   "max_shift": 22.48175233206325,
+   "dropped_g_cm": []
+  },
+  "B_0603418c5b": {
+   "modes": 51,
+   "rms_shift": 11.321661150864783,
+   "rms_residual_true": 3.6189812805451416,
+   "rms_residual_newton": 3.6333607403143784,
+   "min_overlap": 0.5325401793758751,
+   "max_shift": 28.008307049946552,
+   "dropped_g_cm": []
+  },
+  "B_079e66d017": {
+   "modes": 49,
+   "rms_shift": 10.37755885830382,
+   "rms_residual_true": 1.1143956306491911,
+   "rms_residual_newton": 1.061776382090778,
+   "min_overlap": 0.7757890297682045,
+   "max_shift": 34.87027615986244,
+   "dropped_g_cm": []
+  },
+  "B_151c8ce719": {
+   "modes": 27,
+   "rms_shift": 12.537792584782306,
+   "rms_residual_true": 0.743711088808962,
+   "rms_residual_newton": 0.7410611307680587,
+   "min_overlap": 0.9694318431343267,
+   "max_shift": 25.897764369219658,
+   "dropped_g_cm": []
+  },
+  "B_16194573ac": {
+   "modes": 34,
+   "rms_shift": 11.919533284840034,
+   "rms_residual_true": 2.442539196248428,
+   "rms_residual_newton": 2.4593503199657123,
+   "min_overlap": 0.7105879588623176,
+   "max_shift": 43.33269060235858,
+   "dropped_g_cm": []
+  },
+  "B_17f1611949": {
+   "modes": 37,
+   "rms_shift": 11.458322176986222,
+   "rms_residual_true": 1.8832742975295778,
+   "rms_residual_newton": 1.8458884563809,
+   "min_overlap": 0.4390149925588494,
+   "max_shift": 32.107414429237224,
+   "dropped_g_cm": []
+  },
+  "B_190a33a33e": {
+   "modes": 40,
+   "rms_shift": 10.55481020936952,
+   "rms_residual_true": 3.075952005348808,
+   "rms_residual_newton": 3.0855368195291546,
+   "min_overlap": 0.45754651034673716,
+   "max_shift": 23.850527506600883,
+   "dropped_g_cm": [
+    41.02735555465019
+   ]
+  },
+  "B_410ac0fb2f": {
+   "modes": 40,
+   "rms_shift": 13.324716827981499,
+   "rms_residual_true": 3.2371836988291878,
+   "rms_residual_newton": 3.246084902945306,
+   "min_overlap": 0.6754631199484593,
+   "max_shift": 37.419174582310404,
+   "dropped_g_cm": []
+  },
+  "B_78f8233b4c": {
+   "modes": 52,
+   "rms_shift": 10.686797246671398,
+   "rms_residual_true": 2.470521569510935,
+   "rms_residual_newton": 2.4745525487705216,
+   "min_overlap": 0.3976335159199892,
+   "max_shift": 33.83597753749456,
+   "dropped_g_cm": []
+  },
+  "B_a41f4cff9d": {
+   "modes": 46,
+   "rms_shift": 12.499892159904057,
+   "rms_residual_true": 4.687106792886393,
+   "rms_residual_newton": 4.728898516017301,
+   "min_overlap": 0.324359272100467,
+   "max_shift": 33.90626559163593,
+   "dropped_g_cm": []
+  }
+ },
+ "thresholds": {
+  "min_shift_cm": 1.0,
+  "A": 0.3,
+  "B": 0.35,
+  "D": 16,
+  "min_window_modes": 10
+ },
+ "dropped": {
+  "A_8f6ed7c002": [
+   39.85385738004043
+  ],
+  "B_190a33a33e": [
+   41.02735555465019
+  ]
+ },
+ "check_without_dropped": {
+  "molecules": 16,
+  "modes_read": 680,
+  "rms_shift": 11.160330700046295,
+  "rms_residual_true": 2.385271962273154,
+  "rms_residual_newton": 2.3885675206360846,
+  "molecules_helped": 16,
+  "lines": {
+   "A": true,
+   "B": true,
+   "C": true
+  }
+ }
+}
