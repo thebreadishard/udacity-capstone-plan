@@ -1,0 +1,250 @@
+{
+ "survey": "probes\\results_m1\\pipeline_reuse_survey_2026-10-31\\pipeline_reuse_survey.json",
+ "pool": {
+  "a": 0,
+  "b": 25,
+  "catalogue": 88
+ },
+ "chosen": [
+  {
+   "id": "B_0464551954",
+   "name": "naphthalene+NO2+NO2",
+   "smiles": "O=[N+]([O-])c1cc2ccccc2cc1[N+](=O)[O-]",
+   "formula": "C10H6N2O4",
+   "n_c": 10,
+   "role": "catalogue"
+  },
+  {
+   "id": "B_026983edcc",
+   "name": "naphthalene+CH3+SH",
+   "smiles": "Cc1ccc2ccccc2c1S",
+   "formula": "C11H10S",
+   "n_c": 11,
+   "role": "catalogue"
+  },
+  {
+   "id": "A2_0a89c174d8",
+   "name": "dibenzofuran+NO2",
+   "smiles": "O=[N+]([O-])c1cccc2c1oc1ccccc12",
+   "formula": "C12H7NO3",
+   "n_c": 12,
+   "role": "catalogue"
+  },
+  {
+   "id": "A2_177784139f",
+   "name": "phenazine+OH",
+   "smiles": "Oc1cccc2nc3ccccc3nc12",
+   "formula": "C12H8N2O",
+   "n_c": 12,
+   "role": "catalogue"
+  },
+  {
+   "id": "A2_3c982d4d3f",
+   "name": "dibenzothiophene+SH",
+   "smiles": "Sc1cccc2sc3ccccc3c12",
+   "formula": "C12H8S2",
+   "n_c": 12,
+   "role": "catalogue"
+  },
+  {
+   "id": "A_5a75c6c39e",
+   "name": "diphenyl_ether",
+   "smiles": "c1ccc(Oc2ccccc2)cc1",
+   "formula": "C12H10O",
+   "n_c": 12,
+   "role": "catalogue"
+  },
+  {
+   "id": "A_8152ea74fd",
+   "name": "carbazole",
+   "smiles": "c1ccc2c(c1)[nH]c1ccccc12",
+   "formula": "C12H9N",
+   "n_c": 12,
+   "role": "catalogue"
+  },
+  {
+   "id": "A_8d1f3c46b0",
+   "name": "acenaphthene",
+   "smiles": "c1cc2c3c(cccc3c1)CC2",
+   "formula": "C12H10",
+   "n_c": 12,
+   "role": "catalogue"
+  },
+  {
+   "id": "B_2a36ca9ac1",
+   "name": "biphenyl+SH",
+   "smiles": "Sc1ccc(-c2ccccc2)cc1",
+   "formula": "C12H10S",
+   "n_c": 12,
+   "role": "catalogue"
+  },
+  {
+   "id": "A2_05f5ff045c",
+   "name": "fluorene+NH2",
+   "smiles": "Nc1ccc2c(c1)Cc1ccccc1-2",
+   "formula": "C13H11N",
+   "n_c": 13,
+   "role": "b"
+  },
+  {
+   "id": "A2_066237c4f5",
+   "name": "fluorene+Cl",
+   "smiles": "Clc1cccc2c1-c1ccccc1C2",
+   "formula": "C13H9Cl",
+   "n_c": 13,
+   "role": "b"
+  },
+  {
+   "id": "A2_05e08111d2",
+   "name": "phenazine+CHO",
+   "smiles": "O=Cc1ccc2nc3ccccc3nc2c1",
+   "formula": "C13H8N2O",
+   "n_c": 13,
+   "role": "catalogue"
+  },
+  {
+   "id": "A2_0bf85f35e5",
+   "name": "phenanthridine+Cl",
+   "smiles": "Clc1cccc2c1cnc1ccccc12",
+   "formula": "C13H8ClN",
+   "n_c": 13,
+   "role": "catalogue"
+  },
+  {
+   "id": "A2_11d7cdeab0",
+   "name": "acenaphthylene+OCH3",
+   "smiles": "COc1ccc2c3c(cccc13)C=C2",
+   "formula": "C13H10O",
+   "n_c": 13,
+   "role": "catalogue"
+  },
+  {
+   "id": "A2_26a9174202",
+   "name": "biphenylene+OCH3",
+   "smiles": "COc1cccc2c1-c1ccccc1-2",
+   "formula": "C13H10O",
+   "n_c": 13,
+   "role": "catalogue"
+  },
+  {
+   "id": "A2_2cf97d4a75",
+   "name": "carbazole+CF3",
+   "smiles": "FC(F)(F)c1ccc2[nH]c3ccccc3c2c1",
+   "formula": "C13H8F3N",
+   "n_c": 13,
+   "role": "catalogue"
+  },
+  {
+   "id": "A2_336097f54c",
+   "name": "dibenzothiophene+CHO",
+   "smiles": "O=Cc1cccc2c1sc1ccccc12",
+   "formula": "C13H8OS",
+   "n_c": 13,
+   "role": "catalogue"
+  },
+  {
+   "id": "A2_34bb1210bc",
+   "name": "dibenzofuran+CH3",
+   "smiles": "Cc1ccc2oc3ccccc3c2c1",
+   "formula": "C13H10O",
+   "n_c": 13,
+   "role": "catalogue"
+  },
+  {
+   "id": "B_00098af305",
+   "name": "naphthalene+COOH+vinyl",
+   "smiles": "C=Cc1ccc2cccc(C(=O)O)c2c1",
+   "formula": "C13H10O2",
+   "n_c": 13,
+   "role": "catalogue"
+  },
+  {
+   "id": "A2_04719edc88",
+   "name": "phenanthridine+COOH",
+   "smiles": "O=C(O)c1cccc2c1cnc1ccccc12",
+   "formula": "C14H9NO2",
+   "n_c": 14,
+   "role": "catalogue"
+  },
+  {
+   "id": "A2_303433ef20",
+   "name": "anthracene+F",
+   "smiles": "Fc1cccc2cc3ccccc3cc12",
+   "formula": "C14H9F",
+   "n_c": 14,
+   "role": "catalogue"
+  },
+  {
+   "id": "A2_30b024df67",
+   "name": "acridine+OCH3",
+   "smiles": "COc1cccc2nc3ccccc3cc12",
+   "formula": "C14H11NO",
+   "n_c": 14,
+   "role": "catalogue"
+  },
+  {
+   "id": "A_d551b360c3",
+   "name": "1-aminoanthracene",
+   "smiles": "Nc1cccc2cc3ccccc3cc12",
+   "formula": "C14H11N",
+   "n_c": 14,
+   "role": "catalogue"
+  },
+  {
+   "id": "B_26f4a2441f",
+   "name": "biphenyl+vinyl",
+   "smiles": "C=Cc1ccccc1-c1ccccc1",
+   "formula": "C14H12",
+   "n_c": 14,
+   "role": "catalogue"
+  },
+  {
+   "id": "A2_0efbc8f50c",
+   "name": "phenanthrene+CONH2",
+   "smiles": "NC(=O)c1ccc2ccc3ccccc3c2c1",
+   "formula": "C15H11NO",
+   "n_c": 15,
+   "role": "catalogue"
+  },
+  {
+   "id": "A2_187a20beab",
+   "name": "phenanthrene+CF3",
+   "smiles": "FC(F)(F)c1ccc2ccc3ccccc3c2c1",
+   "formula": "C15H9F3",
+   "n_c": 15,
+   "role": "catalogue"
+  },
+  {
+   "id": "A2_32ab8c6937",
+   "name": "anthracene+CONH2",
+   "smiles": "NC(=O)c1ccc2cc3ccccc3cc2c1",
+   "formula": "C15H11NO",
+   "n_c": 15,
+   "role": "catalogue"
+  },
+  {
+   "id": "A2_0101e57296",
+   "name": "fluoranthene+NH2",
+   "smiles": "Nc1ccc2c(c1)-c1cccc3cccc-2c13",
+   "formula": "C16H11N",
+   "n_c": 16,
+   "role": "b"
+  },
+  {
+   "id": "A2_043da5bed2",
+   "name": "fluoranthene+SH",
+   "smiles": "Sc1cccc2c1-c1cccc3cccc-2c13",
+   "formula": "C16H10S",
+   "n_c": 16,
+   "role": "b"
+  },
+  {
+   "id": "A2_3c758d3b72",
+   "name": "pyrene+CF3",
+   "smiles": "FC(F)(F)c1cc2cccc3ccc4cccc1c4c32",
+   "formula": "C17H9F3",
+   "n_c": 17,
+   "role": "catalogue"
+  }
+ ]
+}

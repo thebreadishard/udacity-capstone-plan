@@ -54,7 +54,7 @@ from scale_factor_baseline import PAHDB_FACTORS, pahdb_region  # noqa: E402
 
 from dpir.provenance import git_state, provenance  # noqa: E402
 
-PIPELINE_VERSION = "0.7"               # modules/PIPELINE.md
+PIPELINE_VERSION = "0.8"               # modules/PIPELINE.md
 NETWORK = "ΔH-network"
 CORPUS_ROOT = M05 / "corpus"
 CORPUS = CORPUS_ROOT / "molecules"
@@ -109,6 +109,7 @@ class PipelineConfig(BaseModel):
     psi4_memory_gb: int = Field(4, ge=1, le=64)
     wsl_cap_mb: int = Field(6144, ge=2048, le=65536)
     reuse_corpus: bool = True                # TASKS 150: steps 2–3 from the corpus where it holds the molecule at these settings
+    reuse_only: bool = False                 # TASKS 146: refuse a molecule the corpus cannot give steps 2–3 for, before computing
     corpus: Path = CORPUS_ROOT               # its manifest.csv and molecules/
 
     @field_validator("models")
@@ -134,6 +135,8 @@ class PipelineConfig(BaseModel):
             raise ValueError(f"the qc env's python ({self.psi4_python}) is not a file: set CORPUS_QC_PYTHON or pass --psi4-python")
         if self.xyz is not None and not self.xyz.is_file():
             raise ValueError(f"{self.xyz}: no such xyz file")
+        if self.reuse_only and not self.reuse_corpus:
+            raise ValueError("--reuse-only with --no-reuse: nothing could run")
         return self
 
     @property
@@ -377,6 +380,8 @@ def low_level_files(cfg: PipelineConfig, seconds: dict[str, float]) -> tuple[dic
         d = cfg.folder
         return (json.loads((d / "result.json").read_text(encoding="utf-8")),
                 json.loads((d / "analytic_check.json").read_text(encoding="utf-8")), reused)
+    if cfg.reuse_only:
+        raise Refused([f"--reuse-only: the corpus cannot give steps 2–3 — {'; '.join(reused['why'])}"])
     print(f"[pipeline] computed, not reused: {'; '.join(reused['why'])}", flush=True)
     psi4 = optimise(cfg, xyz, opt_options)
     seconds["optimise"] = round(time.time() - t, 1)
@@ -488,6 +493,7 @@ def parse_args(argv: list[str] | None) -> argparse.Namespace:
     ap.add_argument("--wsl-cap-mb", type=int, default=6144)
     ap.add_argument("--no-reuse", action="store_true", help="compute steps 2-3 even where the corpus holds the molecule (TASKS 150)")
     ap.add_argument("--corpus", type=Path, help="the corpus folder to reuse from (default: module 05's)")
+    ap.add_argument("--reuse-only", action="store_true", help="refuse, before computing, a molecule the corpus cannot give steps 2-3 for")
     ap.add_argument("--check-only", action="store_true", help="the refusal checks alone (a run spec's dry run): nothing is computed or written")
     return ap.parse_args(argv)
 
@@ -499,7 +505,7 @@ def main(argv: list[str] | None = None) -> int:
     a = parse_args(argv)
     given = {k: v for k, v in dict(smiles=a.smiles, xyz=a.xyz, psi4_python=a.psi4_python, corpus=a.corpus).items() if v is not None}
     cfg = PipelineConfig(name=a.name, out_root=a.out, threads=a.threads, psi4_memory_gb=a.psi4_memory_gb, wsl_cap_mb=a.wsl_cap_mb,
-                         reuse_corpus=not a.no_reuse, **given)
+                         reuse_corpus=not a.no_reuse, reuse_only=a.reuse_only, **given)
     try:
         if a.check_only:
             adm = admit(cfg)

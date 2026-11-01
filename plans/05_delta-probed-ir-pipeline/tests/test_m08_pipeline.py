@@ -44,6 +44,7 @@ def pin_registry(monkeypatch):
     (dict(models=()), "no model"),
     (dict(threads=0), "greater than or equal"),
     (dict(unknown=1), "Extra inputs"),
+    (dict(reuse_only=True, reuse_corpus=False), "--reuse-only with --no-reuse"),
 ])
 def test_settings_that_do_not_combine_are_refused_when_built(tmp_path, kw, match):
     with pytest.raises(ValueError, match=match):
@@ -251,6 +252,19 @@ def test_check_only_admits_and_writes_nothing(tmp_path, pin_registry, pin_defaul
     argv = ["--name", "benzene", "--smiles", "c1ccccc1", "--out", str(tmp_path / "out"), "--check-only"]
     assert P.main(argv) == 0
     assert "[pipeline] admitted: benzene, 12 atoms (C, H)" in capsys.readouterr().out and not (tmp_path / "out").exists()
+
+
+def test_reuse_only_refuses_a_molecule_the_corpus_cannot_give_before_computing(tmp_path, monkeypatch):
+    """Pipeline 0.8: the show's batch never falls into psi4 and pyscf by itself."""
+    def computed(*_args, **_kw):
+        raise AssertionError("a step was computed")
+
+    monkeypatch.setattr(P, "start_geometry", lambda cfg: ([["C", 0.0, 0.0, 0.0]], None))
+    monkeypatch.setattr(P, "from_corpus", lambda cfg, xyz, opt: {"reused": False, "why": ["no corpus folder holds it"]})
+    monkeypatch.setattr(P, "optimise", computed)
+    monkeypatch.setattr(P, "low_level", computed)
+    with pytest.raises(P.Refused, match="--reuse-only: the corpus cannot give steps 2–3 — no corpus folder holds it"):
+        P.low_level_files(config(tmp_path, reuse_only=True), {})
 
 
 def test_a_refusal_exits_2_with_its_reasons(tmp_path, pin_registry, pin_defaults, capsys):
