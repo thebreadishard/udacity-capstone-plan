@@ -5,6 +5,8 @@
 #   deploy_connect             pins the host's machine-id (tools/hosts.sh) and sets S, the ssh command
 #   deploy_code <label>        FILES closed under their own needs (tools/deploy_closure.py), tracked and committed; DEST fresh; git archive
 #                              of HEAD into DEST; DEST/COMMIT
+#   deploy_code_over <label>   the same into an existing DEST, overwriting only FILES (an ended batch whose molecules stay, 1 Nov 2026:
+#                              HBC's steps in /root/l5b); every file's sha256 compared with HEAD's; DEST/COMMIT_<label without spaces>
 #   deploy_geometries <list>…  the geometries named in the lists' second column, tar over ssh, sha256 on both sides
 #   deploy_runner_smokes <label args> [opt]   two smokes of probes/labels_batch_ccx53.sh in DEST, water (the caller's WATER) as a
 #                              one-molecule batch in a fresh SMOKE folder: labelled under a 2048 MB cap, named killed at the cap under
@@ -36,6 +38,23 @@ deploy_code() {   # $1 = what is deployed, for the messages
     | $S "mkdir -p $tmp && tar xf - -C $tmp && mv $tmp/x/$P $DEST && rm -r $tmp && find $DEST -type f | wc -l" \
     || { echo "FILES FAILED $NAME"; return 1; }
   git -C "$PLAN" rev-parse HEAD | $S "cat > $DEST/COMMIT"
+}
+
+deploy_code_over() {   # $1 = what is deployed, for the messages
+  local tmp here there
+  tmp=/root/tmp_deploy_over_$(basename "$DEST")
+  echo "[$(t) $NAME] 1. the $1 files over $DEST (git archive of HEAD; nothing else in $DEST is touched)"
+  ( cd "$PLAN" && python tools/deploy_closure.py "${FILES[@]}" ) || { echo "$1 FILES INCOMPLETE — a shipped file needs one the list lacks"; return 1; }
+  ( cd "$PLAN" && git ls-files --error-unmatch "${FILES[@]}" > /dev/null && git diff --quiet HEAD -- "${FILES[@]}" ) \
+    || { echo "$1 FILES NOT TRACKED OR NOT COMMITTED — the server runs HEAD"; return 1; }
+  $S "test -d $DEST" < /dev/null || { echo "$DEST MISSING on $NAME — deploy_code makes a fresh one"; return 1; }
+  ( cd "$PLAN/../.." && git -c core.autocrlf=false archive --format=tar --prefix=x/ HEAD "${FILES[@]/#/$P/}" ) \
+    | $S "rm -rf $tmp && mkdir -p $tmp && tar xf - -C $tmp && cp -r $tmp/x/$P/. $DEST/ && rm -r $tmp" \
+    || { echo "FILES FAILED $NAME"; return 1; }
+  here=$( cd "$PLAN/../.." && for f in "${FILES[@]}"; do printf '%s %s\n' "$(git -c core.autocrlf=false show "HEAD:$P/$f" | sha256sum | cut -d' ' -f1)" "$f"; done | LC_ALL=C sort )
+  there=$($S "cd $DEST && sha256sum ${FILES[*]}" < /dev/null | sed 's/ [ *]/ /' | LC_ALL=C sort)
+  [ "$here" = "$there" ] || { echo "SHA256 MISMATCH after the copy to $DEST"; return 1; }
+  git -C "$PLAN" rev-parse HEAD | $S "cat > $DEST/COMMIT_${1// /_}"
 }
 
 deploy_geometries() {   # $@ = id lists (id TAB geometry path …), relative to the plan
