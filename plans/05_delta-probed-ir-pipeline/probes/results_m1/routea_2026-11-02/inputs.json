@@ -1,0 +1,12 @@
+{
+ "sha256": {
+  "tetracene": "9dcd5ed51b041a4394806ff73966f1e3700daa64723743ca234c9180cd979c2f",
+  "coronene": "da90567a67b97fa1fc83f0052fc2445c3998520aab0ecca84052451cfb519aeb",
+  "coronene_source": "da90567a67b97fa1fc83f0052fc2445c3998520aab0ecca84052451cfb519aeb"
+ },
+ "coronene_source": "probes/results_m1/l5b_2026-11-01/l5b/molecules/T_94b3a9d13a/geometry.json",
+ "max_first_fit": {
+  "a": -4.921132372799479,
+  "b": 3.8858682107575677
+ }
+}

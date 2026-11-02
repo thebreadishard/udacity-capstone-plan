@@ -18,7 +18,8 @@ L=probes/results_m1/s1tz_2026-10-18
 LISTS=("$L/ids_benzene.tsv" "$L/ids_fused.tsv" "$L/ids_naphthalene.tsv" "$L/ids_acenaphthylene.tsv")   # every list a run spec names (19 Oct 2026)
 FILES=(probes/s1tz_run.sh probes/progress_on_growth.sh probes/s2_batch.sh probes/s1_anharmonic_level.sh probes/s1_anharmonic_level.py
        probes/pyscf_hessians_for_qff.py probes/library_log.py probes/scf_converge.py probes/make_qff_displacements.py probes/qff_from_hessians.py
-       src/dpir/__init__.py src/dpir/qff.py src/dpir/provenance.py probes/results_m1/water_dipole_fd_2026-10-02/geometry.json "${LISTS[@]}")
+       src/dpir/__init__.py src/dpir/qff.py src/dpir/provenance.py probes/qff_pm_saving.py probes/qff_symmetry_count.py
+       probes/qff_symmetry_rebuild.py probes/e8_symmetry.py probes/results_m1/water_dipole_fd_2026-10-02/geometry.json "${LISTS[@]}")
 if [ "$NAME" = --list-files ]; then printf '%s\n' "${FILES[@]}"; exit 0; fi
 . "$HERE/deploy_lib.sh"
 SMOKE=/root/s1tz_smoke_$(basename "$DEST")   # 19 Oct 2026: a fresh smoke folder per destination; a reused one skips water and tests nothing

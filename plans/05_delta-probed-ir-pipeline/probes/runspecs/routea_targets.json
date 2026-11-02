@@ -1,0 +1,68 @@
+{
+ "name": "routea_targets",
+ "purpose": "S3 registration (PreRegistration_2026-11-02_S3_Route_A_Transfer.md): route A, GVPT2 at G of tetracene then coronene with the ± saving and four lanes of 8 threads, the stop rule per molecule in the list's third column; launched only after the benzene gate passed and the registration was committed",
+ "host": "routea",
+ "workdir": "/root/dpir_routea",
+ "command": "PY=/root/miniforge3/envs/qc05/bin/python PM_SAVING=1 LANES=4 PYSCF_MAX_MEMORY=24000 bash probes/progress_on_growth.sh --tag RAT --dir /root/routea --name pyscf.log --interval 600 -- bash probes/s2_batch.sh probes/results_m1/routea_2026-11-02/ids_targets.tsv /root/routea 1 8 G:6-31g*:75,302",
+ "sources": [
+  {
+   "local": "probes/progress_on_growth.sh",
+   "remote": "/root/dpir_routea/probes/progress_on_growth.sh"
+  },
+  {
+   "local": "probes/s2_batch.sh",
+   "remote": "/root/dpir_routea/probes/s2_batch.sh"
+  },
+  {
+   "local": "probes/s1_anharmonic_level.sh",
+   "remote": "/root/dpir_routea/probes/s1_anharmonic_level.sh"
+  },
+  {
+   "local": "probes/s1_anharmonic_level.py",
+   "remote": "/root/dpir_routea/probes/s1_anharmonic_level.py"
+  },
+  {
+   "local": "probes/pyscf_hessians_for_qff.py",
+   "remote": "/root/dpir_routea/probes/pyscf_hessians_for_qff.py"
+  },
+  {
+   "local": "probes/qff_pm_saving.py",
+   "remote": "/root/dpir_routea/probes/qff_pm_saving.py"
+  },
+  {
+   "local": "probes/qff_symmetry_count.py",
+   "remote": "/root/dpir_routea/probes/qff_symmetry_count.py"
+  },
+  {
+   "local": "probes/qff_symmetry_rebuild.py",
+   "remote": "/root/dpir_routea/probes/qff_symmetry_rebuild.py"
+  },
+  {
+   "local": "probes/e8_symmetry.py",
+   "remote": "/root/dpir_routea/probes/e8_symmetry.py"
+  },
+  {
+   "local": "probes/scf_converge.py",
+   "remote": "/root/dpir_routea/probes/scf_converge.py"
+  },
+  {
+   "local": "probes/library_log.py",
+   "remote": "/root/dpir_routea/probes/library_log.py"
+  },
+  {
+   "local": "probes/results_m1/routea_2026-11-02/ids_targets.tsv",
+   "remote": "/root/dpir_routea/probes/results_m1/routea_2026-11-02/ids_targets.tsv"
+  }
+ ],
+ "progress": {
+  "regex": "^=== \\((RAT|S1|S2)\\) ",
+  "max_gap_minutes": 60
+ },
+ "marker_regex": "^=== \\(S2\\) [A-Za-z0-9_]+: (done|NOISY|STOPPED|FAILED)|^=== \\(S2\\) all done|^=== \\(RAT\\) command ended",
+ "end_regex": "^=== \\(S2\\) all done",
+ "threads": 32,
+ "estimate": {
+  "hours": 95.0,
+  "basis": "S2's per-Hessian fit exp(-4.92) n^3.89 s at 5 threads: tetracene 100 × 4,006 s, coronene 109 × 8,135 s, over four lanes = 89 h, plus the two optimisations and references"
+ }
+}

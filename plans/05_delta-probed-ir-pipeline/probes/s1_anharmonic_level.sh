@@ -12,6 +12,10 @@
 # process per setting, <threads> each; a failed setting is named in '=== (S1) SETTINGS FAILED: …' after the others have ended.
 # GATE_GRID (14 Oct 2026, S1-TZ): before any displacement, the reference Hessian is recomputed at this finer grid and the harmonic ω compared
 # (s1_anharmonic_level.py gate, line GATE_LINE, default 1.0 cm⁻¹); a failed gate stops the setting with a GATE_FAILED file and marker.
+# PM_SAVING=1 (2 Nov 2026, route A; PreRegistration_2026-11-02_S3_Route_A_Transfer.md): the optimised reference is averaged over its
+# point group, and every −d Hessian that a group operation maps from its +d partner is written as that image instead of computed
+# (probes/qff_pm_saving.py). LANES=k: a setting's displaced Hessians run as k processes of <threads> each (logs <setting>/lane<j>.log);
+# the optimisation and the reference Hessian use k × <threads>. Both off by default.
 set -euo pipefail
 PY=${PY:-/home/thebreadishard/qc05/bin/python}
 HERE=$(cd "$(dirname "$0")" && pwd)
@@ -26,6 +30,9 @@ if [ -n "${WAIT_LOG:-}" ]; then
 fi
 MAX_FIRST=${MAX_FIRST:-900}
 PARALLEL=${PARALLEL:-0}
+PM_SAVING=${PM_SAVING:-0}
+LANES=${LANES:-1}
+refthr=$((thr * LANES))
 mark "start: $# settings, step $DISP, $thr threads$([ "$PARALLEL" = 1 ] && echo ' per setting, the settings in parallel'), geometry $geom"
 
 run_setting() {   # $1 = name:basis:grid; $2 = 1 for the first setting, whose first displaced Hessian the stop rule times
@@ -35,9 +42,10 @@ run_setting() {   # $1 = name:basis:grid; $2 = 1 for the first setting, whose fi
   mkdir -p "$d/refstub" "$d/stubs" "$d/hess"
   if [ ! -f "$d/refstub/ref.json" ]; then
     mark "$name: optimising (B3LYP/$basis, grid $grid)"
-    "$PY" "$HERE/s1_anharmonic_level.py" optimise "$geom" "$d/refstub/ref.json" --basis "$basis" --grid "$grid" --threads "$thr"
+    "$PY" "$HERE/s1_anharmonic_level.py" optimise "$geom" "$d/refstub/ref.json" --basis "$basis" --grid "$grid" --threads "$refthr"
   fi
-  "$PY" "$HERE/pyscf_hessians_for_qff.py" "$d/refstub" "$d/refhess" --basis "$basis" --grid "$grid" --threads "$thr"
+  [ "$PM_SAVING" = 1 ] && mark "$name: reference averaged over its group: $("$PY" "$HERE/qff_pm_saving.py" symmetrize "$d/refstub/ref.json")"
+  "$PY" "$HERE/pyscf_hessians_for_qff.py" "$d/refstub" "$d/refhess" --basis "$basis" --grid "$grid" --threads "$refthr"
   cp "$d/refhess/ref.json" "$d/ref.json"
   if [ -n "${GATE_GRID:-}" ]; then
     "$PY" "$HERE/pyscf_hessians_for_qff.py" "$d/refstub" "$d/refhess_gate" --basis "$basis" --grid "$GATE_GRID" --threads "$thr"
@@ -49,12 +57,29 @@ run_setting() {   # $1 = name:basis:grid; $2 = 1 for the first setting, whose fi
   fi
   "$PY" "$HERE/make_qff_displacements.py" "$d/ref.json" "$d/stubs" --disp "$DISP"
   cp "$d/ref.json" "$d/hess/ref.json"      # the reference stub carries the same name, so it is not computed twice
-  mark "$name: $(ls "$d/stubs" | wc -l) Hessians to compute"
-  if [ "$2" = 1 ]; then
-    "$PY" "$HERE/pyscf_hessians_for_qff.py" "$d/stubs" "$d/hess" --basis "$basis" --grid "$grid" --threads "$thr" --max-first-seconds "$MAX_FIRST" ${GUESS_FROM_PREVIOUS:+--guess-from-previous}       || { mark "$name: STOPPED by the stop rule or a failure (first displaced Hessian > ${MAX_FIRST} s?) — re-price"; exit 1; }
-  else
-    "$PY" "$HERE/pyscf_hessians_for_qff.py" "$d/stubs" "$d/hess" --basis "$basis" --grid "$grid" --threads "$thr" ${GUESS_FROM_PREVIOUS:+--guess-from-previous}
+  local src=$d/stubs
+  if [ "$PM_SAVING" = 1 ]; then
+    mark "$name: ± saving: $("$PY" "$HERE/qff_pm_saving.py" plan "$d/ref.json" "$d/stubs" "$d/stubs_compute")"
+    src=$d/stubs_compute
   fi
+  mark "$name: $(ls "$src" | wc -l) Hessians to compute"
+  if [ "$LANES" -gt 1 ]; then
+    local first=() pids=() j failed=""
+    [ "$2" = 1 ] && first=(--max-first-seconds "$MAX_FIRST")
+    mark "$name: lanes $("$PY" "$HERE/qff_pm_saving.py" split "$src" "$d/lanes" "$LANES") Hessians, $thr threads each"
+    for j in $(seq 0 $((LANES - 1))); do
+      "$PY" "$HERE/pyscf_hessians_for_qff.py" "$d/lanes/lane$j" "$d/hess" --basis "$basis" --grid "$grid" --threads "$thr" "${first[@]}" ${GUESS_FROM_PREVIOUS:+--guess-from-previous} \
+        > "$d/lane$j.log" 2>&1 &
+      pids+=("$!")
+    done
+    for j in "${!pids[@]}"; do wait "${pids[$j]}" || failed="$failed lane$j"; done
+    [ -z "$failed" ] || { mark "$name: LANES FAILED:$failed (see $d/lane*.log)"; [ "$2" = 1 ] && { mark "$name: STOPPED by the stop rule or a failure (first displaced Hessian > ${MAX_FIRST} s?) — re-price"; exit 1; }; exit 1; }
+  elif [ "$2" = 1 ]; then
+    "$PY" "$HERE/pyscf_hessians_for_qff.py" "$src" "$d/hess" --basis "$basis" --grid "$grid" --threads "$thr" --max-first-seconds "$MAX_FIRST" ${GUESS_FROM_PREVIOUS:+--guess-from-previous}       || { mark "$name: STOPPED by the stop rule or a failure (first displaced Hessian > ${MAX_FIRST} s?) — re-price"; exit 1; }
+  else
+    "$PY" "$HERE/pyscf_hessians_for_qff.py" "$src" "$d/hess" --basis "$basis" --grid "$grid" --threads "$thr" ${GUESS_FROM_PREVIOUS:+--guess-from-previous}
+  fi
+  [ "$PM_SAVING" = 1 ] && mark "$name: $("$PY" "$HERE/qff_pm_saving.py" fill "$d/hess" "$d/stubs" "$d/images.json")"
   # dpir.qff refuses a force field whose two finite-difference routes disagree by > 10 cm⁻¹: for S1 that refusal is an outcome (the setting
   # fails), recorded, and the numbers are then assembled with --allow-noisy for the record only (the registration's rule)
   if (cd "$PLAN" && PYTHONPATH=src "$PY" -m dpir.qff "$d/hess" --disp "$DISP" --out "$d/qff_report.md" > "$d/qff_stdout.log" 2>&1); then

@@ -8,6 +8,7 @@
 # passed. The shared steps are probes/deploy_lib.sh's; `--list-files` prints the file list and contacts no server.
 #   bash probes/deploy_s2.sh s1
 #   DEST=/root/dpir_s2b IDS=probes/results_m1/s2b_training_set_2026-10-19/plan/s2b_ids_1of2.tsv bash probes/deploy_s2.sh <host>   (S2b)
+# IDS may name several lists, separated by spaces (route A: the benzene gate's and the targets').
 # no-set-e: every step checks its own result and stops with a named marker
 set -u
 NAME=${1:?host name, or --list-files}
@@ -19,14 +20,17 @@ SMOKE=/root/s2_smoke_$(basename "$DEST")   # a fresh smoke folder per destinatio
 REF=probes/results_m1/s2_smoke_reference_2026-10-14/water_G_omega.json
 FILES=(probes/s2_batch.sh probes/progress_on_growth.sh probes/s1_anharmonic_level.sh probes/s1_anharmonic_level.py probes/pyscf_hessians_for_qff.py
        probes/library_log.py probes/scf_converge.py probes/make_qff_displacements.py probes/qff_from_hessians.py src/dpir/__init__.py
-       src/dpir/qff.py src/dpir/provenance.py probes/results_m1/water_dipole_fd_2026-10-02/geometry.json "$REF" "$IDS")
+       src/dpir/qff.py src/dpir/provenance.py probes/qff_pm_saving.py probes/qff_symmetry_count.py probes/qff_symmetry_rebuild.py
+       probes/e8_symmetry.py probes/results_m1/water_dipole_fd_2026-10-02/geometry.json "$REF")
+read -r -a LISTS <<< "$IDS"
+FILES+=("${LISTS[@]}")
 if [ "$NAME" = --list-files ]; then printf '%s\n' "${FILES[@]}"; exit 0; fi
 . "$HERE/deploy_lib.sh"
 
 deploy_connect || exit 1
 $S "test ! -e $SMOKE" < /dev/null || { echo "$SMOKE EXISTS on $NAME — not overwritten"; exit 1; }
 deploy_code S2 || exit 1
-deploy_geometries "$IDS" || exit 1
+deploy_geometries "${LISTS[@]}" || exit 1
 
 echo "[$(t) $NAME] 3. SMOKE: water through s2_batch.sh at G"
 $S "cd $DEST && printf 'water\tprobes/results_m1/water_dipole_fd_2026-10-02/geometry.json\n' > $SMOKE.ids.tsv && PY=/root/miniforge3/envs/qc05/bin/python bash probes/s2_batch.sh $SMOKE.ids.tsv $SMOKE 1 4 'G:6-31g*:75,302' > $SMOKE.log 2>&1; grep '^=== (S2)' $SMOKE.log" < /dev/null
