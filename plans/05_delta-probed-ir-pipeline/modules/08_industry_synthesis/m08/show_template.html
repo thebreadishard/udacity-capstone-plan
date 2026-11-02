@@ -168,6 +168,18 @@ h2 { margin: 0; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; tex
   .map { flex: none; min-width: 56rem; height: 28rem; }
   .result { overflow-y: visible; }
 }
+/* phones held upright: a desktop-wide map in a sideways scroller loses the token off the screen, so the map runs down the page instead,
+   each card beside its stop; drawMap sets the map's height from the stations */
+@media (max-width: 60rem) and (orientation: portrait) {
+  .stage { overflow-x: visible; }
+  .map { min-width: 0; height: auto; }
+}
+.map.vertical .badges { right: 0; }
+.map.vertical .station { transform: translateY(-50%); right: 0; width: auto; min-height: 0; display: grid; grid-template-columns: 1.8rem minmax(0, 1fr);
+                         column-gap: 0.7rem; align-items: start; }
+.map.vertical .station .icon { grid-row: 1 / span 3; }
+.map.vertical .station .t { margin-top: 0; }
+.map.vertical .station .time { min-height: 0; margin-top: 0.2rem; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 </style>
 </head>
@@ -259,7 +271,9 @@ $("#filters").addEventListener("click", (e) => { if (!e.target.closest(".chip"))
 $("#list").addEventListener("click", (e) => { const b = e.target.closest(".item"); if (!b || state.running) return; select(b.dataset.key); });
 
 /* the metro map: positions in pixels from the map's size, recomputed on resize */
+const UPRIGHT = matchMedia("(max-width: 60rem) and (orientation: portrait)");
 function geometry() {
+  if (UPRIGHT.matches) return geometryDown();
   const box = $("#map").getBoundingClientRect();
   const W = box.width, H = box.height, n = 6;
   const xs = [...Array(n)].map((_, i) => W * (i + 0.5) / n);
@@ -272,29 +286,55 @@ function geometry() {
   const main = xs.map((x) => [x, yMain]);
   const stop = [(xs[2] + xs[3]) / 2, yBranch];                      /* the corpus line's own stop: the corpus record */
   const corpus = [main[0], main[1], [xs[1] + d, yBranch], stop, [xs[4] - d, yBranch], main[4], main[5]];
-  return { W, H, xs, yMain, yBranch, main, corpus, stop, r, gap };
+  const cardAt = xs.map((x) => [x, yMain + r + gap]);
+  return { W, H, main, corpus, stop, cardAt, r, gap, down: false };
+}
+/* upright phones: the main line runs down the left, the corpus line beside it on the far left with its label turned along it, and the
+   cards fill the width to the right; the height follows from the stations, below the legend and the Start button */
+function geometryDown() {
+  const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+  const r = 2.3 * rem, gap = 1.1 * rem, d = 3.4 * rem, step = 8.5 * rem, START = 2.9 * rem;
+  const xBranch = 2.2 * rem, xMain = xBranch + d;
+  const top = $("#badges").offsetHeight + 0.8 * rem + START + gap + r;
+  const ys = [...Array(6)].map((_, i) => top + i * step);
+  const main = ys.map((y) => [xMain, y]);
+  const stop = [xBranch, (ys[2] + ys[3]) / 2];
+  const corpus = [main[0], main[1], [xBranch, ys[1] + d], stop, [xBranch, ys[4] - d], main[4], main[5]];
+  const cardAt = ys.map((y) => [xMain + r + 0.5 * rem, y]);
+  return { W: $("#map").getBoundingClientRect().width, H: ys[5] + step / 2 + 6 * rem, main, corpus, stop, cardAt, r, gap, rem, down: true };
 }
 function pathD(pts) { return pts.map((p, i) => (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1)).join(" "); }
+function stopLabel(g) {
+  if (g.down) {
+    return `<text class="stop-label" transform="translate(${(g.stop[0] - 1.4 * g.rem).toFixed(1)} ${g.stop[1].toFixed(1)}) rotate(-90)" text-anchor="middle"`
+      + ` dominant-baseline="middle">Corpus record <tspan class="stop-sub">· steps 3–4 computed earlier</tspan></text>`;
+  }
+  return `<text class="stop-label" x="${g.stop[0]}" y="${g.stop[1] - 22}" text-anchor="middle">Corpus record</text>
+    <text class="stop-sub" x="${g.stop[0]}" y="${g.stop[1] + 30}" text-anchor="middle">steps 3–4 computed earlier</text>`;
+}
 function drawMap(mol) {
-  const g = geometry();
-  const branch = [g.main[1], [g.xs[1] + (g.yMain - g.yBranch), g.yBranch], [g.xs[4] - (g.yMain - g.yBranch), g.yBranch], g.main[4]];
-  const ix = (i) => (i === 1 || i === 4 ? " interchange" : "");
-  $("#lines").innerHTML = `<path class="branch" d="${pathD(branch)}"/><path class="base" d="${pathD(g.main)}"/><path class="run" id="run" d=""/>
-    <circle class="ring" id="ringC" cx="${g.stop[0]}" cy="${g.stop[1]}" r="12"/><circle class="dot corpus-stop" id="dotC" cx="${g.stop[0]}" cy="${g.stop[1]}" r="10"/>
-    <text class="stop-label" x="${g.stop[0]}" y="${g.stop[1] - 22}" text-anchor="middle">Corpus record</text>
-    <text class="stop-sub" x="${g.stop[0]}" y="${g.stop[1] + 30}" text-anchor="middle">steps 3–4 computed earlier</text>
-    ${g.main.map((p, i) => `<circle class="ring" id="ring${i}" cx="${p[0]}" cy="${p[1]}" r="${i === 1 || i === 4 ? 16 : 14}"/><circle class="dot${ix(i)}" id="dot${i}" cx="${p[0]}" cy="${p[1]}" r="${i === 1 || i === 4 ? 15 : 12}"/>`).join("")}`;
+  const map = $("#map"), down = UPRIGHT.matches;
   if (!$("#badges")) {
     const b = document.createElement("div"); b.className = "badges"; b.id = "badges";
     b.innerHTML = '<span class="badge-line"><i style="background:var(--accent)"></i>Main line · every step computed</span>'
       + '<span class="badge-line"><i style="background:var(--corpus)"></i>Corpus line · steps 3–4 taken from the corpus</span>';
-    $("#map").appendChild(b);
+    map.appendChild(b);
   }
+  map.classList.toggle("vertical", down);
+  if (!down) map.style.height = "";
+  const g = geometry();
+  if (down) map.style.height = g.H.toFixed(0) + "px";
+  const branch = [g.corpus[1], g.corpus[2], g.corpus[4], g.corpus[5]];
+  const ix = (i) => (i === 1 || i === 4 ? " interchange" : "");
+  $("#lines").innerHTML = `<path class="branch" d="${pathD(branch)}"/><path class="base" d="${pathD(g.main)}"/><path class="run" id="run" d=""/>
+    <circle class="ring" id="ringC" cx="${g.stop[0]}" cy="${g.stop[1]}" r="12"/><circle class="dot corpus-stop" id="dotC" cx="${g.stop[0]}" cy="${g.stop[1]}" r="10"/>
+    ${stopLabel(g)}
+    ${g.main.map((p, i) => `<circle class="ring" id="ring${i}" cx="${p[0]}" cy="${p[1]}" r="${i === 1 || i === 4 ? 16 : 14}"/><circle class="dot${ix(i)}" id="dot${i}" cx="${p[0]}" cy="${p[1]}" r="${i === 1 || i === 4 ? 15 : 12}"/>`).join("")}`;
   document.querySelectorAll(".start").forEach((s) => s.remove());
   if (mol && state.mode !== "live") {
     const btn = document.createElement("button");
     btn.type = "button"; btn.className = "start"; btn.id = "start"; btn.textContent = "Start ▶"; btn.disabled = state.running;
-    btn.style.left = g.xs[0] + "px"; btn.style.top = (g.yMain - g.r - g.gap) + "px";
+    btn.style.left = g.main[0][0] + "px"; btn.style.top = (g.main[0][1] - g.r - g.gap) + "px";
     btn.addEventListener("click", () => ride(mol));
     $("#map").appendChild(btn);
   }
@@ -303,7 +343,7 @@ function drawMap(mol) {
   stations.forEach((s, i) => {
     const el = document.createElement("button");
     el.type = "button"; el.className = "station"; el.dataset.state = "pending"; el.id = "st" + i;
-    el.style.left = g.xs[i] + "px"; el.style.top = (g.yMain + g.r + g.gap) + "px";
+    el.style.left = g.cardAt[i][0] + "px"; el.style.top = g.cardAt[i][1] + "px";
     el.innerHTML = `<div class="icon">${ICONS[s.icon]}</div><div class="t">${esc(s.title)}</div><div class="tool">${esc(s.tool)}</div><div class="time" id="time${i}"></div>`;
     el.addEventListener("click", () => showDetail(s));
     $("#map").appendChild(el);
@@ -350,6 +390,17 @@ function setStation(i, st, text) {
   const ring = $("#ring" + i); if (ring) ring.classList.toggle("on", st === "active");
   const time = $("#time" + i); if (text !== undefined && time) time.textContent = text;
 }
+/* upright phones: the page brings the token's next stop into view, unless the reader moved the page in the last two seconds (a tap on
+   Start is no move) */
+let movedAt = -1e9;
+["touchmove", "wheel"].forEach((ev) => window.addEventListener(ev, () => { movedAt = performance.now(); }, { passive: true }));
+function follow(p) {
+  if (!UPRIGHT.matches || performance.now() - movedAt < 2000) return;
+  const y = $("#map").getBoundingClientRect().top + p[1];
+  if (y > innerHeight * 0.3 && y < innerHeight * 0.7) return;
+  const motion = matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+  window.scrollBy({ top: y - innerHeight / 2, behavior: motion });
+}
 function animateTo(from, to, ms, run, done) {
   /* frames move the token; a timer finishes the leg in any case, because frames stop in a hidden tab while timers go on */
   const t0 = performance.now();
@@ -390,6 +441,7 @@ function ride(m) {
     later(() => {
       if (reused && k === 1) { setStation(2, "skipped", m.stations[2].time); setStation(3, "skipped", m.stations[3].time); }
       const base = trail.slice();
+      follow(route[k + 1]);
       animateTo(route[k], route[k + 1], ms, (p) => runPath.setAttribute("d", pathD(base.concat([p]))), () => { trail.push(route[k + 1]); enter(stops[k + 1]); });
     }, t);
     t += ms + (stops[k + 1] === null ? 0 : stops[k + 1] === "C" ? CORPUS_DWELL : STEP_DWELL);
@@ -508,6 +560,7 @@ function liveMoveTo(station) {
   const step = () => {
     if (live.at >= target) { live.moving = false; return; }
     const base = route.slice(0, live.at + 1);
+    follow(route[live.at + 1]);
     animateTo(route[live.at], route[live.at + 1], STEP_TRAVEL, (pt) => run.setAttribute("d", pathD(base.concat([pt]))), () => { live.at += 1; step(); });
   };
   step();
