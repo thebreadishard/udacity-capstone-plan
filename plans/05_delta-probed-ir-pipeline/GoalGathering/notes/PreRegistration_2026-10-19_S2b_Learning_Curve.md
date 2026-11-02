@@ -1,6 +1,6 @@
-# Pre-registration S2b — the anharmonic shift's learning curve (DRAFT, 19 Oct 2026)
+# Pre-registration S2b — the anharmonic shift's learning curve (19 Oct 2026; registered 2 Nov 2026)
 
-**Status: DRAFT — new spending, so it waits for the user's word** (servers, euros). Written before any S2b molecule is selected by script
+**Status: REGISTERED 2 Nov 2026, 07:5x** — the user chose S2b with route A that morning and created the three CPX62 (ubuntu-32gb-hel1-3/4/5, `s2b1`–`s2b3` in `tools/hosts.sh`), committed before any S2b computation; run specs `probes/runspecs/s2b_{1,2,3}of3.json`. Drafted 19 Oct as waiting for the user's word on the spending. Written before any S2b molecule is selected by script
 or computed. The costing below read only sizes and SMILES of candidate scaffolds, never a label.
 
 ## Why
