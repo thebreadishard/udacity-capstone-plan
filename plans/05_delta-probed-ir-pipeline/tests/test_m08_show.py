@@ -71,6 +71,14 @@ def test_a_listed_molecule_links_to_its_atlas_page_and_no_other_does():
     assert S.molecule(NO_TRUTH[0])["atlas"] is None                       # module 06's candidate is not in the catalogue
 
 
+def test_the_atlas_index_opens_the_newest_run_of_each_linked_page():
+    url = f"{S.ATLAS_URL}/molecule/A_1/"
+    data = {"molecules": [{"key": "demo/benzene", "atlas": url, "pipeline_version": "0.4"},
+                          {"key": "holdout/A_1", "atlas": url, "pipeline_version": "0.10"},
+                          {"key": "demo/cinnoline", "atlas": None, "pipeline_version": "0.9"}]}
+    assert S.atlas_index(data) == {"A_1": "holdout/A_1"}                  # 0.10 is newer than 0.4, not older
+
+
 def test_check_links_reports_every_page_the_live_site_does_not_serve():
     data = {"molecules": [{"name": "benzene", "atlas": "https://x/molecule/A/"}, {"name": "carbazole", "atlas": "https://x/molecule/B/"},
                           {"name": "candidate06", "atlas": None}]}

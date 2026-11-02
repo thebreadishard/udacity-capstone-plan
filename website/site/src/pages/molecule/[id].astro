@@ -27,6 +27,8 @@ const outDir = path.resolve('../export/out');
 const mol = JSON.parse(fs.readFileSync(path.join(outDir, 'molecules', `${row.id}.json`), 'utf8'));
 const svgPath = path.join(outDir, 'depictions', `${row.id}.svg`);
 const svg = fs.existsSync(svgPath) ? fs.readFileSync(svgPath, 'utf8') : '';
+const showPath = path.join(outDir, 'pipeline_show.json');   // export/pipeline_show.py: the show's key for each molecule with a recorded run
+const showKey = fs.existsSync(showPath) ? JSON.parse(fs.readFileSync(showPath, 'utf8')).molecules[row.id] ?? null : null;
 const labels = ['Listed', 'Cheap level done', 'Correction predicted', 'Spectrum predicted', 'Anchored', 'Validated'];
 const reached = (i) => i <= row.rung && !(i === 2 || i === 3);   // rungs 2–3 are reserved until the layer produces them
 const vib = mol.frequencies_cm;
@@ -76,6 +78,10 @@ const notifyHref = `https://github.com/thebreadishard/spectrum-atlas/issues/new?
           ))}
         </ol>
       </section>
+      {showKey && <section class="card">
+        <h2>Through the pipeline</h2>
+        <p class="small">This molecule has a recorded run: <a href={withBase('/pipeline/') + '#' + encodeURIComponent(showKey) + '!'}>see it go through the pipeline</a>, station by station, with its spectrum and certificate.</p>
+      </section>}
       <section class="card">
         <h2>Request a run</h2>
         <p class="muted small">Not available on this site yet: the pipeline (a molecule in, its spectrum and certificate out) runs on the project's own computer, with three of the four mode families licensed at the DFT stand-in level. Sign-in will be needed only to request runs; reading stays open.</p>

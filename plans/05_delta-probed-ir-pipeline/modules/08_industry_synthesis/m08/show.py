@@ -213,6 +213,20 @@ def payload(runs: tuple[Path, ...]) -> dict:
             "licence_line_cm": 3, "station_titles": [dict(s) for s in STATIONS], "live": False}
 
 
+def atlas_index(data: dict) -> dict[str, str]:
+    """Per Atlas page the show links to, the show key the page's 'see it go through the pipeline' opens: the run of the newest
+    pipeline version, the last key on a tie (benzene is both a demo run and a hold-out (a) run)."""
+    best: dict[str, tuple[tuple[int, ...], str]] = {}
+    for m in data["molecules"]:
+        if not m["atlas"]:
+            continue
+        atlas_id = m["atlas"].rstrip("/").rsplit("/", 1)[1]
+        candidate = (tuple(int(x) for x in m["pipeline_version"].split(".")), m["key"])
+        if atlas_id not in best or candidate > best[atlas_id]:
+            best[atlas_id] = candidate
+    return {atlas_id: key for atlas_id, (_, key) in sorted(best.items())}
+
+
 def page(data: dict) -> str:
     template = TEMPLATE.read_text(encoding="utf-8")
     if template.count(DATA_MARK) != 1:
@@ -232,7 +246,11 @@ def main(argv: list[str] | None = None) -> int:
     tmp = a.out.with_suffix(".tmp")
     tmp.write_text(html_text, encoding="utf-8")
     tmp.replace(a.out)
-    print(f"wrote {a.out} ({len(html_text) / 1024:.0f} KB, {len(a.runs)} runs)")
+    index = a.out.with_name(a.out.stem + "_index.json")       # the Atlas reads it (website/export/pipeline_show.py)
+    tmp = index.with_suffix(".tmp")
+    tmp.write_text(json.dumps({"network": data["network"], "molecules": atlas_index(data)}, indent=1), encoding="utf-8")
+    tmp.replace(index)
+    print(f"wrote {a.out} ({len(html_text) / 1024:.0f} KB, {len(a.runs)} runs) and {index.name}")
     if a.check_links:
         dead = dead_links(data)
         if dead:

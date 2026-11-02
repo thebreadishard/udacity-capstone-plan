@@ -8,6 +8,7 @@ REPO_URL="https://github.com/thebreadishard/spectrum-atlas.git"
 if [ "${1:-}" != "--no-export" ]; then
   (cd "$HERE/export" && PYTHONIOENCODING=utf-8 python build_catalog.py > /dev/null && PYTHONIOENCODING=utf-8 python depict.py > /dev/null)
 fi
+(cd "$HERE/export" && PYTHONIOENCODING=utf-8 python pipeline_show.py)   # the show at /pipeline/ and its index (TASKS 161)
 (cd "$HERE/site" && npm run build > /dev/null)
 touch "$HERE/site/dist/.nojekyll"
 cp "$HERE/site/public/README.md" "$HERE/site/dist/README.md" 2>/dev/null || true
