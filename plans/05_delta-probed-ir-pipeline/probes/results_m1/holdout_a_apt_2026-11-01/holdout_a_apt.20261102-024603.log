@@ -1,0 +1,27 @@
+A_428228e5a5: route cphf, to be refined
+A_08dde334d8: route cphf, to be refined
+A_541c53d1a5: route cphf, to be refined
+A_bce5bae234: route cphf, to be refined
+A_e72997e726: route cphf, to be refined
+A_fdc27f1bd1: route cphf, to be refined
+A_72b86c2331: route cphf, to be refined
+=== (HAA) start: 8 molecules, 2 lanes x 4 threads, cap 6144 MB a step, pyscf max_memory 4096 MB 2026-11-01 21:22:10
+=== (HAA) lane 0 A_428228e5a5 start (apt, 26 atoms) 2026-11-01 21:22:10
+=== (HAA) lane 1 A_08dde334d8 start (apt, 24 atoms) 2026-11-01 21:22:10
+=== (HAA) lane 1 A_08dde334d8 done 5564 s 2026-11-01 22:54:54
+=== (HAA) lane 1 A_541c53d1a5 start (apt, 24 atoms) 2026-11-01 22:54:54
+=== (HAA) lane 0 A_428228e5a5 FAILED (exit 1) after 7496 s: see A_428228e5a5/step.log 2026-11-01 23:27:06
+=== (HAA) lane 0 A_bce5bae234 start (apt, 23 atoms) 2026-11-01 23:27:06
+=== (HAA) lane 1 A_541c53d1a5 done 5522 s 2026-11-02 00:26:56
+=== (HAA) lane 1 A_e72997e726 start (apt, 23 atoms) 2026-11-02 00:26:56
+=== (HAA) lane 0 A_bce5bae234 done 5199 s 2026-11-02 00:53:45
+=== (HAA) lane 0 A_fdc27f1bd1 start (apt, 22 atoms) 2026-11-02 00:53:45
+=== (HAA) lane 1 A_e72997e726 done 4498 s 2026-11-02 01:41:54
+=== (HAA) lane 1 A_72b86c2331 start (apt, 20 atoms) 2026-11-02 01:41:54
+=== (HAA) lane 0 A_fdc27f1bd1 done 3587 s 2026-11-02 01:53:32
+=== (HAA) lane 0 A_8448043181 start (hessian, 12 atoms) 2026-11-02 01:53:32
+=== (HAA) lane 0 A_8448043181 done 508 s 2026-11-02 02:02:00
+=== (HAA) lane 0 done 2026-11-02 02:02:00
+=== (HAA) lane 1 A_72b86c2331 done 2277 s 2026-11-02 02:19:51
+=== (HAA) lane 1 done 2026-11-02 02:19:51
+=== (HAA) all done: 7 of 8 APT files written (their checks are read by probes/holdout_a_apt_install.py) 2026-11-02 02:19:51

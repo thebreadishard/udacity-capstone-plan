@@ -1,0 +1,67 @@
+[
+ {
+  "id": "A_428228e5a5",
+  "step": "apt",
+  "files": [
+   "dipole_b3lyp_cphf.npz"
+  ],
+  "superseded": "modules\\05_support_predictor\\corpus\\superseded_2026-11-01\\A_428228e5a5"
+ },
+ {
+  "id": "A_08dde334d8",
+  "step": "apt",
+  "files": [
+   "dipole_b3lyp_cphf.npz"
+  ],
+  "superseded": "modules\\05_support_predictor\\corpus\\superseded_2026-11-01\\A_08dde334d8"
+ },
+ {
+  "id": "A_541c53d1a5",
+  "step": "apt",
+  "files": [
+   "dipole_b3lyp_cphf.npz"
+  ],
+  "superseded": "modules\\05_support_predictor\\corpus\\superseded_2026-11-01\\A_541c53d1a5"
+ },
+ {
+  "id": "A_bce5bae234",
+  "step": "apt",
+  "files": [
+   "dipole_b3lyp_cphf.npz"
+  ],
+  "superseded": "modules\\05_support_predictor\\corpus\\superseded_2026-11-01\\A_bce5bae234"
+ },
+ {
+  "id": "A_e72997e726",
+  "step": "apt",
+  "files": [
+   "dipole_b3lyp_cphf.npz"
+  ],
+  "superseded": "modules\\05_support_predictor\\corpus\\superseded_2026-11-01\\A_e72997e726"
+ },
+ {
+  "id": "A_fdc27f1bd1",
+  "step": "apt",
+  "files": [
+   "dipole_b3lyp_cphf.npz"
+  ],
+  "superseded": "modules\\05_support_predictor\\corpus\\superseded_2026-11-01\\A_fdc27f1bd1"
+ },
+ {
+  "id": "A_72b86c2331",
+  "step": "apt",
+  "files": [
+   "dipole_b3lyp_cphf.npz"
+  ],
+  "superseded": "modules\\05_support_predictor\\corpus\\superseded_2026-11-01\\A_72b86c2331"
+ },
+ {
+  "id": "A_8448043181",
+  "step": "hessian",
+  "files": [
+   "hessian_b3lyp_analytic.npz",
+   "dipole_b3lyp_cphf.npz"
+  ],
+  "superseded": "modules\\05_support_predictor\\corpus\\superseded_2026-11-01\\A_8448043181"
+ }
+]

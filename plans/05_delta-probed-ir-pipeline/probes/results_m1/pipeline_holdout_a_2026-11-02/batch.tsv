@@ -1,0 +1,8 @@
+benzene_A_8448043181	c1ccccc1	A_8448043181	a	6
+biphenylene_A_72b86c2331	c1ccc2c(c1)-c1ccccc1-2	A_72b86c2331	a	12
+biphenyl_A_fdc27f1bd1	c1ccc(-c2ccccc2)cc1	A_fdc27f1bd1	a	12
+benzophenone_A_08dde334d8	O=C(c1ccccc1)c1ccccc1	A_08dde334d8	a	13
+phenanthridine_A_bce5bae234	c1ccc2c(c1)cnc1ccccc12	A_bce5bae234	a	13
+fluorene_A_e72997e726	c1ccc2c(c1)Cc1ccccc1-2	A_e72997e726	a	13
+phenanthrene_A_541c53d1a5	c1ccc2c(c1)ccc1ccccc12	A_541c53d1a5	a	14
+fluoranthene_A_428228e5a5	c1ccc2c(c1)-c1cccc3cccc-2c13	A_428228e5a5	a	16

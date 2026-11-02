@@ -1,0 +1,13 @@
+A_428228e5a5: route cphf, to be refined
+A_08dde334d8: route cphf, to be refined
+A_541c53d1a5: route cphf, to be refined
+A_bce5bae234: route cphf, to be refined
+A_e72997e726: route cphf, to be refined
+A_fdc27f1bd1: route cphf, to be refined
+A_72b86c2331: route cphf, to be refined
+=== (HAA) start: 8 molecules, 2 lanes x 4 threads, cap 6144 MB a step, pyscf max_memory 4096 MB 2026-11-02 02:46:05
+=== (HAA) lane 1 A_428228e5a5 start (apt, 26 atoms) 2026-11-02 02:46:05
+=== (HAA) lane 0 done 2026-11-02 02:46:05
+=== (HAA) lane 1 A_428228e5a5 FAILED (exit 1) after 4479 s: see A_428228e5a5/step.log 2026-11-02 04:00:44
+=== (HAA) lane 1 done 2026-11-02 04:00:44
+=== (HAA) all done: 7 of 8 APT files written (their checks are read by probes/holdout_a_apt_install.py) 2026-11-02 04:00:44
