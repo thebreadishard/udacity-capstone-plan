@@ -157,6 +157,12 @@ The reference Hessian is invariant under the one grid-compatible operation of th
 
 With the references that is ≈ 168 h, ≈ €145, ending ≈ 9–10 Nov, before 15 Nov. The stop rule, the noise rule and the read are unchanged. The ± saving stays in the runner, off by default; it is not used for a registered result.
 
+## Amendment 4 (2 Nov 2026, 14:0x, before any target force field exists): tetracene's stop was the runner's thread count
+
+Tetracene's four lanes took 7,775–7,814 s for their first displaced Hessians, so the stop rule (6,000 s) stopped it at 13:02 UTC. The cause was the runner, not the molecule. runspec exports OPENBLAS/MKL_NUM_THREADS as the spec's total (32), every lane's pyscf process inherited it, and the CCX53 ran 4 × (8 + 32) threads on 32 cores, at load 128. `s1_anharmonic_level.sh` now caps BLAS per process (45d5da46; water in WSL with an inherited 32: the child sees its own 2, and ω equals the reference to 1e-8).
+
+With the user's word ('Akkoord met allebei'), `routea_targets` was stopped (coronene's optimisation had just begun) and is relaunched with the fixed runner and the same stop rule, which now applies to the next Hessian each lane computes. Tetracene keeps its optimised minimum, its reference and the four displaced Hessians already written. The S2b servers received the same runner for every molecule they start from now on; molecules already running keep the script they read.
+
 ## Risks named now
 
 - pyVPT2 treats degeneracy only for linear molecules. A resonance that touches one of coronene's degenerate modes is left deperturbed and
