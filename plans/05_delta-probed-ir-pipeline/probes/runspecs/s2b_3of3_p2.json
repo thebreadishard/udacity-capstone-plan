@@ -1,0 +1,38 @@
+{
+ "name": "s2b_3of3_p2",
+ "purpose": "S2b amendment 1 (the user: 'Akkoord voor optie A'): server s2b3's second pass, waiting for s2b_3of3 to end, then re-queuing every STOPPED molecule with MAX_FIRST = 1.5 × its own measured first displaced Hessian",
+ "host": "s2b3",
+ "workdir": "/root/dpir_s2b",
+ "command": "PY=/root/miniforge3/envs/qc05/bin/python bash probes/progress_on_growth.sh --tag S2B3P2 --dir /root/s2b --name pyscf.log --interval 600 -- bash probes/s2b_pass2.sh /root/dpir_s2b/s2b_3of3.log probes/results_m1/s2b_training_set_2026-10-19/plan/s2b_ids_3of3.tsv /root/s2b 3 5 G:6-31g*:75,302",
+ "sources": [
+  {
+   "local": "probes/s2b_pass2.sh",
+   "remote": "/root/dpir_s2b/probes/s2b_pass2.sh"
+  },
+  {
+   "local": "probes/s2_batch.sh",
+   "remote": "/root/dpir_s2b/probes/s2_batch.sh"
+  },
+  {
+   "local": "probes/progress_on_growth.sh",
+   "remote": "/root/dpir_s2b/probes/progress_on_growth.sh"
+  },
+  {
+   "local": "probes/results_m1/s2b_training_set_2026-10-19/plan/s2b_ids_3of3.tsv",
+   "remote": "/root/dpir_s2b/probes/results_m1/s2b_training_set_2026-10-19/plan/s2b_ids_3of3.tsv"
+  }
+ ],
+ "progress": {
+  "regex": "^=== \\(S2B3P2\\) progress: |^=== \\(S2P2\\) |^=== \\(S2\\) [A-Za-z0-9_]+: (start|done|NOISY)",
+  "max_gap_minutes": 120,
+  "start_regex": "^=== \\(S2P2\\) (pass 2 start|nothing was stopped)",
+  "heartbeat_glob": "/root/s2b/*/G/*/pyscf.log"
+ },
+ "marker_regex": "^=== \\(S2P2\\) (re-queued|pass 2 start|nothing)|^=== \\(S2\\) [A-Za-z0-9_]+: (STOPPED|FAILED)|^=== \\(S2\\) all done|^=== \\(S2B3P2\\) command ended",
+ "end_regex": "^=== \\(S2\\) all done",
+ "threads": 15,
+ "estimate": {
+  "hours": 230.0,
+  "basis": "s2b_reprice.py: the first pass's list re-priced at the measured 1.55× for 22+ atoms ends ≈ 217–226 h after 2 Nov 07:00 UTC; this run waits for it"
+ }
+}

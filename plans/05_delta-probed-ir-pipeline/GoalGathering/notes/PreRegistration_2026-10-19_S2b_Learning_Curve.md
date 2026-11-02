@@ -97,3 +97,11 @@ Making S2b launch-ready (the user, 20:1x: 'Ja, begin met 1-3') turned up four th
    smoke compared with a folder only s1 has. Fixed (DEST and IDS settable, a fresh smoke folder, a committed water reference).
 The read section now states what `probes/s2b_read.py` does (tests/test_s2b_read.py: the verdict rules on crafted curves, refused inputs, and
 the whole read on exact-slope and pure-noise synthetic molecules). The k list ends at 24 because 32 scaffolds leave at most 31 to train on.
+
+## Amendment 1 (2 Nov 2026, 11:5x, before any S2b force field or label exists): the stop rule re-priced, a second pass
+
+Three 25-atom pool-3 molecules took 3,044 s, 3,063 s and 2,964 s for their first displaced Hessian. S2's fit predicted 1,973 s, so the stop rule's 2,959 s stopped P3_1e34c6eeef at 10:46 UTC, and the other two cross it too. The fit was made on molecules of at most 21 atoms; at 25 atoms it underestimates by ≈ 1.55×. All nine P3 molecules and the A molecules of 22–26 atoms are at risk, which would leave ≈ 23 of the 32 scaffolds.
+
+The user chose option A: 'Akkoord voor optie A'. Each server gets a second pass (`probes/s2b_pass2.sh`, run specs `s2b_{1,2,3}of3_p2`). It waits for its first pass to end, then re-queues every molecule that pass STOPPED. The re-queued molecule's MAX_FIRST is 1.5 × its own measured first displaced Hessian, never below the list's value, so the rule still stops a molecule that slows further. A re-queued molecule resumes from what it kept: the optimised stub, the reference and every Hessian already written.
+
+Re-priced with the measured ratio on every molecule of 22+ atoms (scratch `s2b_reprice.py`), the slot-averaged server ends rise from ≈ 144–151 h to ≈ 217–226 h. That is ≈ 226 server-hours, ≈ €47 more, and the passes end ≈ 11 Nov, before 15 Nov. The selection, the computation and the read are unchanged.
