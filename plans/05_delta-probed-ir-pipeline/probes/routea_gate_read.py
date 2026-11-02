@@ -15,7 +15,7 @@ sys.path.insert(0, HERE)
 from s1_anharmonic_level import compare  # noqa: E402
 
 DIRECT = os.path.join(HERE, "results_m1", "s1_anharmonic_benzene_2026-10-13", "s1_benzene", "G")
-GATE_ROOT = os.path.join(HERE, "results_m1", "routea_2026-11-02", "gate")
+GATE_ROOT = os.path.join(HERE, "results_m1", "routea_2026-11-02", "gate2")   # the rerun (S3 amendment 2)
 RMS_LINE, MAX_LINE = 0.2, 0.5    # cm⁻¹, S1 amendment 2
 
 

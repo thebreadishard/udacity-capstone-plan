@@ -10,7 +10,7 @@ PLAN=$(dirname "$HERE")
 IP=$(host_ip routea)
 SRC=/root/routea_gate2/benzene/G
 host_ssh routea "test -f $SRC/qff_report.npz" || { echo "routea_gate_read.sh: no qff_report.npz on routea yet" >&2; exit 2; }
-DST=$PLAN/probes/results_m1/routea_2026-11-02/gate/benzene/G
+DST=$PLAN/probes/results_m1/routea_2026-11-02/gate2/benzene/G      # the first gate's record stays under gate/ (S3 amendment 2)
 mkdir -p "$DST"
 for f in ref.json qff_report.npz qff_report.md qff_stdout.log images.json; do   # SFTP-mode scp expands no remote brace list
   scp -q -i "$HOME/.ssh/hetzner_g_measure" -o BatchMode=yes "root@$IP:$SRC/$f" "$DST/"
