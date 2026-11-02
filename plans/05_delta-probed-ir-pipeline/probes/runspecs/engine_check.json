@@ -7,5 +7,5 @@
  "progress": {"regex": "^=== \\(ECK\\) ", "max_gap_minutes": 60, "heartbeat_glob": "pyscf/molecules/*/pyscf.log"},
  "marker_regex": "^=== \\(ECK\\) (start|STOPPED|all done)|FAILED", "end_regex": "^=== \\(ECK\\) all done", "fail_regex": "^=== \\(ECK\\) STOPPED",
  "dry_run_args": "--dry-run", "resumable": true, "threads": 8,
- "estimate": {"hours": 1, "basis": "benzene alone first (the registration: its timing replaces the estimate of 2-3 h per molecule of 20-26 atoms, 15-22 h for the eight); the water smoke at these settings took 23 s (probes/results_m1/engine_check_smoke_2026-11-02, 2 Nov 18:19)"},
+ "estimate": {"hours": 14, "basis": "benzene measured first, as registered: 810 s (optimisation 113 s, the two Hessians 697 s; 2 Nov 18:20-18:33); the other seven scaled by (atoms/12)^3 to 1.0-2.3 h each, 11.5 h together, plus room for the ring torsions' longer optimisations (biphenyl, benzophenone); the water smoke took 23 s"},
  "memory": {"peak_gb": 6.0, "basis": "one step at a time under a probes/wsl_capped.sh cgroup cap of 6144 MB (pyscf max_memory 4000 MB)"}}
