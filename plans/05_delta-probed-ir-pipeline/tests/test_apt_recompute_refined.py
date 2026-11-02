@@ -129,5 +129,19 @@ def test_an_error_before_the_apt_file_is_written_is_raised_with_its_cause(fetche
     assert isinstance(info.value.__cause__, ValueError)
 
 
+def test_write_apt_may_log_through_the_hessian_object(fetched, tmp_path, monkeypatch):
+    """2 Nov 2026: A_428228e5a5's refinement logged a direct-SCF timer line after the pyscf log was closed."""
+    from pyscf.lib import logger
+    real = AH.write_apt
+
+    def logging(out_dir, hobj, *args):
+        logger.info(hobj.base, "a line from inside write_apt")
+        return real(out_dir, hobj, *args)
+    monkeypatch.setattr(AH, "write_apt", logging)
+    out = tmp_path / "W_water"
+    R.recompute(str(fetched), str(out), grid=GRID)
+    assert "a line from inside write_apt" in (out / AH.PYSCF_LOG_NAME).read_text(encoding="utf-8")
+
+
 def test_height_change_is_relative_to_the_strongest_old_band():
     assert R.height_change([100.0, 10.0], [99.0, 10.5]) == pytest.approx(0.01)

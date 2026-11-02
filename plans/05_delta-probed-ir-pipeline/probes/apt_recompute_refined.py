@@ -69,11 +69,12 @@ def recompute(src, out_dir, grid=LABELS_GRID, stamp=None, max_memory=AH.MAX_MEMO
         mf, _ = AH.labels_scf(mol, "b3lyp", grid)
         hobj = mf.Hessian()
         response = solve_response(hobj)
-    cause = None
-    try:
-        message, error = AH.write_apt(out_dir, hobj, response, hz["H_projected"], np.array(g["masses_amu"]), grid, stamp or AH.software()), ""
-    except ValueError as exc:      # write_apt writes the file, marked failed, before it raises for a failed sum rule or residual
-        message, error, cause = "", str(exc), exc
+        cause = None
+        try:       # inside the log's block: the refinement's get_jk logs through hobj when the integrals are direct (A_428228e5a5)
+            message, error = AH.write_apt(out_dir, hobj, response, hz["H_projected"], np.array(g["masses_amu"]), grid,
+                                          stamp or AH.software()), ""
+        except ValueError as exc:  # write_apt writes the file, marked failed, before it raises for a failed sum rule or residual
+            message, error, cause = "", str(exc), exc
     apt_path = os.path.join(out_dir, AH.APT_FILE)
     if not os.path.exists(apt_path):
         raise RuntimeError(f"{src}: write_apt raised before writing {AH.APT_FILE}: {error}") from cause
