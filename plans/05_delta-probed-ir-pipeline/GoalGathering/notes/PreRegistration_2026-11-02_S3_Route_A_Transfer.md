@@ -139,6 +139,24 @@ The time and price stay as amendment 1 has them, to within an hour.
 
 The gate is rerun from scratch in fresh folders (`/root/dpir_routea2`, `/root/routea_gate2`), under the same line. A pass launches the targets, because the miss had a measured cause in the runner and not in the method. A second miss stops route A and goes to the user.
 
+## Amendment 3 (2 Nov 2026, 10:0x, after the second gate and before any computation on a target): route A without the ± saving
+
+The rerun gate missed too: Δ_anh rms 0.294 and max 1.285 cm⁻¹ against S1's direct G, with 15 grid-compatible images. Computing those 15 Hessians directly split the miss in two:
+
+| comparison | rms | max |
+|---|---|---|
+| S1 direct ↔ the gate's direct set (the reference and the lanes) | 0.003 | 0.008 cm⁻¹ |
+| images ↔ direct (the saving) | 0.294 | 1.286 cm⁻¹ |
+
+The reference Hessian is invariant under the one grid-compatible operation of the tilted corpus benzene (the inversion) only to 1.9e-5 of max |H|, the order of the images' differences. The ledger has the detail. The user chose option B: 'Akkoord voor optie B'. Route A runs without the ± saving (`PM_SAVING` off), all ±d Hessians directly, four lanes of 8 threads, as S2 and S2b computed their labels.
+
+| molecule | Hessians (2M + 1) | time on four lanes |
+|---|---|---|
+| tetracene | 169 | ≈ 47 h |
+| coronene | 205 | ≈ 116 h |
+
+With the references that is ≈ 168 h, ≈ €145, ending ≈ 9–10 Nov, before 15 Nov. The stop rule, the noise rule and the read are unchanged. The ± saving stays in the runner, off by default; it is not used for a registered result.
+
 ## Risks named now
 
 - pyVPT2 treats degeneracy only for linear molecules. A resonance that touches one of coronene's degenerate modes is left deperturbed and

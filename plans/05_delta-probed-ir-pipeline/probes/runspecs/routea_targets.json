@@ -1,9 +1,9 @@
 {
  "name": "routea_targets",
- "purpose": "S3 registration (PreRegistration_2026-11-02_S3_Route_A_Transfer.md): route A, GVPT2 at G of tetracene then coronene with the ± saving and four lanes of 8 threads, the stop rule per molecule in the list's third column; launched only after the benzene gate passed and the registration was committed",
+ "purpose": "S3 registration (PreRegistration_2026-11-02_S3_Route_A_Transfer.md): route A, GVPT2 at G of tetracene then coronene, every ±d Hessian computed (amendment 3, the user's option B), four lanes of 8 threads, the stop rule per molecule in the list's third column; launched only after the benzene gate passed and the registration was committed",
  "host": "routea",
  "workdir": "/root/dpir_routea2",
- "command": "PY=/root/miniforge3/envs/qc05/bin/python PM_SAVING=1 LANES=4 PYSCF_MAX_MEMORY=24000 bash probes/progress_on_growth.sh --tag RAT --dir /root/routea --name pyscf.log --interval 600 -- bash probes/s2_batch.sh probes/results_m1/routea_2026-11-02/ids_targets.tsv /root/routea 1 8 G:6-31g*:75,302",
+ "command": "PY=/root/miniforge3/envs/qc05/bin/python LANES=4 PYSCF_MAX_MEMORY=24000 bash probes/progress_on_growth.sh --tag RAT --dir /root/routea --name pyscf.log --interval 600 -- bash probes/s2_batch.sh probes/results_m1/routea_2026-11-02/ids_targets.tsv /root/routea 1 8 G:6-31g*:75,302",
  "sources": [
   {
    "local": "probes/progress_on_growth.sh",
@@ -62,7 +62,7 @@
  "end_regex": "^=== \\(S2\\) all done",
  "threads": 32,
  "estimate": {
-  "hours": 108.0,
-  "basis": "S2's per-Hessian fit exp(-4.92) n^3.89 s at 5 threads: tetracene 100 × 4,006 s, coronene 132 × 8,135 s (S3 amendment 1), over four lanes = 103 h, plus the two optimisations and references"
+  "hours": 168.0,
+  "basis": "S2's per-Hessian fit exp(-4.92) n^3.89 s at 5 threads: all ±d Hessians (S3 amendment 3): tetracene 169 × 4,006 s, coronene 205 × 8,135 s, over four lanes = 163 h, plus the two optimisations and references"
  }
 }
