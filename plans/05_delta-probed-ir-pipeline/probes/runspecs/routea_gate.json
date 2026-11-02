@@ -2,56 +2,56 @@
  "name": "routea_gate",
  "purpose": "S3 registration's gate before the targets: benzene at G with the ± saving and four lanes, read against S1's direct G set (Δ_anh rms ≤ 0.2, max ≤ 0.5 cm⁻¹, S1 amendment 2's line); the user chose route A on 2 Nov ('Ga je gang met route A')",
  "host": "routea",
- "workdir": "/root/dpir_routea",
- "command": "PY=/root/miniforge3/envs/qc05/bin/python PM_SAVING=1 LANES=4 PYSCF_MAX_MEMORY=24000 bash probes/progress_on_growth.sh --tag RAG --dir /root/routea_gate --name pyscf.log --interval 600 -- bash probes/s2_batch.sh probes/results_m1/routea_2026-11-02/ids_gate.tsv /root/routea_gate 1 8 G:6-31g*:75,302",
+ "workdir": "/root/dpir_routea2",
+ "command": "PY=/root/miniforge3/envs/qc05/bin/python PM_SAVING=1 LANES=4 PYSCF_MAX_MEMORY=24000 bash probes/progress_on_growth.sh --tag RAG --dir /root/routea_gate2 --name pyscf.log --interval 600 -- bash probes/s2_batch.sh probes/results_m1/routea_2026-11-02/ids_gate.tsv /root/routea_gate2 1 8 G:6-31g*:75,302",
  "sources": [
   {
    "local": "probes/progress_on_growth.sh",
-   "remote": "/root/dpir_routea/probes/progress_on_growth.sh"
+   "remote": "/root/dpir_routea2/probes/progress_on_growth.sh"
   },
   {
    "local": "probes/s2_batch.sh",
-   "remote": "/root/dpir_routea/probes/s2_batch.sh"
+   "remote": "/root/dpir_routea2/probes/s2_batch.sh"
   },
   {
    "local": "probes/s1_anharmonic_level.sh",
-   "remote": "/root/dpir_routea/probes/s1_anharmonic_level.sh"
+   "remote": "/root/dpir_routea2/probes/s1_anharmonic_level.sh"
   },
   {
    "local": "probes/s1_anharmonic_level.py",
-   "remote": "/root/dpir_routea/probes/s1_anharmonic_level.py"
+   "remote": "/root/dpir_routea2/probes/s1_anharmonic_level.py"
   },
   {
    "local": "probes/pyscf_hessians_for_qff.py",
-   "remote": "/root/dpir_routea/probes/pyscf_hessians_for_qff.py"
+   "remote": "/root/dpir_routea2/probes/pyscf_hessians_for_qff.py"
   },
   {
    "local": "probes/qff_pm_saving.py",
-   "remote": "/root/dpir_routea/probes/qff_pm_saving.py"
+   "remote": "/root/dpir_routea2/probes/qff_pm_saving.py"
   },
   {
    "local": "probes/qff_symmetry_count.py",
-   "remote": "/root/dpir_routea/probes/qff_symmetry_count.py"
+   "remote": "/root/dpir_routea2/probes/qff_symmetry_count.py"
   },
   {
    "local": "probes/qff_symmetry_rebuild.py",
-   "remote": "/root/dpir_routea/probes/qff_symmetry_rebuild.py"
+   "remote": "/root/dpir_routea2/probes/qff_symmetry_rebuild.py"
   },
   {
    "local": "probes/e8_symmetry.py",
-   "remote": "/root/dpir_routea/probes/e8_symmetry.py"
+   "remote": "/root/dpir_routea2/probes/e8_symmetry.py"
   },
   {
    "local": "probes/scf_converge.py",
-   "remote": "/root/dpir_routea/probes/scf_converge.py"
+   "remote": "/root/dpir_routea2/probes/scf_converge.py"
   },
   {
    "local": "probes/library_log.py",
-   "remote": "/root/dpir_routea/probes/library_log.py"
+   "remote": "/root/dpir_routea2/probes/library_log.py"
   },
   {
    "local": "probes/results_m1/routea_2026-11-02/ids_gate.tsv",
-   "remote": "/root/dpir_routea/probes/results_m1/routea_2026-11-02/ids_gate.tsv"
+   "remote": "/root/dpir_routea2/probes/results_m1/routea_2026-11-02/ids_gate.tsv"
   }
  ],
  "progress": {

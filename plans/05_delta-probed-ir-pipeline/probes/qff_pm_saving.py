@@ -3,8 +3,10 @@ GoalGathering/notes/PreRegistration_2026-11-02_S3_Route_A_Transfer.md, route A).
 
 For a displaced geometry x₀ + d whose negative is the image of a point-group operation (D d = −d), H(x₀ − d) = D H(x₀ + d) Dᵀ, so the −d
 Hessian is written from the +d one instead of computed (on benzene 0.03 cm⁻¹ rms in Δ_anh, S1's development of 13 Oct; the pair saving
-failed there and is not used). Operations that map the laboratory-frame Lebedev grid onto itself are preferred: their images carry only
-the noise of a DFT Hessian difference.
+failed there and is not used). Only operations that map the laboratory-frame Lebedev grid onto itself are used: their images carry
+only the noise of a DFT Hessian difference. Images made by other operations (C6, C3, oblique mirrors) put up to 61 cm⁻¹ into the
+quartic route disagreement of benzene at G (route A's gate, 2 Nov; 1.1 cm⁻¹ direct), so a mode without a grid-compatible operation
+is computed both ways.
 
     python qff_pm_saving.py symmetrize <stub.json>                         the optimised reference averaged over its group, in place, once
     python qff_pm_saving.py plan <ref.json> <stubs_dir> <compute_dir>      the stubs to compute copied; <compute_dir>/../images.json
@@ -77,17 +79,19 @@ def image_geometry(x: np.ndarray, centre: np.ndarray, R: np.ndarray, perm: list[
 
 
 def best_negating_op(d: np.ndarray, ops: list, n: int) -> dict[str, Any] | None:
-    """The operation that maps the Cartesian displacement d onto −d with the smallest residual, grid-compatible ones first; None when no
-    operation does within REL_TOL."""
+    """The grid-compatible operation that maps the Cartesian displacement d onto −d with the smallest residual; None when none does
+    within REL_TOL."""
     found = []
     for R, perm in ops:
+        if not grid_compatible(R):
+            continue
         r = float(np.linalg.norm(rep(R, perm, n) @ d + d) / np.linalg.norm(d))
         if r < REL_TOL:
-            found.append((not grid_compatible(R), r, R, list(map(int, perm))))
+            found.append((r, R, list(map(int, perm))))
     if not found:
         return None
-    incompatible, r, R, perm = min(found, key=lambda f: (f[0], f[1]))
-    return {"R": R.tolist(), "perm": perm, "grid_compatible": not incompatible, "residual": r}
+    r, R, perm = min(found, key=lambda f: f[0])
+    return {"R": R.tolist(), "perm": perm, "grid_compatible": True, "residual": r}
 
 
 def plan_images(ref_json: str, stubs_dir: str) -> dict[str, dict[str, Any]]:

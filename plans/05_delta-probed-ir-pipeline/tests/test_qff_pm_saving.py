@@ -79,7 +79,18 @@ def test_totally_symmetric_modes_are_computed_both_ways(tmp_path):
     ops = P.point_group_ops(sym, x0, tol=P.OPS_TOL)
     symmetric = [k for k in range(len(d)) if all(np.allclose(P.image_geometry(d[k], np.zeros(3), R, p), d[k], atol=1e-8) for R, p in ops)]
     assert symmetric and all(f"mode{k:02d}_m.json" not in images for k in symmetric)
-    assert all(v["grid_compatible"] or v["residual"] < P.REL_TOL for v in images.values())
+    assert all(v["grid_compatible"] and v["residual"] < P.REL_TOL for v in images.values())
+
+
+def test_only_grid_compatible_operations_make_images(tmp_path):
+    """Ethane's C3 axis lies along z: the threefold operations are not signed permutations, so none of them may make an image."""
+    sym, x0, pairs, r0, _stubs_dir = _stubs(tmp_path)
+    ops = P.point_group_ops(sym, x0, tol=P.OPS_TOL)
+    assert any(not P.grid_compatible(R) for R, _ in ops)
+    harm = harmonic(_hessian(x0, pairs, r0), sym, x0.ravel())
+    for k in range(harm.A.shape[1]):
+        op = P.best_negating_op(harm.A[:, k], ops, len(sym))
+        assert op is None or P.grid_compatible(np.array(op["R"]))
 
 
 def test_the_lanes_hold_every_stub_once_and_a_resplit_must_agree(tmp_path):

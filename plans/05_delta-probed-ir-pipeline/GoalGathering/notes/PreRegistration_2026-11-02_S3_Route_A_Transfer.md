@@ -123,6 +123,22 @@ Benzene's 41 equals what the gate actually computes on `routea` (61 stubs, 41 co
 
 Aligning each pair's basis with a reflection would save about one Hessian per E2g pair (≈ 7 h). It is not built: it would be a new step in a runner the gate has just measured. The read is unchanged.
 
+## Amendment 2 (2 Nov 2026, 08:5x, after the first gate and before any computation on a target): images from grid-compatible operations only
+
+The first benzene gate (`/root/routea_gate`, 07:19–07:47 UTC) missed the line before its read: its force field failed the noise guard. The quartic route disagreement was 61.1 cm⁻¹ at most, against 1.1 in S1's direct G set (`probes/results_m1/routea_2026-11-02/gate/benzene/G`). Every large disagreement involved a mode whose −d Hessian was an image made by an operation that does not map the Lebedev grid onto itself. There were five such images (modes 5, 6, 7, 10, 19: C6, C3 or oblique mirrors), and the twelve worst pairs all hold one of them. Pairs whose images came from grid-compatible operations stay below 1 cm⁻¹. This is S1's measured image error of 13 Oct (2.4e-2 against 3.0e-3 of the displacement signal). The runner had preferred grid-compatible operations without requiring them.
+
+The rule now admits only grid-compatible operations (`probes/qff_pm_saving.py`). A mode without one is computed both ways.
+
+| molecule | Hessians before | Hessians now |
+|---|---|---|
+| benzene | 41 | 46 |
+| tetracene | 100 | 100 (all 69 of its images were grid-compatible) |
+| coronene | 132 | 133 |
+
+The time and price stay as amendment 1 has them, to within an hour.
+
+The gate is rerun from scratch in fresh folders (`/root/dpir_routea2`, `/root/routea_gate2`), under the same line. A pass launches the targets, because the miss had a measured cause in the runner and not in the method. A second miss stops route A and goes to the user.
+
 ## Risks named now
 
 - pyVPT2 treats degeneracy only for linear molecules. A resonance that touches one of coronene's degenerate modes is left deperturbed and
