@@ -1,0 +1,11 @@
+{"name": "engine_check",
+ "purpose": "TASKS 73 (the user, 2 Nov 18:1x: 'Ja, doe dat maar'; the registration PreRegistration_2026-11-01_Engine_Check.md and its amendment): the pyscf route of the engine check - per folder of queue.txt, geomeTRIC from the corpus's psi4 start to a B3LYP/6-31G* minimum on grid 99/590, then the analytic B3LYP and wB97X Hessians there as the corpus labels them; benzene first, timed, then the other seven of the clean hold-out (a) after queue.txt is extended; the read is probes/engine_check.py evaluate with v1.5's seeds and probes/engine_check_read.py",
+ "host": "laptop", "workdir": "probes/results_m1/engine_check_2026-11-01",
+ "command": "MSYS_NO_PATHCONV=1 wsl -e bash /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/engine_check_run.sh /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/engine_check_2026-11-01/queue.txt",
+ "sources": [{"local": "probes/engine_check_run.sh"}, {"local": "probes/engine_check.py"}, {"local": "probes/wsl_capped.sh"},
+             {"local": "probes/library_log.py"}, {"local": "modules/05_support_predictor/corpus/analytic_hessians.py"}],
+ "progress": {"regex": "^=== \\(ECK\\) ", "max_gap_minutes": 60, "heartbeat_glob": "pyscf/molecules/*/pyscf.log"},
+ "marker_regex": "^=== \\(ECK\\) (start|STOPPED|all done)|FAILED", "end_regex": "^=== \\(ECK\\) all done", "fail_regex": "^=== \\(ECK\\) STOPPED",
+ "dry_run_args": "--dry-run", "resumable": true, "threads": 8,
+ "estimate": {"hours": 1, "basis": "benzene alone first (the registration: its timing replaces the estimate of 2-3 h per molecule of 20-26 atoms, 15-22 h for the eight); the water smoke at these settings took 23 s (probes/results_m1/engine_check_smoke_2026-11-02, 2 Nov 18:19)"},
+ "memory": {"peak_gb": 6.0, "basis": "one step at a time under a probes/wsl_capped.sh cgroup cap of 6144 MB (pyscf max_memory 4000 MB)"}}
