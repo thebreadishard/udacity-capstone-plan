@@ -61,6 +61,7 @@ FUNCTIONALS = (("b3lyp", "b3lyp"), ("wb97x", "wb97x"))
 IMAGINARY_BELOW = -10.0                # cm⁻¹, psi4_worker's own count
 SPIN_CONTAMINATION = 0.05              # |<S²> − S(S+1)| above which a warning is printed
 MAX_MEMORY_MB = 20000                  # pyscf's max_memory (its blocking target); a run under a memory cap passes a smaller one
+NEWTON_MAX_CYCLE = 50                  # the second-order finish's macro iterations (pyscf's SCF default)
 
 
 @dataclass(frozen=True)
@@ -75,6 +76,7 @@ class LabelsRun:
     max_memory_mb: int = MAX_MEMORY_MB
     reuse_existing: bool = False
     functionals: tuple[str, ...] = tuple(tag for tag, _xc in FUNCTIONALS)
+    newton_finish: bool = False
 
     def __post_init__(self) -> None:
         known = tuple(tag for tag, _xc in FUNCTIONALS)
@@ -82,6 +84,8 @@ class LabelsRun:
             raise ValueError(f"functionals {self.functionals}: one or more of {known}, each once")
         if self.reuse_existing and self.compare_only:
             raise ValueError("--reuse-existing and --compare-only do not combine: --compare-only reads both Hessians already")
+        if self.newton_finish and self.compare_only:
+            raise ValueError("--newton-finish and --compare-only do not combine: --compare-only runs no SCF")
         if len(self.grid) != 2 or min(self.grid) < 1:
             raise ValueError(f"grid {self.grid} is not two positive integers (radial, angular)")
         if self.spin < 0:
@@ -171,14 +175,36 @@ def labels_mol(geometry, log_stream: TextIO, charge=0, spin=0, max_memory=MAX_ME
                       spin=spin)
 
 
-def labels_scf(mol, xc, grid):
-    """The labels route's converged SCF (RKS, or UKS when mol.spin > 0) at an unpruned (radial, angular) grid; raises when it does not converge."""
+def labels_ks(mol, xc, grid):
+    """The labels route's RKS (UKS when mol.spin > 0) at an unpruned (radial, angular) grid, not yet run."""
     mf = dft.UKS(mol) if mol.spin else dft.RKS(mol)
     mf.xc = xc
     mf.grids.atom_grid = tuple(grid)
     mf.grids.prune = None
     mf.conv_tol = 1e-11
+    return mf
+
+
+def finish_by_newton(mf) -> float:
+    """Finish a DIIS SCF that stalled near its threshold with pyscf's second-order solver from its own orbitals, as pyscf's
+    examples/scf/22-newton.py does (`newton().kernel(mo_coeff, mo_occ)`), then restart the plain SCF from that density: the Hessian is
+    built on the usual RKS/UKS object, and `mf.converged` stays that object's own verdict. HBC's ωB97X (1 Nov 2026) stalled at |g| 1.5e-8
+    with the energy still falling 1.3e-10 a cycle against conv_tol 1e-11."""
+    second = mf.newton()
+    second.max_cycle = NEWTON_MAX_CYCLE                   # its own budget: the stalled run's max_cycle is copied into it
+    second.kernel(mf.mo_coeff, mf.mo_occ)
+    if not second.converged:
+        return mf.e_tot
+    return mf.kernel(dm0=second.make_rdm1())
+
+
+def labels_scf(mol, xc, grid, newton_finish=False):
+    """The labels route's converged SCF; with newton_finish a stalled DIIS run gets `finish_by_newton`; raises when it does not converge."""
+    mf = labels_ks(mol, xc, grid)
     e = mf.kernel()
+    if not mf.converged and newton_finish:
+        print(f"{xc}: DIIS stopped unconverged at E = {e:.12f}; finishing by the second-order solver", flush=True)
+        e = finish_by_newton(mf)
     if not mf.converged:
         raise RuntimeError(f"{xc}: SCF not converged")
     return mf, e
@@ -220,7 +246,7 @@ def warn_spin_contamination(d: str, tag: str, mf: Any, spin: int) -> None:
 def compute_hessian(d: str, mol: Any, tag: str, xc: str, run: LabelsRun) -> tuple[np.ndarray, float, Any, Any]:
     """One functional's analytic Hessian (3N × 3N, symmetrised) with its energy, Hessian object and CPHF response (None without an APT)."""
     try:
-        mf, e = labels_scf(mol, xc, run.grid)
+        mf, e = labels_scf(mol, xc, run.grid, newton_finish=run.newton_finish)
     except RuntimeError as exc:
         raise RuntimeError(f"{d} {tag}: SCF not converged") from exc
     if run.spin:
@@ -311,6 +337,8 @@ def parse_args() -> argparse.Namespace:
                     help="skip the B3LYP APT from the Hessian's response (closed shell only; on by default since 11 Oct 2026)")
     ap.add_argument("--functionals", default=",".join(tag for tag, _xc in FUNCTIONALS),
                     help="comma-separated, of b3lyp and wb97x (29 Oct 2026, the pipeline: a new molecule needs the low level alone)")
+    ap.add_argument("--newton-finish", action="store_true",
+                    help="finish a DIIS SCF that stalls unconverged by the second-order solver, same thresholds (1 Nov 2026, HBC)")
     return ap.parse_args()
 
 
@@ -318,7 +346,8 @@ def main():
     a = parse_args()
     rad, ang = (int(v) for v in a.grid.split(","))
     run = LabelsRun(grid=(rad, ang), charge=a.charge, spin=a.spin, compare_only=a.compare_only, apt=not a.no_apt, stamp=software(),
-                    max_memory_mb=a.max_memory, reuse_existing=a.reuse_existing, functionals=tuple(a.functionals.split(",")))
+                    max_memory_mb=a.max_memory, reuse_existing=a.reuse_existing, functionals=tuple(a.functionals.split(",")),
+                    newton_finish=a.newton_finish)
     lib.num_threads(a.threads)
     apt_errors = []
     for d in a.dirs:

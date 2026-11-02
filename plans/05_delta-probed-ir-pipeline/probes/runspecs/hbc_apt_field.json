@@ -1,0 +1,22 @@
+{"name": "hbc_apt_field",
+ "purpose": "TASKS 49, step 2 of the user's order of 1 Nov: HBC's (T_76dfc434db, 60 atoms) APT by the field route, the second route that fixed ovalene, peropyrene and coronene when their labels-route APTs missed the sum rule (HBC 9.2e-4 against 5e-4); probes/l5_apt_field_run.sh unchanged (F = 1e-3 and 2e-3, label settings), on the CCX53 after hbc_wb97x ends (probes/wait_then_run.sh), 24 threads beside d8a_relabel's 8",
+ "host": "labels",
+ "workdir": "/root/hbcf",
+ "command": "CAP_SCOPE=system L5F_DIR=/root/hbcf/probes/results_m1/hbc_apt_field_2026-11-01 L5F_PYTHON=/root/miniforge3/envs/qc05/bin/python L5F_THREADS=24 L5F_CAP_MB=32768 L5F_MAX_MEMORY_MB=12000 bash probes/wait_then_run.sh /root/l5b/hbc_wb97x.log '^=== \\(HBC\\) all done' -- bash probes/l5_apt_field_run.sh",
+ "sources": [
+  {"local": "probes/wait_then_run.sh", "remote": "/root/hbcf/probes/wait_then_run.sh"},
+  {"local": "probes/l5_apt_field_run.sh", "remote": "/root/hbcf/probes/l5_apt_field_run.sh"},
+  {"local": "probes/apt_field_route.py", "remote": "/root/hbcf/probes/apt_field_route.py"},
+  {"local": "probes/library_log.py", "remote": "/root/hbcf/probes/library_log.py"},
+  {"local": "probes/wsl_capped.sh", "remote": "/root/hbcf/probes/wsl_capped.sh"},
+  {"local": "modules/05_support_predictor/corpus/apt.py", "remote": "/root/hbcf/modules/05_support_predictor/corpus/apt.py"},
+  {"local": "probes/results_m1/hbc_apt_field_2026-11-01/ids.tsv", "remote": "/root/hbcf/probes/results_m1/hbc_apt_field_2026-11-01/ids.tsv"},
+  {"local": "probes/results_m1/hbc_apt_field_2026-11-01/T_76dfc434db/geometry.json", "remote": "/root/hbcf/probes/results_m1/hbc_apt_field_2026-11-01/T_76dfc434db/geometry.json"}
+ ],
+ "progress": {"regex": "^  field component [0-9]/3|^  resuming after field component|^=== \\(L5F\\) ", "max_gap_minutes": 120,
+              "start_regex": "^=== \\(L5F\\) start: ", "heartbeat_glob": "probes/results_m1/hbc_apt_field_2026-11-01/*/pyscf.log"},
+ "marker_regex": "^=== \\(WAIT\\) condition met|^=== \\(L5F\\) (start|STOPPED|all done)",
+ "end_regex": "^=== \\(L5F\\) all done",
+ "dry_run_args": "--dry-run",
+ "threads": 24,
+ "estimate": {"hours": 6, "basis": "coronene (36 atoms) took 2.8 h for both fields at 8 threads on the laptop (1 Nov); n^3 to 60 atoms is 4.6x, about 13 h at 8 threads, taken as about 6 h at 24 (an assumption, not measured on this server)"}}
