@@ -23,6 +23,9 @@ PLAN=$(dirname "$HERE")
 DISP=${DISP:-0.10}                        # decision 46: the step of T3 (0.10) gave T2's fundamentals with half the route noise
 geom=$1; root=$2; thr=$3; shift 3
 export OMP_NUM_THREADS=$thr
+# BLAS too, per process: runspec exports OPENBLAS/MKL_NUM_THREADS as the spec's total, which every pyscf process here would inherit
+# (2 Nov 2026: four lanes × (8 + 32) threads on 32 cores, load 128; S2b's three molecules × (5 + 15) on 16)
+export OPENBLAS_NUM_THREADS=$thr MKL_NUM_THREADS=$thr
 mark() { echo "=== (S1) $* $(date '+%F %T')"; }
 if [ -n "${WAIT_LOG:-}" ]; then
   mark "waiting for /${WAIT_RE}/ in $WAIT_LOG"
@@ -42,10 +45,12 @@ run_setting() {   # $1 = name:basis:grid; $2 = 1 for the first setting, whose fi
   mkdir -p "$d/refstub" "$d/stubs" "$d/hess"
   if [ ! -f "$d/refstub/ref.json" ]; then
     mark "$name: optimising (B3LYP/$basis, grid $grid)"
-    "$PY" "$HERE/s1_anharmonic_level.py" optimise "$geom" "$d/refstub/ref.json" --basis "$basis" --grid "$grid" --threads "$refthr"
+    OMP_NUM_THREADS=$refthr OPENBLAS_NUM_THREADS=$refthr MKL_NUM_THREADS=$refthr \
+      "$PY" "$HERE/s1_anharmonic_level.py" optimise "$geom" "$d/refstub/ref.json" --basis "$basis" --grid "$grid" --threads "$refthr"
   fi
   [ "$PM_SAVING" = 1 ] && mark "$name: reference averaged over its group: $("$PY" "$HERE/qff_pm_saving.py" symmetrize "$d/refstub/ref.json")"
-  "$PY" "$HERE/pyscf_hessians_for_qff.py" "$d/refstub" "$d/refhess" --basis "$basis" --grid "$grid" --threads "$refthr"
+  OMP_NUM_THREADS=$refthr OPENBLAS_NUM_THREADS=$refthr MKL_NUM_THREADS=$refthr \
+    "$PY" "$HERE/pyscf_hessians_for_qff.py" "$d/refstub" "$d/refhess" --basis "$basis" --grid "$grid" --threads "$refthr"
   cp "$d/refhess/ref.json" "$d/ref.json"
   if [ -n "${GATE_GRID:-}" ]; then
     "$PY" "$HERE/pyscf_hessians_for_qff.py" "$d/refstub" "$d/refhess_gate" --basis "$basis" --grid "$GATE_GRID" --threads "$thr"
