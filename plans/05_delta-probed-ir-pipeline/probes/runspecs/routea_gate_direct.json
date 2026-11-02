@@ -1,0 +1,12 @@
+{"name": "routea_gate_direct",
+ "purpose": "S3 amendment 2, the second gate's miss (rms 0.294, max 1.285 cm⁻¹ against S1's direct G): the 15 image Hessians of /root/routea_gate2 computed directly at the same geometries, separating the ± saving's own error from the reference minimum's difference; route A's targets stay unlaunched (the user decides)",
+ "host": "routea",
+ "workdir": "/root/dpir_routea2",
+ "command": "bash probes/routea_gate_direct.sh",
+ "sources": [{"local": "probes/routea_gate_direct.sh", "remote": "/root/dpir_routea2/probes/routea_gate_direct.sh"},
+             {"local": "probes/pyscf_hessians_for_qff.py", "remote": "/root/dpir_routea2/probes/pyscf_hessians_for_qff.py"}],
+ "progress": {"regex": "^=== \\(GD\\) |^\\[", "max_gap_minutes": 30},
+ "marker_regex": "^=== \\(GD\\) (done|qff rc)",
+ "end_regex": "^=== \\(GD\\) done",
+ "threads": 32,
+ "estimate": {"hours": 0.3, "basis": "the rerun gate on routea: 46 benzene G Hessians over four lanes of 8 threads in 32 min with the reference; 15 here on 32 threads"}}
