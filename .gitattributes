@@ -4,5 +4,9 @@
 *.tsv text eol=lf
 # Frozen candidate lists: their .sha256 is of the LF bytes the generator writes (14 Oct 2026: CRLF on checkout would break the hash)
 **/out/*_candidates_*.csv text eol=lf
+# Plan 05's Python and JSON as LF on checkout (2 Nov 2026, TASKS 165): runspec compares a source's raw sha256 with its server copy
+# (git archive, LF), and pre-commit's stash/restore and merges rewrote stat-dirty working copies as CRLF, refusing three launches
+plans/05_delta-probed-ir-pipeline/**/*.py text eol=lf
+plans/05_delta-probed-ir-pipeline/**/*.json text eol=lf
 # The rung-C pin's frozen corpus: its record holds a sha256 of the bytes as copied, so no file may be converted (16 Oct 2026)
 plans/*/tests/data/rungC_pin_corpus/** -text
