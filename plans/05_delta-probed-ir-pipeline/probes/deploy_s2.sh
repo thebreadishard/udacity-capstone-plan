@@ -17,7 +17,7 @@ DEST=${DEST:-/root/dpir_s2}
 IDS=${IDS:-probes/results_m1/s2_training_set_2026-10-14/s2_ids.tsv}
 SMOKE=/root/s2_smoke_$(basename "$DEST")   # a fresh smoke folder per destination: a reused one skips water and tests nothing (19 Oct 2026)
 REF=probes/results_m1/s2_smoke_reference_2026-10-14/water_G_omega.json
-FILES=(probes/s2_batch.sh probes/s1_anharmonic_level.sh probes/s1_anharmonic_level.py probes/pyscf_hessians_for_qff.py
+FILES=(probes/s2_batch.sh probes/progress_on_growth.sh probes/s1_anharmonic_level.sh probes/s1_anharmonic_level.py probes/pyscf_hessians_for_qff.py
        probes/library_log.py probes/scf_converge.py probes/make_qff_displacements.py probes/qff_from_hessians.py src/dpir/__init__.py
        src/dpir/qff.py src/dpir/provenance.py probes/results_m1/water_dipole_fd_2026-10-02/geometry.json "$REF" "$IDS")
 if [ "$NAME" = --list-files ]; then printf '%s\n' "${FILES[@]}"; exit 0; fi

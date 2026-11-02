@@ -1,0 +1,52 @@
+{
+ "name": "s2b_2of3",
+ "purpose": "TASKS 53 (b) S2b, the learning curve over 32 scaffolds (PreRegistration_2026-10-14_S2_Anharmonic_Shift.md, S2b revision 19 Oct): list 2 of 3 at G, three molecules at a time with 5 threads, the per-molecule stop rule from probes/s2b_plan.py in the list's third column; the user created the three CPX62 on 2 Nov",
+ "host": "s2b2",
+ "workdir": "/root/dpir_s2b",
+ "command": "PY=/root/miniforge3/envs/qc05/bin/python bash probes/progress_on_growth.sh --tag S2B2 --dir /root/s2b --name '*.json' --interval 600 -- bash probes/s2_batch.sh probes/results_m1/s2b_training_set_2026-10-19/plan/s2b_ids_2of3.tsv /root/s2b 3 5 G:6-31g*:75,302",
+ "sources": [
+  {
+   "local": "probes/progress_on_growth.sh",
+   "remote": "/root/dpir_s2b/probes/progress_on_growth.sh"
+  },
+  {
+   "local": "probes/s2_batch.sh",
+   "remote": "/root/dpir_s2b/probes/s2_batch.sh"
+  },
+  {
+   "local": "probes/s1_anharmonic_level.sh",
+   "remote": "/root/dpir_s2b/probes/s1_anharmonic_level.sh"
+  },
+  {
+   "local": "probes/s1_anharmonic_level.py",
+   "remote": "/root/dpir_s2b/probes/s1_anharmonic_level.py"
+  },
+  {
+   "local": "probes/pyscf_hessians_for_qff.py",
+   "remote": "/root/dpir_s2b/probes/pyscf_hessians_for_qff.py"
+  },
+  {
+   "local": "probes/scf_converge.py",
+   "remote": "/root/dpir_s2b/probes/scf_converge.py"
+  },
+  {
+   "local": "probes/library_log.py",
+   "remote": "/root/dpir_s2b/probes/library_log.py"
+  },
+  {
+   "local": "probes/results_m1/s2b_training_set_2026-10-19/plan/s2b_ids_2of3.tsv",
+   "remote": "/root/dpir_s2b/probes/results_m1/s2b_training_set_2026-10-19/plan/s2b_ids_2of3.tsv"
+  }
+ ],
+ "progress": {
+  "regex": "^=== \\(S2B2\\) progress: |^=== \\(S2\\) [A-Za-z0-9_]+: (start|done|NOISY)",
+  "max_gap_minutes": 120
+ },
+ "marker_regex": "^=== \\(S2\\) [A-Za-z0-9_]+: (STOPPED|FAILED)|^=== \\(S2\\) all done|^=== \\(S2B2\\) command ended",
+ "end_regex": "^=== \\(S2\\) all done",
+ "threads": 15,
+ "estimate": {
+  "hours": 147.3,
+  "basis": "probes/s2b_plan.py: S2's measured logs, molecule hours exp(-11.82) n^5.04, list end 147.3 h on three slots (plan.json, servers 3)"
+ }
+}

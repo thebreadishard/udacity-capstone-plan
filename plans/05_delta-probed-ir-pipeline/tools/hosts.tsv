@@ -3,3 +3,7 @@
 # reaches the right IP may be talking to the wrong machine (157.180.32.149 was hel1-23 on 30 Sep and is the CCX53 now). tools/hosts.sh refuses
 # a machine whose id differs. Columns are TAB-separated: name, ip, machine-id, what it is.
 labels	157.180.32.149	edcb17d0044b431791e20cc6c5207edf	CCX53 ubuntu-128gb-hel1-2, the analytic labels server (7 Oct 2026)
+s2b1	2.29.157.205	1cafb9db84874095b63cecc0dc2b9b2a	CPX62 ubuntu-32gb-hel1-3, S2b list 1 of 3 (2 Nov 2026)
+s2b2	2.29.118.49	a8cba875f3934390821786e4bc8ee2cf	CPX62 ubuntu-32gb-hel1-4, S2b list 2 of 3 (2 Nov 2026)
+s2b3	2.29.134.106	b1fc5014c8804a44bbb0b0eabc870e5e	CPX62 ubuntu-32gb-hel1-5, S2b list 3 of 3 (2 Nov 2026)
+routea	2.29.113.235	38ce8ac58f1e434280f6c9c390fb1944	CCX53 ubuntu-128gb-hel1-6, route A: tetracene and coronene GVPT2 at G (2 Nov 2026)
