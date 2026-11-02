@@ -107,6 +107,22 @@ against our numbers.
 | coronene's rms above tetracene's in most families (degenerate resonances are left deperturbed) | one in two |
 | line 1 holds in at least one family | one in four |
 
+## Amendment 1 (2 Nov 2026, 08:3x, before any computation on a target): coronene's Hessian count
+
+'Coronene 109 at most' above was S1's count, which assumed that every mode of a degenerate pair has an operation that maps it to its negative. The runner's rule is stricter. A degenerate pair's basis comes from the reference Hessian, so it is arbitrary inside the pair's plane, and for E2g-type pairs no operation acts as −1 on the whole plane. Those members are computed both ways.
+
+The same rule applied to a random group-averaged Hessian (scratch `pm_counts.py`) gives:
+
+| molecule | Hessians | of which images |
+|---|---|---|
+| benzene | 41 | 20 |
+| tetracene | 100 | 69 |
+| coronene | 132 | 73 |
+
+Benzene's 41 equals what the gate actually computes on `routea` (61 stubs, 41 computed, 20 images), so the count is measured, not assumed. Coronene then needs ≈ 132 × 8,135 s ÷ 4 ≈ 75 h. Both targets with their references take ≈ 108 h, ≈ €92, and still end before 15 Nov if launched on 2 Nov.
+
+Aligning each pair's basis with a reflection would save about one Hessian per E2g pair (≈ 7 h). It is not built: it would be a new step in a runner the gate has just measured. The read is unchanged.
+
 ## Risks named now
 
 - pyVPT2 treats degeneracy only for linear molecules. A resonance that touches one of coronene's degenerate modes is left deperturbed and

@@ -62,7 +62,7 @@
  "end_regex": "^=== \\(S2\\) all done",
  "threads": 32,
  "estimate": {
-  "hours": 95.0,
-  "basis": "S2's per-Hessian fit exp(-4.92) n^3.89 s at 5 threads: tetracene 100 × 4,006 s, coronene 109 × 8,135 s, over four lanes = 89 h, plus the two optimisations and references"
+  "hours": 108.0,
+  "basis": "S2's per-Hessian fit exp(-4.92) n^3.89 s at 5 threads: tetracene 100 × 4,006 s, coronene 132 × 8,135 s (S3 amendment 1), over four lanes = 103 h, plus the two optimisations and references"
  }
 }
