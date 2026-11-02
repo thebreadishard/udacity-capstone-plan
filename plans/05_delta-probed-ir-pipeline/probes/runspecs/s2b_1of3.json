@@ -40,7 +40,8 @@
  ],
  "progress": {
   "regex": "^=== \\(S2B1\\) progress: |^=== \\(S2\\) [A-Za-z0-9_]+: (start|done|NOISY)",
-  "max_gap_minutes": 120
+  "max_gap_minutes": 120,
+  "heartbeat_glob": "/root/s2b/*/G/*/pyscf.log"
  },
  "marker_regex": "^=== \\(S2\\) [A-Za-z0-9_]+: (STOPPED|FAILED)|^=== \\(S2\\) all done|^=== \\(S2B1\\) command ended",
  "end_regex": "^=== \\(S2\\) all done",
