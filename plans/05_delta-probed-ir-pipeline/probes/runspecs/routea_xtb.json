@@ -1,0 +1,43 @@
+{
+ "name": "routea_xtb",
+ "purpose": "S3 registration ('GFN2-xTB force fields of the two targets are computed on the laptop from their G minima', for the x models): tetracene, then coronene when its G reference exists (probes/fetch_g_minima.sh from routea)",
+ "host": "laptop",
+ "workdir": "probes/results_m1/routea_2026-11-02",
+ "command": "MSYS_NO_PATHCONV=1 wsl -e bash /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/wsl_capped.sh 1536 -- bash /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/xtb_anharmonic.sh probes/results_m1/routea_2026-11-02/minima/ids.tsv probes/results_m1/routea_2026-11-02/xtb",
+ "sources": [
+  {
+   "local": "probes/xtb_anharmonic.sh"
+  },
+  {
+   "local": "probes/xtb_hessians_for_qff.py"
+  },
+  {
+   "local": "probes/dxtb_hessians_for_qff.py"
+  },
+  {
+   "local": "probes/make_qff_displacements.py"
+  },
+  {
+   "local": "probes/wsl_capped.sh"
+  },
+  {
+   "local": "probes/fetch_g_minima.sh"
+  }
+ ],
+ "progress": {
+  "regex": "^\\[[0-9:]+\\] [0-9]+/[0-9]+ |^=== \\(XTB\\) ",
+  "max_gap_minutes": 30
+ },
+ "marker_regex": "^=== \\(XTB\\) [A-Za-z0-9_]+: (NOISY|FAILED)",
+ "end_regex": "^=== \\(XTB\\) all done",
+ "dry_run_args": "--dry-run",
+ "threads": 4,
+ "estimate": {
+  "hours": 12.0,
+  "basis": "S2 amendment 4's xtb fields: ±1–3 h per molecule up to 21 atoms; tetracene (30) and coronene (36) scaled by their Hessian counts"
+ },
+ "memory": {
+  "peak_gb": 1.5,
+  "basis": "a bound: probes/wsl_capped.sh stops the run's process tree at 1536 MB (MemoryMax, tested 19 Oct), as s2_xtb"
+ }
+}

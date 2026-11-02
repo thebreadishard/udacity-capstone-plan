@@ -1,0 +1,43 @@
+{
+ "name": "s2b_xtb",
+ "purpose": "S2b registration ('Computation': GFN2-xTB force fields of the new molecules on the laptop, amendment 4's input): xtb-binary minima from each molecule's G minimum (probes/fetch_g_minima.sh from s2b1–s2b3), dxtb Hessians by force differences, dpir.qff; relaunched with a longer list as the servers' molecules reach their G reference (xtb_anharmonic.sh skips finished molecules)",
+ "host": "laptop",
+ "workdir": "probes/results_m1/s2b_xtb_2026-11-02",
+ "command": "MSYS_NO_PATHCONV=1 wsl -e bash /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/wsl_capped.sh 1536 -- bash /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/xtb_anharmonic.sh probes/results_m1/s2b_xtb_2026-11-02/minima/ids.tsv probes/results_m1/s2b_xtb_2026-11-02/xtb",
+ "sources": [
+  {
+   "local": "probes/xtb_anharmonic.sh"
+  },
+  {
+   "local": "probes/xtb_hessians_for_qff.py"
+  },
+  {
+   "local": "probes/dxtb_hessians_for_qff.py"
+  },
+  {
+   "local": "probes/make_qff_displacements.py"
+  },
+  {
+   "local": "probes/wsl_capped.sh"
+  },
+  {
+   "local": "probes/fetch_g_minima.sh"
+  }
+ ],
+ "progress": {
+  "regex": "^\\[[0-9:]+\\] [0-9]+/[0-9]+ |^=== \\(XTB\\) ",
+  "max_gap_minutes": 30
+ },
+ "marker_regex": "^=== \\(XTB\\) [A-Za-z0-9_]+: (NOISY|FAILED)",
+ "end_regex": "^=== \\(XTB\\) all done",
+ "dry_run_args": "--dry-run",
+ "threads": 4,
+ "estimate": {
+  "hours": 24.0,
+  "basis": "S2 amendment 4's xtb fields on this laptop: ±1–3 h per molecule of 9–21 atoms (s2_xtb, 18 Oct); up to 23 molecules, run as they arrive"
+ },
+ "memory": {
+  "peak_gb": 1.5,
+  "basis": "a bound: probes/wsl_capped.sh stops the run's process tree at 1536 MB (MemoryMax, tested 19 Oct), as s2_xtb"
+ }
+}
