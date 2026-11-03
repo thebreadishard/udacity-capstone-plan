@@ -1,6 +1,6 @@
 {
  "name": "chain35s2",
- "purpose": "TASKS 169: chain 35's seed 2 re-run at epoch cap 300 (its best was at the cap 200), its epochs up to 200 checked against chain 35's log, then v1.3.1's clean hold-out read (chain 35's seeds 0 and 1 with the new seed 2)",
+ "purpose": "TASKS 169: chain 35's seed 2 re-run at epoch cap 500 (its best was at the cap 200), its epochs up to 200 checked against chain 35's log, then v1.3.1's clean hold-out read (chain 35's seeds 0 and 1 with the new seed 2)",
  "host": "laptop",
  "workdir": "probes/results_m1",
  "command": "python ../chain_runner.py probes/runs/chain35s2.json",
@@ -28,7 +28,7 @@
   "basis": "chain 41's measured peak (rungC_train.py, 7.7 GB, 19 Oct 2026, step 5 at n = 978); this chain trains one seed at 750"
  },
  "estimate": {
-  "hours": 2.6,
-  "basis": "chain 35's seed 2: 5,642 s for 200 epochs (≈ 28 s an epoch), so ≤ 2.4 h for 300, plus the design check and two reads"
+  "hours": 4.1,
+  "basis": "chain 35's seed 2: 5,642 s for 200 epochs (≈ 28 s an epoch), so ≤ 3.9 h for 500 (early stopping, patience 20, ends it sooner), plus the design check and two reads"
  }
 }
