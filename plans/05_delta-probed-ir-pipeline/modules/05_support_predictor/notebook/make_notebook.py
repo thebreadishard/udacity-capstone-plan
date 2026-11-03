@@ -1152,6 +1152,18 @@ overlap (0.97 against 0.27) did not depend on pairing and is unchanged. At coupl
 every column: benzene's symmetry fixes its band heights, so that molecule cannot test this part, and the test moves to a low-symmetry molecule with a
 coupled-cluster dipole derivative. These numbers are what module 08's certificate now quotes beside the spectral shape.""")
 
+# ---- 12.7 a dated note (3 November 2026): section 12.4's family count corrected, appended so that 12.4 stays as written
+_under = [f for f in _FAM if _c24f[0][f] <= reads.FAMILY_LINE_CM]
+_over = [f for f in _FAM if f not in _under]
+md(f"""### 12.7 Note (3 November 2026): a count in section 12.4 corrected
+
+Section 12.4 says that chain 24's numbers per family put "two families under the line, two above it". Its own numbers put {len(_under)} of the
+{len(_FAM)} families at or under {reads.FAMILY_LINE_CM:g} cm⁻¹ — {", ".join(f"{f} {_c24f[0][f]:.2f}" for f in _under)} — and
+{", ".join(f"{f} {_c24f[0][f]:.2f}" for f in _over)} above it. The C–H out-of-plane number lies inside that family's label noise
+({_fc["floor_median"]["CH-oop"]:.2f} cm⁻¹), so it could not be counted as met, which is what section 12.4 goes on to say; the count itself was
+wrong. Section 12.4 stays as it was written and run; this note is the correction, found while the report's Addendum 6 was written, which
+counts from the numbers.""")
+
 nb = new_notebook(cells=cells, metadata={"kernelspec": {"name": "python3", "display_name": "Python 3", "language": "python"}})
 path = HERE / "deep_learning.ipynb"
 if "--check-only" in sys.argv:
