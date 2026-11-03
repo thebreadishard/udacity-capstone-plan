@@ -31,7 +31,7 @@ RESULTS = P.PLAN / "probes" / "results_m1"
 M05 = P.PLAN / "modules" / "05_support_predictor"
 TEMPLATE = Path(__file__).with_name("show_template.html")
 OUT = P.PLAN / "modules" / "08_industry_synthesis" / "out" / "pipeline_show.html"
-DEFAULT_RUNS = (RESULTS / "pipeline_demo_v04_2026-10-30" / "benzene", RESULTS / "pipeline_demo_v04_2026-10-30" / "phenanthrene",
+DEFAULT_RUNS = (RESULTS / "pipeline_benzene_computed_2026-11-03" / "benzene", RESULTS / "pipeline_demo_v04_2026-10-30" / "phenanthrene",
                 RESULTS / "pipeline_demo_v04_2026-10-30" / "candidate06", RESULTS / "pipeline_rehearsal_2026-10-30" / "cinnoline",
                 RESULTS / "pipeline_reuse_demo_2026-10-31" / "carbazole")
 FAMILY_ORDER = ("CH-stretch", "ring-ip", "CH-oop", "other")
