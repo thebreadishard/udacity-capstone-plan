@@ -1,0 +1,49 @@
+{
+ "verdict": "PASS",
+ "line_cm": 0.3,
+ "families": {
+  "ring-ip": {
+   "psi4": 1.77328321354061,
+   "pyscf": 1.7693669401620962,
+   "difference": -0.003916273378513857,
+   "within_line": true
+  },
+  "CH-stretch": {
+   "psi4": 1.185654923283791,
+   "pyscf": 1.1860735899513986,
+   "difference": 0.0004186666676075923,
+   "within_line": true
+  },
+  "CH-oop": {
+   "psi4": 2.172922660664861,
+   "pyscf": 2.1109347373468275,
+   "difference": -0.06198792331803338,
+   "within_line": true
+  },
+  "other": {
+   "psi4": 3.62401528105226,
+   "pyscf": 3.6581998036796595,
+   "difference": 0.03418452262739935,
+   "within_line": true
+  }
+ },
+ "models": [
+  "E7_rungC_chain35_analytic_model_n750_seed0.pt",
+  "E7_rungC_chain35_analytic_model_n750_seed1.pt",
+  "E7_rungC_chain35_analytic_model_n750_seed2.pt"
+ ],
+ "molecules": [
+  "A_08dde334d8",
+  "A_428228e5a5",
+  "A_541c53d1a5",
+  "A_72b86c2331",
+  "A_8448043181",
+  "A_bce5bae234",
+  "A_e72997e726",
+  "A_fdc27f1bd1"
+ ],
+ "information": {
+  "psi4": {},
+  "pyscf": {}
+ }
+}
