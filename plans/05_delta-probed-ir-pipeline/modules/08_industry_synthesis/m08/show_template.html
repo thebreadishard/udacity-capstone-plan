@@ -424,7 +424,6 @@ function ride(m) {
   const route = reused ? g.corpus : g.main;
   const stops = reused ? [0, 1, null, "C", null, 4, 5] : [0, 1, 2, 3, 4, 5];
   const travel = reused ? [STEP_TRAVEL, 550, 450, 450, 550, STEP_TRAVEL] : Array(5).fill(STEP_TRAVEL);
-  const trail = [route[0]];
   const runPath = $("#run");
   runPath.setAttribute("class", "run" + (reused ? " corpus" : "")); runPath.setAttribute("d", "");
   for (let i = 0; i < 6; i++) setStation(i, "pending", "");
@@ -436,19 +435,20 @@ function ride(m) {
     later(() => setStation(s, "done", m.stations[s].time), STEP_DWELL);
     return STEP_DWELL;
   };
-  let t = enter(0);
-  travel.forEach((ms, k) => {
-    later(() => {
-      if (reused && k === 1) { setStation(2, "skipped", m.stations[2].time); setStation(3, "skipped", m.stations[3].time); }
-      const base = trail.slice();
-      follow(route[k + 1]);
-      animateTo(route[k], route[k + 1], ms, (p) => runPath.setAttribute("d", pathD(base.concat([p]))), () => { trail.push(route[k + 1]); enter(stops[k + 1]); });
-    }, t);
-    t += ms + (stops[k + 1] === null ? 0 : stops[k + 1] === "C" ? CORPUS_DWELL : STEP_DWELL);
-  });
-  later(() => {
-    showResult(m); $("#realtime").textContent = m.real_time; state.running = false; state.finished = true; $("#start").disabled = false;
-  }, t);
+  /* as in the live mode, a leg starts when the one before has finished and draws the route up to its own start: timed apart, a leg after
+     a bend (no dwell) began before the bend joined the drawn line, and the lit line cut the corner */
+  const leg = (k) => {
+    if (k === travel.length) {
+      showResult(m); $("#realtime").textContent = m.real_time; state.running = false; state.finished = true; $("#start").disabled = false;
+      return;
+    }
+    if (reused && k === 1) { setStation(2, "skipped", m.stations[2].time); setStation(3, "skipped", m.stations[3].time); }
+    const base = route.slice(0, k + 1);
+    follow(route[k + 1]);
+    animateTo(route[k], route[k + 1], travel[k], (p) => runPath.setAttribute("d", pathD(base.concat([p]))),
+      () => later(() => leg(k + 1), enter(stops[k + 1])));
+  };
+  later(() => leg(0), enter(0));
 }
 
 /* the result */
