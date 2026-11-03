@@ -4,6 +4,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+import numpy as np
 import pytest
 
 PLAN = Path(__file__).resolve().parents[1]
@@ -47,3 +48,30 @@ def test_one_fewer_shows_truncation():
     r = read(992.0, 0.0, 907.0, 0.0, 500.0)                              # a q⁸ term: exact with four steps, aliased with three
     assert r["all_steps"]["phi_iiii"] == pytest.approx(907.0, abs=1e-2)
     assert abs(r["one_fewer"]["phi_iiii"] - 907.0) > 10
+
+
+
+def _rotation(angles: tuple[float, float, float]) -> "np.ndarray":
+    a, b, c = angles
+    rx = np.array([[1, 0, 0], [0, np.cos(a), -np.sin(a)], [0, np.sin(a), np.cos(a)]])
+    ry = np.array([[np.cos(b), 0, np.sin(b)], [0, 1, 0], [-np.sin(b), 0, np.cos(b)]])
+    rz = np.array([[np.cos(c), -np.sin(c), 0], [np.sin(c), np.cos(c), 0], [0, 0, 1]])
+    return rz @ ry @ rx
+
+
+def test_charge_frame_placement_is_rigid_and_orientation_free():
+    rng = np.random.default_rng(7)
+    geom = rng.normal(size=(6, 3)) * 2.0
+    symbols = ["C", "C", "N", "O", "H", "H"]
+    charges = R.charges_of(symbols)
+    placed = R.in_charge_frame(geom, charges)
+    moved = R.in_charge_frame(geom @ _rotation((0.3, -1.1, 2.0)).T + np.array([1.0, -2.0, 0.5]), charges)
+    assert np.allclose(np.abs(placed), np.abs(moved), atol=1e-9)
+    assert np.allclose(np.linalg.norm(placed[:, None] - placed[None], axis=2), np.linalg.norm(geom[:, None] - geom[None], axis=2))
+    moment = (placed * charges[:, None]).T @ placed
+    assert np.allclose(moment, np.diag(np.diag(moment)), atol=1e-9)
+
+
+def test_unknown_element_is_refused():
+    with pytest.raises(SystemExit, match="no nuclear charge"):
+        R.charges_of(["C", "Xe"])

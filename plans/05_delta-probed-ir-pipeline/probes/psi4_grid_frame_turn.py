@@ -16,18 +16,11 @@ import numpy as np
 
 PLAN = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(PLAN / "probes"), str(PLAN / "src")]
-from qff_energy_route import harmonic, load_results, reference_index  # noqa: E402
+from qff_energy_route import charge_frame, charges_of, harmonic, load_results, reference_index  # noqa: E402
 
-NUCLEAR_CHARGE = {"C": 6, "H": 1}
 REF_DIR = PLAN / "probes/results_m1/s1tz_gridcheck_2026-10-28/s1tz_gridcheck/benzene/coarse"
 MODES = (5, 10, 11)
 STEPS = (0.1, 0.2, 0.3, 0.4)
-
-
-def charge_frame(geom: np.ndarray, charges: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
-    """Moments (ascending) and axes of the nuclear-charge second moment about the centre of charge, as OrientationMgr builds them."""
-    d = geom - charges @ geom / charges.sum()
-    return np.linalg.eigh((d * charges[:, None]).T @ d)
 
 
 def turn_degrees(v0: np.ndarray, v1: np.ndarray) -> float:
@@ -45,7 +38,7 @@ def main() -> None:
     ref = recs[reference_index(recs)]
     harm = harmonic(ref.H, ref.symbols, ref.geom)
     geom0 = ref.geom.reshape(-1, 3)
-    charges = np.array([NUCLEAR_CHARGE[s] for s in ref.symbols], dtype=float)
+    charges = charges_of(ref.symbols)
     w0, v0 = charge_frame(geom0, charges)
     print("reference moments of charge", np.round(w0, 6))
     for i in MODES:

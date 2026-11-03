@@ -11,7 +11,11 @@ in energies.json, so a second call resumes. --program psi4 computes the same ene
 energies confirmed its Hessians, so only another program separates the level of theory from one implementation of it).
 
     python probes/qff_energy_route.py <dir with ref.json> <out_dir> --modes 10 11 [--steps 0.1 0.2 0.3 0.4] [--program pyscf|psi4]
-           [--basis def2-tzvp] [--grid 75,302]
+           [--basis def2-tzvp] [--grid 75,302] [--frame lab|charge]
+
+--frame charge (TASKS 142(a)) moves every geometry into its own nuclear-charge principal frame before the energy, the frame psi4 1.10
+orients its grid by: the energy of a rigidly moved molecule is the same, so any change against --frame lab is the grid's quadrature
+error turning with the atoms.
 """
 from __future__ import annotations
 
@@ -36,6 +40,7 @@ MIN_STEPS = 3  # the truncation check drops the largest step and still needs q²
 PSI4_LOG_NAME = "psi4.log"
 PSI4_MEMORY = "3 GB"  # under the 4096 MB cap of probes/psi4_energyroute_benzene.sh
 PYSCF_CONV_TOL_GRAD = 1e-8  # rks_setup's; psi4's d_convergence matches it
+NUCLEAR_CHARGE = {"H": 1, "C": 6, "N": 7, "O": 8, "F": 9}
 
 Energy = Callable[[list[str], np.ndarray], float]
 
@@ -52,10 +57,32 @@ def parse_args() -> argparse.Namespace:
     ap.add_argument("--grid", default="75,302")
     ap.add_argument("--conv", type=float, default=1e-11)
     ap.add_argument("--threads", type=int, default=4)
+    ap.add_argument("--frame", choices=("lab", "charge"), default="lab",
+                    help="charge: each geometry in its own nuclear-charge principal frame, as psi4 orients its grid")
     a = ap.parse_args()
     if len(a.steps) < MIN_STEPS or sorted(a.steps) != a.steps or a.steps[0] <= 0:
         raise SystemExit(f"--steps must be at least {MIN_STEPS} increasing positive values, got {a.steps}")
     return a
+
+
+def charges_of(symbols: list[str]) -> np.ndarray:
+    unknown = sorted(set(symbols) - set(NUCLEAR_CHARGE))
+    if unknown:
+        raise SystemExit(f"no nuclear charge for {unknown}: add them to NUCLEAR_CHARGE")
+    return np.array([NUCLEAR_CHARGE[s] for s in symbols], dtype=float)
+
+
+def charge_frame(geom: np.ndarray, charges: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """Moments (ascending) and axes of the nuclear-charge second moment about the centre of charge, as psi4's OrientationMgr builds them."""
+    d = geom - charges @ geom / charges.sum()
+    return np.linalg.eigh((d * charges[:, None]).T @ d)
+
+
+def in_charge_frame(geom: np.ndarray, charges: np.ndarray) -> np.ndarray:
+    """The geometry with its centre of charge at the origin and its charge axes along x, y, z. An eigenvector's sign is arbitrary, and a
+    sign flip is a reflection the Lebedev grid maps onto itself, so it does not change the quadrature."""
+    _, axes = charge_frame(geom, charges)
+    return (geom - charges @ geom / charges.sum()) @ axes
 
 
 def even_fit(steps: list[float], even: list[float]) -> np.ndarray:
@@ -132,16 +159,18 @@ def main() -> None:
     if os.path.exists(ck):
         with open(ck, encoding="utf-8") as fh:
             E = json.load(fh)
+    charges = charges_of(ref.symbols)
+    place = (lambda g: in_charge_frame(g, charges)) if a.frame == "charge" else (lambda g: g)
     points = [("ref", 0, 0.0)] + [(f"mode{i:02d}_{'p' if s > 0 else 'm'}{q:.2f}", i, s * q) for i in a.modes for q in a.steps for s in (1, -1)]
     with BACKENDS[a.program](a) as (energy, version):
         for n, (key, i, q) in enumerate(points, 1):
             if key in E:
                 continue
             t0 = time.time()
-            E[key] = energy(ref.symbols, geom0 + q * harm.A[:, i].reshape(-1, 3))
+            E[key] = energy(ref.symbols, place(geom0 + q * harm.A[:, i].reshape(-1, 3)))
             write_json(ck, E)
             print(f"[{time.strftime('%H:%M:%S')}] {n}/{len(points)} {key} E = {E[key]:.12f} ({time.time() - t0:.0f} s)", flush=True)
-    res = {"ref_file": ref.file, "program": version, "xc": a.xc, "basis": a.basis, "grid": a.grid, "conv": a.conv, "steps": a.steps,
+    res = {"ref_file": ref.file, "program": version, "xc": a.xc, "basis": a.basis, "grid": a.grid, "frame": a.frame, "conv": a.conv, "steps": a.steps,
            "e_ref": E["ref"], "modes": {}}
     for i in a.modes:
         plus = [E[f"mode{i:02d}_p{q:.2f}"] for q in a.steps]
