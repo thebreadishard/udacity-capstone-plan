@@ -1,0 +1,34 @@
+=== (S2M) imidazole+CH3 grid check: 15 stubs, 15 coarse Hessians staged 2026-11-03 20:50:09
+=== (S2M) 15 Hessians at grid 99,590, B3LYP/6-31G*, 6 threads 2026-11-03 20:50:09
+[20:50:10] start 1/15 mode00_m.json
+[20:54:34] 1/15 mode00_m.json E = -265.53004807 in 265 s
+[20:54:34] start 2/15 mode00_p.json
+[20:58:44] 2/15 mode00_p.json E = -265.53004900 in 250 s
+[20:58:44] start 3/15 mode02_m.json
+[21:02:58] 3/15 mode02_m.json E = -265.53004362 in 254 s
+[21:02:58] start 4/15 mode02_p.json
+[21:06:59] 4/15 mode02_p.json E = -265.53004375 in 241 s
+[21:06:59] start 5/15 mode11_m.json
+[21:10:57] 5/15 mode11_m.json E = -265.53002849 in 238 s
+[21:10:57] start 6/15 mode11_p.json
+[21:14:56] 6/15 mode11_p.json E = -265.53002814 in 239 s
+[21:14:56] start 7/15 mode22_m.json
+[21:19:01] 7/15 mode22_m.json E = -265.53001613 in 245 s
+[21:19:01] start 8/15 mode22_p.json
+[21:22:57] 8/15 mode22_p.json E = -265.53001636 in 237 s
+[21:22:57] start 9/15 mode24_m.json
+[21:26:53] 9/15 mode24_m.json E = -265.52998117 in 236 s
+[21:26:53] start 10/15 mode24_p.json
+[21:30:51] 10/15 mode24_p.json E = -265.52998276 in 238 s
+[21:30:51] start 11/15 mode25_m.json
+[21:34:48] 11/15 mode25_m.json E = -265.52998076 in 237 s
+[21:34:48] start 12/15 mode25_p.json
+[21:38:41] 12/15 mode25_p.json E = -265.52998071 in 234 s
+[21:38:41] start 13/15 mode26_m.json
+[21:42:46] 13/15 mode26_m.json E = -265.52997928 in 245 s
+[21:42:46] start 14/15 mode26_p.json
+[21:46:40] 14/15 mode26_p.json E = -265.52998111 in 234 s
+[21:46:40] start 15/15 ref.json
+[21:50:39] 15/15 ref.json E = -265.53005139 in 239 s
+done: 15 Hessians in 60.5 min
+=== (S2M) imidazole+CH3 grid check done (15 Hessians) 2026-11-03 21:50:39
