@@ -12,7 +12,7 @@ the cation fill (TASKS 121: 414 candidates). Ionised PAHs matter most in astrono
 The closed-shell route (the APT from the Hessian's own CPHF response, residual-checked since 12 Oct) is not available for UKS: on the
 cation 3-hydroxypyridine⁺ the CPHF-based APT — ours and pyscf-properties' — was 3.3e-3 e off two routes that agreed with each other, the
 field route (`probes/apt_field_route.py`) and finite differences of the dipole (`probes/results_m1/uks_apt_margin_2026-10-11/REGISTRATION.md`;
-the cause, pyscf 2.14's Krylov CPHF stopping early, was found on 12 Oct and is fixed upstream by #3333, unreleased).
+the cause, pyscf 2.14's Krylov CPHF stopping early, was found on 12 Oct and is fixed upstream by #3334, unreleased).
 
 **Done before (the user, 27 Oct: the field route was used before).** The 12 Oct diagnosis built this route and ran it on water, benzene and two pool-3 cations, 3-hydroxypyridine⁺ and P3c_00e041576d: field route against finite differences of the dipole 9.9e-5 and 2.8e-4 e, with and without grid response 8e-6 apart; its outcome (2): 'for the cations' heights the field route is the validated choice (≈ 15 min per 12-atom cation at 4 threads), not the CPHF APT' (`probes/results_m1/uks_apt_margin_2026-10-11/`, outcome of 12 Oct 03:4x). The CC version of the same derivative gave the anchors' APTs (`probes/cc_apt_field.py`, lever 6, 12 Oct), and the closed-shell L4 of 16 Oct used it as the second route on five molecules (lesson D1: a polar molecule needs two fields). Nothing ran it on the cation set since: this note carries out the 12 Oct recommendation.
 
@@ -56,4 +56,4 @@ estimate). Memory: a UKS gradient, far below a Hessian; measured on the largest 
 3. The 46 laptop cations, then the 14 once fetched from the CCX53; then the export and module 08 read the new files.
 4. For the cation fill (TASKS 121): the same runner as a step of the labels route for open shells, so a new cation row carries its APT.
 
-Not in scope: a UKS branch of the CPHF-based route (needs pyscf with #3333; TASKS 47), CC-level APTs for cations (frozen, TASKS 29).
+Not in scope: a UKS branch of the CPHF-based route (needs pyscf with #3334; a release that carries it), CC-level APTs for cations (frozen, TASKS 29).

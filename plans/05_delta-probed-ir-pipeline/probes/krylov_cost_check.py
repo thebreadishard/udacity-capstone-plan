@@ -1,8 +1,8 @@
 """TASKS 133: E8's reference CCSD(T) gradient (probes/e8_cc_hessian_fd.py, its arguments passed unchanged, --only-reference) with the
 relative residual of every CPHF solve recorded. pyscf 2.14.0's lib.krylov ignores lindep and its cphf.solve_nos1 does not pass one; master's
-#3333 changed both, so the Z-vector of a CC gradient can stop early on the release. With --upstream-cphf <pyscf checkout> the CPHF solve is
+#3334 changed both, so the Z-vector of a CC gradient can stop early on the release. With --upstream-cphf <pyscf checkout> the CPHF solve is
 that checkout's cphf.solve with its lib.krylov (both loaded from their files, in place only during the solve), everything else — pyscf,
-the C kernels, BLAS and OpenMP — unchanged: the run isolates #3333. Writes krylov_residuals.json beside E8's reference.npz.
+the C kernels, BLAS and OpenMP — unchanged: the run isolates #3334. Writes krylov_residuals.json beside E8's reference.npz.
 
     python probes/krylov_cost_check.py [--upstream-cphf ~/pyscf-wt-base] <E8 arguments …> --only-reference
 """

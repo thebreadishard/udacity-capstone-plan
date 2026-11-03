@@ -228,7 +228,7 @@ def fd_gradient(mycc) -> np.ndarray:
 
 
 def ucphf_passes_lindep() -> bool:
-    """pyscf#3333 (4 Aug 2026, after 2.14.0) passes lindep = max(tol², eps) to lib.krylov in ucphf; without it the Krylov solve of NO's
+    """pyscf#3334 (3 Aug 2026, after 2.14.0) passes lindep = max(tol², eps) to lib.krylov in ucphf; without it the Krylov solve of NO's
     Z-vector stops at a relative residual of 4e-5 and the UCCSD(T) gradient is 1.5e-5 off FD (TASKS 132)."""
     import inspect
 
@@ -239,7 +239,7 @@ def ucphf_passes_lindep() -> bool:
 def test_the_installed_gradient_equals_finite_differences(case, monkeypatch, request):
     mycc, eris, _, _ = case
     if mycc.mol.atom_symbol(0) == "N" and not ucphf_passes_lindep():
-        request.applymarker(pytest.mark.xfail(strict=True, reason="pyscf without #3333: ucphf's Krylov stops early on NO (TASKS 132)"))
+        request.applymarker(pytest.mark.xfail(strict=True, reason="pyscf without #3334: ucphf's Krylov stops early on NO (TASKS 132)"))
     keep_pyscf(monkeypatch)
     U.install(block=3, slab_mb=slab_mb(mycc.t2[1].shape[2], 2))
     got = ccsd_t_gradient(mycc, eris)

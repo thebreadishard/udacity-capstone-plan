@@ -249,5 +249,5 @@ any test ran, and the new max_memory = 1 test fails on it (checked by putting it
 ## Not prepared as a PR
 
 - The C kernel for the open-shell (T) intermediates: not finished to PR quality tonight (see TASKS 98).
-- NO's UCCSD(T) gradient (TASKS 132): already fixed on master by #3333 (lindep passed to lib.krylov); nothing to submit — a comment on our
-  issue #2702 that #3333 resolves the early stop for CPHF may be worth posting, in the user's words.
+- NO's UCCSD(T) gradient (TASKS 132): already fixed on master by #3334 (lindep passed to lib.krylov); nothing to submit — a comment on our
+  issue #2702 that #3334 resolves the early stop for CPHF may be worth posting, in the user's words.
