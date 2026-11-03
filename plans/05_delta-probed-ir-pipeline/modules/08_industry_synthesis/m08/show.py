@@ -10,12 +10,13 @@ every such page after the build and fails when one is missing.
 from __future__ import annotations
 
 import argparse
+import functools
 import json
 import re
 import urllib.error
 import urllib.request
 from collections.abc import Callable
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 
 import numpy as np
 
@@ -85,6 +86,10 @@ def carbon_count(formula: str) -> int:
 
 
 REUSE_SINCE = (0, 6)                 # pipeline 0.6 took steps 2–3 from the corpus first; earlier records computed every step
+# the corpus APTs redone on the residual-checked route after their Hessian pass (12 Oct and 1 Nov 2026): the pass's time does not hold them
+APT_RECOMPUTE_LOGS = (RESULTS / "apt_refine_install_2026-10-12" / "recompute" / "recompute.jsonl",
+                      RESULTS / "holdout_a_apt_2026-11-01" / "recompute.jsonl")
+HESSIAN_TIMED_FROM_S = 1.0           # a pass that read a saved Hessian instead of computing one records ≈ 0 s (benzene, A_8448043181)
 
 
 def reused(rec: dict) -> bool:
@@ -96,6 +101,34 @@ def reused(rec: dict) -> bool:
     raise ValueError(f"{rec['name']}: pipeline {rec['pipeline_version']} record without its reuse entry")
 
 
+@functools.cache
+def apt_recomputes() -> dict[str, float]:
+    """Corpus folder → the seconds of its APT's recompute. A folder computed twice keeps its last row: the later run wrote the file installed."""
+    out = {}
+    for log in APT_RECOMPUTE_LOGS:
+        for line in log.read_text(encoding="utf-8").splitlines():
+            if line.strip():
+                row = json.loads(line)
+                out[row["id"]] = float(row["seconds"])
+    return out
+
+
+def corpus_low_level_seconds(rec: dict) -> tuple[float | None, float | None]:
+    """A reused run's corpus seconds for the B3LYP Hessian pass (None when the pass timed nothing) and for its APT when that was recomputed
+    later (None when the pass wrote it, its time then inside the pass's)."""
+    hessian = rec["low_level"]["b3lyp"]["seconds"]
+    folder = PureWindowsPath(rec["reuse"]["source"]).name
+    return (hessian if hessian >= HESSIAN_TIMED_FROM_S else None), apt_recomputes().get(folder)
+
+
+def corpus_low_level_text(rec: dict) -> str:
+    """The 'Hessian + APT' card's time on the corpus line."""
+    hessian, apt = corpus_low_level_seconds(rec)
+    if apt is None:
+        return f"from the corpus · {duration(hessian)}" if hessian is not None else "from the corpus · time not recorded"
+    return f"from the corpus · Hessian {duration(hessian) if hessian is not None else 'time not recorded'}, APT {duration(apt)}"
+
+
 def stations(rec: dict) -> list[dict]:
     """The six stations with each one's recorded time: the laptop's for a computed step, the corpus record's for a reused one."""
     sec = rec["seconds"]
@@ -103,7 +136,7 @@ def stations(rec: dict) -> list[dict]:
     corpus = rec["optimisation"]["timings_s"] if from_corpus else {}
     times = ["checked before any computation", "with the optimisation",
              f"from the corpus · {duration(corpus['optimise'])}" if from_corpus else f"{duration(sec['optimise'])} on the laptop",
-             f"from the corpus · {duration(rec['low_level']['b3lyp']['seconds'])}" if from_corpus else f"{duration(sec['low_level'])} on the laptop",
+             corpus_low_level_text(rec) if from_corpus else f"{duration(sec['low_level'])} on the laptop",
              f"{duration(sec['correction_and_spectra'])} with the spectrum", "certified"]
     adm = rec["admission"]
     details = [f"{adm['formula']} · {adm['n_atoms']} atoms · neutral and closed-shell, every element seen in training; canonical SMILES {adm['smiles']}",
@@ -121,9 +154,12 @@ def real_time(rec: dict) -> str:
     """The run's total real time from its record: the laptop's seconds, and for a reused run the corpus's for steps 3–4 beside them."""
     sec = rec["seconds"]
     if reused(rec):
-        corpus = rec["optimisation"]["timings_s"]["optimise"] + rec["low_level"]["b3lyp"]["seconds"]
-        return (f"Real time: {duration(sec['reuse'] + sec['correction_and_spectra'])} on the laptop, steps 3–4 from the corpus "
-                f"({duration(corpus)} when they were computed)")
+        lead = f"Real time: {duration(sec['reuse'] + sec['correction_and_spectra'])} on the laptop, steps 3–4 from the corpus"
+        hessian, apt = corpus_low_level_seconds(rec)
+        if hessian is None:
+            return f"{lead} (their time is not recorded)"
+        corpus = rec["optimisation"]["timings_s"]["optimise"] + hessian + (apt or 0.0)
+        return f"{lead} ({duration(corpus)} when they were computed)"
     return f"Real time: {duration(sum(sec.values()))} on the laptop in all"
 
 

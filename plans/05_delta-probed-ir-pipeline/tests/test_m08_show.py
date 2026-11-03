@@ -89,9 +89,34 @@ def test_check_links_reports_every_page_the_live_site_does_not_serve():
 def test_the_real_time_adds_up_the_record():
     rec, _ = record(NO_TRUTH[1])                                    # cinnoline: the ledger's 30 Oct rehearsal, 1,262 s
     assert S.real_time(rec) == f"Real time: {S.duration(sum(rec['seconds'].values()))} on the laptop in all" == "Real time: 21 min on the laptop in all"
-    reused_rec = {"name": "x", "pipeline_version": "0.6", "reuse": {"reused": True}, "seconds": {"reuse": 0.6, "correction_and_spectra": 2.8},
-                  "optimisation": {"timings_s": {"optimise": 30.5}}, "low_level": {"b3lyp": {"seconds": 3212}}}
+    reused_rec = {"name": "x", "pipeline_version": "0.6", "reuse": {"reused": True, "source": r"C:\corpus\molecules\A_not_recomputed"},
+                  "seconds": {"reuse": 0.6, "correction_and_spectra": 2.8}, "optimisation": {"timings_s": {"optimise": 30.5}},
+                  "low_level": {"b3lyp": {"seconds": 3212}}}
     assert S.real_time(reused_rec) == "Real time: 3.4 s on the laptop, steps 3–4 from the corpus (54 min when they were computed)"
+
+
+def corpus_record(folder_id, hessian_seconds):
+    return {"reuse": {"reused": True, "source": rf"C:\corpus\molecules\{folder_id}"}, "low_level": {"b3lyp": {"seconds": hessian_seconds}},
+            "seconds": {"reuse": 0.6, "correction_and_spectra": 2.8}, "optimisation": {"timings_s": {"optimise": 30.5}}}
+
+
+def test_an_apt_recomputed_after_its_hessian_shows_its_own_time():
+    """Carbazole's corpus folder: its APT was redone on 12 Oct (9,566 s), after the Hessian pass (3,212 s), which does not hold that time."""
+    rec = corpus_record("A_8152ea74fd", 3212)
+    assert S.apt_recomputes()["A_8152ea74fd"] == 9566.0
+    assert S.corpus_low_level_text(rec) == "from the corpus · Hessian 54 min, APT 2.7 h"
+    assert S.real_time(rec).endswith(f"({S.duration(30.5 + 3212 + 9566)} when they were computed)")
+
+
+def test_an_apt_written_in_the_hessian_pass_is_inside_its_time():
+    rec = corpus_record("A_not_recomputed", 7454)
+    assert S.corpus_low_level_text(rec) == "from the corpus · 2.1 h"
+
+
+def test_a_pass_that_timed_nothing_says_so():
+    rec = corpus_record("A_not_recomputed", 0)
+    assert S.corpus_low_level_text(rec) == "from the corpus · time not recorded"
+    assert S.real_time(rec).endswith("steps 3–4 from the corpus (their time is not recorded)")
 
 
 def test_the_page_carries_the_data_once_and_reads_back():
