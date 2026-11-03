@@ -1,0 +1,13 @@
+{"name": "m05_append_12_6",
+ "purpose": "TASKS 20 (the user, 3 Nov: 'Ja, stop de run en doe het append-only'): module 05's section 12.6 (cells 85-87) executed append-only, the 85 stored cells keep their outputs of 8 Oct (the rule of 28 Sep: module artefacts show the learning); replaces the top-to-bottom run m05_notebook, stopped at cell 14",
+ "host": "laptop",
+ "workdir": "modules/05_support_predictor/notebook",
+ "command": "env M05_THREADS=4 PYTHONUTF8=1 python execute_section8.py --from-cell 85 --setup 3,5,9,11 --defs 13,18",
+ "sources": [{"local": "modules/05_support_predictor/notebook/execute_section8.py"}, {"local": "modules/05_support_predictor/notebook/make_notebook.py"}],
+ "progress": {"regex": "^(setup cell|definitions of cell|new cell) [0-9]+", "max_gap_minutes": 30},
+ "marker_regex": "^written |Traceback|CellExecutionError|SystemExit",
+ "end_regex": "^written ",
+ "threads": 4,
+ "estimate": {"hours": 0.25, "basis": "the append-only section 11 of 28 Sep took 21 min with three-seed training on the laptop; 12.6 trains nothing and reads three records of 9 Oct"},
+ "memory": {"peak_gb": 5.0, "basis": "as m05_notebook: the setup cells load a 3.7 MB release; one kernel, nothing in WSL"},
+ "resumable": false}

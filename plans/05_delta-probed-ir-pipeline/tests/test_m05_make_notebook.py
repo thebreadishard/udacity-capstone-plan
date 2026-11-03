@@ -18,3 +18,14 @@ def test_check_only_writes_nothing():
     assert "every code cell compiles; nothing written" in done.stdout
     assert NOTEBOOK.stat().st_mtime_ns == before
     assert not (MODULE / "notebook" / "deep_learning.building.ipynb").exists()
+
+
+def test_draft_to_writes_only_the_draft(tmp_path):
+    before = NOTEBOOK.stat().st_mtime_ns
+    draft = tmp_path / "draft.ipynb"
+    env = {**os.environ, "PYTHONUTF8": "1"}
+    done = subprocess.run([sys.executable, "notebook/make_notebook.py", "--draft-to", str(draft)], cwd=MODULE, env=env,
+                          capture_output=True, text=True, check=False, timeout=300)
+    assert done.returncode == 0, done.stderr
+    assert draft.exists()
+    assert NOTEBOOK.stat().st_mtime_ns == before

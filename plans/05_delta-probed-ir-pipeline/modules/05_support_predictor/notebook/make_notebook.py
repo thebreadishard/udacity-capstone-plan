@@ -9,7 +9,8 @@ evaluation of both with metrics fit for the task and a direct comparison · a 4�
 Data: `data/corpus_release/<release>.npz` written by `m05/build_release.py` (default: the layer-A file of 22 September; the E6 layer-A2
 release replaces it when the corpus factory finishes). Model: `m05/deltah_model.py` (copy of the architecture sheet). Results go to
 `notebook/results.json` for `make_summary.py`. Environment knobs for a quick pipeline check (not a result): M05_QUICK=1 → 3 epochs,
-one seed. Run:  python notebook/make_notebook.py  (`--check-only` compiles every code cell and writes nothing; while executing, one
+one seed. Run:  python notebook/make_notebook.py  (`--check-only` compiles every code cell and writes nothing; `--draft-to PATH` writes
+the unexecuted notebook to PATH and nothing else, for `execute_section8.py`; while executing, one
 `[m05nb] cell i/n start|done` line per cell for the run's watch)
 """
 import csv
@@ -1222,6 +1223,13 @@ path = HERE / "deep_learning.ipynb"
 if "--check-only" in sys.argv:
     check_cells(nb.cells)
     print(f"check-only: {len(nb.cells)} cells, every code cell compiles; nothing written")
+    sys.exit(0)
+if "--draft-to" in sys.argv:
+    position = sys.argv.index("--draft-to") + 1
+    if position == len(sys.argv):
+        raise SystemExit("--draft-to needs a path")
+    nbformat.write(nb, sys.argv[position])
+    print(f"draft: {len(nb.cells)} cells written to {sys.argv[position]}")
     sys.exit(0)
 # 2 Oct 2026 15:1x: the executed notebook on disk is replaced only after a successful execution — a failed run (a wrong M05_RELEASE) had left it
 # without outputs for a few minutes; the draft goes to a temporary name and is moved over the original at the end.
