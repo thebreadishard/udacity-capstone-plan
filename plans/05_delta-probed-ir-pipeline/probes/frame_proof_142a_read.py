@@ -44,6 +44,7 @@ def verdict(lab: dict, charge: dict) -> tuple[list[str], bool]:
 
 
 def main() -> None:
+    sys.stdout.reconfigure(encoding="utf-8")   # the table's ω and φ on a cp1252 console
     out = Path(sys.argv[1])
     lab, charge = load(out / "lab" / "energy_route.json"), load(out / "charge" / "energy_route.json")
     for key in ("program", "xc", "basis", "grid", "steps"):
