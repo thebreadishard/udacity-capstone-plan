@@ -9,7 +9,8 @@ evaluation of both with metrics fit for the task and a direct comparison · a 4�
 Data: `data/corpus_release/<release>.npz` written by `m05/build_release.py` (default: the layer-A file of 22 September; the E6 layer-A2
 release replaces it when the corpus factory finishes). Model: `m05/deltah_model.py` (copy of the architecture sheet). Results go to
 `notebook/results.json` for `make_summary.py`. Environment knobs for a quick pipeline check (not a result): M05_QUICK=1 → 3 epochs,
-one seed. Run:  python notebook/make_notebook.py
+one seed. Run:  python notebook/make_notebook.py  (`--check-only` compiles every code cell and writes nothing; while executing, one
+`[m05nb] cell i/n start|done` line per cell for the run's watch)
 """
 import csv
 import json
@@ -33,6 +34,21 @@ def md(s):
 
 def code(s):
     cells.append(new_code_cell(s))
+
+
+def check_cells(notebook_cells: list) -> None:
+    """Compiles every code cell, IPython magics left out, so a queued execution cannot fail on a syntax error."""
+    for index, cell in enumerate(notebook_cells, start=1):
+        if cell.cell_type == "code":
+            source = "\n".join(line for line in cell.source.splitlines() if not line.lstrip().startswith("%"))
+            compile(source, f"<cell {index}>", "exec")
+
+
+def cell_reporter(phase: str):
+    """An nbclient hook printing one flushed line per cell: the cells run inside one library call, so the watch sees no other output."""
+    def report(cell, cell_index: int, **_) -> None:
+        print(f"[m05nb] cell {cell_index + 1}/{len(cells)} {phase}", flush=True)
+    return report
 
 
 md(f"""# Module 05 — the ΔH model: a Transformer that predicts, per family of vibrations, how a cheap Hessian must be corrected
@@ -1203,12 +1219,18 @@ coupled-cluster dipole derivative. These numbers are what module 08's certificat
 
 nb = new_notebook(cells=cells, metadata={"kernelspec": {"name": "python3", "display_name": "Python 3", "language": "python"}})
 path = HERE / "deep_learning.ipynb"
+if "--check-only" in sys.argv:
+    check_cells(nb.cells)
+    print(f"check-only: {len(nb.cells)} cells, every code cell compiles; nothing written")
+    sys.exit(0)
 # 2 Oct 2026 15:1x: the executed notebook on disk is replaced only after a successful execution — a failed run (a wrong M05_RELEASE) had left it
 # without outputs for a few minutes; the draft goes to a temporary name and is moved over the original at the end.
 tmp = HERE / "deep_learning.building.ipynb"
 nbformat.write(nb, tmp)
 if "--no-execute" not in sys.argv:
-    NotebookClient(nb, timeout=10800, kernel_name="python3", resources={"metadata": {"path": str(HERE)}}).execute()   # 3 Oct 2026: the cap-100 audit cell took > 1 h beside two CC jobs
+    # timeout per cell: 3 Oct 2026, the cap-100 audit cell took > 1 h beside two CC jobs
+    NotebookClient(nb, timeout=10800, kernel_name="python3", resources={"metadata": {"path": str(HERE)}},
+                   on_cell_start=cell_reporter("start"), on_cell_executed=cell_reporter("done")).execute()
     nbformat.write(nb, tmp)
     os.replace(tmp, path)
     print("executed and written:", path)
