@@ -1,0 +1,21 @@
+{"name": "fd222_labels",
+ "purpose": "TASKS 171 (the user, 3 Nov: 'Ja, optie 1, op de CCX53 na de wachtrij'; priced 523 lane-h, ~5.5 CCX53 days, ~EUR 112): analytic B3LYP and wB97X labels with the APT for the 222 pool molecules v1.3 still trains on psi4 finite differences (not in the lanes' 811 ids), so the whole pool is analytic; on the labels CCX53 after its queue (waits for both hbc_wb97x's and d8a_relabel's end lines), the one batch runner from /root/fd222 (deploy_molecules_ccx53.sh, smokes passed). Then fetch with the FETCHED line before the 15 Nov stop.",
+ "host": "labels",
+ "workdir": "/root/fd222",
+ "command": "CODE=/root/fd222/modules/05_support_predictor/corpus CAP_MB=26624 WAIT_COUNT=2 LABEL_ARGS='--max-memory 24000 --reuse-existing' bash probes/labels_batch_ccx53.sh /root/fd222 FD2 '/root/l5b/hbc_wb97x.log /root/l5b/d8a_relabel.log' '^=== \\((HBC|D8A)\\) all done'",
+ "sources": [
+  {"local": "probes/labels_batch_ccx53.sh", "remote": "/root/fd222/probes/labels_batch_ccx53.sh"},
+  {"local": "probes/wsl_capped.sh", "remote": "/root/fd222/probes/wsl_capped.sh"},
+  {"local": "probes/cation_oom_check.sh", "remote": "/root/fd222/probes/cation_oom_check.sh"},
+  {"local": "probes/library_log.py", "remote": "/root/fd222/probes/library_log.py"},
+  {"local": "modules/05_support_predictor/corpus/analytic_hessians.py", "remote": "/root/fd222/modules/05_support_predictor/corpus/analytic_hessians.py"},
+  {"local": "modules/05_support_predictor/corpus/apt.py", "remote": "/root/fd222/modules/05_support_predictor/corpus/apt.py"},
+  {"local": "probes/results_m1/fd222_labels_2026-11-03/ids.tsv", "remote": "/root/fd222/ids.txt"}
+ ],
+ "progress": {"regex": "^  [A-Z0-9]+_[0-9a-f]+ (labels started|labelled|KILLED|LABELS)", "max_gap_minutes": 120,
+              "start_regex": "^=== \\(FD2\\) start: ", "heartbeat_glob": "molecules/*/pyscf.log"},
+ "marker_regex": "^=== \\(FD2\\) (start|all done|STOPPED)|^  [A-Z0-9]+_[0-9a-f]+ (KILLED|LABELS)",
+ "end_regex": "^=== \\(FD2\\) all done: 0 failures",
+ "dry_run_args": "--dry-run",
+ "threads": 32,
+ "estimate": {"hours": 132, "basis": "compute_prices.py labels (out/anchor_plan/price_labels_chain35_fd.md, 3 Nov): 523 lane-hours on the labels lanes' model, 8-30 atoms inside the timed range, on 4 lanes"}}

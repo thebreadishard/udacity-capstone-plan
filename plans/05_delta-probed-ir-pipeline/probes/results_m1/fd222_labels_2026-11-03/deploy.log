@@ -1,0 +1,10 @@
+[20:37:20 labels] 1. the molecules files under /root/fd222 (git archive of HEAD)
+deploy list closed: 8 files
+8
+[20:37:24 labels] 2. the molecule folders of probes/results_m1/fd222_labels_2026-11-03/ids.tsv (tar, sha256 of each geometry.json on both sides)
+222 molecule folders, geometry sha256 equal; /root/fd222/ids.txt
+[20:37:37 labels] SMOKE 1: water through the runner under a 2048 MB system-scope cap
+  water_plus labelled 16 s - (SM) water_plus max RSS 402444 kB, wall 15.33 s
+[20:37:55 labels] SMOKE 2: the same under 64 MB must be named killed at the cap
+  water_kill KILLED at the cap of 64 MB 46 s (molecules/water_kill/labels.log)
+[20:38:45 labels] DEPLOY DONE
