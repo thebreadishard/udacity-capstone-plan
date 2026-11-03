@@ -81,3 +81,4 @@ outputs are current again. Items unchanged otherwise; the reviewer sees sections
   re-ticked in the full weekend pass (TASKS, weekend review 2).
 
 - Lay-reader pass done 4 Oct 2026 (TASKS item 20): a plain-language opening in README, notebook (builder and the executed notebook's markdown) and report; `modules/GLOSSARY.md` linked; the report rebuilt; the notebook re-executed after the TZ run (decision 58, text and execution split).
+- 3 Nov 2026 19:1x: section 12.6 executed append-only (88 cells, no error outputs, cells 0–84 unchanged against the committed notebook); the October top-to-bottom executions recorded in PROVENANCE. The report has no addendum for sections 12–12.6 yet (TASKS 20, writing phase).
