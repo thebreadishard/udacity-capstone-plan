@@ -8,9 +8,9 @@ leaves this list; the pipeline version that carries it is named in `modules/PIPE
 |---|---|---|---|
 | The request officer runs the pipeline for a rung 2–3 request | it refuses and names the pipeline today (decision 65); the replay worker would start a pipeline run behind module 07's gate | 146 | after |
 | Module 08's notebook and paper on decision 65 | both describe the licence of 28 Sep (layer B, no family) | 146 | after |
-| The network's answer independent of the atom order | v1.3 moves bands by up to 2.9 cm⁻¹ between SMILES writings (0.2 fixes one order per molecule, not the spread) | 149 | before |
+| The network's answer independent of the atom order | v1.3 moves bands by up to 2.9 cm⁻¹ between SMILES writings (0.2 and, for an xyz, 0.7 fix one order per molecule, not the spread; v1.5 is to remove it) | 149 | before |
 | Anharmonic shifts on the positions | the positions are harmonic; S1/S2 measure the anharmonic step | 53 | after |
-| Cations and other open-shell molecules | refused today (charge, multiplicity); the 60 pool-3 cations have analytic UKS labels, the network has no carried cation rung | 98, 121 | after |
+| Cations and other open-shell molecules | refused today (charge, multiplicity); the 60 pool-3 cations have analytic UKS labels (corpus shard a), the network has no carried cation rung | 98, 121 | after |
 | The geometry without psi4 (pyscf + geomeTRIC) | one engine instead of two; only after a check that it gives the same Hessian and network read | 73 | after |
 | v1.4 if chain 44 carries it | a new network version is a new pipeline version | 129 | after |
 | The reach beyond about 40 atoms | the DFT step's measured reach (8–9 Oct) and the size penalty (chain 42) | 49 | after |
@@ -18,6 +18,3 @@ leaves this list; the pipeline version that carries it is named in `modules/PIPE
 | The laptop's Hessian time for large molecules | the analytic Hessian is the step that grows fastest with size | 146 | after |
 | Promotion into `src/dpir` and the product repository | the forkable product of 2027 | 73 | after |
 | The demo molecules re-run at the meeting's pipeline version | the page shows each molecule at the version that ran it (benzene 0.1, phenanthrene 0.2, the candidate 0.3); 0.3 reproduces the first two to the bit, but one version on the page reads cleaner; laptop: about 6 min, 77 min and 3.7 h | 146 | before |
-| Reuse of the corpus's B3LYP Hessian and APT | the Hessian is 3.6 of the candidate's 3.7 h; 862 corpus molecules hold one | 150 | after |
-| The training flag in the certificate | a molecule the network trained on must not be read by the hold-out error; the demo's molecule must be unseen | 155 | before |
-| The run time estimated at admission | the demo's live run must fit half an hour | 151 | before |
