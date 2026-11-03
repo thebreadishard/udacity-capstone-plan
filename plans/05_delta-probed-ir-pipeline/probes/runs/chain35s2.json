@@ -1,0 +1,50 @@
+{
+ "_about": "TASKS 169 (the user, 3 Nov 2026: 'Ja, eens met allebei'): chain 35's seed 2 had its best inner validation at its epoch cap (200 of 200; decision 51: a re-run). Seed 2 alone, chain 35's recipe and inputs with --epochs 300 and --holdout-twins keep (chain 35 trained before the twin drop), under its own prefix; chain 35's weights are only read. The new seed's epochs up to 200 must repeat chain 35's log (probes/epoch_repeat_check.py), then the clean hold-out (a) read of chain 35's seeds 0 and 1 with the new seed 2 (v1.3.1) beside v1.3's (probes/holdout_a_clean.sh). Carried only if worse on neither hold-out (decision 57), by hand after the read.",
+ "name": "C35S2",
+ "poll_s": 600,
+ "wait": [],
+ "steps": [
+  {
+   "kind": "rungc",
+   "chain": "35s2",
+   "date": "2026-11-03",
+   "seeds": [2],
+   "note": "chain 35's seed 2 at epoch cap 300 (TASKS 169); candidate for v1.3.1 until its read",
+   "trainings": [
+    {
+     "prefix": "out/E7_rungC_chain35s2_analytic",
+     "args": ["--sizes", "750", "--epochs", "300", "--holdout-twins", "keep"]
+    }
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "the new seed 2 repeats chain 35's epochs up to 200",
+   "cwd": ".",
+   "log": "modules/05_support_predictor/out/E7_rungC_chain35s2_repeat_check.log",
+   "argv": ["{python}", "probes/epoch_repeat_check.py", "modules/05_support_predictor/out/E7_rungC_chain35_analytic.log",
+            "modules/05_support_predictor/out/E7_rungC_chain35s2_analytic.log", "--seed", "2"]
+  },
+  {
+   "kind": "cmd",
+   "label": "clean hold-out (a) read of the new seed 2",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/E7_rungC_chain35s2_analytic_a8read_seed2.log",
+   "argv": ["{python}", "../../probes/rungC_eval_saved.py", "out/E7_rungC_chain35s2_analytic_model_n750_seed2.pt",
+            "out/E7_rungC_chain35s2_analytic_a8read_seed2", "--use-analytic", "--threads", "4", "--allow-any-model",
+            "--holdout-b-file", "corpus/holdout_b_frozen_2026-10-08.txt", "--eval-ids-file", "a8=out/holdout_a_clean_2026-10-30.txt"]
+  },
+  {
+   "kind": "cmd",
+   "label": "v1.3.1's clean read (chain 35's seeds 0 and 1 with the new seed 2)",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/holdout_a_clean_read_v131_2026-11-03.md",
+   "argv": ["{python}", "../../probes/holdout_a_clean_read.py", "out/E7_rungC_chain35_analytic_a8read_seed0.json",
+            "out/E7_rungC_chain35_analytic_a8read_seed1.json", "out/E7_rungC_chain35s2_analytic_a8read_seed2.json"]
+  }
+ ],
+ "outputs": [
+  "modules/05_support_predictor/out/E7_rungC_chain35s2_analytic_model_n750_seed2.pt",
+  "modules/05_support_predictor/out/holdout_a_clean_read_v131_2026-11-03.md"
+ ]
+}
