@@ -1,4 +1,4 @@
-# Hoofdstuk 8 — Module 03: het lab-scorebord, de matrixtolerantie en u_band
+# Hoofdstuk 8 — Module 03: het lab-scorebord, de matrixverschuiving en u_band
 
 *Udacity-module "Conduct a Statistical Analysis Using Python". In de rubriek Project 2.*
 
@@ -6,110 +6,121 @@
 
 ## 1. Wat is de vraag?
 
-Verzamel alle bruikbare *gemeten* bandposities van de laddermoleculen in één tabel, meet
-per band hoe onzeker die positie is, en toets per bandfamilie of matrixspectra
-systematisch verschoven zijn ten opzichte van gasspectra.
+Laboratoria meten infraroodspectra op twee manieren. In een *matrix* worden de moleculen
+ingevroren in vast argon bij ongeveer 10 K (−263 °C): scherp gemeten, maar het argon kan
+de banden een beetje verschuiven. In de *gasfase* meet je de damp: dichter bij de
+omstandigheden in de ruimte, maar bij de beschikbare bronnen heet en wazig. De vraag van
+deze module, vastgelegd vóórdat er één paar was gevormd: **is de verschuiving tussen de
+matrixpositie en de gasfasepositie van een band nul, per bandfamilie?** Daarnaast meet de
+module per gasfaseband hoe onzeker die positie is (u_band).
 
 ## 2. Wat eist de school?
 
-Beschrijvende statistiek plus minstens één **hypothesetoets**, op een openbare dataset
-die vóór de module beschikbaar was, met minstens 500 rijen en 6 kolommen, numerieke én
-groeperende variabelen, en **niet** dezelfde dataset als module 02. De rubriek noemt
-voorbeeldbronnen (Kaggle, UCI, Data.gov); die lijst is volgens de repo-leesnotitie een
-lijst voorbeelden, geen gesloten poort. De toets moet vooraf worden vastgelegd.
+Beschrijvende statistiek, minstens drie figuren ("visuele modellen") en precies één
+**hypothesetoets** met hypothesen, toetsingsgrootheid en p-waarde. De dataset is openbaar,
+bestond al vóór het project, heeft minstens 500 rijen en 6 kolommen met numerieke én
+groeperende variabelen, en is **niet** dezelfde als die van module 02. Het rapport
+verklaart de keuze van de toets, leest de resultaten, noemt minstens één beperking en één
+bron van bias, en heeft een uitleg voor een niet-technisch publiek. De rubriek noemt
+voorbeeldbronnen (Kaggle, UCI, Data.gov); dat is een lijst voorbeelden, geen gesloten poort.
 
 ## 3. Invoer
 
-- **PAHdb experimentele bibliotheken**: v3.10 (84 soorten, matrixisolatie in argon bij
-  ongeveer 10 K) en de gasfasebibliotheek v1.00.
-- **NIST WebBook**: JCAMP-bestanden per CAS-nummer (benzeen, naftaleen, pyreen, chryseen,
-  trifenyleen). Voor de R2-moleculen zijn dat GC-IR-spectra van hete damp, gehomogeniseerd
-  tot 8 cm⁻¹; voor naftaleen een dampspectrum bij 245 °C en een GC-IR-vermelding; voor
-  benzeen twintig kwantitatieve celspectra bij 0,125–1,93 cm⁻¹.
-- **PNNL/NWIR**: het kwantitatieve dampfasespectrum van naftaleen bij 25 of 50 °C (het artikel noemt beide; de kop van het databestand beslist) en 0,112 cm⁻¹
-  (gevonden in de laatste review; genoemd vóór deze module iets print, zoals de
-  niet-verwisselregel eist).
-- **De documentatie van die bronnen** (bibliografie-items 50, 56, 57, 59): daarin staan
-  de meetcondities (temperatuur, resolutie) die het JCAMP-bestand zelf vaak niet noemt.
-- **De hot-band-literatuur** (items 52–53, 60): hoeveel cm⁻¹ per kelvin een band
-  verschuift, per familie. Items 52 en 64 (Joblin 1995/1994) gelezen op 6 september 2026: de
-  hellingen per familie staan in de bibliografie; item 53 (Pirali 2009) komt nog van de begeleider.
-- **De parser en cache uit plan 02 en 04** (in de git-geschiedenis).
+- **PAHdb experimentele bibliotheek v3.10**: 84 soorten, 3.896 banden, gemeten in argon bij
+  10 K met 0,9 cm⁻¹ resolutie (Hudgins & Sandford 1998). Ingelezen door de parser van
+  module 02.
+- **NIST Chemistry WebBook**: acht gasfaserecords van benzeen en vijf PAK's. De
+  hoofdbron voor de toets is de GC-IR-reeks van NIST/EPA: hete damp in een verwarmde buis,
+  8 cm⁻¹ resolutie. De documentatie van die reeks noemt geen temperatuur; aangenomen is
+  250 °C. Daarnaast een dampspectrum van naftaleen bij 245 °C en een benzeencelspectrum.
+- **Het kwantitatieve benzeenscorebord**: vier banden uit het NIST-record met 0,125 cm⁻¹
+  resolutie (Chu et al. 1999).
+- **De hot-band-literatuur** (Joblin et al. 1995): hoeveel cm⁻¹ een band per kelvin
+  verschuift, per familie. Een *hot band* is een overgang vanuit een trilling die bij hoge
+  temperatuur al aangeslagen is; die ligt iets lager en trekt de gemeten piek mee.
 
 ## 4. Bewerking
 
-1. Alle bronnen inlezen tot één tabel met dezelfde kolommen (object O9).
-2. Per gasfaseband **u_band** bepalen: de kwadratensom van (i) de opgegeven resolutie uit de
-   documentatie (nooit de puntafstand van het bestand), (ii) de centroïde-precisie uit de
-   signaal-ruisverhouding, en (iii) de temperatuurterm u_T: een vastgepinde
-   hot-band-correctie met ±30 %, of, zolang die er niet is, de vloer
-   χ_max·(T_bron − 296 K) + u_296 met χ_max = 0,03 cm⁻¹/K (herinnerd, wordt vervangen) en u_296
-   het 0 → 296 K-aandeel per molecuul (1 / 3 / 5 cm⁻¹ voor benzeen / naftaleen / R2-soorten,
-   schattingen). Een bron zonder opgegeven temperatuur krijgt die uit de documentatie van
-   haar reeks; is die er ook niet, dan geldt "heet".
-3. Per familie het **beslisbaarheidsoordeel**: gas-beslisbaar als u_band kleiner is dan de
-   beat-marge van die familie; anders onbeslisbaar door constructie. Matrixdata gaat door de
-   matrix–gas-poort van stap 4.
-4. De **vooraf vastgelegde toets**: per familie "de matrix-naar-gas-verschuiving is nul",
-   tweezijdig, met vooraf gekozen α; "onbeslist" is een toegestane uitkomst. Het resultaat is
-   de gemeten **matrixtolerantie** per familie.
-5. Beschrijvende statistiek per familie en fase, met figuren.
+1. **Eén tabel.** `build_lab_tables.py` voegt alle bronnen samen tot `bands_lab.csv`: één
+   rij per laboratoriumband, 4.218 rijen × 31 kolommen.
+2. **De toets eerst vastleggen.** `PRE_REGISTRATION.md` is gecommit vóórdat er een paar
+   werd gevormd. Daarin staan: hoe een gaspiek wordt gevonden (minstens 5 σ boven de ruis),
+   welke matrixband erbij hoort (dezelfde soort, binnen 20 cm⁻¹, de sterkste; één-op-één),
+   de grootheid Δ = ν_matrix − ν_gas, de familieregel van module 02, en een minimum van zes
+   paren per familie.
+3. **De paren.** Vier soorten hebben zowel matrix- als gasfasedata: naftaleen, antraceen,
+   pyreen en chryseen. Dat levert 63 paren op de hoofdbron, plus 11 op het naftaleenspectrum
+   bij 245 °C, dat apart wordt getoond en niet meetelt.
+4. **De toets.** Per familie de Wilcoxon-rangtekentoets: een toets die vraagt of de
+   verschuivingen rond nul liggen, zonder aan te nemen dat ze normaal verdeeld zijn.
+   Tweezijdig, α = 0,05, met de Holm-correctie omdat dezelfde vraag voor meerdere families
+   tegelijk wordt gesteld. Een familie met minder dan zes paren heet *onbeslist door
+   constructie*: bij vijf paren kan de kleinste mogelijke p-waarde (0,0625) α niet halen.
+5. **u_band per gasfaseband.** De kwadratensom van drie termen: de opgegeven resolutie, de
+   precisie van het piekmidden (uit de signaal-ruisverhouding) en een temperatuurterm u_T.
+   Voor de hete bronnen is u_T een ondergrens: de hot-band-helling per familie maal het
+   temperatuurverschil met 296 K, plus het aandeel tussen 0 en 296 K. De helling komt uit
+   Joblin 1995 waar die gemeten is, anders geldt een vloer van 0,044 cm⁻¹ per kelvin.
 
 ## 5. Uitvoer
 
-- **O9, het scorebord**: CSV met `bron, identifier, molecuul, fase, bronklasse,
-  temperatuur, resolutie, bandpositie, centroïde-precisie, u_T, u_band, familie, oordeel`.
-- **De matrixtolerantie per familie** met toetsuitslag: pilotnotitie-item 4.
-- **De bandlijst per molecuul met oordelen**: pilotnotitie-item 1; de marges: item 2.
-- **Een provenance-kolom**: per spectrum de bronklasse (cel / dampcel / GC-IR), de
-  opgegeven temperatuur en resolutie — zodat de herkomst een kolom is en geen voetnoot.
+- **Het scorebord** `bands_lab.csv` (object O9 van hoofdstuk 6) en de paren
+  `pairs_matrix_gas.csv` (74 rijen).
+- **De toetsuitslag** `test_results.json`. Zes van de acht families verwerpen H₀ na de
+  Holm-correctie: de matrixbanden liggen 3,3 tot 5,9 cm⁻¹ (mediaan per familie) hoger dan
+  de hete gasbanden. De C–H-strek (4 paren) en de laagste trillingen (5 paren) zijn onbeslist
+  door constructie. Alle 63 paren samen: mediaan 3,74 cm⁻¹, p ≈ 1,6 · 10⁻¹⁰.
+- **u_band per record en familie** (`out/U_BAND.md`, `out/u_band_by_record_family.csv`). Op
+  de hete GC-IR-bronnen is u_band 8,6 cm⁻¹ (C–H-buiging in het vlak), 9,6 (C–H uit het
+  vlak), 10,2–12,1 (C–H-strek) en 15,9–16,2 cm⁻¹ (de families zonder gemeten helling). Geen
+  van de 63 paren is beslisbaar bij een marge van 2 of 5 cm⁻¹; 17 zijn het bij 10 cm⁻¹. De
+  benzeenbanden van het kwantitatieve record houden u_band = 2,55 cm⁻¹.
+- **Koude kolommen**: jet-gekoelde bandlijsten van tetraceen (34 banden) en coroneen (20
+  banden) als aparte, gelabelde kolommen, zonder temperatuurterm.
+- **Het notebook** `analysis.ipynb` en het rapport `Statistical_Analysis_Report.pdf`.
 
-Verwachting, vooraf opgeschreven: R0 en R1 beslisbaar in alle families op hun
-kamertemperatuurbronnen (de hete naftaleenvermeldingen als aparte, gelabelde kolommen);
-de C–C-families van R2 onbeslisbaar door constructie op de hete GC-IR-bron, tenzij een
-hot-band-correctie wordt vastgepind.
-
-Wie gebruikt het? De pilotnotitie (items 1, 2, 4), module 04 (de labkant van de
-koppeltabel), module 08 (de score), en de campagne-officier, die een "beslisbaar"-oordeel
-zonder u_band weigert.
+Wie gebruikt het? Het certificaat van de pijplijn (module 08) zet bij elke band de
+laboratoriumtolerantie u_band van zijn familie, gelezen uit
+`u_band_by_record_family.csv`. Module 04 gebruikt dezelfde experimentele bibliotheek als
+labkant van zijn koppeltabel.
 
 ## 6. Waarom deze module?
 
-Zonder scorebord is er geen waarheid om tegen te scoren, en zonder u_band kan het plan
-niet zeggen welke vergelijkingen eerlijk zijn. De temperatuurterm is bovendien de plek
-waar het plan in de laatste twee reviews het meest is bijgesteld: eerst leek naftaleen
-alleen als hete damp beschikbaar, waardoor R1 per familie zou moeten worden gescoord; toen
-bleek er een kamertemperatuurspectrum te bestaan. Dat dit vóór de meting is uitgezocht en
-opgeschreven, is precies wat pre-registratie betekent.
+Zonder scorebord is er geen meting om tegen te scoren, en zonder u_band weet je niet welke
+vergelijkingen eerlijk zijn. De getallen laten zien waar de grens ligt. Op de hete
+gasbronnen is de meetonzekerheid 8,6 cm⁻¹ of meer. De doelwaarde voor de fout van het
+netwerk is 3 cm⁻¹ per familie (beslissing 53). Die bronnen kunnen een verschil van een paar cm⁻¹ dus niet beslissen; alleen
+koude of kwantitatieve bronnen kunnen dat. Dat dit vooraf is opgeschreven en daarna gemeten,
+is wat pre-registratie betekent: de verwachting "onbeslist door constructie op de hete bron"
+staat in het plan en is nu een getal.
 
 ## 7. Waar het kan misgaan — en wat je bij de aftekening controleert
 
-- **Bronnen buiten de voorbeeldlijst.** NASA en NIST staan niet op de rubrieklijst. Het
-  rapport moet de DOI's noemen en in één zin zeggen dat de lijst voorbeelden bevat, geen
-  gesloten poort (zoals de repo-leesnotitie vastlegt).
-- **Rijen en kolommen.** ≥ 500 rijen en ≥ 6 kolommen moeten aantoonbaar gehaald worden
-  vóórdat de module begint; tel het na in de gecombineerde tabel.
-- **De toets vooraf.** De vorm van de toets (welke grootheid, tweezijdig, α) moet in een
-  gedateerd document staan voordat de data worden samengevoegd.
-- **Niet dezelfde data als module 02.** Metingen versus berekeningen: het rapport zegt het
-  expliciet.
-- **De schuld eerst.** u_band mag pas worden geprint als items 52–53 (hot-band-hellingen)
-  en 56–57, 59 (meetcondities van de R0- en R1-bronnen) zijn gelezen. Zonder dat is de
-  temperatuurterm een schatting en het oordeel voorlopig.
-- **De vraag aan de begeleider.** Voor de C–C-families van de R2-moleculen bestaat geen
-  kamertemperatuurbron in het 6–15 µm-gebied; het voorstel vraagt de begeleider daarom om
-  hulp bij het vinden van gasfase- of jet-gekoelde spectra. Dat is dragend, geen
-  beleefdheid.
+- **Vier moleculen dragen de toets.** Banden van één molecuul zijn niet onafhankelijk. Het
+  rapport noemt dat als beperking.
+- **Twee effecten door elkaar.** Δ vergelijkt een 10 K-matrix met een hete damp. De
+  matrixverschuiving en de hot-band-verschuiving zijn in deze data niet te scheiden; het
+  rapport zegt dat.
+- **De temperatuur van de hete bron is aangenomen.** De documentatie van de GC-IR-reeks
+  noemt geen temperatuur. Elk getal met u_T draagt de aanname 250 °C.
+- **Niet de dataset van module 02.** Metingen tegenover berekeningen; notebook en rapport
+  zeggen het. Module 02 laadt de experimentele bibliotheek daarom niet.
+- **Bronnen buiten de voorbeeldlijst.** NASA en NIST staan niet op de lijst van de rubriek;
+  README en rapport noemen elke bron met versie en webadres.
+- **Bij het inleveren.** De repository `udacity-statistical-analysis` (`main` plus
+  `module-03-lab-scoreboard`) en een vers `requirements.txt` met `pip freeze`.
 
 ## 8. In het kort
 
-Module 03 bouwt de tabel van gemeten bandposities, meet per band de onzekerheid u_band
-(resolutie, centroïde, temperatuur) en toetst vooraf vastgelegd of matrixspectra verschoven
-zijn. Het levert drie van de dertien onderdelen van de pilotnotitie en beslist welke
-vergelijkingen het plan eerlijk kan aangaan.
+Module 03 bouwt een tabel van 4.218 gemeten banden, vormt volgens een vooraf vastgelegde
+regel 63 paren van matrix- en gasfasebanden en toetst per familie of de verschuiving nul is.
+Zes families hebben een verschuiving van 3 tot 6 cm⁻¹, twee hebben te weinig paren. De
+module meet ook per band de onzekerheid u_band; op de hete gasbronnen is die 8,6 cm⁻¹ of
+meer. Het certificaat van de pijplijn draagt die tolerantie bij elke band.
 
-*Bron: [Capstone_Mapping.md](../GoalGathering/Capstone_Mapping.md) §3 (Module 03),
-[Frozen_Ladder_and_Tolerances.md](../GoalGathering/Frozen_Ladder_and_Tolerances.md) §2
-(beslisbaarheid, temperatuurterm, R0/R1-rijen), [probes/README.md](../probes/README.md)
-probe 2a, [Relevant_Scientific_Papers.md](../GoalGathering/Relevant_Scientific_Papers.md)
-items 50–60, [Rubrics/03](../../../Rubrics/03_Conduct_a_Statistical_Analysis_Using_Python.md).*
+*Bron: [README.md](../modules/03_lab_scoreboard/README.md),
+[PRE_REGISTRATION.md](../modules/03_lab_scoreboard/PRE_REGISTRATION.md),
+[PROVENANCE.md](../modules/03_lab_scoreboard/PROVENANCE.md),
+[RUBRIC_CHECKLIST_2026-10-03.md](../modules/03_lab_scoreboard/RUBRIC_CHECKLIST_2026-10-03.md),
+`notebook/test_results.json` en `out/U_BAND.md` van module 03,
+[Rubrics/03](../../../Rubrics/03_Conduct_a_Statistical_Analysis_Using_Python.md).*

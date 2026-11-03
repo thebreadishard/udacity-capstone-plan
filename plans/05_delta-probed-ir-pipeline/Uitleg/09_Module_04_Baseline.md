@@ -1,4 +1,4 @@
-# Hoofdstuk 9 — Module 04: de goedkope tegenstander en de onzekerheidslaag
+# Hoofdstuk 9 — Module 04: de gekalibreerde goedkope tegenstander
 
 *Udacity-module "Applied Machine Learning". In de rubriek Project 3.*
 
@@ -6,131 +6,138 @@
 
 ## 1. Wat is de vraag?
 
-Bouw met klassiek machine learning de sterkste *eerlijke goedkope* voorspeller van
-bandposities die er te maken is, zodat de pijplijn een tegenstander heeft die niet
-zwak is; en gebruik hetzelfde model om op de bereikrungs een foutenmarge per band te
-schatten.
+Kan een klassiek machine-learningmodel de fout voorspellen die de geschaalde berekende
+spectra van NASA (de atlas van module 02) maken ten opzichte van laboratoriummetingen,
+alleen uit kenmerken van de band en het molecuul? Als dat lukt, is de gecorrigeerde
+bibliotheek de sterkste eerlijke goedkope tegenstander voor de pijplijn. Het antwoord van
+de module is **nee**: wat er na de schaalfactor overblijft, is spreiding van band tot band
+die deze kenmerken niet vangen.
 
 ## 2. Wat eist de school?
 
-Een volledige klassieke ML-workflow: dataset kiezen en het probleem formuleren (begeleid
-of onbegeleid), inlezen en inspecteren, voorbewerken, een model trainen met scikit-learn
-of PyTorch, evalueren met passende metrieken, een notebook-samenvatting en een rapport met
-citaties. De dataset moet openbaar zijn vóór de module, niet synthetisch of AI-gegenereerd,
-en **niet dezelfde als die van module 02 of 03**. Beoordeeld wordt op: het notebook draait
-van boven naar beneden; voorbewerking is passend; het model past bij het probleem; er is
-minstens één passende metriek; `requirements.txt`; uitleg waarom de metriek past;
-interpretatie met eigen resultaten; minstens één beperking of afweging; minstens één bron
-van bias met een genomen of voorgestelde maatregel; leesbare code; een rapport voor
-technisch én niet-technisch publiek.
+Een volledige klassieke ML-workflow: het probleem formuleren (begeleid of onbegeleid),
+inlezen en inspecteren, voorbewerken, minstens één model trainen met scikit-learn of
+PyTorch, evalueren met passende metrieken, een notebook met samenvatting en een rapport met
+citaties. De dataset is openbaar, niet synthetisch of AI-gegenereerd, en **niet dezelfde
+als die van module 02 of 03**. Beoordeeld wordt onder meer: het notebook draait van boven
+naar beneden; de metriek past en wordt gemotiveerd; de resultaten worden gelezen; minstens
+één beperking en één bron van bias met een genomen maatregel; een rapport voor technisch én
+niet-technisch publiek.
 
 ## 3. Invoer — de datastructuur in detail
 
-**De trainingstabel, object O10.** Eén rij per (molecuul, band) waarvoor zowel een
-berekende als een gemeten positie bestaat: de atlas van module 02 gekoppeld aan het
-scorebord van module 03.
+**De trainingstabel** `training_table.csv` (object O10 van hoofdstuk 6): 2.477 rijen × 28
+kolommen. Elke rij is een
+paar van een gemeten band (PAHdb experimenteel v3.10, argonmatrix) en een berekende band
+(PAHdb theoretisch v4.00) van hetzelfde molecuul. Van de 84 experimentele soorten komen er
+83 in de theoretische bibliotheek voor. De koppeling gebruikt het PAHdb-nummer (`uid`) van
+de soort.
 
-| Kolom | Type | Herkomst | Rol in het model |
-|---|---|---|---|
-| molecuul, uid | tekst | O8 | groepering voor de splitsing |
-| N, aantal ringen, lading | gehele getallen | O8 | kenmerk (feature) |
-| familie | categorie | O8/O9 | kenmerk, en de eenheid waarin gerapporteerd wordt |
-| geschaalde harmonische DFT-positie | getal (cm⁻¹) | O8 | kenmerk |
-| basisset, schaalfactor | categorie, getal | O8 | kenmerk |
-| modekenmerken (samenstelling, lokale omgeving) | getallen | O2 waar beschikbaar | kenmerk |
-| labpositie | getal (cm⁻¹) | O9 | — |
-| fase, u_band | categorie, getal | O9 | weging; filter op beslisbare banden |
-| **fout = labpositie − DFT-positie** | getal (cm⁻¹) | afgeleid | **doelvariabele** |
+| Kolom | Type | Rol in het model |
+|---|---|---|
+| uid, molecuul | tekst | groepering voor de splitsing |
+| ongeschaalde harmonische frequentie | getal (cm⁻¹) | kenmerk |
+| log₁₀ van de berekende intensiteit, relatieve intensiteit | getallen | kenmerk |
+| schaalfactorgebied (drie gebieden), familie | categorieën | kenmerk |
+| aantal C, aantal H, lading, stikstof ja/nee | getallen | kenmerk |
+| aantallen H-buren (solo, duo, trio, kwartet) | getallen | kenmerk |
+| labpositie | getal (cm⁻¹) | — |
+| **y = labpositie − geschaalde berekende positie** | getal (cm⁻¹) | **doelvariabele** |
 
-Het is dus **begeleid leren, regressie**: voorspel per band hoeveel de geschaalde
-harmonische DFT-waarde ernaast zit.
+Het is dus **begeleid leren, regressie**. Geen enkele labgrootheid is een kenmerk.
 
-**Publicatie vooraf.** Deze tabel wordt als eigen, versiebeheerde uitgave met een
-Zenodo-DOI gepubliceerd **voordat module 04 begint**, met een provenance-paragraaf die
-uitlegt dat het een afgeleide tabel is (koppeling van twee openbare bronnen), verschillend
-van de datasets van module 02 (berekeningen) en 03 (metingen). Dat is "lezing 1" van de
-herbruikregel, door de gebruiker op 2 september 2026 beslist en overgenomen. Terugval als
-een beoordelaar "lezing 2" hanteert (elke koppeling van eerdere data is hergebruik): de
-NIST CCCBDB-tabel, of anders VIBFREQ1295.
+**Het recept** (`RECIPE.md`) is vastgelegd en gecommit vóór de eerste trainingsrun: de
+doelvariabele, de koppelregel, de kenmerken, vier modellen, de evaluatie, de metrieken,
+geen afstemming van hyperparameters, en zaadje 0 (de startwaarde van de
+toevalsgenerator, zodat elke run hetzelfde uitkomt).
 
-**Het recept** (welke kenmerken, welke afstemming, welke zaadjes) staat vast in
-pilotnotitie-item 6.
+**Openbaarheid.** De tabel koppelt twee openbare PAHdb-bibliotheken. Ze staat sinds
+12 september 2026 openbaar in de repository van het plan en gaat mee in de
+inlever-repository; dat voldoet aan de eis "openbaar beschikbaar" van de rubriek. Een
+aparte Zenodo-uitgave met DOI is daarom niet nodig (besluit van de gebruiker).
 
 ## 4. Bewerking
 
-1. Inlezen en inspecteren van O10; ontbrekende modekenmerken markeren.
-2. Voorbewerking: één-hot-codering van categorieën, schaling van getallen, filtering op
-   banden met een beslisbaar oordeel.
-3. **Splitsing per molecuul**, nooit per band: alle banden van één molecuul zitten óf in de
-   training óf in de test ("leave-molecule-out"). Anders leert het model een molecuul
+1. Inlezen en inspecteren; de tabel heeft geen ontbrekende waarden.
+2. Voorbewerking: standaardisering van de getallen en één-hot-codering van de categorieën
+   voor het lineaire model; ruwe kenmerken voor het boommodel.
+3. **Splitsing per molecuul** ("leave-one-molecule-out", 83 rondes): alle banden van één
+   molecuul zitten óf in de training óf in de test. Anders leert het model een molecuul
    herkennen in plaats van een fout voorspellen.
-4. Trainen van een scikit-learn-model (bijvoorbeeld een gradiënt-boosting-regressor of
-   een gereguleerde lineaire regressie; het recept van item 6 beslist).
-5. Evalueren met **RMSE en MAE in cm⁻¹ per familie** op de weggelaten moleculen; een
-   figuur van voorspelde tegen werkelijke fout; een figuur van de restfout per familie.
-6. Interpretatie: welke families laten zich goed kalibreren, welke niet. De verwachting
-   uit de literatuur: de kalibratie vangt het *gemiddelde* van het CC−DFT-verschil per familie
-   op (het enige literatuurgetal is 5,45 cm⁻¹ voor benzeen, item 45; voor naftaleen bestaat er geen); de pijplijn met Δ₂ moet dan de *spreiding* binnen de
-   familie winnen.
+4. Vier modellen naast elkaar: het **nulmodel** (de bibliotheek zoals geleverd, y = 0; dat
+   is lijn A), een **constante per familie** (het gemiddelde y van de familie in de
+   trainingsset), **ridge-regressie** (lineair met een straf op grote coëfficiënten) en
+   **gradient-boosted trees** (`HistGradientBoostingRegressor`).
+5. Evaluatie met de **MAE** (gemiddelde absolute fout, in cm⁻¹) als hoofdmaat, met RMSE, R²
+   en het aandeel binnen 5 cm⁻¹ ernaast; per familie en per laddermolecuul.
 
 ## 5. Uitvoer — de datastructuur in detail
 
-Twee objecten, allebei dragend.
+**De uitslag** (`model_results.json`), MAE op de weggelaten moleculen:
 
-**(1) De gekalibreerde opponentkolom.** Voor elke band van elk laddermolecuul: de
-DFT-positie plus de door het model voorspelde correctie. Vorm: een tabel `molecuul, band,
-familie, gekalibreerde positie (cm⁻¹)`. Dit wordt in module 08 de tweede tegenstander in de
-beat-vergelijking (naast de ruwe atlas). Het plan zegt hardop wat deze kolom doet: ze
-absorbeert het gemiddelde; Δ₂ moet de rest kopen.
+| Model | MAE (cm⁻¹) |
+|---|---|
+| nulmodel (lijn A) | 6,49 |
+| constante per familie | 6,43 |
+| ridge-regressie | 6,40 |
+| gradient-boosted trees | 6,48 |
+| gradient-boosted trees met early stopping | 6,34 |
 
-**(2) De empirische onzekerheidslaag.** Voor de bereikrungs R4–R6 (geen labdata) geeft het
-model per band een **geschatte fout met spreiding**: `molecuul, band, familie, verwachte
-fout, spreiding (cm⁻¹)`. Die spreiding gaat in het foutbudget van het certificaat (object
-O13) als "P5 empirische onzekerheid".
+De R² blijft overal onder 0,02: geen model verklaart een noemenswaardig deel van de fout.
+De rij met early stopping is een vervolgrun onder beslissing 51 (*early stopping*: het
+trainen stopt als de fout op een aparte validatieset niet meer daalt). De getallen van de
+eerste run blijven ernaast staan.
 
-Verder: het notebook, `requirements.txt`, het rapport, en de vereiste zin: "De
-trainingstabel is een gepubliceerde afgeleide dataset (DOI …) die openbare berekende
-banden aan openbare laboratoriumbanden koppelt; haar herkomst en het verschil met de
-datasets van module 02 en 03 staan in §…; ze is niet AI-gegenereerd."
+**De basislijn.** Volgens de regel van het recept wint het model met de laagste MAE, en bij
+een gelijkspel het eenvoudigste. De gebruiker koos ridge: het verschil met de bomen
+(0,06 cm⁻¹) valt binnen de ruis, net als het verschil met niets doen.
+
+**Twee tabellen**: `opponent_column_ladder.csv` (de gekalibreerde posities van de
+testmoleculen, telkens voorspeld door een model dat dat molecuul niet zag) en
+`uncertainty_layer.csv` (een verwachte fout met spreiding per band). Verder het notebook
+`modeling.ipynb` en het rapport `Machine_Learning_Analysis_Report.pdf`.
 
 ## 6. Waarom deze module?
 
-Een "beat" tegen een zwakke tegenstander is niets waard. De atlas van module 02 is ruwe
-geschaalde DFT; iedereen in het vakgebied weet dat je die met een slimme kalibratie een
-paar cm⁻¹ beter kunt maken (de "Ethereal-AI-klasse"-aanpak uit de literatuur, hier in eigen
-uitvoering). Door die kalibratie zelf te bouwen, speelt de pijplijn tegen de sterkste
-goedkope tegenstander en niet tegen een stroman. Zonder module 04 is P2 (de beat-toets)
-niet eerlijk en heeft R4–R6 geen foutenmarge.
+Een vergelijking met een zwakke tegenstander bewijst niets. Daarom is eerst geprobeerd de
+goedkope voorspelling zo sterk mogelijk te maken, met een recept dat vóór de eerste run
+vastlag. De uitkomst is zelf een resultaat: de fout van geschaalde B3LYP tegen het lab is
+met een schaalfactor plus klassieke ML op bandkenmerken niet weg te werken.
+
+Dat sluit aan bij een latere meting van module 05, op de *proxytaak*: het verschil tussen
+twee DFT-methoden, B3LYP en ωB97X, waarop het netwerk van module 05 is getraind (hoofdstuk
+10). Op hold-out (b), 39 moleculen die het netwerk nooit zag, laat de beste schaalfactor met drie frequentiegebieden per familie een
+fout van 3,9 (C–H-strek), 10,0 (C–H uit het vlak), 14,2 (ringtrillingen in het vlak) en
+14,6 cm⁻¹ (overige) over. Het ΔH-netwerk (versie 1.1) komt op 2,6 / 3,8 / 2,6 / 6,0 cm⁻¹.
 
 ## 7. Waar het kan misgaan — en wat je bij de aftekening controleert
 
-- **De Q4-uitzondering.** De pijplijn heeft als regel dat het lab nooit trainingsinvoer is.
-  Module 04 traint *wél* op labresiduen, met opzet, want het is de tegenstander en niet de
-  pijplijn. Dat is een verklaarde uitzondering: leave-molecule-out, recept bevroren in de
-  pilotnotitie, en de uitvoer verschijnt alleen als opponentkolom (P2) en als
-  onzekerheidslaag (P5). Controleer dat het model nergens anders wordt gebruikt.
-- **Distinctheid.** De koppeltabel moet vóór de start gepubliceerd zijn met DOI en
-  provenance-paragraaf. Zonder dat is de dataset "gemaakt tijdens de module" en voldoet
-  hij niet. Controleer de datum van de uitgave tegen de startdatum.
-- **Volgorde.** Module 02 → 03 → 04 is verplicht (atlas → scorebord → koppeltabel), en de
-  pilotnotitie moet gecommit zijn voordat de opponentkolom in enige vergelijking wordt
-  gebruikt.
-- **Bias-sectie van de rubriek.** De voor de hand liggende bron: het model is getraind op
-  kleine PAK's en wordt op grote toegepast (R4–R6); de onzekerheidslaag is daar een
-  extrapolatie. Dat moet in het rapport staan als bias én als maatregel (de spreiding wordt
-  gerapporteerd, niet verzwegen).
-- **Metriekkeuze.** RMSE/MAE in cm⁻¹ per familie, met de reden: de beat-marge is per
-  familie gedefinieerd, dus de metriek ook.
+- **De Q4-uitzondering.** De pijplijn traint nooit op labdata. Module 04 doet dat wél, met
+  opzet, want het is de tegenstander. Het recept verklaart die uitzondering. Controleer dat
+  het model nergens anders wordt gebruikt; de code van de pijplijn leest de uitvoer van
+  module 04 niet in.
+- **De koppeling is zelf een model.** Ongeveer 11 % van de paren verschilt meer dan
+  15 cm⁻¹; daar is de toewijzing van labband aan berekende band twijfelachtig. Het rapport
+  noemt dat als beperking.
+- **Matrix, geen gas.** De labkant is gemeten in argon, niet in de gasfase (zie hoofdstuk 8).
+- **Klein en klein.** 83 moleculen, allemaal met hooguit 50 koolstofatomen.
+- **Bias.** De gemeten moleculen zijn geen willekeurige steekproef. Daarnaast heeft de
+  auteur belang bij een zwakke tegenstander; het vooraf gecommitte recept is de maatregel
+  daartegen.
+- **Bij het inleveren.** De repository `udacity-applied-machine-learning` (`main` plus
+  `module-04-calibrated-harmonic`) en een vers `requirements.txt` met `pip freeze`.
 
 ## 8. In het kort
 
-Module 04 traint een klassiek regressiemodel dat per band de fout van geschaalde
-harmonische DFT tegen het lab voorspelt, op een vooraf gepubliceerde koppeltabel van
-atlas en scorebord, gesplitst per molecuul. Eruit komen de gekalibreerde opponentkolom
-voor de beat-toets en de foutenmarge voor de bereikrungs. Het is de sterkste eerlijke
-tegenstander, en het enige onderdeel dat met opzet op labdata traint.
+Module 04 koppelt berekende en gemeten banden van 83 moleculen tot een tabel van 2.477
+paren en traint vier modellen, getest op moleculen die ze niet zagen. Geen model voorspelt de
+resterende fout: de beste MAE is 6,34 cm⁻¹ tegen 6,49 voor niets doen. Ridge-regressie is
+de basislijn. De les: een schaalfactor laat spreiding over die je met bandkenmerken niet
+terugwint.
 
-*Bron: [Capstone_Mapping.md](../GoalGathering/Capstone_Mapping.md) §3 (Module 04) en §4,
-[Distilled_Project_Plan_and_Quality_Checks.md](../GoalGathering/Distilled_Project_Plan_and_Quality_Checks.md)
-§7 (P2, P5, Q4), [Frozen_Ladder_and_Tolerances.md](../GoalGathering/Frozen_Ladder_and_Tolerances.md)
-§4 item 6, [Rubrics/04](../../../Rubrics/04_Applied_Machine_Learning.md).*
+*Bron: [README.md](../modules/04_calibrated_harmonic/README.md),
+[RECIPE.md](../modules/04_calibrated_harmonic/RECIPE.md) en
+[RUBRIC_CHECKLIST_2026-10-03.md](../modules/04_calibrated_harmonic/RUBRIC_CHECKLIST_2026-10-03.md)
+van module 04, `notebook/model_results.json` van module 04,
+[scale_factor_baseline_2026-10-25.md](../modules/05_support_predictor/out/scale_factor_baseline_2026-10-25.md),
+[Rubrics/04](../../../Rubrics/04_Applied_Machine_Learning.md).*

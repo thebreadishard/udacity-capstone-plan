@@ -31,9 +31,10 @@ met de oorspronkelijke vector. Voor één veer is dit gewoon ½ k x².
 bijzondere vectoren (eigenvectoren) waarvoor H·v gewoon een veelvoud van v is, H·v = λ v.
 Die v's zijn de normale modes en de λ's de bijbehorende veerconstanten, dus de
 frequenties. In de coördinaten van die v's is de matrix diagonaal: alle koppelingen zijn
-weggedraaid. Dat is waarom het plan de correctie Δ₂ uitdrukt "in de basis van de
-DFT-modes": daar is de goedkope Hessiaan diagonaal, en Δ₂ laat zien wat er nog aan
-ontbreekt.
+weggedraaid. Daarom wordt de correctie Δ₂ vaak gelezen "in de basis van de DFT-modes":
+daar is de goedkope Hessiaan diagonaal, en Δ₂ laat zien wat er nog aan ontbreekt. Het netwerk
+van module 05 leert de correctie in lokale coördinaten (bindingen en hoeken) en draait haar
+daarna naar die modebasis (besluit 49, hoofdstuk 5).
 
 ## §4.2 Tweede afgeleiden meten met eindige verschillen
 
@@ -48,6 +49,12 @@ vooruit, beide achteruit, en de twee gemengde). Voor een volledige Hessiaan van 
 deze manier: 1 + 2M + 4·M(M−1)/2 energieën. Voor benzeen (M = 30) is dat 1801. Voor coroneen
 (M = 102) bijna 21.000. Dat is precies het aantal dat plan 05 wil vermijden.
 
+In het project zelf worden eindige verschillen op twee plaatsen gebruikt. De CC-ankers komen uit
+eindige verschillen van *gradiënten* in plaats van energieën: één gradiënt in het evenwicht en één
+bij elk van 2 × 3N verschoven standen, voor benzeen (N = 12) dus 73 gradiënten. Elke gradiënt levert
+in één keer een hele kolom van de Hessiaan. De DFT-Hessianen van het corpus komen niet uit eindige
+verschillen, maar analytisch (hoofdstuk 3).
+
 **Waarom symmetrisch (±h)?** Schrijf E als machtreeks: E(q) = E₀ + a q + ½ k q² + b q³ + …
 Tel je E(+h) en E(−h) op, dan vallen alle *oneven* termen (a q, b q³) precies weg en blijft
 alleen k q² + (kwartisch) over. Neem je alleen E(+h) − E(0), dan zit de lineaire term a h
@@ -61,8 +68,13 @@ De antisymmetrische combinatie ½ [ΔE(+p) − ΔE(−p)] = Δ₁·p komt er gra
 
 **De stapgrootte** is een afweging. Te klein: het verschil verdrinkt in de rekenruis. Te
 groot: de kwartische term vervuilt de schatting. Het plan gebruikt q = 1 (de natuurlijke
-trillingsamplitude) en controleert vooraf, met de ruislijn van hoofdstuk 5, of de ruis
-daar klein genoeg voor is.
+trillingsamplitude) en controleert vooraf of de ruis daar klein genoeg voor is: de ruis per
+energie moet onder een vooraf vastgelegde grens blijven, een vast deel van de kleinste
+bandverschuiving die het plan wil kunnen zien (de "ruislijn"). Hoe het misgaat als de stap te
+klein is voor de ruis, liet het project zelf zien: een ωB97X-Hessiaan van benzeen uit eindige
+verschillen met een stap van 0,005 bohr zat tot 133 cm⁻¹ fout, omdat de ruis van het
+DFT-rekenrooster bij die stap het verschil overstemde (besluit 50). Sindsdien zijn alle
+DFT-Hessianen van het corpus analytisch.
 
 ## §4.3 Kleinste kwadraten en residuen
 
@@ -90,7 +102,10 @@ waarden worden erbij geprint met een vlag als één ervan meer dan twee keer de 
 
 ## §4.4 Veel onbekenden, weinig metingen: dunne matrices terugvinden
 
-Dit is het wiskundige hart van het plan. Δ₂ is een M × M-matrix; voor coroneen zijn dat
+Dit is het wiskundige hart van het oorspronkelijke ontwerp, Δ-probing (hoofdstuk 5). In
+het gebouwde product rekent het netwerk de correctie uit zonder dure metingen per molecuul. De
+wiskunde hieronder blijft nodig waar een groter molecuul gedeeltelijk met CC wordt gemeten; dat
+werk is na de capstone gepland. Δ₂ is een M × M-matrix; voor coroneen zijn dat
 ruim 5000 verschillende getallen. Elke meting (één patroonpaar) levert één getal:
 R_s(p) = ½ pᵀ Δ₂ p. Dat is één **lineaire vergelijking** in de onbekende elementen van Δ₂.
 Met K metingen heb je K vergelijkingen. Als je er evenveel hebt als onbekenden, kun je
@@ -99,19 +114,20 @@ het stelsel oplossen. Maar het plan wil juist **veel minder** metingen dan onbek
 Dat kan als je iets over de oplossing weet. Twee vormen van voorkennis, in het plan
 **priors** genoemd:
 
-1. **Structureel (frequentie-gebande) prior.** De verwachting is dat Δ₂ vooral
-   niet-diagonale elementen heeft tussen modes met bijna dezelfde frequentie (binnen een
-   band van breedte w). Elementen buiten die band krijgen een "straf" op hun grootte
+1. **Structurele prior: de symmetrie** (besluit 11). Elke normale mode heeft een
+   symmetrietype: hoe hij zich gedraagt als je het molecuul draait of spiegelt. Een correctie
+   kan twee modes van verschillend symmetrietype niet koppelen; die elementen zijn exact nul.
+   Waar de symmetrie te veel vrije elementen overlaat, krijgen die een "straf" op hun grootte
    (technisch: een ℓ₁-straf, die oplossingen met veel exacte nullen bevoordeelt), plus een
-   lage-rangterm. Het oplossen wordt dan: zoek de matrix die de metingen verklaart én zo
-   weinig mogelijk buiten-de-band-elementen heeft. Dit is een standaardprobleem uit de
-   **compressed sensing**: een dun object kun je met weinig, slim gekozen metingen exact
-   terugvinden. De bandbreedte w en de strafgewichten worden niet gekozen maar uit een
-   DFT-tegen-DFT-oefening (de "dry run") afgelezen volgens een vaste regel.
-2. **Geleerde prior.** Een neuraal netwerk (module 05) voorspelt uit DFT-kenmerken *welke*
-   niet-diagonale elementen groot zullen zijn. Dat voorspelde patroon ("de steun" van Δ₂,
-   Engels: support) vervangt de straf. Hoofdstuk 10 legt uit onder welke voorwaarden dat
-   mag.
+   lage-rangterm. Het oplossen wordt dan: zoek de matrix die de metingen verklaart én zo weinig
+   mogelijk grote vrije elementen heeft. Dit is een standaardprobleem uit de **compressed
+   sensing**: een dun object kun je met weinig, slim gekozen metingen exact terugvinden. Het
+   eerste ontwerp gebruikte een frequentieband als structuur; de structuur bleek daar niet te
+   zitten.
+2. **Geleerde prior.** Het ΔH-netwerk van module 05 voorspelt de hele correctie. Die
+   voorspelling is de beginschatting, en de metingen hoeven alleen het verschil daarmee nog
+   te bepalen. De volgorde van de metingen komt dan van de volgordescorer (besluit 58), zodat
+   de meest informatieve eerst komen.
 
 Hoe weet je of je genoeg metingen hebt? Door een deel van de metingen **achter te houden**
 (een fractie f_h, gekozen met een vast zaadje vóórdat er metingen zijn) en te kijken hoe
@@ -128,7 +144,8 @@ niet bij een van tevoren gekozen aantal. Dat is de zin "K is een meting, geen ke
 
 Elke gemeten energie heeft een ruis σ_E (§4.3). De symmetrische combinatie van twee
 energieën heeft dan ruis σ_E/√2 (de referentie-energie is één gedeelde waarde en telt niet
-als extra ruis per patroon; de fout erin wordt apart bepaald en afgetrokken, hoofdstuk 5).
+als extra ruis per patroon; de fout erin, c₀, wordt uit een meting bij een tweede amplitude
+bepaald en afgetrokken).
 De verhouding van die ruis tot de grootte van de metingen heet de **ruisvloer**:
 
 ρ_noise = σ(R_s) / RMS_resp.
@@ -152,13 +169,15 @@ identificeren.
 Het plan zet een hash op alles wat vooraf vastgelegd moet zijn: de lijst patronen in hun
 vaste volgorde (de "deck"), het zaadje van de achtergehouden set, de bevroren orbitalen,
 de vaste afspraken in de pilotnotitie. Wie later een patroon toevoegt of de volgorde
-verandert, verandert de hash, en de campagne-officier (hoofdstuk 12) weigert dan de
-berekening. Zo wordt "we hebben vooraf vastgelegd wat we gaan meten" controleerbaar in
-plaats van een belofte.
+verandert, verandert de hash, en een meting tegen een ander dek dan het vastgelegde telt
+niet. Zo wordt "we hebben vooraf vastgelegd wat we gaan meten" controleerbaar in plaats van
+een belofte. Ook elders in het project dragen bestanden een hash: elk anker in het ankerregister
+(besluit 62), en elk corpusbestand dat de pijplijn hergebruikt, met zijn sha256 in het record van
+de run.
 
 Het plan gebruikt hashes ook voor **verzegelen**: de negen-puntsfits van de gladheidsprobe
-bevatten al de diagonale Δ₂-elementen van naftaleen, en die mogen niet leesbaar zijn
-voordat de drempels zijn vastgelegd. De fitcoëfficiënten gaan daarom in een bestand dat
+bevatten al de diagonale Δ₂-elementen van naftaleen, en die mochten niet leesbaar zijn
+voordat de drempels waren vastgelegd. De fitcoëfficiënten gingen daarom in een bestand dat
 het script weigert te openen zolang de pilotnotitie geen commit-hash heeft. Alleen σ, dat
 géén Δ₂-informatie bevat (de residuen staan loodrecht op alles wat de fit vastlegt), wordt
 geprint.
@@ -172,9 +191,11 @@ vergelijkingen dan onbekenden terugvinden, en met een achtergehouden set meet je
 het genoeg is: K is het aantal energieën waarbij de achtergehouden fout ρ onder c maal de
 ruisvloer komt. De ruis σ komt uit residuen van een polynoomfit, gedeeld door n − p en
 gepoold over vier modes. Hashes maken vooraf-vastleggen controleerbaar en verzegelen wat
-nog niet gelezen mag worden.
+nog niet gelezen mag worden. In het gebouwde product voorspelt een netwerk de correctie; deze
+wiskunde hoort bij gedeeltelijke CC-metingen, en eindige verschillen leveren de CC-ankers.
 
 *Bron: [Frozen_Ladder_and_Tolerances.md](../GoalGathering/Frozen_Ladder_and_Tolerances.md)
 §3 (stopregel, estimator, ±paren, hashes, verzegeling), [Distilled_Project_Plan_and_Quality_Checks.md](../GoalGathering/Distilled_Project_Plan_and_Quality_Checks.md)
 §3 (patronen, hold-out, priors), [Research_Note_2026-09-03_Delta_Probing.md](../GoalGathering/notes/Research_Note_2026-09-03_Delta_Probing.md)
-(de compressed-sensing-achtergrond).*
+(de compressed-sensing-achtergrond); besluiten 11, 49, 50, 58 en 62 in de [README](../README.md);
+`probes/e8_cc_hessian_fd.py`; [PIPELINE.md](../modules/PIPELINE.md) (versie 0.6, hergebruik met sha256).*

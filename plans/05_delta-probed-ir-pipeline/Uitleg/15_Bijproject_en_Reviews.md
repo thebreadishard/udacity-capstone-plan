@@ -1,45 +1,44 @@
 # Hoofdstuk 15 — Het bijproject en de reviewgeschiedenis
 
 > **In dit hoofdstuk leer je**
-> – wat het mode-G-bijproject is, wat het belooft en wanneer het stopt;
+> – wat het mode-G-bijproject was, wat het heeft gemeten en waarom het niet is gebouwd;
 > – hoe plan 05 is beoordeeld: vier rondes van twee lezingen, en wat elke ronde veranderde;
-> – waarom de reviewlus op 4 september 2026 is gesloten en de tekst bevroren;
-> – welke schulden er nog openstaan en in welke volgorde ze worden betaald.
+> – waarom de reviewlus is gesloten en de tekst bevroren, en hoe het plan sindsdien verandert;
+> – wat er nog openstaat, in welke volgorde.
 
 ---
 
 ## §15.1 Het bijproject: mode G
 
-Hoofdstuk 5 legde uit dat een **gradiënt** (de kracht op alle atomen) per berekening 3N
-getallen oplevert in plaats van één, en dat mode G daardoor het aantal probes K sterk zou
-kunnen verlagen. Het probleem: voor lokale CC(T) met bevroren ruimtes bestond op 3
-september 2026 geen productieklare gradiënt. De gebruiker besliste (beslissing 5, deel 2):
-mode E is de *gegarandeerde* route, maar geen plafond; de gradiënt wordt gebouwd in een
-**vooraf geregistreerd bijproject**.
+Het bevroren plan rekende de dure correctie uit met losse energieën (mode E). Een
+**gradiënt** (de kracht op alle atomen) levert per berekening 3N getallen in plaats van één,
+waarbij N het aantal atomen is. Gradiënten (mode G) zouden het aantal dure berekeningen dus
+sterk kunnen verlagen. Voor lokale CC(T) met bevroren ruimtes bestond toen geen
+productieklare gradiënt. De gebruiker besliste (beslissing 5): mode E is de gegarandeerde
+route, en de gradiënt wordt gebouwd in een **vooraf geregistreerd bijproject**, met eigen
+mijlpalen, een eigen urenbudget en een hard stopcriterium. Dat stopcriterium is de les van
+plan 01, dat aan een bodemloze put ten onder ging.
 
-**Het gereedschap.** PySCFAD, een versie van het PySCF-pakket die met automatische
-differentiatie (AD) werkt: een programma dat energieën uitrekent, kan er automatisch de
-afgeleiden bij leveren. In de openbare code staat een lokale-CC-module met een
-(T)-bestand; of de (T)-term daarin van begin tot eind differentieerbaar is, is het eerste
-dat het bijproject print.
+**Het gereedschap** was PySCFAD, een versie van het rekenpakket PySCF die met automatische
+differentiatie werkt: een programma dat energieën uitrekent, levert er automatisch de
+afgeleiden bij. Twee metingen zijn gedaan:
 
-**De mijlpalen**, elk met een geprinte slaagvoorwaarde:
+- **M2a, de prijs van een gradiënt.** Een gradiënt kostte 6,04 keer zoveel als één energie
+  (LNO-CCSD(T), benzeen, basisset 6-31G, acht rekenkernen). Dat lag binnen de vooraf gestelde
+  grens van 20. Met de grotere basisset cc-pVDZ paste de berekening niet in 32 GB geheugen.
+- **M2b, de juiste grootheid.** De lokale-CC-module die PySCFAD meelevert, berekent niet de
+  grootheid van het plan: op de drie probemodes van benzeen week ze 5,5 / 8,2 / 26,4 µE_h af,
+  tegen een grens van 6.
 
-| Mijlpaal | Molecuul | Wat er moet blijken |
-|---|---|---|
-| M1 (hoofdproject, niet het bijproject) | benzeen | bevroren ruimtes kunnen worden opgeslagen, overgebracht en herladen; de energie is glad langs drie modes |
-| M2 | benzeen | de AD-gradiënt klopt met eindige verschillen van dezelfde bevroren energie (72 herprojecteerde energieën); σ_g onder de mode-G-ruislijn; de "projectieterm" geprint |
-| M3 | naftaleen | hetzelfde, plus rekentijd en geheugen ≤ 28 GB, 36 gradiënten |
-| M4 | pyreen | run/no-run, correctheid en σ_g; geclassificeerd als laptop of cluster |
-| M5 | coroneen | run/no-run én beide controles |
-
-Waar een mijlpaal slaagt, mag mode G op de bijbehorende rung **erbij** draaien. Het
-bijproject heeft een eigen urenbudget, een kalender-checkpoint van twaalf weken na de
-pilotnotitie en een **stopcriterium**: is M3 dan niet gehaald, of faalt de
-correctheidscontrole van M2 na één herafleiding, dan stopt het per gedateerde notitie en
-draait mode E ongestoord door. Dat is de les van plan 01, dat aan een bodemloze put ten
-onder ging. Verwachting, opgeschreven: M4 en M5 zijn clusterwerk, dus de mode-G-grootte-zin
-is voorwaardelijk aan het cluster.
+Daarop besliste de gebruiker (beslissing 43) de gradiënt zelf te schrijven, in Python op
+JAX. Die gradiënt is niet gebouwd: het project koos een andere route. De ankers zijn nu
+gewone (niet-lokale) CCSD(T)-Hessianen, berekend uit analytische CCSD(T)-gradiënten in
+pyscf, met een basissetcorrectie van MP2 naar cc-pVTZ (het ankerregister,
+[ANCHORS.md](../modules/ANCHORS.md)). De les van die route staat in de werkregels van de
+repository: een nieuwe bibliotheekaanroep noemt de test van de bibliotheek die dezelfde
+aanroep doet. Zes dagen coupled-cluster-rekenwerk gebruikten een functie die verkeerd was
+aangeroepen en er toch goed uitzag. Sinds beslissing 63 ligt nieuw coupled-cluster-werk
+stil tot juli 2027.
 
 ## §15.2 Hoe het plan is beoordeeld
 
@@ -59,9 +58,14 @@ en met 10 (de nummering loopt door over de plannen heen).
 Alle bevindingen zijn dezelfde dag in de tekst gesloten; de lijsten staan in de README van
 het plan. Pass B van ronde 10 bevestigde dat alle twaalf sluitingen van ronde 9 standhielden.
 
+Na de bevriezing zijn niet het plan maar de gebouwde onderdelen beoordeeld: een review van de
+codekwaliteit, per module een rubriekchecklist (`RUBRIC_CHECKLIST_*.md` in elke modulemap),
+en een review van modules 02–08 tegen hun rubrieken
+([REVIEW_2026-10-17.md](../modules/REVIEW_2026-10-17.md)).
+
 ## §15.3 Waarom de lus is gesloten
 
-Op 4 september vroeg de gebruiker om een analyse: convergeren de rondes, of herstellen we
+Na ronde 10 vroeg de gebruiker om een analyse: convergeren de rondes, of herstellen we
 vooral onze eigen fouten uit de vorige ronde? De uitkomst: de domeinreviewer vond per ronde
 minder en lichtere punten (8 → 6 → 4 blokkerend), maar een groeiend deel van de koude
 lezingen bestond uit *naden*: oude formuleringen die een patch over veertien bestanden
@@ -73,31 +77,39 @@ nog een meting vooraf, en hun "wat zou het beslissen"-lijsten bestaan uit probes
 
 Besluit: geen ronde 11. Wel een kleine mechanische **naadcontrole** van de laatste patch
 (19 naden, alle gesloten). Daarna is de tekst **bevroren**: elk bindend document draagt de
-regel "Frozen text as of 2026-09-04" — wijzigingen alleen via een gedateerde notitie die
-de bevinding of meting noemt, de Ladder is de enige bindende plek per regel, andere
+regel "Frozen text as of 2026-09-04". De Ladder is de enige bindende plek per regel; andere
 bestanden verwijzen ernaar.
+
+Het plan verandert sindsdien via **genummerde beslissingen** in de README van het plan, elk
+met de woorden van de gebruiker erbij; er zijn er nu 65. Zo verving de geleerde correctie
+(het ΔH-netwerk) de oorspronkelijke probe-aanpak, en legde beslissing 63 het eindpunt van de
+capstone vast.
 
 ## §15.4 Wat er openstaat, in volgorde
 
-1. **Mapping Pass 6**: de aftekening module voor module (hoofdstuk 16 bereidt die voor). De
-   gebruiker heeft gevraagd ermee te wachten.
-2. **De eerste literatuurschulden** (items 52, 56, 57, 61, 62, 64 betaald op 6 september 2026; 53, 59, 63 nog van de begeleider): items 52–53 (hot-band-hellingen per familie), 56–57 en
-   59 (de meetcondities van de benzeen- en naftaleenbronnen), 60 — lezen vóórdat module 03
-   u_band print.
-3. **Probe M1**: kan de gekozen code ruimtes bevriezen? Zo nee: stop 1.
-4. **De voornotitieprobes**: de dry run met ruiskolom, de canonieke haalbaarheidsprobe, de
-   gradiënt-run/no-run, de R0-pilot, de gladheidsprobe (72 energieën).
-5. **De pilotnotitie**, en pas daarna de eerste echte probe.
+1. **Het bewijs compleet maken**, tot eind november 2026 (beslissing 63). Betaald rekenwerk
+   stopt op 15 november 2026; daarna rekent alleen de laptop.
+2. **De demonstratie van de pijplijn** op de afspraak met de begeleider van 25 november 2026
+   (onder voorbehoud; beslissing 64).
+3. **De schrijffase**, december 2026 – februari 2027: modules 08 en 09, het concept van paper
+   D (het datapaper), de opzet van paper C, en versie 0 van de productrepository.
+4. **Inleveren** van de modules tussen januari en juni 2027; maart – juni 2027 is buffer en
+   overdracht. Na juni 2027 beslist de begeleider hoe nieuwe coupled-cluster-ankers worden
+   gemaakt.
+5. **Mapping Pass 6**, de aftekening van de mapping module voor module. De gebruiker heeft
+   gevraagd ermee te wachten; hoofdstuk 16 is de checklist ervoor.
 
 ## In het kort
 
-Het bijproject bouwt de gradiëntroute (mode G) met vijf mijlpalen, een eigen budget en
-een hard stopcriterium; slaagt het, dan draait mode G naast mode E. Plan 05 doorliep vier
-reviewrondes van twee lezingen; de laatste twee veranderden het ontwerp op drie wezenlijke
-punten (±paren, projectie, de Δ₁-term) en vonden een betere labbron voor naftaleen. Op 4
-september 2026 is de lus gesloten en de tekst bevroren; wat rest zijn metingen, in een
-vaste volgorde.
+Het mode-G-bijproject heeft twee dingen gemeten: een gradiënt kost ongeveer zes energieën,
+en de meegeleverde lokale-CC-module berekent niet de grootheid van het plan. De eigen
+gradiënt is niet gebouwd; de ankers komen nu uit analytische CCSD(T)-gradiënten in pyscf. Plan 05
+doorliep vier reviewrondes van twee lezingen; daarna is de tekst bevroren en verandert het
+plan via genummerde beslissingen. Wat rest: het bewijs afmaken, de demonstratie, de
+schrijffase en het inleveren.
 
 *Bron: [Side_Project_2026-09-04_ModeG_Gradients.md](../GoalGathering/notes/Side_Project_2026-09-04_ModeG_Gradients.md),
-[README.md](../README.md) (reviewrecord en "Not yet done"),
-[Seam_Check_2026-09-04_Round10B_patch.md](../GoalGathering/reviews/Seam_Check_2026-09-04_Round10B_patch.md).*
+[README.md](../README.md) (reviewrecord; beslissingen 43, 63 en 64),
+[Mandate_2026-09-13_Affordable_Plan_Obstacle_Ledger.md](../GoalGathering/notes/Mandate_2026-09-13_Affordable_Plan_Obstacle_Ledger.md)
+obstakel 7, [Seam_Check_2026-09-04_Round10B_patch.md](../GoalGathering/reviews/Seam_Check_2026-09-04_Round10B_patch.md),
+[ANCHORS.md](../modules/ANCHORS.md), [REVIEW_2026-10-17.md](../modules/REVIEW_2026-10-17.md).*

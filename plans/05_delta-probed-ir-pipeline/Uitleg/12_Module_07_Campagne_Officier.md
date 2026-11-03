@@ -1,18 +1,23 @@
 # Hoofdstuk 12 — Module 07: de run steward
 
 *Udacity-module "Design of Autonomous and Semi-Autonomous Agentic Workflows". In de
-rubriek Project 6. Herschreven 25 september 2026 naar de gebouwde agent; het ontwerp van
-12 september staat als gedateerd kader in §9.*
+rubriek Project 6.*
 
 ---
 
 ## 1. Wat is de vraag?
 
-Bouw een agent die een lopende rekencampagne draaiende houdt: hij kijkt wat de machines
-doen, beslist wat de volgende stap is (starten, uitlezen, herkansen, wachten, of aan een mens
-vragen), voert die stap uit met een klein aantal toegestane gereedschappen, en schrijft elke
-beslissing op met de regel die hij toepaste. En vooral: hij maakt de fouten niet opnieuw die
-wij in de twee weken ervoor zelf hebben gemaakt.
+De berekeningen van dit project draaien dagenlang op gehuurde machines en een laptop, en 's
+nachts gaat er van alles mis: een taak sterft, een slotbestand blokkeert de volgende taak,
+een log valt stil terwijl het werk doorgaat. Bouw een agent die zo'n rekencampagne bewaakt:
+hij kijkt wat de machines doen, kiest de volgende stap (uitlezen, starten, herkansen,
+wachten of een mens vragen), voert die uit met een kleine lijst toegestane acties, en
+schrijft elke beslissing op met de regel die hij toepaste. Vooral moet hij de fouten niet
+herhalen die het project zelf heeft gemaakt.
+
+Het eerste ontwerp van deze module heette de *campagne-officier* (vandaar de bestandsnaam
+van dit hoofdstuk). De weigeringen van dat ontwerp zijn poortregels van de run steward
+geworden.
 
 ## 2. Wat eist de school?
 
@@ -21,151 +26,144 @@ meerdere, met reden), expliciete beslislogica, beperkt geheugen of toestand, min
 tool, logging en veiligheidsmaatregelen, een architectuurdiagram, voorbeeldruns met
 waarneembare uitvoer en minstens één echte mislukking of onverwacht gedrag, en een rapport
 met persona, beslislogica, geheugen, tools, veiligheid, geobserveerd gedrag en een ethische
-overweging gebonden aan *dit* systeem. Gebouwd met gereedschap uit de cursus (wij: LangGraph,
-uit het keuzevak; het taalmodel via de Anthropic-API, met het model-id in elke run gelogd).
-Niet hergebruikt uit een eerdere module.
+overweging die over *dit* systeem gaat. Het systeem gebruikt gereedschap uit de cursus en is
+niet hergebruikt uit een eerdere module. Hier: LangGraph (uit het keuzevak over LangChain en
+LangGraph), met een taalmodel via een API waarvan het model-id in elke run wordt gelogd.
 
-## 3. Waar komt de agent vandaan?
-
-Tussen 10 en 25 september 2026 draaide dit project op vijf gehuurde machines en één laptop.
-Iemand moest elk uur beslissen: is die berekening klaar, mag de volgende starten, is dat
-foutbericht erg, moet de eigenaar dit weten? Die "iemand" was de AI-assistent van het
-project, onder toezicht van de eigenaar, en elke beslissing kwam in het logboek. Zo'n
-dertig van die beslissingen waren fout, en van elke fout is een regel gemaakt: een proefrun
-vóór elke start, nooit een tweede exemplaar van dezelfde taak, een klok lezen in dezelfde
-opdracht als het tijdstempel, een statistiek over het model pas lezen naast dezelfde
-statistiek over het doel. Op 25 september stonden er tweeëndertig van zulke regels, elk met
-het incident erbij dat hem heeft gekost.
-
-De run steward is die lus, expliciet gemaakt. Niet omdat de lus creatief moet zijn — dat
-moet hij juist niet — maar omdat regels alleen iets waard zijn als ze *uitvoerbaar* zijn.
-
-## 4. Invoer — wat de agent ziet en onthoudt
+## 3. Invoer — wat de agent ziet en onthoudt
 
 De agent heeft geen dataset maar **waarnemingen** en **geheugen**.
 
-**Waarnemingen** zijn letterlijke stukjes logtekst plus de feiten die een gereedschap eruit
-haalt: "dit slot is van deze machine en zijn proces leeft niet meer", "deze taak heeft een
-geslaagde proefrun", "dit checkpoint is acht minuten oud". De tekst blijft erbij, want de
-agent moet kunnen citeren wat hij las.
+**Waarnemingen** zijn letterlijke stukken logtekst plus de feiten die een gereedschap
+eruit haalt: "dit slot hoort bij deze machine en zijn proces leeft niet meer", "deze taak
+heeft een geslaagde proefrun", "dit checkpoint is acht minuten oud". De tekst blijft
+erbij, zodat de agent kan citeren wat hij las.
 
-**Geheugen** bestaat uit drie delen, en bewust niet meer:
+**Geheugen** bestaat uit drie delen, bewust niet meer:
 
 | Onderdeel | Wat het is | Verandert door |
 |---|---|---|
-| de regeltabel (`rules_v1.json`) | 32 regels: naam, wanneer, wat moet, wat nooit mag, en het incident dat de regel heeft gekost | alleen een mens, gedateerd en gecommit |
+| de regeltabel (`rules_v2.json`) | 41 regels: naam, wanneer, wat moet, wat nooit mag, en het incident waaruit de regel kwam | alleen een mens, gecommit |
 | de campagnetoestand | welke taken er zijn, wat ze horen op te leveren, hoe vaak ze herkanst zijn | de gereedschappen |
 | het rollende venster | de laatste waarnemingen en de acties van deze run | elke stap |
 
-Er is geen geleerd geheugen. Wat de agent weet over "wat werkt", staat in de tabel, en de
+**Waar de regels vandaan komen.** Toen het project op vijf gehuurde machines en een laptop
+draaide, nam de AI-assistent van het project elk uur zulke beslissingen, onder toezicht
+van de eigenaar. Van elke foute beslissing is een regel gemaakt. Regels 1–32 komen uit de
+eerste twee weken: een proefrun vóór elke start, nooit een tweede exemplaar van dezelfde
+taak, de klok lezen in dezelfde opdracht als het tijdstempel. Regels 33–41 komen uit de
+week daarna, onder meer: een nieuwe aanroep van een softwarebibliotheek noemt de test van
+die bibliotheek die dezelfde aanroep doet (na het lambda-incident: zes dagen
+coupled-cluster-rekenwerk met een functie die verkeerd was aangeroepen en er toch goed
+uitzag); "gevalideerd"
+staat er alleen met het getal en waartegen; instellingen die van de elementen afhangen
+worden per molecuul afgeleid; een gehuurde server wordt pas verwijderd als alle resultaten
+binnen zijn; een controle die een fout ziet, stopt de taak in plaats van te waarschuwen.
+
+Er is geen geleerd geheugen. Wat de agent weet over "wat werkt", staat in de tabel, en die
 tabel is een bestand dat een mens kan lezen en veranderen.
 
-## 5. Bewerking — de lus en de poort
+## 4. Bewerking — de lus en de poort
 
-De agent is een LangGraph-graaf met vijf knopen die in een lus staan:
+De agent is een LangGraph-graaf met vijf knopen in een lus:
 
-1. **Waarnemen** — status van machines, resultaatbestanden, de klok.
-2. **Voorstellen** — het redeneerdeel (een taalmodel, of in de tests een deterministische
-   regeltabel) levert precies één voorstel: `{actie, argumenten, regel-id, reden}`.
-3. **Poort** — gewone Python zonder taalmodel controleert het voorstel: staat de actie op
-   de lijst van elf toegestane acties; bestaat de aangehaalde regel; heeft een start een
-   geslaagde proefrun en geen levend exemplaar; wordt een slot alleen verwijderd als zijn
-   proces dood is op dezelfde machine en de proceslijst is nagekeken; wordt een "het model
-   respecteert X"-statistiek alleen vastgelegd naast dezelfde statistiek over het doel;
-   wordt een taak met een vers checkpoint niet herstart; staat er in een logregel een
-   opdracht aan de agent (dan mag alleen nog escalatie); raakt het voorstel iets wat aan
-   een mens toebehoort. Een geweigerd voorstel wordt vervangen door wat de regel voorschrijft:
-   een proefrun, een procescheck, wachten, of vragen.
-4. **Handelen** — het goedgekeurde (of vervangen) voorstel wordt uitgevoerd met een
-   gereedschap van de lijst.
-5. **Vastleggen** — één logboekregel met tijdstempel uit de klok, actie, regel, reden en of
-   de poort het goedkeurde.
+1. **Waarnemen** — de status van machines, resultaatbestanden, de klok.
+2. **Voorstellen** — het redeneerdeel (een taalmodel, of het deterministische beleid dat de
+   regeltabel letterlijk toepast) levert precies één voorstel:
+   `{actie, argumenten, regel-id, reden}`.
+3. **Poort** — gewone Python zonder taalmodel controleert het voorstel. Staat de actie op de
+   lijst van elf? Bestaat de aangehaalde regel? Heeft een start een geslaagde proefrun en
+   geen levend exemplaar? Wordt een slot alleen verwijderd als zijn proces dood is op
+   dezelfde machine? Wordt een statistiek over het model alleen vastgelegd naast dezelfde
+   statistiek over het doel? Staat er in een logregel een opdracht aan de agent? Dan mag
+   alleen nog escalatie. 29 van de 41 regels dwingt de poort zelf af. Een geweigerd voorstel
+   wordt vervangen door wat de regel voorschrijft: een proefrun, een procescheck, wachten of
+   vragen.
+4. **Handelen** — het goedgekeurde of vervangen voorstel wordt uitgevoerd.
+5. **Vastleggen** — één logboekregel met tijdstempel, actie, regel, reden en het oordeel van
+   de poort.
 
-Daarna terug naar 1, tot de actie "wachten" of "vragen" is, of tot het stappenbudget op is.
+Daarna terug naar 1, tot de actie "wachten" of "vragen" is of het stappenbudget op is.
+
+De elf acties: status lezen, een resultaatbestand lezen, processen controleren, een
+achtergebleven slot verwijderen, een proefrun, starten, mislukte rijen opnieuw in de rij
+zetten, een meting vastleggen, een logboekregel schrijven, wachten, en een mens
+waarschuwen. Geen van die elf maakt of verwijdert machines, geeft geld uit, publiceert,
+verandert een regel of velt een wetenschappelijk oordeel.
 
 De **persona** is een zorgvuldige laborant die logs leest, geschreven regels toepast en
-"vraag het de PI" zegt als een toestand bij geen enkele regel past. De kern van het ontwerp
-in één zin: *het taalmodel stelt voor, de code beslist.* Een verkeerd of gemanipuleerd
-voorstel kan daardoor nooit iets doen buiten de elf acties, en geen van die elf maakt of
-verwijdert machines, geeft geld uit, publiceert, verandert een regel of velt een oordeel.
+"vraag het de onderzoeksleider" zegt als een toestand bij geen enkele regel past. De kern
+van het ontwerp: *het taalmodel stelt voor, de code beslist.*
 
-## 6. Uitvoer — wat de agent oplevert
+**Hoe hij is getest.** Niet op een echte machine: de agent speelt opgenomen logs na. Er zijn
+17 scenario's, elk met vooraf vastgelegd welke reeks acties goed is en welke verboden is.
+S1–S8 komen uit de echte logs van één dag, bijvoorbeeld een achtergebleven slot na een
+gedode taak, een training waarvan de uitvoer stil bleef terwijl de checkpoints wél
+verschenen, en een logregel waarin iemand de agent opdraagt een map te wissen. S9–S17
+toetsen de regels 33–41; ze zijn vastgelegd vóórdat het beleid ervoor werd geschreven.
 
-- **Acties**, elk met de regel die ze rechtvaardigt.
-- **Het logboek**: per stap één regel, met de reden van een eventuele weigering.
-- **Escalaties**: een bericht aan de mens met de waarneming geciteerd en de regels die zijn
-  overwogen. Dat is de enige weg naar buiten.
-- Voor de school: het notebook met de runs, het rapport met bronnen, het diagram,
-  `requirements.txt`.
+## 5. Uitvoer — wat de agent oplevert
 
-## 7. Hoe is hij getest?
+- **Acties**, elk met de regel die ze rechtvaardigt, en **het logboek**: per stap één regel,
+  met de reden van een eventuele weigering.
+- **Escalaties**: een bericht aan de mens met de waarneming geciteerd en de overwogen
+  regels. Dat is de enige weg naar buiten.
+- **De uitslag** met het deterministische beleid: 17 van de 17 scenario's goed, met 13
+  escalaties. Onder de oude regeltabel (regels 1–32) haalde het beleid 0 van de 9 nieuwe
+  scenario's. Daarnaast 29 tests van de poort, elk met een negatieve controle: een test die
+  faalt als je de betreffende beveiliging weghaalt.
+- Voor de school: het notebook `agentic_system.ipynb`, het rapport
+  `Agentic_AI_System_Design_Report.pdf`, het architectuurdiagram en `requirements.txt`.
 
-Niet op een machine. Acht scenario's zijn vóór de bouw vastgelegd, allemaal uit de echte
-logs van 25 september 2026: een achtergebleven slot na een gedode runner; een launch-wrapper
-die na een geslaagde proefrun bleef hangen; één molecuul dat in de geometrie-optimalisatie
-faalde terwijl de rest doorging; een symmetriestatistiek zonder doelcontrole (de fout van
-die ochtend, zie hoofdstuk 10); een training waarvan de uitvoer stil bleef terwijl de
-checkpoints wél verschenen; een campagne die een nieuwe server nodig had; een taak die met
-een onbekende fout stopte; en een logregel waarin iemand de agent opdraagt een map te
-wissen. Voor elk scenario staat vooraf welke reeks acties goed is en welke acties verboden
-zijn.
+Module 08 gebruikt de poort: de verzoekbehandelaar van module 08 schrijft een opdracht tot
+rekenen als een voorstel in het schema van de steward, en dat voorstel gaat door dezelfde
+poort.
 
-Uitslag met het deterministische referentiebeleid: acht van acht goed. De drie gevallen die
-aan een mens toebehoren (server, onbekende fout, opdracht in een log) werden geëscaleerd,
-de statistiek zonder controle werd geweigerd, het stille trainingsproces werd met rust
-gelaten. Daarnaast elf poorttests, elk met een negatieve controle: een test die faalt als
-je de betreffende beveiliging weghaalt.
+**De echte mislukking, zoals de rubriek die vraagt.** In het scenario met één mislukt
+molecuul stelde de eerste versie van het beleid elke stap dezelfde logboekregel voor, tot het
+stappenbudget op was. De regel "één regel per gebeurtenis" stond in de tabel, maar niet in
+de toestand van het beleid, en de poort bewaakte herhaling niet. Dezelfde fout dook later
+op een tweede plek op, bij het uitlezen van resultaten. De les: een regel in een prompt is
+een verzoek, alleen een poort is een garantie.
 
-**De echte mislukking, zoals de rubriek die vraagt.** Bij het scenario met het mislukte
-molecuul stelde de eerste versie van het beleid elke stap dezelfde logboekregel voor, tot
-het stappenbudget op was. De regel "één regel per gebeurtenis" stond in de tabel, maar niet
-in de toestand van het beleid, en de poort bewaakte herhaling niet. De les is algemener dan
-het geval: een regel in een prompt is een verzoek, alleen een poort is een garantie.
+## 6. Waarom deze module?
 
-Wat nog ontbreekt: de run met het taalmodel zelf. Die vraagt een API-sleutel die de eigenaar
-moet aanmaken (een Claude-abonnement bevat er geen). Tot die tijd is het deterministische
-beleid de referentie, en zegt het rapport dat eerlijk.
+Een campagne draait 's nachts door, en iemand moet de regels toepassen terwijl de mensen
+slapen. De diepere reden: dit project heeft zijn regels duur betaald. Een agent die ze
+afdwingt, maakt van een regel een controle in plaats van een belofte. Het logboek is na te
+spelen: elke regel citeert zijn regel en zijn waarneming, dus een lezer kan het met één
+specifieke stap oneens zijn. De ethische overweging van het rapport hangt daaraan: een agent
+die andermans geld uitgeeft en het bewijsmateriaal schrijft, moet tot op de regel
+controleerbaar zijn, en zijn grenzen moeten in de structuur zitten, niet in zijn goede wil.
 
-## 8. Waarom deze module?
+## 7. Waar het kan misgaan — en wat je bij de aftekening controleert
 
-Omdat de campagne 's nachts doordraait en iemand de regels moet toepassen terwijl de mensen
-slapen. Maar de diepere reden staat in §3: dit project heeft zijn regels duur betaald. Een
-agent die ze afdwingt, maakt van pre-registratie een controle in plaats van een belofte, en
-maakt van het logboek iets wat je kunt naspelen: elke regel citeert zijn regel en zijn
-waarneming, dus een lezer kan het met een specifieke stap oneens zijn. De ethische
-overweging van het rapport hangt daaraan: een agent die andermans geld uitgeeft en het
-bewijsmateriaal schrijft, moet controleerbaar zijn tot op de regel, en zijn grenzen moeten
-in de structuur zitten, niet in zijn goede wil.
+- **De run met het taalmodel ontbreekt nog.** De rubriek eist die niet strikt, maar het
+  rapport belooft hem. De gebruiker besliste hem later te draaien met de API-sleutel van de
+  cursus (Vocareum), 51 aanroepen. Tot dan is het deterministische beleid de referentie, en
+  zegt het rapport dat.
+- **Broosheid.** Het deterministische beleid kent alleen de vormen van toestand die de
+  regels beschrijven. Een nieuwe soort fout leidt tot escalatie, niet tot een oplossing; dat
+  is de bedoeling, maar het rapport moet het zeggen.
+- **Nooit live.** De agent is alleen op nagespeelde logs beoordeeld en raakt geen machine
+  aan. Als hij ooit live gaat, leest eerst een tweede lezer de poort.
+- **Rapportsecties.** Het rapport volgt de zeven secties van Task 6 van de rubriek.
+- **Bij het inleveren.** De repository `udacity-agentic-workflows` en een vers
+  `requirements.txt` met `pip freeze` in de omgeving met LangGraph.
 
-## 9. Gedateerd kader: het ontwerp van 12 september 2026
-
-Het eerste ontwerp heette de *campagne-officier* en was gebouwd rond het anker: zes
-gereedschappen (`check_deck_hash`, `check_budget`, `queue_submit`, `run_probe`,
-`print_cost_record`, `write_certificate_or_refuse`) die batches indienden, kostenrecords in
-het vaste formaat van de Ladder printten en certificaten schreven of weigerden, met een
-weigeringslijst van elf regels (geen "beat"-zin zonder de hash van de pilotnotitie, nergens
-een kostenbijvoeglijknaamwoord in het rapport, geen geleerde prior op de lage rungen, en zo
-verder). De twee vooraf benoemde mislukkingen waren een vergiftigde deck-hash en een verboden
-woord in een conceptzin.
-
-Dat ontwerp is niet verworpen maar opgeschoven: de run steward is dezelfde agent gezien vanaf
-de hele campagne in plaats van vanaf het anker. De weigeringen van de officier zijn
-poortregels geworden; de deck-hash-controle en het gesloten uitvoerformaat komen terug zodra
-de steward live draait naast de ankerbatches. Wat veranderde, is de bron van de regels: niet
-langer alleen het plan, maar de incidententabel van het project zelf.
-
-## 10. In het kort
+## 8. In het kort
 
 Module 07 bouwt de run steward: één begrensde LangGraph-agent die waarneemt, één actie
 voorstelt met de regel erbij, door een deterministische poort gaat, handelt met elf
-toegestane gereedschappen en elke stap vastlegt. Zijn geheugen is de regeltabel van
-tweeëndertig eigen lessen. Getest op acht scenario's uit de echte logs van 25 september:
-acht van acht, met één echte mislukking gevonden en gerepareerd vóór de eerste commit. De
-run met het taalmodel wacht op een sleutel.
+toegestane acties en elke stap vastlegt. Zijn geheugen is een tabel van 41 regels uit de
+eigen fouten van het project. Op 17 nagespeelde scenario's haalt het deterministische
+beleid 17 van de 17; de run met het taalmodel wacht op de sleutel van de cursus.
 
-*Bron: [DESIGN_2026-09-25.md](../modules/07_agentic_workflows/DESIGN_2026-09-25.md),
-[rules_v1.json](../modules/07_agentic_workflows/rules/rules_v1.json),
+*Bron: [README.md](../modules/07_agentic_workflows/README.md),
+[RUBRIC_CHECKLIST_2026-09-25.md](../modules/07_agentic_workflows/RUBRIC_CHECKLIST_2026-09-25.md),
+[DESIGN_2026-09-25.md](../modules/07_agentic_workflows/DESIGN_2026-09-25.md),
+[rules_v2.json](../modules/07_agentic_workflows/rules/rules_v2.json),
 [scenarios.json](../modules/07_agentic_workflows/scenarios/scenarios.json),
-[PROVENANCE.md](../modules/07_agentic_workflows/PROVENANCE.md),
-[QUALITY_POLICY.md](../QUALITY_POLICY.md),
+`notebook/results.json` en `steward/schema.py` van module 07,
+[REVIEW_2026-10-17.md](../modules/REVIEW_2026-10-17.md),
 [Rubrics/07](../../../Rubrics/07_Design_of_Autonomous_and_Semi_Autonomous_Agentic_Workflows.md).*

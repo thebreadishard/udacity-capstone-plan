@@ -1,13 +1,13 @@
 # Uitleg van plan 05 — Leeswijzer
 
-*Een verklaring van het Δ-probing-plan op het niveau van klas 6 vwo.*
+*Een verklaring van plan 05 op het niveau van klas 6 vwo.*
 
 ---
 
 ## Voor wie is dit geschreven?
 
 Voor iemand die wiskunde B, natuurkunde, scheikunde en informatica op vwo-6-niveau volgt
-en wil begrijpen wat er in plan 05 wordt voorgesteld, waarom, en welke data er door de
+en wil begrijpen wat er in plan 05 is gebouwd en gemeten, waarom, en welke data er door de
 pijplijn stroomt. Je hoeft geen kennis van kunstmatige intelligentie of kwantumchemie te
 hebben. Alles wat je nodig hebt wordt in deel A opgebouwd.
 
@@ -17,18 +17,20 @@ eruit gaat bij elke stap. Dat is informatica op vwo-niveau, geen programmeercurs
 
 ## Waar dit boek over gaat, in drie zinnen
 
-Het plan bouwt één programma: een molecuul erin, een infraroodspectrum eruit. Dat spectrum
-moet aantoonbaar beter zijn dan de beste voorspelling die er nu bestaat, gemeten tegen
-laboratoriumdata. De vernieuwing zit in hoe de dure, nauwkeurige berekening wordt
-uitgevoerd: niet het hele molecuul opnieuw doorrekenen, maar alleen de *correctie* op een
-goedkope berekening opmeten, met zo weinig mogelijk dure metingen ("probes").
+Het project bouwt één programma: een molecuul erin, zijn infraroodspectrum eruit, met een
+certificaat dat per band zegt hoe goed die bekend is. Het programma rekent het molecuul eerst
+goedkoop door met DFT en verbetert daarna de veerconstanten met een neuraal netwerk, dat de
+correctie naar een beter rekenniveau heeft geleerd op 750 moleculen uit een eigen verzameling
+van ruim 1.200. Dat dit werkt is aangetoond tussen twee DFT-methoden, op moleculen die het
+netwerk nooit zag (drie van de vier bandfamilies blijven binnen 3 cm⁻¹), en elf
+coupled-clusterberekeningen, de "ankers", vormen de brug naar de gouden standaard.
 
 ## Hoe is dit boek opgebouwd?
 
 **Deel A — Het gereedschap (hoofdstuk 1 t/m 6).**
 Het probleem; de natuurkunde van trillingen; de scheikunde van goedkope en dure
-berekeningen; het wiskundig gereedschap; de kern van het plan (Δ-probing); en de
-datastructuren en de pijplijn.
+berekeningen; het wiskundig gereedschap; de kern van het plan (het idee van Δ-probing en de
+geleerde correctie die eruit is gegroeid); en de datastructuren en de pijplijn.
 
 **Deel B — De modules van de opleiding (hoofdstuk 7 t/m 14).**
 Het plan wordt uitgevoerd als acht opeenvolgende Udacity-modules (02 t/m 09). Elke module
@@ -51,24 +53,33 @@ het meest bepalend zijn.
 
 **Deel C — Overzicht (hoofdstuk 15 t/m 17).**
 Het bijproject en de reviewgeschiedenis; een checklist voor de aftekening van de mapping;
-één totaaloverzicht van de hele keten plus een woordenlijst.
+één totaaloverzicht van de hele keten, de lessen uit de praktijk en een woordenlijst.
 
 ## Wat dit boek niet is
 
 Het is geen bindend document. De bindende tekst van plan 05 is bevroren op 4 september
 2026 en staat in `GoalGathering/`; de [Ladder](../GoalGathering/Frozen_Ladder_and_Tolerances.md)
-is de enige plek waar elke regel officieel staat. Als deze uitleg ergens van de Ladder
-afwijkt, heeft de Ladder gelijk en moet deze uitleg worden verbeterd. Elk hoofdstuk noemt
-onderaan het document waaruit het is samengevat.
+is de plek waar elke regel officieel staat. Wat daarna is besloten, staat als genummerde
+besluiten in de [README van plan 05](../README.md). Als deze uitleg ergens afwijkt van de
+Ladder of van een besluit, hebben die gelijk en moet deze uitleg worden verbeterd. Elk
+hoofdstuk noemt onderaan de documenten waaruit het is samengevat.
 
 ## Een waarschuwing vooraf
 
-In dit plan is **nog niets uitgevoerd**. Er bestaat geen code en er is geen enkel getal
-gemeten. Overal waar hieronder een getal staat, is dat óf een afspraak (een drempel die
-vooraf is vastgelegd), óf een verwachting uit de literatuur die als zodanig is gelabeld, óf
-een voorbeeld om iets uit te leggen. Het plan zelf is streng op dit punt: een getal dat niet
-door een script is uitgeprint, telt niet als resultaat. Houd die regel in je achterhoofd bij
-het lezen.
+Plan 05 is uitgevoerd. Er is code, er zijn duizenden berekeningen gedaan en er is veel
+gemeten. Elk getal in dit boek komt uit een runlog, een resultaatbestand of een bron, en elk
+hoofdstuk noemt onderaan waar het vandaan komt. Een getal dat niet door een script is
+uitgeprint, telt niet als resultaat. Daarnaast staan er afspraken in (drempels die vooraf
+zijn vastgelegd, zoals de 3 cm⁻¹ per familie) en voorbeelden om iets uit te leggen; die
+worden als zodanig genoemd.
+
+Let bij elk getal op twee dingen. Het eerste is het niveau. De meeste metingen vergelijken
+twee DFT-methoden met elkaar; dat heet het proxyniveau. Een getal dat tegen coupled cluster
+is gemeten, staat er als zodanig bij. Het tweede zijn de moleculen. Een fout van het netwerk
+telt alleen op moleculen die het netwerk nooit heeft gezien.
+
+Wordt een meting door een betere vervangen, dan wordt de tekst herschreven. De oude versie
+staat in de git-geschiedenis van het bestand.
 
 ## Inhoud
 
@@ -78,7 +89,7 @@ het lezen.
 | 2 | [Natuurkunde: trillingen en licht](02_Natuurkunde_Trillingen_en_Licht.md) | A |
 | 3 | [Scheikunde: goedkope en dure berekeningen](03_Scheikunde_DFT_en_Coupled_Cluster.md) | A |
 | 4 | [Wiskundig gereedschap](04_Wiskunde_Gereedschap.md) | A |
-| 5 | [De kern: Δ-probing](05_De_Kern_Delta_Probing.md) | A |
+| 5 | [De kern: de geleerde correctie](05_De_Kern_Delta_Probing.md) | A |
 | 6 | [Datastructuren en de pijplijn](06_Datastructuren_en_Pijplijn.md) | A |
 | 7 | [Module 02 — de opponent-atlas](07_Module_02_Opponent_Atlas.md) | B |
 | 8 | [Module 03 — het lab-scorebord](08_Module_03_Scorebord.md) | B |
@@ -92,20 +103,20 @@ het lezen.
 | 16 | [Checklist voor mapping Pass 6](16_Checklist_Mapping_Pass_6.md) | C |
 | 17 | [Totaaloverzicht en woordenlijst](17_Totaaloverzicht_en_Woordenlijst.md) | C |
 
-*Geschreven op 4 september 2026 bij de bevroren tekst van plan 05; bijgewerkt naar de stand van 25 september 2026 (zie het wijzigingslog
-hieronder). Bron van elk hoofdstuk: de documenten in `../GoalGathering/` en `../probes/README.md`.*
+*Eerste versie 4 september 2026, bij de bevroren tekst van plan 05; deze versie beschrijft de stand van 3 november 2026 (zie het
+wijzigingslog hieronder).*
 
 ## Wijzigingslog
 
-De Uitleg wordt bijgewerkt door herschrijven, niet door stapelen: de leerling leest de stand van nu; de geschiedenis staat hier en in de
-git-geschiedenis van elk bestand. Waar het verloop zelf de les is (het anker per familie, de taal van de correctie, de lessen uit de praktijk)
-staat het als gedateerd kader in de tekst.
+De Uitleg wordt bijgewerkt door herschrijven, niet door stapelen: de leerling leest de stand van nu. De geschiedenis staat hier en in de
+git-geschiedenis van elk bestand.
 
 | Datum | Wat | Waar |
 |---|---|---|
-| 12 september 2026 | gedateerde aanvullingen bij het bevroren plan: basisset (besluit 33), drempellijn (besluit 20), stand module 05, twee lessen | 3 §3.7, 5 §5.4, 10 §9, 17 §17.1a |
-| 25 september 2026 | hoofdstuk 11 herschreven (module 06 is een kandidatenvoorsteller op een PubChem-set; het oude ontwerp als kader in §9); hoofdstuk 10 §1–§8 herschreven (eigen corpus in lagen, het familieblok als doel, de taal van de correctie, wat het model niet kan) met §9 en §10 als kaders; hoofdstuk 5 §5.9 (symmetrie, buurt, omgeving één keer, de prijs per energie); hoofdstuk 3 kader met de ankeruitkomst; hoofdstuk 6 O11/O12; hoofdstuk 17 tabelrijen en §17.1b met lessen 3–5 | commit van 25 september 2026 |
-| 25 september 2026, 09:4x | hoofdstuk 10: de lezing van E11.2 ("het paarmodel respecteert de symmetrie niet") teruggenomen — de meetlat was te grof en het doel had dezelfde spreiding; de symmetrie zit in het paarmodel ingebouwd; de reden voor het equivariante netwerk opnieuw gesteld; kanttekening bij de spiegelbeeldcontrole in §10 | 10 §8, 10 §10 |
-| 25 september 2026, 12:1x | hoofdstuk 17: les 6 (een "het model respecteert X"-meting zonder doelcontrole is geen resultaat; de intrekking hoort bij de bewering) | 17 §17.1b |
-| 25 september 2026, 19:1x | hoofdstuk 12 herschreven: module 07 is gebouwd als de run steward (LangGraph, gesloten actielijst, deterministische poort, regeltabel van 32 eigen lessen, acht scenario's uit de logs van 25 september, 8/8); het ontwerp van 12 september (campagne-officier) als gedateerd kader in §9 | 12 |
+| 4 september 2026 | eerste versie, bij de bevroren tekst van plan 05 | alle |
+| 12 september 2026 | aanvullingen: basisset (besluit 33), drempellijn (besluit 20), stand module 05, twee lessen | 3, 5, 10, 17 |
+| 25 september 2026 | hoofdstukken 10, 11 en 12 herschreven (eigen corpus in lagen, kandidatenvoorsteller, run steward); de lezing "het paarmodel respecteert de symmetrie niet" teruggenomen; aanvullingen in 3, 5, 6 en 17 | 3, 5, 6, 10, 11, 12, 17 |
+| 3 november 2026 | nieuwe versie naar de stand van nu, zonder gedateerde kaders: hoofdstukken 0, 1, 5, 6, 10, 11, 13 en 17 herschreven; 2–4, 7–9, 12 en 14–16 nagelopen en waar nodig verbeterd | alle |
 
+*Bron: de documenten in `../GoalGathering/`, de besluiten in de [README](../README.md), en de overzichten
+[PIPELINE.md](../modules/PIPELINE.md), [MODELS.md](../modules/MODELS.md) en [ANCHORS.md](../modules/ANCHORS.md).*

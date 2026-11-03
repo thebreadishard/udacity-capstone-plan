@@ -1,220 +1,290 @@
 # Hoofdstuk 10 — Module 05: de ΔH-voorspeller (de "steunvoorspeller")
 
-*Udacity-module "Deep Learning Systems". In de rubriek Project 4. Stand van 27 september 2026; §9 bewaart het ontwerp van 12 september als
-gedateerd kader, §10 legt uit hoe je weet dat een netwerk echt leert.*
+*Udacity-module "Deep Learning Systems". In de rubriek Project 4. De bijnaam in de bestandsnaam komt uit het eerste ontwerp, waarin het
+netwerk alleen voorspelde wélke elementen van de correctie groot zijn (de "steun", Engels: support). Het netwerk voorspelt nu de correctie
+zelf.*
 
 ---
 
 ## 1. Wat is de vraag?
 
-Kan een neuraal netwerk, alleen uit goedkope DFT-kenmerken van een molecuul, voorspellen *hoe* de goedkope trillingsberekening gecorrigeerd
-moet worden naar een betere — niet trilling voor trilling, maar als het hele **blok per bandfamilie**: de verschuiving van elke band én de
-koppelingen tussen de banden van één familie — zodat de dure metingen daar geplaatst worden waar het netwerk nog niet zeker is, en er minder
-van nodig zijn?
+Kan een neuraal netwerk uit de goedkope berekening van een molecuul voorspellen hoe de krachtmatrix van dat molecuul (de Hessiaan,
+[hoofdstuk 4](04_Wiskunde_Gereedschap.md)) gecorrigeerd moet worden naar een betere berekening, zo nauwkeurig dat de trillingsfrequenties
+in elke bandfamilie binnen 3 cm⁻¹ kloppen, ook bij moleculen die het netwerk nooit heeft gezien?
+
+Die correctie heet ΔH: de betere Hessiaan min de goedkope. Het netwerk dat haar voorspelt heet in alle teksten van het project het
+**ΔH-netwerk**. Het is het hart van het eindproduct: de pijplijn van module 08 ([hoofdstuk 13](13_Module_08_Synthese.md)) telt de
+voorspelde ΔH op bij de goedkope Hessiaan en rekent daaruit het spectrum.
 
 ## 2. Wat eist de school?
 
 Een deep-learning-experiment in PyTorch: een probleemdomein kiezen (**beeld, tekst of reeks**), een model uit de familie **CNN, RNN of
-Transformer**, een baseline trainen, en **precies één** ding veranderen voor een gecontroleerde vergelijking ("zeg wat er veranderde en wat gelijk
-bleef"). Beide modellen evalueren, met leercurves. "Hoge nauwkeurigheid is niet vereist." De dataset moet openbaar zijn vóór de module, niet
-synthetisch of AI-gegenereerd, en **niet hergebruikt uit een eerdere capstone-module**; samengestelde echte datasets zijn toegestaan. Het rapport
-moet een ethiek-paragraaf hebben en het notebook een samenvatting van 4–6 zinnen.
+Transformer**, een baseline trainen, en **precies één** ding veranderen voor een gecontroleerde vergelijking ("zeg wat er veranderde en wat
+gelijk bleef"). Beide modellen evalueren, met leercurves. "Hoge nauwkeurigheid is niet vereist." De dataset moet openbaar zijn vóór de
+module, niet synthetisch of AI-gegenereerd, en **niet hergebruikt uit een eerdere capstone-module**; samengestelde echte datasets zijn
+toegestaan. Het rapport moet een ethiek-paragraaf hebben en het notebook een samenvatting van 4–6 zinnen.
 
 ## 3. Invoer — de datastructuur in detail
 
-**Het corpus, object O11: zelf gemaakt, in lagen.** Zeven gemeten PAK-tensoren zijn geen deep-learning-dataset, en de openbare databank
-Hessian QM9 bevat vrijwel geen aromaten van de maat die het plan nodig heeft. Daarom heeft het project sinds 12 september een eigen **corpusfabriek**:
-voor elk molecuul rekent ze de geometrie met B3LYP/6-31G* uit, en dan twee Hessianen op precies die geometrie, één met B3LYP en één met ωB97X.
-Het verschil ΔH = H(ωB97X) − H(B3LYP) is de *plaatsvervanger* van de echte correctie (coupled cluster min DFT): twee functionalen met een
-sterk verschillend aandeel exacte uitwisseling, zodat het verschil dezelfde soort structuur heeft als het echte verschil. Het corpus bestaat in
-lagen:
+**Het corpus: zelf berekend, in lagen.** Een neuraal netwerk leert van voorbeelden, en voor deze taak bestond geen geschikte openbare
+verzameling. De openbare databank Hessian QM9 is wel gedownload en geteld, maar bevat moleculen van hooguit negen zware atomen en vrijwel
+geen aromatische ringen; ze zit daarom niet in de dataset. Het project rekent zijn voorbeelden zelf uit met een **corpusfabriek**. Voor elk
+molecuul optimaliseert die de geometrie met B3LYP/6-31G\* en rekent ze op precies die geometrie twee Hessianen uit: één met B3LYP en één met
+ωB97X. Dat zijn twee DFT-methoden ([hoofdstuk 3](03_Scheikunde_DFT_en_Coupled_Cluster.md)) met een sterk verschillend aandeel exacte
+uitwisseling. Hun verschil ΔH = H(ωB97X) − H(B3LYP) is de **plaatsvervanger** (proxy) van de echte correctie, coupled cluster min DFT. Het
+heeft dezelfde soort structuur als het echte verschil, maar kost een fractie. Het corpus (object O11 van [hoofdstuk 6](06_Datastructuren_en_Pijplijn.md)) telt 1.236 moleculen in vijf lagen:
 
-| Laag | Wat | Waarom | Stand 27 september |
+| Laag | Wat | Waarom | Aantal |
 |---|---|---|---|
-| A | de aromaten van 22–30 atomen die op de ladder lijken: benzeen, naftaleen, antraceen, fenantreen, pyreen, fluorantheen, carbazool, acridine … | de "groottebrug" | 45 klaar |
-| A2 | dezelfde veertien kernen, elk met vijftien zijgroepen (CH₃, OH, NH₂, F, Cl, CN, CHO, COOH, OCH₃, NO₂, CF₃, vinyl, ethynyl, CONH₂, SH) | veertien skeletten leren geen regel; honderden omgevingen wel | 199 klaar; 15 zadelpunten worden heropgelost |
-| B | negentien kleine kernen (benzeen, pyridine, thiofeen, indool, chinoline …) met dezelfde zijgroepen, tot 26 atomen | de grote leercurve: 4.353 moleculen in vaste gehashte volgorde | gestart 25 september; op 27 september ruim 250 klaar, in zes delen over gehuurde machines; de eerste tussenlezing zondagavond 27 september |
-| C | de geconjugeerde deelverzameling van Hessian QM9 (6.055 moleculen, alleen B3LYP erbij) | brede kleine-moleculenbasis | gepland |
+| A | met de hand gekozen aromaten, van benzeen tot pyreen, met varianten waarin een stikstof- of zuurstofatoom in de ring zit | de ouders: de kale kernen die het meest op de grote PAK's lijken | 46 |
+| A2 | grote kernen (drie en vier ringen) met één zijgroep uit een vaste lijst van vijftien (CH₃, OH, NH₂, F, Cl, CN, …) | een handvol skeletten leert geen regel; honderden omgevingen wel | 327 |
+| B | kleine aromatische en heteroaromatische kernen (benzeen, pyridine, thiofeen, indool, chinoline, …) met zijgroepen, tot 26 atomen | de breedte: veel chemische omgevingen voor weinig rekentijd | 743 |
+| P3 | pool 3: aromaten van vier ringen met stikstof in de ring, en aromaten van vijf ringen | twee assen die het corpus nog miste: stikstof in grote ringen en grootte | 60 |
+| P3c | radicaalkationen (een molecuul met één elektron minder, dus één positieve lading) op bekende skeletten | geladen PAK's komen veel voor in de ruimte en hebben een ander spectrum | 60 |
 
-Elk molecuul heeft een map met de geometrie, de twee Hessianen, de frequenties en een resultaatrecord; een **uitgave** (release) is een bevroren
-bestand met een lijst van id's en een controlesom per Hessiaan, en krijgt een Zenodo-DOI. De uitgave van 24 september telt 229 moleculen.
+Elk molecuul heeft een eigen map (object O2) met de geometrie, de twee Hessianen en een resultaatrecord; bij een deel van de moleculen staat er ook de
+APT bij, de tabel waaruit de hoogte van elke band volgt. Het netwerk van dit hoofdstuk (versie 1.3, §4) is getraind op de lagen A, A2 en B;
+de lagen P3 en P3c zijn er voor de volgende versie.
 
-**Twee routes, één regel.** Psi4 rekent deze Hessianen als eindige verschillen van gradiënten (hoofdstuk 4 §4.2), en dat maakt ruis: op
-benzeen zat in de ωB97X-Hessiaan een fout van 133 cm⁻¹ die niets met de chemie te maken had. Sindsdien geldt de regel dat elke verdachte
-Hessiaan een **tweede route** krijgt, een analytische Hessiaan uit pyscf, en dat de uitgave de analytische versie gebruikt waar die bestaat.
-Zo zijn vijf moleculen "genezen" en vijftien echte zadelpunten ontmaskerd (hoofdstuk 4 §4.5: ruis en de stopregel).
+**Twee routes, één regel.** Psi4 rekent een Hessiaan uit eindige verschillen van gradiënten ([hoofdstuk 4](04_Wiskunde_Gereedschap.md)), en
+dat geeft ruis. In de ωB97X-Hessiaan van benzeen zat een fout tot 133 cm⁻¹ die niets met de chemie te maken had: het rekenrooster van psi4
+was te grof voor de kleine stapgrootte. Daarom geldt de regel dat elke verdachte Hessiaan een **tweede route** krijgt (besluit 50): een
+analytische Hessiaan uit pyscf, exact afgeleid in plaats van uit kleine stapjes geschat. Voor 862 moleculen staat zo'n analytische Hessiaan
+klaar, en de training gebruikt die waar ze bestaat. Analytische labels veranderen het niveau van de leerstof niet; ze halen er de meetruis
+uit (besluit 60).
 
-**De vorm per molecuul:**
+**De vorm per molecuul, zoals het netwerk hem ziet:**
 
 | Onderdeel | Type | Betekenis |
 |---|---|---|
-| tokens | reeks van M records | één per DFT-trilling: frequentie, welke atomen bewegen, atoomomgevingskenmerken, de familie |
-| K | matrix M × M | de correctie in de basis van de B3LYP-trillingen, in cm⁻¹: de diagonaal is de bandverschuiving, de rest de koppelingen |
-| familieblok | per familie een deelmatrix van K | het **doel**: verschuiving én koppelingen van één familie samen (sinds 19 september) |
-| steun | matrix M × M van 0/1 | welke elementen van K groot zijn — de tweede kop van het netwerk |
-| splits-hash | tekst | per molecuul: train / validatie / test, reproduceerbaar |
+| atomen | lijst van N records | atoomsoort en plaats (x, y, z) in de B3LYP-geometrie |
+| goedkope Hessiaan | per atoompaar drie getallen | de B3LYP-krachtmatrix, geschreven als getallen die niet veranderen als je het molecuul draait |
+| interne coördinaten | lijst | de rek van elke binding, de buiging van elke hoek, de verdraaiing om elke binding |
+| doel ΔH | matrix 3N × 3N | het verschil ωB97X − B3LYP, in de eenheden van de Hessiaan |
+| familie per trilling | label | C–H-strek, ring-in-het-vlak, C–H-uit-het-vlak of "overig"; alleen voor de beoordeling |
 
-**Probleemdomein en modelfamilie, expliciet verklaard:** domein **reeks** (een molecuul als reeks van M trillings-tokens), model **Transformer**
-(aandacht tussen tokens: de plek waar "zijn trillingen i en j gekoppeld?" leeft). Dat is de ingeleverde baseline van deze module. Wat het
-project daarnaast leerde over de *taal* waarin je de correctie moet opschrijven, staat in §6.
+**De toetsverzamelingen.** Een netwerk toets je op moleculen die het nooit zag. Zo'n achtergehouden verzameling heet een *hold-out*. Module 05
+heeft er twee, en geen van beide komt ooit in de training:
 
-**Wat er niet in zit.** Geen labdata. De PAK's van de ladder en alles wat groter is dan het corpus zijn **alleen testset**.
+- **Hold-out (a)**: tien ouders uit laag A. Ze lijken het meest op de grote PAK's waar het product voor bedoeld is.
+- **Hold-out (b)**: 69 moleculen op twee skeletten, fluorantheen en fluoreen. Van die skeletten zit geen enkel molecuul in de training, dus
+  hier moet het netwerk oordelen over ringsystemen die het nooit zag.
+
+Wat overblijft, vormt de pool: 972 moleculen waaruit versie 1.3 er 750 trekt. Van die 750 gaat 15 % naar een *validatieset*: moleculen
+waarop het netwerk tijdens de training niet leert, maar waarop gemeten wordt wanneer het moet stoppen (§4).
+
+**Probleemdomein en modelfamilie, expliciet verklaard.** Het ingeleverde notebook gebruikt het domein **reeks**: een molecuul als reeks van
+trillingstokens, één per DFT-trilling, met frequentie, familie en omgevingskenmerken. Het model is een **Transformer**: een netwerk dat elk
+token laat "kijken" naar alle andere tokens, de plek waar de vraag "zijn trillingen i en j gekoppeld?" leeft. Het notebook traint op een
+bevroren uitgave van 224 moleculen uit de lagen A en A2. Dat is de baseline van de school. Het ΔH-netwerk van het eindproduct is de opvolger
+ervan, en §6 legt uit waarom het er anders uitziet.
+
+**Wat er niet in zit.** Geen labdata. Laboratorium- en sterrenkundige spectra zijn de buitenste controle van de hele keten, nooit
+trainings-, validatie- of stopinvoer.
 
 ## 4. Bewerking
 
-1. Corpus bouwen met de fabriek (lagen A en A2 op gehuurde machines, september 2026), de tweede route op verdachte moleculen, splitsen per
-   molecuul met hash, uitgeven met DOI.
-2. Baseline-Transformer trainen op het familieblok; leercurves loggen.
-3. **De gecontroleerde vergelijking, bevroren in het recept vóór het trainen:** één ding anders, al het andere gelijk, drie zaadjes. In het
-   ingeleverde notebook is dat de tweede kop (de steun) aan of uit; het recept zegt precies wat veranderde en wat niet.
-4. Evalueren op de weggehouden moleculen: per familie de fout op de diagonaal (bandverschuivingen, in cm⁻¹) en op de koppelingen, tegen twee
-   regels zonder netwerk — "geen correctie" en "de mediaan van de familie" — zodat elk getal een betekenis heeft.
-5. Aanvullingen in dezelfde notebook (secties 7, 8 en 9): de tweede route op benzeen, de heropgeloste zadelpunten, de coupled-cluster-controle E8,
-   en de lokaliteitstoetsen E9, E10 en de grootte-extrapolatie van 24–25 september. Sectie 8 is *append-only* uitgevoerd: de cellen van eerder
-   zijn niet opnieuw gedraaid, hun uitvoer is bewaard, en het notebook vermeldt dat.
+**De gecontroleerde vergelijking van het notebook.** De baseline is een Transformer van twee lagen (135.939 parameters); de ene verandering is
+vier lagen (235.907 parameters), al het andere gelijk. Beide worden met drie *zaadjes* getraind: drie trainingsruns die alleen verschillen in
+het toeval waarmee ze beginnen, zodat je de spreiding ziet. Twee regels zonder netwerk dienen als tegenstander: "geen correctie" en "de
+mediaan van de familie in de trainingsset". Zo heeft elk getal een betekenis.
+
+**Het ΔH-netwerk, versie 1.3.** Dit is het netwerk dat de pijplijn gebruikt. [Hoofdstuk 5](05_De_Kern_Delta_Probing.md) (§5.5) volgt het stap voor
+stap; hier staat wat de module bouwt en traint. Het netwerk bestaat uit twee delen.
+
+- **Het lichaam** (`m05/rungC_equivariant.py`) is een *equivariant* netwerk. Equivariant betekent: draai je het molecuul in de ruimte, dan
+  draaien alle tussenresultaten precies mee. Het netwerk hoeft dat dus niet uit voorbeelden te leren; het zit in de bouw. Het lichaam stuurt
+  in drie rondes berichten tussen atomen die binnen 5 Å van elkaar liggen. Na die rondes heeft elk atoom een beschrijving van 64 getallen en
+  64 pijltjes van zijn eigen omgeving.
+- **De kop** (`m05/rungC_hybrid.py`) zet die beschrijvingen om in de correctie. Hij voorspelt één getal per paar interne coördinaten, en
+  alleen voor paren die dicht bij elkaar liggen: dezelfde coördinaat, paren die een atoom delen, paren binnen een ring en hun naaste buren.
+  Dat getal hangt af van de beschrijvingen van de betrokken atomen, van het soort paar en van de goedkope krachtconstante van dat paar. Een
+  deel van de voorspelling is een factor maal die goedkope krachtconstante, met één factor per soort paar; het netwerk leert alleen wat
+  daarna overblijft. De correctie in interne coördinaten wordt met de Wilson-matrix B omgezet naar de Hessiaan: ΔH = Bᵀ ΔF B. Die omzetting is
+  vaste wiskunde en maakt ΔH vanzelf symmetrisch.
+
+Samen hebben lichaam en kop 172.194 instelbare getallen. De training (`m05/rungC_train.py`) gebruikt 750 moleculen met analytische labels
+waar die er zijn. De verliesfunctie, het getal dat de training zo klein mogelijk maakt, bevat naast de fout op ΔH een term die de vier
+families even zwaar laat tellen, zodat de kleine familie "overig" niet ondersneeuwt.
+
+**Stoppen op tijd (besluit 51).** Elke training in het project houdt een validatieset achter en stopt als de fout daarop twintig rondes lang
+niet meer daalt, met een plafond van 200 rondes. Daarna wordt de beste toestand teruggezet en wordt de beste ronde naast het plafond
+opgeschreven. Ligt de beste ronde binnen tien procent van het plafond, dan telt de run niet als resultaat en wordt hij opnieuw gedaan met een
+hoger plafond. Zonder die regel leert een netwerk de trainingsvoorbeelden uit het hoofd, of het stopt voordat het klaar is.
+
+**Drie zaadjes, één versie (besluiten 55, 57 en 59).** Elk opgeslagen netwerk staat met zijn recept, zijn toetsgetallen en een status in een
+register (`modules/05_support_predictor/MODELS.md`, object O15). Een versienummer hoort bij een recept: versie 1.3 zijn drie
+netwerken met hetzelfde recept, en de pijplijn neemt het gemiddelde van hun drie voorspellingen. Werk wordt alleen gedaan met een versie die
+*gedragen* is: een versie waar het project tevreden over is. Een nieuwe versie wordt alleen gedragen als ze op geen van vijf getallen slechter
+is dan de vorige, op geen van beide hold-outs, en op minstens één beter. Die vijf getallen zijn de fout van elk van de vier families en de
+koppelingsratio (punt 5 van dit hoofdstuk). Versie 1.3 haalde dat: op 9 van de 10 getallen beter dan versie 1.1, op geen slechter. Een volgende versie, 1.4, is
+vooraf vastgelegd en neemt ook de kationen en pool 3 mee.
+
+**Hoe je weet dat het netwerk echt leert.** Een netwerk dat op zijn trainingsvoorbeelden goed scoort, heeft nog niets bewezen. Een leerling
+die de antwoorden van het oefenexamen uit zijn hoofd kent, heeft ook geen wiskunde geleerd. Het project gebruikt drie soorten bewijs.
+
+1. *Toetsen op wat het nooit zag, steeds moeilijker.* Een paar moleculen achterhouden is makkelijk. Een heel skelet achterhouden is moeilijker:
+   dat is hold-out (b). Het moeilijkst is *groter*: leren van kleine moleculen en toetsen op grotere, want de PAK's in de ruimte zijn groter
+   dan alles wat het corpus bevat. Die toets, op moleculen voorbij de maat van het corpus, loopt nog.
+2. *De leercurve.* Geef het netwerk bijvoorbeeld 100, 300 en 750 voorbeelden en zet de fout uit tegen het aantal. Bij echt leren daalt die lijn; bij uit het
+   hoofd leren blijft ze vlak, want elk nieuw voorbeeld vertelt dan niets over het volgende.
+3. *Controles die moeten mislukken.* Schud de antwoorden door elkaar, zodat elk molecuul de correctie van een ander krijgt, en train opnieuw.
+   Dan moet het netwerk verliezen wat het met de echte antwoorden won, en dat doet het. Daarnaast is er de *ruisvloer*: een netwerk kan niet
+   nauwkeuriger worden dan zijn leerstof. Met de eindige-verschillen-labels lag die vloer voor de C–H-uit-het-vlak-familie op 3,3 cm⁻¹, vlak
+   bij de doelwaarde zelf; daarom traint versie 1.3 op analytische labels.
+
+**De meting.** De fout wordt gemeten op de frequenties, de grootheid waar het spectrum om draait. De gecorrigeerde
+Hessiaan wordt opgelost tot trillingen, en per familie wordt de rms-fout van de frequenties berekend tegen de ωB97X-waarheid. Rms is de
+wortel uit het gemiddelde van de gekwadrateerde fouten, in cm⁻¹. Elk getal is het gemiddelde over de drie zaadjes.
+
+**Van de plaatsvervanger naar coupled cluster.** De proxy leert het netwerk de *vorm* van de correctie op duizend moleculen. Wat "juist" is,
+bepalen de coupled-cluster-ankers: moleculen waarvan het project een CCSD(T)-Hessiaan heeft ([hoofdstuk 3](03_Scheikunde_DFT_en_Coupled_Cluster.md)).
+Dat zijn de lagen van waarheid van besluit 60: B3LYP is de invoer, ωB97X de opstap, CCSD(T) de ijking en het lab de buitenste controle
+([hoofdstuk 5](05_De_Kern_Delta_Probing.md), §5.6 en §5.8).
+
+- *De ankers.* Het register (`modules/ANCHORS.md`, object O14, besluit 62) bevat elf gedragen ankers: acenaftyleen, antraceen, azuleen, benzeen,
+  benzonitril, fluorbenzeen, isochinoline, naftaleen, pyridine, chinoline en chinoxaline. De standaard is CCSD(T) in de basisset cc-pVDZ,
+  plus een correctie voor de stap naar de grotere basisset cc-pVTZ die met de goedkopere methode MP2 is berekend; benzeen is volledig met
+  CCSD(T)/cc-pVTZ gerekend. Niets wordt overschreven: een betere versie van een anker is een nieuwe regel, de oude wordt "vervangen". Elk
+  anker krijgt twee onafhankelijke controles (besluit 61), omdat een berekening die er goed uitziet toch fout kan zijn.
+- *De overdracht.* Het netwerk wordt op de ankers bijgesteld: het lichaam blijft vast, de kop leert verder op de CC-correctie. Getoetst wordt
+  steeds op een anker dat bij het bijstellen buiten bleef. Bijstellen van alleen de laatste laag van de kop bleek te weinig: die kon de
+  correctie uit het vlak zelfs op de eigen ankers niet volgen. Met de hele kop halveerde de fout op het achtergehouden anker: C–H-uit-het-vlak
+  van 12,3 naar 6,5 cm⁻¹, gemeten op versie 1.1 met zes ankers. In de vastgelegde herhaling met de vijf nieuwe ankers erbij daalde die
+  familie van 7,2 naar 6,3 cm⁻¹, en de bandhoogtes van de drie minst symmetrische ankers kwamen dichter bij CCSD(T) dan zonder correctie. De doelwaarde van 3 cm⁻¹ op
+  CC-niveau is daarmee niet gehaald, en het project claimt haar niet.
+- *Het aantal ankers.* Hoeveel ankers een familie nodig heeft, is op de proxy nagespeeld: een netwerk dat een opzettelijk andere correctie leerde, die het niveau
+  en de samenhang van de echte CC-correctie nabootst, wordt met k moleculen met de ware correctie bijgesteld. Ring-in-het-vlak en C–H-strek
+  halen 3 cm⁻¹ bij 100 moleculen, C–H-uit-het-vlak bij ongeveer 167, en "overig" niet binnen 200.
+- *De grens van de capstone (besluit 63).* De capstone eindigt met het bewijs op de proxy: de pijplijn staat, de correctie per familie is
+  geleerd en getoetst met twee DFT-methoden, en de bestaande ankers vormen de brug naar coupled cluster. Nieuwe ankers vallen buiten de
+  capstone tot juli 2027.
 
 ## 5. Uitvoer — de datastructuur in detail
 
-- **Het getrainde model** met versiehash, en de uitgave van het corpus met DOI.
-- **Per familie een getal**: de fout van de voorspelde bandverschuiving op de testset (op de uitgave van 229 moleculen: 2,6 / 3,9 / 5,4 / 8,5 cm⁻¹ voor
-  C–H-strek / C–H-uit-het-vlak / ring-in-het-vlak / overig, tegen 44 / 24 / 20 / 19 zonder correctie) en de gemiddelde precisie van de steunkop.
-- **De geleerde prior** voor een nieuw molecuul: een voorspelde K met een onzekerheid, die als `prior = geleerd` met modelhash in het deck (O3) van
-  een rung gaat waar dat mag (hoofdstuk 5 §5.4).
-- Notebook, `requirements.txt`, rapport met de vereiste zinnen: het corpus is eigen berekende ab-initiodata, openbaar met DOI, niet AI-gegenereerd,
-  in geen eerdere module gebruikt; het lab is nooit trainings-, validatie- of stopinvoer.
+**Het netwerk.** Drie opgeslagen netwerken van versie 1.3, elk met zijn recept, zijn toetsgetallen en de commit waarmee het gemaakt is, in
+het register. De pijplijn laadt ze, laat ze alle drie ΔH voorspellen en telt het gemiddelde op bij de B3LYP-Hessiaan; die voorspelde correctie is
+object O4 van [hoofdstuk 6](06_Datastructuren_en_Pijplijn.md).
 
-## 6. Wat het project onderweg leerde: de taal van de correctie
+**De fout per familie en de vrijgave (besluit 65).** Een familie is *vrijgegeven* als de gemiddelde fout van de gedragen versie op beide
+hold-outs binnen 3 cm⁻¹ blijft. De vrijgave volgt dus elke nieuwe versie. Voor versie 1.3, in cm⁻¹, met "geen correctie" ter vergelijking
+(over alle trillingen samen 23,4 op (a) en 23,0 op (b)):
 
-Dit is het deel dat op 12 september nog niet bestond en dat de reviewer moet zien, omdat het laat zien dat er *geleerd* is.
+| familie | hold-out (a), de acht schone moleculen | hold-out (b) | vrijgegeven |
+|---|---|---|---|
+| ring-in-het-vlak | 1,77 | 2,12 | ja |
+| C–H-strek | 1,19 | 2,50 | ja |
+| C–H-uit-het-vlak | 2,17 | 2,70 | ja |
+| overig | 3,62 | 3,89 | nee |
 
-**De koppelingen leerden niet, tot de taal veranderde (E6 → E7, 19–23 september).** In de basis van de trillingen (K per trillingspaar) leerde geen
-enkel model de koppelingen: de leercurve bleef vlak bij 45, 100 en 175 moleculen. De reden is wiskundig: een trilling is een richting in een
-36-dimensionale ruimte, en die richting heeft geen vast teken — draai je hem om, dan wisselt de koppeling van teken zonder dat een kenmerk van de
-trilling dat verraadt. Het label per trillingspaar is dus slecht gedefinieerd. Schrijf dezelfde correctie op in de taal van **bindingen en hoeken**
-(interne coördinaten: rek van een binding, buiging van een hoek), dan is elk element tekenvast en lokaal, en dan leert hetzelfde netwerk op
-dezelfde 175 moleculen de koppelingen wél: de fout op de ringkoppelingen halveert tegenover "geen correctie", ook op skeletten die het nooit zag,
-en ook op de kale kernen zonder zijgroepen (0,43 tegen 0,47 bij 175 moleculen; gecorrigeerde frequenties 4,7 tot 5,2 cm⁻¹ tegen 23 zonder correctie).
+Twee van de tien moleculen van hold-out (a) bleken als tweeling in laag B toch in de training te zitten (punt 6 van dit hoofdstuk). De
+vrijgave en het certificaat van de pijplijn lezen daarom de acht schone moleculen. Met de twee lekken erbij lag elke familie 0,04 tot
+0,27 cm⁻¹ lager; de vrijgave is voor geen enkele familie anders. [Hoofdstuk 5](05_De_Kern_Delta_Probing.md) (§5.7) zet deze getallen naast de rest van
+het plan.
 
-**De correctie is lokaal, en dat is drie keer gemeten.** Driekwart van ΔH zit in bindingsparen die een atoom delen of in dezelfde ring liggen (E7);
-de echte coupled-cluster-correctie van benzeen zit voor 98 % in datzelfde patroon, één binding verder (E8, 24 september); en de correctie van een
-molecuul met zijgroep is het blok van zijn moederkern plus de buurt van de zijgroep (E9): een kwart van de Hessiaan-kolommen geeft de gecorrigeerde
-frequenties tot 1,7 cm⁻¹ terug. Voor rigide zijgroepen kan dat buurtblok zelfs één keer gemeten en overgezet worden (E10). Hoofdstuk 5 §5.9 zegt
-wat dat voor de telling van dure metingen betekent.
+Naast de frequenties is er de **koppelingsratio**: de fout op de koppelingen tussen ringtrillingen gedeeld door de fout van "geen correctie".
+Voor versie 1.3 is die 0,17 op de oorspronkelijke tien moleculen van (a) en 0,26 op (b). Een ratio van 1 zou betekenen dat het netwerk niets aan de koppelingen heeft geleerd.
 
-**Symmetrie: een meting die niets mat, en wat ze ons toch leerde (E11.2, 25 september).** Een eerste lezing, dezelfde ochtend, zei dat het
-paarmodel de symmetrie van het molecuul niet respecteerde: spiegelbeeldparen zouden antwoorden krijgen die de helft van hun eigen grootte
-uiteenliepen. Die lezing was fout, en de fout is leerzaam. De meetlat deelde paren in klassen in op grond van het soort atomen, niet op grond van
-hun onderlinge ligging: in benzeen zaten ortho-, meta- en paraparen in één klasse, en het verschil tussen die drie is echte natuurkunde, geen
-asymmetrie. De controle die vooraf had gemoeten, dezelfde meetlat langs het dóél leggen, gaf hetzelfde getal (0,58 tegen 0,52 voor het model).
-Met echte symmetriebanen, de paren die een spiegeling of draaiing van het molecuul in elkaar overvoert, is het doel wél symmetrisch (benzeen 0,03)
-en blijkt iets anders: het paarmodel krijgt voor spiegelbeeldparen precies dezelfde invoer, want zijn kenmerken zijn atoomsoorten, afstanden
-en ringafstanden, en die veranderen niet onder een spiegeling. Het geeft dus vanzelf hetzelfde antwoord. Symmetrie zit in dit model ingebouwd,
-niet geleerd, en de test kon die twee nooit uit elkaar houden. Wat blijft staan: het paarmodel kent geen richtingen, alleen getallen per paar,
-en voor een correctie op de volledige krachtmatrix in de ruimte, een grootheid mét richtingen, is een **equivariant** netwerk nodig: een netwerk
-waarvan de tussenresultaten meedraaien met het molecuul. Dat netwerk ("rung C") is op 25 september gebouwd en vooraf tegen het paarmodel vastgelegd, en op 27 september 's avonds voor het eerst getraind (C1, vast recept): bij 175 moleculen geen winst boven het paarmodel (ratio 0,96–1,00 tegen 0,43; het netwerk convergeert naar een bijna vaste uitvoer). Volgens de regel van 12:1x zegt dat niets over de architectuur voordat de eerlijke-kanszoektocht is gelopen (uitvoerschaling en plaats van de verliesfunctie eerst, dan leersnelheid, dan de voortraining C2); die staat geregistreerd. Het is de volgende versie van deze module om díe reden, en niet omdat E11.2 het zou
-hebben afgedwongen.
+De vrijgave geldt op het niveau waarop het netwerk gemeten is, de proxy ωB97X. Een vrijgave op coupled-cluster-niveau bestaat niet. Het
+certificaat van de pijplijn markeert per band of zijn familie vrijgegeven is en of het netwerk het molecuul in de training heeft gezien.
+
+**Het ingeleverde notebook.** De hoofdrun van het notebook geeft per familie de fout van de voorspelde bandverschuiving op de testset, in
+cm⁻¹, gemiddeld over drie zaadjes:
+
+| model | C–H-strek | C–H-uit-het-vlak | ring-in-het-vlak | overig |
+|---|---|---|---|---|
+| geen correctie | 43,78 | 24,08 | 20,34 | 19,23 |
+| mediaan van de familie | 2,71 | 8,12 | 15,64 | 14,53 |
+| baseline (twee lagen) | 3,18 | 4,05 | 5,46 | 8,30 |
+| vier lagen | 2,61 | 4,03 | 5,22 | 8,58 |
+
+De verschuivingen worden geleerd: vier tot zes keer beter dan "geen correctie" in de families uit het vlak en van de ring. De koppelingen in
+deze basis leert geen enkel model; elk model zit daar op "geen correctie". De extra lagen veranderen niets buiten de spreiding van de
+zaadjes. Dat is de eerlijke uitkomst van het ingeleverde experiment, en de aangevulde secties van het notebook laten zien wat het project
+er daarna uit leerde.
+
+**Verder:** het rapport met de vereiste zinnen (het corpus is eigen berekende ab-initiodata, niet AI-gegenereerd, in geen eerdere module
+gebruikt; het lab is nooit trainings-, validatie- of stopinvoer), `requirements.txt`, en de corpusuitgaven met een controlesom per bestand.
+De data zijn openbaar in de GitHub-repository van het plan; een Zenodo-uitgave met DOI is in voorbereiding.
+
+## 6. Waarom deze module?
+
+Zonder module 05 heeft de pijplijn alleen de goedkope tegenstander van module 04: B3LYP-frequenties met een schaalfactor
+([hoofdstuk 9](09_Module_04_Baseline.md)). Op de hold-outs zitten de B3LYP-frequenties zonder correctie 23 cm⁻¹ (rms) naast de
+ωB97X-waarheid; met het ΔH-netwerk 2 tot 3 cm⁻¹. Het netwerk is het enige
+deel van de pijplijn dat iets *leert*, en het is het deel waar de vernieuwing van het plan zit: een correctie die per familie gemeten,
+vrijgegeven en later met weinig coupled-cluster-ankers geijkt kan worden.
+
+**Wat de module het project leerde.** Het ingeleverde experiment liet zien wat niet werkte. De lessen daarna bepaalden hoe het ΔH-netwerk
+eruitziet.
+
+- **De taal van de correctie.** In de basis van de trillingen leerde geen enkel model de koppelingen: de leercurve bleef vlak bij 45, 100 en
+  175 moleculen. De reden is wiskundig. Een trilling is een richting zonder vast teken: draai je hem om, dan wisselt de koppeling van teken
+  zonder dat een kenmerk van de trilling dat verraadt. Het label per trillingspaar is dus slecht gedefinieerd. Schrijf je dezelfde correctie
+  op in de taal van bindingen en hoeken (interne coördinaten), dan is elk element tekenvast en lokaal. Op dezelfde 175 moleculen leerde een
+  eenvoudig paarmodel de koppelingen dan wél: ratio 0,43 en 0,47 op de twee hold-outs, gecorrigeerde frequenties 4,7 en 5,1 cm⁻¹ tegen 23
+  zonder correctie. Sindsdien worden koppelingen in interne coördinaten geleerd (besluit 49; [hoofdstuk 5](05_De_Kern_Delta_Probing.md), §5.4).
+- **De correctie is lokaal, drie keer gemeten.** Driekwart van ΔH zit in paren die een atoom delen of in dezelfde ring liggen. De echte
+  coupled-cluster-correctie van benzeen zit voor 98 % in datzelfde patroon, één binding verder. En de correctie van een molecuul met een
+  zijgroep is het blok van zijn moederkern plus de buurt van de zijgroep: een kwart van de kolommen van de Hessiaan geeft de gecorrigeerde
+  frequenties tot op 1,7 cm⁻¹ terug. Daarom kijkt de kop van het netwerk alleen naar paren die dicht bij elkaar liggen.
+- **Een meting die niets mat.** Een symmetrietoets leek te zeggen dat het paarmodel spiegelbeeldparen verschillend behandelde. De meetlat
+  deelde paren echter in naar atoomsoort, niet naar ligging; in benzeen zaten ortho-, meta- en paraparen in één klasse, en hun verschil is
+  echte natuurkunde. Dezelfde meetlat langs het doel gaf hetzelfde getal. Het paarmodel geeft spiegelbeeldparen vanzelf hetzelfde antwoord,
+  want zijn kenmerken veranderen niet onder een spiegeling. Symmetrie zat dus ingebouwd, en de toets kon ingebouwd en geleerd niet uit
+  elkaar houden. Wat bleef staan: het paarmodel kent geen richtingen, en een correctie van de volledige krachtmatrix in de ruimte heeft die
+  wel. Daarom is het lichaam van het ΔH-netwerk equivariant. De les: leg een meetlat eerst langs het doel, dan pas langs het model.
+- **Een vloer die van onszelf was.** Een week lang bleef elke variant van de kop op dezelfde fout steken. De oorzaak lag bij het doel:
+  een hulpterm in de verliesfunctie mikte op een grootheid die de kop door zijn bouw nooit kon bereiken. Met een doel dat binnen het bereik
+  van de kop ligt, een kleinste-kwadratenpassing op het patroon, verdween de vloer, en de fout op de ringkoppelingen zakte naar een ratio van
+  0,22. De les: controleer of een doel bereikbaar is voordat je een plateau als grens van het model leest.
+- **Ruis in de leerstof.** De fout van 133 cm⁻¹ in de benzeen-Hessiaan leidde tot de tweede route. Later bleek de ruis van de
+  eindige-verschillen-labels in de familie uit het vlak 3,3 cm⁻¹ te zijn, vlak bij de doelwaarde. Op analytische labels daalde de fout van die
+  familie op de oorspronkelijke tien van hold-out (a) van 2,36 naar 1,99 cm⁻¹, met hetzelfde recept.
+- **Dekking per familie van skeletten.** Haal je alle 130 moleculen met drie ringen uit de pool, dan stijgt de fout op ongeziene ouders met
+  drie ringen van 0,15 naar 0,5. Zet je ze in stappen terug (0, 31, 62, 123 kinderen), dan zakt die naar 0,45, 0,22, 0,17 en 0,15. De eerste
+  dertig kinderen van een familie leveren driekwart van de winst, zestig bijna alles. Dat is de regel voor elke nieuwe pool (besluit 52):
+  eerst elke familie dertig, dan zestig waar de beste nauwkeurigheid nodig is.
+- **Een toets die niet schoon was.** Twee moleculen van hold-out (a), 2-naftoëzuur en benzonitril, stonden ook in laag B, onder een tweede
+  code, en kwamen zo in de training. Een controle in de pijplijn die vraagt of het netwerk een molecuul al heeft gezien, vond ze. De trainer laat
+  zulke tweelingen nu standaard weg, en een toets op een verzameling met een tweeling wordt geweigerd.
+- **Alleen gedragen versies.** Een resultaat van een verkeerde netwerkversie kan het project van zijn pad brengen. Daarom weigeren de
+  programma's die een netwerk laden elke versie die niet gedragen is, tenzij die uitzondering met naam in het record staat (besluit 55).
+- **Het plafond van de hoofdrun.** In de hoofdrun van het notebook lagen de beste rondes tegen het plafond
+  van 30. Opnieuw getraind met een plafond van 100 lagen de beste rondes tussen 25 en 45, en de testfouten binnen 0,9 cm⁻¹ van de eerste run:
+  het plafond begrensde het aantal rondes, de getallen nauwelijks. Daaruit kwam de stopregel van §4 voor elke lerende module.
 
 ## 7. Waar het kan misgaan — en wat je bij de aftekening controleert
 
-- **De herbruikclausule.** Het corpus is eigen berekende data, in geen eerdere module gebruikt; controleer dat het rapport dat zegt en de DOI noemt.
-- **Domein en familie letterlijk.** "Reeks" en "Transformer" met zoveel woorden; de verandering van precies één ding in het recept vóór het trainen.
-- **Ruis in de labels.** Elke uitgave meldt welke Hessianen langs de tweede route zijn vervangen en waarom; een molecuul dat "genezen" is, staat
-  erbij met beide getallen. Controleer dat de uitgave van het notebook overeenkomt met de uitgave in de provenance.
-- **Append-only eerlijk.** Cellen die niet opnieuw gedraaid zijn, mogen niet opnieuw *geschreven* zijn. Op 24 september overschreef het
-  uitvoerhulpje per ongeluk twee zware cellen met hun definitie-kopieën; dat is op 25 september ontdekt, hersteld uit de commit van 23 september en
-  in de provenance opgeschreven. Controleer dat de trainingscellen uitvoer en een uitvoernummer hebben.
-- **Het bewijs is een curve, geen tabel.** Zie §10: niets in dit hoofdstuk is een bewijs dat het netwerk leert wat het voor grote PAK's moet leren;
-  de vooraf vastgelegde leercurve op laag B is dat wel of niet.
+- **De herbruikclausule.** Het corpus is eigen berekende data, in geen eerdere module gebruikt. Controleer dat het rapport dat zegt, en dat
+  het naar de uitgave verwijst die er bij inlevering is (de GitHub-repository, of de Zenodo-DOI als die er dan is).
+- **Domein en familie letterlijk.** "Reeks" en "Transformer" met zoveel woorden, en de ene verandering (twee naar vier lagen) in het recept
+  vóór het trainen.
+- **Notebook en eindproduct uit elkaar houden.** Het ingeleverde experiment is de Transformer in de trillingsbasis; het netwerk van de
+  pijplijn is het equivariante ΔH-netwerk. Controleer dat het rapport zegt welk getal bij welk netwerk hoort, en dat een getal over "het
+  netwerk" de gedragen versie noemt.
+- **Ruis in de labels.** Elke uitgave meldt welke Hessianen langs de tweede route zijn vervangen en waarom. Controleer dat de uitgave van
+  het notebook overeenkomt met de uitgave in de provenance.
+- **Append-only eerlijk.** Het notebook bewaart de hoofdrun zoals die gedraaid is; latere secties zijn eraan toegevoegd zonder de eerdere
+  cellen opnieuw te draaien. Cellen die niet opnieuw gedraaid zijn, mogen ook niet opnieuw *geschreven* zijn. Eén keer overschreef een
+  uitvoerhulpje per ongeluk twee zware cellen met hun definitie; dat is hersteld uit de vorige commit en in de provenance opgeschreven.
+  Controleer dat de trainingscellen uitvoer en een uitvoernummer hebben.
+- **De vrijgave is geen CC-vrijgave.** De 3 cm⁻¹ geldt op de proxy. Controleer dat geen tekst een familie "vrijgegeven" noemt zonder dat
+  niveau, en dat "overig" nergens als vrijgegeven staat.
+- **Hold-outs schoon houden.** Een molecuul kan onder twee namen in het corpus staan. Controleer dat de toetsgetallen uit een run komen
+  waarin de trainer de tweelingen heeft weggelaten.
 
 ## 8. In het kort
 
-Module 05 traint een Transformer die uit DFT-kenmerken per bandfamilie het correctieblok voorspelt, op een eigen corpus van ωB97X−B3LYP-verschillen
-in lagen, uitgegeven met DOI. Onderweg leerde het project dat de correctie lokaal is en in de taal van bindingen en hoeken geleerd moet worden, dat
-symmetrie in het paarmodel ingebouwd zit (de test van 25 september mat daardoor niets), en dat het echte bewijs een vooraf vastgelegde leercurve is die op 25 september is gestart en op 27 september haar eerste tussenlezing krijgt.
+Module 05 traint het ΔH-netwerk: een equivariant lichaam en een kop die per paar nabije interne coördinaten één correctiegetal voorspelt.
+Het leert op een eigen corpus van 1.236 moleculen in vijf lagen het verschil tussen ωB97X en B3LYP. Versie 1.3, drie zaadjes op 750
+moleculen met vroeg stoppen, brengt de frequenties van 23 cm⁻¹ fout naar 2 tot 3. Ring-in-het-vlak, C–H-strek en C–H-uit-het-vlak zijn
+vrijgegeven op beide hold-outs; "overig" niet. De elf coupled-cluster-ankers vormen de brug naar het echte niveau, waar de doelwaarde nog
+niet gehaald is. Onderweg leerde de module dat de correctie lokaal is en in bindingen en hoeken geleerd moet worden, dat een meetlat eerst
+langs het doel moet, en dat een toets alleen telt als hij schoon is.
 
-## 9. Gedateerd kader: stand van zaken op 12 september 2026
-
-Dit hoofdstuk beschrijft het plan zoals het is bevroren. Sindsdien is er gemeten, en dat verandert
-één aanname in §3.
-
-**Hessian QM9 is binnen.** Het bestand van 6,3 GB is gedownload en gecontroleerd (md5 klopt); alleen het
-vacuümdeel is uitgepakt: 41.645 moleculen met per molecuul de geometrie, de energie, de krachten, de
-Hessiaan, de frequenties en de normaalmodes. Het artikel is gelezen voor de eenheden (Å, eV, eV/Å²,
-cm⁻¹) en de conventies. Twee dingen die je bij gebruik moet weten: de Hessianen zijn *numeriek*
-(eindige verschillen met een verplaatsing van 0,01 a.u.; de makers melden dat de frequenties daar tot
-15 cm⁻¹ gevoelig voor zijn, dus dat is de ruisvloer van elk label dat we eruit maken), en translaties en
-rotaties zijn er niet uitgeprojecteerd (dat doen wij zelf voordat Δ₂ wordt gevormd).
-
-**De aanname "benzeenderivaten oververtegenwoordigd" klopt niet.** Een ringtelling uit de geometrie
-(bindingen uit covalente stralen, ringen uit de bindingsgraaf, platheid gecontroleerd) geeft: 66 van de
-41.645 moleculen hebben een geheel-koolstof aromatische zesring, benzeen zelf zit er één keer in.
-Wat er wél ruim in zit, 6.055 moleculen, zijn platte geconjugeerde vijf- en zesringen met stikstof of
-zuurstof erin: pyridine-, pyrrool- en furaanachtigen. De "aromaat-zware QM9-deelverzameling" van §3 is
-in werkelijkheid een geconjugeerde, heteroaromatische deelverzameling. De PAK-testset ligt dus nog
-verder buiten de trainingsverdeling dan §3 aannam.
-
-**Het antwoord dat klaarstaat: een eigen corpusfabriek.** Omdat QM9 gewoon DFT is en DFT-Hessianen
-van kleine aromaten goedkoop zijn (gemeten op de laptop: benzeen 3 tot 7 minuten per Hessiaan,
-naftaleen 13 minuten, pyreen 54 minuten), is in `modules/05_support_predictor/corpus/` een
-wachtrij klaargezet die molecuul voor molecuul beide Hessianen rekent (B3LYP en ωB97X, 6-31G*), in
-vier lagen en in een vaste volgorde (de laag A′ is later op 12 september toegevoegd, op besluit van de opdrachtgever):
-
-| laag | inhoud | aantal in het manifest |
-|---|---|---|
-| A, grootte-brug (ouders) | aromaten van 12 tot 30 atomen, van benzeen tot pyreen, met aza- en oxa-varianten | 45 |
-| A′, grootte-brug als verdeling | dezelfde grote kernen (antraceen, fenantreen, pyreen, fluorantheen, acridine, carbazool, …) elk met één zijgroep uit vijftien; toegevoegd op 12 september op besluit van de opdrachtgever, omdat 45 ouders geen regel kunnen leren | 868 |
-| B, de klasse | mono- en digesubstitueerde aromatische en heteroaromatische kernen tot 26 atomen | 4.353 |
-| C, QM9 geconjugeerd | de 6.055 uit de ringtelling; alleen de B3LYP-Hessiaan hoeft nog | 6.055 |
-
-De fabriek kan op elk moment gestopt en weer gestart worden (laptop, straks de desktop, ooit een
-cluster); omdat de volgorde binnen een laag vastligt, is elke tussenstand een reproduceerbare
-deelverzameling en zijn "de eerste 300, 600, 1.200" van laag B geneste sets voor een leercurve. De
-volgorde over de lagen heen: eerst A (de vijf timingmoleculen voorop), dan om en om B en A′ zodat de
-klasse-as en de grootte-as samen groeien, dan C.
-Hoeveel er uiteindelijk gerekend wordt, staat met opzet nergens: dat wordt een gedateerde notitie na
-een timingtest van vijf moleculen, precies zoals §3 al voorschreef voor de QM9-deelverzameling.
-Er is nog niets gerekend. De vier eigen lagen zijn op 12 september als kandidaat overgenomen (gedateerde
-notitie in de mapping); hoeveel er echt gerekend wordt, beslist de timingtest van vijf moleculen — en die
-kan pas draaien als er geen ankerberekening loopt (regel: één zware berekening tegelijk op de laptop).
-
-*Bron: `modules/05_support_predictor/PROVENANCE.md`, `out/HESSIAN_QM9_SUMMARY.md`,
-`out/HESSIAN_QM9_RINGS.md`, `corpus/DESIGN_2026-09-12.md`; gedateerde notitie van 12 september in
-[Capstone_Mapping.md](../GoalGathering/Capstone_Mapping.md) §Module 05.*
-
-## 10. Hoe weet je dat een netwerk echt iets geleerd heeft? (gedateerde aanvulling, 25 september 2026)
-
-Een netwerk dat op zijn trainingsvoorbeelden goed scoort, heeft nog niets bewezen. Een leerling die de antwoorden van het oefenexamen uit zijn
-hoofd kent, heeft ook geen wiskunde geleerd. De vraag die in dit hoofdstuk telt is dus niet "hoe klein is de fout?", maar "hoe weet je dat het
-netwerk de *regel* heeft gevonden en niet de *antwoorden*?" Daar zijn drie soorten bewijs voor, en we gebruiken ze alle drie.
-
-**Eerste bewijs: toetsen op wat het netwerk nooit zag, en dat steeds moeilijker maken.** Het makkelijkste is een paar moleculen achterhouden
-uit dezelfde verzameling. Moeilijker is een heel *skelet* achterhouden: alle moleculen die op een bepaalde kern zijn gebouwd, bijvoorbeeld alles
-met een carbazool-kern, zodat het netwerk die kern nooit ziet en er toch over moet oordelen. Het moeilijkst, en voor ons het belangrijkst, is
-*groter*: leer alleen van kleine moleculen en toets op grotere. Dat is precies de richting waarin de pijplijn straks moet werken, want de PAK's
-die in de ruimte tellen zijn groter dan alles wat we kunnen doorrekenen. Als de fout bij elke stap ongeveer gelijk blijft, heeft het netwerk iets
-algemeens geleerd. Als de fout bij "groter" ineens omhoog schiet, kende het alleen de maten die het gezien had.
-
-**Tweede bewijs: de leercurve.** Geef het netwerk 50, 100, 200, 1.000 voorbeelden en zet de fout uit tegen het aantal. Bij echt leren daalt die
-lijn en blijft ze dalen; bij uit het hoofd leren blijft ze vlak, want elk nieuw voorbeeld vertelt dan niets over het volgende. Het sterkste bewijs
-dat wij hebben is een *vergelijking* van twee curves op dezelfde gegevens. Toen we het netwerk vroegen om de correctie per trilling op te
-schrijven, bleef de curve voor de koppelingen tussen trillingen vlak, hoe veel moleculen we ook gaven. Toen we dezelfde correctie opschreven in
-de taal van bindingen en hoeken — lokaal, in de buurt van elk atoom — begon dezelfde curve te dalen. Dezelfde data, dezelfde voorbeelden, een
-andere taal: dat is het verschil tussen "het kan niet" en "het kan, als je het goed vraagt". Omdat een curve pas overtuigt als ze lang genoeg is,
-loopt sinds 25 september een nieuwe: van 100 tot 1.200 kleine moleculen, met de drie toetsen van het eerste bewijs, en met de leesregel — wat
-telt als slagen en wat als falen — op papier gezet vóórdat het eerste getal bestond. Zo kan niemand achteraf de lat verplaatsen, wij ook niet.
-
-**Derde bewijs: controles die moeten mislukken, en controles die moeten kloppen.** Schud de antwoorden door elkaar, zodat elk molecuul de
-correctie van een ander molecuul te leren krijgt, en train opnieuw. Als het netwerk dan óók een dalende curve laat zien, meet onze meetlat iets
-anders dan leren, en dan mag geen enkele eerdere curve tellen. Andersom: in een symmetrisch molecuul, zoals benzeen, zijn er atomen die
-elkaars spiegelbeeld zijn. Niemand heeft het netwerk verteld welke dat zijn. Als het voor spiegelbeeldparen toch hetzelfde antwoord geeft, heeft
-het de natuurkunde gevonden en niet de tabel onthouden. (Deze controle werkt alleen bij een model dat de symmetrie kán schenden. Bij ons
-paarmodel zit ze in de kenmerken ingebouwd, en dan meet de controle niets; dat leerden we op 25 september, zie §8.) Een derde controle is de *ruisvloer*: onze correcties komen zelf uit berekeningen met een
-kleine meetfout, en een netwerk kan niet nauwkeuriger worden dan zijn leerstof. Een curve die tot aan die vloer zakt en daar stopt is het beste
-wat er te halen valt; een curve die ver boven de vloer blijft hangen zegt dat het model, en niet de data, de grens is.
-
-**Waar we staan, eerlijk.** De verschuiving van elke trilling apart leert het netwerk goed. De koppelingen tussen trillingen leert het op
-skeletten die het nooit zag én op de kale moederkernen zonder zijgroepen, met een curve die daalt; die kale kernen zijn juist de moleculen
-die het meest op de grote PAK's lijken, en de curve daalt daar nog te langzaam om al van bewijs te spreken. (Een eerdere versie van deze
-alinea, dezelfde ochtend, noemde die curve vlak; dat kwam uit een achterhaald resultaatbestand en is gecorrigeerd.) Kleine moleculen leren het netwerk iets over grotere, maar langzamer dan ze elkaar leren.
-Dat is geen mislukking en geen succes; het is de stand van een curve die nog kort is. Het bewijs dat dit ontwerp werkt, is een curve die lang
-genoeg is, op de drie moeilijke toetsen, met de leesregel van tevoren. Die curve loopt nu. Sinds 26 september krijgt ook de geleerde molecuulrepresentatie haar eerlijke kans naast het paarmodel: een vooraf vastgelegde zoektocht in vijf stappen (optimalisatie, verliesfunctie, capaciteit, datagroei, voortraining), waarvan de eerste drie zonder oordeel zijn gelezen en de vierde op 300 moleculen wacht; geen zin over "leert niet" vóór de vijfde. De eerste tussenlezing van de laag-B-curve is zondagavond 27 september.
+*Bron: `modules/05_support_predictor/README.md`, `modules/MODELS.md`, `modules/05_support_predictor/MODELS.md`, `modules/ANCHORS.md`,
+`modules/PIPELINE.md`; besluiten 49–63 en 65 in de [README van plan 05](../README.md); de leesrecords
+`modules/05_support_predictor/out/E7_rungC_chain35_read.md`, `holdout_a_clean_read_2026-10-30.md` en
+`anchor_count_2026-10-29/anchor_count_read.md`; `GoalGathering/notes/Diagnosis_2026-10-21_Set_Three_Read.md`; de rubriek
+[Rubrics/05](../../../Rubrics/05_Deep_Learning_Systems.md).*

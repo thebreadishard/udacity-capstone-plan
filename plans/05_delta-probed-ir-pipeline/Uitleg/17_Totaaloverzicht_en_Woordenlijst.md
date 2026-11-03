@@ -2,233 +2,337 @@
 
 ---
 
-## §17.1 De hele keten in één tabel
+## §17.1 De keten in het kort
+
+Het product is één programma, de pijplijn van module 08 (versie 0.9). Het rekent een molecuul
+goedkoop door met DFT (B3LYP/6-31G*), telt daar de correctie bij op die het ΔH-netwerk
+voorspelt, en rekent uit de gecorrigeerde Hessiaan het spectrum. Bij het spectrum hoort een
+certificaat dat per band zegt of de familie van die band is vrijgegeven.
+
+Het ΔH-netwerk (module 05, versie 1.3) leerde de correctie van B3LYP naar ωB97X op 750 moleculen
+van het eigen corpus. Het is gemeten op twee groepen moleculen die het nooit zag, hold-out (a) en
+hold-out (b). Drie van de vier families blijven daar binnen 3 cm⁻¹ en zijn vrijgegeven; de familie
+'other' niet. Die licentie geldt op het proxyniveau. De elf CCSD(T)-ankers zijn de brug naar de
+gouden standaard; een licentie op coupled-clusterniveau bestaat nog niet.
+
+Wat "goed" is, komt uit vier lagen (besluit 60). B3LYP/6-31G* is de invoer en blijft dat. ωB97X/6-31G*
+is de tussenstap, waarop het netwerk de vorm van de correctie leert. De CCSD(T)-ankers zijn de
+ijklaag die zegt wat goed is voor de harmonische correctie. Laboratorium- en sterrenkundige spectra
+zijn de controle van buitenaf op de hele keten.
+
+Om die kern staan de andere modules. Modules 02 tot en met 04 bouwen de tegenstanders en de
+labwaarheid, module 06 stelt nieuwe moleculen voor, module 07 bewaakt de lange berekeningen, en
+module 09 verdedigt het geheel.
+
+## §17.2 De hele keten in één tabel
+
+"Poort" is de controle die moet slagen voordat de uitvoer verder mag.
 
 | Stap | Wie | Erin | Eruit | Poort |
 |---|---|---|---|---|
-| Tegenstander bouwen | M02 | PAHdb v4.00 | atlas (O8) | — |
-| Waarheid bouwen | M03 | PAHdb-exp., NIST, PNNL, documentatie | scorebord met u_band (O9); matrixtolerantie | toets vooraf vastgelegd |
-| Goedkope tegenstander | M04 | koppeltabel (O10, eigen DOI) | gekalibreerde kolom; onzekerheidslaag | Q4-uitzondering, leave-molecule-out |
-| Voornotitieprobes | probes | DFT, één CC-punt | dry run (c, K_cap, w), M1, haalbaarheid, run/no-run, σ | pilotnotitie pas daarna |
-| Pilotnotitie | student | alles hierboven, geen Δ₂ | O14, gecommit | verzegelde fits gaan open |
-| Deck | probes (+M06 vóór hash) | O2, prior, q_s | O3 met hash | onveranderlijk daarna |
-| Probes | batchrunner via M07 | deck | antwoordrecords (O5) | hash-controle, budgetregel |
-| Recovery | solver | O5, prior | Δ₂, ρ-curve, K, K_off, c₀, Δ₁ (O6) | stopregel, K_cap |
-| Licenties | probes | O6, referenties | Q6 / Q7 / Q8-uitslagen | fail-closed zinnen |
-| Spectrum | pijplijn | DFT + Δ₂ + geometrieterm, VPT2 (pyVPT2 op analytische pyscf-Hessianen, besluit 46) | bandposities per familie; intensiteiten (DFT-dipolen, anharmonisch), gescoord bij benzeen en naftaleen; breedte als tekenkeuze | resonantieregels |
-| Score | M08 | spectrum, O8, O9, M04-kolom | beat / verloren / onbeslisbaar per familie | u_band, Δ = 0-nulrij |
-| Record en certificaat | M07 | alles | O7, O13 of weigering | de weigeringslijst |
-| ΔH-voorspeller | M05 | ΔH-corpus in lagen (O11) | geleerde prior per familieblok; de leercurve van laag B | licentie verdiend op R2 én R3 |
-| Kandidatenvoorsteller | M06 | PubChem-kandidatenset (O12) | nieuwe moleculen voor de atlas, met projectpassing | vooraf vastgelegde metingen (geldigheid, nieuwheid, passing, gehoorzaamheid) |
-| Fragmenten (R6) | pijplijn | fragmenten uit de DFT-geometrie | Δ₂ per fragment | licentie (a)(b)(b′)(c) |
-| Mode G | bijproject | eigen bevroren-ruimte-gradiënten (PySCFAD's lokale-CC-gradiënt bleek niet de gevraagde, 17 september) | gradiënten erbij op gelicentieerde rungs | M2–M5, stopcriterium |
-| Paper en verdediging | M08, M09 | alles | paper; presentatie | geen kostenbijvoeglijknaamwoord |
+| Tegenstander lezen | M02 | PAHdb v4.00, de berekende bibliotheek van NASA | de opponent-atlas: nette tabellen van berekende banden | — |
+| Waarheid bouwen | M03 | PAHdb-experimenteel v3.10 (argonmatrix), NIST-gasfasespectra | het lab-scorebord; de matrix–gasverschuiving per familie; u_band | toets vooraf vastgelegd |
+| Goedkope tegenstander | M04 | paren van een labband en een geschaalde PAHdb-band, 83 moleculen | de gekalibreerde kolom en de uitslag dat de restfout spreiding is die de kenmerken niet vangen | recept vooraf vastgelegd; leave-one-molecule-out |
+| Corpus | M05 | 1.236 moleculen in vijf lagen (A, A2, B, P3, P3c) | per molecuul de B3LYP-geometrie, de analytische B3LYP- en ωB97X-Hessiaan en de APT | een tweede route voor elke gemarkeerde Hessiaan (besluit 50) |
+| Ankers | probes, ankerregister | elf moleculen, van benzeen tot antraceen | CCSD(T)-Hessianen: CCSD(T)/cc-pVDZ plus een MP2-basisstap naar cc-pVTZ; benzeen volledig CCSD(T)/cc-pVTZ | twee tweede routes (besluit 61); één gedragen versie per molecuul (besluit 62) |
+| ΔH-netwerk | M05 | 750 corpusmoleculen; hold-outs (a) en (b) apart | versie 1.3 in drie seeds; per molecuul een voorspelde ΔH | early stopping (besluit 51); promotie alleen als beste op beide hold-outs (besluit 57) |
+| Licentie | M08 | de evaluatierecords van het gedragen netwerk | per familie vrijgegeven of niet | fout ≤ 3 cm⁻¹ op beide hold-outs (besluit 65) |
+| Pijplijn, stap 1–3 | M08 | SMILES of xyz | startgeometrie (RDKit), B3LYP/6-31G*-minimum (psi4), analytische B3LYP-Hessiaan en APT (pyscf); uit het corpus waar het corpus ze precies zo heeft | toelating: neutraal, gesloten schil, aromatisch, alleen C, H, N, O, F, S, Cl |
+| Pijplijn, stap 4 | M08 met M05 | de B3LYP-Hessiaan | de gecorrigeerde Hessiaan: B3LYP plus de gemiddelde ΔH van de drie seeds | alleen een gedragen netwerkversie (besluit 55) |
+| Pijplijn, stap 5 | M08 | gecorrigeerde Hessiaan, B3LYP-APT | dubbel-harmonisch spectrum en certificaat | licentie per band; gezien of ongezien |
+| Anharmonische stap | probes, in aanbouw | DFT-krachtconstanten van derde en vierde orde op niveau G | Δ_anh per band en de geometrieterm | nog niet in de pijplijn |
+| Kandidatengenerator | M06 | een bevroren set moleculen uit PubChem | nieuwe moleculen als SMILES | buiten de pijplijn |
+| Run steward | M07 | logs van lopende berekeningen | een voorstel uit een gesloten actielijst | deterministische poort en regeltabel |
+| Volgordescorer | standout-module (P1) | kenmerken van paren van een molecuul | de volgorde van gedeeltelijke CC-metingen | vastgelegd vóór de hash van het dek (besluit 58) |
+| Openbaar | M08, `website/` | de resultaten hierboven | de Spectrum Atlas en de pijplijnshow (42 opgenomen runs) | — |
+| Verdediging | M09 | alles | de presentatie | — |
 
-## §17.1a Gedateerde aanvulling 12 september 2026: na module 09, en twee lessen uit de praktijk
+## §17.3 Lessen uit de praktijk
 
-**Het netwerk: eerst "stand-out" (beslissing 32, 12 september), sinds 14 september het bereikproduct zelf (beslissing 36).** De modulereeks eindigt bij module 09. Het neurale
-netwerk dat op de uitvoer van de pijplijn zelf getraind zou worden (Δ₂-correcties als trainingsdata voor
-PAK's zonder laboratoriumspectrum) is met naam in het projectvoorstel gezet als het uitstekende vervolg
-*buiten* de reeks, niet als "module 10": de rubrieken kennen geen stand-outcriterium, en het netwerk mag
-pas beginnen als twee poorten open zijn — een korte gemeten reikwijdte van de correctie op R2–R3 en een
-dekkingstabel die zegt dat de banden van de pijplijn als trainingslabels deugen. De verliesvoorwaarde staat
-er nu al bij. Twee dagen later maakte beslissing 36 er pijplijn A van: het product voor de grote PAK's, per familie vrijgegeven of geweigerd, met dezelfde twee poorten als licentie (hoofdstuk 10; projectvoorstel §3.5).
+**Les 1: de laptop rekent niet twee dingen tegelijk.** Een naftaleenberekening van 3,5 uur ging
+verloren doordat er naast de berekening een tweede klus van 8 GB werd gestart. De berekening liep
+in WSL (een Linux-omgeving binnen Windows) en gebruikte 25 van de 31 GB. Windows meldde
+geheugentekort en beëindigde de hele virtuele machine. Regel: elke laptoprun noemt vooraf zijn
+piekgeheugen, en het startprogramma weigert een run die alle laptopruns samen boven 13 GB brengt.
 
-**Les 1: de laptop rekent niet twee dingen tegelijk.** Op 12 september is een naftaleenberekening van
-3,5 uur verloren gegaan doordat er náást de berekening (in WSL, met 25 van de 31 GB) een Lean-build van
-8 GB op de Windows-kant werd gestart; Windows meldde geheugentekort en beëindigde de hele virtuele
-machine. Regel sindsdien: naast een ankerberekening niets van meer dan ongeveer 1 GB op de Windows-kant.
+**Les 2: lange berekeningen moeten kunnen hervatten.** Een berekening die dagen loopt, schrijft elk
+tussenresultaat weg zodra het bestaat en slaat bij hervatten over wat al klaar is. De CC-ankers
+schrijven zo elke gradiënt apart weg. De regel begon bij de lokale-CC-code van pyscf-forge, die de
+resultaten van haar fragmenten alleen in het geheugen hield. De laag eromheen is getest op benzeen:
+afgebroken na 2 van 15 fragmenten, hervat, en de energieën waren identiek tot op de laatste cijfers.
 
-**Les 2: lange berekeningen moeten kunnen hervatten.** De lokale-CC-code van pyscf-forge bewaart de
-resultaten van haar 24 fragmenten alleen in het geheugen. Er is een laag omheen gebouwd die elk fragment
-direct wegschrijft en bij hervatten overslaat wat al klaar is; getest op benzeen (afgebroken na 2 van 15
-fragmenten, hervat, energieën identiek tot op de laatste cijfers). Een gesneuvelde berekening verliest nu
-hooguit het lopende fragment. De lijst van alle software-ingrepen staat in
-`GoalGathering/notes/Software_Changes_Ledger.md`, met per ingreep of hij als pull request naar de makers
-zou kunnen.
+**Les 3: een achterhaald resultaatbestand is gevaarlijker dan geen bestand.** In zes documenten
+werden getallen aangehaald uit een run die al was vervangen; het doel van benzeen bevatte daarin nog
+een rekenfout van 133 cm⁻¹. Een leercurve leek daardoor vlak terwijl ze daalt. Regel: een
+resultaatbestand waarvan de invoer later is gecorrigeerd, krijgt bovenaan het woord VERVANGEN, en elk
+document dat een curve aanhaalt, noemt het bestand. Voor netwerken geldt hetzelfde: verder werk
+draait alleen op een gedragen versie (besluit 55).
 
-## §17.1b Gedateerde aanvulling 25 september 2026: wat er in twee weken veranderde, en vier lessen
+**Les 4: een hulpje dat een kopie van een cel uitvoert, kan de echte cel overschrijven.** De
+uitvoerder van module 05 mocht alleen cellen toevoegen aan het notebook. Toch verving hij twee
+trainingscellen door hun definitie-kopieën. De cellen zijn hersteld uit een eerdere commit.
 
-**Het anker is gelezen** (hoofdstuk 3, kader): per familie verlies / winst / tussenin; de goedkope basis voor één van de drie families vrijgegeven.
-**De correctie is lokaal** en moet in de taal van bindingen en hoeken geleerd worden (hoofdstuk 10 §6); dat maakte van module 06 een
-kandidatenvoorsteller (hoofdstuk 11) en van de telling van dure metingen een telling per buurt en per omgevingstype (hoofdstuk 5 §5.9).
-**Het bewijs dat het netwerk leert** is een vooraf vastgelegde leercurve die op 25 september is gestart (hoofdstuk 10 §10).
+**Les 5: een controle met geschudde labels vertelt je wat je meetlat meet.** Een model kreeg de
+correcties van *andere* moleculen te leren. Het leerde de koppelingen niet; dat is goed, want die
+meetlat meet dus leren. Toch halveerde het de frequentiefout, omdat elke klasse van termen een
+gemiddelde heeft dat je zonder chemie kunt raden. Die tweede meetlat wordt daarom gelezen tegen
+13 cm⁻¹, wat geschudde labels al halen, en niet tegen 23 cm⁻¹, de fout zonder correctie.
 
-**Les 3: een achterhaald resultaatbestand is gevaarlijker dan geen bestand.** Op 25 september werden in zes documenten getallen aangehaald uit
-een run van 23 september die dezelfde dag al was vervangen (het doel van benzeen was daarin nog de rekenfout van 133 cm⁻¹); de curve op de kale
-kernen leek daardoor vlak terwijl ze daalt. Regel sindsdien: een resultaatbestand waarvan de invoer later gecorrigeerd is, krijgt dezelfde dag
-bovenaan het woord VERVANGEN, en elk document dat een curve aanhaalt, noemt het bestand.
+**Les 6: een meting van "het model respecteert X" zegt niets zonder dezelfde meting aan het doel.**
+Een symmetrietest leek beslissend: spiegelbeeldparen kregen van het paarmodel antwoorden die de helft
+van hun grootte uiteenliepen, ver boven de vooraf gestelde grens. Het besluit "het model respecteert de
+symmetrie niet" stond binnen een uur in zes documenten. Dezelfde meetlat langs het doel gaf hetzelfde
+getal: de klassen waren te grof en het verschil was echte natuurkunde. Met echte symmetriebanen bleek
+het model even symmetrisch als zijn doel. Regel: zo'n meting wordt eerst aan het doel gedaan; zonder
+die controle is het geen resultaat. De intrekking hoort in dezelfde documenten als de bewering.
 
-**Les 4: een hulpje dat een kopie van een cel uitvoert, kan de echte cel overschrijven.** De append-only-uitvoerder van module 05 verving op 24
-september twee trainingscellen door hun definitie-kopieën; gevonden op 25 september, hersteld uit de commit van 23 september.
+**Les 7: een berekening die er goed uitziet, kan de verkeerde berekening zijn.** Zes dagen lang zijn
+CCSD(T)-Hessianen berekend met de verkeerde hulpgrootheid. De gradiënt van CCSD(T) heeft een
+"lambda" nodig, een tussenuitkomst van de berekening, en de code gebruikte die van CCSD. De aanroep zag er goed uit en de paarcontroles slaagden. De eigen
+test van pyscf liet het juiste gebruik al die tijd zien. Twee regels kwamen eruit. Een nieuwe
+bibliotheekaanroep in een productieroute noemt de test of het voorbeeld van de makers dat dezelfde
+aanroep doet. En elk anker krijgt een tweede route die iets anders meet: de gradiënt wordt vergeleken
+met verschillen van de opgeslagen energieën (besluit 61), een controle die een fout van deze grootte
+vangt.
 
-**Les 5: een controle met geschudde labels vertelt je wat je meetlat meet.** Een model dat de correcties van *andere* moleculen te leren kreeg,
-leerde de koppelingen niet (goed: die meetlat meet leren) maar halveerde toch de frequentiefout, omdat elke klasse van termen een gemiddelde
-heeft dat je zonder chemie kunt raden. Sindsdien wordt die tweede meetlat tegen 13 cm⁻¹ gelezen, niet tegen 23.
+**Les 8: een hold-out is pas schoon als je het hebt nagekeken.** Twee moleculen van hold-out (a),
+2-naftoëzuur en benzonitril, zaten ook in de training, als tweeling in laag B: hetzelfde molecuul
+onder een andere naam. Dat kwam aan het licht toen het certificaat moest zeggen of het netwerk een
+molecuul heeft gezien. Op de schone acht moleculen ligt de fout van elke familie 0,04 tot 0,27 cm⁻¹
+hoger, en de licentie verandert voor geen enkele familie. Regel: de trainer laat hold-out-tweelingen
+standaard weg, en de evaluatie weigert een testset met een tweeling.
 
-**Les 6: een meting van "het model respecteert X" zegt niets zonder dezelfde meting aan het doel.** Op 25 september leek een
-symmetrietest beslissend: spiegelbeeldparen kregen van het paarmodel antwoorden die de helft van hun grootte uiteenliepen, ver boven de
-vooraf gestelde grens. Het besluit "het model respecteert de symmetrie niet, een equivariant netwerk is vereist" stond binnen een uur in zes
-documenten. Toen dezelfde meetlat langs het dóél werd gelegd, gaf die hetzelfde getal: de klassen waren te grof en het verschil was echte
-natuurkunde. Met echte symmetriebanen bleek het model even symmetrisch als zijn doel, omdat zijn kenmerken onder een spiegeling niet
-veranderen. De les is een regel geworden: zo'n meting wordt eerst aan het doel gedaan en alleen daarnaast gelezen; zonder die controle is
-het geen resultaat. En de tweede helft van de les: de intrekking hoort in dezelfde documenten als de bewering, met datum.
+**Les 9: hetzelfde molecuul, anders opgeschreven, moet hetzelfde antwoord geven.** Twee schrijfwijzen
+van fenantreen verschoven de gecorrigeerde banden van het netwerk tot 2,9 cm⁻¹ (rms 0,65 cm⁻¹), omdat
+het antwoord van versie 1.3 afhangt van de volgorde van de atomen. De pijplijn zet daarom elke invoer
+eerst in één vaste volgorde, die van de canonieke SMILES. De afhankelijkheid in het netwerk zelf blijft
+tot een volgende versie.
 
-**27 september.** De ruisvloer van de labels is gemeten (besluit 45: ≈ 0,04 µE_h per energie, drie ordes onder wat de terugrekenregel verdraagt). De patroonvoorsteller, nu als standout-module op het corpus, leerde iets over het meetplan zelf: ongeveer 45 % van de koppelingskracht ligt binnen de frequentieband die het dek van het plan bestrijkt, een dek met een patroon voor élk paar komt op 97 achtergehouden moleculen wél tot de stopdrempel (0,08 / 0,14 tegen 0,53 / 0,47 aan het eind van het banddek), en een geleerde meetvolgorde bespaart metingen (1,35 / 1,52 × het banddek in plaats van 2,2 / 2,1 ×); herordenen tijdens het meten helpt 6–10 % en verplaatst het stoppunt niet: de rest van de afstand tot het orakel is kennis, geen terugkoppeling. Verbreding en stopregel zijn vooraf vastgelegd voor na de 28ste. De kationen hebben een prijs: benzeen⁺ ≈ 22 × het neutrale molecuul, naftaleen⁺ 34.411 s per energie (9,6 uur). Het projectvoorstel kreeg zijn vierde koude lezing.
+## §17.4 Woordenlijst
 
-## §17.2 Woordenlijst
+De Engelse woordenlijst voor de beoordelaars van de school is
+[GLOSSARY.md](../modules/GLOSSARY.md); dezelfde termen betekenen hier hetzelfde.
 
-**Anharmonisch** — afwijking van het ideale-veergedrag; verschuift banden meestal omlaag.
-Plan 05 corrigeert dit niet met CC.
+**Anharmonisch** — afwijking van het ideale-veergedrag; verschuift banden meestal een paar procent
+omlaag. Het project neemt de anharmonische verschuiving uit DFT (niveau G), niet uit coupled cluster;
+de pijplijn rekent nog harmonisch.
 
-**Arm A / B / C** — drie manieren om de lokale-CC-energie bij een verplaatste stand te
-berekenen: alles bevroren (A), bezette orbitalen overgebracht met verse virtuele ruimtes
-(B), alles vers (C). Het probe-object is A; de referentie voor de ruislijn is B.
+**Anker** — een molecuul waarvan het project de CCSD(T)-Hessiaan heeft berekend. Er zijn elf
+gedragen ankers; het ankerregister ([ANCHORS.md](../modules/ANCHORS.md)) houdt elke versie bij.
 
-**Atlas** — de tabel van berekende PAHdb-banden (module 02); "lijn A" van de tegenstanders.
+**APT (atomaire polaire tensor)** — hoe het dipoolmoment van een molecuul verandert als een atoom
+beweegt. De APT bepaalt de hoogte (intensiteit) van een band.
 
-**Band, bandpositie** — piek in het infraroodspectrum en zijn frequentie in cm⁻¹.
+**Arm A / B / C** — drie manieren om een lokale-CC-energie bij een verplaatste stand te berekenen:
+alles bevroren (A), bezette orbitalen overgebracht en virtuele ruimtes vers (B), alles vers (C).
 
-**Basisset** — de verzameling functies waaruit orbitalen worden opgebouwd; cc-pVTZ op R0–R1.
+**Atlas (opponent-atlas)** — de tabel van berekende PAHdb-banden van module 02; de tegenstander
+waartegen het project zich meet.
 
-**Beat** — het plan claimt "beat" voor een familie als de eigen bandposities aantoonbaar
-dichter bij het lab liggen dan die van elke tegenstander, en alleen waar u_band dat kan
-beslissen.
+**Band, positie, intensiteit** — een piek in het infraroodspectrum; zijn positie is de kleur (in
+cm⁻¹), zijn intensiteit de sterkte.
 
-**Bereikrung** — R4–R6: geen labdata; een spectrum met foutbudget, geen winstclaim.
+**Basisset** — de verzameling wiskundige functies waaruit orbitalen worden opgebouwd, zoals de
+resolutie van een foto. Het project gebruikt 6-31G* voor de DFT-niveaus en cc-pVDZ en cc-pVTZ voor
+de ankers. Uitkomsten in verschillende basissets zijn niet direct vergelijkbaar.
 
-**Bevroren ruimte** — de orbitaalruimtes van de lokale CC-methode, één keer gekozen en
-door projectie overgebracht naar elke verplaatste stand (hoofdstuk 3).
+**Beat** — een familie waarvan de eigen bandposities aantoonbaar dichter bij het lab liggen dan die
+van elke tegenstander, en alleen waar u_band dat kan beslissen.
 
-**Biaslijn** — Q6-test: bevroren Δ₂ tegen volledig-CCSD(T)-Δ₂ op benzeen, per mode binnen τ.
+**Bereikrung** — een trede van de ladder zonder labdata: een spectrum met foutbudget, geen winstclaim.
 
-**c, c₀** — c is de stopconstante (ρ* = c·ρ_noise, uit de dry run); c₀ is de fout in de
-gedeelde referentie-energie, bepaald uit de tweede amplitude en afgetrokken.
+**Bevroren ruimte** — de orbitaalruimtes van de lokale CC-methode, één keer gekozen en door projectie
+overgebracht naar elke verplaatste stand (hoofdstuk 3).
 
-**Certificaat** — het uitvoerobject per molecuul: spectrum, foutbudget, beat-uitslagen,
-kostenrecord, licenties, hashes — of een weigering.
+**Certificaat** — wat de pijplijn per molecuul naast het spectrum aflevert: per band de familie en of
+die is vrijgegeven, of het netwerk het molecuul heeft gezien, en de ωB97X-waarheid waar het corpus die
+heeft. Een molecuul dat de pijplijn niet aanneemt, krijgt een weigering met de reden.
 
-**CMA** — Concordant Mode Approach, een bestaande methode; CMA-0 is het diagonale
-enkelmode-blok van dit plan; CMA-2 selecteert enkele niet-diagonale elementen.
+**cm⁻¹ en µm** — twee eenheden voor de positie van een band. 3,3 µm is ongeveer 3.000 cm⁻¹, de
+C–H-strek.
 
-**Coupled cluster (CC), CCSD(T)** — de nauwkeurige, dure rekenmethode; de "gouden standaard".
+**Corpus** — de eigen verzameling moleculen van het project (1.236), in vijf lagen: A (46
+handgekozen ouders), A2 (327 afgeleide kinderen), B (743), P3 (60) en P3c (60 kationen).
 
-**Deck** — de vooraf vastgelegde, gehashte lijst patronen van een rung met alle instellingen.
+**Coupled cluster (CC), CCSD(T)** — de nauwkeurige, dure rekenmethode; CCSD(T) heet de "gouden
+standaard".
 
-**Δ, Δ₁, Δ₂** — verschil CC − DFT: Δ₁ de kracht in de DFT-stand (gemeten, gebruikt voor de
-eerste-orde-geometrieterm), Δ₂ de Hessiaancorrectie (het beloofde object).
+**Dek (deck)** — de vooraf vastgelegde, gehashte lijst patronen van een gedeeltelijke CC-meting, met
+alle instellingen.
 
-**DFT** — dichtheidsfunctionaaltheorie, de goedkope methode (B3LYP als hoofdfunctionaal).
+**Δ, Δ₁, Δ₂, ΔH** — het verschil tussen een betere en een goedkopere methode. Δ₁ is het verschil in
+kracht in de goedkope stand, Δ₂ het verschil in Hessiaan. ΔH is Δ₂ zoals het netwerk het voorspelt:
+H(ωB97X) − H(B3LYP) op het proxyniveau.
 
-**Dry run** — generale repetitie van de hele machinerie met DFT tegen DFT (B3LYP tegen een
-functionaal met veel exacte uitwisseling), met een ruiskolom per energie; levert c, K_cap,
-n_min(G), w en de strafgewichten.
+**DFT, B3LYP, ωB97X** — dichtheidsfunctionaaltheorie, de goedkope methode; B3LYP en ωB97X zijn twee
+functionalen (recepten) daarbinnen. B3LYP is de invoer van de pijplijn, ωB97X de tussenstap.
 
-**Eerste-orde-geometrieterm** — Σ φ_iij·δq_j: de correctie omdat Δ₂ in de DFT-stand wordt
-gemeten en niet in het eigen minimum van het gecorrigeerde landschap; toegepast en per band
-geprint; geen atoom wordt verplaatst.
+**Dry run** — generale repetitie van de meetmachinerie met DFT tegen DFT, die de instellingen van
+het meetplan levert.
 
-**Familie** — groep modes naar bewegingstype (C–H-strek, C–C-strek, C–H-buiging in/uit het
-vlak); de eenheid van scoren en rapporteren.
+**Dubbel-harmonisch** — het eenvoudigste model van een spectrum: posities uit de harmonische
+Hessiaan, hoogtes uit de eerste afgeleide van het dipoolmoment (de APT).
 
-**Fragmentlicentie** — de vier metingen (a)(b)(b′)(c) die fragmentgewijs opmeten op R6
-toestaan; "in afwachting van (b′)" is een mogelijke toestand.
+**Early stopping** — de training houdt een validatieset apart, stopt als die niet meer verbetert, en
+bewaart de beste stand (besluit 51).
 
-**Gepoolde σ** — σ² gemiddeld over de vier Q6-modes van één arm; de gepoolde waarde beslist.
+**Equivariant netwerk** — een netwerk waarvan de uitvoer netjes meedraait als je het molecuul draait
+of spiegelt. Het lichaam van het ΔH-netwerk is equivariant.
 
-**Hash** — vingerafdruk van data; maakt vooraf-vastleggen controleerbaar.
+**Familie** — groep trillingen naar bewegingstype, de eenheid van scoren en vrijgeven. Het netwerk
+en de licentie kennen er vier: CH-stretch (C–H-strek, boven 2.800 cm⁻¹), ring-ip (ringtrillingen
+in het vlak, 950–1.750 cm⁻¹), CH-oop (C–H-buiging uit het vlak, 600–1.050 cm⁻¹) en 'other' (de rest:
+zachte skelettrillingen en trillingen van zijgroepen).
 
-**Hessiaan** — matrix van tweede afgeleiden van de energie; bepaalt de harmonische
-frequenties.
+**Gedragen (carried)** — de status van een netwerkversie of anker waar het project tevreden mee is.
+Verder werk draait alleen op gedragen versies (besluiten 55 en 62).
 
-**Hot band** — verschuiving van een band door thermisch aangeslagen lage modes; de reden dat
-de temperatuur van een labspectrum in u_band zit.
+**Geometrieterm (eerste-orde)** — ½ Σ φ_iik ΔQ_k: de verschuiving van een frequentie doordat het
+betere niveau zijn minimum op een iets andere plek heeft. Nagemeten op 18 moleculen; hoort bij de
+anharmonische stap, nog niet in de pijplijn.
 
-**K, K_off, K_cap, n_min(G)** — K het aantal CC-energieën (mode E; ±paar = 2) of gradiënten
-(mode G) tot de stopregel; K_off = K − 2M; K_cap het plafond; n_min(G) het minimumaantal in
-mode G.
+**Hash** — vingerafdruk van data; maakt vooraf vastleggen controleerbaar.
 
-**Kostenrecord** — de vaste regel per rung en mode met K, K_off, σ, c₀, ρ-getallen,
-rekentijd, machine, script.
+**Hessiaan** — de matrix van tweede afgeleiden van de energie naar de atoomposities; bepaalt de
+harmonische frequenties.
 
-**Licentie (Q6/Q7/Q8; geleerde prior; fragment)** — een reeks metingen die iets toestaat;
-nooit een aanname.
+**Hold-out (a) en (b)** — moleculen die de training nooit ziet. (a): moleculen van laag A die vanaf
+het begin apart zijn gezet, zoals benzeen en fenantreen. (b): alle gesubstitueerde moleculen van twee
+skeletten, zodat het netwerk op ringskeletten wordt getoetst die het nooit zag.
 
-**Lokale CC (DLPNO, LNO)** — CC-varianten die verre elektronencorrelatie weglaten en
-daardoor bijna lineair schalen.
+**Hot band** — verschuiving van een band door thermisch aangeslagen lage trillingen; de reden dat de
+temperatuur van een labspectrum in u_band zit.
 
-**M** — aantal normale modes, 3N − 6.
+**Imaginaire frequentie** — een trilling met een negatieve veerconstante; wordt met een minteken
+geschreven. In een minimum hoort ze niet voor te komen.
 
-**Matrixisolatie** — labspectrum van een molecuul ingevroren in argon bij ~10 K; verschoven
-ten opzichte van gas; alleen bruikbaar achter de matrix–gas-poort.
+**K, K_off** — K is het aantal dure energieën tot de stopregel van een gedeeltelijke meting; K_off
+= K − 2M, het deel buiten de diagonaal.
 
-**Mode E / mode G** — Δ₂ uit energieën / uit gradiënten. Sinds 17 september (besluit 43) komt de diagonaal uit energieën en komen de koppelingen uit gradiënten (2k + 1 = 19 bij naftaleen), met een eigen gradiëntmotor voor de bevroren ruimtes als bijproject.
+**Kandidatengenerator** — het netwerk van module 06: een SMILES-Transformer die nieuwe moleculen
+voorstelt die het waard zijn om te berekenen; een experiment (0.x) buiten de pijplijn.
 
-**Normale mode** — bewegingspatroon waarbij alle atomen met één frequentie trillen.
+**Kostenrecord** — de vaste regel per meting met aantallen, rekentijd, machine en script.
 
-**Onbeslisbaar door constructie** — een familie waarvan u_band groter is dan de beat-marge;
-vooraf verklaard, geen winst en geen verlies.
+**Lagen van waarheid** — de vier lagen van besluit 60: B3LYP (invoer), ωB97X (tussenstap),
+CCSD(T)-ankers (ijklaag), lab en ruimte (controle van buitenaf).
 
-**Patroon (p), ±paar** — een uitwijkingsvector van alle atomen; gaat altijd als paar +p en
-−p de berekening in.
+**Licentie** — een vrijgave die op metingen rust, nooit op een aanname. In de pijplijn: een familie
+is vrijgegeven waar de seed-gemiddelde fout van het gedragen netwerk op beide hold-outs binnen
+3 cm⁻¹ blijft (besluit 65). Onder versie 1.3 zijn ring-ip, CH-stretch en CH-oop vrijgegeven, 'other'
+niet.
 
-**Pilotnotitie** — het gedateerde document met alle bevroren getallen, gecommit vóór de
-eerste lokale-CC-Δ₂.
+**Lokale coördinaten** — bindingslengtes, bindingshoeken en torsies in plaats van normale modes.
+Het ΔH-netwerk leert de correctie in lokale coördinaten en zet haar daarna om naar de modes
+(besluit 49).
 
-**Pre-registratie** — vooraf vastleggen wat je meet en waartegen, controleerbaar door
-hashes en datums.
+**Lokale CC (DLPNO, LNO)** — CC-varianten die verre elektronencorrelatie weglaten en daardoor bijna
+lineair schalen; de route voor ankers boven ongeveer 26 atomen.
 
-**Prior (structureel / geleerd)** — de voorkennis die de recovery nodig heeft om uit weinig
-metingen een dunne Δ₂ terug te vinden: sinds besluit 11 de symmetrie van het molecuul (koppelingen tussen verschillende symmetrietypen zijn nul; de frequentieband van het eerste ontwerp bleek niet waar de structuur zit), of het
-door module 05 voorspelde patroon.
+**M** — het aantal normale modes, 3N − 6.
+
+**Matrixisolatie** — een labspectrum van een molecuul dat bij ongeveer 10 K in argon is ingevroren;
+verschoven ten opzichte van gas.
+
+**Mode E / mode G** — een gedeeltelijke CC-meting uit energieën (E) of uit gradiënten (G).
+
+**MP2** — een correlatiemethode die veel goedkoper is dan CCSD(T). De ankers gebruiken het verschil
+MP2/cc-pVTZ − MP2/cc-pVDZ als basisstap.
+
+**Netwerk, versie, seed** — een netwerk is een programma met veel instelbare getallen dat een
+afbeelding leert uit voorbeelden. Een seed is één trainingsrun; het project traint er drie per
+recept. Een versie noemt een recept: 1.x is in productie, 0.x is een experiment
+([MODELS.md](../modules/MODELS.md)).
+
+**Normale mode** — een bewegingspatroon waarbij alle atomen met één frequentie trillen.
+
+**Onbeslisbaar door constructie** — een familie waarvan u_band groter is dan de winstmarge; vooraf
+verklaard, geen winst en geen verlies.
+
+**Patroon (p), ±paar** — een uitwijkingsvector van alle atomen; gaat altijd als paar +p en −p de
+berekening in.
+
+**Pijplijn** — het programma van module 08: een molecuul erin, spectrum en certificaat eruit. Het
+heeft een eigen versienummer ([PIPELINE.md](../modules/PIPELINE.md)).
+
+**Pijplijnshow** — een webpagina die de pijplijn als metrokaart met zes stations toont, met
+opgenomen runs in hun echte rekentijd en een live-stand op de laptop.
+
+**Pilotnotitie** — het document met alle vooraf vastgelegde getallen van een meting, gecommit vóór
+de eerste dure meting.
+
+**Pre-registratie** — vooraf vastleggen wat je meet, hoe je het leest en wat als succes telt, zodat
+de uitkomst achteraf niet kan worden gebogen.
+
+**Prior** — de voorkennis die nodig is om uit weinig metingen een grote matrix terug te vinden: de
+symmetrie van het molecuul (besluit 11), of de correctie die het netwerk voorspelt.
 
 **Probe** — één dure meting (een ±paar met CC en DFT); ook: elk vooraf omschreven script in
 `probes/` dat een getal print.
 
-**Q6, Q7, Q8** — de ankerlicentie (ruis, bias, drempel), de probinglicentie (recovery tegen
-volledige referentie op R0–R1), en lokaliteit/verzadiging (directe koppelingen, K_off-groei).
+**Proxyniveau, CC-niveau** — op het proxyniveau worden twee DFT-methoden met elkaar vergeleken om een
+methode te oefenen; op CC-niveau wordt vergeleken met coupled cluster.
 
-**R_s, R_a** — de symmetrische combinatie ½[ΔE(+p) + ΔE(−p)] − ΔE(0) (het antwoord; bevat
-Δ₂) en de antisymmetrische ½[ΔE(+p) − ΔE(−p)] (bevat Δ₁).
+**R_s, R_a** — de symmetrische combinatie ½[ΔE(+p) + ΔE(−p)] − ΔE(0), die Δ₂ bevat, en de
+antisymmetrische ½[ΔE(+p) − ΔE(−p)], die Δ₁ bevat.
 
-**Recovery** — het terugrekenen van Δ₂ uit de antwoorden met een prior.
+**Recovery** — het terugrekenen van Δ₂ uit de antwoorden van de metingen met een prior.
 
-**ρ, ρ_noise, ρ\*, ρ_max, ρ\*_common** — achtergehouden fout; ruisvloer; stopdrempel
-c·ρ_noise; de vloer 0,5 waarboven "op ruisniveau"; de gemeenschappelijke drempel waarbij
-Q8(c) twee rungs vergelijkt.
+**ρ, ρ_noise, ρ\*** — de fout op achtergehouden metingen; de ruisvloer; de stopdrempel c·ρ_noise.
 
-**Rung** — trede van de ladder R0–R6.
+**Rung, ladder** — de ladder is de eigen lijst testmoleculen van klein naar groot; elke trede is een
+rung.
 
-**Ruislijn** — Q6-test: σ_E ≤ 0,82·τ·q_s² (mode E), σ_g ≤ 2,8·τ·q_s (mode G).
+**Run steward** — het programma van module 07 dat lange berekeningen bewaakt, een regeltabel uit
+eigen lessen toepast en alleen acties uit een korte lijst mag nemen.
 
-**Scorebord** — de tabel van gemeten banden met u_band (module 03).
+**Scaffold (skelet)** — het ringskelet van een molecuul zonder zijgroepen.
 
-**σ_E, σ_g** — per-punt-ruis van de energie- of gradiëntverschillen, √(SSR/(n − p)),
-gepoold per arm.
+**Schaalfactor** — een getal iets onder één waarmee harmonische DFT-posities worden vermenigvuldigd
+om dichter bij metingen te komen; een pleister, geen correctie van de natuurkunde.
 
-**Steun (support)** — welke elementen van Δ₂ groot zijn; het eerste doel van module 05, sinds besluit 49 vervangen door de correctie zelf in lokale coördinaten.
+**Scorebord** — de tabel van gemeten labbanden met u_band (module 03).
 
-**τ, τ₇, η₈, ε₈, γ, d₇, r_c, r_f, h** — de bevroren drempels: kleinste beat-marge;
-Q7-tolerantie; koppelingsafwijking; verre-aandeel; verzadigingsfactor;
-onderscheidbaarheidsfactor; gemeten lokaliteitslengte; kleinste slagende fragmentstraal;
-Cartesische probestap.
+**σ** — de ruis per punt, geschat als √(SSR/(n − p)) uit de residuen van een fit.
 
-**u_band, u_T, u_296, χ_max** — gemeten bandonzekerheid van een labband; haar
-temperatuurterm; het 0 → 296 K-aandeel per molecuul; de maximale
-hot-band-helling: gemeten 0,044 cm⁻¹/K (Joblin e.a. 1995, de 6,2 µm-band van coroneen; het eerste ontwerp herinnerde 0,03).
+**SMILES, canonieke SMILES** — een manier om een molecuul als tekstregel te schrijven; de canonieke
+SMILES is de ene vaste schrijfwijze die het programma RDKit kiest.
 
-**Verzegeld bestand** — de fitcoëfficiënten van de gladheidsprobe en de ruwe M1-energieën;
-gaan pas open met de commit-hash van de pilotnotitie.
+**Spectrum Atlas** — de openbare website van het project
+(https://thebreadishard.github.io/spectrum-atlas/): de corpusmoleculen met hun spectrum, het anker
+waar dat bestaat, de gemeten nauwkeurigheid van het netwerk en de licentie.
 
-## §17.3 Waar je verder leest
+**Steun (support)** — welke elementen van Δ₂ groot zijn; het eerste doel van module 05, sinds
+besluit 49 vervangen door de correctie zelf in lokale coördinaten.
 
-- Het bindende geheel: de [README](../README.md) van plan 05 en de reeks documenten in
-  `GoalGathering/`, te beginnen met de woordenlijst van de
-  [Overarching_Goal](../GoalGathering/Overarching_Goal.md).
-- De regels: de [Ladder](../GoalGathering/Frozen_Ladder_and_Tolerances.md).
-- De modules: de [Capstone_Mapping](../GoalGathering/Capstone_Mapping.md) en de
-  rubrieken in `Rubrics/`.
-- De probes in hun volgorde: [probes/README.md](../probes/README.md).
-- Het waarom voor de begeleider: het [Project_Proposal](../GoalGathering/Projectvoorstel_2026-09-30.md).
+**Tussenstap (stepping stone)** — ωB97X/6-31G*, het niveau waarop het netwerk de vorm van de
+correctie leert op de moleculen van het corpus; beoordeeld op hoe weinig de ankers daarna nog moeten
+corrigeren.
 
-*Einde van de uitleg. Geschreven op 4 september 2026 bij de bevroren tekst van plan 05.*
+**u_band** — de gemeten onzekerheid van een labband, met een term voor de temperatuur van het
+monster.
+
+**Verzegeld bestand** — een bestand met tussenuitkomsten dat pas opengaat als de drempels zijn
+vastgelegd.
+
+**Volgordescorer** — het netwerk van de standout-module (P1, versie 1.0): kiest in welke volgorde
+de stukken van een gedeeltelijke CC-meting worden berekend. De geleerde volgordescorer (P2) doet
+hetzelfde vanuit het ΔH-netwerk en is een experiment (0.x).
+
+## §17.5 Waar je verder leest
+
+- Het bindende geheel: de [README](../README.md) van plan 05, met de genummerde besluiten, en de
+  documenten in `GoalGathering/`, te beginnen met de [Ladder](../GoalGathering/Frozen_Ladder_and_Tolerances.md).
+- De pijplijn en haar versies: [PIPELINE.md](../modules/PIPELINE.md); de netwerken:
+  [MODELS.md](../modules/MODELS.md); de ankers: [ANCHORS.md](../modules/ANCHORS.md).
+- De modules: de mappen in `modules/`, elk met een README en een rubriekchecklist, en de
+  [Capstone_Mapping](../GoalGathering/Capstone_Mapping.md).
+- Het waarom voor de begeleider: het [Projectvoorstel](../GoalGathering/Projectvoorstel_2026-09-30.md).
+- De openbare kant: de Spectrum Atlas en de pijplijnshow op
+  https://thebreadishard.github.io/spectrum-atlas/pipeline/.
+
+*Bron: [README.md](../README.md) (besluiten 11, 49–65), [PIPELINE.md](../modules/PIPELINE.md),
+[MODELS.md](../modules/MODELS.md), [ANCHORS.md](../modules/ANCHORS.md), [GLOSSARY.md](../modules/GLOSSARY.md),
+de README's van de modules 02 tot en met 08, `../TASKS.md` (taken 53, 146, 149, 156) en `../TASKS_closed.md` (taak 157),
+de werkregels van de repository over laptopgeheugen en bibliotheekaanroepen, het obstakelregister (lessen 1–6),
+en de corpusmap `modules/05_support_predictor/corpus/molecules/`.*

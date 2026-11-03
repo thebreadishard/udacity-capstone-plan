@@ -50,6 +50,12 @@ rapporteert per familie, omdat de nauwkeurigheid van de rekenmethoden per famili
 verschilt en omdat de sterrenkunde vooral in bepaalde families geïnteresseerd is (de
 6,2 en 7,7 µm-banden zijn C–C-strek).
 
+Het netwerk en zijn licentie (hoofdstukken 10 en 13) gebruiken vier families, met een vaste regel
+op frequentie en bewegingsrichting: **CH-stretch** (boven 2800 cm⁻¹, vooral waterstof beweegt),
+**ring-ip** (950–1750 cm⁻¹, beweging in het vlak: de C–C-strek en de C–H-buiging in het vlak
+samen), **CH-oop** (600–1050 cm⁻¹, beweging uit het vlak, met waterstof erin) en **'other'**: de
+rest, zoals zachte trillingen van het hele skelet en trillingen van zijgroepen.
+
 ## §2.3 De Hessiaan: alle veerconstanten in één tabel
 
 Voor één veer is de energie E = ½ k x². De veerconstante is de tweede afgeleide van de
@@ -71,15 +77,20 @@ Uit de Hessiaan volgen de normale modes en hun frequenties in één wiskundige s
 (diagonaliseren, hoofdstuk 4). Dat is waarom de Hessiaan het hart van het plan is: **wie de
 Hessiaan goed heeft, heeft de harmonische bandposities goed.** Het plan-05-idee is precies
 dat je niet de hele Hessiaan met de dure methode hoeft te berekenen, maar alleen de
-*correctie* op de goedkope Hessiaan. Die correctie is een even grote matrix en heet Δ₂.
+*correctie* op de goedkope Hessiaan. Die correctie is een even grote matrix en heet Δ₂, in
+het gebouwde product ΔH. Het product meet die correctie niet per molecuul: een neuraal netwerk
+voorspelt haar (hoofdstuk 10).
 
 Schrijf je de Hessiaan niet in atoomcoördinaten maar in de coördinaten van de goedkope
 normale modes, dan is de goedkope Hessiaan zelf diagonaal (dat is de definitie van
 normale modes). De correctie Δ₂ is dan een matrix waarvan de diagonaal zegt "deze mode moet
 iets stijver of slapper" en de niet-diagonale elementen zeggen "deze twee modes zijn toch
-een beetje aan elkaar gekoppeld". Het plan verwacht dat die niet-diagonale elementen vooral
-groot zijn tussen modes met bijna dezelfde frequentie; dat vermoeden zit in de
-"frequentie-gebande" prior van hoofdstuk 5.
+een beetje aan elkaar gekoppeld". Het eerste ontwerp verwachtte dat die niet-diagonale
+elementen vooral groot zijn tussen modes met bijna dezelfde frequentie. De metingen wezen anders
+uit. In de modebasis bleken de koppelingen niet te leren, omdat een normale mode een richting
+zonder vast teken is. In lokale coördinaten (bindingslengtes en hoeken) zit driekwart van de
+correctie in paren die een atoom of een ring delen. Het netwerk leert de correctie daarom in lokale
+coördinaten en zet haar daarna om naar de modes (besluit 49, hoofdstuk 5).
 
 ## §2.4 Harmonisch en anharmonisch
 
@@ -104,8 +115,13 @@ goedkope en dure spectra in de harmonische term zit; anharmonische
 constanten zijn bij de goedkope methode al redelijk. Ten tweede zou het opmeten van de dure
 anharmonische constanten het aantal benodigde berekeningen enorm vergroten, en juist dat
 aantal wil het plan klein houden. Het plan belooft daarom uitdrukkelijk **geen**
-coupled-clustercorrectie op anharmonische constanten; het rapporteert alleen als bonus hoe
-groot die zou zijn geweest langs elke mode apart.
+coupled-clustercorrectie op anharmonische constanten.
+
+De vorm van het eindspectrum is daarmee ν = ω + Δ_anh: de harmonische frequentie ω, verbeterd
+door het netwerk, plus de anharmonische verschuiving Δ_anh uit DFT. Voor Δ_anh is niveau G gekozen
+(B3LYP/6-31G*). Een grotere basisset veranderde alleen de kwartische constanten van de trillingen
+uit het vlak, en bracht die verder van CCSD(T) af. De pijplijn rekent nu nog harmonisch; de
+anharmonische stap is in aanbouw.
 
 ## §2.5 Resonanties
 
@@ -120,7 +136,8 @@ herkend met vaste drempels, de betrokken toestanden worden samen behandeld, en a
 veel worden (een "polyad-cap") wordt de C–H-strekfamilie op die rung **niet gescoord** in
 plaats van fout gescoord. De verzameling modes die samen moeten worden behandeld heet de
 "resonantie-gesloten familieset"; die wordt tot één stap diep gesloten (de partners van
-een gescoorde mode doen mee, de partners van de partners niet).
+een gescoorde mode doen mee, de partners van de partners niet). Die regels horen bij de
+anharmonische stap: een harmonisch spectrum kent geen resonanties.
 
 ## §2.6 Temperatuur: warme banden
 
@@ -133,9 +150,10 @@ is. Dat heet een **hot band**-verschuiving.
 
 Dit is geen bijzaak voor het plan. Veel openbare gasfasespectra van PAK's zijn gemeten in
 hete damp (245 °C voor naftaleen in één databank; rond 250 °C in de GC-IR-bibliotheek die
-voor pyreen wordt gebruikt), terwijl de berekening een koud molecuul beschrijft. Een
-verschuiving van orde 0,01–0,03 cm⁻¹ per kelvin, over ruim 200 graden, is 2–7 cm⁻¹: net zo
-groot als het effect dat het plan wil aantonen. Hoofdstuk 8 legt uit hoe het plan hiermee
+voor pyreen wordt gebruikt), terwijl de berekening een koud molecuul beschrijft. De gemeten
+verschuiving ligt tussen ongeveer 0,01 en 0,05 cm⁻¹ per kelvin, afhankelijk van de band (Joblin
+e.a. 1995). Over ruim 200 graden is dat 2 tot 10 cm⁻¹: net zo groot als het effect dat het plan
+wil aantonen. Hoofdstuk 8 legt uit hoe het plan hiermee
 omgaat (een temperatuurterm in de meetonzekerheid, en de voorkeur voor spectra bij
 kamertemperatuur, die voor benzeen en naftaleen blijken te bestaan).
 
@@ -156,13 +174,16 @@ vooraf "onbeslisbaar op matrix" verklaard.
 
 Een molecuul met N atomen heeft M = 3N − 6 normale trillingen, elk met een frequentie die
 uit de veerconstanten volgt. Alle veerconstanten samen vormen de Hessiaan; wie de Hessiaan
-goed heeft, heeft de harmonische bandposities goed. Plan 05 corrigeert alleen de
-Hessiaan met de dure methode (Δ₂) en laat de anharmonische correctie aan de goedkope
-methode over. Resonanties worden met vaste regels behandeld of eerlijk niet gescoord.
+goed heeft, heeft de harmonische bandposities goed. Plan 05 corrigeert de Hessiaan met
+een geleerde correctie (Δ₂, in het product ΔH) en laat de anharmonische correctie aan de goedkope
+methode over; die stap is nog niet in de pijplijn. Het netwerk en de licentie werken met vier
+families: CH-stretch, ring-ip, CH-oop en 'other'. Resonanties worden met vaste regels behandeld of eerlijk niet gescoord.
 Temperatuur verschuift banden met een paar cm⁻¹, dus de temperatuur van het labspectrum
 telt mee in de onzekerheid; gas en matrix worden verschillend behandeld.
 
 *Bron: [Overarching_Goal.md](../GoalGathering/Overarching_Goal.md) (methode-skelet),
 [Frozen_Ladder_and_Tolerances.md](../GoalGathering/Frozen_Ladder_and_Tolerances.md) §2
 (beslisbaarheid, temperatuurterm) en §3 (resonantiesluiting, Δ₂-only),
-[Distilled_Project_Plan_and_Quality_Checks.md](../GoalGathering/Distilled_Project_Plan_and_Quality_Checks.md) §3.*
+[Distilled_Project_Plan_and_Quality_Checks.md](../GoalGathering/Distilled_Project_Plan_and_Quality_Checks.md) §3; besluiten 11 en
+49 in de [README](../README.md); de familieregel in `m05/learning_curve_layerA.py`; de anharmonische stap in `../TASKS.md` (taak 53);
+de temperatuurhellingen in de Ladder §2 (item 52 van de literatuurlijst).*
