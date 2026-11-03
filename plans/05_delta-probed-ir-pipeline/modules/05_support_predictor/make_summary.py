@@ -15,6 +15,9 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_BREAK
 from docx.shared import Inches, Pt
 
 HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE / "m05"))   # the follow-up readers, shared with the notebook's builder
+import followup_reads as reads  # noqa: E402
+
 TEMPLATE = HERE.parents[3] / "Rubrics" / "APA7_template.docx"
 NB = HERE / "notebook"
 FIG = NB / "figures"
@@ -274,6 +277,81 @@ if FU5.exists():
          f"precision {U5['pair_ap']['baseline']:.2f} / {U5['pair_ap']['4 layers']:.2f} against {U5['pair_ap_cap30']['baseline']:.2f} / {U5['pair_ap_cap30']['4 layers']:.2f}. The largest movement of any "
          f"test error is {d_diag:.2f} cm⁻¹: the cap was binding on the epoch count, not on the numbers, and the comparison of the main report stands. No best epoch sits within "
          "10 % of the new cap, so the rule is satisfied. The earlier sections are kept as run; the audit is appended, because the change of practice is part of what the module shows.")
+
+
+
+def required(value, what: str):
+    """A follow-up number the report quotes; its record must exist (the notebook may say 'running', the report may not)."""
+    if value is None:
+        raise SystemExit(f"Addendum 6: the record for {what} is missing in out/")
+    return value
+
+
+def addendum6() -> None:
+    """Sections 12-12.6 of the notebook (1-10 October 2026): the rung-C network, the targets per family, clean labels, the pairing fix."""
+    heading("Addendum 6 (1–10 October 2026): the floor was the target, coverage per scaffold, targets per family, clean labels")
+    bounds = required(reads.record("rungC_target_bound_holdouts_2026-10-01.json"), "the target bounds")["bounds"]
+    net175 = required(reads.seed_mean("E7_rungC_lever1b_f_proj_175_2026-10-01", 175), "the network at 175")
+    pair175 = required(reads.pair_model_mean("E7_rungB_f_175_2026-10-01", 175), "the pair model at 175")
+    c24 = "E7_rungC_carried_kd_750_saved_2026-10-02"
+    c24a, c24b = required(reads.seed_mean(c24, 750), "chain 24"), required(reads.seed_mean(c24, 750, "b"), "chain 24 (b)")
+    c24w = required(reads.seed_mean(c24, 750, "a", "corrected_freq_rms"), "chain 24 ω")
+    zero = required(reads.cc_transfer("T3_cc_transfer", "zero_rule", family="ring-ip"), "the CC transfer, zero rule").values()
+    tuned = required(reads.cc_transfer("T3_cc_transfer", "network_alpha", family="ring-ip"), "the CC transfer, network").values()
+    para(f"Notebook section 12 opens a new model and a new question. Every model of sections 7–11 had stopped at a ring-coupling ratio of about 0.42 on "
+         f"the hold-out of unseen scaffolds. Measured before any training, the target itself explained it: reconstructed on the pairs the model could "
+         f"express (internal coordinates at most one bond apart), the true correction already leaves {bounds['d:projected']['a']['coupling_ratio']:.2f} of the "
+         f"ring couplings, and with pairs up to three bonds apart only {bounds['f:projected']['a']['coupling_ratio']:.2f}. On that wider support an "
+         f"equivariant network (rung C: the geometry in, the correction per pair of internal coordinates out) reached {net175:.2f} against {pair175:.2f} for "
+         f"the hand-feature pair model at 175 molecules, and kept improving where the pair model did not: at 750 molecules, three seeds, "
+         f"{c24a:.2f} on hold-out (a) and {c24b:.2f} on the never-seen scaffolds of hold-out (b), with a corrected-frequency error of {c24w:.1f} cm⁻¹ — "
+         f"the first registered target of the project met. Tuned on three coupled-cluster anchors and read on the fourth, the same network brings an unseen "
+         f"anchor's in-plane frequencies from {min(zero):.0f}–{max(zero):.0f} cm⁻¹ to {min(tuned):.1f}–{max(tuned):.1f} cm⁻¹.")
+    full = required(reads.coverage_parent("control620_2026-10-02", "phenanthrene"), "the coverage control")
+    without = required(reads.coverage_parent("noring3_2026-10-02", "phenanthrene"), "the coverage ablation")
+    some = required(reads.coverage_parent("ring3keep25_2026-10-03", "phenanthrene"), "the coverage with 31 children")
+    benz_full = required(reads.coverage_parent("control620_2026-10-02", "benzene"), "the coverage control, benzene")
+    benz_without = required(reads.coverage_parent("noring3_2026-10-02", "benzene"), "the coverage ablation, benzene")
+    para(f"Section 12.3 asked why the error grows with the ring skeleton: are large skeletons harder, or does the training pool hold too few of them? "
+         f"Taking the 123 substituted three-ring molecules out of the pool moved the phenanthrene parent of the hold-out from {full:.2f} to {without:.2f}, "
+         f"while benzene stayed at {benz_full:.2f}–{benz_without:.2f}; keeping 31 of them brought it back to {some:.2f}. Coverage, not difficulty: a "
+         f"scaffold family is covered by a few dozen of its substituted children, which became the project's rule for composing a pool (decision 52).")
+    c24f = required(reads.family_read(c24), "chain 24 per family").per_family
+    floor = required(reads.record("rungC_family_floor_ceiling_2026-10-03.json"), "the family floors")["floor_median"]
+    r34 = required(reads.record("read_chain34_analytic_2026-10-05.json"), "chain 34 on analytic labels")
+    fd34, an34 = r34["record"]["a"], r34["results"]["a"]
+    h34 = required(reads.hinge_low_mode_mean("rungC_low_modes_noise_c34_analytic_2026-10-05.json"), "the hinge molecules, chain 34")
+    h36 = required(reads.hinge_low_mode_mean("rungC_low_modes_noise_c36_analytic_2026-10-07.json"), "the hinge molecules, chain 36")
+    comp = required(reads.record("composite_test2_benzene_2026-10-06.json"), "benzene's composite anchor")["results"]
+    fams = " / ".join(FAM[f] for f in reads.FAMILIES)
+    under = sum(c24f[f] <= reads.FAMILY_LINE_CM for f in reads.FAMILIES)
+    para(f"Sections 12.4–12.5 replaced the all-mode average by one number per family of vibrations (decision 53: every family under 3 cm⁻¹). Read "
+         f"that way the target of 12.2 was met by {under} families of {len(reads.FAMILIES)} ({fams}: "
+         + " / ".join(f"{c24f[f]:.2f}" for f in reads.FAMILIES)
+         + f" cm⁻¹). Two numbers no training can move were measured first, the noise of the finite-difference labels and the head's own ceiling; the "
+         f"C–H out-of-plane number lay inside its label noise ({floor['CH-oop']:.2f} cm⁻¹), so it could not be read. Graded against exact "
+         f"analytic labels instead, the carried model of the time (chain 34) gives "
+         + " / ".join(f"{an34[f]['mean']:.2f}" for f in reads.FAMILIES)
+         + " cm⁻¹ against "
+         + " / ".join(f"{fd34[f]:.2f}" for f in reads.FAMILIES)
+         + f" on the finite-difference labels: three families under the line, the out-of-plane miss was the ruler. The 'other' family — mostly soft, "
+         f"low-frequency modes — is the one left; a registered test gave the network an input for the hinge between rings that its five worst molecules "
+         f"share, and it did not help (low-mode error {h34:.2f} → {h36:.2f} cm⁻¹). The anchors' own ruler moved too: benzene's CCSD(T) anchor in the small "
+         f"cc-pVDZ basis sits {comp['dz']['ring-ip']:.1f} cm⁻¹ from the larger-basis result in the ring in-plane family, further than the cheap B3LYP start "
+         f"({comp['low']['ring-ip']:.1f}); the small-basis anchor plus the basis step measured with MP2 brings it to {comp['comp']['ring-ip']:.1f}, and every "
+         f"anchor since is kept in a registry with its level (decision 62).")
+    m = required(reads.matched_pairing_means(), "the matched-pairing read")
+    para(f"Section 12.6 corrects a number of section 12.2. The band-height read-out paired the bands of two spectra in order of position; where a bright "
+         f"and a dark band swap places between the two levels, a bright band was compared with a dark one. Paired by the shape of the motion instead, the "
+         f"height error is {m['intensity_rel_rms_matched']:.2f} against {m['intensity_rel_rms_zero_rule_matched']:.2f} without correction (sorted: "
+         f"{m['intensity_rel_rms']:.2f} against {m['intensity_rel_rms_zero_rule']:.2f}): the network still halves it, but the baseline had been overstated "
+         f"twofold. The spectrum overlap ({m['spectrum_overlap']:.2f} against {m['spectrum_overlap_zero_rule']:.2f}) did not depend on the pairing.")
+    para("What was learned: measure the bound of the target before blaming a model, read accuracy per family rather than in one average, check the "
+         "ruler — the labels and the anchors — before the network, and keep a corrected number beside the one it replaces. The sections are appended "
+         "in the notebook with their dates; the earlier sections stand as run.")
+
+
+addendum6()
 
 
 heading("References")

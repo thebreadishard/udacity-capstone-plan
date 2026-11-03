@@ -13,7 +13,6 @@ one seed. Run:  python notebook/make_notebook.py  (`--check-only` compiles every
 the unexecuted notebook to PATH and nothing else, for `execute_section8.py`; while executing, one
 `[m05nb] cell i/n start|done` line per cell for the run's watch)
 """
-import csv
 import json
 import os
 import sys
@@ -25,6 +24,12 @@ from nbclient import NotebookClient
 from nbformat.v4 import new_code_cell, new_markdown_cell, new_notebook
 
 HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE.parent / "m05"))   # section 12's readers, shared with make_summary.py
+import followup_reads as reads  # noqa: E402
+
+_names, _FAM, HINGE_MOLECULES = reads.CC_ANCHORS, reads.FAMILIES, reads.HINGE_MOLECULES
+_rc, _rb, _t3, _cov, _cov_mol = reads.seed_mean, reads.pair_model_mean, reads.cc_transfer, reads.coverage_mean, reads.coverage_parent
+_fam_read, _json_or_none = reads.family_read, reads.record
 RELEASE = os.environ.get("M05_RELEASE", "layerA2_2026-09-23")   # 2 Oct 2026: the release the executed notebook carries; sections 7+ assert the follow-ups against its ids
 cells = []
 
@@ -755,24 +760,6 @@ else:
 md(reading)
 
 # ---- 12. follow-up (1 October 2026): the floor was the target and the support — appended after sections 1–11, which stay as run
-def _rc(name, size, hold="a", key="coupling_ratio"):
-    """Seed-mean read-out of a rung-C record in ../out (None when the record is absent — the cell then says so)."""
-    p = HERE.parent / "out" / f"{name}.json"
-    if not p.exists():
-        return None
-    rec = json.load(open(p, encoding="utf-8"))
-    seeds = rec["curve"][str(size)]["per_seed"]
-    return float(np.mean([s[hold][key] for s in seeds]))
-
-
-def _rb(name, size, hold="a", key="coupling_ratio"):
-    p = HERE.parent / "out" / f"{name}.json"
-    if not p.exists():
-        return None
-    rec = json.load(open(p, encoding="utf-8"))
-    return float(rec["curve"][str(size)]["B1_mlp"]["mean"][hold][key])
-
-
 def _f(x, d=2):
     return "—" if x is None else f"{x:.{d}f}"
 
@@ -855,26 +842,12 @@ rows; the ω criterion (≤ 3 cm⁻¹) is not — {_f(_c17[2], 1)} against a tar
 # ---- 12.2 the next day (2 October 2026): T1 met, the CC transfer, the error map, the first intensities
 
 
-def _t3(prefix, col, key="coupling_ratio", fam=None):
-    """Mean over the three saved models of a leave-one-anchor-out column, per held-out anchor (None when a file is absent)."""
-    out = {}
-    for s in (0, 1, 2):
-        p = HERE.parent / "out" / f"{prefix}_seed{s}_2026-10-02.json"
-        if not p.exists():
-            return None
-        for held, f in json.load(open(p, encoding="utf-8"))["folds"].items():
-            v = f[col]["freq_rms_by_family"].get(fam) if fam else f[col][key]
-            out.setdefault(held, []).append(v)
-    return {h: float(np.mean(v)) for h, v in out.items()}
-
-
-_names = {"A_8448043181": "benzene", "B_8b12a55d3a": "fluorobenzene", "A_6e858b26e5": "pyridine", "A_01f3186607": "naphthalene"}
 _c23 = [_rc("E7_rungC_carried_kd_750_2026-10-01", 750, h, k) for h, k in (("a", "coupling_ratio"), ("b", "coupling_ratio"), ("a", "corrected_freq_rms"), ("a", "dH_residual_ratio"))]
 _c24 = [_rc("E7_rungC_carried_kd_750_saved_2026-10-02", 750, h, k) for h, k in (("a", "coupling_ratio"), ("b", "coupling_ratio"), ("a", "corrected_freq_rms"), ("a", "dH_residual_ratio"))]
 _cols = (("zero_rule", "zero rule"), ("alpha_scaling", "α scaling, no network"), ("network_alpha", "network, α tuned"), ("network_head", "network, head tuned"))
 _t3r = {c: _t3("T3_cc_transfer", c) for c, _ in _cols}
-_t3w = {c: _t3("T3_cc_transfer", c, fam="ring-ip") for c, _ in _cols}
-_l2r, _l2w = _t3("T3b_l21", "network_head_l2"), _t3("T3b_l21", "network_head_l2", fam="ring-ip")
+_t3w = {c: _t3("T3_cc_transfer", c, family="ring-ip") for c, _ in _cols}
+_l2r, _l2w = _t3("T3b_l21", "network_head_l2"), _t3("T3b_l21", "network_head_l2", family="ring-ip")
 _t3_rows = []
 for i, nm in _names.items():
     cells_ = [f"{_f(_t3r[c][i]) if _t3r[c] else '—'} / {_f(_t3w[c][i], 1) if _t3w[c] else '—'}" for c, _ in _cols]
@@ -937,29 +910,6 @@ alone destroys it); the relative error is the intensity-specific number. The ful
 # ---- 12.3 the night of 2–3 October: coverage per scaffold family, and where learning has to begin
 
 
-def _cov(tag, hold="a", key="coupling_ratio"):
-    """Seed-mean read-out of a coverage record (the size key is the record's only size)."""
-    p = HERE.parent / "out" / f"E7_rungC_coverage_{tag}.json"
-    if not p.exists():
-        return None
-    rec = json.load(open(p, encoding="utf-8"))
-    n = next(iter(rec["curve"]))
-    return float(np.mean([s[hold][key] for s in rec["curve"][n]["per_seed"]]))
-
-
-def _cov_mol(tag, name_prefix, hold="a"):
-    """Seed-mean ratio of the hold-out molecules whose manifest name starts with name_prefix (None when the record is absent)."""
-    p = HERE.parent / "out" / f"E7_rungC_coverage_{tag}.json"
-    if not p.exists():
-        return None
-    man = {r["id"]: r["name"] for r in csv.DictReader(open(HERE.parent / "corpus" / "manifest.csv", encoding="utf-8"))}
-    rec = json.load(open(p, encoding="utf-8"))
-    n = next(iter(rec["curve"]))
-    vals = [v["coupling_ratio"] for s in rec["curve"][n]["per_seed"] for i, v in s[hold]["per_molecule"].items()
-            if man[i].split("+")[0] == name_prefix and v["coupling_ratio"] is not None]
-    return float(np.mean(vals)) if vals else None
-
-
 _cov_rows = [("all 123 three-ring children (control, 620 of 750)", "control620_2026-10-02"), ("none of the 130 three-and-more-ring molecules", "ablation620_2026-10-02"),
              ("without the 7 pyrenes only", "noring4_2026-10-02"), ("without the 123 three-ring only", "noring3_2026-10-02"),
              ("31 of the 123 kept", "ring3keep25_2026-10-03"), ("62 of the 123 kept", "ring3keep50_2026-10-03"),
@@ -992,19 +942,8 @@ place to validate code and physics, which is how water is used throughout this p
 """)
 
 # ---- 12.4 targets per family (decisions 53 and 54, 3 October 2026); chain 34's row is filled when its record exists (one rebuild after the read)
-_FAM = ["ring-ip", "CH-stretch", "CH-oop", "other"]
 _fc = json.load(open(HERE.parent / "out" / "rungC_family_floor_ceiling_2026-10-03.json", encoding="utf-8"))
 _cv = json.load(open(HERE.parent / "out" / "rungC_family_curve_2026-10-03.json", encoding="utf-8"))
-
-
-def _fam_read(name, hold="a"):
-    """Seed means of a record's per-family corrected-ω rms, its coupling ratio and the best epochs (None when the record is absent)."""
-    p = HERE.parent / "out" / f"{name}.json"
-    if not p.exists():
-        return None
-    rec = json.load(open(p, encoding="utf-8")); n = next(iter(rec["curve"])); ps = rec["curve"][n]["per_seed"]
-    fam = {f: float(np.mean([s[hold]["diag_rms"][f] for s in ps if f in s[hold]["diag_rms"]])) for f in _FAM}
-    return fam, float(np.mean([s[hold]["coupling_ratio"] for s in ps])), [s.get("best_epoch") for s in ps], float(np.mean([s[hold]["corrected_freq_rms"] for s in ps]))
 
 
 _c24f = _fam_read("E7_rungC_carried_kd_750_saved_2026-10-02")
@@ -1012,11 +951,6 @@ _c34f = _fam_read("E7_rungC_chain34_kdfamily_750_2026-10-05")
 _c34b = _fam_read("E7_rungC_chain34_kdfamily_750_2026-10-05", "b")
 _c34bw = _fam_read("E7_rungC_chain34b_kdfamily_w03_750_2026-10-04")            # 4 Oct: weight 0.3
 _c34cw = _fam_read("E7_rungC_chain34c_kdfamilylow_750_2026-10-04")            # 4 Oct: 'other' split at 700 cm⁻¹
-
-
-def _json_or_none(name):
-    p = HERE.parent / "out" / name
-    return json.load(open(p, encoding="utf-8")) if p.exists() else None
 
 
 _lm, _lmc = _json_or_none("rungC_low_modes_noise_2026-10-04.json"), _json_or_none("rungC_low_modes_noise_c34c_2026-10-04.json")
@@ -1137,7 +1071,7 @@ if all(x is not None for x in (_r34a, _r36a, _t2, _t3, _t3m, _rd, _lm36, _lm34))
     _five = next(s for s in _sets if "five_anchors" in s)
     _nap4, _nap5 = _t3m[_four]["A_01f3186607|network_alpha"], _t3m[_five]["A_01f3186607|network_alpha"]
     _ant5 = _t3m[_five]["A_a1e6ec1862|network_alpha"]
-    _hinge = ["A_fdc27f1bd1", "A_72b86c2331", "A_3100da3761", "A_e72997e726", "A_08dde334d8"]
+    _hinge = HINGE_MOLECULES
     _lo34 = {r["id"]: r["pred"].get("other-low", float("nan")) for r in _lm34["rows"]}
     _lo36 = {r["id"]: r["pred"].get("other-low", float("nan")) for r in _lm36["rows"]}
     _h34, _h36 = float(np.mean([_lo34[i] for i in _hinge])), float(np.mean([_lo36[i] for i in _hinge]))

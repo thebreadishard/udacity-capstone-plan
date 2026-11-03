@@ -1,5 +1,6 @@
 """tools/make_module_repo.sh: a module folder becomes its own repository with its own history — main from master, the development branch
 kept — and an existing target is refused."""
+import importlib.util
 import json
 import shutil
 import subprocess
@@ -87,7 +88,8 @@ def _make(mono: Path, target: Path, *extra: str) -> subprocess.CompletedProcess:
 
 
 MANIFEST = "# deliverables\nREADME.md\nSUBMISSION.txt\nnb/\nrun: nb/work.ipynb\n"
-needs_jupyter = pytest.mark.skipif(shutil.which("jupyter") is None, reason="needs jupyter nbconvert")
+needs_jupyter = pytest.mark.skipif(shutil.which("jupyter") is None or importlib.util.find_spec("nbconvert") is None
+                                   or importlib.util.find_spec("ipykernel") is None, reason="needs jupyter nbconvert and a kernel")
 
 
 @needs_jupyter
