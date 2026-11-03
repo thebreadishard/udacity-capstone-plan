@@ -41,8 +41,9 @@ jobs:
       # 13 Oct 2026: geomeTRIC (internal coordinates, Wilson B) — four test files skipped their geomeTRIC parts here, and one test without its
       # importorskip kept CI red for eight hours; the laptop's version, so CI runs what the laptop runs
       # 29 Oct 2026: RDKit for the pipeline's refusals (tests/test_m08_pipeline.py: 18 failures on 7d860867 without it); the laptop's version
-      - name: Test dependencies of the module tests (pandas, scipy, CPU torch, geomeTRIC, RDKit)
-        run: pip install pandas scipy scikit-learn geometric==1.1.1 rdkit==2026.3.6 && pip install torch --index-url https://download.pytorch.org/whl/cpu
+      # 3 Nov 2026: nbformat and nbclient for module 05's notebook builder and append-only executor (tests/test_m05_*); the laptop's versions
+      - name: Test dependencies of the module tests (pandas, scipy, CPU torch, geomeTRIC, RDKit, nbformat, nbclient)
+        run: pip install pandas scipy scikit-learn geometric==1.1.1 rdkit==2026.3.6 nbformat==5.11.1 nbclient==0.11.0 && pip install torch --index-url https://download.pytorch.org/whl/cpu
       # 27 Oct 2026: one ruff set (pyproject.toml) on the lines the pushed commits change, as the edit hook and pre-commit do
       - name: Ruff on the changed lines (tools/ruff_gate.py)
         env:
