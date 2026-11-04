@@ -197,3 +197,5 @@ the anharmonic pattern agrees. Route A's data carry no IR intensities, so our si
 after the rehearsal, the change is dated here before tetracene is read.
 
 **Prediction (before any number).** At 0.5 km/mol, tetracene's rms about the mean is at most 10 cm⁻¹: one in two.
+
+**Rehearsal outcome, 4 Nov 2026 17:4x** (`probes/results_m1/pahdb_match_2026-11-04/pahdb_match_330.json`; WSL `vpt2` environment with the S2 labels' pyVPT2 worktree): naphthalene, uid 330, against S2's naphthalene at G. 13 IR-active fundamentals of ours in the window. At ≥ 0.5 km/mol 11 pair: Δν mean +5.96, rms 8.89, about the mean 6.60, max 15.5 cm⁻¹; the two weakest of ours (799.3, 1169.1) stay unpaired. At ≥ 0.1 all 13 pair (mean +5.94, about the mean 4.90). At ≥ 2.0, 11 pair, and two partners change (1226.5 → 1243.9, 1531.0 → 1518.9; about the mean 9.21). The positive mean is the expected sign for 6-31G* against N07D. The script runs end to end and pairs plausibly at the main threshold. Where the threshold changes a partner, a combination band lies near a fundamental, which is what the two side thresholds are reported for. **The rule is unchanged** for tetracene.
