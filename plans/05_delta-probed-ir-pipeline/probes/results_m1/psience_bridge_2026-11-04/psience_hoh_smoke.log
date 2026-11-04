@@ -1,0 +1,603 @@
+===== cartesian
+>>------------------------- Starting Perturbation Theory Runner -------------------------
+::> Hamiltonian Options
+<::
+::> Solver Options
+  > order: 2                                                                                                   
+  > state_space_filters: <function VPTStateSpace.filter_generator.<locals>.filter at 0x7097d2c6af00>                         
+  > extended_state_space_postprocessor: <bound method VPTRunner._matrix_element_filler of <class 'Psience.VPT2.Runner.VPTRunner'>>          
+<::
+::> Runtime Options
+<::
+::> States
+  > [[0 0 0]
+  >  [0 0 1]
+  >  [0 1 0]
+  >  [1 0 0]
+  >  [0 0 2]
+  >  [0 2 0]
+  >  [2 0 0]
+  >  [0 1 1]
+  >  [1 0 1]
+  >  [1 1 0]]
+<::
+::> Degeneracies
+  > None
+<::
+::> Computing PT corrections:
+  > states: 10
+  > order: 2
+  > expansion order: 2
+  ::> calculating G-matrix derivatives
+    > took 0.000s...
+  <::
+  ::> calculating potential derivatives
+    > prepping grad...
+    > Cartesian transformation...
+    > handling mixed derivative symmetry (MixedDerivativeHandlingModes.Old)...
+    > checking Hessian...
+    > took 0.697s...
+  <::
+  ::> getting representations
+    > trying to load from checkpoint...
+    > failed to load, building instead...
+    > state-space storage: memory; estimated state-space RAM 17644 bytes
+    ::> getting basis
+      > trying to load from checkpoint...
+      > fail to load, building instead...
+      > getting states for H(1)|n(0)>
+      ::> getting states for order 1
+        > H(1)|n(0)>
+      <::
+      > getting states for H(2)|n(0)>+H(1)|n(1)>
+      ::> getting states for order 2
+        > H(2)|n(0)>
+        > H(1)|n(1)>
+      <::
+      > H(0): BasisStateSpace(nstates=10, basis=HOBasis(dim=3))
+      > H(1): SelectionRuleStateSpace(ogstates=10, nstates=197, basis=HOBasis(dim=3))
+      > H(2): SelectionRuleStateSpace(ogstates=10, nstates=62, basis=HOBasis(dim=3))
+      > took 3.363s...
+      ::> precomputing coupled space indices
+        > generating indices for SelectionRuleStateSpace(ogstates=10, nstates=197, basis=HOBasis(dim=3))
+        > generating indices for SelectionRuleStateSpace(ogstates=10, nstates=62, basis=HOBasis(dim=3))
+        > took 0.002s
+      <::
+      ::> generating total space
+        > total coupled space dimension: 56 (contracted from 56)
+        > took 0.000s
+      <::
+    <::
+    ::> building ExpansionRepresentation<T(0)V(0)>
+      ::> in Representation<T(0)>
+        > evaluating in BraKet space BraKetSpace(nstates=56)
+        > evaluating 56 elements over 6 unique indices sequentially
+        > took 0.438s
+      <::
+      ::> in Representation<V(0)>
+        > evaluating in BraKet space BraKetSpace(nstates=56)
+        > evaluating 56 elements over 6 unique indices sequentially
+        > took 0.295s
+      <::
+      > took 1.239s
+    <::
+    ::> building ExpansionRepresentation<T(1)V(1)>
+      ::> in Representation<T(1)>
+        > evaluating in BraKet space BraKetSpace(nstates=166)
+        > took 0.001s
+      <::
+      ::> in Representation<V(1)>
+        > evaluating in BraKet space BraKetSpace(nstates=166)
+        > evaluating 166 elements over 10 unique indices sequentially
+        > took 0.218s
+      <::
+      > took 0.861s
+    <::
+    ::> building ExpansionRepresentation<T(2)V(2)Coriolis(0)V'(0)>
+      ::> in Representation<T(2)>
+        > evaluating in BraKet space BraKetSpace(nstates=34)
+        > took 0.001s
+      <::
+      ::> in Representation<V(2)>
+        > evaluating in BraKet space BraKetSpace(nstates=34)
+        > evaluating 34 elements over 15 unique indices sequentially
+        > took 0.259s
+      <::
+      ::> in Representation<Coriolis(0)>
+        > evaluating in BraKet space BraKetSpace(nstates=34)
+        > evaluating 34 elements over 75 unique indices sequentially
+        > took 0.253s
+      <::
+      ::> in Representation<V'(0)>
+        > evaluating in BraKet space BraKetSpace(nstates=34)
+        > evaluating identity tensor over 34 elements
+        > took 0.129s
+      <::
+      > took 2.227s
+    <::
+  <::
+  ::> Applying Perturbation Theory
+    > order: 2
+    > states: 10
+    > deg. spaces: 0
+    > deg. handling: standard
+    > took 0.006s
+  <::
+  ::> Strongly coupled states (threshold=0.3)
+    > state:    0   0   2
+    >  order 2  0   2   0
+  <::
+<::
+::> Energy Corrections
+  > State    <0|dH(2)|0>  <0|dH(1)|1> 
+  0 0 0     42.02414   -117.62974
+  0 0 1    199.53514   -467.93035
+  0 1 0    195.87334   -452.78667
+  1 0 0    -32.13943    -93.04841
+  0 0 2    452.10242  -1011.36801
+  0 2 0    445.86468   -972.19226
+  2 0 0   -109.82575    -92.98393
+  0 1 1    544.18694  -1160.25729
+  1 0 1     59.47842   -400.50612
+  1 1 0     46.32129   -372.85189
+<::
+::> States Energies
+  > State     Harmonic   Anharmonic     Harmonic   Anharmonic
+               ZPE          ZPE    Frequency    Frequency
+0 0 0   4681.56365   4605.95805            -            - 
+0 0 1            -            -   3937.52466   3744.73505 
+0 1 0            -            -   3803.29959   3621.99186 
+1 0 0            -            -   1622.30304   1572.72080 
+0 0 2            -            -   7875.04932   7391.38933 
+0 2 0            -            -   7606.59918   7155.87720 
+2 0 0            -            -   3244.60608   3117.40200 
+0 1 1            -            -   7740.82425   7200.35950 
+1 0 1            -            -   5559.82770   5294.40560 
+1 1 0            -            -   5425.60263   5174.67763 
+<::
+::> calculating dipole derivatives
+  > took 0.002s
+<::
+::> Calculating intensities:
+  > lower/upper states: 1/10
+  ::> taking correction subspaces:
+    > getting ground space...
+    > highest-order space: ScipySparseArray(<56> nonzero=21)
+    > getting excited space...
+    > highest-order space: ScipySparseArray(<56, 10> nonzero=250)
+    > took 0.004s...
+  <::
+  > dipole partitioning: standard
+  ::> getting coupled states for ExpansionRepresentation<M(0)>
+    > got BraKetSpace(nstates=21)
+    > took 0.013s...
+  <::
+  ::> getting coupled states for ExpansionRepresentation<M(1)>
+    > got BraKetSpace(nstates=75)
+    > took 0.018s...
+  <::
+  ::> getting coupled states for ExpansionRepresentation<M(2)>
+    > got BraKetSpace(nstates=34)
+    > took 0.146s...
+  <::
+  ::> getting coupled states for ExpansionRepresentation<M(3)>
+    > got BraKetSpace(nstates=3)
+    > took 0.110s...
+  <::
+  ::> building ExpansionRepresentation<M(0)>
+    ::> in Representation<M(0)>
+      > evaluating in BraKet space BraKetSpace(nstates=20)
+      > evaluating identity tensor over 20 elements
+      > took 0.203s
+    <::
+    > took 0.474s...
+  <::
+  ::> building ExpansionRepresentation<M(1)>
+    ::> in Representation<M(1)>
+      > evaluating in BraKet space BraKetSpace(nstates=60)
+      > evaluating 60 elements over 3 unique indices sequentially
+      > took 0.284s
+    <::
+    > took 0.572s...
+  <::
+  ::> building ExpansionRepresentation<M(2)>
+    ::> in Representation<M(2)>
+      > evaluating in BraKet space BraKetSpace(nstates=31)
+      > evaluating 31 elements over 6 unique indices sequentially
+      > took 0.253s
+    <::
+    > took 0.513s...
+  <::
+  ::> building ExpansionRepresentation<M(3)>
+    ::> in Representation<M(3)>
+      > evaluating in BraKet space BraKetSpace(nstates=3)
+      > evaluating 3 elements over 10 unique indices sequentially
+      > took 0.294s
+    <::
+    > took 0.579s...
+  <::
+  ::> axis: 0
+    > non-zero dipole terms: 3
+    ::> calculating corrections...
+      > took 0.000s
+      > took 0.003s
+      > took 0.005s
+    <::
+  <::
+  ::> axis: 1
+    > non-zero dipole terms: 3
+    ::> calculating corrections...
+      > took 0.000s
+      > took 0.002s
+      > took 0.004s
+    <::
+  <::
+  ::> axis: 2
+    > non-zero dipole terms: 3
+    ::> calculating corrections...
+      > took 0.001s
+      > took 0.002s
+      > took 0.004s
+    <::
+  <::
+<::
+::> X Dipole Contributions
+  > Initial State: 0 0 0 
+State    <0|M(0)|0>       <0|M(1)|0>       <0|M(0)|1>       <1|M(0)|0>       <0|M(2)|0>       <0|M(1)|1>       <0|M(0)|2>       <1|M(1)|0>       <1|M(0)|1>       <2|M(0)|0>      
+  0 0 0  -2.57911105e-17   9.83071540e-16  -7.20664604e-18  -7.20664604e-18   0.00000000e+00   0.00000000e+00   3.42804579e-19   0.00000000e+00  -6.85609157e-19   3.42804579e-19
+  0 0 1   4.40777592e-17   0.00000000e+00  -8.07034732e-27   8.07034732e-27  -3.70196820e-14   7.00751168e-17  -2.52413338e-18   5.33956612e-17   3.29536255e-18  -1.91000753e-19
+  0 1 0  -4.60115816e-17   0.00000000e+00   4.01824288e-18  -4.01824288e-18   2.78429957e-14   3.76062526e-16   4.09074707e-18   6.39420044e-16  -3.38278705e-18  -8.50950338e-19
+  1 0 0  -5.32624732e-18   0.00000000e+00   1.84312489e-19  -1.84312489e-19   3.26268753e-14   1.86973155e-16  -2.23775604e-19   1.77138582e-16  -2.05753667e-19  -1.70533332e-19
+  0 0 2   0.00000000e+00   9.89592790e-16   5.17832337e-18  -1.82226436e-18   0.00000000e+00   0.00000000e+00   2.28163863e-19   0.00000000e+00  -6.47902747e-20  -1.63373588e-19
+  0 2 0   0.00000000e+00   1.62888159e-15   1.56893087e-17  -1.19932515e-17   0.00000000e+00   0.00000000e+00  -3.49099290e-19   0.00000000e+00   9.22090881e-19  -5.72991592e-19
+  2 0 0   0.00000000e+00  -1.22820127e-15   5.85772774e-18   4.93864986e-19   0.00000000e+00   0.00000000e+00  -2.00352274e-19   0.00000000e+00   5.27480558e-19  -3.27128284e-19
+  0 1 1   0.00000000e+00   2.79244548e-16  -1.42992577e-17   9.28766916e-18   0.00000000e+00   0.00000000e+00   1.78865876e-25   0.00000000e+00   1.07148823e-27  -1.79937365e-25
+  1 0 1   0.00000000e+00  -3.27394203e-16  -2.76191518e-18   7.32969318e-19   0.00000000e+00   0.00000000e+00   1.46240662e-24   0.00000000e+00   5.21685750e-28  -1.46292831e-24
+  1 1 0   0.00000000e+00   1.10881321e-15   1.71152112e-18  -1.20318813e-18   0.00000000e+00   0.00000000e+00  -2.70609051e-20   0.00000000e+00   1.08781474e-19  -8.17205690e-20
+<::
+::> Y Dipole Contributions
+  > Initial State: 0 0 0 
+State    <0|M(0)|0>       <0|M(1)|0>       <0|M(0)|1>       <1|M(0)|0>       <0|M(2)|0>       <0|M(1)|1>       <0|M(0)|2>       <1|M(1)|0>       <1|M(0)|1>       <2|M(0)|0>      
+  0 0 0   0.00000000e+00   1.05061709e-09  -1.01446195e-11  -1.01446195e-11   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+  0 0 1   3.24200050e-02   0.00000000e+00   0.00000000e+00   0.00000000e+00   2.21559139e-04  -5.38057085e-04  -1.85656069e-03  -2.25927356e-04   2.42379994e-03  -1.40484119e-04
+  0 1 0  -7.83452626e-17   0.00000000e+00   0.00000000e+00   0.00000000e+00  -2.44581842e-09   9.38708391e-12   1.28876874e-08   2.22988112e-10  -6.26307314e-12   2.26185306e-10
+  1 0 0   7.10009928e-17   0.00000000e+00   0.00000000e+00   0.00000000e+00  -9.17575332e-09   2.31807317e-11   4.41555144e-09   2.67536215e-11  -4.66023845e-12   1.83893373e-09
+  0 0 2   0.00000000e+00   1.48579660e-09  -3.57366250e-11   2.34778049e-12   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+  0 2 0   0.00000000e+00  -2.53496619e-16   3.58772882e-12  -1.14030146e-12   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+  2 0 0   0.00000000e+00   5.93666295e-16  -3.47127119e-10  -3.34901777e-11   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+  0 1 1   0.00000000e+00  -6.67123383e-04  -1.05173678e-02   6.83125198e-03   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+  1 0 1   0.00000000e+00  -5.13302582e-03  -2.03143951e-03   5.39112438e-04   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+  1 1 0   0.00000000e+00  -7.65680419e-16   5.44320602e-11  -8.65085686e-12   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+<::
+::> Z Dipole Contributions
+  > Initial State: 0 0 0 
+State    <0|M(0)|0>       <0|M(1)|0>       <0|M(0)|1>       <1|M(0)|0>       <0|M(2)|0>       <0|M(1)|1>       <0|M(0)|2>       <1|M(1)|0>       <1|M(0)|1>       <2|M(0)|0>      
+  0 0 0  -7.39438681e-01   2.34813685e-03  -1.63989568e-03  -1.63989568e-03   0.00000000e+00   0.00000000e+00   9.82830753e-03   0.00000000e+00  -1.96566151e-02   9.82830753e-03
+  0 0 1   4.98065307e-18   0.00000000e+00  -2.31379218e-10   2.31379218e-10  -1.09459184e-09  -9.41029171e-10   1.01281757e-08  -6.05948385e-10   2.50962797e-11  -2.93143228e-09
+  0 1 0  -8.20141874e-03   0.00000000e+00   1.15204199e-01  -1.15204199e-01   4.11540301e-05   3.18336468e-04   1.16117110e-03   5.44142253e-04  -7.74121547e-04  -3.09227366e-04
+  1 0 0  -5.06717600e-02   0.00000000e+00   5.28429296e-03  -5.28429296e-03  -4.33619833e-04   4.94729522e-05   4.64663751e-04   1.96563475e-04  -1.07944389e-03  -2.61406034e-04
+  0 0 2   0.00000000e+00  -1.12312824e-03   1.42942505e-03  -6.58213539e-04   0.00000000e+00   0.00000000e+00   6.54152468e-03   0.00000000e+00  -1.85755613e-03  -4.68396855e-03
+  0 2 0   0.00000000e+00   9.39057154e-04   2.94107011e-03  -2.23145757e-03   0.00000000e+00   0.00000000e+00  -1.00087787e-02   0.00000000e+00   2.64366152e-02  -1.64278365e-02
+  2 0 0   0.00000000e+00   3.50483807e-03  -4.35679022e-04   2.46284763e-04   0.00000000e+00   0.00000000e+00  -5.74415830e-03   0.00000000e+00   1.51230219e-02  -9.37886358e-03
+  0 1 1   0.00000000e+00  -2.74596149e-09  -2.44536106e-11   1.64953842e-11   0.00000000e+00   0.00000000e+00   5.12813698e-09   0.00000000e+00   3.07198810e-11  -5.15885687e-09
+  1 0 1   0.00000000e+00  -1.35321017e-09  -1.62546620e-10   9.20704301e-11   0.00000000e+00   0.00000000e+00   4.19276256e-08   0.00000000e+00   1.49568830e-11  -4.19425825e-08
+  1 1 0   0.00000000e+00   1.39363498e-03   6.70115989e-03  -7.23233597e-03   0.00000000e+00   0.00000000e+00  -7.75844062e-04   0.00000000e+00   3.11879668e-03  -2.34295261e-03
+<::
+::> IR Data
+  > Initial State: 0 0 0 
+                   Harmonic                  Anharmonic
+State       Frequency    Intensity       Frequency    Intensity
+  0 0 1    3937.52466     67.02051      3744.73505     63.28503
+  0 1 0    3803.29959      4.14283      3621.99186      3.05757
+  1 0 0    1622.30304     67.45626      1572.72080     68.16913
+  0 0 2    7875.04932      0.00000      7391.38933      0.01482
+  0 2 0    7606.59918      0.00000      7155.87720      0.31498
+  2 0 0    3244.60608      0.00000      3117.40200      0.55493
+  0 1 1    7740.82425      0.00000      7200.35950      2.20972
+  1 0 1    5559.82770      0.00000      5294.40560      3.76351
+  1 1 0    5425.60263      0.00000      5174.67763      0.06233
+<::
+>>--------------------------------------------------<<
+===== internals
+>>------------------------- Starting Perturbation Theory Runner -------------------------
+::> Hamiltonian Options
+<::
+::> Solver Options
+  > order: 2                                                                                                   
+  > state_space_filters: <function VPTStateSpace.filter_generator.<locals>.filter at 0x7097d2650f60>                         
+  > extended_state_space_postprocessor: <bound method VPTRunner._matrix_element_filler of <class 'Psience.VPT2.Runner.VPTRunner'>>          
+<::
+::> Runtime Options
+<::
+::> States
+  > [[0 0 0]
+  >  [0 0 1]
+  >  [0 1 0]
+  >  [1 0 0]
+  >  [0 0 2]
+  >  [0 2 0]
+  >  [2 0 0]
+  >  [0 1 1]
+  >  [1 0 1]
+  >  [1 1 0]]
+<::
+::> Degeneracies
+  > None
+<::
+::> Computing PT corrections:
+  > states: 10
+  > order: 2
+  > expansion order: 2
+  ::> calculating G-matrix derivatives
+    > Getting coordinate transforms for Molecule('HOH_freq.fchk', shape=(3, 3))
+    > Embedding axes: ['B', 'C']
+    > Getting d^nR/dX^n up to order 3...
+    > took 0.771s
+    > Getting d^nX/dR^n up to order 3...
+    > took 0.426s
+    > WARNING: max of d^1G/dQ^1 is 0.0010354218595956244
+    > took 1.204s...
+  <::
+  ::> calculating potential derivatives
+    > prepping grad...
+    > checking Hessian...
+    > took 0.008s...
+  <::
+  > WARNING: max of d^1G/dQ^1 is 0.0010354218595956244
+  ::> getting representations
+    > trying to load from checkpoint...
+    > failed to load, building instead...
+    > state-space storage: memory; estimated state-space RAM 17644 bytes
+    ::> getting basis
+      > trying to load from checkpoint...
+      > fail to load, building instead...
+      > getting states for H(1)|n(0)>
+      ::> getting states for order 1
+        > H(1)|n(0)>
+      <::
+      > getting states for H(2)|n(0)>+H(1)|n(1)>
+      ::> getting states for order 2
+        > H(2)|n(0)>
+        > H(1)|n(1)>
+      <::
+      > H(0): BasisStateSpace(nstates=10, basis=HOBasis(dim=3))
+      > H(1): SelectionRuleStateSpace(ogstates=10, nstates=197, basis=HOBasis(dim=3))
+      > H(2): SelectionRuleStateSpace(ogstates=10, nstates=62, basis=HOBasis(dim=3))
+      > took 0.071s...
+      ::> precomputing coupled space indices
+        > generating indices for SelectionRuleStateSpace(ogstates=10, nstates=197, basis=HOBasis(dim=3))
+        > generating indices for SelectionRuleStateSpace(ogstates=10, nstates=62, basis=HOBasis(dim=3))
+        > took 0.002s
+      <::
+      ::> generating total space
+        > total coupled space dimension: 56 (contracted from 56)
+        > took 0.000s
+      <::
+    <::
+    ::> building ExpansionRepresentation<T(0)V(0)>
+      ::> in Representation<T(0)>
+        > evaluating in BraKet space BraKetSpace(nstates=56)
+        > evaluating 56 elements over 6 unique indices sequentially
+        > took 0.231s
+      <::
+      ::> in Representation<V(0)>
+        > evaluating in BraKet space BraKetSpace(nstates=56)
+        > evaluating 56 elements over 6 unique indices sequentially
+        > took 0.284s
+      <::
+      > took 1.102s
+    <::
+    ::> building ExpansionRepresentation<T(1)V(1)>
+      ::> in Representation<T(1)>
+        > evaluating in BraKet space BraKetSpace(nstates=166)
+        > evaluating 166 elements over 24 unique indices sequentially
+        > took 0.270s
+      <::
+      ::> in Representation<V(1)>
+        > evaluating in BraKet space BraKetSpace(nstates=166)
+        > evaluating 166 elements over 10 unique indices sequentially
+        > took 0.263s
+      <::
+      > took 1.268s
+    <::
+    ::> building ExpansionRepresentation<T(2)V(2)V'(0)>
+      ::> in Representation<T(2)>
+        > evaluating in BraKet space BraKetSpace(nstates=34)
+        > evaluating 34 elements over 75 unique indices sequentially
+        > took 0.262s
+      <::
+      ::> in Representation<V(2)>
+        > evaluating in BraKet space BraKetSpace(nstates=34)
+        > evaluating 34 elements over 15 unique indices sequentially
+        > took 0.286s
+      <::
+      ::> in Representation<V'(0)>
+        > evaluating in BraKet space BraKetSpace(nstates=34)
+        > evaluating identity tensor over 34 elements
+        > took 0.179s
+      <::
+      > took 1.925s
+    <::
+  <::
+  ::> Applying Perturbation Theory
+    > order: 2
+    > states: 10
+    > deg. spaces: 0
+    > deg. handling: standard
+    > took 0.007s
+  <::
+  ::> Strongly coupled states (threshold=0.3)
+    > state:    0   0   2
+    >  order 2  0   2   0
+  <::
+<::
+::> Energy Corrections
+  > State    <0|dH(2)|0>  <0|dH(1)|1> 
+  0 0 0     81.09838   -156.70146
+  0 0 1    276.69255   -545.08551
+  0 1 0    281.62505   -538.53513
+  1 0 0     88.49930   -213.67502
+  0 0 2    567.83181  -1127.09547
+  0 2 0    578.27617  -1104.59993
+  2 0 0     89.69389   -292.47319
+  0 1 1    668.06324  -1284.13091
+  1 0 1    293.34762   -634.36366
+  1 1 0    306.98639   -633.50202
+<::
+::> States Energies
+  > State     Harmonic   Anharmonic     Harmonic   Anharmonic
+               ZPE          ZPE    Frequency    Frequency
+0 0 0   4681.56367   4605.96059            -            - 
+0 0 1            -            -   3937.52469   3744.73481 
+0 1 0            -            -   3803.29961   3621.99261 
+1 0 0            -            -   1622.30305   1572.73041 
+0 0 2            -            -   7875.04938   7391.38881 
+0 2 0            -            -   7606.59921   7155.87854 
+2 0 0            -            -   3244.60610   3117.42987 
+0 1 1            -            -   7740.82430   7200.35971 
+1 0 1            -            -   5559.82774   5294.41478 
+1 1 0            -            -   5425.60266   5174.69010 
+<::
+::> calculating dipole derivatives
+  > took 0.006s
+<::
+::> Calculating intensities:
+  > lower/upper states: 1/10
+  ::> taking correction subspaces:
+    > getting ground space...
+    > highest-order space: ScipySparseArray(<56> nonzero=21)
+    > getting excited space...
+    > highest-order space: ScipySparseArray(<56, 10> nonzero=250)
+    > took 0.005s...
+  <::
+  > dipole partitioning: standard
+  ::> getting coupled states for ExpansionRepresentation<M(0)>
+    > got BraKetSpace(nstates=21)
+    > took 0.014s...
+  <::
+  ::> getting coupled states for ExpansionRepresentation<M(1)>
+    > got BraKetSpace(nstates=75)
+    > took 0.023s...
+  <::
+  ::> getting coupled states for ExpansionRepresentation<M(2)>
+    > got BraKetSpace(nstates=34)
+    > took 0.017s...
+  <::
+  ::> getting coupled states for ExpansionRepresentation<M(3)>
+    > got BraKetSpace(nstates=3)
+    > took 0.005s...
+  <::
+  ::> building ExpansionRepresentation<M(0)>
+    ::> in Representation<M(0)>
+      > evaluating in BraKet space BraKetSpace(nstates=20)
+      > evaluating identity tensor over 20 elements
+      > took 0.245s
+    <::
+    > took 0.473s...
+  <::
+  ::> building ExpansionRepresentation<M(1)>
+    ::> in Representation<M(1)>
+      > evaluating in BraKet space BraKetSpace(nstates=60)
+      > evaluating 60 elements over 3 unique indices sequentially
+      > took 0.227s
+    <::
+    > took 0.438s...
+  <::
+  ::> building ExpansionRepresentation<M(2)>
+    ::> in Representation<M(2)>
+      > evaluating in BraKet space BraKetSpace(nstates=31)
+      > evaluating 31 elements over 6 unique indices sequentially
+      > took 0.221s
+    <::
+    > took 0.470s...
+  <::
+  ::> building ExpansionRepresentation<M(3)>
+    ::> in Representation<M(3)>
+      > evaluating in BraKet space BraKetSpace(nstates=3)
+      > evaluating 3 elements over 10 unique indices sequentially
+      > took 0.308s
+    <::
+    > took 0.556s...
+  <::
+  ::> axis: 0
+    > non-zero dipole terms: 3
+    ::> calculating corrections...
+      > took 0.001s
+      > took 0.003s
+      > took 0.006s
+    <::
+  <::
+  ::> axis: 1
+    > non-zero dipole terms: 3
+    ::> calculating corrections...
+      > took 0.001s
+      > took 0.002s
+      > took 0.005s
+    <::
+  <::
+  ::> axis: 2
+    > non-zero dipole terms: 3
+    ::> calculating corrections...
+      > took 0.001s
+      > took 0.003s
+      > took 0.005s
+    <::
+  <::
+<::
+::> X Dipole Contributions
+  > Initial State: 0 0 0 
+State    <0|M(0)|0>       <0|M(1)|0>       <0|M(0)|1>       <1|M(0)|0>       <0|M(2)|0>       <0|M(1)|1>       <0|M(0)|2>       <1|M(1)|0>       <1|M(0)|1>       <2|M(0)|0>      
+  0 0 0  -2.57911105e-17   9.85837410e-16  -8.58957530e-18  -8.58957530e-18   0.00000000e+00   0.00000000e+00   4.75962332e-19   0.00000000e+00  -9.51924663e-19   4.75962332e-19
+  0 0 1   4.40777595e-17   0.00000000e+00  -8.05706755e-27   8.05706755e-27  -3.70415245e-14   7.83299148e-17  -2.97517596e-18   6.30821860e-17   4.03382374e-18  -6.23951020e-19
+  0 1 0  -4.60115818e-17   0.00000000e+00   4.79732578e-18  -4.79732578e-18   2.75396321e-14   5.10195545e-16   4.71718774e-18   7.33189962e-16  -4.23659771e-18  -9.55881084e-19
+  1 0 0  -5.32624732e-18   0.00000000e+00   1.50600978e-19  -1.50600978e-19   3.24013465e-14   2.95427157e-16   1.96691550e-22   2.39674545e-16  -4.28956466e-19   5.64019734e-21
+  0 0 2   0.00000000e+00   9.89599483e-16   5.15938527e-18  -1.81000518e-18   0.00000000e+00   0.00000000e+00   8.10013906e-20   0.00000000e+00  -2.60320661e-21  -7.83981840e-20
+  0 2 0   0.00000000e+00   1.62888201e-15   1.76691553e-17  -1.39735094e-17   0.00000000e+00   0.00000000e+00  -6.02745792e-19   0.00000000e+00   1.31454581e-18  -7.11800021e-19
+  2 0 0   0.00000000e+00  -1.22429686e-15   2.24874995e-18   1.98418714e-19   0.00000000e+00   0.00000000e+00  -1.83452835e-19   0.00000000e+00   2.29989372e-19  -4.65365375e-20
+  0 1 1   0.00000000e+00   2.79243340e-16  -1.56260544e-17   1.06156763e-17   0.00000000e+00   0.00000000e+00   1.80910166e-25   0.00000000e+00  -3.58572190e-27  -1.77324444e-25
+  1 0 1   0.00000000e+00  -3.27201192e-16  -2.78380370e-18   5.61842426e-19   0.00000000e+00   0.00000000e+00   1.46055448e-24   0.00000000e+00   3.25677656e-27  -1.46381126e-24
+  1 1 0   0.00000000e+00   1.10874954e-15   2.14907921e-18  -1.57706434e-18   0.00000000e+00   0.00000000e+00  -3.86002195e-20   0.00000000e+00   8.29185495e-20  -4.43183300e-20
+<::
+::> Y Dipole Contributions
+  > Initial State: 0 0 0 
+State    <0|M(0)|0>       <0|M(1)|0>       <0|M(0)|1>       <1|M(0)|0>       <0|M(2)|0>       <0|M(1)|1>       <0|M(0)|2>       <1|M(1)|0>       <1|M(0)|1>       <2|M(0)|0>      
+  0 0 0   0.00000000e+00   1.05058862e-09  -1.01279055e-11  -1.01279055e-11   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+  0 0 1   3.24200052e-02   0.00000000e+00   0.00000000e+00   0.00000000e+00   3.48755803e-04  -5.52036877e-04  -2.18831078e-03  -2.24503394e-04   2.96695176e-03  -4.58927030e-04
+  0 1 0   8.41945972e-17   0.00000000e+00   0.00000000e+00   0.00000000e+00  -2.44566487e-09  -2.24146400e-11   1.28686361e-08   2.54596432e-10  -3.93163236e-12   2.22900809e-10
+  1 0 0  -1.08095069e-15   0.00000000e+00   0.00000000e+00   0.00000000e+00  -9.16299702e-09   1.76295329e-11   4.41629766e-09   2.24180880e-11  -4.99022384e-12   1.84004365e-09
+  0 0 2   0.00000000e+00   1.48579510e-09  -3.57619607e-11   2.37237786e-12   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+  0 2 0   0.00000000e+00  -4.19210383e-15   3.58332523e-12  -1.13859719e-12   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+  2 0 0   0.00000000e+00  -3.42307820e-14  -3.47034293e-10  -3.34829474e-11   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+  0 1 1   0.00000000e+00  -6.68013751e-04  -1.14932512e-02   7.80802572e-03   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+  1 0 1   0.00000000e+00  -4.99105951e-03  -2.04753891e-03   4.13245452e-04   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+  1 1 0   0.00000000e+00  -6.64831085e-15   5.43913390e-11  -8.64491437e-12   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00   0.00000000e+00
+<::
+::> Z Dipole Contributions
+  > Initial State: 0 0 0 
+State    <0|M(0)|0>       <0|M(1)|0>       <0|M(0)|1>       <1|M(0)|0>       <0|M(2)|0>       <0|M(1)|1>       <0|M(0)|2>       <1|M(1)|0>       <1|M(0)|1>       <2|M(0)|0>      
+  0 0 0  -7.39438681e-01   2.71115833e-03  -1.82140643e-03  -1.82140643e-03   0.00000000e+00   0.00000000e+00   1.36459792e-02   0.00000000e+00  -2.72919585e-02   1.36459792e-02
+  0 0 1  -5.98459937e-16   0.00000000e+00  -2.30998483e-10   2.30998483e-10  -9.35591976e-10  -1.01607662e-09   1.01064649e-08  -6.83246925e-10   3.45901016e-11  -2.93233612e-09
+  0 1 0  -8.20141879e-03   0.00000000e+00   1.37540733e-01  -1.37540733e-01   2.76398948e-04  -6.51280688e-05   1.34917033e-03   7.32825225e-04  -1.00194265e-03  -2.55823609e-04
+  1 0 0  -5.06717602e-02   0.00000000e+00   4.31777409e-03  -4.31777409e-03  -3.37910469e-04  -3.88281853e-04   1.30128412e-03  -2.39320927e-04  -2.23672194e-03   7.91727660e-04
+  0 0 2   0.00000000e+00  -9.95106080e-04   1.20867310e-03  -5.65483746e-04   0.00000000e+00   0.00000000e+00   2.32233356e-03   0.00000000e+00  -7.46346949e-05  -2.24769886e-03
+  0 2 0   0.00000000e+00   9.60984491e-04   3.43594827e-03  -2.74826304e-03   0.00000000e+00   0.00000000e+00  -1.72808981e-02   0.00000000e+00   3.76884129e-02  -2.04075148e-02
+  2 0 0   0.00000000e+00   3.86827847e-03  -1.33713595e-03   7.84301286e-04   0.00000000e+00   0.00000000e+00  -5.25964642e-03   0.00000000e+00   6.59386256e-03  -1.33421614e-03
+  0 1 1   0.00000000e+00  -2.74596479e-09  -2.44398313e-11   1.64808120e-11   0.00000000e+00   0.00000000e+00   5.18674736e-09   0.00000000e+00  -1.02803695e-10  -5.08394366e-09
+  1 0 1   0.00000000e+00  -1.35321160e-09  -1.62473147e-10   9.20268287e-11   0.00000000e+00   0.00000000e+00   4.18745241e-08   0.00000000e+00   9.33727364e-11  -4.19678969e-08
+  1 1 0   0.00000000e+00  -1.08021776e-03   1.12918595e-02  -9.34918281e-03   0.00000000e+00   0.00000000e+00  -1.10667958e-03   0.00000000e+00   2.37729907e-03  -1.27061948e-03
+<::
+::> IR Data
+  > Initial State: 0 0 0 
+                   Harmonic                  Anharmonic
+State       Frequency    Intensity       Frequency    Intensity
+  0 0 1    3937.52469     67.02051      3744.73481     63.31481
+  0 1 0    3803.29961      4.14283      3621.99261      3.01196
+  1 0 0    1622.30305     67.45626      1572.73041     68.28938
+  0 0 2    7875.04938      0.00000      7391.38881      0.01482
+  0 2 0    7606.59921      0.00000      7155.87854      0.31498
+  2 0 0    3244.60610      0.00000      3117.42987      0.55493
+  0 1 1    7740.82430      0.00000      7200.35971      2.20972
+  1 0 1    5559.82774      0.00000      5294.41478      3.76352
+  1 1 0    5425.60266      0.00000      5174.69010      0.06233
+<::
+>>--------------------------------------------------<<

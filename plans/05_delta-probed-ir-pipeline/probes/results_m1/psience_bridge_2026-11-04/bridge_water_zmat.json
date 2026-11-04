@@ -1,0 +1,51 @@
+{
+ "hess_dir": "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/s1_anharmonic_benzene_2026-10-13/s1_smoke_water/G/hess",
+ "disp": 0.1,
+ "internals": [
+  [
+   0,
+   -1,
+   -1,
+   -1
+  ],
+  [
+   1,
+   0,
+   -1,
+   -1
+  ],
+  [
+   2,
+   0,
+   1,
+   -1
+  ]
+ ],
+ "mixed_derivative_handling_mode": "averaged",
+ "omega_ours_cm": [
+  1710.8043631184871,
+  3721.0972522731176,
+  3844.9313095736347
+ ],
+ "omega_psience_cm": [
+  1710.8043631145865,
+  3721.0972522646343,
+  3844.931309564867
+ ],
+ "nu_ours_cm": [
+  1682.708130356908,
+  3550.3076026099793,
+  3676.1135512624755
+ ],
+ "nu_psience_cm": [
+  1659.707308068713,
+  3550.3148106664607,
+  3653.1185919218638
+ ],
+ "mode_map_diagonal": [
+  0.08828928717843841,
+  -0.13020970236494836,
+  -0.13235858895725405
+ ],
+ "quartic_route_disagreement_max_cm": 14.801744588464999
+}
