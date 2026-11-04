@@ -82,6 +82,11 @@ def target_rows(train: dict, test: dict, models: dict[str, Predictor]) -> dict[s
             "pairs": sum(len(g) == 2 for g in groups)}
 
 
+def transfer_holds(r_model: float, r_c: float) -> bool:
+    """S3's line 1: the verdict model's target rms is at most LINE_LICENSE and below (c)'s on the same modes (NaN never holds)."""
+    return bool(r_model <= LINE_LICENSE and r_model < r_c)
+
+
 def family_read(rows: dict[str, dict[str, Any]], verdicts: dict[str, dict[str, Any]]) -> dict[str, dict[str, Any]]:
     """Per family pooled over the targets: n, every model's rms, the verdict model's reading and size penalty; per molecule the rms."""
     out = {}
@@ -108,7 +113,7 @@ def family_read(rows: dict[str, dict[str, Any]], verdicts: dict[str, dict[str, A
                 entry["reading"] = f"no verdict: {n} target mode(s) < {MIN_MODES}"
             elif not np.isfinite(r_model):
                 entry["reading"] = f"no verdict: the verdict model {model} gave no prediction"
-            elif r_model <= LINE_LICENSE and r_model < pooled["c"]:
+            elif transfer_holds(r_model, pooled["c"]):
                 entry["reading"] = f"transfer holds: {model} {r_model:.2f} ≤ {LINE_LICENSE} and below (c) {pooled['c']:.2f}"
             else:
                 entry["reading"] = f"transfer fails: {model} {r_model:.2f} against line {LINE_LICENSE} and (c) {pooled['c']:.2f}"
