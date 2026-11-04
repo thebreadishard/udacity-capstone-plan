@@ -27,6 +27,7 @@ def test_labels_from_characters_and_a_refusal():
     assert H.classify(chars) == ["b3u", "au", "b1g", "ag"]
     with pytest.raises(SystemExit):
         H.classify(np.array([[0.7, 1, 1, 1]]))
+    assert H.classify(np.array([[-0.95, -1, -1, -1]])) == ["au"]
 
 
 def test_the_mapping_rule():

@@ -24,7 +24,8 @@ from dpir.qff import MASS, vpt2  # noqa: E402  after the src path
 
 SETTING = HERE / "results_m1" / "s2_anharmonic_2026-10-18" / "s2" / "A_01f3186607" / "G"
 FERMI_WINDOW, FERMI_MIN_K = 200.0, 0.0      # the report's (`python -m dpir.qff` defaults)
-CHAR_MIN = 0.99
+CHAR_MIN = 0.99     # the four mapped modes
+SIGN_MIN = 0.9      # every mode: its label is read from the signs
 PERM_TOL_BOHR = 0.05
 # D2h characters under (i, σ(xy), σ(xz), σ(yz)); x = normal, y = long axis, z = short axis (Pirali's band types)
 IRREPS = {(1, 1, 1, 1): "ag", (1, 1, -1, -1): "b1g", (1, -1, 1, -1): "b2g", (1, -1, -1, 1): "b3g",
@@ -64,10 +65,11 @@ def characters(symbols: list[str], geom: np.ndarray, q: np.ndarray) -> np.ndarra
 
 
 def classify(chars: np.ndarray) -> list[str]:
-    """The D2h label of every mode; a mode whose characters are not ±1 within CHAR_MIN stops the read."""
+    """The D2h label of every mode from the signs of its characters; a character below SIGN_MIN in size stops the read (near-degenerate
+    pairs of different symmetry mix by ~1 % on this geometry, which is D2h to 6.5e-4 bohr)."""
     labels = []
     for i, c in enumerate(chars):
-        if np.abs(c).min() < CHAR_MIN:
+        if np.abs(c).min() < SIGN_MIN:
             raise SystemExit(f"mode {i}: characters {np.round(c, 3)} are not ±1")
         labels.append(IRREPS[tuple(int(np.sign(v)) for v in c)])
     return labels
@@ -102,6 +104,10 @@ def read(setting: Path) -> dict:
         raise SystemExit("the reference's modes are not the report's")
     labels = classify(characters(ref["molecule"]["symbols"], np.array(ref["molecule"]["geometry"], float).reshape(-1, 3), q))
     idx = mapping(labels)
+    chars = characters(ref["molecule"]["symbols"], np.array(ref["molecule"]["geometry"], float).reshape(-1, 3), q)
+    for b, i in idx.items():
+        if np.abs(chars[i]).min() < CHAR_MIN:
+            raise SystemExit(f"ν{b} (mode {i}) has characters {np.round(chars[i], 3)}: not clean enough to map")
     p3 = arrays["phi_ijk"]
     chi = {}
     for name, key in (("sym", "phi_iijj_sym"), ("a", "phi_iijj_route_a"), ("b", "phi_iijj_route_b")):
