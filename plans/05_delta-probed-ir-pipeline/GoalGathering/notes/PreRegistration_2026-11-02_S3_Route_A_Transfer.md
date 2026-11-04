@@ -173,3 +173,27 @@ With the user's word ('Akkoord met allebei'), `routea_targets` was stopped (coro
 
 
 **Dated note, 4 November 2026 08:4x (TASKS 174).** The Coriolis term of `src/dpir/qff.py` paired lab-frame ζ with the sorted principal rotational constants until 4 Nov (TASKS 174, fixed in 648a001e). Every stored force-field report and GVPT2 label was rebuilt and every stored read of this registration rerun (`probes/results_m1/coriolis_redo_2026-11-04/compare.md`): no verdict changed, scores moved ≤ 0.04 cm⁻¹. The read of this registration that is still to come uses the fixed code.
+
+## Amendment 5 (4 Nov 2026, 17:4x — before PAHdb's tetracene is read against our numbers): the matching rule for the Mackie line
+
+**What the library holds.** Looked at on benzene's entries only: PAHdb's anharmonic library v1.00 (sha256 `2fb7a776…`, module 02's copy)
+lists every VPT2 transition of a species — fundamentals, overtones and combinations — as a frequency and an intensity. It gives no
+assignment and no symmetry. Tetracene is uid 282 (C18H12, named tetracene in the library), computed at B3LYP/N07D. That is another basis
+than our 6-31G*, so a mean offset between the two carries the basis difference. The rms about the mean is the closer measure of whether
+the anharmonic pattern agrees. Route A's data carry no IR intensities, so our side cannot be chosen by intensity.
+
+**The rule** (`probes/pahdb_anharmonic_match.py`, tested on synthetic values first: `tests/test_pahdb_anharmonic_match.py`, 5):
+- **Ours:** tetracene's GVPT2 fundamentals as `gvpt2_labels.py` computes them, in 550–2000 cm⁻¹, IR-active only. The modes are labelled
+  b1u, b2u or b3u in D2h from the signs of their characters, as `probes/hot_band_desk_naphthalene.py` labels them; a character below 0.9
+  in size stops the read.
+- **Theirs:** uid 282's transitions at or above 0.5 km/mol, in the same window widened by 25 cm⁻¹ on each side.
+- **Pairing:** one to one, with the least total |Δν| (`linear_sum_assignment`). A pair more than 25 cm⁻¹ apart is left unpaired.
+- **Reported:** the pairs, the mean and rms of Δν = ours − theirs, the rms about the mean, and the unpaired on both sides. The
+  thresholds 0.1 and 2.0 km/mol are reported beside the main read, to show how much the threshold decides.
+- No line and no verdict, as registered.
+
+**Rehearsal before tetracene.** Naphthalene is not a target. Its uid 330 entry goes against S2's naphthalene at G
+(`probes/results_m1/s2_anharmonic_2026-10-18/s2/A_01f3186607/G`, the force field of TASKS 180) with the same script. If the rule changes
+after the rehearsal, the change is dated here before tetracene is read.
+
+**Prediction (before any number).** At 0.5 km/mol, tetracene's rms about the mean is at most 10 cm⁻¹: one in two.
