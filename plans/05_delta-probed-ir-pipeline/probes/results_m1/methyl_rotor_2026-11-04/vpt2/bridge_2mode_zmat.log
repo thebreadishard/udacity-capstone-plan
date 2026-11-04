@@ -1,0 +1,131 @@
+>>------------------------- Computing PT corrections: -------------------------
+:: states: 3
+:: order: 2
+:: expansion order: 2
+::> calculating G-matrix derivatives
+  > Getting coordinate transforms for Molecule('H6N2C4', shape=(12, 3))
+  > Embedding axes: ['A', 'B']
+  > Getting d^nR/dX^n up to order 3...
+  > took 104.065s
+  > Getting d^nX/dR^n up to order 3...
+  > took 40.498s
+  > took 144.586s...
+<::
+::> calculating potential derivatives
+  > prepping grad...
+  > checking Hessian...
+  > took 0.013s...
+<::
+::> getting representations
+  > trying to load from checkpoint...
+  > failed to load, building instead...
+  > state-space storage: memory; estimated state-space RAM 2320 bytes
+  ::> getting basis
+    > trying to load from checkpoint...
+    > fail to load, building instead...
+    > getting states for H(1)|n(0)>
+    ::> getting states for order 1
+      > H(1)|n(0)>
+    <::
+    > getting states for H(2)|n(0)>+H(1)|n(1)>
+    ::> getting states for order 2
+      > H(2)|n(0)>
+      > H(1)|n(1)>
+    <::
+    > H(0): BasisStateSpace(nstates=3, basis=HOBasis(dim=2))
+    > H(1): SelectionRuleStateSpace(ogstates=7, nstates=39, basis=HOBasis(dim=2))
+    > H(2): SelectionRuleStateSpace(ogstates=3, nstates=11, basis=HOBasis(dim=2))
+    > took 0.721s...
+    ::> precomputing coupled space indices
+      > generating indices for SelectionRuleStateSpace(ogstates=7, nstates=39, basis=HOBasis(dim=2))
+      > generating indices for SelectionRuleStateSpace(ogstates=3, nstates=11, basis=HOBasis(dim=2))
+      > took 0.002s
+    <::
+    ::> generating total space
+      > total coupled space dimension: 15 (contracted from 15)
+      > took 0.000s
+    <::
+  <::
+  ::> building ExpansionRepresentation<T(0)V(0)>
+    ::> in Representation<T(0)>
+      > evaluating in BraKet space BraKetSpace(nstates=15)
+      > evaluating 15 elements over 3 unique indices sequentially
+      > took 0.147s
+    <::
+    ::> in Representation<V(0)>
+      > evaluating in BraKet space BraKetSpace(nstates=15)
+      > evaluating 15 elements over 3 unique indices sequentially
+      > took 0.155s
+    <::
+    > took 0.611s
+  <::
+  ::> building ExpansionRepresentation<T(1)V(1)>
+    ::> in Representation<T(1)>
+      > evaluating in BraKet space BraKetSpace(nstates=30)
+      > evaluating 30 elements over 8 unique indices sequentially
+      > took 0.161s
+    <::
+    ::> in Representation<V(1)>
+      > evaluating in BraKet space BraKetSpace(nstates=30)
+      > evaluating 30 elements over 4 unique indices sequentially
+      > took 0.157s
+    <::
+    > took 0.751s
+  <::
+  ::> building ExpansionRepresentation<T(2)V(2)V'(0)>
+    ::> in Representation<T(2)>
+      > evaluating in BraKet space BraKetSpace(nstates=7)
+      > evaluating 7 elements over 16 unique indices sequentially
+      > took 0.165s
+    <::
+    ::> in Representation<V(2)>
+      > evaluating in BraKet space BraKetSpace(nstates=7)
+      > evaluating 7 elements over 5 unique indices sequentially
+      > took 0.155s
+    <::
+    ::> in Representation<V'(0)>
+      > evaluating in BraKet space BraKetSpace(nstates=7)
+      > evaluating identity tensor over 7 elements
+      > took 0.065s
+    <::
+    > took 0.950s
+  <::
+<::
+::> Applying Perturbation Theory
+  > order: 2
+  > states: 3
+  > deg. spaces: 0
+  > deg. handling: standard
+  > took 0.002s
+<::
+>>--------------------------------------------------<<
+mode  0  ω ours    108.02  Psience    108.02   ν ours     97.06  Psience       nan  Δν    +nan
+mode  1  ω ours    265.20  Psience    265.20   ν ours    263.59  Psience       nan  Δν    +nan
+mode  2  ω ours    337.91  Psience    337.91   ν ours    338.99  Psience       nan  Δν    +nan
+mode  3  ω ours    483.10  Psience    483.10   ν ours    488.15  Psience       nan  Δν    +nan
+mode  4  ω ours    651.45  Psience    651.45   ν ours    637.65  Psience       nan  Δν    +nan
+mode  5  ω ours    664.51  Psience    664.51   ν ours    657.13  Psience       nan  Δν    +nan
+mode  6  ω ours    687.91  Psience    687.91   ν ours    677.00  Psience       nan  Δν    +nan
+mode  7  ω ours    720.64  Psience    720.64   ν ours    712.00  Psience       nan  Δν    +nan
+mode  8  ω ours    805.67  Psience    805.67   ν ours    793.14  Psience       nan  Δν    +nan
+mode  9  ω ours    948.05  Psience    948.05   ν ours    909.45  Psience       nan  Δν    +nan
+mode 10  ω ours    979.15  Psience    979.15   ν ours    962.35  Psience       nan  Δν    +nan
+mode 11  ω ours   1012.86  Psience   1012.86   ν ours    997.61  Psience       nan  Δν    +nan
+mode 12  ω ours   1081.69  Psience   1081.69   ν ours   1052.26  Psience       nan  Δν    +nan
+mode 13  ω ours   1099.56  Psience   1099.56   ν ours   1079.24  Psience       nan  Δν    +nan
+mode 14  ω ours   1139.88  Psience   1139.88   ν ours   1116.20  Psience       nan  Δν    +nan
+mode 15  ω ours   1255.18  Psience   1255.18   ν ours   1230.04  Psience       nan  Δν    +nan
+mode 16  ω ours   1301.07  Psience   1301.07   ν ours   1260.59  Psience       nan  Δν    +nan
+mode 17  ω ours   1361.26  Psience   1361.26   ν ours   1331.25  Psience       nan  Δν    +nan
+mode 18  ω ours   1445.49  Psience   1445.49   ν ours   1413.64  Psience       nan  Δν    +nan
+mode 19  ω ours   1472.20  Psience   1472.20   ν ours   1431.98  Psience       nan  Δν    +nan
+mode 20  ω ours   1507.50  Psience   1507.50   ν ours   1471.36  Psience   1500.66  Δν  +29.30
+mode 21  ω ours   1521.09  Psience   1521.09   ν ours   1483.20  Psience   1516.02  Δν  +32.82
+mode 22  ω ours   1542.82  Psience   1542.82   ν ours   1508.54  Psience       nan  Δν    +nan
+mode 23  ω ours   1618.99  Psience   1618.99   ν ours   1587.71  Psience       nan  Δν    +nan
+mode 24  ω ours   3047.32  Psience   3047.32   ν ours   3069.79  Psience       nan  Δν    +nan
+mode 25  ω ours   3100.86  Psience   3100.86   ν ours   2954.47  Psience       nan  Δν    +nan
+mode 26  ω ours   3124.33  Psience   3124.33   ν ours   2983.02  Psience       nan  Δν    +nan
+mode 27  ω ours   3265.62  Psience   3265.62   ν ours   3133.16  Psience       nan  Δν    +nan
+mode 28  ω ours   3287.62  Psience   3287.62   ν ours   3159.52  Psience       nan  Δν    +nan
+mode 29  ω ours   3654.13  Psience   3654.13   ν ours   3480.37  Psience       nan  Δν    +nan
