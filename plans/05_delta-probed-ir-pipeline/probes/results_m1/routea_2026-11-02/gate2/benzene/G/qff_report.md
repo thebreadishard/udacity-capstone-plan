@@ -1,6 +1,6 @@
-# Quartic force field from 61 displaced Hessians — /root/routea_gate2/benzene/G/hess
+# Quartic force field from 61 displaced Hessians — C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\routea_2026-11-02\gate2\benzene\G\hess
 
-Reference file `ref.json`; 30 vibrational modes; displacement 0.1 in reduced coordinates; assignment residual max 5.45e-15.
+Reference file `ref.json`; 30 vibrational modes; displacement 0.1 in reduced coordinates; assignment residual max 4.15e-14.
 Harmonic ω (cm⁻¹): 414.8, 415.5, 621.2, 621.9, 695.0, 718.3, 864.9, 865.2, 969.6, 969.8, 1011.3, 1019.1, 1020.9, 1069.0, 1069.3, 1185.3, 1207.5, 1207.5, 1356.7, 1387.8, 1531.6, 1531.8, 1655.8, 1656.2, 3176.2, 3185.9, 3186.0, 3201.9, 3201.9, 3212.6
 
 ## Noise diagnostics
@@ -67,8 +67,10 @@ Off-diagonal semi-diagonal quartic constants φ_iijj have two independent finite
 
 ## Provenance
 
-- timestamp_utc: `2026-11-02 08:26:34`
-- host: `ubuntu-128gb-hel1-6`
-- python: `3.12.16`
-- numpy: `2.5.4`
-- command: `qff.py /root/routea_gate2/benzene/G/hess --disp 0.10 --out /root/routea_gate2/benzene/G/qff_report.md`
+- timestamp_utc: `2026-11-04 07:37:58`
+- host: `Asus18`
+- python: `3.14.6`
+- numpy: `2.5.1`
+- command: `qff.py C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\routea_2026-11-02\gate2\benzene\G\hess --disp 0.10 --out C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\routea_2026-11-02\gate2\benzene\G\qff_report.md`
+- commit: `648a001eb6cfa32df774b73c6e2f0d91dadb87c4`
+- dirty: `yes`

@@ -1,6 +1,6 @@
-# Quartic force field from 61 displaced Hessians — /root/s1_benzene/R/hess
+# Quartic force field from 61 displaced Hessians — C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s1_anharmonic_benzene_2026-10-13\s1_benzene\R\hess
 
-Reference file `ref.json`; 30 vibrational modes; displacement 0.1 in reduced coordinates; assignment residual max 5.32e-15.
+Reference file `ref.json`; 30 vibrational modes; displacement 0.1 in reduced coordinates; assignment residual max 3.05e-14.
 Harmonic ω (cm⁻¹): 415.1, 415.1, 621.5, 621.5, 695.0, 718.3, 865.0, 865.0, 969.7, 969.7, 1011.3, 1019.1, 1020.8, 1069.2, 1069.2, 1185.3, 1207.5, 1207.5, 1356.7, 1387.8, 1531.6, 1531.7, 1656.0, 1656.0, 3176.3, 3186.0, 3186.0, 3201.9, 3201.9, 3212.6
 
 ## Noise diagnostics
@@ -71,8 +71,10 @@ Off-diagonal semi-diagonal quartic constants φ_iijj have two independent finite
 
 ## Provenance
 
-- timestamp_utc: `2026-10-13 22:02:47`
-- host: `ubuntu-32gb-hel1-6`
-- python: `3.12.15`
-- numpy: `2.5.4`
-- command: `qff.py /root/s1_benzene/R/hess --disp 0.10 --out /root/s1_benzene/R/qff_report.md`
+- timestamp_utc: `2026-11-04 07:38:07`
+- host: `Asus18`
+- python: `3.14.6`
+- numpy: `2.5.1`
+- command: `qff.py C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s1_anharmonic_benzene_2026-10-13\s1_benzene\R\hess --disp 0.10 --out C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s1_anharmonic_benzene_2026-10-13\s1_benzene\R\qff_report.md`
+- commit: `648a001eb6cfa32df774b73c6e2f0d91dadb87c4`
+- dirty: `yes`

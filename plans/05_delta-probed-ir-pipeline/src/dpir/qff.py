@@ -457,7 +457,7 @@ def vpt2(w: np.ndarray, p3: np.ndarray, p4: np.ndarray, B: np.ndarray, zeta: np.
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-def report(cache_dir: str, recs: list[HessianRecord], qff: QFF, harm: Harmonic, ref: HessianRecord, info: dict, disp: float,  # noqa: PLR0913  older than TASKS 174, which only passes the geometry to coriolis_zeta inside; a config object is TASKS 139
+def report(cache_dir: str, recs: list[HessianRecord], qff: QFF, harm: Harmonic, ref: HessianRecord, info: dict, disp: float,  # noqa: PLR0913  older than TASKS 174, which only passes the geometry to coriolis_zeta inside; a config object is TASKS 175
            fermi_window: float, fermi_min_k: float, pyvpt2_json: str | None = None) -> tuple[str, dict]:
     """Markdown report plus the arrays to save; returns (text, arrays)."""
     n = len(qff.omega_cm)

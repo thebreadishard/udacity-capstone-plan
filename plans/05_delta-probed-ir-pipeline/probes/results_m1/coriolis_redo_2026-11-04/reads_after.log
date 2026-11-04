@@ -1,0 +1,480 @@
+$ C:\Users\thebr\AppData\Local\Programs\Python\Python314\python.exe probes/s2_read.py C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s2_anharmonic_2026-10-18\s2 --selection C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s2_training_set_2026-10-14\selection.json --extra A_8448043181=C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s1_anharmonic_benzene_2026-10-13\s1_benzene\G --out C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\coriolis_redo_2026-11-04\after\read_v2
+C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\s2_read.py:242: OptimizeWarning: Covariance of the parameters could not be estimated
+  (a, b, c), _ = curve_fit(lambda k, a, b, c: a + b * k ** (-c), ks, ys, p0=(ys.min() * 0.8, ys.max(), 0.5),
+# S2 read — 14 molecules in 9 scaffolds, excluded 6
+
+| k (training scaffolds) | (b) rms ± SE | (c) rms ± SE | unseen-family modes |
+|---|---|---|---|
+| 4 | 9.86 ± 0.02 | 11.98 ± 0.01 | 0 |
+| 6 | 9.77 ± 0.01 | 11.98 ± 0.00 | 0 |
+| all (8) | 9.72 ± 0.00 | 11.96 ± 0.00 | 0 |
+
+| family | modes | (b) k=4 | (b) k=6 | (b) all | (c) all |
+|---|---|---|---|---|---|
+| CH-stretch | 0 | nan ± nan | nan ± nan | nan | nan |
+| CH-oop | 74 | 5.81 ± 0.08 | 5.73 ± 0.04 | 5.67 | 5.92 |
+| ring-ip | 257 | 3.32 ± 0.03 | 3.20 ± 0.02 | 3.15 | 8.77 |
+| other | 101 | 19.04 ± 0.04 | 18.93 ± 0.01 | 18.85 | 19.76 |
+
+*8 training scaffolds per held-out scaffold: k ≥ 8 is the full set, so the curve ends at k = 6 → all.*
+
+**line 2 missed, route b still descending but its fitted asymptote is at or above 3.0 cm⁻¹: read as flat — the search (model class × features) first**
+(b) misses line 1 but descends faster than (c): not stopped, repeated after the search
+
+- excluded A_8f6ed7c002: NOISY (noise rule)
+- excluded B_190a33a33e: NOISY (noise rule)
+- excluded B_151c8ce719: NOISY (noise rule)
+- excluded B_16194573ac: NOISY (noise rule)
+- excluded B_17f1611949: NOISY (noise rule)
+- excluded B_0040149ee1: no qff_report.npz (STOPPED or FAILED)
+$ C:\Users\thebr\AppData\Local\Programs\Python\Python314\python.exe probes/s2_read.py C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s2_anharmonic_2026-10-18\s2 --selection C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s2_training_set_2026-10-14\selection.json --extra A_8448043181=C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s1_anharmonic_benzene_2026-10-13\s1_benzene\G --scope no-linear-xh --out C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\coriolis_redo_2026-11-04\after\read_a2_dvpt2_scope
+C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\s2_read.py:242: OptimizeWarning: Covariance of the parameters could not be estimated
+  (a, b, c), _ = curve_fit(lambda k, a, b, c: a + b * k ** (-c), ks, ys, p0=(ys.min() * 0.8, ys.max(), 0.5),
+# S2 read — 14 molecules in 9 scaffolds, excluded 6 — labels DVPT2 (stored), scope no-linear-xh
+
+| k (training scaffolds) | (b) rms ± SE | (c) rms ± SE | unseen-family modes |
+|---|---|---|---|
+| 4 | 7.43 ± 0.03 | 9.61 ± 0.01 | 0 |
+| 6 | 7.30 ± 0.01 | 9.59 ± 0.00 | 0 |
+| all (8) | 7.25 ± 0.00 | 9.57 ± 0.00 | 0 |
+
+| family | modes | (b) k=4 | (b) k=6 | (b) all | (c) all |
+|---|---|---|---|---|---|
+| CH-stretch | 0 | nan ± nan | nan ± nan | nan | nan |
+| CH-oop | 74 | 5.93 ± 0.09 | 5.86 ± 0.04 | 5.81 | 5.92 |
+| ring-ip | 257 | 2.96 ± 0.02 | 2.90 ± 0.01 | 2.88 | 8.77 |
+| other | 96 | 13.96 ± 0.06 | 13.73 ± 0.03 | 13.63 | 13.22 |
+
+*8 training scaffolds per held-out scaffold: k ≥ 8 is the full set, so the curve ends at k = 6 → all.*
+
+**line 2 missed, route b still descending but its fitted asymptote is at or above 3.0 cm⁻¹: read as flat — the search (model class × features) first**
+
+- excluded A_8f6ed7c002: NOISY (noise rule)
+- excluded B_190a33a33e: NOISY (noise rule)
+- excluded B_151c8ce719: NOISY (noise rule)
+- excluded B_16194573ac: NOISY (noise rule)
+- excluded B_17f1611949: NOISY (noise rule)
+- excluded B_0040149ee1: no qff_report.npz (STOPPED or FAILED)
+$ C:\Users\thebr\AppData\Local\Programs\Python\Python314\python.exe probes/s2_read.py C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s2_anharmonic_2026-10-18\s2 --selection C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s2_training_set_2026-10-14\selection.json --extra A_8448043181=C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s1_anharmonic_benzene_2026-10-13\s1_benzene\G --gvpt2-dir C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s2_anharmonic_2026-10-18\gvpt2 --scope all --out C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\coriolis_redo_2026-11-04\after\read_a2_gvpt2_all
+C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\s2_read.py:242: OptimizeWarning: Covariance of the parameters could not be estimated
+  (a, b, c), _ = curve_fit(lambda k, a, b, c: a + b * k ** (-c), ks, ys, p0=(ys.min() * 0.8, ys.max(), 0.5),
+# S2 read — 14 molecules in 9 scaffolds, excluded 6 — labels GVPT2, scope all
+
+| k (training scaffolds) | (b) rms ± SE | (c) rms ± SE | unseen-family modes |
+|---|---|---|---|
+| 4 | 10.15 ± 0.03 | 12.39 ± 0.01 | 0 |
+| 6 | 10.06 ± 0.01 | 12.38 ± 0.00 | 0 |
+| all (8) | 10.01 ± 0.00 | 12.36 ± 0.00 | 0 |
+
+| family | modes | (b) k=4 | (b) k=6 | (b) all | (c) all |
+|---|---|---|---|---|---|
+| CH-stretch | 0 | nan ± nan | nan ± nan | nan | nan |
+| CH-oop | 74 | 5.79 ± 0.08 | 5.70 ± 0.04 | 5.65 | 5.89 |
+| ring-ip | 257 | 4.22 ± 0.03 | 4.11 ± 0.02 | 4.06 | 9.50 |
+| other | 101 | 19.26 ± 0.05 | 19.13 ± 0.02 | 19.06 | 19.97 |
+
+*8 training scaffolds per held-out scaffold: k ≥ 8 is the full set, so the curve ends at k = 6 → all.*
+
+**line 2 missed, route b still descending but its fitted asymptote is at or above 3.0 cm⁻¹: read as flat — the search (model class × features) first**
+(b) misses line 1 but descends faster than (c): not stopped, repeated after the search
+
+- excluded A_8f6ed7c002: NOISY (noise rule)
+- excluded B_190a33a33e: NOISY (noise rule)
+- excluded B_151c8ce719: NOISY (noise rule)
+- excluded B_16194573ac: NOISY (noise rule)
+- excluded B_17f1611949: NOISY (noise rule)
+- excluded B_0040149ee1: no qff_report.npz (STOPPED or FAILED)
+$ C:\Users\thebr\AppData\Local\Programs\Python\Python314\python.exe probes/s2_read.py C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s2_anharmonic_2026-10-18\s2 --selection C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s2_training_set_2026-10-14\selection.json --extra A_8448043181=C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s1_anharmonic_benzene_2026-10-13\s1_benzene\G --gvpt2-dir C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s2_anharmonic_2026-10-18\gvpt2 --scope no-linear-xh --out C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\coriolis_redo_2026-11-04\after\read_a2_gvpt2_scope
+C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\s2_read.py:242: OptimizeWarning: Covariance of the parameters could not be estimated
+  (a, b, c), _ = curve_fit(lambda k, a, b, c: a + b * k ** (-c), ks, ys, p0=(ys.min() * 0.8, ys.max(), 0.5),
+# S2 read — 14 molecules in 9 scaffolds, excluded 6 — labels GVPT2, scope no-linear-xh
+
+| k (training scaffolds) | (b) rms ± SE | (c) rms ± SE | unseen-family modes |
+|---|---|---|---|
+| 4 | 7.87 ± 0.03 | 10.13 ± 0.01 | 0 |
+| 6 | 7.73 ± 0.01 | 10.11 ± 0.00 | 0 |
+| all (8) | 7.68 ± 0.00 | 10.10 ± 0.00 | 0 |
+
+| family | modes | (b) k=4 | (b) k=6 | (b) all | (c) all |
+|---|---|---|---|---|---|
+| CH-stretch | 0 | nan ± nan | nan ± nan | nan | nan |
+| CH-oop | 74 | 5.90 ± 0.09 | 5.82 ± 0.04 | 5.78 | 5.89 |
+| ring-ip | 257 | 4.00 ± 0.02 | 3.92 ± 0.01 | 3.90 | 9.50 |
+| other | 96 | 14.34 ± 0.07 | 14.10 ± 0.03 | 14.00 | 13.61 |
+
+*8 training scaffolds per held-out scaffold: k ≥ 8 is the full set, so the curve ends at k = 6 → all.*
+
+**line 2 missed, route b still descending but its fitted asymptote is at or above 3.0 cm⁻¹: read as flat — the search (model class × features) first**
+
+- excluded A_8f6ed7c002: NOISY (noise rule)
+- excluded B_190a33a33e: NOISY (noise rule)
+- excluded B_151c8ce719: NOISY (noise rule)
+- excluded B_16194573ac: NOISY (noise rule)
+- excluded B_17f1611949: NOISY (noise rule)
+- excluded B_0040149ee1: no qff_report.npz (STOPPED or FAILED)
+$ C:\Users\thebr\AppData\Local\Programs\Python\Python314\python.exe probes/s2_read.py C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s2_anharmonic_2026-10-18\s2 --selection C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s2_training_set_2026-10-14\selection.json --extra A_8448043181=C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s1_anharmonic_benzene_2026-10-13\s1_benzene\G --gvpt2-dir C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s2_anharmonic_2026-10-18\gvpt2 --scope no-large-amplitude --out C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\coriolis_redo_2026-11-04\after\read_a3_gvpt2_nolam
+C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\s2_read.py:242: OptimizeWarning: Covariance of the parameters could not be estimated
+  (a, b, c), _ = curve_fit(lambda k, a, b, c: a + b * k ** (-c), ks, ys, p0=(ys.min() * 0.8, ys.max(), 0.5),
+# S2 read — 14 molecules in 9 scaffolds, excluded 6 — labels GVPT2, scope no-large-amplitude
+
+| k (training scaffolds) | (b) rms ± SE | (c) rms ± SE | unseen-family modes |
+|---|---|---|---|
+| 4 | 4.46 ± 0.03 | 8.12 ± 0.01 | 0 |
+| 6 | 4.40 ± 0.01 | 8.10 ± 0.01 | 0 |
+| all (8) | 4.37 ± 0.00 | 8.09 ± 0.00 | 0 |
+
+| family | modes | (b) k=4 | (b) k=6 | (b) all | (c) all |
+|---|---|---|---|---|---|
+| CH-stretch | 0 | nan ± nan | nan ± nan | nan | nan |
+| CH-oop | 74 | 5.81 ± 0.08 | 5.73 ± 0.04 | 5.67 | 5.89 |
+| ring-ip | 251 | 3.88 ± 0.02 | 3.82 ± 0.01 | 3.81 | 9.38 |
+| other | 93 | 4.68 ± 0.05 | 4.62 ± 0.03 | 4.60 | 5.39 |
+
+*8 training scaffolds per held-out scaffold: k ≥ 8 is the full set, so the curve ends at k = 6 → all.*
+
+**line 2 missed, route b still descending but its fitted asymptote is at or above 3.0 cm⁻¹: read as flat — the search (model class × features) first**
+
+- excluded A_8f6ed7c002: NOISY (noise rule)
+- excluded B_190a33a33e: NOISY (noise rule)
+- excluded B_151c8ce719: NOISY (noise rule)
+- excluded B_16194573ac: NOISY (noise rule)
+- excluded B_17f1611949: NOISY (noise rule)
+- excluded B_0040149ee1: no qff_report.npz (STOPPED or FAILED)
+$ C:\Users\thebr\AppData\Local\Programs\Python\Python314\python.exe probes/s2_search.py C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s2_anharmonic_2026-10-18\s2 --selection C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s2_training_set_2026-10-14\selection.json --extra A_8448043181=C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s1_anharmonic_benzene_2026-10-13\s1_benzene\G --gvpt2-dir C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s2_anharmonic_2026-10-18\gvpt2 --scope all --out C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\coriolis_redo_2026-11-04\after\search_all
+ridge-F1: CH-oop 5.65, ring-ip 4.06, other 19.06
+ridge-F2: CH-oop 6.28, ring-ip 8.19, other 18.39
+ridge-F3: CH-oop 6.43, ring-ip 8.20, other 18.32
+krr-F1 α=0.01 γ=0.3: CH-oop 5.98, ring-ip 3.58, other 20.34
+krr-F1 α=0.01 γ=1: CH-oop 6.07, ring-ip 3.55, other 21.36
+krr-F1 α=0.01 γ=3: CH-oop 6.39, ring-ip 3.56, other 22.25
+krr-F1 α=0.1 γ=0.3: CH-oop 5.86, ring-ip 3.79, other 19.23
+krr-F1 α=0.1 γ=1: CH-oop 5.80, ring-ip 3.57, other 20.37
+krr-F1 α=0.1 γ=3: CH-oop 5.97, ring-ip 3.52, other 20.59
+krr-F1 α=1 γ=0.3: CH-oop 5.86, ring-ip 4.08, other 19.11
+krr-F1 α=1 γ=1: CH-oop 5.70, ring-ip 3.99, other 19.43
+krr-F1 α=1 γ=3: CH-oop 5.70, ring-ip 3.81, other 19.87
+krr-F2 α=0.01 γ=0.3: CH-oop 7.47, ring-ip 11.45, other 15.07
+krr-F2 α=0.01 γ=1: CH-oop 7.60, ring-ip 7.05, other 13.51
+krr-F2 α=0.01 γ=3: CH-oop 8.27, ring-ip 5.44, other 14.41
+krr-F2 α=0.1 γ=0.3: CH-oop 7.28, ring-ip 10.66, other 15.52
+krr-F2 α=0.1 γ=1: CH-oop 7.35, ring-ip 6.59, other 13.62
+krr-F2 α=0.1 γ=3: CH-oop 7.50, ring-ip 5.17, other 14.48
+krr-F2 α=1 γ=0.3: CH-oop 6.81, ring-ip 8.29, other 16.42
+krr-F2 α=1 γ=1: CH-oop 7.09, ring-ip 6.25, other 14.87
+krr-F2 α=1 γ=3: CH-oop 7.09, ring-ip 5.22, other 15.97
+krr-F3 α=0.01 γ=0.3: CH-oop 8.27, ring-ip 11.70, other 16.27
+krr-F3 α=0.01 γ=1: CH-oop 7.97, ring-ip 7.70, other 14.50
+krr-F3 α=0.01 γ=3: CH-oop 7.56, ring-ip 6.01, other 15.96
+krr-F3 α=0.1 γ=0.3: CH-oop 7.43, ring-ip 10.91, other 16.25
+krr-F3 α=0.1 γ=1: CH-oop 7.60, ring-ip 7.03, other 14.50
+krr-F3 α=0.1 γ=3: CH-oop 7.20, ring-ip 5.52, other 16.17
+krr-F3 α=1 γ=0.3: CH-oop 6.67, ring-ip 8.35, other 16.90
+krr-F3 α=1 γ=1: CH-oop 6.98, ring-ip 6.51, other 15.85
+krr-F3 α=1 γ=3: CH-oop 6.82, ring-ip 5.61, other 17.80
+mlp-F1 α=0.0001: CH-oop 5.74, ring-ip 3.69, other 18.91
+mlp-F1 α=0.01: CH-oop 5.75, ring-ip 3.66, other 18.95
+mlp-F2 α=0.0001: CH-oop 7.81, ring-ip 16.92, other 17.58
+mlp-F2 α=0.01: CH-oop 7.91, ring-ip 17.90, other 17.52
+mlp-F3 α=0.0001: CH-oop 9.47, ring-ip 10.29, other 19.60
+mlp-F3 α=0.01: CH-oop 10.05, ring-ip 10.65, other 20.94
+# S2 search — 14 molecules, 9 scaffolds, GVPT2 labels, scope all
+
+## Nested score (line 2: ≤ 3.0 cm⁻¹ per family)
+
+| family | modes | nested rms | licensed | chosen per outer fold |
+|---|---|---|---|---|
+| CH-oop | 74 | 6.57 | no | krr-F2 α=1 γ=3 ×1; mlp-F1 α=0.01 ×1; ridge-F1 ×5 |
+| ring-ip | 257 | 3.52 | no | krr-F1 α=0.01 γ=0.3 ×2; krr-F1 α=0.01 γ=1 ×2; krr-F1 α=0.1 γ=3 ×5 |
+| other | 101 | 19.05 | no | krr-F2 α=0.01 γ=1 ×7; ridge-F1 ×2 |
+$ C:\Users\thebr\AppData\Local\Programs\Python\Python314\python.exe probes/s2_search.py C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s2_anharmonic_2026-10-18\s2 --selection C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s2_training_set_2026-10-14\selection.json --extra A_8448043181=C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s1_anharmonic_benzene_2026-10-13\s1_benzene\G --gvpt2-dir C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s2_anharmonic_2026-10-18\gvpt2 --scope no-large-amplitude --out C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\coriolis_redo_2026-11-04\after\search_no-large-amplitude
+ridge-F1: CH-oop 5.67, ring-ip 3.81, other 4.60
+ridge-F2: CH-oop 6.29, ring-ip 3.82, other 4.61
+ridge-F3: CH-oop 6.19, ring-ip 3.81, other 4.61
+krr-F1 α=0.01 γ=0.3: CH-oop 5.80, ring-ip 3.57, other 4.54
+krr-F1 α=0.01 γ=1: CH-oop 6.05, ring-ip 3.51, other 4.70
+krr-F1 α=0.01 γ=3: CH-oop 6.37, ring-ip 3.57, other 4.99
+krr-F1 α=0.1 γ=0.3: CH-oop 5.73, ring-ip 3.92, other 4.62
+krr-F1 α=0.1 γ=1: CH-oop 5.77, ring-ip 3.60, other 4.52
+krr-F1 α=0.1 γ=3: CH-oop 5.97, ring-ip 3.52, other 4.70
+krr-F1 α=1 γ=0.3: CH-oop 5.83, ring-ip 4.12, other 4.61
+krr-F1 α=1 γ=1: CH-oop 5.69, ring-ip 4.05, other 4.61
+krr-F1 α=1 γ=3: CH-oop 5.70, ring-ip 3.83, other 4.51
+krr-F2 α=0.01 γ=0.3: CH-oop 7.46, ring-ip 4.91, other 4.51
+krr-F2 α=0.01 γ=1: CH-oop 7.62, ring-ip 5.47, other 4.64
+krr-F2 α=0.01 γ=3: CH-oop 8.33, ring-ip 5.42, other 5.30
+krr-F2 α=0.1 γ=0.3: CH-oop 7.25, ring-ip 4.55, other 4.42
+krr-F2 α=0.1 γ=1: CH-oop 7.33, ring-ip 4.83, other 4.63
+krr-F2 α=0.1 γ=3: CH-oop 7.53, ring-ip 5.13, other 5.21
+krr-F2 α=1 γ=0.3: CH-oop 6.80, ring-ip 4.76, other 4.48
+krr-F2 α=1 γ=1: CH-oop 7.10, ring-ip 4.77, other 4.80
+krr-F2 α=1 γ=3: CH-oop 7.12, ring-ip 5.07, other 5.56
+krr-F3 α=0.01 γ=0.3: CH-oop 8.25, ring-ip 4.94, other 4.75
+krr-F3 α=0.01 γ=1: CH-oop 7.97, ring-ip 5.91, other 4.70
+krr-F3 α=0.01 γ=3: CH-oop 7.61, ring-ip 5.92, other 5.67
+krr-F3 α=0.1 γ=0.3: CH-oop 7.44, ring-ip 4.53, other 4.54
+krr-F3 α=0.1 γ=1: CH-oop 7.61, ring-ip 4.93, other 4.79
+krr-F3 α=0.1 γ=3: CH-oop 7.25, ring-ip 5.38, other 5.69
+krr-F3 α=1 γ=0.3: CH-oop 6.67, ring-ip 4.86, other 4.52
+krr-F3 α=1 γ=1: CH-oop 7.02, ring-ip 4.91, other 5.04
+krr-F3 α=1 γ=3: CH-oop 6.90, ring-ip 5.42, other 6.14
+mlp-F1 α=0.0001: CH-oop 5.87, ring-ip 4.09, other 4.76
+mlp-F1 α=0.01: CH-oop 5.89, ring-ip 4.07, other 4.77
+mlp-F2 α=0.0001: CH-oop 7.19, ring-ip 5.01, other 4.70
+mlp-F2 α=0.01: CH-oop 7.23, ring-ip 4.96, other 4.69
+mlp-F3 α=0.0001: CH-oop 7.98, ring-ip 5.54, other 5.23
+mlp-F3 α=0.01: CH-oop 7.58, ring-ip 4.98, other 5.28
+# S2 search — 14 molecules, 9 scaffolds, GVPT2 labels, scope no-large-amplitude
+
+## Nested score (line 2: ≤ 3.0 cm⁻¹ per family)
+
+| family | modes | nested rms | licensed | chosen per outer fold |
+|---|---|---|---|---|
+| CH-oop | 74 | 7.63 | no | krr-F1 α=0.01 γ=3 ×1; krr-F2 α=1 γ=3 ×1; mlp-F1 α=0.01 ×1; ridge-F1 ×3; ridge-F3 ×1 |
+| ring-ip | 251 | 3.79 | no | krr-F1 α=0.01 γ=1 ×7; ridge-F1 ×1; ridge-F3 ×1 |
+| other | 93 | 4.83 | no | krr-F1 α=0.01 γ=0.3 ×1; krr-F1 α=0.1 γ=1 ×1; krr-F1 α=1 γ=3 ×1; krr-F2 α=0.01 γ=0.3 ×1; krr-F2 α=0.01 γ=1 ×1; krr-F2 α=0.1 γ=0.3 ×2; krr-F2 α=1 γ=0.3 ×1; mlp-F1 α=0.01 ×1 |
+$ C:\Users\thebr\AppData\Local\Programs\Python\Python314\python.exe probes/s2_xtb_read.py C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s2_anharmonic_2026-10-18\s2 --selection C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s2_training_set_2026-10-14\selection.json --extra A_8448043181=C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s1_anharmonic_benzene_2026-10-13\s1_benzene\G --gvpt2-dir C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s2_anharmonic_2026-10-18\gvpt2 --xtb-root C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s2_xtb_2026-10-18\xtb --xtb-gvpt2-dir C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s2_xtb_2026-10-18\gvpt2_x --out C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\coriolis_redo_2026-11-04\after\read_a4
+C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\s2_read.py:242: OptimizeWarning: Covariance of the parameters could not be estimated
+  (a, b, c), _ = curve_fit(lambda k, a, b, c: a + b * k ** (-c), ks, ys, p0=(ys.min() * 0.8, ys.max(), 0.5),
+# S2 amendment 4 — GFN2-xTB as input (14 G molecules; GVPT2 labels both sides; line 2 ≤ 3.0 cm⁻¹)
+
+## Scope all
+
+Without an xtb force field: 0; G window modes without an xtb partner (overlap < 0.5): 13.
+
+| family | modes | (x0) Δ_xtb rms | Pearson r | (c) rms | (x1) rms | (x2) nested rms | licensed (x0/x1/x2) |
+|---|---|---|---|---|---|---|---|
+| CH-oop | 72 | 10.34 | 0.05 | 5.99 | 5.94 | 5.81 | no/no/no |
+| ring-ip | 248 | 5.60 | 0.86 | 9.58 | 4.42 | 3.51 | no/no/no |
+| other | 99 | 20.16 | 0.58 | 20.07 | 15.33 | 16.85 | no/no/no |
+
+(x1) curve verdict: line 2 missed, route b still learning: not failed — data-limited; next S2b, sized by the extrapolation
+
+## Scope no-large-amplitude
+
+Without an xtb force field: 0; G window modes without an xtb partner (overlap < 0.5): 11.
+
+| family | modes | (x0) Δ_xtb rms | Pearson r | (c) rms | (x1) rms | (x2) nested rms | licensed (x0/x1/x2) |
+|---|---|---|---|---|---|---|---|
+| CH-oop | 72 | 10.34 | 0.05 | 5.99 | 7.76 | 5.83 | no/no/no |
+| ring-ip | 243 | 5.00 | 0.90 | 9.48 | 3.60 | 3.81 | no/no/no |
+| other | 92 | 5.84 | 0.29 | 5.42 | 4.84 | 5.14 | no/no/no |
+
+(x1) curve verdict: line 2 missed, route b flat: no negative conclusion yet — the search (model class × features) first
+
+$ C:\Users\thebr\AppData\Local\Programs\Python\Python314\python.exe probes/s1_anharmonic_level.py compare C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s1_anharmonic_benzene_2026-10-13\s1_benzene\R C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s1_anharmonic_benzene_2026-10-13\s1_benzene\G C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s1_anharmonic_benzene_2026-10-13\s1_benzene\B --out C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\coriolis_redo_2026-11-04\after\s1_compare\compare.json
+C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s1_anharmonic_benzene_2026-10-13\s1_benzene\G: Δ_anh difference over 22 modes in 550–2000 cm⁻¹: rms 0.19, max 0.34 cm⁻¹ (min mode overlap 0.636)
+C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s1_anharmonic_benzene_2026-10-13\s1_benzene\B: Δ_anh difference over 22 modes in 550–2000 cm⁻¹: rms 3.16, max 7.51 cm⁻¹ (min mode overlap 0.654)
+$ C:\Users\thebr\AppData\Local\Programs\Python\Python314\python.exe probes/qff_noise_diagnosis.py C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s2_anharmonic_2026-10-18\s2\B_151c8ce719\G --decouple-below 120 --out C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\coriolis_redo_2026-11-04\after\diag_imidazole\decouple_120.json
+{
+ "setting_dir": "C:\\Users\\thebr\\Documents\\CapstonePlan\\plans\\05_delta-probed-ir-pipeline\\probes\\results_m1\\s2_anharmonic_2026-10-18\\s2\\B_151c8ce719\\G",
+ "worst": [
+  {
+   "i": 0,
+   "j": 25,
+   "omega_i": 108.02447815297737,
+   "omega_j": 3100.8586910362706,
+   "disagreement": 5.626780567850346,
+   "phi_a": -2051.0695196398765,
+   "phi_b": -2045.4427390720261,
+   "substituent_share_i": 0.9417311755523504,
+   "substituent_share_j": 0.9999961093260309,
+   "oop_share_i": 0.5320052346311263,
+   "oop_share_j": 0.6680310775004757
+  },
+  {
+   "i": 24,
+   "j": 0,
+   "omega_i": 3047.317114665915,
+   "omega_j": 108.02447815297737,
+   "disagreement": 4.671544881067803,
+   "phi_a": -2015.421677218382,
+   "phi_b": -2020.0932220994498,
+   "substituent_share_i": 0.9999820525057408,
+   "substituent_share_j": 0.9417311755523504,
+   "oop_share_i": 0.4891721651774221,
+   "oop_share_j": 0.5320052346311263
+  },
+  {
+   "i": 26,
+   "j": 0,
+   "omega_i": 3124.329799135706,
+   "omega_j": 108.02447815297737,
+   "disagreement": 3.660585671870649,
+   "phi_a": -1972.095151965501,
+   "phi_b": -1975.7557376373716,
+   "substituent_share_i": 0.9999438630705779,
+   "substituent_share_j": 0.9417311755523504,
+   "oop_share_i": 0.14698761937364166,
+   "oop_share_j": 0.5320052346311263
+  },
+  {
+   "i": 22,
+   "j": 0,
+   "omega_i": 1542.8219207073755,
+   "omega_j": 108.02447815297737,
+   "disagreement": 2.9997504178263767,
+   "phi_a": 46.8331250658314,
+   "phi_b": 43.83337464800503,
+   "substituent_share_i": 0.2845816945347589,
+   "substituent_share_j": 0.9417311755523504,
+   "oop_share_i": 0.02650327156379213,
+   "oop_share_j": 0.5320052346311263
+  },
+  {
+   "i": 0,
+   "j": 11,
+   "omega_i": 108.02447815297737,
+   "omega_j": 1012.861109710247,
+   "disagreement": 2.8407032748542633,
+   "phi_a": 566.7536438950845,
+   "phi_b": 563.9129406202302,
+   "substituent_share_i": 0.9417311755523504,
+   "substituent_share_j": 0.8104266774407715,
+   "oop_share_i": 0.5320052346311263,
+   "oop_share_j": 0.004557664563379035
+  }
+ ],
+ "lowest_modes": [
+  108.02447815297737,
+  265.1950889820435,
+  337.9092678128121,
+  483.09723936330005
+ ],
+ "dnu_routes_window_max": 0.4282494288933094,
+ "dnu_routes_window_rms": 0.18988050889464816,
+ "dnu_routes_all_max": 0.8550400941544467,
+ "dnu_routes_argmax_mode_omega": 108.02447815297737,
+ "dnu_routes_per_mode": {
+  "0:108": -0.8550400941544467,
+  "25:3101": 0.7323463438551698,
+  "1:265": 0.6303590257991516,
+  "2:338": -0.6294854550267246,
+  "24:3047": 0.6257692308972764,
+  "3:483": -0.6021423137573443,
+  "26:3124": 0.5899287819538586,
+  "11:1013": -0.4282494288933094
+ },
+ "decoupling": {
+  "decouple_below_cm": 120.0,
+  "modes": {
+   "0": 108.02447815297737
+  },
+  "window_max_abs_shift": 5.867663406342672,
+  "window_rms_shift": 1.5941056449020905,
+  "largest_window_shifts": {
+   "20:1508": -5.867663406342672,
+   "21:1521": -3.251781890838174,
+   "23:1619": 1.6505622363156363,
+   "11:1013": -1.0107489095576057,
+   "6:688": -0.845184327107745,
+   "8:806": 0.7410353228651729
+  }
+ }
+}
+$ C:\Users\thebr\AppData\Local\Programs\Python\Python314\python.exe probes/qff_noise_diagnosis.py C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s2_anharmonic_2026-10-18\s2\A_8f6ed7c002\G --decouple-below 120 --out C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\coriolis_redo_2026-11-04\after\diag_styrene\decouple_120.json
+{
+ "setting_dir": "C:\\Users\\thebr\\Documents\\CapstonePlan\\plans\\05_delta-probed-ir-pipeline\\probes\\results_m1\\s2_anharmonic_2026-10-18\\s2\\A_8f6ed7c002\\G",
+ "worst": [
+  {
+   "i": 4,
+   "j": 0,
+   "omega_i": 449.4778633915967,
+   "omega_j": 39.85385738004043,
+   "disagreement": 10.650627568942468,
+   "phi_a": 135.0974831555457,
+   "phi_b": 145.74811072448816,
+   "substituent_share_i": 0.5380316872112096,
+   "substituent_share_j": 0.7674948859812643,
+   "oop_share_i": 0.37780464186597357,
+   "oop_share_j": 0.9999719343737138
+  },
+  {
+   "i": 33,
+   "j": 0,
+   "omega_i": 1714.1600948841124,
+   "omega_j": 39.85385738004043,
+   "disagreement": 8.611462827749733,
+   "phi_a": -292.6226603791084,
+   "phi_b": -284.0111975513587,
+   "substituent_share_i": 0.9452684931476947,
+   "substituent_share_j": 0.7674948859812643,
+   "oop_share_i": 1.2359317473021736e-05,
+   "oop_share_j": 0.9999719343737138
+  },
+  {
+   "i": 18,
+   "j": 0,
+   "omega_i": 1037.5768260887926,
+   "omega_j": 39.85385738004043,
+   "disagreement": 5.9689213828410175,
+   "phi_a": 906.5332438409862,
+   "phi_b": 912.5021652238272,
+   "substituent_share_i": 0.9930372743291215,
+   "substituent_share_j": 0.7674948859812643,
+   "oop_share_i": 0.9999697961461276,
+   "oop_share_j": 0.9999719343737138
+  },
+  {
+   "i": 5,
+   "j": 0,
+   "omega_i": 449.9275857633415,
+   "omega_j": 39.85385738004043,
+   "disagreement": 5.24018172633555,
+   "phi_a": 233.1513652743336,
+   "phi_b": 238.39154700066916,
+   "substituent_share_i": 0.4869844356084954,
+   "substituent_share_j": 0.7674948859812643,
+   "oop_share_i": 0.6221931637242295,
+   "oop_share_j": 0.9999719343737138
+  },
+  {
+   "i": 1,
+   "j": 0,
+   "omega_i": 208.2173923875131,
+   "omega_j": 39.85385738004043,
+   "disagreement": 3.138988571206255,
+   "phi_a": 1292.8927252876244,
+   "phi_b": 1289.7537367164182,
+   "substituent_share_i": 0.5007025654080511,
+   "substituent_share_j": 0.7674948859812643,
+   "oop_share_i": 0.999731016023206,
+   "oop_share_j": 0.9999719343737138
+  }
+ ],
+ "lowest_modes": [
+  39.85385738004043,
+  208.2173923875131,
+  237.2945292753712,
+  413.37348570519526
+ ],
+ "dnu_routes_window_max": 1.153492535083842,
+ "dnu_routes_window_rms": 0.3034462572944354,
+ "dnu_routes_all_max": 3.9414755946334026,
+ "dnu_routes_argmax_mode_omega": 39.85385738004043,
+ "dnu_routes_per_mode": {
+  "0:40": 3.9414755946334026,
+  "4:449": -1.5885736484053723,
+  "33:1714": -1.153492535083842,
+  "18:1038": -0.7926963798090583,
+  "2:237": 0.519388639200514,
+  "5:450": -0.48925849642773755,
+  "1:208": 0.4130758298433648,
+  "6:561": 0.30639937851731247
+ },
+ "decoupling": {
+  "decouple_below_cm": 120.0,
+  "modes": {
+   "0": 39.85385738004043
+  },
+  "window_max_abs_shift": 4.613896166318341,
+  "window_rms_shift": 1.238042431616469,
+  "largest_window_shifts": {
+   "13:922": -4.613896166318341,
+   "6:561": -2.211729812180579,
+   "8:656": -1.9994663664284644,
+   "27:1376": 1.5293553858709856,
+   "12:854": -1.507392114165782,
+   "18:1038": -1.4335339492150752
+  }
+ }
+}

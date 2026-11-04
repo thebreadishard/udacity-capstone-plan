@@ -1,6 +1,6 @@
-# Quartic force field from 7 displaced Hessians — /root/s1_smoke_water/G/hess
+# Quartic force field from 7 displaced Hessians — C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s1_anharmonic_benzene_2026-10-13\s1_smoke_water\G\hess
 
-Reference file `ref.json`; 3 vibrational modes; displacement 0.1 in reduced coordinates; assignment residual max 4.90e-16.
+Reference file `ref.json`; 3 vibrational modes; displacement 0.1 in reduced coordinates; assignment residual max 5.06e-16.
 Harmonic ω (cm⁻¹): 1710.8, 3721.1, 3844.9
 
 ## Noise diagnostics
@@ -18,14 +18,16 @@ Off-diagonal semi-diagonal quartic constants φ_iijj have two independent finite
 
 | mode | ω | ν raw quartics | ν − ω | ν symmetry-averaged quartics | ν − ω | pyVPT2 ν | pair |
 |---|---|---|---|---|---|---|---|
-| 0 | 1710.8 | 1682.7 | -28.1 | 1682.7 | -28.1 | — |  |
+| 0 | 1710.8 | 1659.7 | -51.1 | 1659.7 | -51.1 | — |  |
 | 1 | 3721.1 | 3550.3 | -170.8 | 3550.3 | -170.8 | — |  |
-| 2 | 3844.9 | 3676.1 | -168.8 | 3676.1 | -168.8 | — |  |
+| 2 | 3844.9 | 3653.1 | -191.8 | 3653.1 | -191.8 | — |  |
 
 ## Provenance
 
-- timestamp_utc: `2026-10-13 18:06:42`
-- host: `ubuntu-32gb-hel1-6`
-- python: `3.12.15`
-- numpy: `2.5.4`
-- command: `qff.py /root/s1_smoke_water/G/hess --disp 0.10 --allow-noisy --out /root/s1_smoke_water/G/qff_report.md`
+- timestamp_utc: `2026-11-04 07:38:09`
+- host: `Asus18`
+- python: `3.14.6`
+- numpy: `2.5.1`
+- command: `qff.py C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s1_anharmonic_benzene_2026-10-13\s1_smoke_water\G\hess --disp 0.10 --allow-noisy --out C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s1_anharmonic_benzene_2026-10-13\s1_smoke_water\G\qff_report.md`
+- commit: `648a001eb6cfa32df774b73c6e2f0d91dadb87c4`
+- dirty: `yes`

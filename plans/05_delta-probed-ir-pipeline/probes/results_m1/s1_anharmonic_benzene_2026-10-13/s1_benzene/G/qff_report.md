@@ -1,6 +1,6 @@
-# Quartic force field from 61 displaced Hessians — /root/s1_benzene/G/hess
+# Quartic force field from 61 displaced Hessians — C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s1_anharmonic_benzene_2026-10-13\s1_benzene\G\hess
 
-Reference file `ref.json`; 30 vibrational modes; displacement 0.1 in reduced coordinates; assignment residual max 5.19e-15.
+Reference file `ref.json`; 30 vibrational modes; displacement 0.1 in reduced coordinates; assignment residual max 7.03e-14.
 Harmonic ω (cm⁻¹): 414.8, 415.5, 621.2, 621.9, 695.0, 718.3, 864.9, 865.2, 969.6, 969.8, 1011.3, 1019.1, 1020.9, 1069.0, 1069.3, 1185.3, 1207.5, 1207.5, 1356.7, 1387.8, 1531.6, 1531.7, 1655.8, 1656.1, 3176.2, 3185.9, 3186.0, 3201.9, 3201.9, 3212.6
 
 ## Noise diagnostics
@@ -42,7 +42,7 @@ Off-diagonal semi-diagonal quartic constants φ_iijj have two independent finite
 | 5 | 718.3 | 708.4 | -9.9 | 708.4 | -9.9 | — |  |
 | 6 | 864.9 | 850.7 | -14.2 | 850.2 | -14.7 | — | e |
 | 7 | 865.2 | 849.7 | -15.5 | 850.2 | -15.0 | — | e |
-| 8 | 969.6 | 965.6 | -4.0 | 965.1 | -4.5 | — | e |
+| 8 | 969.6 | 965.6 | -3.9 | 965.1 | -4.5 | — | e |
 | 9 | 969.8 | 964.7 | -5.1 | 965.3 | -4.5 | — | e |
 | 10 | 1011.3 | 993.8 | -17.5 | 993.8 | -17.5 | — |  |
 | 11 | 1019.1 | 1007.3 | -11.8 | 1007.3 | -11.8 | — |  |
@@ -67,8 +67,10 @@ Off-diagonal semi-diagonal quartic constants φ_iijj have two independent finite
 
 ## Provenance
 
-- timestamp_utc: `2026-10-13 20:04:55`
-- host: `ubuntu-32gb-hel1-6`
-- python: `3.12.15`
-- numpy: `2.5.4`
-- command: `qff.py /root/s1_benzene/G/hess --disp 0.10 --out /root/s1_benzene/G/qff_report.md`
+- timestamp_utc: `2026-11-04 07:38:07`
+- host: `Asus18`
+- python: `3.14.6`
+- numpy: `2.5.1`
+- command: `qff.py C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s1_anharmonic_benzene_2026-10-13\s1_benzene\G\hess --disp 0.10 --out C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\s1_anharmonic_benzene_2026-10-13\s1_benzene\G\qff_report.md`
+- commit: `648a001eb6cfa32df774b73c6e2f0d91dadb87c4`
+- dirty: `yes`

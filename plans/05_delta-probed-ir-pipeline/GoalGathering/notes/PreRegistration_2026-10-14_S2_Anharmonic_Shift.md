@@ -317,3 +317,5 @@ molecules at G) and 3 (route A on the large targets, or a scale factor) to the u
 **Note (19 Oct 2026, 16:4x — the user).** The scale factor named among line 3's fallbacks is withdrawn as an option: *'Het hele ding met
 dit project, het doel dat we nastreven, is om van die schaalfactor af te komen die PAHdb gebruikt. Stel die optie daarom nooit meer voor.'*
 It stays only as the baseline the project is measured against. Option 3 is route A.
+
+**Dated note, 4 November 2026 08:4x (TASKS 174).** The Coriolis term of `src/dpir/qff.py` paired lab-frame ζ with the sorted principal rotational constants until 4 Nov (TASKS 174, fixed in 648a001e). Every stored force-field report and GVPT2 label was rebuilt and every stored read of this registration rerun (`probes/results_m1/coriolis_redo_2026-11-04/compare.md`): no verdict changed, scores moved ≤ 0.04 cm⁻¹. The read of this registration that is still to come uses the fixed code.

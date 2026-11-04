@@ -170,3 +170,6 @@ With the user's word ('Akkoord met allebei'), `routea_targets` was stopped (coro
 - Memory above 307 basis functions at G is measured here for the first time (coronene has 384). Four lanes of 24 GB fit the CCX53's
   122 GB.
 - The S3 read depends on S2b's read. If S2b ends late, the S3 read waits for it; route A's GVPT2 values are kept either way.
+
+
+**Dated note, 4 November 2026 08:4x (TASKS 174).** The Coriolis term of `src/dpir/qff.py` paired lab-frame ζ with the sorted principal rotational constants until 4 Nov (TASKS 174, fixed in 648a001e). Every stored force-field report and GVPT2 label was rebuilt and every stored read of this registration rerun (`probes/results_m1/coriolis_redo_2026-11-04/compare.md`): no verdict changed, scores moved ≤ 0.04 cm⁻¹. The read of this registration that is still to come uses the fixed code.

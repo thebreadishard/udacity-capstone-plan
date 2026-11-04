@@ -46,7 +46,7 @@ def test_vpt2_does_not_depend_on_the_orientation_of_the_molecule(water_cache, se
 
 def test_water_in_its_lab_frame_agrees_with_psience():
     """S1's pyscf water (lab frame): our fundamentals within 0.05 cm⁻¹ of Psience's on the same force field (measured 4 Nov 2026:
-    0.003, 0.011, 0.011 after the fix; before it modes 0 and 2 were 23.0 cm⁻¹ high)."""
+    0.003, 0.011, 0.012 after the fix; before it modes 0 and 2 were 23.0 cm⁻¹ high)."""
     recs = load_results(str(_need(S1_WATER_G)))
     psience = np.array(json.loads(Path(_need(PSIENCE_WATER_G)).read_text(encoding="utf-8"))["nu_psience_cm"], float)
     np.testing.assert_allclose(fundamentals(recs, 0.10), psience, atol=0.05)
