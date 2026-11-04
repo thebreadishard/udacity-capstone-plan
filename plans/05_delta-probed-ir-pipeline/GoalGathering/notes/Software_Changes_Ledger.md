@@ -65,6 +65,7 @@ One line per change; the numbered section below the register carries every origi
 | 52 | 2026-10-23 | C | pyscf 2.14.0 / master 143946e35 (`cc/uccsd_t_lambda.py`, `cc/uccsd_t_rdm.py`, `cc/uccsd_rdm.py`) | the open-shell CCSD(T) gradient forms whole tensors: the (T) lambda and both (T) densities build o³v³ `ijkabc` arrays for four spin cases, and the UCCSD γ2 builds whole v⁴ blocks (the UHF `_gamma2_outcore` only calls the in-core function), so benzene⁺/cc-pVDZ (≈ 22 GB per array) is the largest cation it can run and acenaphthylene⁺ would need ≈ 830 GB per array; fix designed — fused blocked C kernels per spin case on the RHF kernels' pattern plus an out-of-core γ2 (`GoalGathering/notes/Design_Note_2026-10-23_UHF_CCSD_T_Gradient_Memory.md`; TASKS 98) | pr-open |
 | 53 | 2026-11-01 | C | geomeTRIC 1.1.1 (`internal.py`, `PrimitiveInternalCoordinates.makePrimitives`); psi4's optking 0.5.0 (`addIntcos.py`) for comparison | at a planar three-neighbour centre geomeTRIC drops the angle of the two lowest-numbered neighbours for an out-of-plane coordinate, so the primitive set follows the atom numbers; optking keeps every bend | done |
 | 54 | 2026-11-01 | C | uutils coreutils 0.8.0 `mkdir` (WSL Ubuntu 26.04) | two concurrent `mkdir` calls on one new path can both exit 0, so a `mkdir` lock admits two holders; bash's noclobber create is exclusive; fixed upstream in 0.11.0 (#13970), Ubuntu's backport is Launchpad #2171333 | done |
+| 55 | 2026-11-04 | B | our VPT2 (`probes/qff_from_hessians.py`, pyVPT2's expressions) + geomeTRIC 1.1.1 internal coordinates; no open package we use has it (pyscf/pyscf-forge: no VPT2; pyVPT2 0.1.2: rectilinear only) | VPT2 in curvilinear internal coordinates from a stored semi-numerical quartic force field — the methyl rotor report's option 1 (TASKS 173) | planned |
 
 ## Sections
 
@@ -840,6 +841,18 @@ Sep). Size: one module of ≈ 150 lines plus tests; decided by the user.
 > Also seen on Ubuntu 26.04 LTS under WSL2 with rust-coreutils 0.8.0-0ubuntu3. Two background subshells ran plain `mkdir DIR` on one new path, 200 trials per filesystem: both exited 0 in 81 trials on tmpfs and in 7 on a 9p mount (/mnt/c). With bash's noclobber create (`(set -C; : > FILE)`) as the lock, none of 200 on either. We found it when a smoke test of a two-lane job queue ran one job in both lanes. The 0.10.0 update offered for 26.04 still has the bug, so the backport of bf423f3 is what fixes it.
 
 The user marked the bug 'affects me' on 1 Nov (16:4x); the comment was not posted. Launchpad's API still counted one affected user right after (it may lag).
+
+### 55 — VPT2 in curvilinear internal coordinates from a stored quartic force field
+
+**Group:** B, own layer. **Date:** 2026-11-04 (07:0x). **Status:** planned (the user: 'bouw optie 1 eerst als eigen module'); upstream only on the user's word, a pyscf-forge issue first.
+
+**Why.** In rectilinear normal coordinates a methyl torsion's cubic and quartic constants are huge (4-methylimidazole: φ_iiii ≈ 19,600 cm⁻¹) and mostly cancel in the coupled fundamentals; zeroing them moves the CH3 bends by up to 5.9 cm⁻¹ (TASKS 156 (c)). In curvilinear coordinates the same couplings shrink 10–100-fold while the CH3 fundamentals move 0–4 cm⁻¹ (acetic acid, MP2/junTZ, Mendolicchio, Bloino & Barone JCTC 2022, PMC9753597). Running VPT2 in curvilinear coordinates on our stored force field decides whether decoupling or the coupled value is right for a hindered rotor (`reports/Methylrotor in anharmonische IR.md`, option 1).
+
+**What.** From the semi-numerical force field we already store (the reference Hessian and the ±q displaced Hessians; for 4-methylimidazole the 61 of `probes/results_m1/s2_anharmonic_2026-10-18/s2/B_151c8ce719/G/hess/`), re-express the potential in curvilinear internal coordinates (bonds, angles, dihedrals; geomeTRIC's primitives give first and second derivatives with respect to Cartesians, third derivatives are ours if the quartic terms need them), build the coordinate-dependent kinetic term (the G matrix and its expansion, with the pseudopotential term), and run VPT2/GVPT2 with the expressions of our existing code. No new electronic-structure calculations.
+
+**Checks before any read.** (1) A rigid molecule (water, then benzene) gives the same fundamentals in both coordinate sets within our route noise — the two-route rule; (2) the reference implementation's published acetic-acid numbers, where the force field can be rebuilt cheaply, or the closest case we can compute; (3) the existing rectilinear result of every molecule is reproduced when the curvilinear path is switched off. The upstream test or paper each formula follows is cited in the code.
+
+**Upstream.** pyscf-forge would be the home (pyscf Hessians, new features go to forge); pyscf has no VPT2 yet, so a VPT2 module with this option is the offer. An issue drafted first, posted on the user's word. pyVPT2 (BSD-3, one maintainer, last release Sep 2024, rectilinear only) is the alternative.
 
 ## How to use this ledger
 
