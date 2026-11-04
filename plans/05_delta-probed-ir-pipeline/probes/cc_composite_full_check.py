@@ -250,21 +250,34 @@ def merge(a) -> int:
 
 # ---- build: the full composite anchor
 
-def build_frame(a, x0: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+def build_frame(planeframe: str | None, x0: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     """(V, coordinates the rows were computed at): the plane frame when given, else the corpus frame."""
-    if not a.planeframe:
+    if not planeframe:
         return np.eye(3), x0
-    pf = load_planeframe(a.planeframe)
+    pf = load_planeframe(Path(planeframe))
     pf.check(x0)
     return pf.V, pf.coords
 
 
-def check_rows_coordinates(a, xr: np.ndarray) -> None:
-    for rows in (a.mp2_dz, a.mp2_tz):
-        with np.load(rows) as z:
+def check_rows_coordinates(rows: tuple[str, ...], xr: np.ndarray, frame: str) -> None:
+    for path in rows:
+        with np.load(path) as z:
             xc = np.asarray(z["coords_bohr"], float).reshape(-1, 3)
         if np.abs(xc - xr).max() > FRAME_TOL_BOHR:
-            raise SystemExit(f"{rows}: rows computed at other coordinates than the anchor's (frame: {'plane' if a.planeframe else 'corpus'})")
+            raise SystemExit(f"{path}: rows computed at other coordinates than the anchor's (frame: {frame})")
+
+
+def mp2_rows_frame(mp2_dz: str, mp2_tz: str, planeframe: str | None, sym: list[str],
+                   x0: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray, float, float]:
+    """The MP2/DZ and MP2/TZ Hessians in the frame their rows were computed in, the rotation back to the corpus frame (H = T M Tᵀ) and the
+    symmetry spreads: (M_DZ, M_TZ, T, spread DZ, spread TZ)."""
+    n = len(x0)
+    V, xr = build_frame(planeframe, x0)
+    check_rows_coordinates((mp2_dz, mp2_tz), xr, "plane" if planeframe else "corpus")
+    ops = SYM.point_group_ops(sym, xr)
+    _, reps = SYM.unique_displacements(ops, n)
+    M_dz, M_tz, s_dz, s_tz = mp2_pair(mp2_dz, mp2_tz, ops, reps, n)
+    return M_dz, M_tz, np.kron(np.eye(n), V), s_dz, s_tz
 
 
 def step_method_of(mp2_tz: str) -> str:
@@ -277,17 +290,11 @@ def build(a) -> int:
     back. Writes <out>.npz (H_raw, H_projected, freq_cm, status), .md and .json."""
     anchor = Path(a.anchor)
     H, x0 = load_anchor(anchor)
-    n = len(x0)
     mol_dir = corpus_dir(a.mol_id)
     sym, xg, masses = load_geometry(mol_dir / "geometry.json")
     if np.abs(xg - x0).max() > FRAME_TOL_BOHR:
         raise SystemExit(f"{anchor}: coordinates differ from the corpus geometry of {a.mol_id}")
-    V, xr = build_frame(a, x0)
-    check_rows_coordinates(a, xr)
-    ops = SYM.point_group_ops(sym, xr)
-    _, reps = SYM.unique_displacements(ops, n)
-    M_dz, M_tz, s_dz, s_tz = mp2_pair(a.mp2_dz, a.mp2_tz, ops, reps, n)
-    T = np.kron(np.eye(n), V)
+    M_dz, M_tz, T, s_dz, s_tz = mp2_rows_frame(a.mp2_dz, a.mp2_tz, a.planeframe, sym, x0)
     step = T @ (M_tz - M_dz) @ T.T
     H_comp = H + step
     f_dz, f_comp = frequencies_cm(H, masses, x0), frequencies_cm(H_comp, masses, x0)
