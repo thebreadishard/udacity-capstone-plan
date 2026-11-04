@@ -9,7 +9,7 @@ leaves this list; the pipeline version that carries it is named in `modules/PIPE
 | The request officer runs the pipeline for a rung 2–3 request | it refuses and names the pipeline today (decision 65); the replay worker would start a pipeline run behind module 07's gate | 146 | after |
 | Module 08's notebook and paper on decision 65 | both describe the licence of 28 Sep (layer B, no family) | 146 | after |
 | The network's answer independent of the atom order | v1.3 moves bands by up to 2.9 cm⁻¹ between SMILES writings (0.2 and, for an xyz, 0.7 fix one order per molecule, not the spread; v1.5 is to remove it) | 149 | before |
-| Anharmonic shifts on the positions | the positions are harmonic; S1/S2 measure the anharmonic step | 53 | after |
+| Anharmonic shifts on the positions | the positions are harmonic; S1/S2/S2b/S3 measure the anharmonic step, TASKS 178 builds it into the pipeline | 53, 178 | after |
 | Cations and other open-shell molecules | refused today (charge, multiplicity); the 60 pool-3 cations have analytic UKS labels (corpus shard a), the network has no carried cation rung | 98, 121 | after |
 | The geometry without psi4 (pyscf + geomeTRIC) | one engine instead of two; only after a check that it gives the same Hessian and network read | 73 | after |
 | v1.4 if chain 44 carries it | a new network version is a new pipeline version | 129 | after |
