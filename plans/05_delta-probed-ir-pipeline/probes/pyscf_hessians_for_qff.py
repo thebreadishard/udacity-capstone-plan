@@ -12,7 +12,8 @@ Note on the functional: pyscf's 'b3lyp' is the Gaussian definition (VWN3-type co
 noise diagnostic does not depend on this; absolute frequencies do at the cm⁻¹ level, and the report says which was used.
 pyscf's own log (every SCF cycle and the Hessian's step timers, `library_log.py`) is appended to `<out_dir>/pyscf.log`, so a Hessian that
 runs for an hour shows whether it is computing (19 Oct 2026). A stalled DIIS falls back to the second-order solver (`scf_converge.py`;
-acenaphthylene's T reference Hessian, 19 Oct).
+acenaphthylene's T reference Hessian, 19 Oct). Every converged SCF is kept as `<out_dir>/<name>.chk` (4 Nov 2026), so a resumed call and a
+retry read the neighbour's density from it instead of converging an SCF there (on coronene that SCF is ≈ 170 s on 32 threads).
 """
 from __future__ import annotations
 
@@ -67,13 +68,48 @@ def displaced_geometry(path: str) -> dict[str, Any] | None:
     return d
 
 
+def molecule_at(d: dict[str, Any], a: argparse.Namespace, lib_log: TextIO) -> Any:
+    """The pyscf Mole of one displaced geometry at the run's basis."""
+    geom = np.array(d["molecule"]["geometry"], float).reshape(-1, 3)
+    atoms = [(s, tuple(x)) for s, x in zip(d["molecule"]["symbols"], geom, strict=True)]
+    return pyscf_mole(lib_log, atom=atoms, unit="Bohr", basis=a.basis, symmetry=False)
+
+
 def converged_at(d: dict[str, Any], a: argparse.Namespace, lib_log: TextIO, dm0: Any = None) -> tuple[Any, float]:
     """The converged RKS at one displaced geometry and its energy. The SCF starts from dm0 when given and falls back to the second-order
     solver when DIIS stalls (scf_converge.py); raises SCFNotConverged (a RuntimeError) when that fails too."""
-    geom = np.array(d["molecule"]["geometry"], float).reshape(-1, 3)
-    atoms = [(s, tuple(x)) for s, x in zip(d["molecule"]["symbols"], geom, strict=True)]
-    mol = pyscf_mole(lib_log, atom=atoms, unit="Bohr", basis=a.basis, symmetry=False)
+    mol = molecule_at(d, a, lib_log)
     return converged_scf(rks_setup(mol, a.xc, a.grid, a.conv), 200, log=lambda m: print(m, flush=True), dm0=dm0)
+
+
+def chk_path(out_dir: str, cache_file: str) -> str:
+    """The chkfile beside a geometry's Hessian record."""
+    return os.path.join(out_dir, os.path.splitext(os.path.basename(cache_file))[0] + ".chk")
+
+
+def save_scf(mf: Any, chk: str) -> None:
+    """A converged SCF to its chkfile with pyscf's dump_scf (as pyscf/scf/test/test_h2o.py's test_init_guess_minao writes one), through a
+    temporary file moved over the target."""
+    from pyscf import scf
+    tmp = chk + ".tmp"
+    scf.chkfile.dump_scf(mf.mol, tmp, mf.e_tot, mf.mo_energy, mf.mo_coeff, mf.mo_occ)
+    os.replace(tmp, chk)
+
+
+def density_at(cache_file: str, a: argparse.Namespace, lib_log: TextIO) -> tuple[Any, str]:
+    """The converged density at one geometry and where it came from: its chkfile when an earlier call wrote one, read without projection
+    (init_guess_by_chkfile(project=False), as test_init_guess_minao reads it: the same density the uninterrupted call would hold), else
+    a new SCF there (records written before chkfiles existed). A chkfile of another geometry or basis stops the call."""
+    from pyscf import gto, scf
+    d = displaced_geometry(cache_file)
+    chk = chk_path(a.out_dir, cache_file)
+    if not os.path.exists(chk):
+        return converged_at(d, a, lib_log)[0].make_rdm1(), "an SCF"
+    mol = molecule_at(d, a, lib_log)
+    chk_mol = scf.chkfile.load_mol(chk)
+    if not gto.same_basis_set(chk_mol, mol) or not np.allclose(chk_mol.atom_coords(), mol.atom_coords(), rtol=0.0, atol=1e-10):
+        raise RuntimeError(f"{chk} is not the SCF of {os.path.basename(cache_file)} at basis {a.basis}")
+    return scf.hf.init_guess_by_chkfile(mol, chk, project=False), "its chkfile"
 
 
 def resume_start(files: list[str], out_dir: str) -> str | None:
@@ -86,15 +122,17 @@ def resume_start(files: list[str], out_dir: str) -> str | None:
     return asks[todo[0] - 1]
 
 
-def hessian_record(d: dict[str, Any], a: argparse.Namespace, lib_log: TextIO, dm0: Any = None) -> tuple[dict[str, Any], float, Any]:
+def hessian_record(d: dict[str, Any], chk: str, a: argparse.Namespace, lib_log: TextIO,
+                   dm0: Any = None) -> tuple[dict[str, Any], float, Any]:
     """The analytic Hessian at one displaced geometry as the record qff_from_hessians.py reads, with its energy and the converged density
-    (the next geometry's start with --guess-from-previous)."""
+    (the next geometry's start with --guess-from-previous). The converged SCF goes to `chk` before the Hessian starts."""
     from pyscf.hessian import rks as rks_hess
     rad, ang = (int(x) for x in a.grid.split(","))
     sym = d["molecule"]["symbols"]
     geom = np.array(d["molecule"]["geometry"], float).reshape(-1, 3)
     t0 = time.time()
     mf, e = converged_at(d, a, lib_log, dm0)
+    save_scf(mf, chk)
     mol = mf.mol
     H = rks_hess.Hessian(mf).kernel()                      # (natm, natm, 3, 3) in E_h/bohr²
     n = mol.natm
@@ -107,24 +145,24 @@ def hessian_record(d: dict[str, Any], a: argparse.Namespace, lib_log: TextIO, dm
     return rec, float(e), mf.make_rdm1()
 
 
-def record_with_retry(d: dict[str, Any], before: str | None, a: argparse.Namespace, lib_log: TextIO,
+def record_with_retry(d: dict[str, Any], chk: str, before: str | None, a: argparse.Namespace, lib_log: TextIO,
                       dm0: Any = None) -> tuple[dict[str, Any], float, Any]:
     """hessian_record, with one retry from the other start when the SCF does not converge: a start from pyscf's default guess (dm0 None)
-    retries from the converged density of `before`, the geometry before it; a start from a density retries from the default guess. With no
-    `before` a default-guess failure stops at once. Raises SCFNotConverged naming both attempts when the retry fails too."""
+    retries from the converged density of `before`, the geometry before it (density_at); a start from a density retries from the default
+    guess. With no `before` a default-guess failure stops at once. Raises SCFNotConverged naming both attempts when the retry fails too."""
     try:
-        return hessian_record(d, a, lib_log, dm0)
+        return hessian_record(d, chk, a, lib_log, dm0)
     except SCFNotConverged as first:
         if dm0 is None and before is None:
             raise
         if dm0 is None:
-            print(f"  {first}; retry from the density of {os.path.basename(before)}", flush=True)
-            retry_dm = converged_at(displaced_geometry(before), a, lib_log)[0].make_rdm1()
+            retry_dm, source = density_at(before, a, lib_log)
+            print(f"  {first}; retry from the density of {os.path.basename(before)} ({source})", flush=True)
         else:
             print(f"  {first} from the previous density; retry from pyscf's default guess", flush=True)
             retry_dm = None
         try:
-            return hessian_record(d, a, lib_log, retry_dm)
+            return hessian_record(d, chk, a, lib_log, retry_dm)
         except SCFNotConverged as second:
             raise SCFNotConverged(f"{first}; the retry from the other start: {second}") from second
 
@@ -141,9 +179,8 @@ def main() -> None:
         before = resume_start(files, a.out_dir) if a.guess_from_previous else None
         if before is not None:
             t0 = time.time()
-            mf, _ = converged_at(displaced_geometry(before), a, lib_log)
-            dm = mf.make_rdm1()
-            print(f"[{time.strftime('%H:%M:%S')}] resumed: the start density from an SCF at {os.path.basename(before)} "
+            dm, source = density_at(before, a, lib_log)
+            print(f"[{time.strftime('%H:%M:%S')}] resumed: the start density at {os.path.basename(before)} from {source} "
                   f"({time.time() - t0:.0f} s)", flush=True)
         previous = None                                    # the Hessian request before f: a failed SCF's other start
         for f in files:
@@ -158,7 +195,8 @@ def main() -> None:
             print(f"[{time.strftime('%H:%M:%S')}] start {done + 1}/{len(files)} {os.path.basename(f)}", flush=True)
             t0 = time.time()
             try:
-                rec, e, dm_new = record_with_retry(d, before, a, lib_log, dm if a.guess_from_previous else None)
+                rec, e, dm_new = record_with_retry(d, chk_path(a.out_dir, f), before, a, lib_log,
+                                                   dm if a.guess_from_previous else None)
             except RuntimeError as exc:
                 raise SystemExit(f"{exc} at {f}") from exc
             with open(out, "w", encoding="utf-8") as fh:
