@@ -71,7 +71,7 @@ def diagnose(setting_dir: str, top: int = 5, decouple_below: float = 100.0) -> d
         if len(worst) >= top:
             break
     B = rotational_constants(geom, sym)
-    zeta = coriolis_zeta(harm.q, sym)
+    zeta = coriolis_zeta(harm.q, sym, geom)
     p3 = np.asarray(z["phi_ijk"], float)
     nu_a = vpt2(w, p3, a, B, zeta)[0]
     nu_b = vpt2(w, p3, b, B, zeta)[0]

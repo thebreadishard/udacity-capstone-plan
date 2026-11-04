@@ -54,7 +54,7 @@ def test_reproduces_the_probe_arrays(t2, benzene_t2_npz):
     phi4s = symmetry_average(qff.phi4, qff.pairs)
     np.testing.assert_allclose(_magnitudes(phi4s), _magnitudes(benzene_t2_npz["phi_iijj_sym"]), rtol=1e-8, atol=1e-8)
     B = rotational_constants(ref.geom, ref.symbols)
-    zeta = coriolis_zeta(harm.q, ref.symbols)
+    zeta = coriolis_zeta(harm.q, ref.symbols, ref.geom)
     nu_raw, chi_raw, _ = vpt2(qff.omega_cm, qff.phi3, qff.phi4, B, zeta)
     nu_sym, chi_sym, _ = vpt2(qff.omega_cm, qff.phi3, phi4s, B, zeta)
     # Fundamentals: exact outside the pairs. Inside a pair the two harmonic values differ by ≤ 0.01 cm⁻¹ (numerical
@@ -103,7 +103,7 @@ def test_three_bands_within_the_cheap_functional_error(t2):
     """850.6 / 1004.4 / 1324.1 cm⁻¹ on 21 September 2026; what remains against experiment is the B3LYP/6-31G* error."""
     qff, harm, ref, info = t2
     phi4s = symmetry_average(qff.phi4, qff.pairs)
-    nu_sym, _, _ = vpt2(qff.omega_cm, qff.phi3, phi4s, rotational_constants(ref.geom, ref.symbols), coriolis_zeta(harm.q, ref.symbols))
+    nu_sym, _, _ = vpt2(qff.omega_cm, qff.phi3, phi4s, rotational_constants(ref.geom, ref.symbols), coriolis_zeta(harm.q, ref.symbols, ref.geom))
     for target in (850.6, 1004.4, 1324.1):
         assert np.abs(nu_sym - target).min() < 0.05, f"band near {target} moved"
     for name, exp in EXPERIMENT.items():

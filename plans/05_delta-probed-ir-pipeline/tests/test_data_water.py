@@ -33,7 +33,7 @@ def test_water_force_field_and_vpt2_match_pyvpt2(water_cache, water_pyvpt2):
     recs = load_results(str(water_cache))
     qff, harm, ref, info = qff_from_records(recs, 0.05)
     B = rotational_constants(ref.geom, ref.symbols)
-    zeta = coriolis_zeta(harm.q, ref.symbols)
+    zeta = coriolis_zeta(harm.q, ref.symbols, ref.geom)
     nu, chi, fermi = vpt2(qff.omega_cm, qff.phi3, qff.phi4, B, zeta)
     keep = np.array(water_pyvpt2["omega"], float) > 1.0
     py_phi3 = np.array(water_pyvpt2["phi_ijk"], float)[np.ix_(keep, keep, keep)]

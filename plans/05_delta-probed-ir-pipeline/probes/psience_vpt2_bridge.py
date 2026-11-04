@@ -132,7 +132,7 @@ def run(hess_dir: str, disp: float, internals: list | None, excluded: list[int])
     nu_ps = fundamentals(mol, internals, len(harm.omega), excluded)
     qff, harm_q, ref_q, info = Q.qff_from_records(Q.load_results(hess_dir), disp, allow_noisy=True)
     B = Q.rotational_constants(ref_q.geom, ref_q.symbols)
-    zeta = Q.coriolis_zeta(harm_q.q, ref_q.symbols)
+    zeta = Q.coriolis_zeta(harm_q.q, ref_q.symbols, ref_q.geom)
     nu_ours, _, _ = Q.vpt2(qff.omega_cm, qff.phi3, qff.phi4, B, zeta, fermi_window=0.0)
     return {"hess_dir": hess_dir, "disp": disp, "internals": internals, "excluded_modes": excluded, "mixed_derivative_handling_mode": MIXED_MODE,
             "omega_ours_cm": qff.omega_cm.tolist(), "omega_psience_cm": w_ps.tolist(), "nu_ours_cm": nu_ours.tolist(),

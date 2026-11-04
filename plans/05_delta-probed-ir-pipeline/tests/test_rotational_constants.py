@@ -31,7 +31,7 @@ def test_coriolis_zeta_is_antisymmetric_and_bounded(model_molecule):
 
     symbols, geom, m, rng = model_molecule
     q = vibrational_basis(geom, m, rng)
-    z = coriolis_zeta(q, symbols)
+    z = coriolis_zeta(q, symbols, geom)
     assert z.shape == (3, 6, 6)
     np.testing.assert_allclose(z, -z.transpose(0, 2, 1), atol=1e-14)
     assert np.abs(z).max() <= 1.0 + 1e-12

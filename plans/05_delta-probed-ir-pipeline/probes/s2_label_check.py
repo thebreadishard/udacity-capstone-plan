@@ -45,7 +45,7 @@ def molecule_inputs(setting_dir):
     _omega, q = harmonic_modes(os.path.join(setting_dir, "ref.json"))
     with np.load(os.path.join(setting_dir, "qff_report.npz")) as z:
         arrays = {k: z[k] for k in z.files}
-    return arrays, rotational_constants(geom, symbols), coriolis_zeta(q, symbols)
+    return arrays, rotational_constants(geom, symbols), coriolis_zeta(q, symbols, geom)
 
 
 def treatments(arrays, B, zeta):

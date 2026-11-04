@@ -361,21 +361,29 @@ def symmetry_average(phi4: np.ndarray, pairs: list[tuple[int, int]]) -> np.ndarr
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-def rotational_constants(geom: np.ndarray, symbols: list[str]) -> np.ndarray:
-    """Equilibrium rotational constants (cm⁻¹), ascending moments of inertia → descending constants."""
+def principal_axes(geom: np.ndarray, symbols: list[str]) -> tuple[np.ndarray, np.ndarray]:
+    """Principal moments of inertia (amu Å², ascending) and the lab-frame axes as columns, in that order."""
     m = np.array([MASS[s] for s in symbols])
     x = geom.reshape(-1, 3) * BOHR_ANGSTROM
     x = x - (m[:, None] * x).sum(0) / m.sum()
     inertia = np.zeros((3, 3))
     for mi, r in zip(m, x, strict=True):
         inertia += mi * (np.dot(r, r) * np.eye(3) - np.outer(r, r))
-    return ROT_CONST_AMU_A2_CM / np.linalg.eigvalsh(inertia)
+    return np.linalg.eigh(inertia)
 
 
-def coriolis_zeta(q: np.ndarray, symbols: list[str]) -> np.ndarray:
-    """Coriolis coupling constants ζ^a_ij from the mass-weighted normal modes, shape (3, n, n)."""
+def rotational_constants(geom: np.ndarray, symbols: list[str]) -> np.ndarray:
+    """Equilibrium rotational constants (cm⁻¹), ascending moments of inertia → descending constants (the order of `coriolis_zeta`'s axes)."""
+    return ROT_CONST_AMU_A2_CM / principal_axes(geom, symbols)[0]
+
+
+def coriolis_zeta(q: np.ndarray, symbols: list[str], geom: np.ndarray) -> np.ndarray:
+    """Coriolis coupling constants ζ^a_ij from the mass-weighted normal modes, shape (3, n, n), about the principal axes in the order
+    `rotational_constants` returns them, so that ``vpt2`` pairs B_a with ζ^a. (Until 4 Nov 2026 the axes were the lab frame's: right
+    only for a geometry already in its principal frame — psi4's standard orientation — and 23 cm⁻¹ off on S1's pyscf water; TASKS 174.)"""
     n = q.shape[1]
-    Q = q.reshape(len(symbols), 3, n)
+    axes = principal_axes(geom, symbols)[1]
+    Q = np.einsum("kxi,xa->kai", q.reshape(len(symbols), 3, n), axes)
     z = np.zeros((3, n, n))
     for a, (b, c) in enumerate(((1, 2), (2, 0), (0, 1))):
         z[a] = np.einsum("ki,kj->ij", Q[:, b, :], Q[:, c, :]) - np.einsum("ki,kj->ij", Q[:, c, :], Q[:, b, :])
@@ -449,7 +457,7 @@ def vpt2(w: np.ndarray, p3: np.ndarray, p4: np.ndarray, B: np.ndarray, zeta: np.
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-def report(cache_dir: str, recs: list[HessianRecord], qff: QFF, harm: Harmonic, ref: HessianRecord, info: dict, disp: float,
+def report(cache_dir: str, recs: list[HessianRecord], qff: QFF, harm: Harmonic, ref: HessianRecord, info: dict, disp: float,  # noqa: PLR0913  older than TASKS 174, which only passes the geometry to coriolis_zeta inside; a config object is TASKS 139
            fermi_window: float, fermi_min_k: float, pyvpt2_json: str | None = None) -> tuple[str, dict]:
     """Markdown report plus the arrays to save; returns (text, arrays)."""
     n = len(qff.omega_cm)
@@ -489,7 +497,7 @@ def report(cache_dir: str, recs: list[HessianRecord], qff: QFF, harm: Harmonic, 
                          f"{abs(qff.phi4[a, j] - qff.phi4[b, j]):.1f} | {diff[a, j]:.1f} / {diff[b, j]:.1f} |")
     phi4s = symmetry_average(qff.phi4, qff.pairs)
     B = rotational_constants(ref.geom, ref.symbols)
-    zeta = coriolis_zeta(harm.q, ref.symbols)
+    zeta = coriolis_zeta(harm.q, ref.symbols, ref.geom)
     nu_raw, chi_raw, fermi = vpt2(w, qff.phi3, qff.phi4, B, zeta, fermi_window, fermi_min_k)
     nu_sym, chi_sym, _ = vpt2(w, qff.phi3, phi4s, B, zeta, fermi_window, fermi_min_k)
     lines += [

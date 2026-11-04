@@ -253,4 +253,6 @@ def coriolis_zeta(q, symbols):
 
 
 if __name__ == "__main__":
-    main()
+    # every stored report since 21 Sep 2026 is src/dpir/qff.py's (73 of 73, 4 Nov); this copy's Coriolis term pairs lab-frame ζ with
+    # the sorted principal B (TASKS 174), so its own VPT2 is not run any more; harmonic() stays importable for make_qff_displacements.py
+    raise SystemExit("qff_from_hessians.py no longer runs its own VPT2 (TASKS 174): use `python -m dpir.qff <cache_dir> --disp d`")
