@@ -193,15 +193,16 @@ def compute(a) -> int:
     frozen = sum(CORE_ORBITALS[s] for s in sym) if a.frozen == "auto" else int(a.frozen)
     settings = GradientSettings(a.basis, (99, 590), frozen, a.max_memory, a.cart)
     rows = {}
-    for k in ks:
-        t0 = datetime.now()
-        g = []
-        for s in (+1, -1):
-            x = x0.ravel().copy()
-            x[k] += s * a.step
-            g.append(gradient("mp2", sym, x.reshape(-1, 3), settings))
-        rows[k] = (g[0] - g[1]) / (2 * a.step)
-        print(f"[{datetime.now():%H:%M:%S}] mp2 {a.basis} k={k}: H_kk {rows[k][k]:+.6f} ({(datetime.now() - t0).seconds} s)", flush=True)
+    with open(Path(a.out).with_suffix(".pyscf.log"), "a", encoding="utf-8") as lib_log:     # pyscf's own log (19 Oct 2026)
+        for k in ks:
+            t0 = datetime.now()
+            g = []
+            for s in (+1, -1):
+                x = x0.ravel().copy()
+                x[k] += s * a.step
+                g.append(gradient("mp2", sym, x.reshape(-1, 3), settings, lib_log))
+            rows[k] = (g[0] - g[1]) / (2 * a.step)
+            print(f"[{datetime.now():%H:%M:%S}] mp2 {a.basis} k={k}: H_kk {rows[k][k]:+.6f} ({(datetime.now() - t0).seconds} s)", flush=True)
     save_npz(a.out, ks=np.array(ks), reps=np.array(reps), step=a.step, basis=a.basis, frozen=frozen, cart=a.cart, coords_bohr=x0,
              **{f"row_{k:02d}": rows[k] for k in ks})
     print(f"→ {a.out} ({len(ks)} displacements)")
@@ -267,17 +268,25 @@ def check_rows_coordinates(rows: tuple[str, ...], xr: np.ndarray, frame: str) ->
             raise SystemExit(f"{path}: rows computed at other coordinates than the anchor's (frame: {frame})")
 
 
+def rows_in_frame(rows: str, planeframe: str | None, sym: list[str], x0: np.ndarray) -> tuple[np.ndarray, np.ndarray, float]:
+    """One MP2 row file's Hessian in the frame its rows were computed in, the rotation back to the corpus frame (H = T M Tᵀ) and its
+    symmetry spread."""
+    n = len(x0)
+    V, xr = build_frame(planeframe, x0)
+    check_rows_coordinates((rows,), xr, "plane" if planeframe else "corpus")
+    ops = SYM.point_group_ops(sym, xr)
+    _, reps = SYM.unique_displacements(ops, n)
+    M, spread = assemble(Path(rows), ops, reps, n)
+    return M, np.kron(np.eye(n), V), spread
+
+
 def mp2_rows_frame(mp2_dz: str, mp2_tz: str, planeframe: str | None, sym: list[str],
                    x0: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray, float, float]:
     """The MP2/DZ and MP2/TZ Hessians in the frame their rows were computed in, the rotation back to the corpus frame (H = T M Tᵀ) and the
     symmetry spreads: (M_DZ, M_TZ, T, spread DZ, spread TZ)."""
-    n = len(x0)
-    V, xr = build_frame(planeframe, x0)
-    check_rows_coordinates((mp2_dz, mp2_tz), xr, "plane" if planeframe else "corpus")
-    ops = SYM.point_group_ops(sym, xr)
-    _, reps = SYM.unique_displacements(ops, n)
-    M_dz, M_tz, s_dz, s_tz = mp2_pair(mp2_dz, mp2_tz, ops, reps, n)
-    return M_dz, M_tz, np.kron(np.eye(n), V), s_dz, s_tz
+    M_dz, T, s_dz = rows_in_frame(mp2_dz, planeframe, sym, x0)
+    M_tz, _, s_tz = rows_in_frame(mp2_tz, planeframe, sym, x0)
+    return M_dz, M_tz, T, s_dz, s_tz
 
 
 def step_method_of(mp2_tz: str) -> str:

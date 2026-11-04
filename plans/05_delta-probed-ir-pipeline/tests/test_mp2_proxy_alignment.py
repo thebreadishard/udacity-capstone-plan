@@ -79,3 +79,24 @@ def test_the_read_covers_every_family_and_reports():
     res = M.read(recs)
     assert set(res) == set(M.FAMS) and all(r["verdict"] == "better" for r in res.values())
     assert "| CH-oop | better |" in M.report(res, recs)
+
+
+def test_amendment_1_adds_the_631gs_verdict_only_when_every_record_carries_it():
+    rng = np.random.default_rng(1)
+    recs = []
+    for k in range(4):
+        t = rng.normal(size=12)
+        recs.append({"mol_id": f"A{k}", "families": ["CH-oop", "other", "ring-ip", "CH-stretch"] * 3, "truth": t.tolist(),
+                     "wb97x": (t + 0.2 * rng.normal(size=12)).tolist(), "mp2_dz": t.tolist(), "mp2_tz": t.tolist(),
+                     "mp2_631gs": [0.0] * 12})                      # a stone that carries nothing reads as the CC rms: worse
+    res = M.read(recs)
+    assert all(r["verdict_631gs"] == "worse" for r in res.values()) and all(r["verdict"] == "better" for r in res.values())
+    assert "MP2/6-31G* against ωB97X" in M.report(res, recs)
+    del recs[0]["mp2_631gs"]
+    res = M.read(recs)
+    assert not any("verdict_631gs" in r for r in res.values()) and "MP2/6-31G*" not in M.report(res, recs)
+
+
+def test_a_missing_631gs_row_file_stops_the_read(tmp_path):
+    with pytest.raises(SystemExit, match=r"no MP2/6-31G\* rows for A_x"):
+        M.rows_631gs(tmp_path, "A_x", ["H", "H"], np.zeros((2, 3)), np.ones(2))

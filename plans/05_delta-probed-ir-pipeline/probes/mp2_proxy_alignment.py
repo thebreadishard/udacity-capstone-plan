@@ -7,11 +7,14 @@ K_kk of the CC correction (the carried anchor − B3LYP) and of each candidate (
 shifts of probes/set3_decompose.py, the families of probes/e8_cc_locality.py. Pooled per family over the anchors: the correlation, the least-
 squares slope of CC on the candidate, the rms of CC − candidate (the candidate used as it is) and of CC − s·candidate with s fitted on the other
 anchors (one factor per family, as the anchors tune the head). The verdict per family compares MP2/cc-pVDZ with ωB97X on that last rms.
+Amendment 1 (TASKS 183): with --mp2-631gs DIR the candidate MP2/6-31G* (the stone's affordable basis; rows mp2_rows_<id>_631gs.npz in the
+corpus frame) is added, with its own verdict against ωB97X; without it the read is the registered one.
 
-    python probes/mp2_proxy_alignment.py <out_dir>        → <out_dir>/mp2_proxy_alignment.json and .md
+    python probes/mp2_proxy_alignment.py <out_dir> [--mp2-631gs <rows dir>]   → <out_dir>/mp2_proxy_alignment.json and .md
 """
 from __future__ import annotations
 
+import argparse
 import json
 import os
 import sys
@@ -24,12 +27,13 @@ PLAN = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PLAN / "probes"))
 import e8_cc_locality as L  # noqa: E402
 import set3_diagnosis as D  # noqa: E402
-from cc_composite_full_check import corpus_dir, load_geometry, mp2_rows_frame  # noqa: E402
+from cc_composite_full_check import corpus_dir, load_geometry, mp2_rows_frame, rows_in_frame  # noqa: E402
 from qc_common import project_tr  # noqa: E402
 from set3_decompose import FAMS, projected, shifts  # noqa: E402
 
 CANDIDATES = ("wb97x", "mp2_dz", "mp2_tz")
 MAIN, BASELINE = "mp2_dz", "wb97x"
+STONE = "mp2_631gs"                # amendment 1: MP2 at the pool's basis, read against the same baseline
 BETTER, WORSE = 0.8, 1.25          # ratio of the scaled rms, MP2/cc-pVDZ over ωB97X
 MIN_ANCHORS, MIN_MODES = 3, 10     # below either, a family is not read
 BENZENE = "A_8448043181"           # its carried anchor is a full CC/TZ Hessian; its MP2 rows are test 1's (4 Oct)
@@ -54,7 +58,16 @@ def mp2_hessians(mol_id: str, anchor_file: str, sym: list[str], x0: np.ndarray, 
     return {name: project_tr(T @ M @ T.T, masses, x0)[0] for name, M in (("mp2_dz", M_dz), ("mp2_tz", M_tz))}
 
 
-def anchor_record(mol_id: str, anchor_file: str) -> dict[str, Any]:
+def rows_631gs(rows_dir: Path, mol_id: str, sym: list[str], x0: np.ndarray, masses: np.ndarray) -> np.ndarray:
+    """MP2/6-31G* Hessian of one anchor from its row file (corpus frame), projected as the corpus's are."""
+    path = rows_dir / f"mp2_rows_{mol_id}_631gs.npz"
+    if not path.is_file():
+        raise SystemExit(f"{path}: no MP2/6-31G* rows for {mol_id}")
+    M, _, _ = rows_in_frame(str(path), None, sym, x0)
+    return project_tr(M, masses, x0)[0]
+
+
+def anchor_record(mol_id: str, anchor_file: str, rows_631gs: Path | None = None) -> dict[str, Any]:
     """The shifts K_kk of the CC correction and of every candidate, and each mode's family, for one anchor."""
     mol_dir = corpus_dir(mol_id)
     sym, x0, masses = load_geometry(mol_dir / "geometry.json")
@@ -62,6 +75,8 @@ def anchor_record(mol_id: str, anchor_file: str) -> dict[str, Any]:
     w, freq, V = L.normal_modes(low, masses)
     hess = {"truth": projected(Path(anchor_file)), "wb97x": projected(mol_dir / "hessian_wb97x_analytic.npz"),
             **mp2_hessians(mol_id, anchor_file, sym, x0, masses)}
+    if rows_631gs is not None:
+        hess[STONE] = rows_631gs(rows_631gs, mol_id, sym, x0, masses)
     rec = {name: shifts(H - low, V, w, masses).tolist() for name, H in hess.items()}
     return {"mol_id": mol_id, "families": list(L.families(freq, V, sym, masses, x0)), **rec}
 
@@ -116,12 +131,16 @@ def family_verdict(main: dict[str, Any], base: dict[str, Any]) -> tuple[str, flo
 
 
 def read(records: list[dict[str, Any]]) -> dict[str, Any]:
-    """Every family's statistics per candidate and its verdict."""
+    """Every family's statistics per candidate and its verdict; MP2/6-31G*'s own verdict when the records carry it (amendment 1)."""
+    stone = all(STONE in r for r in records)
+    cands = (*CANDIDATES, STONE) if stone else CANDIDATES
     res = {}
     for fam in FAMS:
-        stats = {cand: family_stats(records, fam, cand) for cand in CANDIDATES}
+        stats = {cand: family_stats(records, fam, cand) for cand in cands}
         verdict, ratio = family_verdict(stats[MAIN], stats[BASELINE])
         res[fam] = {"stats": stats, "verdict": verdict, "ratio": ratio}
+        if stone:
+            res[fam]["verdict_631gs"], res[fam]["ratio_631gs"] = family_verdict(stats[STONE], stats[BASELINE])
     return res
 
 
@@ -140,6 +159,11 @@ def report(res: dict[str, Any], records: list[dict[str, Any]]) -> str:
     for fam, r in res.items():
         ratio = "" if r["ratio"] is None else f"{r['ratio']:.2f}"
         lines.append(f"| {fam} | {r['verdict']} | {ratio} |")
+    if all("verdict_631gs" in r for r in res.values()):
+        lines += ["", "| family | verdict (MP2/6-31G* against ωB97X, scaled rms; amendment 1) | ratio |", "|---|---|---|"]
+        for fam, r in res.items():
+            ratio = "" if r["ratio_631gs"] is None else f"{r['ratio_631gs']:.2f}"
+            lines.append(f"| {fam} | {r['verdict_631gs']} | {ratio} |")
     return "\n".join(lines) + "\n"
 
 
@@ -149,8 +173,8 @@ def write_atomic(path: Path, text: str) -> None:
     os.replace(tmp, path)
 
 
-def main(out_dir: Path) -> int:
-    records = [anchor_record(mol_id, f) for mol_id, f in D.anchors().items()]
+def main(out_dir: Path, rows_631gs: Path | None = None) -> int:
+    records = [anchor_record(mol_id, f, rows_631gs) for mol_id, f in D.anchors().items()]
     res = read(records)
     out_dir.mkdir(parents=True, exist_ok=True)
     write_atomic(out_dir / "mp2_proxy_alignment.json", json.dumps({"families": res, "records": records}, indent=1))
@@ -161,4 +185,8 @@ def main(out_dir: Path) -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main(Path(sys.argv[1]).resolve()))
+    ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
+    ap.add_argument("out_dir", type=Path)
+    ap.add_argument("--mp2-631gs", type=Path, default=None, help="folder of the MP2/6-31G* row files (amendment 1)")
+    a = ap.parse_args()
+    sys.exit(main(a.out_dir.resolve(), a.mp2_631gs.resolve() if a.mp2_631gs else None))

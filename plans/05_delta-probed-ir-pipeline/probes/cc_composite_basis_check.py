@@ -16,9 +16,11 @@ import time
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
+from typing import TextIO
 
 import numpy as np
 from cc_composite_full_check import save_npz, write_text
+from library_log import pyscf_mole
 from qc_common import CORE_ORBITALS
 
 BASES = ("cc-pvdz", "cc-pvtz")
@@ -38,10 +40,13 @@ class GradientSettings:
     cart: bool = False
 
 
-def build(symbols, coords, s: GradientSettings):
+def build(symbols, coords, s: GradientSettings, log: TextIO | None = None):
+    """The Mole of one geometry; its pyscf log goes to `log` (probes/library_log.py) when given, else nowhere."""
+    atoms = [(sym, tuple(c)) for sym, c in zip(symbols, coords, strict=True)]
+    if log is not None:
+        return pyscf_mole(log, atom=atoms, unit="Bohr", basis=s.basis, cart=s.cart, symmetry=False, max_memory=s.max_memory)
     from pyscf import gto
-    return gto.M(atom=[(sym, tuple(c)) for sym, c in zip(symbols, coords, strict=True)], unit="Bohr", basis=s.basis, cart=s.cart, symmetry=False,
-                 verbose=0, max_memory=s.max_memory)
+    return gto.M(atom=atoms, unit="Bohr", basis=s.basis, cart=s.cart, symmetry=False, verbose=0, max_memory=s.max_memory)
 
 
 def b3lyp_mf(mol, grid):
@@ -57,10 +62,10 @@ def b3lyp_mf(mol, grid):
     return mf, float(e)
 
 
-def gradient(level: str, symbols, coords, s: GradientSettings) -> np.ndarray:
-    """The analytic nuclear gradient (3N, flattened) at one geometry for X = b3lyp | mp2."""
+def gradient(level: str, symbols, coords, s: GradientSettings, log: TextIO | None = None) -> np.ndarray:
+    """The analytic nuclear gradient (3N, flattened) at one geometry for X = b3lyp | mp2; pyscf's log to `log` when given."""
     from pyscf import mp, scf
-    mol = build(symbols, coords, s)
+    mol = build(symbols, coords, s, log)
     if level == "b3lyp":
         mf, _ = b3lyp_mf(mol, s.grid)
         return mf.nuc_grad_method().kernel().ravel()

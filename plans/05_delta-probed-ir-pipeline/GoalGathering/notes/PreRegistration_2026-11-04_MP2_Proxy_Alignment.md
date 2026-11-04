@@ -70,3 +70,25 @@ Scaled rms (CC − s·candidate, s fitted on the other ten anchors), ωB97X / MP
 Read beside it, not a verdict (`probes/mp2_proxy_per_anchor.py`, `per_anchor.txt`): in CH-oop ωB97X shifts every anchor's modes up by +18 to +24 cm⁻¹ on average, where CC moves them down by up to −22 (fused rings) or leaves them near zero (benzene, pyridine, fluorobenzene). MP2/cc-pVDZ moves them down by −37 to −84, the right sign and the same rise with ring fusion, at three to five times the size (own slopes +0.01 to +0.29): MP2's known over-softening of arene out-of-plane modes in this basis. The leave-one-out residual of MP2/cc-pVDZ is below ωB97X's on all eleven anchors in CH-oop. The margin to the line is small (0.74 against 0.8). MP2/cc-pVTZ correlates best (+0.97) but changes sign between the small and the fused anchors, so one factor through zero does not fit it; it shares the composite's basis step and is not judged. In ring-ip and CH-stretch the CC correction is close to one constant shift per family (mean ≈ rms), which no candidate's factor reproduces in ring-ip.
 
 **What follows, as registered:** step 1 of the stepping-stone registration is re-proposed to the user. One check comes first because it is free: whether the CH-oop advantage holds at 6-31G*, the basis an affordable stone would use, since this read saw MP2 only at cc-pVDZ and the advantage rests on a basis artefact's direction (TASKS 183). Nothing is licensed and no carried model is touched.
+
+## Amendment 1 (4 November 2026, 23:4x — after the outcome above, before any MP2/6-31G* shift; the user: 'Akkoord met 183')
+
+The CH-oop advantage was seen at cc-pVDZ only, and it rests on the direction of MP2's out-of-plane over-softening in that basis. An affordable
+stone would be MP2 at the pool's basis, 6-31G*, which no anchor has. This amendment adds that candidate; the read above stays as it is.
+
+**The candidate.** MP2/6-31G* − B3LYP/6-31G*: pyscf conventional MP2, Cartesian d functions (the corpus's 6-31G*), frozen core by the element
+rule, central differences of analytic gradients with the anchors' step 0.005 bohr, the corpus frame — the route and settings of the 5 Oct
+step 0 (`cc_composite_full_check.py compute`). Benzene's and naphthalene's step-0 row files are reused (sha256-equal copies; their diagonal
+row elements were printed on 5 Oct, no shift was ever computed from them); the nine others are computed by `probes/mp2_631gs_anchors.sh`
+(run spec `mp2_631gs_anchors`, laptop WSL, smoked on water tonight). `compute` now writes pyscf's own log beside each row file; the rows
+themselves are unchanged (`tests/test_cc_composite_pyscf_regression.py`, 3 passed against the changed scripts).
+
+**The read.** `probes/mp2_proxy_alignment.py --mp2-631gs <rows dir>`: the same records, statistics and line, with MP2/6-31G* in the place of
+MP2/cc-pVDZ — scaled rms over ωB97X's ≤ 0.8 *better*, ≥ 1.25 *worse*, between *no clear difference*; CH-oop decides, then 'other'. Without
+the option the read reproduces the outcome above exactly (checked tonight).
+
+**What each outcome means.** *Better in CH-oop:* step 1 of the stepping-stone registration is proposed to the user with its price (TASKS 183
+(2)). *No clear difference or worse in CH-oop:* the cc-pVDZ advantage belongs to that basis; MP2 is parked again as a stone, and the lever
+for CH-oop lies elsewhere.
+
+**Prediction (before any number).** MP2/6-31G* also follows CC better than ωB97X in CH-oop: one in two.
