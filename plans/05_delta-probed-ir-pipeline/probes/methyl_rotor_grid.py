@@ -7,7 +7,9 @@ then the three methyl H turned by Δτ about the displaced C1→C0 axis, so the 
 reduced coordinate, τ on equally spaced points over 360°. Energies with the Hessian runs' RKS (`rks_setup`, `converged_scf`), one json per
 lane, written after every point, so a second call resumes.
 
-    python probes/methyl_rotor_grid.py <out_dir> --lane 0 --lanes 12 [--n-tau 24 --n-q 11] [--smoke] [--dry-run]
+    python probes/methyl_rotor_grid.py <out_dir> --lane 0 --lanes 12 [--n-tau 24 --n-q 11] [--reuse <coarser grid dir>] [--smoke] [--dry-run]
+
+--reuse seeds the lanes with a coarser τ grid's energies (TASKS 176's 48-point grid on the 24-point one), read only.
 """
 from __future__ import annotations
 
@@ -85,6 +87,35 @@ def write_json(path: Path, obj) -> None:
     tmp.replace(path)
 
 
+def load_grid(grid_dir: Path) -> tuple[dict, dict[str, float]]:
+    """A grid directory's grid.json and the union of its lanes' energies."""
+    meta = json.loads((grid_dir / "grid.json").read_text(encoding="utf-8"))
+    E: dict[str, float] = {}
+    for f in sorted(grid_dir.glob("energies_lane*.json")):
+        E |= json.loads(f.read_text(encoding="utf-8"))
+    return meta, E
+
+
+def reused_energies(old_meta: dict, old_E: dict[str, float], points: list[dict], n_tau: int, n_q: int, level: list) -> dict[str, float]:
+    """The energies of a coarser τ grid at this grid's indices: same q nodes and level, n_tau a multiple of the old one, every old point
+    computed; each mapped point must sit at the same Δτ and q, else the reuse is refused."""
+    if old_meta["n_q"] != n_q or list(old_meta["level"]) != list(level):
+        raise SystemExit(f"reuse refused: n_q {old_meta['n_q']} / level {old_meta['level']} against {n_q} / {level}")
+    if n_tau % old_meta["n_tau"] != 0 or n_tau == old_meta["n_tau"]:
+        raise SystemExit(f"reuse refused: n_tau {n_tau} is not a finer multiple of {old_meta['n_tau']}")
+    step = n_tau // old_meta["n_tau"]
+    by_index = {p["index"]: p for p in points}
+    out: dict[str, float] = {}
+    for p in old_meta["points"]:
+        if str(p["index"]) not in old_E:
+            raise SystemExit(f"reuse refused: old point {p['index']} has no energy")
+        new = by_index[(p["k_tau"] * step * n_q + p["i20"]) * n_q + p["i21"]]
+        if abs(new["dtau_deg"] - p["dtau_deg"]) > 1e-9 or abs(new["q20"] - p["q20"]) > 1e-12 or abs(new["q21"] - p["q21"]) > 1e-12:
+            raise SystemExit(f"reuse refused: old point {p['index']} does not sit on new point {new['index']}")
+        out[str(new["index"])] = old_E[str(p["index"])]
+    return out
+
+
 def energy_function(lib_log, threads: int):
     """B3LYP/6-31G* (75,302) energies with the Hessian runs' RKS, pyscf's own log in lib_log."""
     from library_log import pyscf_mole
@@ -110,7 +141,12 @@ def parse_args(argv: list[str] | None) -> argparse.Namespace:
     ap.add_argument("--threads", type=int, default=1)
     ap.add_argument("--smoke", action="store_true")
     ap.add_argument("--dry-run", action="store_true", help="write grid.json and check the geometries; no energy")
+    ap.add_argument("--reuse", help="a coarser grid directory whose energies seed this one (read only)")
     a = ap.parse_args(argv)
+    if a.smoke and a.reuse:
+        raise SystemExit("--smoke and --reuse do not combine (the smoke's four τ values are no multiple of a real grid)")
+    if a.reuse and Path(a.reuse).resolve() == Path(a.out_dir).resolve():
+        raise SystemExit("--reuse must name another directory than out_dir: the reused grid is read only")
     if a.smoke:
         a.n_tau, a.n_q = 4, 1
     if a.n_q % 2 != 1 or a.n_tau % 2 != 0:
@@ -135,14 +171,23 @@ def main(argv: list[str] | None = None) -> int:
         got = (tau_of(geometry(x0, harm.A, p)) - tau0 - p["dtau_deg"] + 180.0) % 360.0 - 180.0
         if abs(got) > 1e-6:
             raise SystemExit(f"point {p['index']}: torsion off by {got:.2e}°")
+    level = [XC, BASIS, GRID, CONV]
+    reused = reused_energies(*load_grid(Path(a.reuse)), points, a.n_tau, a.n_q, level) if a.reuse else {}
     write_json(out / "grid.json", {"reference": str(REFERENCE), "tau0_deg": tau0, "n_tau": a.n_tau, "n_q": a.n_q, "bends": list(BENDS),
-                                   "omega_cm": [float(harm.omega_cm[b]) for b in BENDS], "level": [XC, BASIS, GRID, CONV], "points": points})
+                                   "omega_cm": [float(harm.omega_cm[b]) for b in BENDS], "level": level, "points": points,
+                                   "reused_from": a.reuse, "n_reused": len(reused)})
     if a.dry_run:
-        print(f"dry run: {len(points)} points, τ₀ {tau0:.3f}°, ω {harm.omega_cm[BENDS[0]]:.1f} / {harm.omega_cm[BENDS[1]]:.1f}", flush=True)
+        print(f"dry run: {len(points)} points ({len(reused)} reused), τ₀ {tau0:.3f}°, ω {harm.omega_cm[BENDS[0]]:.1f} / "
+              f"{harm.omega_cm[BENDS[1]]:.1f}", flush=True)
         return 0
     ck = out / f"energies_lane{a.lane:02d}.json"
     E = json.loads(ck.read_text(encoding="utf-8")) if ck.exists() else {}
     mine = [p for p in points if p["index"] % a.lanes == a.lane]
+    for p in mine:
+        key = str(p["index"])
+        if key in reused and E.setdefault(key, reused[key]) != reused[key]:
+            raise SystemExit(f"point {key}: lane checkpoint {E[key]} differs from the reused {reused[key]}")
+    write_json(ck, E)
     with open(out / f"lane{a.lane:02d}_{PYSCF_LOG_NAME}", "a", encoding="utf-8") as lib_log:
         energy = energy_function(lib_log, a.threads)
         for n, p in enumerate(mine, 1):

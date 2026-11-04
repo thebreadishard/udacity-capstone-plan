@@ -20,6 +20,8 @@ import numpy as np
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent / "src"))
+from methyl_rotor_grid import load_grid  # noqa: E402  the grid's one reader of its own files
+
 from dpir.qff import HARTREE_CM, MASS, ROT_CONST_AMU_A2_CM  # noqa: E402  after the src path
 
 MICROWAVE_V3_CM = 317.20      # Gougoula et al., J. Chem. Phys. 2019 (repository records; to check in the paper before a document cites it)
@@ -178,10 +180,7 @@ def coupling_shifts(V: np.ndarray, F: float, omega: tuple[float, float]) -> dict
 
 def grid_potential(grid_dir: Path) -> tuple[np.ndarray, dict]:
     """V (n_τ, n_q, n_q) in cm⁻¹ above its minimum, from grid.json and the lanes' energies; a missing point stops the read."""
-    meta = json.loads((grid_dir / "grid.json").read_text(encoding="utf-8"))
-    E: dict[str, float] = {}
-    for f in sorted(grid_dir.glob("energies_lane*.json")):
-        E |= json.loads(f.read_text(encoding="utf-8"))
+    meta, E = load_grid(grid_dir)
     V = np.full((meta["n_tau"], meta["n_q"], meta["n_q"]), np.nan)
     for p in meta["points"]:
         if str(p["index"]) not in E:
@@ -198,7 +197,7 @@ def full_dimension_delta(coords: str, modes: tuple[int, int]) -> dict[int, float
 
 
 def read_grid(grid_dir: Path, scan_read: dict) -> dict:
-    """Part B by its registered line (with amendment 1)."""
+    """Part B by its registered line (with amendments 1 and 2: convergence between the grid and its every-other-τ subset)."""
     V, meta = grid_potential(grid_dir)
     F = scan_read["F_cm"]
     omega = tuple(meta["omega_cm"])
@@ -207,11 +206,12 @@ def read_grid(grid_dir: Path, scan_read: dict) -> dict:
     sub = coupling_shifts(V[::2], F, omega)
     conv = max(abs(sub["delta20"] - shifts["delta20"]), abs(sub["delta21"] - shifts["delta21"]))
     d_vpt2 = {coords: full_dimension_delta(coords, (b20, b21)) for coords in ("cart", "zmat")}
-    res = {"F_cm": F, "omega_cm": list(omega), "variational": shifts, "tau_subset_12": sub, "convergence_cm": conv,
-           "delta_vpt2_full_dimension": {c: {str(k): v for k, v in d.items()} for c, d in d_vpt2.items()}}
+    half = meta["n_tau"] // 2
+    res = {"F_cm": F, "omega_cm": list(omega), "n_tau": meta["n_tau"], "variational": shifts, f"tau_subset_{half}": sub,
+           "convergence_cm": conv, "delta_vpt2_full_dimension": {c: {str(k): v for k, v in d.items()} for c, d in d_vpt2.items()}}
     dv = (shifts["delta20"], shifts["delta21"])
     if conv > CONVERGED_CM:
-        res["verdict"] = f"not converged (12-point τ subset moves Δ_var by {conv:.2f} cm⁻¹ > {CONVERGED_CM}); no verdict"
+        res["verdict"] = f"not converged ({half}-point τ subset moves Δ_var by {conv:.2f} cm⁻¹ > {CONVERGED_CM}); no verdict"
     elif all(abs(dv[n] - d_vpt2[c][b]) <= AGREE_CM for c in d_vpt2 for n, b in enumerate((b20, b21))):
         res["verdict"] = "VPT2's torsion–bend coupling holds variationally: a hindered methyl keeps its coupled VPT2 value"
     elif abs(dv[0]) <= AGREE_CM and all(d_vpt2[c][b20] >= SPURIOUS_VPT2_CM for c in d_vpt2):

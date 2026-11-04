@@ -1,0 +1,83 @@
+[13:04:20] start 2/43 mode02_m.json
+[14:17:59] 2/43 mode02_m.json E = -693.15129139 in 4419 s
+[14:17:59] start 3/43 mode04_m.json
+[15:30:32] 3/43 mode04_m.json E = -693.15129040 in 4353 s
+[15:30:32] start 4/43 mode06_m.json
+[16:43:35] 4/43 mode06_m.json E = -693.15128797 in 4383 s
+[16:43:35] start 5/43 mode08_m.json
+[17:56:05] 5/43 mode08_m.json E = -693.15128751 in 4350 s
+[17:56:05] start 6/43 mode10_m.json
+[19:07:53] 6/43 mode10_m.json E = -693.15128477 in 4308 s
+[19:07:53] start 7/43 mode12_m.json
+[20:19:12] 7/43 mode12_m.json E = -693.15128389 in 4279 s
+[20:19:12] start 8/43 mode14_m.json
+[21:30:03] 8/43 mode14_m.json E = -693.15128335 in 4251 s
+[21:30:03] start 9/43 mode16_m.json
+[22:40:20] 9/43 mode16_m.json E = -693.15128202 in 4217 s
+[22:40:20] start 10/43 mode18_m.json
+[23:51:30] 10/43 mode18_m.json E = -693.15128078 in 4271 s
+[23:51:30] start 11/43 mode20_m.json
+[01:02:16] 11/43 mode20_m.json E = -693.15128017 in 4246 s
+[01:02:16] start 12/43 mode22_m.json
+[02:12:39] 12/43 mode22_m.json E = -693.15127779 in 4223 s
+[02:12:39] start 13/43 mode24_m.json
+[03:23:27] 13/43 mode24_m.json E = -693.15127747 in 4248 s
+[03:23:27] start 14/43 mode26_m.json
+[04:34:07] 14/43 mode26_m.json E = -693.15127731 in 4240 s
+[04:34:07] start 15/43 mode28_m.json
+[05:45:26] 15/43 mode28_m.json E = -693.15127690 in 4280 s
+[05:45:26] start 16/43 mode30_m.json
+[06:56:37] 16/43 mode30_m.json E = -693.15127528 in 4270 s
+[06:56:37] start 17/43 mode32_m.json
+[08:07:27] 17/43 mode32_m.json E = -693.15127506 in 4250 s
+[08:07:27] start 18/43 mode34_m.json
+[09:18:58] 18/43 mode34_m.json E = -693.15127415 in 4292 s
+[09:18:58] start 19/43 mode36_m.json
+[10:30:20] 19/43 mode36_m.json E = -693.15127376 in 4282 s
+[10:30:20] start 20/43 mode38_m.json
+[11:41:28] 20/43 mode38_m.json E = -693.15127296 in 4268 s
+[11:41:28] start 21/43 mode40_m.json
+[12:52:28] 21/43 mode40_m.json E = -693.15127230 in 4260 s
+[12:52:28] start 22/43 mode42_m.json
+[14:04:21] 22/43 mode42_m.json E = -693.15127139 in 4313 s
+[14:04:21] start 23/43 mode44_m.json
+[15:15:53] 23/43 mode44_m.json E = -693.15126850 in 4292 s
+[15:15:53] start 24/43 mode46_m.json
+[16:27:50] 24/43 mode46_m.json E = -693.15126839 in 4317 s
+[16:27:50] start 25/43 mode48_m.json
+[17:39:44] 25/43 mode48_m.json E = -693.15126761 in 4314 s
+[17:39:44] start 26/43 mode50_m.json
+[18:51:22] 26/43 mode50_m.json E = -693.15126679 in 4298 s
+[18:51:22] start 27/43 mode52_m.json
+[20:03:00] 27/43 mode52_m.json E = -693.15126530 in 4298 s
+[20:03:00] start 28/43 mode54_m.json
+[21:15:24] 28/43 mode54_m.json E = -693.15126474 in 4344 s
+[21:15:24] start 29/43 mode56_m.json
+[22:27:06] 29/43 mode56_m.json E = -693.15126368 in 4302 s
+[22:27:06] start 30/43 mode58_m.json
+[23:38:38] 30/43 mode58_m.json E = -693.15126209 in 4292 s
+[23:38:38] start 31/43 mode60_m.json
+[00:50:06] 31/43 mode60_m.json E = -693.15126234 in 4288 s
+[00:50:06] start 32/43 mode62_m.json
+[02:01:54] 32/43 mode62_m.json E = -693.15126080 in 4308 s
+[02:01:54] start 33/43 mode64_m.json
+[03:14:08] 33/43 mode64_m.json E = -693.15126026 in 4334 s
+[03:14:08] start 34/43 mode66_m.json
+[04:26:17] 34/43 mode66_m.json E = -693.15125867 in 4329 s
+[04:26:17] start 35/43 mode68_m.json
+[05:38:40] 35/43 mode68_m.json E = -693.15125791 in 4343 s
+[05:38:40] start 36/43 mode70_m.json
+[06:50:29] 36/43 mode70_m.json E = -693.15125658 in 4309 s
+[06:50:29] start 37/43 mode72_m.json
+[08:02:14] 37/43 mode72_m.json E = -693.15122257 in 4305 s
+[08:02:14] start 38/43 mode74_m.json
+[09:14:36] 38/43 mode74_m.json E = -693.15122250 in 4342 s
+[09:14:36] start 39/43 mode76_m.json
+[10:26:50] 39/43 mode76_m.json E = -693.15122243 in 4334 s
+[10:26:50] start 40/43 mode78_m.json
+[11:38:52] 40/43 mode78_m.json E = -693.15122233 in 4322 s
+[11:38:52] start 41/43 mode80_m.json
+[12:50:43] 41/43 mode80_m.json E = -693.15122201 in 4311 s
+[12:50:43] start 42/43 mode82_m.json
+[14:02:42] 42/43 mode82_m.json E = -693.15122172 in 4319 s
+done: 43 Hessians in 2938.4 min

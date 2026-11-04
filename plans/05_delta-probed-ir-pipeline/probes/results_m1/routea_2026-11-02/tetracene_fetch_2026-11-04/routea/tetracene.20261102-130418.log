@@ -1,0 +1,34 @@
+=== (S1) start: 1 settings, step 0.10, 8 threads, geometry probes/results_m1/routea_2026-11-02/geometries/tetracene.json 2026-11-02 09:00:47
+=== (S1) G: optimising (B3LYP/6-31g*, grid 75,302) 2026-11-02 09:00:47
+optimising: pyscf's own log in /root/routea/tetracene/G/refstub/pyscf.log
+  BFGS evaluation 1: E = -693.1355040230, max |g_internal| = 4.4e-02, 72 s
+  BFGS evaluation 2: E = -693.1466592773, max |g_internal| = 1.5e-02, 71 s
+  BFGS evaluation 3: E = -693.1478431172, max |g_internal| = 4.6e-03, 72 s
+  BFGS evaluation 4: E = -693.1485161316, max |g_internal| = 5.1e-03, 71 s
+  BFGS evaluation 5: E = -693.1493743450, max |g_internal| = 5.3e-03, 71 s
+  BFGS evaluation 6: E = -693.1497854930, max |g_internal| = 4.0e-03, 71 s
+  BFGS evaluation 7: E = -693.1500107572, max |g_internal| = 3.0e-03, 72 s
+  BFGS evaluation 8: E = -693.1502128816, max |g_internal| = 3.4e-03, 71 s
+  BFGS evaluation 9: E = -693.1504975783, max |g_internal| = 3.8e-03, 71 s
+  BFGS evaluation 10: E = -693.1508200132, max |g_internal| = 3.6e-03, 71 s
+  BFGS evaluation 11: E = -693.1510813330, max |g_internal| = 2.5e-03, 71 s
+  BFGS evaluation 12: E = -693.1512169199, max |g_internal| = 1.7e-03, 70 s
+  BFGS evaluation 13: E = -693.1512704622, max |g_internal| = 1.0e-03, 71 s
+  BFGS evaluation 14: E = -693.1512878285, max |g_internal| = 6.4e-04, 71 s
+  BFGS evaluation 15: E = -693.1512914628, max |g_internal| = 2.6e-04, 71 s
+  BFGS evaluation 16: E = -693.1512922532, max |g_internal| = 1.7e-04, 71 s
+  BFGS evaluation 17: E = -693.1512928888, max |g_internal| = 1.8e-04, 70 s
+  BFGS evaluation 18: E = -693.1512937591, max |g_internal| = 1.8e-04, 72 s
+  BFGS evaluation 19: E = -693.1512944249, max |g_internal| = 1.3e-04, 71 s
+  BFGS evaluation 20: E = -693.1512946830, max |g_internal| = 5.2e-05, 71 s
+BFGS: E = -693.1512946830, max |g_internal| = 5.2e-05 after 20 evaluations
+  Newton 0: E = -693.1512946830, max |g_internal| = 5.2e-05, net force 9.6e-14
+  Newton 1: E = -693.1512948561, max |g_internal| = 1.1e-07, net force 1.4e-13
+[10:23:46] start 1/1 ref.json
+[10:52:20] 1/1 ref.json E = -693.15129486 in 1714 s
+done: 1 Hessians in 28.6 min
+169 stubs in /root/routea/tetracene/G/stubs; step 0.1; omega (cm-1): 56.6, 92.5, 151.3, 163.7, 195.5, 273.6, 303.7, 317.6, 322.0, 382.8, 445.3, 478.2, 481.1, 486.3, 504.0, 521.6, 562.8, 568.0, 617.2, 634.6, 644.9, 736.0, 749.4, 762.3, 763.3, 766.5, 770.0, 779.8, 787.8, 849.1, 859.3, 860.2, 872.6, 897.5, 909.0, 910.6, 925.4, 942.7, 961.4, 963.0, 990.3, 990.7, 1031.0, 1032.6, 1157.1, 1158.8, 1165.5, 1195.1, 1199.1, 1217.5, 1235.3, 1240.0, 1302.1, 1310.1, 1324.6, 1332.8, 1369.2, 1385.6, 1428.4, 1432.0, 1442.9, 1449.0, 1494.5, 1498.1, 1520.3, 1574.2, 1593.7, 1600.5, 1623.0, 1662.9, 1680.1, 1693.3, 3173.6, 3175.1, 3176.6, 3178.9, 3179.3, 3179.9, 3183.7, 3184.5, 3197.6, 3197.6, 3210.1, 3210.4
+=== (S1) G: 169 Hessians to compute 2026-11-02 10:52:20
+=== (S1) G: lanes 43 42 42 42 Hessians, 8 threads each 2026-11-02 10:52:21
+=== (S1) G: LANES FAILED: lane0 lane1 lane2 lane3 (see /root/routea/tetracene/G/lane*.log) 2026-11-02 13:02:35
+=== (S1) G: STOPPED by the stop rule or a failure (first displaced Hessian > 6000 s?) — re-price 2026-11-02 13:02:35
