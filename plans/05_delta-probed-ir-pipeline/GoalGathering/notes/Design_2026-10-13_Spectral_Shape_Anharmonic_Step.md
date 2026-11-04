@@ -157,3 +157,31 @@ The supervisor reads this comparison without translation: it is her own referenc
 - The 99/590 grid was chosen for clean finite differences of *Hessians* (decision 46). A coarser grid may bring the noise of 21 September
   back into the cubic and quartic constants. S1 measures exactly that, with the two-route check on the force field (`qff.py`) as the noise read.
 - Memory above 307 basis functions is unmeasured (TASKS 49). Coronene's first Hessian is also the memory measurement for S3's sequel.
+
+## 8. The methyl rotor policy (added 4 November 2026, 21:0x; the user: 'Ja, leg het beleid vast in taak 53')
+
+**The policy.** For a hindered methyl group, one whose torsional fundamental lies far below its barrier, as on 4-methylimidazole
+(B3LYP V3 = 227.6 cm⁻¹ against F = 5.65 cm⁻¹, fundamental 91.3 cm⁻¹):
+- the CH3 bends' anharmonic shift is the VPT2 value with the methyl torsion left out of the force field (the torsion mode excluded, as
+  `probes/psience_vpt2_bridge.py --exclude-modes` does);
+- the torsion's own fundamental comes from a relaxed 1D scan with a Fourier DVR (`probes/methyl_rotor_read.py scan`, 13 points), not from
+  VPT2; it lies below 550 cm⁻¹, outside the window S2, S2b and S3 read;
+- the methyl C–H stretches lie outside the 550–2000 cm⁻¹ window and are not covered: they stay harmonic, with the note of §4.
+
+**Why.** TASKS 176 (`PreRegistration_2026-11-04_Methyl_Rotor_Variational.md`, part B at 48 points): a variational torsion + two-bend
+treatment on a 48 × 11 × 11 B3LYP/6-31G* grid, converged to 0.033 cm⁻¹ in τ, moves the CH3 bend (mode 20) by +1.40 cm⁻¹ through the
+torsion–bend coupling, where the full-dimensional VPT2 moves it by 6.50 (Cartesian) and 7.46 cm⁻¹ (internals). By the registered line
+(iii), VPT2's direct torsion–bend coupling is spurious here. Mode 21: +0.10 against 3.29 / 4.43.
+
+**Its limits, named with it.** The verdict lies 0.10 cm⁻¹ under its 1.5 cm⁻¹ line. The grid holds the direct coupling only, not the part
+VPT2 carries through other modes. It rests on one molecule at B3LYP, whose barrier is 28 % under the microwave value (TASKS 177), so a
+real 4-methylimidazole is more hindered than the surface that was tested. A nearly free methyl (a barrier of a few F, as in toluene) is not
+covered by it.
+
+**What it does not change.** The route rule of TASKS 178 (`PreRegistration_2026-11-04_Anharmonic_Route_Rule.md`) and the reads it was
+written for stand as registered: methyl and other rotors stay outside S2b's main scope, and step 3 of TASKS 178 marks their bands on the
+certificate. The policy defines how a methyl bend's shift is computed. It does not license one. A licence for methyl bands needs its own
+read on more than one molecule, registered before its numbers.
+
+**Not built yet.** Labels with the torsion left out for the corpus's methyl molecules, the hindered/near-free test per methyl, and the
+step in `m08/pipeline.py`; each is a piece of TASKS 53, started only when the user and I have agreed its place in the order.
