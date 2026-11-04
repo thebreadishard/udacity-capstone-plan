@@ -4,7 +4,7 @@
 # of 4-methylimidazole (13 constrained optimisations, probes/methyl_torsion_scan.py, 4 lanes × 3 threads), then B, its (τ, q20, q21) grid
 # (2,904 energies, probes/methyl_rotor_grid.py, 12 lanes × 1 thread). Both resume: a written point is skipped.
 #   bash probes/methyl_rotor.sh <out_dir> [--smoke|--dry-run] [--tau48]   (--smoke: scan points 0 and 6, three grid points; --dry-run:
-#   stage only; --tau48: no scan, the 48-point τ grid in <out_dir>/grid48 seeded read only from <out_dir>/grid, TASKS 176)
+#   stage only; --tau48: no scan, the 48-point τ grid in <out_dir>/grid_tau48 seeded read only from <out_dir>/grid_tau24, TASKS 176)
 set -euo pipefail
 PY=${PY:-$HOME/qc05/bin/python}
 HERE=$(cd "$(dirname "$0")" && pwd)
@@ -19,8 +19,8 @@ for arg in "${@:2}"; do
 done
 [ "$TAU48" = 1 ] && [ "$MODE" = "--smoke" ] && { echo "methyl_rotor.sh: --tau48 and --smoke do not combine" >&2; exit 2; }
 SCAN_LANES=4; SCAN_THREADS=3; GRID_LANES=12
-GDIR=$OUT/grid; grid_args=()
-[ "$TAU48" = 1 ] && { GDIR=$OUT/grid48; grid_args=(--n-tau 48 --reuse "$OUT/grid"); }
+GDIR=$OUT/grid_tau24; grid_args=()
+[ "$TAU48" = 1 ] && { GDIR=$OUT/grid_tau48; grid_args=(--n-tau 48 --reuse "$OUT/grid_tau24"); }
 mark() { echo "=== (ROTOR) $* $(date '+%F %T')"; }
 mkdir -p "$OUT/scan" "$GDIR"
 extra=()
@@ -30,7 +30,7 @@ if [ "$MODE" = "--dry-run" ]; then
   mark "dry run done"; exit 0
 fi
 if [ "$TAU48" = 1 ]; then
-  mark "A skipped: the 48-point τ grid reuses $OUT/grid"
+  mark "A skipped: the 48-point τ grid reuses $OUT/grid_tau24"
 else
 mark "A: torsion scan, $SCAN_LANES lanes × $SCAN_THREADS threads"
 pids=()

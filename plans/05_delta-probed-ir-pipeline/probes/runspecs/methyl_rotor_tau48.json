@@ -7,7 +7,7 @@
              {"local": "probes/pyscf_hessians_for_qff.py"}, {"local": "probes/library_log.py"}, {"local": "probes/scf_converge.py"},
              {"local": "probes/wsl_capped.sh"}],
  "progress": {"regex": "^\\[[0-9:]+\\] lane |^=== \\(ROTOR\\) ", "max_gap_minutes": 30,
-              "heartbeat_glob": "methyl_rotor_2026-11-04/grid48/*pyscf.log"},
+              "heartbeat_glob": "methyl_rotor_2026-11-04/grid_tau48/*pyscf.log"},
  "marker_regex": "^=== \\(ROTOR\\) |Traceback|KILLED",
  "end_regex": "^=== \\(ROTOR\\) methyl rotor done",
  "dry_run_args": "--dry-run",
