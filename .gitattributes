@@ -10,3 +10,5 @@ plans/05_delta-probed-ir-pipeline/**/*.py text eol=lf
 plans/05_delta-probed-ir-pipeline/**/*.json text eol=lf
 # The rung-C pin's frozen corpus: its record holds a sha256 of the bytes as copied, so no file may be converted (16 Oct 2026)
 plans/*/tests/data/rungC_pin_corpus/** -text
+# Index lists read by bash (5 Nov 2026, TASKS 184: probes/anchor_oop_checks.sh refuses a CR, autocrlf would add one on checkout)
+plans/05_delta-probed-ir-pipeline/probes/results_m1/**/*_ks.txt text eol=lf
