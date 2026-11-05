@@ -1,0 +1,66 @@
+{
+ "symbols": [
+  "O",
+  "H",
+  "H"
+ ],
+ "coords_bohr": [
+  [
+   0.0,
+   0.7389333333333333,
+   0.0
+  ],
+  [
+   1.4309,
+   -0.3694666666666667,
+   0.0
+  ],
+  [
+   -1.4309,
+   -0.3694666666666667,
+   0.0
+  ]
+ ],
+ "masses_amu": [
+  15.994915,
+  1.007825,
+  1.007825
+ ],
+ "frame": [
+  [
+   0.0,
+   0.0,
+   1.0
+  ],
+  [
+   1.0,
+   0.0,
+   0.0
+  ],
+  [
+   0.0,
+   1.0,
+   0.0
+  ]
+ ],
+ "origin": [
+  0.0,
+  0.0,
+  -0.5172333333333333
+ ],
+ "source": "C:\\Users\\thebr\\Documents\\CapstonePlan-wt-184\\plans\\05_delta-probed-ir-pipeline\\probes\\results_m1\\anchor_oop_checks_2026-11-05\\smoke\\water_geometry.json",
+ "max_out_of_plane_bohr": 0.0,
+ "n_ops": 4,
+ "unique_ks": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5
+ ],
+ "oop_ks": [
+  2,
+  5
+ ]
+}

@@ -277,7 +277,7 @@ def rows_in_frame(rows: str, planeframe: str | None, sym: list[str], x0: np.ndar
     ops = SYM.point_group_ops(sym, xr)
     _, reps = SYM.unique_displacements(ops, n)
     M, spread = assemble(Path(rows), ops, reps, n)
-    return M, np.kron(np.eye(n), V), spread
+    return M, plane_rotation(V, n), spread
 
 
 def mp2_rows_frame(mp2_dz: str, mp2_tz: str, planeframe: str | None, sym: list[str],
@@ -287,6 +287,37 @@ def mp2_rows_frame(mp2_dz: str, mp2_tz: str, planeframe: str | None, sym: list[s
     M_dz, T, s_dz = rows_in_frame(mp2_dz, planeframe, sym, x0)
     M_tz, _, s_tz = rows_in_frame(mp2_tz, planeframe, sym, x0)
     return M_dz, M_tz, T, s_dz, s_tz
+
+
+def plane_rotation(V: np.ndarray, n: int) -> np.ndarray:
+    """T of n atoms with x − origin = T x_r, so a Hessian goes to the plane frame as H_r = Tᵀ H T."""
+    return np.kron(np.eye(n), V)
+
+
+def oop_indices(n: int) -> tuple[np.ndarray, np.ndarray]:
+    """(out-of-plane, in-plane) Cartesian indices of n atoms in the plane frame."""
+    return np.arange(2, 3 * n, 3), np.array([k for k in range(3 * n) if k % 3 != 2])
+
+
+def oop_part(M_r: np.ndarray) -> np.ndarray:
+    """The out-of-plane block (z × z) of a plane-frame matrix, every other element zero."""
+    zi, _ = oop_indices(len(M_r) // 3)
+    out = np.zeros_like(M_r)
+    out[np.ix_(zi, zi)] = M_r[np.ix_(zi, zi)]
+    return out
+
+
+def oop_step_added(H: np.ndarray, V: np.ndarray, step_r: np.ndarray) -> np.ndarray:
+    """H (corpus frame) with the out-of-plane block of a plane-frame step added — test 3's repair."""
+    T = plane_rotation(V, len(H) // 3)
+    return T @ (T.T @ H @ T + oop_part(step_r)) @ T.T
+
+
+def oop_block_replaced(H: np.ndarray, V: np.ndarray, block_r: np.ndarray) -> np.ndarray:
+    """H (corpus frame) with its out-of-plane block replaced by that of a plane-frame matrix; the in-plane block and the couplings kept."""
+    T = plane_rotation(V, len(H) // 3)
+    H_r = T.T @ H @ T
+    return T @ (H_r - oop_part(H_r) + oop_part(block_r)) @ T.T
 
 
 def step_method_of(mp2_tz: str) -> str:
@@ -411,16 +442,13 @@ class Repair:
 
 def repaired(a, pf: PlaneFrame, H: np.ndarray, x0: np.ndarray) -> Repair:
     n = len(pf.symbols)
-    T = np.kron(np.eye(n), pf.V)                     # x − origin = T x_r  →  H_r = Tᵀ H T
+    T = plane_rotation(pf.V, n)
     H_r = T.T @ H @ T
     ops = SYM.point_group_ops(pf.symbols, pf.coords)
     _, reps = SYM.unique_displacements(ops, n)
     M_dz, M_tz, s_dz, s_tz = mp2_pair(a.mp2_dz, a.mp2_tz, ops, reps, n, OUT_OF_PLANE)
-    zi = np.arange(2, 3 * n, 3)
-    ip = np.array([k for k in range(3 * n) if k % 3 != 2])
-    step = np.zeros_like(H_r)
-    step[np.ix_(zi, zi)] = (M_tz - M_dz)[np.ix_(zi, zi)]
-    H_comp_r = H_r + step
+    zi, ip = oop_indices(n)
+    H_comp_r = H_r + oop_part(M_tz - M_dz)
     H_comp = T @ H_comp_r @ T.T
     normal = pf.V[:, 2]
     return Repair(H_comp, H_comp_r, frequencies_cm(H, pf.masses, x0), frequencies_cm(H_comp, pf.masses, x0),

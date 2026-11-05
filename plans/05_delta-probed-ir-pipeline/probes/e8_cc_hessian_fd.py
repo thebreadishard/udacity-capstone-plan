@@ -17,11 +17,12 @@ import sys
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, TextIO
 
 import e8_hessian_checks as HC
 import e8_symmetry as SYM
 import numpy as np
+from library_log import PYSCF_LOG_NAME, pyscf_mole
 from pyscf import cc, gto, lib, scf
 from pyscf.grad import ccsd_t as ccsd_t_grad
 from qc_common import CORE_ORBITALS, HARTREE2CM
@@ -56,16 +57,20 @@ def write_json(path: str, record: dict) -> None:
 
 
 class RunLog:
-    """The run's log: every line to stdout and to <out>/e8_fd.log, flushed, the file closed however the run ends."""
+    """The run's log: every line to stdout and to <out>/e8_fd.log, flushed; pyscf's own log in <out>/pyscf.log (`lib`); both files closed
+    however the run ends."""
 
     def __init__(self, out_dir: str):
         self.path = os.path.join(out_dir, "e8_fd.log")
+        self.lib_path = os.path.join(out_dir, PYSCF_LOG_NAME)
 
     def __enter__(self):
         self.fh = open(self.path, "a")          # closed by __exit__
+        self.lib = open(self.lib_path, "a", encoding="utf-8")
         return self
 
     def __exit__(self, *exc):
+        self.lib.close()
         self.fh.close()
 
     def __call__(self, s: str) -> None:
@@ -217,11 +222,12 @@ def _uhf_gradient(mol, s: CCSettings, log):
     return float(e_hf + e_corr + et), np.asarray(g), None
 
 
-def gradient(symbols, coords_bohr, s: CCSettings, log, check_fast: bool = False):
+def gradient(symbols, coords_bohr, s: CCSettings, log, check_fast: bool = False, lib_log: TextIO | None = None):
     """CCSD(T) energy, gradient and (closed shell) relaxed dipole at one geometry: RHF-CCSD(T) for spin 0, UHF-UCCSD(T) otherwise. `check_fast`
-    runs the C kernels' two-route checks (the reference gradient)."""
-    mol = gto.M(atom=[(sym.capitalize(), tuple(c)) for sym, c in zip(symbols, coords_bohr, strict=True)], unit="Bohr", basis=s.basis, symmetry=False,
-                verbose=0, max_memory=s.max_memory, charge=s.charge, spin=s.spin)
+    runs the C kernels' two-route checks (the reference gradient); `lib_log` receives pyscf's own log (none when None)."""
+    build = dict(atom=[(sym.capitalize(), tuple(c)) for sym, c in zip(symbols, coords_bohr, strict=True)], unit="Bohr", basis=s.basis,
+                 symmetry=False, max_memory=s.max_memory, charge=s.charge, spin=s.spin)
+    mol = gto.M(verbose=0, **build) if lib_log is None else pyscf_mole(lib_log, **build)
     if s.spin == 0:
         return _rhf_gradient(mol, s, log, check_fast)
     return _uhf_gradient(mol, s, log)
@@ -433,7 +439,7 @@ def only_check(job: Job) -> None:
     with np.load(job.ref_path) as ref:
         e0, g0 = float(ref["energy"]), ref["gradient"]
     t0 = time.time()
-    e1, g1, _ = gradient(job.symbols, job.x0, job.s, job.log, check_fast=True)
+    e1, g1, _ = gradient(job.symbols, job.x0, job.s, job.log, check_fast=True, lib_log=job.log.lib)
     dgrad = float(np.abs(np.asarray(g1) - np.asarray(g0)).max())
     de = abs(e1 - e0)
     passed = bool(dgrad <= TWO_ROUTE_GRAD_LIMIT and de <= TWO_ROUTE_ENERGY_LIMIT)   # the kernel checks inside gradient() raise on failure
@@ -470,7 +476,7 @@ def reference(job: Job) -> Reference:
     a = job.a
     inline = a.two_route_check == "inline"
     t0 = time.time()
-    e0, g0, mu0 = gradient(job.symbols, job.x0, job.s, job.log, check_fast=inline)
+    e0, g0, mu0 = gradient(job.symbols, job.x0, job.s, job.log, check_fast=inline, lib_log=job.log.lib)
     save_atomic(job.ref_path, lambda fh: np.savez(fh, energy=e0, gradient=g0, coords_bohr=job.x0, charge=a.charge, spin=a.spin, two_route_checked=inline,
                                                   **({"dipole": mu0} if mu0 is not None else {})))
     job.log(f"reference: E = {e0:.9f}, max|grad| {np.abs(g0).max():.2e}, {time.time() - t0:.0f} s"
@@ -508,7 +514,7 @@ def displaced_pair(job: Job, k: int, e0: float) -> dict[str, np.ndarray]:
         x = job.x0.copy()
         x.flat[k] += s * a.step
         t0 = time.time()
-        e, gr, mu = gradient(job.symbols, x, job.s, job.log)
+        e, gr, mu = gradient(job.symbols, x, job.s, job.log, lib_log=job.log.lib)
         save_atomic(p, lambda fh, gr=gr: np.save(fh, gr))
         gs[sign] = gr
         save_atomic(os.path.join(a.out, f"ener_{k:02d}_{sign}.npy"), lambda fh, e=e: np.save(fh, np.array(e)))
