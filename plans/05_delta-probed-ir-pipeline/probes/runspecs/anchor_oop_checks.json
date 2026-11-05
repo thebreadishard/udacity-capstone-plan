@@ -1,0 +1,37 @@
+{
+ "name": "anchor_oop_checks",
+ "purpose": "TASKS 184 (the user, 5 Nov: 'Doe beide, met een uitzondering op decision 63'): (a) pyridine CCSD(T)/cc-pVTZ gradients at its seven out-of-plane displacements, (b) benzene MP2 rows at cc-pVTZ and cc-pVQZ at its two, both in the plane frame, read by probes/anchor_oop_check.py under GoalGathering/notes/PreRegistration_2026-11-05_Anchor_CH-oop_Checks.md",
+ "host": "laptop",
+ "workdir": "probes/results_m1",
+ "command": "MSYS_NO_PATHCONV=1 wsl -e bash /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/wsl_capped.sh 12800 -- bash /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/anchor_oop_checks.sh probes/results_m1/anchor_oop_checks_2026-11-05",
+ "sources": [
+  {"local": "probes/anchor_oop_checks.sh"},
+  {"local": "probes/e8_cc_hessian_fd.py"},
+  {"local": "probes/e8_hessian_checks.py"},
+  {"local": "probes/e8_symmetry.py"},
+  {"local": "probes/qc_common.py"},
+  {"local": "probes/library_log.py"},
+  {"local": "probes/cc_composite_full_check.py"},
+  {"local": "probes/cc_composite_basis_check.py"},
+  {"local": "probes/t_density_kernel/t_density_fast.py"},
+  {"local": "probes/wsl_capped.sh"}
+ ],
+ "progress": {
+  "regex": "^\\[[0-9-]+ [0-9:]+\\] |^\\[[0-9:]+\\] mp2 cc-pv[tq]z k=|^=== \\(AOC\\) ",
+  "max_gap_minutes": 60,
+  "heartbeat_glob": "anchor_oop_checks_2026-11-05/*"
+ },
+ "marker_regex": "^=== \\(AOC\\) [A-Za-z0-9_]+: FAILED|Traceback|KILLED|refusing to continue",
+ "end_regex": "^=== \\(AOC\\) all done",
+ "dry_run_args": "--dry-run",
+ "threads": 8,
+ "estimate": {
+  "hours": 42.0,
+  "basis": "(a) 14 CCSD(T)/cc-pVTZ gradients at the 4-5 Oct benzene rate, 1.6-2.6 h each on 8 threads (pyridine 250 basis functions against 264), about 25 h; (b) 8 MP2 gradients, the 850 s TZ gradient at 4 threads scaled N^5 to QZ, about 14 h; margin for the reference gradient and its kernel checks"
+ },
+ "memory": {
+  "peak_gb": 12.5,
+  "basis": "benzene's CC/TZ run peaked at 11.9 GB RSS at max_memory 10,000 MB (memory_2026-10-04*.log); probes/wsl_capped.sh stops the run at 12,800 MB"
+ },
+ "resumable": true
+}

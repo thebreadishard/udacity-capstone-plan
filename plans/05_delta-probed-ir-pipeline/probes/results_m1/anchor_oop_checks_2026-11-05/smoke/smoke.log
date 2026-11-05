@@ -1,0 +1,41 @@
+=== (AOC) water_cc_tz: start 2026-11-05 07:59:49
+[2026-11-05 07:59:49] E8 FD Hessian: 3 atoms, cc-pvtz, frozen 1 (derived from the elements: 1), step 0.005 bohr, 18 displacements, 8 threads, max_memory 10000 MB, explicit (T) lambda, fast (T) density kernel, fast (T) lambda kernel
+[2026-11-05 07:59:53] fast (T) lambda two-route check: max |kernel − pyscf| = 7.0e-18 (l1_t; limit 1e-10; 2 s)
+[2026-11-05 07:59:58] fast (T) density two-route check: max |kernel − pyscf| = 6.9e-18 (doo[for_grad=True]; limit 1e-10; 5 s)
+[2026-11-05 07:59:59] (T) lambda 6 s, gradient 1 s
+[2026-11-05 07:59:59] reference: E = -76.332194462, max|grad| 3.48e-03, 10 s
+[2026-11-05 07:59:59] symmetry: 4 operations, orbits [[0], [1, 2]], 6 displacements (12 gradients) instead of 18
+[2026-11-05 07:59:59] partial run: displacement indices [2, 5]
+[2026-11-05 08:00:02] (T) lambda 1 s, gradient 1 s
+[2026-11-05 08:00:02] coordinate  2 p: E − E0 =     -0.04 µE_h, 3 s  (1/18 gradients)
+[2026-11-05 08:00:05] (T) lambda 1 s, gradient 1 s
+[2026-11-05 08:00:05] coordinate  2 m: E − E0 =     -0.04 µE_h, 3 s  (2/18 gradients)
+[2026-11-05 08:00:05] pair check coordinate  2: max |mean(g+, g−) − g0| = 5.3e-06 a.u. (limit 1e-04)
+[2026-11-05 08:00:08] (T) lambda 1 s, gradient 1 s
+[2026-11-05 08:00:08] coordinate  5 p: E − E0 =     -0.01 µE_h, 3 s  (3/18 gradients)
+[2026-11-05 08:00:11] (T) lambda 1 s, gradient 1 s
+[2026-11-05 08:00:11] coordinate  5 m: E − E0 =     -0.01 µE_h, 3 s  (4/18 gradients)
+[2026-11-05 08:00:11] pair check coordinate  5: max |mean(g+, g−) − g0| = 3.0e-06 a.u. (limit 1e-04)
+[2026-11-05 08:00:11] partial run done; merge grad_*.npy files and rerun without --ks to assemble the Hessian
+=== (AOC) water_cc_tz: done 2026-11-05 08:00:11
+=== (AOC) water_mp2_ccpvtz_k2: start 2026-11-05 08:00:11
+[08:00:13] mp2 cc-pvtz k=2: H_kk -0.002828 (1 s)
+→ probes/results_m1/anchor_oop_checks_2026-11-05/smoke/mp2_rows_water_planeframe_ccpvtz_k02.npz (1 displacements)
+=== (AOC) water_mp2_ccpvtz_k2: done 2026-11-05 08:00:13
+=== (AOC) water_mp2_ccpvtz_k5: start 2026-11-05 08:00:13
+[08:00:14] mp2 cc-pvtz k=5: H_kk -0.000613 (0 s)
+→ probes/results_m1/anchor_oop_checks_2026-11-05/smoke/mp2_rows_water_planeframe_ccpvtz_k05.npz (1 displacements)
+=== (AOC) water_mp2_ccpvtz_k5: done 2026-11-05 08:00:14
+→ probes/results_m1/anchor_oop_checks_2026-11-05/smoke/mp2_rows_water_planeframe_ccpvtz.npz: 2 displacements [2, 5] from 2 files
+=== (AOC) water_mp2_tz: done 2026-11-05 08:00:14
+=== (AOC) water_mp2_ccpvqz_k2: start 2026-11-05 08:00:14
+[08:00:27] mp2 cc-pvqz k=2: H_kk -0.000614 (11 s)
+→ probes/results_m1/anchor_oop_checks_2026-11-05/smoke/mp2_rows_water_planeframe_ccpvqz_k02.npz (1 displacements)
+=== (AOC) water_mp2_ccpvqz_k2: done 2026-11-05 08:00:27
+=== (AOC) water_mp2_ccpvqz_k5: start 2026-11-05 08:00:27
+[08:00:39] mp2 cc-pvqz k=5: H_kk +0.000098 (11 s)
+→ probes/results_m1/anchor_oop_checks_2026-11-05/smoke/mp2_rows_water_planeframe_ccpvqz_k05.npz (1 displacements)
+=== (AOC) water_mp2_ccpvqz_k5: done 2026-11-05 08:00:39
+→ probes/results_m1/anchor_oop_checks_2026-11-05/smoke/mp2_rows_water_planeframe_ccpvqz.npz: 2 displacements [2, 5] from 2 files
+=== (AOC) water_mp2_qz: done 2026-11-05 08:00:39
+=== (AOC) all done: 3 of 3 2026-11-05 08:00:39
