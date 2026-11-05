@@ -566,10 +566,10 @@
   "note": "anchor price recipe follow-up: base (a2), arm (a)'s distortion on the 862 analytic labels - for probes/anchor_recipe_plan.py only, never a production model (GoalGathering/notes/PreRegistration_2026-10-28_Anchor_Price_Recipe.md)"
  },
  "E7_rungC_chain35s2_analytic_model_n750_seed2.pt": {
-  "status": "candidate",
+  "status": "superseded",
   "network": "ΔH-network",
   "version": "",
   "chain": "35s2",
-  "note": "chain 35's seed 2 at epoch cap 500 (TASKS 169); candidate for v1.3.1 until its read"
+  "note": "chain 35's seed 2 at epoch cap 500 (TASKS 169); read 3 Nov 17:5x: early stop at epoch 131 (best 0.0420 at 111, against 0.0412); as v1.3.1 with seeds 0 and 1 worse on ring-ip (b), CH-oop (a8) and 'other' (b) (out/holdout_a_clean_read_v131_2026-11-03.md); not carried, v1.3 stays (decision 57)"
  }
 }
