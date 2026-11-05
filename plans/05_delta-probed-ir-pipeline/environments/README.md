@@ -8,6 +8,7 @@ module 05's file lacked `geometric` and `rdkit` and that the compute environment
 | `windows-python314.txt` | modules 05/06, the Windows probes (torch, rdkit, geometric); identical to `modules/05_support_predictor/requirements.txt` | `pip freeze` |
 | `windows-venv313.txt` | module 07 (LangGraph) | `pip freeze` in `.venv` |
 | `wsl-qc05.txt` | our pyscf branch, the E8 anchors, gate 1, the LNO probes | `pip freeze` in `~/qc05` (WSL) |
+| `wsl-qc215.txt` | pyscf 2.15.0 for the upgrade checklist's tests (TASKS 164): qc05's interpreter and pins, pyscf 2.14.0 → 2.15.0, pyscf-forge left out (its PyPI 1.1.1 lacks our LNO fix, #212); built by `tools/build_env_beside.py`, whose pin list stays in `~/qc215/build-requirements.txt` | `pip freeze` in `~/qc215` (WSL) |
 | `wsl-vpt2.txt` | psi4 + pyVPT2 (route 2) | `conda list --export` (WSL miniforge) |
 | `windows-conda-qc.txt` | psi4 1.11: the corpus deck's engine on the laptop (73 molecules on Asus18), the pipeline's geometry step | `conda list --export` (Windows anaconda, `~/.conda/envs/qc`) |
 | `windows-conda-vpt2.txt` | psi4 1.10.2 + pyVPT2: the benzene VPT2 of 14 Sep | `conda list --export` (Windows anaconda, `~/.conda/envs/vpt2`) |

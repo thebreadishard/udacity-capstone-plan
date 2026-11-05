@@ -893,3 +893,15 @@ our routes: analytic gradients for DF-CCSD and DF-CCSD(T) with auxiliary-basis r
 checks (#3428). Steps 2–5 are not started: the running jobs and the corpus layer in progress stay on 2.14.0 (anchor_oop_checks in WSL, the labels
 and S2b servers), and the new environment is built beside the old one only on the user's word (TASKS 164). The rows keep their status until that
 rebuild records the move.
+
+**pyscf 2.15.0, step 2 done: `~/qc215` beside `~/qc05` (5 November 2026, 11:3x; the user: 'Bouw de 2.15.0-omgeving naast de oude').**
+Built by the new `tools/build_env_beside.py` (20 tests): qc05's own interpreter (uv CPython 3.12.14, the symlink target of `~/qc05/bin/python`) and
+qc05's live `pip freeze`, installed pin for pin with `--no-deps`; two changes only, so a difference in step 3 belongs to pyscf: pyscf 2.14.0 →
+2.15.0, and pyscf-forge 1.1.1 left out (PyPI's 1.1.1 predates #212, so its LNO still calls the six-argument DF vvvv routine, row 1; it also brings
+the MC-PDFT dipoles `pyscf/prop/dip_moment` and `trans_dip_moment`, which nothing of ours imports). Checks passed: `pip check`; the target's
+`pip freeze` equals the 21-pin plan; pyscf, `pyscf.cc.ccsd_t_lambda_slow`, `pyscf.grad.ccsd_t`, `pyscf.hessian.rks`, `pyscf.hessian.thermo`,
+pyscfad and geometric import. `pyscf.prop.infrared` is in neither environment: it comes from the `~/pyscf-properties-master` checkout
+(`probes/upstream_infrared.py`). Listing `environments/wsl-qc215.txt`; qc05's listing was stale since its 3 Oct freeze (geometric 1.1.1,
+networkx 3.7 and six 1.17.0 installed later without a refreeze) and is refrozen. qc05 was only read. For step 3: gate 1 writes the one stamp
+`~/.dpir_gate1.json` (host, pyscf version, file hashes) that every e8 launch on qc05 checks, so a gate 1 on qc215 would make the next qc05 launch
+refuse until gate 1 is re-run there; the stamp needs one per environment before step 3's gate 1.
