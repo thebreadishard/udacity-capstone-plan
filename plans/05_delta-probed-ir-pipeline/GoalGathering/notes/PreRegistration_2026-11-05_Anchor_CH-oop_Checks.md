@@ -73,3 +73,11 @@ the harmonic ω of both against Goodman's estimated harmonics, and the CH-oop rm
 
 `probes/anchor_oop_checks.sh probes/results_m1/anchor_oop_checks_2026-11-05` (run spec `anchor_oop_checks`, laptop WSL, (a) then (b)), smoked on
 water first (`A_MOL=water B_MOL=water`, the same script).
+
+## Correction (5 November 2026, 09:2x — before any number; the run is in its reference gradient)
+
+Under (a) the computation says "the inline two-route check: benzene's 4 Oct settings". That is wrong in one point: benzene's 4 Oct run deferred
+its kernel checks to a separate run (`--two-route-check separate`, reference 7,986 s; the (T) lambda check then took 10,085 s on 6 Oct). This run
+makes them inline: the C kernels against pyscf's Python route on pyridine's reference gradient, before the first displaced gradient. Kept, since
+it is the second route on this molecule itself (gate 1 checks the kernels on water only), at the price of hours of a silent phase once (the watch
+sees no pyscf log growth there); the run's end moves to ≈ 7–8 Nov. Nothing else changes.
