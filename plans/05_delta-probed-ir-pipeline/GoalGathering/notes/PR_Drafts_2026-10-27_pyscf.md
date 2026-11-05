@@ -264,12 +264,15 @@ The docstring now (`pyscf/cc/uccsd_rdm.py`, branch `uccsd-gamma2-outcore`):
     block of p at a time from the two contractions giving D1[p,q] and D1[q,p].
     '''
 
-Proposed (one commit on the branch, docstring only; the module's tests rerun before the push), in the module's own style — its
-neighbours name what they return ('dvvvv, dvvVV and dVVVV of _gamma2_outcore, held in memory.', 'One-particle spin density matrices
-dm1a, dm1b in MO basis'), not an imperative:
+Proposed (15:4x; one commit on the branch, this docstring only — the review named no other; the module's tests rerun before the
+push). PEP 257, on the user's word ('Volg PEP 257. Vanaf nu altijd bij Python PR's'): the summary line a command, ending in a period.
+pyscf has no rule against it: CONTRIBUTING.md and its lint settings say nothing on docstrings, and its coding-style recipe
+(`agent-recipes/skills/pyscf-coding-style.template.md`) asks of a function outside the public API only 'a short docstring explaining
+their purpose'. (The earlier noun-phrase draft leaned on 'dvvvv, dvvVV and dVVVV of _gamma2_outcore, held in memory.', which is this
+PR's own text, not pyscf's.)
 
-    '''One vvvv block of _gamma2_vvvv_incore, written to h5fobj[key] per block
-    of its first index.'''
+    '''Write one vvvv block of _gamma2_vvvv_incore to h5fobj[key], one block of
+    its first index at a time.'''
 
 Reply on the comment: 'Thanks, simplified in <commit>.'
 
