@@ -905,3 +905,9 @@ pyscfad and geometric import. `pyscf.prop.infrared` is in neither environment: i
 networkx 3.7 and six 1.17.0 installed later without a refreeze) and is refrozen. qc05 was only read. For step 3: gate 1 writes the one stamp
 `~/.dpir_gate1.json` (host, pyscf version, file hashes) that every e8 launch on qc05 checks, so a gate 1 on qc215 would make the next qc05 launch
 refuse until gate 1 is re-run there; the stamp needs one per environment before step 3's gate 1.
+
+**Rows 35 and 52, 5 November 2026 (15:2x): pyscf/pyscf#3546 and #3547 approved by jeanwsr** (14:10 and 14:16 UTC); #3548 (stacked on #3547)
+still waits for review. One comment on #3547, at `_vvvv_to_h5`'s docstring in `pyscf/cc/uccsd_rdm.py`: 'comment can be simpler.' A shorter
+docstring and a one-line reply are drafted in `PR_Drafts_2026-10-27_pyscf.md`; pushed and posted only on the user's word. Each PR has one red
+check that its change does not touch: #3547 `linux-build (ubuntu-latest, 3.9)` fails in `pyscf/tools/test/test_finite_diff.py::
+test_symmetry_is_pinned_under_displacement` (an upstream test from #3428; `Gradients_Scanner ... not converged`), #3546 the `windows-wheel` build.

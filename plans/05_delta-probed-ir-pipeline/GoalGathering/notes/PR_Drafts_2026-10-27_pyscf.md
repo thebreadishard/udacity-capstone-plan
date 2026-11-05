@@ -251,3 +251,25 @@ any test ran, and the new max_memory = 1 test fails on it (checked by putting it
 - The C kernel for the open-shell (T) intermediates: not finished to PR quality tonight (see TASKS 98).
 - NO's UCCSD(T) gradient (TASKS 132): already fixed on master by #3334 (lindep passed to lib.krylov); nothing to submit — a comment on our
   issue #2702 that #3334 resolves the early stop for CPHF may be worth posting, in the user's words.
+
+## Review of A (#3547), 5 Nov 2026 (15:2x) — drafted, not pushed or posted
+
+jeanwsr approved #3546 and #3547 (14:10 / 14:16 UTC) with one comment on #3547 at `_vvvv_to_h5`'s docstring: 'comment can be simpler.'
+
+The docstring now (`pyscf/cc/uccsd_rdm.py`, branch `uccsd-gamma2-outcore`):
+
+    '''One vvvv block as _gamma2_vvvv_incore forms it, D2 = D1 + D1.transpose(1,0,3,2).conj()
+    with D1[p,q,r,s] = fac * sum_ij tau[i,j,p,r] lam[i,j,q,s], and compressed as
+    (D2 + D2.transpose(1,0,2,3))/2 on both pairs; written to h5fobj[key] for a
+    block of p at a time from the two contractions giving D1[p,q] and D1[q,p].
+    '''
+
+Proposed (one commit on the branch, docstring only; the module's tests rerun before the push):
+
+    '''Write one vvvv block of _gamma2_vvvv_incore to h5fobj[key], computed in
+    blocks of the first index.'''
+
+Reply on the comment: 'Thanks, simplified in <commit>.'
+
+The red checks are not from this change: `linux-build (ubuntu-latest, 3.9)` fails in `test_finite_diff.py::
+test_symmetry_is_pinned_under_displacement` (upstream's, #3428), #3546's `windows-wheel` build. No comment on them unless asked.
