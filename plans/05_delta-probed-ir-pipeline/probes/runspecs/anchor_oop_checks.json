@@ -18,8 +18,8 @@
  ],
  "progress": {
   "regex": "^\\[[0-9-]+ [0-9:]+\\] |^\\[[0-9:]+\\] mp2 cc-pv[tq]z k=|^=== \\(AOC\\) ",
-  "max_gap_minutes": 60,
-  "heartbeat_glob": "anchor_oop_checks_2026-11-05/*"
+  "max_gap_minutes": 120,
+  "heartbeat_glob": "anchor_oop_checks_2026-11-05/*/*.log"
  },
  "marker_regex": "^=== \\(AOC\\) [A-Za-z0-9_]+: FAILED|Traceback|KILLED|refusing to continue",
  "end_regex": "^=== \\(AOC\\) all done",
