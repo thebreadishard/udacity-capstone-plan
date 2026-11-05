@@ -99,4 +99,22 @@ def test_amendment_1_adds_the_631gs_verdict_only_when_every_record_carries_it():
 
 def test_a_missing_631gs_row_file_stops_the_read(tmp_path):
     with pytest.raises(SystemExit, match=r"no MP2/6-31G\* rows for A_x"):
-        M.rows_631gs(tmp_path, "A_x", ["H", "H"], np.zeros((2, 3)), np.ones(2))
+        M.hessian_631gs(tmp_path, "A_x", ["H", "H"], np.zeros((2, 3)), np.ones(2))
+
+
+def test_anchor_record_reads_the_stone_when_given_its_folder(tmp_path, monkeypatch):
+    """The switch's path through anchor_record (the first real read stopped there: a parameter shadowed the reader)."""
+    sym, x0, masses = ["H", "H"], np.zeros((2, 3)), np.ones(2)
+    zero = np.zeros((6, 6))
+    calls = []
+    monkeypatch.setattr(M, "corpus_dir", lambda mol_id: tmp_path)
+    monkeypatch.setattr(M, "load_geometry", lambda path: (sym, x0, masses))
+    monkeypatch.setattr(M, "projected", lambda path: zero)
+    monkeypatch.setattr(M.L, "normal_modes", lambda H, m: (np.ones(1), np.ones(1), np.ones((6, 1))))
+    monkeypatch.setattr(M.L, "families", lambda freq, V, s, m, x: ["CH-oop"])
+    monkeypatch.setattr(M, "mp2_hessians", lambda *args: {"mp2_dz": zero, "mp2_tz": zero})
+    monkeypatch.setattr(M, "hessian_631gs", lambda d, mol_id, *rest: calls.append((d, mol_id)) or zero)
+    monkeypatch.setattr(M, "shifts", lambda dH, V, w, m: np.zeros(1))
+    assert M.STONE not in M.anchor_record("A_x", "anchor.npz")
+    rec = M.anchor_record("A_x", "anchor.npz", tmp_path)
+    assert calls == [(tmp_path, "A_x")] and rec[M.STONE] == [0.0]

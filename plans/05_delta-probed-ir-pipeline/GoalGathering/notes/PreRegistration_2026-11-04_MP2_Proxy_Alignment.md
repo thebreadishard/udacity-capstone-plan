@@ -92,3 +92,29 @@ the option the read reproduces the outcome above exactly (checked tonight).
 for CH-oop lies elsewhere.
 
 **Prediction (before any number).** MP2/6-31G* also follows CC better than ωB97X in CH-oop: one in two.
+
+## Outcome of amendment 1 (5 November 2026, 05:2x)
+
+The nine row files came from run spec `mp2_631gs_anchors` (launched 4 Nov 23:46, `=== (M631) all done: 9 of 9` at 05:14:26, no failure);
+benzene's and naphthalene's are the 5 Oct copies. Read: `probes/results_m1/mp2_proxy_alignment_631gs_2026-11-05/mp2_proxy_alignment.md` and `.json`; per anchor: `per_anchor.txt` there. The
+first real read stopped at its first record (a parameter of `anchor_record` shadowed the row reader; the synthetic tests never passed
+through that path): the reader was renamed, a test now runs `anchor_record` with the option on, and the read was run again unchanged
+otherwise. The ωB97X, MP2/cc-pVDZ and MP2/cc-pVTZ rows of the new read equal the outcome above.
+
+| family | scaled rms, ωB97X / MP2/6-31G* (cm⁻¹) | ratio | corr, MP2/6-31G* | verdict |
+|---|---|---|---|---|
+| CH-oop | 13.73 / 8.14 | 0.59 | +0.88 | better |
+| other | 13.10 / 12.44 | 0.95 | +0.69 | no clear difference |
+| ring-ip | 16.01 / 10.81 | 0.68 | −0.43 | better |
+| CH-stretch | 2.52 / 1.91 | 0.76 | −0.44 | better |
+
+**By the line: better in CH-oop**, which decides; 'other' shows no clear difference. The prediction (one in two) came out on the better side.
+Per anchor, MP2/6-31G*'s leave-one-out residual in CH-oop is below ωB97X's on all eleven (2.2 to 13.5 against 7.9 to 19.6 cm⁻¹), and below
+MP2/cc-pVDZ's on ten (azulene 11.3 against 10.6).
+
+**What it does not say.** The stone carries the right sign at about six times CC's size (pooled slope +0.16; unscaled rms of CC − candidate
+83.7 against CC's own 17.8 cm⁻¹): it is usable only through a fitted scale, as the stepping-stone design intends, never raw. In ring-ip and
+CH-stretch the 'better' comes through a negative slope (MP2/6-31G* shifts against CC's direction), so those two families do not count as
+support for the stone; the registration lets CH-oop decide and those do not enter. Eleven anchors, one basis pair, shifts to first order.
+
+**What follows, as registered:** step 1 of the stepping-stone registration is proposed to the user with its price (TASKS 183 (2)).

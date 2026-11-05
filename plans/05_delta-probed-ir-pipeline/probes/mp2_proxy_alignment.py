@@ -58,7 +58,7 @@ def mp2_hessians(mol_id: str, anchor_file: str, sym: list[str], x0: np.ndarray, 
     return {name: project_tr(T @ M @ T.T, masses, x0)[0] for name, M in (("mp2_dz", M_dz), ("mp2_tz", M_tz))}
 
 
-def rows_631gs(rows_dir: Path, mol_id: str, sym: list[str], x0: np.ndarray, masses: np.ndarray) -> np.ndarray:
+def hessian_631gs(rows_dir: Path, mol_id: str, sym: list[str], x0: np.ndarray, masses: np.ndarray) -> np.ndarray:
     """MP2/6-31G* Hessian of one anchor from its row file (corpus frame), projected as the corpus's are."""
     path = rows_dir / f"mp2_rows_{mol_id}_631gs.npz"
     if not path.is_file():
@@ -67,7 +67,7 @@ def rows_631gs(rows_dir: Path, mol_id: str, sym: list[str], x0: np.ndarray, mass
     return project_tr(M, masses, x0)[0]
 
 
-def anchor_record(mol_id: str, anchor_file: str, rows_631gs: Path | None = None) -> dict[str, Any]:
+def anchor_record(mol_id: str, anchor_file: str, stone_dir: Path | None = None) -> dict[str, Any]:
     """The shifts K_kk of the CC correction and of every candidate, and each mode's family, for one anchor."""
     mol_dir = corpus_dir(mol_id)
     sym, x0, masses = load_geometry(mol_dir / "geometry.json")
@@ -75,8 +75,8 @@ def anchor_record(mol_id: str, anchor_file: str, rows_631gs: Path | None = None)
     w, freq, V = L.normal_modes(low, masses)
     hess = {"truth": projected(Path(anchor_file)), "wb97x": projected(mol_dir / "hessian_wb97x_analytic.npz"),
             **mp2_hessians(mol_id, anchor_file, sym, x0, masses)}
-    if rows_631gs is not None:
-        hess[STONE] = rows_631gs(rows_631gs, mol_id, sym, x0, masses)
+    if stone_dir is not None:
+        hess[STONE] = hessian_631gs(stone_dir, mol_id, sym, x0, masses)
     rec = {name: shifts(H - low, V, w, masses).tolist() for name, H in hess.items()}
     return {"mol_id": mol_id, "families": list(L.families(freq, V, sym, masses, x0)), **rec}
 
@@ -173,8 +173,8 @@ def write_atomic(path: Path, text: str) -> None:
     os.replace(tmp, path)
 
 
-def main(out_dir: Path, rows_631gs: Path | None = None) -> int:
-    records = [anchor_record(mol_id, f, rows_631gs) for mol_id, f in D.anchors().items()]
+def main(out_dir: Path, stone_dir: Path | None = None) -> int:
+    records = [anchor_record(mol_id, f, stone_dir) for mol_id, f in D.anchors().items()]
     res = read(records)
     out_dir.mkdir(parents=True, exist_ok=True)
     write_atomic(out_dir / "mp2_proxy_alignment.json", json.dumps({"families": res, "records": records}, indent=1))
