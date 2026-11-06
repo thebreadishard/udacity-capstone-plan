@@ -409,11 +409,11 @@ class Job:
 
     @property
     def ref_path(self) -> str:
-        return os.path.join(self.a.out, "reference.npz")
+        return os.path.join(self.a.out, HC.REFERENCE_FILE)
 
     @property
     def check_path(self) -> str:
-        return os.path.join(self.a.out, "two_route_check.json")
+        return os.path.join(self.a.out, HC.TWO_ROUTE_FILE)
 
 
 def energy_check(job: Job) -> None:
@@ -471,7 +471,7 @@ def reference(job: Job) -> Reference:
     """Read when the run folder has it, else computed and stored."""
     if os.path.exists(job.ref_path):
         with np.load(job.ref_path) as ref:
-            checked = bool(ref["two_route_checked"]) if "two_route_checked" in ref.files else True
+            checked = HC.inline_checked(ref)
             return Reference(float(ref["energy"]), ref["gradient"], checked)
     a = job.a
     inline = a.two_route_check == "inline"
@@ -485,8 +485,7 @@ def reference(job: Job) -> Reference:
 
 
 def require_passed_check(job: Job) -> None:
-    ok = os.path.exists(job.check_path) and bool(json.loads(Path(job.check_path).read_text()).get("passed"))
-    if not ok:
+    if not HC.two_route_passed(job.a.out):
         raise SystemExit("the reference gradient is unchecked and no passing two_route_check.json exists — run `--two-route-check only` "
                          "before assembling the Hessian (rule: every derived quantity has a second route)")
     job.log("two-route check on file: passed — assembling")

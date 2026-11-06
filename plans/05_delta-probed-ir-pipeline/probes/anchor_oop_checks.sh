@@ -4,8 +4,11 @@
 # molecule's out-of-plane Cartesian indices in <molecule>_oop_ks.txt (both from cc_composite_full_check.py planeframe; the molecules are
 # A_MOL=pyridine and B_MOL=benzene unless set — the water smoke sets both):
 #   (a) pyridine CCSD(T)/cc-pVTZ gradients at the seven out-of-plane displacements through e8_cc_hessian_fd.py (the 4 Oct benzene settings:
-#       frozen core by the element rule, step 0.005 bohr, explicit (T) lambda, both (T) C kernels, the inline two-route check); --ks takes the
-#       positions in the runner's symmetry-unique list (<A_MOL>_e8_ks.txt), not Cartesian indices. e8 resumes per gradient file.
+#       frozen core by the element rule, step 0.005 bohr, explicit (T) lambda, both (T) C kernels); --ks takes the positions in the
+#       runner's symmetry-unique list (<A_MOL>_e8_ks.txt), not Cartesian indices. e8 resumes per gradient file. The two-route check of the
+#       kernels is deferred (`--two-route-check separate`): inline it needs more than the run's 12,800 MB cap (three OOM kills, 5-6 Nov,
+#       TASKS 185). It runs afterwards as its own step, e8 with `--two-route-check only`, and anchor_oop_check.py refuses the rows until
+#       it has passed.
 #   (b) benzene MP2 rows at cc-pVTZ and cc-pVQZ for its out-of-plane displacements through cc_composite_full_check.py compute
 #       (spherical, frozen core, step 0.005 bohr; --ks there is Cartesian), one file per basis and displacement, merged per basis.
 # Each piece whose output exists is skipped, so a relaunch resumes. pyscf's own log: <run dir>/<A_MOL>_cc_tz/pyscf.log, <row file>.pyscf.log.
@@ -41,7 +44,7 @@ piece_a() {
   if [ "$missing" = 0 ]; then say "${A}_cc_tz: already done, skipped"; return 0; fi
   say "${A}_cc_tz: start"
   "$PY" -u "$HERE/e8_cc_hessian_fd.py" "$RUN/${A}_planeframe.json" "$dir" --basis cc-pvtz --step 0.005 --threads "$THREADS" \
-    --max-memory "$MEM" --symmetry --ks "$POS" --fast-t-density --fast-t-lambda --two-route-check inline < /dev/null || return 1
+    --max-memory "$MEM" --symmetry --ks "$POS" --fast-t-density --fast-t-lambda --two-route-check separate < /dev/null || return 1
   for k in "${OOP_A[@]}"; do for s in p m; do [ -f "$(printf '%s/grad_%02d_%s.npy' "$dir" "$k" "$s")" ] || return 1; done; done
 }
 

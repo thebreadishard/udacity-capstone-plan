@@ -1,6 +1,7 @@
 """The split Hessian self-check (probes/e8_hessian_checks.py, 30 Sep 2026): INVALID (the computation is wrong) versus IMAGINARY (computed
 correctly, not a minimum) versus VALID. Synthetic Hessians with known frequencies, each failure mode on its own and combined, invariances,
 and the three real CC Hessians that motivated it (probes/results_m1/e8_selfcheck_cases/)."""
+import json
 import sys
 from pathlib import Path
 
@@ -222,3 +223,24 @@ def test_probe_and_chain_are_wired_to_the_split_check():
     chain = (PLAN / "probes" / "run_anchors_hel23_parallel.sh").read_text(encoding="utf-8")
     assert 'finish "$name" "$out" "$rc"' in chain and '|| rc=$?' in chain                              # the verdict comes from the exit code
     assert 'rm -f "$out/hessian_ccsd_t.npz" "$out/hessian_ccsd_t_INVALID.npz" "$out/hessian_ccsd_t_IMAGINARY.npz"' in chain   # no stale file
+
+
+def _reference(run_dir, checked):
+    """A reference record with the inline flag set, or (None) as written before the flag existed."""
+    extra = {} if checked is None else {"two_route_checked": checked}
+    np.savez(run_dir / HC.REFERENCE_FILE, energy=-76.0, **extra)
+
+
+@pytest.mark.parametrize("checked, record, cleared", [
+    (True, None, True),          # checked inline
+    (None, None, True),          # a record from before the flag: all were checked inline
+    (False, None, False),        # deferred, no check run yet
+    (False, {"passed": False}, False),
+    (False, {"passed": True}, True),
+    (False, {}, False),          # a record without a verdict is no pass
+])
+def test_kernels_cleared_needs_an_inline_check_or_a_passing_record(tmp_path, checked, record, cleared):
+    _reference(tmp_path, checked)
+    if record is not None:
+        (tmp_path / HC.TWO_ROUTE_FILE).write_text(json.dumps(record), encoding="utf-8")
+    assert HC.kernels_cleared(tmp_path) is cleared

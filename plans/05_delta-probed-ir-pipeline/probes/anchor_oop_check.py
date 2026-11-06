@@ -28,6 +28,7 @@ sys.path.insert(0, str(PLAN / "probes"))
 sys.path.insert(0, str(M05 / "m05"))
 import anchor_registry as AR  # noqa: E402  (module 05's code is not a package)
 import cc_composite_full_check as C  # noqa: E402
+import e8_hessian_checks as HC  # noqa: E402
 import e8_symmetry as SYM  # noqa: E402
 import fundamentals_vs_experiment as FE  # noqa: E402
 import mp2_proxy_alignment as M  # noqa: E402
@@ -105,6 +106,9 @@ def write_cc_rows(run_dir: Path, ks: list[int], coords: np.ndarray, out: Path) -
     with np.load(run_dir / "reference.npz") as z:
         if np.abs(np.asarray(z["coords_bohr"], float) - coords).max() > C.FRAME_TOL_BOHR:
             raise SystemExit(f"{run_dir}: the run's geometry is not the plane-frame geometry")
+    if not HC.kernels_cleared(run_dir):
+        raise SystemExit(f"{run_dir}: the (T) C kernels of these gradients are unchecked and no passing {HC.TWO_ROUTE_FILE} exists — run "
+                         "e8 with --two-route-check only first (rule: every derived quantity has a second route)")
     rows = {}
     for k in ks:
         g_p, g_m = (np.load(run_dir / f"grad_{k:02d}_{s}.npy").ravel() for s in ("p", "m"))

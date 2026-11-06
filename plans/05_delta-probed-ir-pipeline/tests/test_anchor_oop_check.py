@@ -3,6 +3,7 @@ geometry, a non-planar Hessian), the truth anchor's round trip, the leave-one-ou
 read itself is pinned on real data by `anchor_oop_check.py pin` (test 2 reproduced)."""
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
 
@@ -82,3 +83,13 @@ def test_line_a_at_its_edges(rms, verdict):
 @pytest.mark.parametrize(("rms", "verdict"), [(3.0, "converged"), (3.01, "basis error"), (10.0, "basis error"), (10.01, "not the truth")])
 def test_line_b_at_its_edges(rms, verdict):
     assert A.verdict_b(rms) == verdict
+
+
+def test_rows_of_unchecked_kernels_are_refused_until_the_check_passes(tmp_path):
+    coords = np.zeros((2, 3))
+    run = _run_dir(tmp_path, coords, {2: np.ones(6)})
+    np.savez(run / "reference.npz", coords_bohr=coords, two_route_checked=False)
+    with pytest.raises(SystemExit, match="unchecked"):
+        A.write_cc_rows(run, [2], coords, tmp_path / "rows.npz")
+    (run / A.HC.TWO_ROUTE_FILE).write_text(json.dumps({"passed": True}), encoding="utf-8")
+    assert A.write_cc_rows(run, [2], coords, tmp_path / "rows.npz").exists()

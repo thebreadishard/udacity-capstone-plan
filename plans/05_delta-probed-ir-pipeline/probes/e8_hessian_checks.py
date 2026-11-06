@@ -19,6 +19,9 @@ reported as a computational failure. The check now keeps two questions apart:
 Translations/rotations are identified by their overlap with the mass-weighted translation/rotation space, not by position in the sorted list.
 Pure numpy, so tests run on any machine (tests/test_e8_hessian_checks.py).
 """
+import json
+import os
+
 import numpy as np
 
 AMU2AU = 1822.888486209
@@ -31,6 +34,30 @@ ENERGY_DIAG_LIMIT = 1e-3     # E_h/bohr²; energy second difference vs gradient-
                              # the CCSD-lambda water Hessian differed from the correct one by up to 2.5e-3)
 
 
+REFERENCE_FILE = "reference.npz"          # e8's reference gradient, in its run folder
+TWO_ROUTE_FILE = "two_route_check.json"   # the record of a deferred two-route check (`--two-route-check only`)
+
+
+def inline_checked(ref) -> bool:
+    """Whether a loaded reference record passed the kernel checks inline (records written before the flag existed all did)."""
+    return bool(ref["two_route_checked"]) if "two_route_checked" in ref.files else True
+
+
+def two_route_passed(run_dir: str | os.PathLike) -> bool:
+    """Whether the run folder holds a passing record of the deferred two-route check."""
+    path = os.path.join(run_dir, TWO_ROUTE_FILE)
+    if not os.path.exists(path):
+        return False
+    with open(path, encoding="utf-8") as fh:
+        return bool(json.load(fh).get("passed"))
+
+
+def kernels_cleared(run_dir: str | os.PathLike) -> bool:
+    """Whether the gradients of an e8 run folder may be used: its reference passed the kernel checks inline, or a deferred check passed."""
+    with np.load(os.path.join(run_dir, REFERENCE_FILE)) as ref:
+        return inline_checked(ref) or two_route_passed(run_dir)
+
+
 def tr_basis(x, masses):
     """Orthonormal mass-weighted translation/rotation basis (3N × 6); ValueError for a linear or degenerate geometry."""
     x = np.asarray(x, float).reshape(-1, 3)
@@ -39,10 +66,12 @@ def tr_basis(x, masses):
     r = x - (x * m[:, None]).sum(0) / m.sum()
     D = []
     for k in range(3):
-        v = np.zeros((n, 3)); v[:, k] = 1.0
+        v = np.zeros((n, 3))
+        v[:, k] = 1.0
         D.append((v * np.sqrt(m)[:, None]).ravel())
     for k in range(3):
-        e = np.zeros(3); e[k] = 1.0
+        e = np.zeros(3)
+        e[k] = 1.0
         D.append((np.cross(np.tile(e, (n, 1)), r) * np.sqrt(m)[:, None]).ravel())
     D = np.array(D).T
     s = np.linalg.svd(D, compute_uv=False)

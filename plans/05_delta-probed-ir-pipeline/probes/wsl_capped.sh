@@ -2,7 +2,8 @@
 # probes/wsl_capped.sh <cap_MB> -- command … (19 Oct 2026; after the out-of-memory of 19 Oct 00:46) — runs the command inside WSL in a
 # systemd user scope with MemoryMax=<cap_MB> and no swap, so the kernel stops the whole process tree at the cap instead of letting it take
 # memory from the other jobs. The cap is what a run spec's memory.peak_gb may cite: a bound that holds, where a measured peak may not.
-# Exit 137 with the line 'KILLED: over the cap of <cap> MB' when the cap was hit; otherwise the command's own exit code.
+# Exit 137 or 143 with the line 'KILLED: over the cap of <cap> MB …' when the cap was hit; otherwise the command's own exit code. 143: after the
+# kernel's OOM kill systemd stops the rest of the scope with SIGTERM (5-6 Nov 2026, TASKS 185: three kills read as WSL stops).
 # Tested 19 Oct on WSL Ubuntu with systemd: 100 MB under a 300 MB cap passes, 600 MB is killed (exit 137).
 #   bash probes/wsl_capped.sh 1536 -- bash probes/xtb_anharmonic.sh …
 set -u
@@ -21,5 +22,7 @@ case "${CAP_SCOPE:-user}" in
 esac
 systemd-run "${MODE[@]}" --scope --quiet -p MemoryMax="${CAP}M" -p MemorySwapMax=0 "$@"
 rc=$?
-[ "$rc" = 137 ] && echo "KILLED: over the cap of $CAP MB (or killed from outside)"
+case "$rc" in
+  137|143) echo "KILLED: over the cap of $CAP MB, or stopped from outside: journalctl -b | grep -E 'oom-kill|Killed process' tells which" ;;
+esac
 exit "$rc"
