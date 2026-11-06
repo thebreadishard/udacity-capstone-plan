@@ -2,7 +2,8 @@
 refactor; runs in WSL (qc05, one thread) on water at cc-pVDZ: with and without symmetry, with the (T) C kernels, the two-route check deferred
 and then run ('separate', 'only'), a partial run followed by the energy route, the UHF path (H2O+), and the two refusals (a frozen core
 that differs from the elements', a C kernel on the UHF path). Every file of the run folder is compared (arrays by sha256, the log and the
-check file without times), with each step's exit code. Gate 1 is replaced by tests/e8_pin_runner.py: the pin tests the computation.
+check file without times, pyscf's own log only as written or empty: its lines carry timings), with each step's exit code. Gate 1 is
+replaced by tests/e8_pin_runner.py: the pin tests the computation.
 
 E8_PROBES=<folder> selects the folder whose script is tested (default: this checkout's probes; a worktree's for a refactor).
 
@@ -23,6 +24,10 @@ import numpy as np
 import pytest
 
 PLAN = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(PLAN / "probes"))
+
+from library_log import PYSCF_LOG_NAME  # noqa: E402
+
 GOLDEN = PLAN / "tests" / "data" / "e8_cc_hessian_fd_golden.json"
 RUNNER = Path(__file__).with_name("e8_pin_runner.py")
 WATER = {"symbols": ["O", "H", "H"], "coords_bohr": [[0.0, 0.0, 0.2217], [0.0, 1.4309, -0.8867], [0.0, -1.4309, -0.8867]],
@@ -64,6 +69,8 @@ def file_summary(p: Path):
     if p.suffix == ".json":
         rec = {k: v for k, v in json.loads(p.read_text(encoding="utf-8")).items() if k not in ("date", "seconds")}
         return json.dumps(rec, sort_keys=True)                    # text, so a NaN compares equal to itself
+    if p.name == PYSCF_LOG_NAME:
+        return f"<library log, {'written' if p.stat().st_size else 'empty'}>"
     if p.suffix == ".log":
         return SECONDS.sub("<s> s", TIME.sub("", p.read_text(encoding="utf-8")))
     return f"<{p.suffix} file>"

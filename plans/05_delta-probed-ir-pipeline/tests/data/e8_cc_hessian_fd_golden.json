@@ -65,6 +65,7 @@
      "trans_sum_rule": "4.013257726143138e-07",
      "vib_cm": "ae50304c1f102735cf5a1f20167d3f849b95937241aa76d45eb82040a48857ea"
     },
+    "pyscf.log": "<library log, written>",
     "reference.npz": {
      "charge": "0",
      "coords_bohr": "27ea64a53b8b457a924d812b77c5ce380d912fd3ddcb7935319678f6b619f1a8",
@@ -97,6 +98,7 @@
     "grad_00_p.npy": "7d269e96ae75b87412a9c3561d2deb0f52b160b823ceea87afd6e7df3f7d04ed",
     "grad_01_m.npy": "5028091652dbea1deab211aeb89e9f11bbfc5dc805c561268ee3b9a46e016883",
     "grad_01_p.npy": "824ef911f14a8761dab63eaeb315bbdc4b67ed496243a246b292acc17b4558c3",
+    "pyscf.log": "<library log, written>",
     "reference.npz": {
      "charge": "0",
      "coords_bohr": "27ea64a53b8b457a924d812b77c5ce380d912fd3ddcb7935319678f6b619f1a8",
@@ -202,6 +204,7 @@
      "trans_sum_rule": "4.01325872534386e-07",
      "vib_cm": "71d2e60f3644ef1d75efdf76a49c9fcc2cb04e3ff5cfbf439fa7f77035f86888"
     },
+    "pyscf.log": "<library log, written>",
     "reference.npz": {
      "charge": "0",
      "coords_bohr": "27ea64a53b8b457a924d812b77c5ce380d912fd3ddcb7935319678f6b619f1a8",
@@ -221,7 +224,8 @@
   },
   "refuse_fast_uhf": {
    "files": {
-    "e8_fd.log": ""
+    "e8_fd.log": "",
+    "pyscf.log": "<library log, empty>"
    },
    "steps": [
     {
@@ -232,7 +236,8 @@
   },
   "refuse_frozen": {
    "files": {
-    "e8_fd.log": ""
+    "e8_fd.log": "",
+    "pyscf.log": "<library log, empty>"
    },
    "steps": [
     {
@@ -306,6 +311,7 @@
      "trans_sum_rule": "4.013255616719391e-07",
      "vib_cm": "2f6bcf5f76f085a175ad1e7c25e079ae6d4d4cd1997beb6e13275817c7a9f871"
     },
+    "pyscf.log": "<library log, written>",
     "reference.npz": {
      "charge": "0",
      "coords_bohr": "27ea64a53b8b457a924d812b77c5ce380d912fd3ddcb7935319678f6b619f1a8",
@@ -397,6 +403,7 @@
      "trans_sum_rule": "4.013255616719391e-07",
      "vib_cm": "2f6bcf5f76f085a175ad1e7c25e079ae6d4d4cd1997beb6e13275817c7a9f871"
     },
+    "pyscf.log": "<library log, written>",
     "reference.npz": {
      "charge": "0",
      "coords_bohr": "27ea64a53b8b457a924d812b77c5ce380d912fd3ddcb7935319678f6b619f1a8",
@@ -457,6 +464,7 @@
      "trans_sum_rule": "3.8516343447980717e-07",
      "vib_cm": "ee1527ca12843d762c14deb5c175631565f6c920b37e70617e8cee6d9ec0ca37"
     },
+    "pyscf.log": "<library log, written>",
     "reference.npz": {
      "charge": "1",
      "coords_bohr": "27ea64a53b8b457a924d812b77c5ce380d912fd3ddcb7935319678f6b619f1a8",

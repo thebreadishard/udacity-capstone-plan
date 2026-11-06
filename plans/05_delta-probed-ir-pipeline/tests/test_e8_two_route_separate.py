@@ -19,7 +19,7 @@ WATER = {"symbols": ["O", "H", "H"], "coords_bohr": [[0.0, 0.0, 0.2217], [0.0, 1
 
 
 def _fake_gradient(record):
-    def gradient(symbols, coords_bohr, settings, log, check_fast=False):
+    def gradient(symbols, coords_bohr, settings, log, check_fast=False, lib_log=None):
         record.append(check_fast)
         return -76.0, np.zeros((len(symbols), 3)), np.array([0.0, 0.0, -0.76])   # energy, gradient, relaxed dipole (3 Oct 2026)
     return gradient
