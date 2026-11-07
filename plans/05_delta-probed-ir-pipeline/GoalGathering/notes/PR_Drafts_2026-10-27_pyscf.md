@@ -252,7 +252,9 @@ any test ran, and the new max_memory = 1 test fails on it (checked by putting it
 - NO's UCCSD(T) gradient (TASKS 132): already fixed on master by #3334 (lindep passed to lib.krylov); nothing to submit — a comment on our
   issue #2702 that #3334 resolves the early stop for CPHF may be worth posting, in the user's words.
 
-## Review of A (#3547), 5 Nov 2026 (15:2x) — drafted, not pushed or posted
+## Review of A (#3547), 5 Nov 2026 (15:2x) — docstring pushed 7 Nov (f7d7efe7e); the reply is the user's own
+
+7 Nov 09:1x, on the user's word ('Push de commit maar, het antwoord typ ik zelf'): commit f7d7efe7e 'Simplify the docstring of _vvvv_to_h5' on `uccsd-gamma2-outcore`, pushed to `fork`; test_uccsd.py and test_uccsd_t.py 28 passed (136 subtests); pyscf's lint.yml set clean (ruff with .ruff.toml, ruff NPY, flake8 with .flake8). The reply below is only an example: under AI_POLICY.md the user writes it, at https://github.com/pyscf/pyscf/pull/3547#discussion_r4481512339.
 
 jeanwsr approved #3546 and #3547 (14:10 / 14:16 UTC) with one comment on #3547 at `_vvvv_to_h5`'s docstring: 'comment can be simpler.'
 
