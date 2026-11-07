@@ -1,0 +1,21 @@
+{"name": "fd222a_labels",
+ "purpose": "TASKS 171, the user's option 1 of 7 Nov ('Optie 1, bereid de run spec maar voor'): part a of the 222 pool molecules (139 ids, 21-30 atoms, ids_a.tsv) on three lanes of the labels CCX53 as soon as HBC's two steps have ended, beside D_8a1c3dddb7's one lane, instead of fd222_labels waiting for both; part b (fd222b_labels) takes the other 83 on one lane after D_8a1c3dddb7. Same runner, folder and settings as fd222_labels (/root/fd222, deploy_molecules_ccx53.sh, smokes passed); memory 3 x 26,624 MB beside D_8a1c3dddb7's 26,624 MB of the 128 GB. Then fetch with the FETCHED line before the 15 Nov stop.",
+ "host": "labels",
+ "workdir": "/root/fd222",
+ "command": "CODE=/root/fd222/modules/05_support_predictor/corpus IDS_FILE=ids_a.txt LANES=3 THREADS=8 CAP_MB=26624 LABEL_ARGS='--max-memory 24000 --reuse-existing' bash probes/labels_batch_ccx53.sh /root/fd222 FDA /root/hbcf/hbc_apt_field.log '^=== \\(L5F\\) (all done|STOPPED)'",
+ "sources": [
+  {"local": "probes/labels_batch_ccx53.sh", "remote": "/root/fd222/probes/labels_batch_ccx53.sh"},
+  {"local": "probes/wsl_capped.sh", "remote": "/root/fd222/probes/wsl_capped.sh"},
+  {"local": "probes/cation_oom_check.sh", "remote": "/root/fd222/probes/cation_oom_check.sh"},
+  {"local": "probes/library_log.py", "remote": "/root/fd222/probes/library_log.py"},
+  {"local": "modules/05_support_predictor/corpus/analytic_hessians.py", "remote": "/root/fd222/modules/05_support_predictor/corpus/analytic_hessians.py"},
+  {"local": "modules/05_support_predictor/corpus/apt.py", "remote": "/root/fd222/modules/05_support_predictor/corpus/apt.py"},
+  {"local": "probes/results_m1/fd222_labels_2026-11-03/ids_a.tsv", "remote": "/root/fd222/ids_a.txt"}
+ ],
+ "progress": {"regex": "^  [A-Z0-9]+_[0-9a-f]+ (labels started|labelled|KILLED|LABELS)", "max_gap_minutes": 120,
+              "start_regex": "^=== \\(FDA\\) start: ", "heartbeat_glob": "molecules/*/pyscf.log"},
+ "marker_regex": "^=== \\(FDA\\) (start|all done|STOPPED)|^  [A-Z0-9]+_[0-9a-f]+ (KILLED|LABELS)",
+ "end_regex": "^=== \\(FDA\\) all done: 0 failures",
+ "dry_run_args": "--dry-run",
+ "threads": 24,
+ "estimate": {"hours": 137, "basis": "compute_prices.py labels (out/anchor_plan/price_labels_chain35_fd.md, 3 Nov): 523 lane-hours for the 222; part a carries 78.8 % of them at an atoms**3 cost (TASKS 74's scaling), ~412 lane-h on 3 lanes"}}
