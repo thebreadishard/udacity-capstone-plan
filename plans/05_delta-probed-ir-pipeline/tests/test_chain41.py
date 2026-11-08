@@ -80,12 +80,16 @@ def _analytic(rec: dict, hold: str, n: int, n_analytic: int, dropped: list | Non
 
 
 def test_the_analytic_re_read_takes_only_whole_sets_on_analytic_labels():
-    """TASKS 74: every molecule read on analytic labels, and the amendment's drops no longer allowed."""
+    """TASKS 74: every molecule read on analytic labels; of the 19 Oct amendment's drops only the two genuine saddle points stay out."""
     R.require_analytic([_analytic(_rec(s5=0.3), "s5", 30, 30)] * 3, "s5")
     with pytest.raises(SystemExit, match="29 of 30"):
         R.require_analytic([_analytic(_rec(s5=0.3), "s5", 30, 29)] * 3, "s5")
     with pytest.raises(SystemExit, match="lost 1"):
-        R.require_analytic([_analytic(_rec(s5=0.3), "s5", 28, 28, dropped=sorted(R.AMENDED_OUT)[:1])] * 3, "s5")
+        R.require_analytic([_analytic(_rec(s5=0.3), "s5", 29, 29, dropped=["P3_2a090cd77b"])] * 3, "s5")
+    with pytest.raises(SystemExit, match="lost 1"):
+        R.require_analytic([_analytic(_rec(s5=0.3), "s5", 29, 29, dropped=["P3_ffffffffff"])] * 3, "s5")
+    R.require_analytic([_analytic(_rec(s5=0.3), "s5", 28, 28, dropped=sorted(R.GENUINE_SADDLES))] * 3, "s5")
+    assert set(R.GENUINE_SADDLES) < set(R.AMENDED_OUT)
 
 
 def test_the_read_sets_name_every_arm_once():

@@ -22,7 +22,8 @@ Reported beside, without lines:
 Writes out/read_chain41.{json,md} under module 05 (or --out); exit 0 (a read, not a gate).
 
 --analytic is TASKS 74's re-read of the same saved models on the analytic labels of all sixty test molecules: every molecule a set reads
-carries both analytic Hessians and none may be missing, the amendment's three included (their imaginary modes were FD artefacts).
+carries both analytic Hessians and none may be missing but GENUINE_SADDLES: of the amendment's three, P3_2a090cd77b came back on its
+analytic labels; the other two keep their imaginary mode there too (the 8 Nov 2026 amendment).
 
     python probes/chain41_read.py --size <3 eval json> --fold1 <3> --fold2 <3> [--analytic --out out/read_chain41_analytic]
 """
@@ -52,9 +53,15 @@ def family_rms(records: list, hold: str) -> dict[str, float]:
 
 
 # The amendment of 19 Oct 2026 (rung C pre-registration, chain 41): these two leave the read by the loader's imaginary-mode rule (B3LYP
-# finite-difference labels; their ωB97X Hessians have none); TASKS 74's analytic re-read brings them back
+# finite-difference labels; their ωB97X Hessians have none)
 AMENDED_OUT = {"P3_086e85b2d7": "imaginary mode −53.7 cm⁻¹ in the B3LYP FD label", "P3_2aa4adcc95": "imaginary mode −28.4 cm⁻¹ in the B3LYP FD label",
                "P3_2a090cd77b": "imaginary mode −39.8 cm⁻¹ in the ωB97X FD label (s4N; methyl torsion)"}
+
+
+# The amendment of 8 Nov 2026 (TASKS 74): two of them keep their imaginary mode on the analytic B3LYP Hessian, so they are saddle points
+# of that surface at their geometries and stay out of the analytic re-read as well
+GENUINE_SADDLES = {"P3_086e85b2d7": "imaginary mode −52.4 cm⁻¹ on the analytic B3LYP Hessian (FD −53.7)",
+                   "P3_2aa4adcc95": "imaginary mode −27.3 cm⁻¹ on the analytic B3LYP Hessian (FD −28.4)"}
 
 
 def require_complete(records: list, hold: str) -> None:
@@ -67,11 +74,13 @@ def require_complete(records: list, hold: str) -> None:
 
 
 def require_analytic(records: list, hold: str) -> None:
-    """TASKS 74's re-read: no molecule missing and every molecule read on both analytic Hessians — a set partly on FD labels is not it."""
+    """TASKS 74's re-read: no molecule missing but GENUINE_SADDLES, and every molecule read on both analytic Hessians — a set partly on
+    FD labels is not it."""
     for r in records:
         e = r[hold]
-        if e.get("dropped"):
-            raise SystemExit(f"hold-out ({hold}) lost {len(e['dropped'])} molecules at evaluation ({', '.join(e['dropped'][:5])}) — not the analytic re-read")
+        dropped = [i for i in (e.get("dropped") or []) if i not in GENUINE_SADDLES]
+        if dropped:
+            raise SystemExit(f"hold-out ({hold}) lost {len(dropped)} molecules at evaluation ({', '.join(dropped[:5])}) — not the analytic re-read")
         if e.get("n_analytic") != len(e["per_molecule"]):
             raise SystemExit(f"hold-out ({hold}): {e.get('n_analytic')} of {len(e['per_molecule'])} molecules on analytic labels — not the analytic re-read")
 
@@ -154,7 +163,8 @@ def main() -> int:
     res = read(size, fold1, fold2, scaffold_of(size[0]["s5"]["per_molecule"]), half1, half2)
     res["analytic"] = a.analytic
     res["files"] = {"size": a.size, "fold1": a.fold1, "fold2": a.fold2, "fold1_half": a.fold1_half, "fold2_half": a.fold2_half}
-    kind = ("TASKS 74's analytic re-read: the same saved models, all sixty test molecules on analytic labels; the training labels unchanged"
+    kind = ("TASKS 74's analytic re-read: the same saved models, the test molecules on analytic labels but the two genuine saddle points "
+            "(8 Nov amendment); the training labels unchanged"
             if a.analytic else "registered read")
     lines = [f"# Chain 41 — five fused rings from a corpus of at most four ({kind})", "",
              f"q5 = r_S / r_K = {res['r_S']:.3f} / {res['r_K']:.3f} = **{res['q5']:.2f}** → {res['verdict']}", "",
