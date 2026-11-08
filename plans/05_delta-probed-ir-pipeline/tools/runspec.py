@@ -105,6 +105,15 @@ class Estimate(_Frozen):
 class Memory(_Frozen):
     peak_gb: float = Field(gt=0, le=64, description="the run's peak memory (all its processes, WSL included), GB")
     basis: str = Field(min_length=10, description="the measurement the peak comes from")
+    budget_word: str | None = Field(default=None, min_length=20, description="the user's word, quoted with its date, that lets this run "
+                                    f"pass the {LAPTOP_RUN_MEMORY_GB:g} GB laptop budget; such a run starts only with no other laptop run "
+                                    "in progress, and every other laptop run waits for it")
+
+    @model_validator(mode="after")
+    def _word_only_past_the_budget(self) -> Memory:
+        if self.budget_word is not None and self.peak_gb <= LAPTOP_RUN_MEMORY_GB:
+            raise ValueError(f"budget_word is for a peak past {LAPTOP_RUN_MEMORY_GB:g} GB; {self.peak_gb:g} GB fits without one")
+        return self
 
 
 class RunSpec(_Frozen):
@@ -481,18 +490,30 @@ def measured_room_problems(peak_gb: float) -> list[str]:
             f"in progress (< {FREE_COMMIT_MARGIN_GB:g} GB)"]
 
 
+def over_budget_problems(peak_gb: float, others: float) -> list[str]:
+    """A run past the budget on the user's word runs alone; its bound is the cap its command states (a WSL run's wsl_capped.sh inside the
+    VM's .wslconfig limit), as for a first run alone, which the measured free commit does not hold either."""
+    if others == 0:
+        return []
+    return [f"memory: {peak_gb:g} GB passes the {LAPTOP_RUN_MEMORY_GB:g} GB budget on the user's word and so runs alone; {others:g} GB of "
+            "laptop runs are in progress"]
+
+
 def memory_problems(spec: RunSpec, spec_dir: Path, state_dir: Path) -> list[str]:
     """Why a laptop run may not start now for memory, empty when it may: it states its measured peak, and that peak plus the peaks of the
     laptop runs in progress fits LAPTOP_RUN_MEMORY_GB. A run still waiting for its start line holds no memory yet and is not counted (the
     chains wait for one another, so one trains at a time). Beside a laptop run in progress, the measured free commit must also leave
     FREE_COMMIT_MARGIN_GB after this run's peak (the user, 21 Oct 2026: the stated peaks fitted on 20-21 Oct while the commit limit ran out,
-    the WSL VM and the rest of Windows hold memory no spec states)."""
+    the WSL VM and the rest of Windows hold memory no spec states). A run whose memory carries the user's budget_word may pass the budget
+    when it is the only laptop run in progress (the user, 8 Nov 2026, TASKS 184); its stated peak still counts against every later run."""
     if spec.host != LAPTOP:
         return []
     if spec.memory is None:
         return [f"{spec.name} states no measured peak memory (memory.peak_gb with its basis); a laptop run needs one"]
     others, unknown = laptop_runs_in_progress(spec.name, spec_dir, state_dir)
     problems = [f"laptop run {n} is in progress without a stated peak memory, so the budget cannot be checked" for n in unknown]
+    if spec.memory.budget_word is not None:
+        return problems + over_budget_problems(spec.memory.peak_gb, others)
     if others > 0 or unknown:
         problems += measured_room_problems(spec.memory.peak_gb)
     total = others + spec.memory.peak_gb

@@ -375,6 +375,37 @@ def test_a_run_in_progress_without_a_peak_blocks_the_budget(tmp_path):
     assert R.memory_problems(spec(), specs, state) == ["laptop run old is in progress without a stated peak memory, so the budget cannot be checked"]
 
 
+WORD = "the user, 8 Nov 2026: '1 en 2 akkoord' (TASKS 184)"
+
+
+def test_a_word_is_only_for_a_peak_past_the_budget():
+    assert R.Memory(peak_gb=17.0, basis="the cap wsl_capped.sh sets", budget_word=WORD).budget_word == WORD
+    with pytest.raises(ValidationError, match="fits without one"):
+        R.Memory(peak_gb=13.0, basis="the cap wsl_capped.sh sets", budget_word=WORD)
+    with pytest.raises(ValidationError, match="at least 20"):
+        R.Memory(peak_gb=17.0, basis="the cap wsl_capped.sh sets", budget_word="ok")
+
+
+def test_a_run_past_the_budget_on_the_users_word_runs_alone(tmp_path, monkeypatch):
+    specs, state = tmp_path / "specs", tmp_path / "state"
+    big = spec(name="check", memory={"peak_gb": 17.0, "basis": "the cap wsl_capped.sh sets", "budget_word": WORD})
+    assert R.memory_problems(spec(memory={"peak_gb": 17.0, "basis": "the cap wsl_capped.sh sets"}), specs, state) == [
+        "memory: 17 GB + 0 GB of laptop runs in progress = 17 GB > 13 GB"]          # without the word: refused
+    monkeypatch.setattr(R, "measure_free_commit_gb", lambda: 1.0)
+    assert R.memory_problems(big, specs, state) == []                                # alone: the stated cap is its bound
+    write_spec(specs, spec(name="training"))
+    R.save_state("training", run_state(), state)
+    assert R.memory_problems(big, specs, state) == [
+        "memory: 17 GB passes the 13 GB budget on the user's word and so runs alone; 4 GB of laptop runs are in progress"]
+
+
+def test_every_other_laptop_run_waits_for_the_run_past_the_budget(tmp_path):
+    specs, state = tmp_path / "specs", tmp_path / "state"
+    write_spec(specs, spec(name="check", memory={"peak_gb": 17.0, "basis": "the cap wsl_capped.sh sets", "budget_word": WORD}))
+    R.save_state("check", run_state(), state)
+    assert R.memory_problems(spec(), specs, state) == ["memory: 4 GB + 17 GB of laptop runs in progress = 21 GB > 13 GB"]
+
+
 def test_resume_does_not_relaunch_past_the_budget(tmp_path):
     specs, state = tmp_path / "specs", tmp_path / "state"
     write_spec(specs, spec(name="gone", resumable=True, memory={"peak_gb": 10.0, "basis": "peak working set of a test run"}))
