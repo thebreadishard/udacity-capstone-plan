@@ -25,7 +25,7 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from learning_curve_layerA import AMU2AU, FAMILIES, HARTREE2CM, molecule_features, normal_modes  # noqa: E402
+from learning_curve_layerA import AMU2AU, FAMILIES, HARTREE2CM, molecule_features, n_imaginary, normal_modes
 from learning_curve_layerA_v2_descriptors import environment_tokens  # noqa: E402
 
 
@@ -40,12 +40,6 @@ def sha256(p: Path) -> str:
 PREFER_ANALYTIC = "--prefer-analytic" in sys.argv     # 23 Sep 2026: use the pyscf second-route Hessians where both exist (corpus/analytic_hessians.py)
 USED_ANALYTIC: list = []
 _TMP: list = []
-
-
-def vib_only(freq):
-    """3N−6 vibrational entries by the corpus convention: drop the six nearest zero; imaginary stay negative."""
-    f = np.asarray(freq, float); keep = np.argsort(np.abs(f))[6:]
-    return np.sort(f[keep])
 
 
 def effective_dir(mol_dir: Path) -> Path:
@@ -79,7 +73,7 @@ def block_matrix(mol_dir: Path):
     return K.astype(np.float32), freq.astype(np.float32)
 
 
-def main():
+def main():  # noqa: PLR0915  the release builder's loop predates the size rule (TASKS 139); split at the next release build
     ap = argparse.ArgumentParser()
     ap.add_argument("molecules")
     ap.add_argument("out_prefix")
@@ -105,7 +99,7 @@ def main():
         if dd is not d:
             # 24 Sep 2026: with the analytic second route the imaginary-mode rule reads the analytic frequencies, not deck v1's finite-difference
             # counts — sixteen of the corpus's twenty imaginary modes were soft torsions flipped by grid noise (corpus README, 23 Sep)
-            n_im = {tag: int((vib_only(np.load(dd / f"hessian_{tag}.npz")["freq_cm"]) < 0).sum()) for tag in ("b3lyp", "wb97x")}
+            n_im = {tag: n_imaginary(np.load(dd / f"hessian_{tag}.npz")["freq_cm"]) for tag in ("b3lyp", "wb97x")}
         else:
             n_im = {tag: int(r.get(f"n_imaginary_{tag}", 0)) for tag in ("b3lyp", "wb97x")}
         if n_im["b3lyp"] or n_im["wb97x"]:

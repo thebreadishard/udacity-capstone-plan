@@ -67,6 +67,20 @@ def normal_modes(H, masses_amu):
     return w[keep], freq[keep], V[:, keep], Hm
 
 
+def vib_only(freq) -> np.ndarray:
+    """3N−6 vibrational entries by the corpus convention: drop the six nearest zero; imaginary stay negative."""
+    f = np.asarray(freq, float)
+    keep = np.argsort(np.abs(f))[6:]
+    return np.sort(f[keep])
+
+
+def n_imaginary(freq_cm) -> int:
+    """Imaginary modes of an analytic Hessian's 3N-long frequency list: every negative vibrational entry counts, as pyscf's
+    harmonic_analysis counts them (its freq_error) — the analytic route has no grid noise to excuse, unlike psi4_worker's FD count,
+    which starts at −10 cm⁻¹."""
+    return int((vib_only(freq_cm) < 0).sum())
+
+
 def molecule_features(mol_dir, lo=None, hi=None):
     """Per-mode tokens, first-order shift target and family labels; `lo`/`hi` are projected Cartesian Hessians that replace the psi4 files
     (29 Sep 2026: the analytic pyscf route as the low level — the mode basis and the families then follow it)."""

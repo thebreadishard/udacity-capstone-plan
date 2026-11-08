@@ -17,15 +17,18 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import e6_learning_curve as E6  # noqa: E402
 import e7_rungB_pairs as RB  # noqa: E402
 import e7_t2_sqm as T2  # noqa: E402
-from learning_curve_layerA import AMU2AU, HARTREE2CM, normal_modes  # noqa: E402
+from learning_curve_layerA import AMU2AU, HARTREE2CM, n_imaginary, normal_modes
 from sklearn.ensemble import HistGradientBoostingRegressor  # noqa: E402
 
 RING = "ring-ip"
 
 
 def substitute(m, d):
-    """Replace the psi4 FD Hessians of molecule m by the analytic ones in dir d (both functionals required); recompute everything derived."""
-    lo = np.load(d / "hessian_b3lyp_analytic.npz")["H_projected"]; hi = np.load(d / "hessian_wb97x_analytic.npz")["H_projected"]
+    """Replace the psi4 FD Hessians of molecule m by the analytic ones in dir d (both functionals required); recompute everything derived,
+    the imaginary-mode flag included: it follows the analytic frequencies, as the release reads them (8 Nov 2026, TASKS 188 — until then it
+    kept the FD counts, which dropped 12 molecules sound on the analytic route and kept 5 imaginary on it)."""
+    z_lo, z_hi = np.load(d / "hessian_b3lyp_analytic.npz"), np.load(d / "hessian_wb97x_analytic.npz")
+    lo, hi = z_lo["H_projected"], z_hi["H_projected"]
     masses = m["masses"]; w, f, V, _ = normal_modes(lo, masses)
     mm = np.repeat(masses * AMU2AU, 3); dH = hi - lo
     Km = V.T @ (dH / np.sqrt(np.outer(mm, mm))) @ V; om = np.sqrt(np.abs(w))
@@ -33,7 +36,8 @@ def substitute(m, d):
     Fl, _ = T2.to_internal(lo, m["B"]); Fh, _ = T2.to_internal(hi, m["B"])
     # families and tokens are kept from the corpus loader (same geometry; the mode order may differ slightly — the family label follows the
     # frequency and shares, which the analytic Hessian changes by < 1 cm⁻¹ for a sound molecule and by the artefact for benzene)
-    m.update(V=V, w=w, freq=f, K=K, target=np.diag(K).astype(np.float32), F_low=Fl, F_high=Fh, H_low=lo, dH_true=dH, substituted=True)
+    m.update(V=V, w=w, freq=f, K=K, target=np.diag(K).astype(np.float32), F_low=Fl, F_high=Fh, H_low=lo, dH_true=dH, substituted=True,
+             imaginary=bool(n_imaginary(z_lo["freq_cm"]) or n_imaginary(z_hi["freq_cm"])))
     fam = m["family"]
     if len(fam) != len(f):
         raise RuntimeError(f"{d.name}: mode count changed ({len(fam)} vs {len(f)})")
