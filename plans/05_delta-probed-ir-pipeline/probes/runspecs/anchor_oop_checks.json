@@ -3,7 +3,7 @@
  "purpose": "TASKS 184 (the user, 5 Nov: 'Doe beide, met een uitzondering op decision 63'): (a) pyridine CCSD(T)/cc-pVTZ gradients at its seven out-of-plane displacements, (b) benzene MP2 rows at cc-pVTZ and cc-pVQZ at its two, both in the plane frame, read by probes/anchor_oop_check.py under GoalGathering/notes/PreRegistration_2026-11-05_Anchor_CH-oop_Checks.md",
  "host": "laptop",
  "workdir": "probes/results_m1",
- "command": "MSYS_NO_PATHCONV=1 wsl -e bash /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/wsl_capped.sh 12800 -- bash /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/anchor_oop_checks.sh probes/results_m1/anchor_oop_checks_2026-11-05",
+ "command": "MSYS_NO_PATHCONV=1 wsl -e bash /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/wsl_capped.sh 12800 -- env MAX_MEMORY_MB=8500 bash /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/anchor_oop_checks.sh probes/results_m1/anchor_oop_checks_2026-11-05",
  "sources": [
   {"local": "probes/anchor_oop_checks.sh"},
   {"local": "probes/e8_cc_hessian_fd.py"},
@@ -31,7 +31,7 @@
  },
  "memory": {
   "peak_gb": 12.5,
-  "basis": "benzene's CC/TZ run peaked at 11.9 GB RSS at max_memory 10,000 MB (memory_2026-10-04*.log); probes/wsl_capped.sh stops the run at 12,800 MB; pyridine's inline (T) density check needed more (three OOM kills, 5-6 Nov) and is deferred to its own step (TASKS 185)"
+  "basis": "benzene's CC/TZ run peaked at 11.9 GB RSS at max_memory 10,000 MB (memory_2026-10-04*.log); probes/wsl_capped.sh stops the run at 12,800 MB; pyridine's inline (T) density check needed more (three OOM kills, 5-6 Nov) and is deferred to its own step (TASKS 185). 9 Nov 07:04: the cap stopped the 8th gradient (coordinate 11 m) in pyscf's rdm2 MO->AO step, which sizes its blocks by max_memory minus the ≈ 6.25 GB in use and peaked at 12.7 GB; max_memory 8,500 MB takes 1.5 GB off those blocks (the ERIs already go outcore)"
  },
  "resumable": true
 }
