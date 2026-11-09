@@ -1,0 +1,36 @@
+{
+ "name": "anchor_oop_kernel_check",
+ "purpose": "TASKS 184: the deferred two-route check of the (T) lambda and density kernels for anchor_oop_checks' pyridine CCSD(T)/cc-pVTZ gradients (e8 --two-route-check only); its passing two_route_check.json is what probes/anchor_oop_check.py needs before it reads the CC rows under GoalGathering/notes/PreRegistration_2026-11-05_Anchor_CH-oop_Checks.md",
+ "host": "laptop",
+ "workdir": "probes/results_m1",
+ "command": "MSYS_NO_PATHCONV=1 wsl -e bash /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/wsl_capped.sh 18500 -- bash /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/anchor_oop_kernel_check.sh probes/results_m1/anchor_oop_checks_2026-11-05",
+ "sources": [
+  {"local": "probes/anchor_oop_kernel_check.sh"},
+  {"local": "probes/mem_watch_wsl.sh"},
+  {"local": "probes/e8_cc_hessian_fd.py"},
+  {"local": "probes/e8_hessian_checks.py"},
+  {"local": "probes/e8_symmetry.py"},
+  {"local": "probes/qc_common.py"},
+  {"local": "probes/library_log.py"},
+  {"local": "probes/t_density_kernel/t_density_fast.py"},
+  {"local": "probes/wsl_capped.sh"}
+ ],
+ "progress": {
+  "regex": "^\\[[0-9-]+ [0-9:]+\\] |^=== \\(AOK\\) ",
+  "max_gap_minutes": 120,
+  "heartbeat_glob": "anchor_oop_checks_2026-11-05/pyridine_cc_tz/pyscf.log"
+ },
+ "marker_regex": "^=== \\(AOK\\) FAILED|Traceback|KILLED|refusing to continue",
+ "end_regex": "^=== \\(AOK\\) done",
+ "dry_run_args": "--dry-run",
+ "threads": 8,
+ "estimate": {
+  "hours": 10.0,
+  "basis": "pyridine's reference gradient at the anchor run's rate (about 1.8 h on 8 threads), its (T) lambda check 6,964 s and its density check past 4.9 h when the 12,800 MB cap stopped it (5-6 Nov, TASKS 185): about 9 h, a margin for the density check's unknown end. Silent stretches: the lambda check about 2 h and the density check 5 h or more write no line and pyscf.log does not grow (TASKS 185 (c)), so the watch raises up to three known anomalies"
+ },
+ "memory": {
+  "peak_gb": 18.5,
+  "basis": "probes/wsl_capped.sh stops the run at 18,500 MB, inside the WSL VM's 20 GB (.wslconfig, which leaves Windows 11.3 GB); the density check passed the 12,800 MB cap three times (5-6 Nov) and benzene's at cc-pVTZ (264 functions against pyridine's 250) filled the 20 GB VM on 6 Oct; mem_watch_wsl.sh logs the RSS each minute into pyridine_cc_tz/kernel_check_mem.log",
+  "budget_word": "the user, 8 Nov 2026: '1 en 2 akkoord' on the plan to 25 Nov (decision 2: the kernel check as its own step past the 13 GB laptop budget, after the anchor run)"
+ }
+}
