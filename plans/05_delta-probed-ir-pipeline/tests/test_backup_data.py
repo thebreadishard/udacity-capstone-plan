@@ -25,6 +25,20 @@ def test_psi4_logs_stay_out_of_every_source_that_can_hold_them(tmp_path, monkeyp
     assert [p.name for p in B.iter_files("probes/results_m1", excluded["probes/results_m1"])] == ["result.json"]
 
 
+def test_a_file_past_githubs_limit_stays_on_the_laptop(tmp_path, monkeypatch):
+    src = tmp_path / "plan" / "data"
+    src.mkdir(parents=True)
+    (src / "small.json").write_text("{}")
+    (src / "big.sh").write_text("x" * 11)
+    monkeypatch.setattr(B, "PLAN", tmp_path / "plan")
+    monkeypatch.setattr(B, "SOURCES", [("data", set())])
+    monkeypatch.setattr(B, "SINGLE_FILES", [])
+    monkeypatch.setattr(B, "GITHUB_FILE_LIMIT", 10)
+    pairs, n, total = B.plan_copies(tmp_path / "mirror")
+    assert [p.name for p, _ in pairs] == ["small.json"] and n == 1 and total == 2
+    assert B.plan_copies.too_large == [Path("data/big.sh")]
+
+
 def test_a_file_that_vanishes_during_the_plan_is_skipped(tmp_path, monkeypatch):
     src = tmp_path / "plan" / "data"
     src.mkdir(parents=True)

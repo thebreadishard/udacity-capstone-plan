@@ -44,6 +44,8 @@ SOURCES += [(f"{M05}/corpus/{p.name}", PSI4_LOGS)          # TASKS 43 (1), 10 Oc
             for p in sorted((PLAN / M05 / "corpus").glob("shards_*")) if p.is_dir()]   # folder is mirrored without an edit here
 SINGLE_FILES = [f"{M05}/corpus/manifest.csv", f"{M05}/corpus/ledger.csv", f"{M05}/corpus/STATUS.md"]
 EXCLUDED_SUFFIXES = {".tmp", ".lock", ".pid"}
+# GitHub refuses the whole push for one file past 100 MB (9 Nov 2026: a fetched Miniforge3.sh, 124.5 MB, ended the 02:30 backup)
+GITHUB_FILE_LIMIT = 100_000_000
 PSI4_SCRATCH = re.compile(r"^psi\.\d+\.")   # psi.<pid>.clean and friends, written and removed by a running psi4 (13 Oct 2026)
 
 
@@ -65,14 +67,20 @@ def needs_copy(src: Path, dst: Path) -> bool:
 
 def plan_copies(mirror: Path) -> tuple[list[tuple[Path, Path]], int, int]:
     """(pairs to copy, files considered, bytes considered). A file that vanishes between the listing and its stat — a running job's
-    temporary file — is skipped and counted in `plan_copies.vanished` (13 Oct 2026: one such file ended the 03:30 backup with exit 1)."""
+    temporary file — is skipped and counted in `plan_copies.vanished` (13 Oct 2026: one such file ended the 03:30 backup with exit 1).
+    A file past GITHUB_FILE_LIMIT stays on the laptop and is listed in `plan_copies.too_large`."""
     pairs, n, total = [], 0, 0
     plan_copies.vanished = 0
+    plan_copies.too_large = []
     files = [(p, p.relative_to(PLAN)) for rel, ex in SOURCES for p in iter_files(rel, ex)]
     files += [(PLAN / f, Path(f)) for f in SINGLE_FILES if (PLAN / f).is_file()]
     for src, rel in files:
         try:
-            total += src.stat().st_size
+            size = src.stat().st_size
+            if size > GITHUB_FILE_LIMIT:
+                plan_copies.too_large.append(rel)
+                continue
+            total += size
             dst = mirror / rel
             if needs_copy(src, dst):
                 pairs.append((src, dst))
@@ -101,6 +109,8 @@ def main(argv=None) -> int:
     changed = sum(s.stat().st_size for s, _ in pairs if s.exists())
     print(f"{n} files, {total / 2**20:.0f} MB considered; {len(pairs)} to copy ({changed / 2**20:.1f} MB) into {mirror}"
           + (f"; {plan_copies.vanished} vanished while listed (skipped)" if plan_copies.vanished else ""))
+    for rel in plan_copies.too_large:
+        print(f"past GitHub's {GITHUB_FILE_LIMIT / 1e6:.0f} MB file limit, stays on the laptop: {rel}")
     if a.dry_run:
         for s, _ in pairs[:10]:
             print("  ", s.relative_to(PLAN))
