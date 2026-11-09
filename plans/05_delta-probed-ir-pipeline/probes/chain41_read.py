@@ -23,7 +23,8 @@ Writes out/read_chain41.{json,md} under module 05 (or --out); exit 0 (a read, no
 
 --analytic is TASKS 74's re-read of the same saved models on the analytic labels of all sixty test molecules: every molecule a set reads
 carries both analytic Hessians and none may be missing but GENUINE_SADDLES: of the amendment's three, P3_2a090cd77b came back on its
-analytic labels; the other two keep their imaginary mode there too (the 8 Nov 2026 amendment).
+analytic labels; the other two keep their imaginary mode there too (the 8 Nov 2026 amendment), and P3_082a4af67e has one there
+that the finite-difference label lacked (amendment 2, 9 Nov).
 
     python probes/chain41_read.py --size <3 eval json> --fold1 <3> --fold2 <3> [--analytic --out out/read_chain41_analytic]
 """
@@ -61,14 +62,17 @@ AMENDED_OUT = {"P3_086e85b2d7": "imaginary mode −53.7 cm⁻¹ in the B3LYP FD 
 # The amendment of 8 Nov 2026 (TASKS 74): two of them keep their imaginary mode on the analytic B3LYP Hessian, so they are saddle points
 # of that surface at their geometries and stay out of the analytic re-read as well
 GENUINE_SADDLES = {"P3_086e85b2d7": "imaginary mode −52.4 cm⁻¹ on the analytic B3LYP Hessian (FD −53.7)",
-                   "P3_2aa4adcc95": "imaginary mode −27.3 cm⁻¹ on the analytic B3LYP Hessian (FD −28.4)"}
+                   "P3_2aa4adcc95": "imaginary mode −27.3 cm⁻¹ on the analytic B3LYP Hessian (FD −28.4)",
+                   # amendment 2 (9 Nov 2026): every negative analytic frequency counts since TASKS 188
+                   "P3_082a4af67e": "imaginary mode −4.6 cm⁻¹ on the analytic B3LYP Hessian (FD none)"}
 
 
 def require_complete(records: list, hold: str) -> None:
     """A registered test set is read whole or not at all (13 Oct 2026: the loader had silently skipped every molecule above 32 atoms); only
-    the molecules the 19 Oct amendment names may be missing."""
+    the molecules an amendment names may be missing: the 19 Oct one's, and the analytic re-read's saddle points (P3_082a4af67e has no
+    imaginary mode in its FD label, so an FD evaluation never drops it)."""
     for r in records:
-        dropped = [i for i in (r[hold].get("dropped") or []) if i not in AMENDED_OUT]
+        dropped = [i for i in (r[hold].get("dropped") or []) if i not in AMENDED_OUT and i not in GENUINE_SADDLES]
         if dropped:
             raise SystemExit(f"hold-out ({hold}) lost {len(dropped)} registered molecules at evaluation ({', '.join(dropped[:5])}) — not read")
 
@@ -163,8 +167,8 @@ def main() -> int:
     res = read(size, fold1, fold2, scaffold_of(size[0]["s5"]["per_molecule"]), half1, half2)
     res["analytic"] = a.analytic
     res["files"] = {"size": a.size, "fold1": a.fold1, "fold2": a.fold2, "fold1_half": a.fold1_half, "fold2_half": a.fold2_half}
-    kind = ("TASKS 74's analytic re-read: the same saved models, the test molecules on analytic labels but the two genuine saddle points "
-            "(8 Nov amendment); the training labels unchanged"
+    kind = ("TASKS 74's analytic re-read: the same saved models, the test molecules on analytic labels but the genuine saddle points "
+            "(amendments of 8 and 9 Nov); the training labels unchanged"
             if a.analytic else "registered read")
     lines = [f"# Chain 41 — five fused rings from a corpus of at most four ({kind})", "",
              f"q5 = r_S / r_K = {res['r_S']:.3f} / {res['r_K']:.3f} = **{res['q5']:.2f}** → {res['verdict']}", "",

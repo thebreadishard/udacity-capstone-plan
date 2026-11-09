@@ -89,7 +89,9 @@ def test_the_analytic_re_read_takes_only_whole_sets_on_analytic_labels():
     with pytest.raises(SystemExit, match="lost 1"):
         R.require_analytic([_analytic(_rec(s5=0.3), "s5", 29, 29, dropped=["P3_ffffffffff"])] * 3, "s5")
     R.require_analytic([_analytic(_rec(s5=0.3), "s5", 28, 28, dropped=sorted(R.GENUINE_SADDLES))] * 3, "s5")
-    assert set(R.GENUINE_SADDLES) < set(R.AMENDED_OUT)
+    assert set(R.GENUINE_SADDLES) - set(R.AMENDED_OUT) == {"P3_082a4af67e"}  # amendment 2: a saddle on the analytic label only
+    R.require_analytic([_analytic(_rec(s5=0.3), "s5", 13, 13, dropped=["P3_082a4af67e"])] * 3, "s5")
+    R.require_complete([_analytic(_rec(s5=0.3), "s5", 13, 13, dropped=["P3_082a4af67e"])] * 3, "s5")
 
 
 def test_the_read_sets_name_every_arm_once():

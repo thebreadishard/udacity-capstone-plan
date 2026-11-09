@@ -1,0 +1,77 @@
+{
+ "r_S": 0.4124638815712722,
+ "r_K": 0.3874751193641435,
+ "q5": 1.0644912691378374,
+ "verdict": "carries (\u2264 1.3)",
+ "control_curve": {
+  "r_K_half": 0.3945437457832463,
+  "r_K_full": 0.3874751193641435,
+  "drop": 0.007068626419102775,
+  "two_se": 0.019526482154939392,
+  "still_learning": false
+ },
+ "beside": {
+  "size_arm_s4N": 0.3075489139682201,
+  "omega_rms_s5": {
+   "size": 3.773713164157583,
+   "control": 3.171982674333438,
+   "zero_rule": 22.70623215426241
+  },
+  "family_rms_s5": {
+   "size": {
+    "CH-stretch": 3.2663800900884024,
+    "CH-oop": 4.437456323404949,
+    "ring-ip": 3.718019499878043,
+    "other": 4.678367629711523
+   },
+   "control_fold1": {
+    "CH-stretch": 1.1569120435646925,
+    "CH-oop": 3.151317938040305,
+    "ring-ip": 2.7741845629069632,
+    "other": 3.7685303663681506
+   },
+   "control_fold2": {
+    "CH-stretch": 1.3885925514356714,
+    "CH-oop": 3.524425281406605,
+    "ring-ip": 3.694943582179197,
+    "other": 4.923352440062081
+   }
+  },
+  "r_S_per_scaffold": {
+   "benzo[a]pyrene": 0.48276489012765983,
+   "benzo[e]pyrene": 0.4007297713808342,
+   "benzo[k]fluoranthene": 0.30419487826859,
+   "dibenz[a,h]anthracene": 0.3127739402558295,
+   "perylene": 0.47804988202475585,
+   "picene": 0.43092472596441694
+  }
+ },
+ "analytic": true,
+ "files": {
+  "size": [
+   "out/E7_rungC_chain41_size_eval_analytic_seed0.json",
+   "out/E7_rungC_chain41_size_eval_analytic_seed1.json",
+   "out/E7_rungC_chain41_size_eval_analytic_seed2.json"
+  ],
+  "fold1": [
+   "out/E7_rungC_chain41_control1_eval_analytic_seed0.json",
+   "out/E7_rungC_chain41_control1_eval_analytic_seed1.json",
+   "out/E7_rungC_chain41_control1_eval_analytic_seed2.json"
+  ],
+  "fold2": [
+   "out/E7_rungC_chain41_control2_eval_analytic_seed0.json",
+   "out/E7_rungC_chain41_control2_eval_analytic_seed1.json",
+   "out/E7_rungC_chain41_control2_eval_analytic_seed2.json"
+  ],
+  "fold1_half": [
+   "out/E7_rungC_chain41_control1half_eval_analytic_seed0.json",
+   "out/E7_rungC_chain41_control1half_eval_analytic_seed1.json",
+   "out/E7_rungC_chain41_control1half_eval_analytic_seed2.json"
+  ],
+  "fold2_half": [
+   "out/E7_rungC_chain41_control2half_eval_analytic_seed0.json",
+   "out/E7_rungC_chain41_control2half_eval_analytic_seed1.json",
+   "out/E7_rungC_chain41_control2half_eval_analytic_seed2.json"
+  ]
+ }
+}
