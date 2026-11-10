@@ -183,8 +183,9 @@ def test_the_probe_sums_the_heartbeat_files(tmp_path):
 # ---------------------------------------------------------------- launch and check against a stand-in shell
 
 class FakeShell:
-    def __init__(self, hosts=None, probe_out="", rc=0, sha=None):
+    def __init__(self, hosts=None, probe_out="", rc=0, sha=None, tracked=()):
         self.hosts, self.probe_out, self.rc, self.sha = hosts or {}, probe_out, rc, sha or {}
+        self.tracked_paths = set(tracked)
         self.launched = []
 
     def host_row(self, host):
@@ -196,6 +197,9 @@ class FakeShell:
         if "sha256sum" in script or script.startswith("test -d"):
             return self.rc, "workdir=ok\n" + "".join(f"{h}  {p}\n" for p, h in self.sha.items())
         return self.rc, self.probe_out
+
+    def tracked(self, paths):
+        return [p for p in paths if p in self.tracked_paths]
 
     def launch_laptop(self, s, append=False):
         self.launched.append(("laptop", s.name, append))
@@ -221,6 +225,38 @@ def test_launch_records_the_state_and_refuses_a_second_launch(tmp_path):
     assert sh.launched == [("laptop", "demo", False)] and st.started_at == T0 and st.phase_started_at == T0 and st.status == "running"
     with pytest.raises(R.LaunchRefused, match="already running"):
         R.launch(p, sh, T0, tmp_path / "state")
+
+
+def test_a_laptop_run_whose_log_git_tracks_is_not_launched(tmp_path):
+    s = spec()
+    sh = FakeShell(tracked={R.laptop_log(s)})
+    with pytest.raises(R.LaunchRefused, match=r"log probes/demo\.log is tracked by git"):
+        R.launch(write_spec(tmp_path / "specs", s), sh, T0, tmp_path / "state")
+    assert sh.launched == [] and R.load_state("demo", tmp_path / "state") is None
+
+
+def test_a_server_run_is_not_asked_about_its_log():
+    s = spec(host="box", workdir="/root/x", sources=[{"local": "tools/stamp.py", "remote": "/root/x/stamp.py"}], memory=None)
+    assert not any("tracked by git" in p for p in R.preflight(s, FakeShell(hosts={"box": ("1.2.3.4", "m")}, tracked={R.laptop_log(s)})))
+
+
+def test_git_names_the_tracked_paths_only():
+    if shutil.which("git") is None:
+        pytest.skip("git is not on PATH")
+    tracked, untracked = R.ROOT / "tools" / "runspec.py", R.ROOT / "probes" / "watch_state" / "no_such_run.log"
+    assert R.Shell().tracked([tracked, untracked]) == [tracked] and R.Shell().tracked([]) == []
+
+
+def test_the_logs_of_running_laptop_runs_are_listed_waiting_ones_included(tmp_path):
+    specs, state = tmp_path / "specs", tmp_path / "state"
+    for name in ("waiting", "ended", "never"):
+        write_spec(specs, spec(name=name))
+    write_spec(specs, spec(name="remote", host="box", workdir="/root/x", memory=None,
+                           sources=[{"local": "tools/stamp.py", "remote": "/root/x/stamp.py"}]))
+    R.save_state("waiting", run_state(phase_started_at=None), state)
+    R.save_state("ended", run_state(status="ended"), state)
+    R.save_state("remote", run_state(), state)
+    assert R.running_laptop_logs(specs, state) == [R.ROOT / "probes" / "waiting.log"]
 
 
 def test_launch_refuses_a_source_that_does_not_compile(tmp_path, monkeypatch):

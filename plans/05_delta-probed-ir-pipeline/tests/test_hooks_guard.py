@@ -57,6 +57,20 @@ def test_git_add_all(command, hit):
     assert ("git_add_all" in names(bash(command))) is hit
 
 
+@pytest.mark.parametrize("command, hit", [
+    ("git commit -q -F msg.txt", True), ("cd x && git -C repo commit -m y", True), ("git add a.py; git commit -m 'z'", True),
+    ("git status -s", False), ("git log --oneline -1", False), ("echo 'git commit'", False), ("git add a.py", False),
+])
+def test_commit_over_live_log_only_for_a_commit(command, hit):
+    assert (G.commit_over_live_log(bash(command), lambda: ["probes/results_m1/chain42.log"]) is not None) is hit
+
+
+def test_commit_over_live_log_passes_when_no_live_log_is_tracked():
+    assert G.commit_over_live_log(bash("git commit -q -F msg.txt"), lambda: []) is None
+    reason = G.commit_over_live_log(bash("git commit -m x"), lambda: ["probes/results_m1/chain42.log"])
+    assert "chain42.log" in reason and "git rm --cached" in reason
+
+
 @pytest.mark.parametrize("call, hit", [
     (bash("wsl -e bash -c 'nohup python repro_2702.py --large > l.log 2>&1 &'"), True),       # the #2702 repro
     (bash("bash tools/remote_launch.sh root@1.2.3.4 /root/x n -- 'bash run.sh'"), True),
@@ -172,7 +186,7 @@ def test_commands_reads_command_words_only():
 
 
 def test_every_rule_names_its_incident_and_a_known_decision():
-    assert len(G.RULES) == 8 and len({r.name for r in G.RULES}) == 8     # 27 Oct: clean_code_after_edit merged into lint_after_edit
+    assert len(G.RULES) == 9 and len({r.name for r in G.RULES}) == 9     # 27 Oct: clean_code_after_edit merged; 10 Nov: commit_over_live_log
     assert all(r.incident and r.decision in ("deny", "ask", "post") and r.event in ("pre", "post") for r in G.RULES)
 
 

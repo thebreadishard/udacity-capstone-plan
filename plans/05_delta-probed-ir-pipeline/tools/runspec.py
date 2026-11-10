@@ -6,7 +6,8 @@ wrapper. Here a run cannot start without saying which log lines prove progress a
 
 A run is a spec, probes/runspecs/<name>.json (committed: the launch record), and a state, probes/watch_state/runs/<name>.json (git-ignored).
   launch    refuses an invalid spec, a run already running, an unknown or re-used host, a source that does not compile or whose server copy
-            differs (sha256), a laptop run without a measured peak memory or past the laptop's memory budget, and a failed dry run; then
+            differs (sha256), a laptop run without a measured peak memory, past the laptop's memory budget or whose log git tracks, and a
+            failed dry run; then
             starts the command through the existing wrappers — tools/remote_launch.sh on a server, tools/launch_outside_app.sh on the laptop.
             Both leave <name>.log, <name>.pid and, when the command ends, <name>.exit in the workdir. Python's output is unbuffered
             (PYTHONUNBUFFERED=1), so a line printed is a line in the log.
@@ -155,6 +156,11 @@ class RunSpec(_Frozen):
 
 def load_spec(path: Path) -> RunSpec:
     return RunSpec.model_validate_json(path.read_text(encoding="utf-8"))
+
+
+def laptop_log(spec: RunSpec) -> Path:
+    """The log a laptop run writes, <workdir>/<name>.log."""
+    return ROOT / spec.workdir / f"{spec.name}.log"
 
 
 # ---------------------------------------------------------------- the state and what a check sees
@@ -354,6 +360,17 @@ class Shell:
             r = self._run([self.bash, "-c", '. "$0" && host_ssh "$1" "$2"', (TOOLS / "hosts.sh").as_posix(), host, script], timeout)
         return r.returncode, r.stdout
 
+    def tracked(self, paths: list[Path]) -> list[Path]:
+        """The paths git tracks. A tracked log is a hazard under a running job: a commit's pre-commit stash rewrites a tracked file with
+        unstaged changes, and the job writes on into the replaced file, unseen by the watch (TASKS 195, 10 Nov 2026)."""
+        if not paths:
+            return []
+        r = self._run(["git", "ls-files", "--", *(p.as_posix() for p in paths)])
+        if r.returncode != 0:
+            raise RuntimeError(f"git ls-files failed (exit {r.returncode}): {r.stderr.strip()[-300:]}")
+        listed = {(ROOT / line).resolve() for line in r.stdout.splitlines() if line}
+        return [p for p in paths if p.resolve() in listed]
+
     def launch_laptop(self, spec: RunSpec, append: bool = False) -> tuple[int, str]:
         n = shlex.quote(spec.name)
         env = RUN_ENV + (f"export OMP_NUM_THREADS={spec.threads} MKL_NUM_THREADS={spec.threads} OPENBLAS_NUM_THREADS={spec.threads}; "
@@ -453,6 +470,9 @@ def preflight(spec: RunSpec, shell: Shell) -> list[str]:
         return problems + _server_problems(spec, shell)
     if not (ROOT / spec.workdir).is_dir():
         problems.append(f"workdir {spec.workdir} does not exist")
+    if shell.tracked([laptop_log(spec)]):
+        problems.append(f"log {spec.workdir}/{spec.name}.log is tracked by git: a commit would rewrite it under the run (TASKS 195); "
+                        "`git rm --cached` it and ignore it first")
     return problems
 
 
@@ -480,6 +500,16 @@ def laptop_runs_in_progress(name: str, spec_dir: Path, state_dir: Path) -> tuple
         else:
             others += other.memory.peak_gb
     return others, unknown
+
+
+def running_laptop_logs(spec_dir: Path = SPEC_DIR, state_dir: Path = STATE_DIR) -> list[Path]:
+    """The logs of the laptop runs whose state is running, waiting ones included: each is open for writing by its job."""
+    logs = []
+    for path in sorted(spec_dir.glob("*.json")):
+        state = load_state(path.stem, state_dir)
+        if state is not None and state.status == "running" and (spec := load_spec(path)).host == LAPTOP:
+            logs.append(laptop_log(spec))
+    return logs
 
 
 def measured_room_problems(peak_gb: float) -> list[str]:
@@ -526,7 +556,7 @@ def memory_problems(spec: RunSpec, spec_dir: Path, state_dir: Path) -> list[str]
 def keep_earlier_log(spec: RunSpec, now: datetime) -> Path | None:
     """A laptop run's log from an earlier launch, renamed <name>.<launch time>.log so the new launch does not overwrite it (19 Oct 2026:
     chain 41's relaunch overwrote its history). Returns the new path, None when there was no log."""
-    log = ROOT / spec.workdir / f"{spec.name}.log"
+    log = laptop_log(spec)
     if spec.host != LAPTOP or not log.exists():
         return None
     kept = log.with_name(f"{spec.name}.{now:%Y%m%d-%H%M%S}.log")

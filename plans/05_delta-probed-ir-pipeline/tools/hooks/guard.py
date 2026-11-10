@@ -185,14 +185,36 @@ def inline_code(c: Call) -> str | None:
 
 # ---------------------------------------------------------------- 2. git add -A / commit -a
 
+def _git_args(words: list[str]) -> list[str]:
+    """A git command's arguments after `git` and `-C <dir>`; empty for another command."""
+    if words[0] != "git":
+        return []
+    return words[3:] if words[1:2] == ["-C"] else words[1:]
+
+
 def git_add_all(c: Call) -> str | None:
     for words in commands(c.command):
-        args = words[3:] if words[:2] == ["git", "-C"] else words[1:]
-        if words[0] != "git" or not args:
+        args = _git_args(words)
+        if not args:
             continue
         if (args[0] == "add" and any(a in ("-A", "--all", ".") for a in args[1:])) or (
                 args[0] == "commit" and any(a == "--all" or re.fullmatch(r"-[A-Za-z]*a[A-Za-z]*", a) for a in args[1:])):
             return "git add -A / . / commit -a: name the paths (run directories are written live; psi4 scratch is 75 MB). CLAUDE.md, Committing."
+    return None
+
+
+def _tracked_live_logs() -> list[str]:
+    import runspec  # here, not at the top: pydantic is loaded only when a commit is about to run, not before every shell call
+    return [p.relative_to(runspec.ROOT).as_posix() for p in runspec.Shell().tracked(runspec.running_laptop_logs())]
+
+
+def commit_over_live_log(c: Call, live: Callable[[], list[str]] = _tracked_live_logs) -> str | None:
+    if not any(_git_args(words)[:1] == ["commit"] for words in commands(c.command)):
+        return None
+    logs = live()
+    if logs:
+        return (f"{', '.join(logs)}: tracked by git and written by a running job. pre-commit's stash would rewrite it under the job, which "
+                "then writes into the replaced file, unseen (TASKS 195). `git rm --cached` it and ignore it, then commit.")
     return None
 
 
@@ -350,6 +372,8 @@ def edited_lines(c: Call, text: str) -> range:
 RULES = (
     Rule("inline_code", "pre", SHELLS, "deny", "3-4 Oct (3x), 15 Oct (2x): backslashes lost from code inside shell commands", inline_code),
     Rule("git_add_all", "pre", SHELLS, "deny", "CLAUDE.md: live run directories, 75 MB psi4 scratch", git_add_all),
+    Rule("commit_over_live_log", "pre", SHELLS, "deny", "10 Nov: a commit's pre-commit stash rewrote chain42.log under its runner",
+         commit_over_live_log),
     Rule("long_job_past_the_door", "pre", SHELLS, "deny", "15 Oct: #2702 repro 37 h without a progress line", long_job_past_the_door),
     Rule("watch_while_running", "pre", SHELLS + EDITS, "deny", "15 Oct: WinError 5 on watch.sh", watch_while_running),
     Rule("github_post", "pre", SHELLS, "ask", "22 Sep: GitHub replies need the user's word", github_post),

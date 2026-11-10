@@ -46,7 +46,7 @@ writing before the assertions pass — that emptied a probe script on 14 Septemb
   `check` by hand uses up one-time events the watch must see (anchors3's end, 19 Oct).
 
 ## Hooks
-`tools/hooks/guard.py` (plan 05) runs before every shell, Edit and Write call and after every edit: eight rules from incidents
+`tools/hooks/guard.py` (plan 05) runs before every shell, Edit and Write call and after every edit: nine rules from incidents
 (TASKS 64). A refused call names its rule and reason; fix the call rather than exempting it. `# hook-exempt: <reason>` is for a case the
 user asked for, and is logged.
 

@@ -81,6 +81,9 @@ plans/*/**/*.out
 plans/*/**/corpus/molecules/
 plans/*/**/*.psi4.log
 plans/*/**/worker_stdout.txt
+# a laptop run's live log (TASKS 195, 10 Nov 2026): a commit's pre-commit stash rewrote chain42.log and chain44.log under their runners;
+# runspec refuses to launch a run whose log git tracks, and tools/backup_data.py mirrors probes/results_m1 whole
+plans/*/probes/results_m1/chain*.log
 # corpus manifest snapshots, editor backups, notebook execution logs (re-runnable; the four tracked stay)
 plans/*/modules/*/corpus/manifest.csv.pre_*
 *.bak
