@@ -5,6 +5,7 @@
          same file format (cc_composite_full_check.assemble reads it unchanged). Resumable: the file is rewritten after every row, and rows
          already in it are skipped.
              python probes/dfmp2_rows.py rows --like <conventional.npz> --symbols-from <corpus geometry.json> --out <df.npz>
+         with --other-basis <basis>, the same plan at another basis (TASKS 184 (b): the QZ rows on a TZ file's plan).
          or, for a molecule without a conventional file, planned from the geometry itself as cc_composite_full_check.compute plans it
          (its symmetry-unique displacements, frozen core by the element rule, the anchors' step 0.005 bohr, spherical functions):
              python probes/dfmp2_rows.py rows --geometry <corpus geometry.json> --basis cc-pvtz --out <df.npz>
@@ -107,14 +108,16 @@ class RowsPlan:
     multiplicity: int = 1
 
 
-def plan_from_like(like_path: str, symbols_from: str) -> RowsPlan:
-    """The settings of an existing conventional row file; the corpus geometry gives the symbols and must be the same molecule."""
+def plan_from_like(like_path: str, symbols_from: str, basis: str | None = None) -> RowsPlan:
+    """Return the settings of an existing conventional row file, at `basis` when given; the corpus geometry gives the symbols and must be
+    the same molecule."""
     like = np.load(like_path)
     x0 = np.asarray(like["coords_bohr"], float)
     geometry = json.loads(Path(symbols_from).read_text(encoding="utf-8"))
     check_same_molecule(x0, np.asarray(geometry["coords_bohr"], float))
     return RowsPlan(like_path, tuple(s.capitalize() for s in geometry["symbols"]), x0, tuple(int(k) for k in like["ks"]),
-                    tuple(int(r) for r in like["reps"]), float(like["step"]), str(like["basis"]), int(like["frozen"]), bool(like["cart"]))
+                    tuple(int(r) for r in like["reps"]), float(like["step"]), str(like["basis"]) if basis is None else basis,
+                    int(like["frozen"]), bool(like["cart"]))
 
 
 def plan_from_geometry(geometry_path: str, basis: str, step: float = ANCHOR_STEP) -> RowsPlan:
@@ -136,7 +139,7 @@ def save_rows(out: Path, plan: RowsPlan, rows: dict[int, np.ndarray], method: st
 
 def run_rows(a: argparse.Namespace) -> int:
     import psi4
-    plan = plan_from_like(a.like, a.symbols_from) if a.like else plan_from_geometry(a.geometry, a.basis)
+    plan = plan_from_like(a.like, a.symbols_from, a.other_basis) if a.like else plan_from_geometry(a.geometry, a.basis)
     plan = replace(plan, charge=a.charge, multiplicity=a.multiplicity)
     out = Path(a.out)
     rows = {int(k[4:]): v for k, v in np.load(out).items() if k.startswith("row_")} if out.exists() else {}
@@ -189,6 +192,7 @@ def main(argv: list[str] | None = None) -> int:
     source.add_argument("--geometry", help="a corpus geometry.json whose own symmetry plans the rows (needs --basis)")
     rows.add_argument("--symbols-from")
     rows.add_argument("--basis")
+    rows.add_argument("--other-basis", help="with --like: the file's plan at this basis instead of its own")
     rows.add_argument("--out", required=True)
     water = sub.add_parser("water")
     water.add_argument("--out", required=True)
@@ -200,6 +204,8 @@ def main(argv: list[str] | None = None) -> int:
     a = ap.parse_args(argv)
     if a.mode == "rows" and a.like and (a.basis or not a.symbols_from):
         ap.error("--like takes its basis from the file and needs --symbols-from")
+    if a.mode == "rows" and a.other_basis and not a.like:
+        ap.error("--other-basis changes the basis of a --like plan; --geometry takes --basis")
     if a.mode == "rows" and a.geometry and (a.symbols_from or not a.basis):
         ap.error("--geometry needs --basis and takes its symbols from the geometry")
     if a.multiplicity < 1:

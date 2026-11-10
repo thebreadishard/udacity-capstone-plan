@@ -125,10 +125,19 @@ def test_the_geometry_mode_runs_on_a_symmetric_water(tmp_path, monkeypatch):
     ["--geometry", "g.json"],                                                     # no basis
     ["--geometry", "g.json", "--basis", "cc-pvtz", "--symbols-from", "g.json"],   # symbols come from the geometry
     ["--like", "a.npz", "--geometry", "g.json", "--basis", "cc-pvtz"],           # one source only
+    ["--geometry", "g.json", "--basis", "cc-pvtz", "--other-basis", "cc-pvqz"],  # --other-basis goes with --like
 ])
 def test_options_that_do_not_combine_are_refused(args):
     with pytest.raises(SystemExit):
         R.main(["rows", *args, "--out", "x.npz"])
+
+
+def test_other_basis_keeps_the_conventional_plan_at_another_basis():
+    own = R.plan_from_like(str(PYRIDINE_ROWS), str(PYRIDINE_GEOMETRY))
+    qz = R.plan_from_like(str(PYRIDINE_ROWS), str(PYRIDINE_GEOMETRY), "cc-pvqz")
+    assert qz.basis == "cc-pvqz" and own.basis != "cc-pvqz"
+    assert (qz.ks, qz.reps, qz.step, qz.frozen, qz.cart) == (own.ks, own.reps, own.step, own.frozen, own.cart)
+    assert np.array_equal(qz.coords_bohr, own.coords_bohr)
 
 
 def test_a_level_out_of_range_is_refused():

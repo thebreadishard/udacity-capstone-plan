@@ -85,6 +85,42 @@ def test_line_b_at_its_edges(rms, verdict):
     assert A.verdict_b(rms) == verdict
 
 
+def _rows_file(path: Path, basis: str, method: str | None, ks=(2, 20)) -> Path:
+    extra = {} if method is None else {"method": method}
+    np.savez(path, ks=np.array(ks), reps=np.array([0, 6]), step=0.005, basis=basis, frozen=6, cart=False, **extra)
+    return path
+
+
+def test_df_files_on_the_conventional_plan_pass_and_others_are_refused(tmp_path):
+    conv = _rows_file(tmp_path / "conv.npz", "cc-pvtz", None)
+    tz = _rows_file(tmp_path / "tz.npz", "cc-pvtz", "DF-MP2 psi4 1.10.2")
+    qz = _rows_file(tmp_path / "qz.npz", "cc-pvqz", "DF-MP2 psi4 1.10.2")
+    A.check_df_files(conv, tz, qz)
+    for bad, match in ((_rows_file(tmp_path / "b1.npz", "cc-pvqz", None), "not a DF-MP2"),
+                       (_rows_file(tmp_path / "b2.npz", "cc-pvtz", "DF-MP2 x"), "basis"),
+                       (_rows_file(tmp_path / "b3.npz", "cc-pvqz", "DF-MP2 x", ks=(2, 5)), "ks differs")):
+        with pytest.raises(SystemExit, match=match):
+            A.check_df_files(conv, tz, bad)
+
+
+def test_the_df_error_is_zero_for_equal_rows_and_refused_past_the_line():
+    rng = np.random.default_rng(3)
+    x0 = np.array([[0.0, 0.0, 0.0], [2.6, 0.0, 0.0], [0.0, 2.6, 0.0], [2.6, 2.6, 0.0]])
+    masses = np.array([12.0, 1.0, 1.0, 12.0])
+    H = _planar(4, rng)
+    H = H @ H.T                                  # positive: real frequencies
+    M = _planar(4, rng)
+    assert A.df_error_cm(H, np.eye(3), M, M, masses, x0) == 0.0
+    zi, _ = A.C.oop_indices(4)
+    M_df = M.copy()
+    M_df[np.ix_(zi, zi)] += 0.05
+    err = A.df_error_cm(H, np.eye(3), M, M_df, masses, x0)
+    assert err > A.DF_LINE_CM
+    A.require_df_line(A.DF_LINE_CM)
+    with pytest.raises(SystemExit, match="not read"):
+        A.require_df_line(err)
+
+
 def test_rows_of_unchecked_kernels_are_refused_until_the_check_passes(tmp_path):
     coords = np.zeros((2, 3))
     run = _run_dir(tmp_path, coords, {2: np.ones(6)})

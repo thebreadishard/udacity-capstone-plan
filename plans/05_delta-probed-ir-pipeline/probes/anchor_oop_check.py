@@ -10,6 +10,8 @@
     python probes/anchor_oop_check.py pin
     python probes/anchor_oop_check.py pyridine <e8 run dir> <planeframe.json> <out dir>
     python probes/anchor_oop_check.py qz <mp2 tz rows.npz> <mp2 qz rows.npz> <planeframe.json> <out dir>
+    python probes/anchor_oop_check.py qz <mp2 tz rows.npz> <df-mp2 qz rows.npz> <planeframe.json> <out dir> --df-tz <df-mp2 tz rows.npz>
+              (the 10 Nov amendment: the step DF-QZ − DF-TZ, read only when the DF check passes)
 """
 from __future__ import annotations
 
@@ -51,6 +53,9 @@ TZ_ROUTE_TOL = 1e-5                    # a.u.: the plane-frame MP2/TZ rows again
 # Registered lines: (a) the composite's CH-oop rms against the truth; (b) how far CH-oop moves past TZ.
 A_HOLDS, A_FAILS = 10.0, 20.0
 B_CONVERGED, B_NOT_TRUTH = 3.0, 10.0
+DF_LINE_CM = 0.5                       # amendment of 10 Nov: max |Δω| the DF route may add at TZ (the 20 Oct swap test's adopt line)
+DF_QZ_BASIS = "cc-pvqz"
+PLAN_KEYS = ("ks", "reps", "step", "frozen", "cart")
 
 
 # ---- the family read (test 2's)
@@ -209,13 +214,37 @@ def tz_second_route(pf: C.PlaneFrame, M_tz_r: np.ndarray, x0: np.ndarray) -> flo
     return float(np.abs(C.oop_part(T.T @ M_old @ T) - C.oop_part(M_tz_r)).max())
 
 
+def check_df_files(conv_tz: Path, df_tz: Path, df_qz: Path) -> None:
+    """Refuse DF files that are not DF-MP2 at TZ and QZ on the conventional TZ file's plan."""
+    with np.load(conv_tz) as c, np.load(df_tz) as t, np.load(df_qz) as q:
+        for name, z, basis in (("DF-TZ", t, str(c["basis"])), ("DF-QZ", q, DF_QZ_BASIS)):
+            if "method" not in z.files or not str(z["method"]).startswith("DF-MP2"):
+                raise SystemExit(f"{name}: not a DF-MP2 row file")
+            if str(z["basis"]) != basis:
+                raise SystemExit(f"{name}: basis {z['basis']}, expected {basis}")
+            for key in PLAN_KEYS:
+                if not np.array_equal(z[key], c[key]):
+                    raise SystemExit(f"{name}: {key} differs from the conventional TZ file's")
+
+
+def df_error_cm(H_tz: np.ndarray, V: np.ndarray, M_conv: np.ndarray, M_df: np.ndarray, masses: np.ndarray, x0: np.ndarray) -> float:
+    """Return the largest |Δω| the DF route adds at TZ: CC/TZ with its out-of-plane block shifted by DF-TZ − conventional TZ."""
+    shifted = C.oop_step_added(H_tz, V, M_df - M_conv)
+    return float(np.abs(C.frequencies_cm(shifted, masses, x0) - C.frequencies_cm(H_tz, masses, x0)).max())
+
+
+def require_df_line(err: float) -> None:
+    if err > DF_LINE_CM:
+        raise SystemExit(f"the DF route moves CC/TZ by {err:.2f} cm⁻¹ at TZ (line {DF_LINE_CM}): (b) is not read")
+
+
 def verdict_b(rms: float) -> str:
     if rms <= B_CONVERGED:
         return "converged"
     return "basis error" if rms <= B_NOT_TRUTH else "not the truth"
 
 
-def read_qz(tz_rows: Path, qz_rows: Path, planeframe: Path) -> dict[str, Any]:
+def read_qz(tz_rows: Path, qz_rows: Path, planeframe: Path, df_tz: Path | None = None) -> dict[str, Any]:
     pf = C.load_planeframe(planeframe)
     sym, x0, masses = C.load_geometry(C.corpus_dir(BENZENE) / "geometry.json")
     pf.check(x0)
@@ -229,13 +258,20 @@ def read_qz(tz_rows: Path, qz_rows: Path, planeframe: Path) -> dict[str, Any]:
     if route > TZ_ROUTE_TOL:
         raise SystemExit(f"the plane-frame MP2/TZ rows differ from test 2's by {route:.1e} a.u.")
     H_tz, _ = carried_hessian(BENZENE)
-    H_qz = C.oop_step_added(H_tz, pf.V, M_qz - M_tz)
+    M_base, df_err = M_tz, None
+    if df_tz is not None:
+        check_df_files(tz_rows, df_tz, qz_rows)
+        M_base, _ = C.assemble(df_tz, ops, reps, n, C.OUT_OF_PLANE)
+        df_err = df_error_cm(H_tz, pf.V, M_tz, M_base, masses, x0)
+        require_df_line(df_err)
+    H_qz = C.oop_step_added(H_tz, pf.V, M_qz - M_base)
     fam = family_read(BENZENE, H_tz, H_qz)
     wilson = ch_oop_wilson()
     modes = {"cc_tz": oop_modes_vs_goodman(H_tz, sym, x0, masses), "cc_tz_qz_step": oop_modes_vs_goodman(H_qz, sym, x0, masses)}
     goodman = {k: M._rms(np.array([r["d"] for r in v if r["wilson"] in wilson])) for k, v in modes.items()}
     check_goodman_route(goodman["cc_tz"])
     return {"families": fam, "verdict": verdict_b(fam[CH_OOP]), "spread": {"tz": s_tz, "qz": s_qz}, "tz_second_route": route,
+            "route": "conventional" if df_tz is None else "df-mp2", "df_error_cm": df_err,
             "modes": modes, "ch_oop_rms_vs_goodman": goodman}
 
 
@@ -262,6 +298,8 @@ def report_qz(r: dict[str, Any]) -> list[str]:
     lines = ["# TASKS 184 (b): how far benzene's out-of-plane modes move past cc-pVTZ (MP2/QZ − MP2/TZ step)", "",
              "Corrected-ω rms (cm⁻¹) of CC/TZ against CC/TZ + [MP2/QZ − MP2/TZ] on the out-of-plane block:", "", *family_table(r["families"]), "",
              f"**Verdict (registered line, CH-oop): {r['verdict']}.** MP2/TZ rows against test 2's, rotated: {r['tz_second_route']:.1e} a.u.", "",
+             *([] if r["df_error_cm"] is None else [f"Step by DF-MP2 (10 Nov amendment); the DF check at TZ: max |Δω| "
+                                                 f"{r['df_error_cm']:.3f} cm⁻¹ (line {DF_LINE_CM}).", ""]),
              "| irrep | Wilson | CC/TZ ω | with the QZ step | Goodman ω |", "|---|---|---|---|---|"]
     for a, b in zip(r["modes"]["cc_tz"], r["modes"]["cc_tz_qz_step"], strict=True):
         lines.append(f"| {a['irrep']} | {a['wilson']} | {a['omega']:.1f} | {b['omega']:.1f} | {a['omega_exp']:.0f} |")
@@ -287,6 +325,7 @@ def build_parser() -> argparse.ArgumentParser:
     q = sub.add_parser("qz")
     for name in ("tz_rows", "qz_rows", "planeframe", "out"):
         q.add_argument(name, type=Path)
+    q.add_argument("--df-tz", type=Path, help="DF-MP2/TZ rows: qz_rows are then DF-MP2/QZ (the 10 Nov amendment)")
     return ap
 
 
@@ -300,7 +339,7 @@ def main(argv: list[str] | None = None) -> int:
         r = read_pyridine(a.run_dir, a.planeframe, a.out)
         write_outputs(a.out, "anchor_oop_pyridine", r, report_pyridine(r))
     else:
-        r = read_qz(a.tz_rows, a.qz_rows, a.planeframe)
+        r = read_qz(a.tz_rows, a.qz_rows, a.planeframe, a.df_tz)
         write_outputs(a.out, "anchor_oop_benzene_qz", r, report_qz(r))
     return 0
 

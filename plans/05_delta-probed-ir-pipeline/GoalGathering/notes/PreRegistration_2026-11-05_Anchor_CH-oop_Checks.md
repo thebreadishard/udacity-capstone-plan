@@ -81,3 +81,18 @@ its kernel checks to a separate run (`--two-route-check separate`, reference 7,9
 makes them inline: the C kernels against pyscf's Python route on pyridine's reference gradient, before the first displaced gradient. Kept, since
 it is the second route on this molecule itself (gate 1 checks the kernels on water only), at the price of hours of a silent phase once (the watch
 sees no pyscf log growth there); the run's end moves to ≈ 7–8 Nov. Nothing else changes.
+
+## Amendment (10 November 2026, 07:1x — before any (b) number; the user: 'Oké' on option 1)
+
+(b)'s conventional MP2/cc-pVQZ gradient does not fit the laptop: on 10 Nov at 01:22 the cgroup killed it at 18.9 GB of anonymous memory in pyscf's
+'mp2 rdm1 intermediates', with max_memory 10,000 MB, and WSL has 20 GB. (b) therefore takes the step by psi4's analytic DF-MP2 gradient at both
+bases (`probes/dfmp2_rows.py`, the route adopted for the anchors' composite step on 20 Oct: water check W 4.9e-8 Eh/bohr; swap test max |Δω|
+0.42 and 0.46 cm⁻¹; upstream psi4 tests dfmp2-grad1 and dfmp2-grad5), on the plan of the conventional TZ file already computed (plane frame,
+displacements 2 and 20, step 0.005 bohr, frozen 6, spherical): DF-MP2/cc-pVTZ (cc-pvtz-jkfit / cc-pvtz-ri) and DF-MP2/cc-pVQZ (cc-pvqz-jkfit /
+cc-pvqz-ri). The step is [DF-MP2/QZ − DF-MP2/TZ].
+
+**The DF check, before the step is read.** CC/TZ with its out-of-plane block shifted by [DF-MP2/TZ − conventional MP2/TZ] against CC/TZ: max |Δω|
+≤ 0.5 cm⁻¹ (the 20 Oct adopt line). Above it (b) is not read and that is reported. The plane-frame second route (the conventional MP2/TZ rows
+against test 2's, ≤ 1e-5 a.u.) and the Goodman pin stay as registered; the read's lines and prediction do not change. Read:
+`probes/anchor_oop_check.py qz <conventional TZ rows> <DF QZ rows> <planeframe> <out> --df-tz <DF TZ rows>`; run spec `anchor_oop_dfmp2`,
+after the kernel check (it runs alone), with check W on water as its smoke.
