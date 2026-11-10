@@ -132,9 +132,13 @@ def test_options_that_do_not_combine_are_refused(args):
         R.main(["rows", *args, "--out", "x.npz"])
 
 
-def test_other_basis_keeps_the_conventional_plan_at_another_basis():
-    own = R.plan_from_like(str(PYRIDINE_ROWS), str(PYRIDINE_GEOMETRY))
-    qz = R.plan_from_like(str(PYRIDINE_ROWS), str(PYRIDINE_GEOMETRY), "cc-pvqz")
+def test_other_basis_keeps_the_conventional_plan_at_another_basis(tmp_path):
+    like = tmp_path / "conv.npz"
+    np.savez(like, ks=np.array([1, 4]), reps=np.array([0, 1]), step=0.005, basis="cc-pvtz", frozen=1, cart=False, coords_bohr=X0)
+    geometry = tmp_path / "geometry.json"
+    geometry.write_text(json.dumps({"symbols": ["O", "H", "H"], "coords_bohr": X0.tolist()}), encoding="utf-8")
+    own = R.plan_from_like(str(like), str(geometry))
+    qz = R.plan_from_like(str(like), str(geometry), "cc-pvqz")
     assert qz.basis == "cc-pvqz" and own.basis != "cc-pvqz"
     assert (qz.ks, qz.reps, qz.step, qz.frozen, qz.cart) == (own.ks, own.reps, own.step, own.frozen, own.cart)
     assert np.array_equal(qz.coords_bohr, own.coords_bohr)
