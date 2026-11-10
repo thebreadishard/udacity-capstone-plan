@@ -83,9 +83,9 @@ def fill(candidates: list[dict], manifest: list[dict], computed: set[str]) -> Fi
     return Fill(rows, held, written)
 
 
-def write(rows: list[dict], manifest_path: Path) -> Path:
-    """The manifest with the rows appended, in its own line ending; a dated copy is kept beside it."""
-    backup = manifest_path.with_name(f"{manifest_path.name}.pre_cation_fill_{time.strftime('%Y-%m-%d_%H%M')}")
+def write(rows: list[dict], manifest_path: Path, label: str = "cation_fill") -> Path:
+    """The manifest with the rows appended, in its own line ending; a dated copy named after the fill (`label`) is kept beside it."""
+    backup = manifest_path.with_name(f"{manifest_path.name}.pre_{label}_{time.strftime('%Y-%m-%d_%H%M')}")
     shutil.copy2(manifest_path, backup)
     term = "\r\n" if b"\r\n" in manifest_path.read_bytes()[:4096] else "\n"
     tmp = manifest_path.with_suffix(".csv.tmp")

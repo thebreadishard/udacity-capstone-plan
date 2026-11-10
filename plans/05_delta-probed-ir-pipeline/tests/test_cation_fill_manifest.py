@@ -86,3 +86,12 @@ def test_the_written_manifest_keeps_its_rows_its_line_ending_and_a_copy(tmp_path
     assert after.startswith(before) and after.count(b"\r\n") == 3
     with path.open(newline="", encoding="utf-8") as f:
         assert [r["layer"] for r in csv.DictReader(f)] == ["A", "P3c"]
+    assert ".pre_cation_fill_" in backup.name
+
+
+def test_the_copy_is_named_after_the_fill(tmp_path):
+    path = tmp_path / "manifest.csv"
+    with path.open("w", newline="", encoding="utf-8") as f:
+        csv.DictWriter(f, fieldnames=CF.BM.FIELDS, lineterminator="\n").writeheader()
+    backup = CF.write([_parent()], path, label="large_pah_merge")
+    assert backup.name.startswith("manifest.csv.pre_large_pah_merge_") and path.read_bytes().count(b"\n") == 2
