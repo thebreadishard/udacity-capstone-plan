@@ -42,7 +42,8 @@ def _folder(root: Path, layer: str, smiles: str, formula: str) -> str:
     mol_id = LM.LJ.mol_id(layer, skeleton)
     d = root / mol_id
     d.mkdir(parents=True)
-    geometry = {"symbols": symbols, "coords_bohr": [[x / LM.BOHR for x in atom] for atom in xyz], "charge": 0, "multiplicity": 1}
+    geometry = {"symbols": symbols, "coords_bohr": [[x / LM.BOHR_ANGSTROM for x in atom] for atom in xyz], "charge": 0,
+                "multiplicity": 1}
     job = {"id": mol_id, "layer": layer, "deck": dict(DECK, threads=8, memory_gb=24),
            "source": {"pahdb_uid": 1, "formula": formula, "name": "", "skeleton": skeleton}}
     result = {"id": mol_id, "layer": layer, "status": "done", "labels": "analytic_only", "n_imaginary_b3lyp": 0, "n_imaginary_wb97x": 0}
@@ -109,7 +110,8 @@ def test_the_selection_s_structures_are_the_frozen_test_ids():
 def test_a_checked_folder_becomes_a_done_row(tree):
     p = tree.plan()
     rows = {r["id"]: r for r in p.rows}
-    assert list(p.folders) == tree.ids and not p.rows_written and not p.folders_in_place
+    assert [i for i, _ in p.folders] == tree.ids and p.rows_written == () and p.folders_in_place == ()
+    assert all(isinstance(f, tuple) for f in (p.rows, p.folders, p.rows_written, p.folders_in_place))
     d, t = rows[tree.d_id], rows[tree.t_id]
     assert (d["layer"], d["name"], d["smiles"], d["n_heavy"], d["n_atoms"]) == ("D", "PAHdb 1 C10H8", LM.HT.canonical(NAPH), 10, 18)
     assert (t["layer"], t["name"], t["n_atoms"]) == ("T", "pyrene", 26)
@@ -131,7 +133,7 @@ def test_the_merge_writes_rows_and_whole_folders_and_a_second_run_nothing(tree, 
     assert sorted(p.name for p in tree.target.corpus.iterdir() if p.name.startswith("manifest.csv.pre_large_pah_merge_"))
     assert not (tree.target.corpus / "large_pah_merge_staging").exists()
     again = tree.plan()
-    assert not again.rows and not again.folders and again.rows_written == tree.ids and again.folders_in_place == tree.ids
+    assert not again.rows and not again.folders and again.rows_written == tuple(tree.ids) and again.folders_in_place == tuple(tree.ids)
     written = tree.target.manifest.read_bytes()
     assert LM.main(["--write"]) == 0 and tree.target.manifest.read_bytes() == written
     assert "0 rows to append (2 written already), 0 folders to copy (2 in place already)" in capsys.readouterr().out
@@ -139,7 +141,14 @@ def test_the_merge_writes_rows_and_whole_folders_and_a_second_run_nothing(tree, 
 
 def test_a_twin_in_the_manifest_stops_the_merge(tree):
     _manifest(tree.target.manifest, [{"id": "B_naph", "layer": "B", "name": "naphthalene", "smiles": "C1=CC=C2C=CC=CC2=C1", "status": "done"}])
-    with pytest.raises(ValueError, match="same molecule: B_naph"):
+    with pytest.raises(ValueError, match="manifest rows with the same molecule as a merge row: B_naph"):
+        tree.plan()
+
+
+def test_two_merge_rows_of_one_molecule_stop_the_merge(tree):
+    pyrene_in_d = _folder(tree.fetched, "D", PYRENE, "C16H10")              # a test molecule in the training layer
+    tree.ids = [*tree.ids, pyrene_in_d]
+    with pytest.raises(ValueError, match=f"merge rows that are the same molecule: {pyrene_in_d}, {tree.t_id}"):
         tree.plan()
 
 
@@ -190,6 +199,23 @@ def test_a_folder_in_the_corpus_that_is_not_ready_stops_the_merge(tree):
     (tree.target.molecules / tree.d_id).mkdir()
     with pytest.raises(ValueError, match="exists and is not ready"):
         tree.plan()
+
+
+def test_a_copy_that_fails_halfway_leaves_only_whole_folders_and_stops_the_next_copy(tree, monkeypatch):
+    p, real = tree.plan(), shutil.copytree
+
+    def copy_all_but_d(src, dst, *args, **kwargs):
+        if Path(src).name == tree.d_id:
+            raise OSError("disk full")
+        return real(src, dst, *args, **kwargs)
+
+    monkeypatch.setattr(LM.shutil, "copytree", copy_all_but_d)
+    with pytest.raises(OSError, match="disk full"):
+        LM.copy_folders(p.folders, tree.target)
+    assert [d.name for d in tree.target.molecules.iterdir()] == [tree.t_id]
+    assert LM.LR.state(str(tree.target.molecules / tree.t_id)) == "ready"
+    with pytest.raises(FileExistsError, match="interrupted merge"):
+        LM.copy_folders(tree.plan().folders, tree.target)
 
 
 def test_a_left_staging_folder_stops_the_copy(tree):

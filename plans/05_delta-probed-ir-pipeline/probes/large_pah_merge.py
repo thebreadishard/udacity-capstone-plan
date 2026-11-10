@@ -31,6 +31,7 @@ from rdkit.Chem import rdDetermineBonds
 PLAN = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PLAN / "probes"))
 sys.path.insert(0, str(PLAN / "modules" / "05_support_predictor"))
+sys.path.insert(0, str(PLAN / "src"))
 import cation_fill_manifest as CF  # noqa: E402
 import large_pah_jobs as LJ  # noqa: E402
 import large_pah_ready as LR  # noqa: E402
@@ -38,12 +39,13 @@ import large_pah_select as LS  # noqa: E402
 import pool3_candidates as P3  # noqa: E402
 from m05 import holdout_twins as HT  # noqa: E402
 
+from dpir.qff import BOHR_ANGSTROM  # noqa: E402
+
 RESULTS = PLAN / "probes" / "results_m1"
 SOURCES = ("l5b_2026-11-01", "l5b_hbc_2026-11-09", "l5b_d8a_2026-11-10")   # the three fetches of /root/l5b/molecules
 CORPUS = P3.M05 / "corpus"
-MACHINE = "ubuntu-128gb-hel1-2"                 # the labels CCX53 (tools/hosts.tsv)
+MACHINE = "ubuntu-128gb-hel1-2"   # the labels CCX53's machine-id, the pin fetch_server_full.sh checked; FETCHED.txt does not record it
 RUN_SETTINGS = ("threads", "memory_gb")         # a job's own settings; the manifest's deck hash is the deck file's
-BOHR = 0.529177210903                           # Å, CODATA 2018
 TEST_LAYER, TRAIN_LAYER = "T", "D"
 NOTE = "lever 5 size test (TASKS 49); layer {layer}; PAHdb uid {uid}; analytic labels only"
 
@@ -69,11 +71,11 @@ class Target:
 
 @dataclass(frozen=True)
 class Plan:
-    """The rows to append, the folders to copy (id → source), and the ids whose row or folder is in place already."""
-    rows: list[dict]
-    folders: dict[str, Path]
-    rows_written: list[str]
-    folders_in_place: list[str]
+    """The rows to append, the folders to copy (id, source), and the ids whose row or folder is in place already."""
+    rows: tuple[dict, ...]
+    folders: tuple[tuple[str, Path], ...]
+    rows_written: tuple[str, ...]
+    folders_in_place: tuple[str, ...]
 
 
 def default_target() -> Target:
@@ -102,7 +104,7 @@ def geometry_angstrom(folder: Path) -> tuple[list[str], list[list[float]]]:
     g = json.loads((folder / "geometry.json").read_text(encoding="utf-8"))
     if g["charge"] != 0 or g["multiplicity"] != 1:
         raise ValueError(f"{folder.name}: charge {g['charge']}, multiplicity {g['multiplicity']} — the size test is neutral closed-shell")
-    return g["symbols"], [[x * BOHR for x in atom] for atom in g["coords_bohr"]]
+    return g["symbols"], [[x * BOHR_ANGSTROM for x in atom] for atom in g["coords_bohr"]]
 
 
 def aromatic_smiles(symbols: list[str], xyz: list[list[float]]) -> str:
@@ -164,15 +166,17 @@ def manifest_row(mol_id: str, folder: Path, deck_file: Path, expected: dict[str,
 
 
 def refuse_twins(rows: list[dict], molecules: Path) -> None:
-    """No manifest row outside the merge is one of its molecules, and the trainer's twin check accepts the merged ids."""
-    ours = {r["id"] for r in rows}
+    """The merge's molecules are distinct, no manifest row outside the merge is one of them, and the trainer's twin check accepts them."""
+    new = {r["id"]: (HT.canonical(r["smiles"]), 0) for r in rows}      # charge 0: geometry_angstrom refuses any other
+    doubles = sorted(i for i, key in new.items() if list(new.values()).count(key) > 1)
+    if doubles:
+        raise ValueError(f"merge rows that are the same molecule: {', '.join(doubles)}")
     keys = HT.manifest_keys(molecules)
-    new = {r["id"]: (HT.canonical(r["smiles"]), 0) for r in rows}
-    same = sorted(i for i, key in keys.items() if i not in ours and key in set(new.values()))
-    if same or len(set(new.values())) != len(new):
-        raise ValueError(f"the merge's molecules are not all new and distinct; manifest rows with the same molecule: {', '.join(same) or 'none'}")
-    held = sorted(i for i in ours if i.startswith(TEST_LAYER + "_"))
-    found = HT.twins(sorted(ours - set(held)), held, {**keys, **new})
+    same = sorted(i for i, key in keys.items() if i not in new and key in set(new.values()))
+    if same:
+        raise ValueError(f"manifest rows with the same molecule as a merge row: {', '.join(same)}")
+    held = sorted(i for i in new if i.startswith(TEST_LAYER + "_"))
+    found = HT.twins(sorted(set(new) - set(held)), held, {**keys, **new})
     if found:
         raise ValueError(f"the twin check finds {', '.join(found)}")
 
@@ -181,7 +185,7 @@ def plan(ids: list[str], target: Target, expected: dict[str, tuple[str, str]]) -
     """Every id checked; what is still to write apart from what is in place."""
     manifest = P3.manifest_rows(target.manifest)
     by_id = {r["id"]: r for r in manifest}
-    all_rows, rows, folders, rows_written, folders_in_place = [], [], {}, [], []
+    all_rows, rows, folders, rows_written, folders_in_place = [], [], [], [], []
     for mol_id in ids:
         folder = source_folder(mol_id, target.sources)
         row = manifest_row(mol_id, folder, target.deck, expected)
@@ -198,18 +202,18 @@ def plan(ids: list[str], target: Target, expected: dict[str, tuple[str, str]]) -
                 raise ValueError(f"{mol_id}: {dst} exists and is not ready ({LR.state(str(dst))})")
             folders_in_place.append(mol_id)
         else:
-            folders[mol_id] = folder
+            folders.append((mol_id, folder))
     refuse_twins(all_rows, target.molecules)
-    return Plan(rows, folders, rows_written, folders_in_place)
+    return Plan(tuple(rows), tuple(folders), tuple(rows_written), tuple(folders_in_place))
 
 
-def copy_folders(folders: dict[str, Path], target: Target) -> None:
+def copy_folders(folders: tuple[tuple[str, Path], ...], target: Target) -> None:
     """Each folder copied beside corpus/molecules and moved in whole: a loader never sees half a molecule."""
     staging = target.corpus / "large_pah_merge_staging"
     if staging.exists():
         raise FileExistsError(f"{staging} is left from an interrupted merge: look at it and remove it first")
     staging.mkdir()
-    for mol_id, src in folders.items():
+    for mol_id, src in folders:
         shutil.copytree(src, staging / mol_id)
         if LR.state(str(staging / mol_id)) != "ready":
             raise RuntimeError(f"{mol_id}: the copy in {staging} is not ready")
