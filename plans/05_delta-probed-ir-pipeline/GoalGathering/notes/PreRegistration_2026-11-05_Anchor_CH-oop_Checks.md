@@ -97,7 +97,7 @@ against test 2's, ≤ 1e-5 a.u.) and the Goodman pin stay as registered; the rea
 `probes/anchor_oop_check.py qz <conventional TZ rows> <DF QZ rows> <planeframe> <out> --df-tz <DF TZ rows>`; run spec `anchor_oop_dfmp2`,
 after the kernel check (it runs alone), with check W on water as its smoke.
 
-## Amendment 2 (10 November 2026, 09:0x — before any (a) number; the user: 'Energieroute')
+## Amendment 2 (10 November 2026, 08:3x — before any (a) number; the user: 'Energieroute')
 
 (a)'s second route on pyridine itself was the C kernels against pyscf's Python route on the reference gradient (the correction of 5 Nov). The
 (T) lambda kernel passed on 10 Nov at 03:44 (max |kernel − pyscf| 2.3e-17, limit 1e-10). The (T) density check against pyscf's slow route does
