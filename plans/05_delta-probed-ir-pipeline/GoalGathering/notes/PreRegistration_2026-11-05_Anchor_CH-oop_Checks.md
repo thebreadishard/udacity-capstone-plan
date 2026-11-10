@@ -96,3 +96,14 @@ cc-pvqz-ri). The step is [DF-MP2/QZ − DF-MP2/TZ].
 against test 2's, ≤ 1e-5 a.u.) and the Goodman pin stay as registered; the read's lines and prediction do not change. Read:
 `probes/anchor_oop_check.py qz <conventional TZ rows> <DF QZ rows> <planeframe> <out> --df-tz <DF TZ rows>`; run spec `anchor_oop_dfmp2`,
 after the kernel check (it runs alone), with check W on water as its smoke.
+
+## Amendment 2 (10 November 2026, 09:0x — before any (a) number; the user: 'Energieroute')
+
+(a)'s second route on pyridine itself was the C kernels against pyscf's Python route on the reference gradient (the correction of 5 Nov). The
+(T) lambda kernel passed on 10 Nov at 03:44 (max |kernel − pyscf| 2.3e-17, limit 1e-10). The (T) density check against pyscf's slow route does
+not fit the laptop: the cgroup killed it four times, three times at 12,800 MB (5–6 Nov) and on 10 Nov at 08:25 at 18,500 MB (anon-rss 18.9 GB).
+The density part is therefore replaced by the energy route of `probes/e8_cc_hessian_fd.py --two-route-check energy` (built 6 Oct 2026 for
+benzene/cc-pVTZ, whose density check ran out of 20 GB): the stored reference gradient against central differences of the stored displaced
+energies, coordinate by coordinate over the seven out-of-plane displacements, limit 2e-5 a.u. (`ENERGY_GRAD_LIMIT`). It checks the gradient
+as a whole — lambda, density and contraction together — and needs no quantum chemistry. It writes `two_route_check.json` (route `energy_fd`),
+which the read of (a) requires. Above the limit (a) is not read and that is reported. The read's lines and prediction do not change.
