@@ -54,7 +54,7 @@ case $rc in
 esac
 
 counts=$(grep -oE '"n_imaginary_(b3lyp|wb97x)": [0-9]+' "$P/$REL_OUT/result.json" | tr '\n' ' ')
-[ "$(echo "$counts" | grep -oE '[0-9]+' | wc -l)" = 2 ] || { say "RUN FAILED: result.json lacks the two imaginary counts ($counts)"; exit 1; }
+[ "$(echo "$counts" | grep -oE ': [0-9]+' | wc -l)" = 2 ] || { say "RUN FAILED: result.json lacks the two imaginary counts ($counts)"; exit 1; }
 if echo "$counts" | grep -qE ': [1-9]'; then
   say "STILL IMAGINARY: $ID $counts- the registration allows one re-optimisation; the user decides"
   exit 5
