@@ -1,0 +1,73 @@
+{
+ "r0_T": 0.7665944554808931,
+ "r0_a": 0.1741944494411074,
+ "rD_T": 0.7056132914882608,
+ "q_T": 4.400797258124275,
+ "g": 0.9204518587936067,
+ "n_seeds": [
+  3,
+  3
+ ],
+ "line_1": "steep (\u2265 1.8)",
+ "line_2": "between: noted",
+ "beside": {
+  "arm 0": {
+   "a": {
+    "coupling_ratio": 0.1741944494411074,
+    "corrected_freq_rms": 2.381126459953343
+   },
+   "b": {
+    "coupling_ratio": 0.2648740998947769,
+    "corrected_freq_rms": 2.7039005056152288
+   },
+   "T": {
+    "coupling_ratio": 0.7665944554808931,
+    "corrected_freq_rms": 7.903605661127112
+   }
+  },
+  "arm D": {
+   "a": {
+    "coupling_ratio": 0.15757432847458527,
+    "corrected_freq_rms": 2.00261924586103
+   },
+   "b": {
+    "coupling_ratio": 0.24142888595226028,
+    "corrected_freq_rms": 2.5164468009780756
+   },
+   "T": {
+    "coupling_ratio": 0.7056132914882608,
+    "corrected_freq_rms": 7.785217876352703
+   }
+  }
+ },
+ "T_per_molecule_freq_rms": {
+  "T_94b3a9d13a": {
+   "arm 0": 7.748843377589595,
+   "arm D": 5.919582721432641
+  },
+  "T_2f846bd4a9": {
+   "arm 0": 5.94779119190562,
+   "arm D": 5.201837267909099
+  },
+  "T_c874e3c6cf": {
+   "arm 0": 7.498577513588927,
+   "arm D": 9.083371550600818
+  },
+  "T_76dfc434db": {
+   "arm 0": 9.193416791820374,
+   "arm D": 8.799671227687037
+  }
+ },
+ "files": {
+  "arm 0": [
+   "out/E7_rungC_chain42_arm0_eval_frozenb_seed0.json",
+   "out/E7_rungC_chain42_arm0_eval_frozenb_seed1.json",
+   "out/E7_rungC_chain42_arm0_eval_frozenb_seed2.json"
+  ],
+  "arm D": [
+   "out/E7_rungC_chain42_armD_eval_frozenb_seed0.json",
+   "out/E7_rungC_chain42_armD_eval_frozenb_seed1.json",
+   "out/E7_rungC_chain42_armD_eval_frozenb_seed2.json"
+  ]
+ }
+}
