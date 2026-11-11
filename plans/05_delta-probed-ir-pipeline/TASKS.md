@@ -45,6 +45,7 @@ longer all fit before 15 Nov ('Waiting') — → chain 44 and the carried v1.4 (
 | **Paper C: what it is, or dropped** (TASKS 190) | the handover promises its outline | the end point's wording | the 25 Nov meeting: which papers she finds useful (the user's word) |
 | **A pyscf issue or PR on `_shell_prange`** (TASKS 193) | a one-condition bug that a tight max_memory reaches | a draft with a small reproduction | any time |
 | **An MP2 QZ step on the anchors' out-of-plane block** (TASKS 194) | benzene's TZ sits 5.40 cm⁻¹ from QZ in CH-oop (10 Nov) | the registration's outcome, free laptop runs | when the order is agreed |
+| **The next step for large molecules: from pieces, by count, or both** (TASKS 199, 200) | chain 42: the network takes the four from 22.8 to 7.9 cm⁻¹ but not to 3; the mandate's spectra need one of the two | E9's proxy result (1.72 cm⁻¹); the labels' price per large molecule | when the order is agreed; the 25 Nov message to the supervisor names it |
 | **A psi4 issue on its turning grid** (TASKS 142) | parked; the evidence is indirect | a draft on the user's word | any time |
 | **The fetch record names the machine** (TASKS 197) | a merge types the server's machine-id into the manifest by hand; the 222's merge needs it too | a FETCHED line with the pinned machine-id | between fetches, before the 222's merge |
 | **Module 06's seed-2 reproduction and module 07's Vocareum key** (TASKS 20) | both modules before submission | the dated follow-up plan; the run command | before submission |
