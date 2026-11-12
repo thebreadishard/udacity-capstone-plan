@@ -58,7 +58,9 @@ from pyscf import lib  # noqa: E402
 STEPS_BOHR = (0.01, 0.02)      # the largest atomic displacement; the scan's bend reaches 0.07 bohr
 STEP_AGREEMENT_CM = 2.0
 CONTROL_TOLERANCE_CM = 2.0
-CONV_TOL = 1e-12               # tighter than the labels' 1e-11: a 15 cm-1 mode changes the projected gradient by ~3e-6 over the steps
+# The labels' 1e-11: on a 40-atom molecule the energy drifts 1-5e-11 a cycle at |g| < 1e-8 (D_ac28161d06, 12 Nov), so 1e-12 never
+# converges. The verdict reads the gradient route, held by CONV_TOL_GRAD against a ~3e-6 change over the steps.
+CONV_TOL = 1e-11
 CONV_TOL_GRAD = 1e-7
 
 
