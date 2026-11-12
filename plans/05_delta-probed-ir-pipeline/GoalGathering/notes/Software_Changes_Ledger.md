@@ -66,6 +66,7 @@ One line per change; the numbered section below the register carries every origi
 | 53 | 2026-11-01 | C | geomeTRIC 1.1.1 (`internal.py`, `PrimitiveInternalCoordinates.makePrimitives`); psi4's optking 0.5.0 (`addIntcos.py`) for comparison | at a planar three-neighbour centre geomeTRIC drops the angle of the two lowest-numbered neighbours for an out-of-plane coordinate, so the primitive set follows the atom numbers; optking keeps every bend | done |
 | 54 | 2026-11-01 | C | uutils coreutils 0.8.0 `mkdir` (WSL Ubuntu 26.04) | two concurrent `mkdir` calls on one new path can both exit 0, so a `mkdir` lock admits two holders; bash's noclobber create is exclusive; fixed upstream in 0.11.0 (#13970), Ubuntu's backport is Launchpad #2171333 | done |
 | 55 | 2026-11-04 | B | Psience 1.6.1 (McCoy group, MIT; VPT2 in Z-matrix internal coordinates) fed from our stored force fields; none of the packages we already use has it (pyscf/pyscf-forge: no VPT2; pyVPT2 0.1.2: rectilinear only) | VPT2 in curvilinear internal coordinates from a stored semi-numerical quartic force field — the methyl rotor report's option 1 (TASKS 173) | done |
+| 56 | 2026-11-12 | C | pyscf 2.14.0 / 2.15.0 (`hessian/rks.py`, `hessian/uks.py`, `df/hessian/rks.py`, `uks.py`) | the CPU DFT Hessian has no XC grid-weight derivative (pyscf#3437; #3502 only refuses the flag); on our labels a rigid translation gets ±7–24 cm⁻¹ | pr-candidate |
 
 ## Sections
 
@@ -857,6 +858,18 @@ The user marked the bug 'affects me' on 1 Nov (16:4x); the comment was not poste
 **Checks before any read.** (1) A rigid molecule (water, then benzene) gives the same fundamentals in both coordinate sets within our route noise — the two-route rule; (2) the reference implementation's published acetic-acid numbers, where the force field can be rebuilt cheaply, or the closest case we can compute; (3) the existing rectilinear result of every molecule is reproduced when the curvilinear path is switched off. The upstream test or paper each formula follows is cited in the code.
 
 **Upstream.** pyscf-forge would be the home (pyscf Hessians, new features go to forge); pyscf has no VPT2 yet, so a VPT2 module with this option is the offer. An issue drafted first, posted on the user's word. pyVPT2 (BSD-3, one maintainer, last release Sep 2024, rectilinear only) is the alternative.
+
+### 56 — pyscf's CPU DFT Hessian has no XC grid response
+
+**Group:** C, finding about third-party software; a port is a PR candidate (TASKS 202). **Date:** 2026-11-12. **Status:** pr-candidate; a question on pyscf#3437 first, only on the user's word.
+
+**What.** pyscf's CPU RKS/UKS Hessians (and their density-fitted classes) leave out the derivative of the DFT quadrature weights in the XC terms. `Hessian.grid_response` was settable and never read (pyscf#3437, 7 Sep 2026). PR #3502 (merged 14 Oct, in 2.15.0) makes `grid_response=True` raise NotImplementedError; the term itself is still missing. Only the VV10 path in `hessian/rks.py` carries weight derivatives (`get_dweight_dA` on `libdft.VXCbecke_weight_derivative`). gpu4pyscf implements the whole term behind the same flag (PR #533, Nov 2025; water/B3LYP max|H t| 3.6e-11 at every grid level, gpu4pyscf#842).
+
+**Where it bites us.** Every analytic label Hessian (pyscf 2.14.0, grid (99, 590) unpruned). Measured on `H_raw` (12 Nov): D_ac28161d06 B3LYP max|H t| 8.7e-5 Eh/bohr², rigid-translation curvature up to 10.9 cm⁻¹; ωB97X 7.0e-4, up to 24.2 cm⁻¹; benzene B3LYP 4.4e-5 (5.6 cm⁻¹), ωB97X 4.9e-4 (22.2 cm⁻¹). D_ac28161d06's B3LYP butterfly at −9.5 cm⁻¹ lies inside that noise (TASKS 49). The vibrational part of the error and the corpus-wide spread are not yet measured (TASKS 201).
+
+**Our handling.** For a decisive curvature: finite differences of analytic gradients with `grid_response=True` (pyscf's own reference in `hessian/test/test_rks.py: finite_diff`; `tools/finite_diff.py` as hardened in 2.15.0 by #3428), on 2.15.0, which also fixes saturated grid-response derivatives (#3525). No change to existing labels before TASKS 201's measurement.
+
+**Upstream.** A CPU port fits pyscf: the flag, the VV10 precedent and gpu4pyscf's implementation exist, and #3437 named the port its preferred fix. Shape in stages: a C kernel for the weights' second derivative; RKS LDA/GGA (energy second-derivative term and Fock first-derivative term), tested by translational invariance and against `finite_diff`; then meta-GGA, UKS, DF. Large (gpu4pyscf's: +2,950 lines). Before any code: CONTRIBUTING, the AI policy, and the maintainers' view on #3437.
 
 ## How to use this ledger
 
