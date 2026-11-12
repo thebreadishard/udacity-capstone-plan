@@ -67,6 +67,18 @@ def test_merge_refuses_an_id_in_two_sets():
         B.merge({"S2": part, "S2b": part})
 
 
+def test_a_selected_molecule_without_a_g_folder_is_refused():
+    with pytest.raises(ValueError, match=r"set S2: no G folder for \['A_1'\]"):
+        B.refuse_missing_g("S2", {"A_1": f"{B.NO_DIRECTORY} root/A_1/G", "A_2": "NOISY (noise rule)"})
+    B.refuse_missing_g("S2", {"A_2": "NOISY (noise rule)"})
+
+
+def test_the_exclusion_report_keeps_the_g_reason():
+    part = {"excluded_g": {"A_2": "NOISY (noise rule)"}, "excluded_x": {"A_2": "no directory x/A_2/X", "A_3": "no directory x/A_3/X"}}
+    assert B.exclusion_report({"S2": part}) == {"A_2": "S2: G: NOISY (noise rule); X: no directory x/A_2/X",
+                                              "A_3": "S2: X: no directory x/A_3/X"}
+
+
 def test_read_sets_refuses_malformed_lists(tmp_path):
     ok = {k: str(tmp_path) for k in B.SET_KEYS} | {"name": "S2", "selection": str(tmp_path / "sel.json")}
     (tmp_path / "sel.json").write_text("{}", encoding="utf-8")

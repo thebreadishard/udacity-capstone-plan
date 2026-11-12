@@ -32,7 +32,7 @@ import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-from s2_read import FAMILIES, LINE_LICENSE, N_SUBSETS, ReadOptions, curve, extrapolate, fit_predict, load_selection, write_atomic  # noqa: E402
+from s2_read import FAMILIES, LINE_LICENSE, N_SUBSETS, NO_DIRECTORY, ReadOptions, curve, extrapolate, fit_predict, load_selection, write_atomic  # noqa: E402
 from s2_search import Config, configs, nested  # noqa: E402
 from s2_xtb_read import MIN_OVERLAP, X2_GRID, build, config_predictor, load_modes, predict_x1, x0_read  # noqa: E402
 
@@ -92,9 +92,28 @@ def read_sets(path: str) -> list[ComputedSet]:
 def load_set(s: ComputedSet) -> dict[str, Any]:
     """A set's G molecules by scaffold (with the search's features), its xtb molecules by id, and both exclusion lists."""
     g_by_scaf, used, excluded_g = load_selection(s.root, s.selection, ReadOptions(setting="G", extra=s.extra, gvpt2_dir=s.gvpt2_dir, features=True))
+    refuse_missing_g(s.name, excluded_g)
     x_by_scaf, _, excluded_x = load_selection(s.xtb_root, s.selection, ReadOptions(setting="X", gvpt2_dir=s.xtb_gvpt2_dir))
     return {"g": g_by_scaf, "x": {m["id"]: m for ms in x_by_scaf.values() for m in ms}, "used": used,
             "excluded_g": excluded_g, "excluded_x": excluded_x}
+
+
+def refuse_missing_g(name: str, excluded_g: dict[str, str]) -> None:
+    """Refuse a set whose selected molecule has no G folder: such a molecule was computed elsewhere and belongs in the set's 'extra'
+    (S2's benzene lives in S1's folder; a read without it silently lost one molecule on 12 Nov)."""
+    missing = sorted(i for i, why in excluded_g.items() if why.startswith(NO_DIRECTORY))
+    if missing:
+        raise ValueError(f"set {name}: no G folder for {missing} - give each by the set's 'extra' (sets.json)")
+
+
+def exclusion_report(parts: dict[str, dict[str, Any]]) -> dict[str, str]:
+    """Every excluded id with its set and both reasons: the G reason (the registration's noise rule) is the one that decides."""
+    out = {}
+    for name, p in parts.items():
+        for i in sorted({*p["excluded_g"], *p["excluded_x"]}):
+            why = [f"{side}: {p[key][i]}" for side, key in (("G", "excluded_g"), ("X", "excluded_x")) if i in p[key]]
+            out[i] = f"{name}: " + "; ".join(why)
+    return out
 
 
 def merge(parts: dict[str, dict[str, Any]]) -> tuple[dict[str, list[dict]], dict[str, dict]]:
@@ -237,7 +256,7 @@ def main() -> int:
     g_by_scaf, x_by_id = merge(parts)
     dirs = {m["id"]: (m["dir"], x_by_id[m["id"]]["dir"]) for ms in g_by_scaf.values() for m in ms if m["id"] in x_by_id}
     modes = load_modes(dirs)
-    excluded = {i: f"{name}: {w}" for name, p in parts.items() for i, w in {**p["excluded_g"], **p["excluded_x"]}.items()}
+    excluded = exclusion_report(parts)
     res: dict[str, Any] = {"registration": "PreRegistration_2026-10-19_S2b_Learning_Curve.md", "sets": list(parts),
                            "molecules": sum(len(p["used"]) for p in parts.values()), "scaffolds": len(g_by_scaf), "excluded": excluded, "scopes": {}}
     for scope in READ_SCOPES:

@@ -309,6 +309,9 @@ def options_from_args(a) -> ReadOptions:
                        gvpt2_dir=vars(a).get("gvpt2_dir"), scope=vars(a).get("scope", "all"))
 
 
+NO_DIRECTORY = "no directory"   # the exclusion reason of a selected molecule whose folder is absent (a setup error, not a property)
+
+
 def load_selection(root, selection_path, options: ReadOptions = ReadOptions()):  # noqa: B008  a frozen dataclass is an immutable default
     """The selected molecules grouped by scaffold, the used ones listed and the excluded ones with their reason (the registration's noise
     rule), read as `options` say."""
@@ -319,7 +322,7 @@ def load_selection(root, selection_path, options: ReadOptions = ReadOptions()): 
     for m in sel:
         d = extra.get(m["id"], os.path.join(root, m["id"], setting))
         gfile = os.path.join(gvpt2_dir, f"{m['id']}.json") if gvpt2_dir else None
-        rec, why = load_molecule(d, gfile, features) if os.path.isdir(d) else (None, f"no directory {d}")
+        rec, why = load_molecule(d, gfile, features) if os.path.isdir(d) else (None, f"{NO_DIRECTORY} {d}")
         if rec is None:
             excluded[m["id"]] = why
             continue
