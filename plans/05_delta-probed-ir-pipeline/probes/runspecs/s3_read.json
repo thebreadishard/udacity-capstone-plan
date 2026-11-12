@@ -1,0 +1,13 @@
+{"name": "s3_read",
+ "purpose": "TASKS 53: S3's registered read (PreRegistration_2026-11-02_S3_Route_A_Transfer.md, 'Read'; probes/s3_read.py): S2's and S2b's models, fitted once on all training molecules (S2b's read's sets.json and s2b_read.json, unchanged), predict tetracene's and coronene's window modes. Target inputs by probes/s3_read_inputs.sh (GVPT2 labels G and X, solver sha256 937c176f as S2's and S2b's). The user, 12 Nov: 'start S3 na stap 2 alvast' - it waits for TASKS 201 step 2's end",
+ "host": "laptop",
+ "workdir": "probes/results_m1/s3_read_2026-11-12",
+ "command": "bash ../../wait_then_run.sh ../hessian_grf_step2.log '^=== \\(GRF\\) (done|RUN FAILED|STOPPED)' -- bash ../../s3_read.sh",
+ "sources": [{"local": "probes/s3_read.py"}, {"local": "probes/s2b_read.py"}, {"local": "probes/s2_read.py"}, {"local": "probes/s2_search.py"},
+             {"local": "probes/s2_xtb_read.py"}, {"local": "probes/s3_read_inputs.sh"}, {"local": "probes/s3_read.sh"}, {"local": "probes/wait_then_run.sh"}],
+ "progress": {"regex": "^\\(S3R\\) |^=== \\(S3R\\) ", "max_gap_minutes": 120, "start_regex": "^=== \\(WAIT\\) condition met"},
+ "marker_regex": "^=== \\(S3R\\) (start|done)|^=== \\(WAIT\\) condition met",
+ "end_regex": "^=== \\(S3R\\) done",
+ "threads": 4,
+ "estimate": {"hours": 1, "basis": "a guess: every model is fitted once on the 37 training molecules (S2b's read searched and drew curves, 3 h); plus the wait for step 2 (about 2 h)"},
+ "memory": {"peak_gb": 3.0, "basis": "an estimate, not capped: S2b's read's own (one CPU python with torch, the molecules' mode arrays under 100 MB)"}}

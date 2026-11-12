@@ -1,0 +1,4 @@
+[
+ {"name": "S3 targets", "root": "probes/results_m1/routea_server_2026-11-10/routea", "selection": "probes/results_m1/s3_read_2026-11-12/selection.json", "gvpt2_dir": "probes/results_m1/s3_read_2026-11-12/gvpt2", "xtb_root": "probes/results_m1/routea_2026-11-02/xtb",
+  "xtb_gvpt2_dir": "probes/results_m1/s3_read_2026-11-12/gvpt2_x", "extra": {}}
+]
