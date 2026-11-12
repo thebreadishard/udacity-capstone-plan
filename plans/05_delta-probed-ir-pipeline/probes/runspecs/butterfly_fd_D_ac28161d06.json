@@ -14,5 +14,5 @@
  "dry_run_args": "--dry-run",
  "threads": 8,
  "estimate": {"hours": 3, "basis": "10 SCFs (5 per grid) with two gradients each; the scan's SCFs took 250 s at (99,590) and 516 s at (150,974) from the previous density (11 Nov), and the grid-response gradient is not yet timed on this molecule: about 7 and 15 min per point"},
- "memory": {"peak_gb": 9.0, "basis": "a bound: probes/wsl_capped.sh stops the step at 9216 MB (CAP_MB; pyscf max_memory 8632); the scan's SCFs ran under a 12288 MB cap"},
+ "memory": {"peak_gb": 12.0, "basis": "a bound: probes/wsl_capped.sh stops the step at 12288 MB (CAP_MB; pyscf max_memory 6144); the grid-response gradient on (150,974) reached the old 9216 MB cap (OOM 12 Nov 10:50)"},
  "resumable": true}

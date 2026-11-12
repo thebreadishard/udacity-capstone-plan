@@ -9,9 +9,11 @@ PW=/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline
 P=$(cd "$(dirname "$0")/.." && pwd)
 REL_IN=modules/05_support_predictor/corpus/reoptimised_2026-11-11/$ID
 REL_OUT=probes/results_m1/butterfly_fd_${ID}_2026-11-12
-CAP_MB=${CAP_MB:-9216}
+CAP_MB=${CAP_MB:-12288}
 THREADS=${THREADS:-8}
-PYSCF_MB=${PYSCF_MB:-$((CAP_MB - 584))}   # pyscf's max_memory, below the cap, as butterfly_scan.sh
+# pyscf's max_memory at half the cap: the grid-response gradient holds arrays outside it (OOM at 9.2 GB on (150,974), cap 9216,
+# max_memory 8632; 12 Nov)
+PYSCF_MB=${PYSCF_MB:-$((CAP_MB / 2))}
 say() { echo "=== (BFD) $* $(date '+%F %T')"; }
 
 [ -f "$P/$REL_IN/geometry.json" ] && [ -f "$P/$REL_IN/hessian_b3lyp_analytic.npz" ] || { say "STOPPED: $REL_IN lacks geometry or Hessian"; exit 1; }
