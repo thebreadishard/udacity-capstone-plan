@@ -74,4 +74,4 @@ trainer's own order for every pool size), N known only on the merged corpus. Spe
 
 ## Note (12 Nov 2026, 21:3x) — closed without running
 
-The user, 8 Nov: chain 44 does not run; the projected and the ridge target are a categorical of the v1.4 search instead (`GoalGathering/notes/Design_2026-10-26_DeltaH_v1.4_Recipe_and_Search.md` §10), saving ≈ 36 laptop hours. No arm was trained; the prediction above stays unread. Its armed runner still waits for a gate line (`chain44_gate.log`, 'merged corpus reviewed') that nothing will write; stopping it is the user's.
+The user, 8 Nov: chain 44 does not run; the projected and the ridge target are a categorical of the v1.4 search instead (`GoalGathering/notes/Design_2026-10-26_DeltaH_v1.4_Recipe_and_Search.md` §10), saving ≈ 36 laptop hours. No arm was trained; the prediction above stays unread. Its armed runner waited for a gate line (`chain44_gate.log`, 'merged corpus reviewed') that nothing would write; stopped on the user's word (12 Nov 21:39).
