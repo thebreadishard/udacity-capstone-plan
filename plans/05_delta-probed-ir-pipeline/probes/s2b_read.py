@@ -23,6 +23,7 @@ import argparse
 import json
 import os
 import sys
+import time
 from collections import Counter
 from dataclasses import dataclass, field
 from typing import Any
@@ -183,13 +184,22 @@ def family_verdict(model_rows: dict[str, dict], full_set: dict[str, float]) -> d
     return out
 
 
+def progress(message: str) -> None:
+    """One flushed progress line: the run spec's proof that the read moves (its stages take minutes to hours)."""
+    print(f"(S2BR) {message} {time.strftime('%Y-%m-%d %H:%M:%S')}", flush=True)
+
+
 def read_scope(by_scaf: dict[str, list[dict]], plan: ReadPlan) -> dict[str, Any]:
     """Every read of one scope's molecules and the per-family verdicts."""
     x0 = x0_read(by_scaf)
+    progress("x0 done")
     x2 = nested(by_scaf, X2_GRID)
+    progress("x2 nested done")
     search = nested(by_scaf, list(plan.search_configs))
+    progress("search nested done")
     choice = x2_choice(x2)
     fam_curves = curves(by_scaf, choice, plan)
+    progress("curves done")
     verdicts = {}
     for fa, model_rows in fam_curves.items():
         full_set = {"x0": x0.get(fa, {}).get("rms", np.nan), **{m: r["all"]["r"] for m, r in model_rows.items() if m != "x2*"},
@@ -232,6 +242,7 @@ def main() -> int:
                            "molecules": sum(len(p["used"]) for p in parts.values()), "scaffolds": len(g_by_scaf), "excluded": excluded, "scopes": {}}
     for scope in READ_SCOPES:
         by_scaf, counts = build(g_by_scaf, x_by_id, modes, scope)
+        progress(f"scope {scope}: {len(by_scaf)} scaffolds")
         if len(by_scaf) < 2:
             raise SystemExit(f"scope {scope}: {len(by_scaf)} scaffold(s) with xtb partners — no leave-one-scaffold-out read")
         res["scopes"][scope] = {"counts": counts, "scaffolds": len(by_scaf), "read": read_scope(by_scaf, plan)}

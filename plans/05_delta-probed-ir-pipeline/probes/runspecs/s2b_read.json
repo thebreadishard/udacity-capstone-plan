@@ -1,0 +1,13 @@
+{"name": "s2b_read",
+ "purpose": "TASKS 53: S2b's registered read (PreRegistration_2026-10-19_S2b_Learning_Curve.md, 'Read'; probes/s2b_read.py) on S2 and S2b together, once the 23 S2b xtb force fields were in (12 Nov 01:42; the user, 11 Nov: the read waits for the two missing ones). Inputs by probes/s2b_read_inputs.sh: GVPT2 labels G and X of the 23 S2b molecules (solver sha256 937c176f, as S2's) and sets.json",
+ "host": "laptop",
+ "workdir": "probes/results_m1/s2b_read_2026-11-12",
+ "command": "echo \"=== (S2BR) start $(date '+%F %T')\" && cd ../../.. && PYTHONUTF8=1 python probes/s2b_read.py --sets probes/results_m1/s2b_read_2026-11-12/sets.json --out probes/results_m1/s2b_read_2026-11-12/read && echo \"=== (S2BR) done $(date '+%F %T')\"",
+ "sources": [{"local": "probes/s2b_read.py"}, {"local": "probes/s2_read.py"}, {"local": "probes/s2_search.py"}, {"local": "probes/s2_xtb_read.py"},
+             {"local": "probes/s2b_read_inputs.sh"}],
+ "progress": {"regex": "^\\(S2BR\\) |^=== \\(S2BR\\) ", "max_gap_minutes": 120},
+ "marker_regex": "^=== \\(S2BR\\) (start|done)",
+ "end_regex": "^=== \\(S2BR\\) done",
+ "threads": 4,
+ "estimate": {"hours": 3, "basis": "a lower bound: a foreground try on the laptop (12 Nov 02:2x) had not finished after 9 min 40 s; the nested search trains the network per fold and the curves draw 20 subsets per k for four models in two scopes"},
+ "memory": {"peak_gb": 3.0, "basis": "an estimate, not capped: one CPU python with torch (this laptop's rung C trainer processes hold 1.5-2.5 GB) and the 37 molecules' mode arrays (under 100 MB)"}}
