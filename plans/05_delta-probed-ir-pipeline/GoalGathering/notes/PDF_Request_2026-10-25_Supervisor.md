@@ -29,10 +29,7 @@ Hollenstein 1990 — 10.1080/00268979000102091
 Zhang 1996 — 10.1126/science.274.5287.582
 Maltseva 2016 — 10.3847/0004-637X/831/1/58
 Oomens 2000 — 10.1086/309545
-Large PAHs from fragments (added 11 Nov 2026; the first three asked of the supervisor by app on 11 Nov)
-Crisci 2026 — 10.1063/5.0343929
-Barone 2026 (JCTC 22, 7326) — 10.1021/acs.jctc.6c00816
-Barone 2026 (JPCL 17, 10555) — 10.1021/acs.jpclett.6c02504
+Large PAHs from fragments (added 11 Nov 2026; Crisci 2026 and Barone 2026 JCTC/JPCL received from the supervisor 12 Nov, in Papers/)
 Di Grande 2024 (JCTC 20, 9243) — 10.1021/acs.jctc.4c00900
 Barone 2026 (JCP 164, 114309) — 10.1063/5.0313437
 Sharma 2025 — 10.1063/5.0271469
