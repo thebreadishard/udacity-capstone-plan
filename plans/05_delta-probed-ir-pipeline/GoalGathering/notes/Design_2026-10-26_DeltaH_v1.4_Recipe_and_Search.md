@@ -142,3 +142,7 @@ Wednesday: chain 35's read → code (§7) → chain 44 if kept → v1.4 stage 1 
    the trainer's per-molecule record carries no per-family diagonal.
 5. **The code** (branch `v14-search-code`, merged after chain 35): `--weight-decay`, `--selection-split`, `probes/promotion_read.py`
    (shared with chain 35's read), `probes/v14_search.py`; the stage chains and runspecs are written by the reads themselves.
+
+## 10. Amendment, 12 Nov 2026, 21:3x — the target is a categorical of the search (before the frozen list is written)
+
+The user, 8 Nov ('bij 3 de verkorte route'): no separate chain 44; projected and ridge become a categorical of the search (§8's option (b)). `probes/v14_search.py`: the control keeps the carried target (projected); a second one-factor ablation, `c02_control_target`, is the control with the ridge target (`--aux-target ls`); each drawn configuration takes its target by a fair coin of its own generator (seed 20261027), so every other drawn value is what it was (tested); the drawn configurations are named from c03. The list is 27 configurations (stage 1 ≈ 54 h). `plan` no longer takes `--target`. Stage 2's target check stays: the winner is also trained with the other target (three seeds), so the choice is checked at the winning hyperparameters. The search runs on the corpus with the 222's labels merged (TASKS 171).

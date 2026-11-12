@@ -71,3 +71,7 @@ couplings (d ≈ 0.02–0.04); line 2 met. Less likely (one in three): flat, as 
 
 'Half of the pool' in setting C is `rungC_train --sizes half`, i.e. the first ⌊N/2⌋ molecules of the size-split pool in its hash order (the
 trainer's own order for every pool size), N known only on the merged corpus. Spec: `probes/runs/chain44.json`. No line changes.
+
+## Note (12 Nov 2026, 21:3x) — closed without running
+
+The user, 8 Nov: chain 44 does not run; the projected and the ridge target are a categorical of the v1.4 search instead (`GoalGathering/notes/Design_2026-10-26_DeltaH_v1.4_Recipe_and_Search.md` §10), saving ≈ 36 laptop hours. No arm was trained; the prediction above stays unread. Its armed runner still waits for a gate line (`chain44_gate.log`, 'merged corpus reviewed') that nothing will write; stopping it is the user's.

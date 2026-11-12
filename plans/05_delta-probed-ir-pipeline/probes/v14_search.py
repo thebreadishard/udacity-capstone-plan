@@ -1,7 +1,8 @@
 """Version 1.4's hyperparameter search (registration GoalGathering/notes/Design_2026-10-26_DeltaH_v1.4_Recipe_and_Search.md, §4–§5).
 
-    python probes/v14_search.py plan --target projected|ls --carried-models <3 .pt>
-                                       the frozen list (control, its parity variant, 24 drawn), the carried version named, stage 1's chain
+    python probes/v14_search.py plan --carried-models <3 .pt>
+                                       the frozen list (control, its parity and target variants, 24 drawn), the carried version named,
+                                       stage 1's chain
     python probes/v14_search.py read1  stage 1 scored on the selection set; stage 2's chain (best four + control)
     python probes/v14_search.py read2  the winner (no-worsening rule, two SE); the final chain
     python probes/v14_search.py read3  the target check and the promotion against the carried version
@@ -9,7 +10,8 @@
 Selection uses only the selection set (`rungC_train.py --selection-split`, whole scaffold cores, never trained); the hold-outs are read once,
 for the winner and the carried version, in the final chain. A configuration's score per seed is the mean of the five read-outs on the
 selection set, each divided by its line (the families' diagonal rms by 3 cm⁻¹, the coupling ratio by 0.25). The parity-odd factor and rung B's
-pair features do not combine (`rungC_config`), so the search draws one or the other. Paths are relative to module 05 unless named otherwise.
+pair features do not combine (`rungC_config`), so the search draws one or the other; the target (projected or ridge) is drawn the same way
+(the user, 8 Nov 2026: a categorical of the search instead of chain 44). Paths are relative to module 05 unless named otherwise.
 """
 from __future__ import annotations
 
@@ -47,11 +49,14 @@ SPACE = {"lr": (1e-4, 1e-3), "weight_decay": (1e-5, 1e-3), "kring_weight": (0.1,
          "body_width": (64, 96, 128), "body_blocks": (3, 4), "hybrid_hidden": (128, 256, 512)}
 LOG_RANGES = ("lr", "weight_decay", "kring_weight", "kdiag_weight")
 TARGETS = ("projected", "ls")
+CARRIED_TARGET = "projected"                 # the carried recipe's (RECIPE_V11 has no --aux-target)
+TARGET_SEED = SEARCH_SEED + 1                # the target's own coin: adding it left every other drawn value as it was
 
 
 @dataclass(frozen=True)
 class Config:
-    """One point of the search. `parity` True = the parity-odd factor without rung B's pair features; False = the pair features (carried)."""
+    """One point of the search. `parity` True = the parity-odd factor without rung B's pair features; False = the pair features (carried).
+    `target` is one of TARGETS (projected = the carried one)."""
     name: str
     lr: float
     weight_decay: float
@@ -69,30 +74,33 @@ def _recipe_value(flag: str) -> str:
     return r[r.index(flag) + 1]
 
 
-def control(target: str) -> Config:
-    """The carried recipe's values (RECIPE_V11, the trainer's weight decay and body size), with the target of chain 44's read."""
+def control() -> Config:
+    """The carried recipe: RECIPE_V11's values, the trainer's weight decay and body size, the carried target."""
     return Config("c00_control", float(_recipe_value("--lr")), WEIGHT_DECAY, N_S, N_BLOCKS, int(_recipe_value("--hybrid-hidden")),
-                  float(_recipe_value("--kring-weight")), float(_recipe_value("--kdiag-weight")), parity=False, target=target)
+                  float(_recipe_value("--kring-weight")), float(_recipe_value("--kdiag-weight")), parity=False, target=CARRIED_TARGET)
 
 
 def _three_digits(x: float) -> float:
     return float(f"{x:.3g}")
 
 
-def draw(target: str, n: int = N_DRAWN, seed: int = SEARCH_SEED) -> list[Config]:
-    """n configurations drawn once from SPACE (log-uniform on the log ranges, uniform choices), the parity variant by a fair coin."""
-    rng = np.random.default_rng(seed)
+def draw(n: int = N_DRAWN, seed: int = SEARCH_SEED, target_seed: int = TARGET_SEED) -> list[Config]:
+    """n configurations drawn once from SPACE (log-uniform on the log ranges, uniform choices), the parity variant by a fair coin and the
+    target by a fair coin of its own generator."""
+    rng, coin = np.random.default_rng(seed), np.random.default_rng(target_seed)
     out = []
     for k in range(n):
         v = {name: _three_digits(10 ** rng.uniform(math.log10(SPACE[name][0]), math.log10(SPACE[name][1]))) for name in LOG_RANGES}
         v |= {name: int(rng.choice(SPACE[name])) for name in ("body_width", "body_blocks", "hybrid_hidden")}
-        out.append(Config(f"c{k + 2:02d}", parity=bool(rng.random() < 0.5), target=target, **v))
+        out.append(Config(f"c{k + 3:02d}", parity=bool(rng.random() < 0.5), target=TARGETS[int(coin.random() < 0.5)], **v))
     return out
 
 
-def frozen_list(target: str) -> list[Config]:
-    c = control(target)
-    return [c, replace(c, name="c01_control_parity", parity=True), *draw(target)]
+def frozen_list() -> list[Config]:
+    """The control, its two one-factor ablations (the parity factor; the other target) and the drawn configurations."""
+    c = control()
+    other = next(t for t in TARGETS if t != CARRIED_TARGET)
+    return [c, replace(c, name="c01_control_parity", parity=True), replace(c, name="c02_control_target", target=other), *draw()]
 
 
 def _flags(flags: list[str]) -> dict[str, str | None]:
@@ -222,11 +230,11 @@ def cation_line(reads: list[SeedRead]) -> str:
 
 
 # -------------------------------------------------------------------------------------------------------------------------------- commands
-def cmd_plan(target: str, carried_models: list[str]) -> int:
+def cmd_plan(carried_models: list[str]) -> int:
     missing = [m for m in carried_models if not (M05 / m).is_file()]
     if missing:
         raise SystemExit(f"--carried-models: not found under module 05: {missing}")
-    configs = frozen_list(target)
+    configs = frozen_list()
     sha = canonical_sha(configs)
     write_new(M05 / OUT / "configs.json", {"search_seed": SEARCH_SEED, "selection_split": SELECTION, "pool_layers": POOL_LAYERS,
                                            "epoch_cap": EPOCH_CAP, "space": SPACE, "configs": [asdict(c) for c in configs], "sha256": sha,
@@ -382,14 +390,13 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     sub = ap.add_subparsers(dest="cmd", required=True)
     plan = sub.add_parser("plan")
-    plan.add_argument("--target", choices=TARGETS, required=True, help="the target chain 44's read chose")
     plan.add_argument("--carried-models", nargs=3, required=True, help="the carried version's three checkpoints, relative to module 05")
     sub.add_parser("read1")
     sub.add_parser("read2")
     sub.add_parser("read3")
     a = ap.parse_args(argv)
     if a.cmd == "plan":
-        return cmd_plan(a.target, a.carried_models)
+        return cmd_plan(a.carried_models)
     if a.cmd == "read1":
         return cmd_read1()
     if a.cmd == "read2":
