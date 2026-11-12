@@ -67,6 +67,7 @@ One line per change; the numbered section below the register carries every origi
 | 54 | 2026-11-01 | C | uutils coreutils 0.8.0 `mkdir` (WSL Ubuntu 26.04) | two concurrent `mkdir` calls on one new path can both exit 0, so a `mkdir` lock admits two holders; bash's noclobber create is exclusive; fixed upstream in 0.11.0 (#13970), Ubuntu's backport is Launchpad #2171333 | done |
 | 55 | 2026-11-04 | B | Psience 1.6.1 (McCoy group, MIT; VPT2 in Z-matrix internal coordinates) fed from our stored force fields; none of the packages we already use has it (pyscf/pyscf-forge: no VPT2; pyVPT2 0.1.2: rectilinear only) | VPT2 in curvilinear internal coordinates from a stored semi-numerical quartic force field — the methyl rotor report's option 1 (TASKS 173) | done |
 | 56 | 2026-11-12 | C | pyscf 2.14.0 / 2.15.0 (`hessian/rks.py`, `hessian/uks.py`, `df/hessian/rks.py`, `uks.py`) | the CPU DFT Hessian has no XC grid-weight derivative (pyscf#3437; #3502 only refuses the flag); on our labels a rigid translation gets ±7–24 cm⁻¹ | pr-candidate |
+| 57 | 2026-11-12 | A+C | pyscf 2.15.0 `grad/rks.py` (`get_vxc_full_response`, `grids_response_becke`); ours `corpus/grid_response_blocked.py` | the grid-response gradient evaluates each atom's whole grid at once and ignores max_memory; OOM above 12 GB at (150, 974) on 38 atoms; our blocked version equals pyscf's to 1e-10 | in use; pr-candidate |
 
 ## Sections
 
@@ -870,6 +871,18 @@ The user marked the bug 'affects me' on 1 Nov (16:4x); the comment was not poste
 **Our handling.** For a decisive curvature: finite differences of analytic gradients with `grid_response=True` (pyscf's own reference in `hessian/test/test_rks.py: finite_diff`; `tools/finite_diff.py` as hardened in 2.15.0 by #3428), on 2.15.0, which also fixes saturated grid-response derivatives (#3525). No change to existing labels before TASKS 201's measurement.
 
 **Upstream.** A CPU port fits pyscf: the flag, the VV10 precedent and gpu4pyscf's implementation exist, and #3437 named the port its preferred fix. Shape in stages: a C kernel for the weights' second derivative; RKS LDA/GGA (energy second-derivative term and Fock first-derivative term), tested by translational invariance and against `finite_diff`; then meta-GGA, UKS, DF. Large (gpu4pyscf's: +2,950 lines). Before any code: CONTRIBUTING, the AI policy, and the maintainers' view on #3437.
+
+### 57 — pyscf's grid-response gradient is not blocked over grid points
+
+**Group:** A (our module) and C (finding about pyscf). **Date:** 2026-11-12. **Status:** in use in `probes/butterfly_fd.py`; a PR candidate beside row 56 (TASKS 202), only on the user's word.
+
+**What.** pyscf 2.15.0 `grad/rks.py` `get_vxc_full_response` loops over `grids_response_cc(grids)`, one item per atom, and calls `eval_ao` (deriv 2 for a GGA) on all of that atom's grid points; `grids_response_becke` builds `dpbecke` (natm, natm, 3, ngrid) on the same points. Neither looks at max_memory. At an unpruned (150, 974) grid one atom has 146,100 points: for D_ac28161d06 (38 atoms, nao 388, 6-31G*) about 4.5 GB for the AO array and 5.1 GB for `dpbecke` (estimates from the shapes).
+
+**Where it bit us.** TASKS 49's option 3, the grid-response gradients at (150, 974): the cgroup OOM killer at 9,216 MB (10:50) and at 12,288 MB (11:08) on 12 Nov, both at the first fine-grid gradient.
+
+**Our change.** `modules/05_support_predictor/corpus/grid_response_blocked.py`: the same partition code (pyscf's, Apache-2.0, line for line) and the same sums, with each atom's grid split into blocks sized from max_memory (`block_size`); `blocked_grid_response()` swaps it in for pyscf's function inside a `with` block. LDA and GGA, closed shell, Becke and Stratmann partitions; anything else raises. `tests/test_grid_response_blocked.py` (6 passed, pyscf 2.15.0): the gradient against pyscf's on displaced water at (50, 194), B3LYP and LDA, with one block per atom and with blocks of BLKSIZE = 56, max difference < 1e-10 Eh/bohr; the weights and weight derivatives per atom against `grids_response_cc` within 1e-14.
+
+**Upstream.** A small, self-contained PR: block the per-atom loop in `get_vxc_full_response` (and the UKS, MGGA and NLC variants) by max_memory, as `get_vxc` already does through `block_loop`. It belongs with row 56's port, which needs the same blocking.
 
 ## How to use this ledger
 

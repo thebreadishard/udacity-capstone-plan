@@ -52,6 +52,7 @@ from analytic_hessians import (  # noqa: E402  (the corpus code lives in the mod
     software,
 )
 from butterfly_scan import FINE_GRID, LABEL_GRID, write_json  # noqa: E402
+from grid_response_blocked import blocked_grid_response  # noqa: E402
 from library_log import PYSCF_LOG_NAME  # noqa: E402
 from pyscf import lib  # noqa: E402
 
@@ -162,7 +163,9 @@ def point_record(geometry: dict, coords: np.ndarray, cfg: FdConfig, grid: tuple[
     if not mf.converged:
         raise RuntimeError(f"SCF not converged at grid {grid}")
     # nuc_grad_method imports the gradient module itself; mf.Gradients exists only once pyscf.grad.rks is imported (it failed 12 Nov 08:13)
-    with_response = mf.nuc_grad_method().set(grid_response=True).kernel()
+    # pyscf's grid response holds each atom's whole grid at once (OOM at (150,974), 12 Nov); the blocked one gives the same gradient
+    with blocked_grid_response():
+        with_response = mf.nuc_grad_method().set(grid_response=True).kernel()
     without = mf.nuc_grad_method().set(grid_response=False).kernel()
     return {"energy_hartree": float(energy), "gradient": np.asarray(with_response).tolist(),
             "gradient_no_grid_response": np.asarray(without).tolist()}, mf.make_rdm1()
