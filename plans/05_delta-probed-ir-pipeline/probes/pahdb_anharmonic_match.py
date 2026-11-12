@@ -80,6 +80,7 @@ def summary(m: dict[str, Any]) -> dict[str, Any]:
 
 def our_fundamentals(setting: Path) -> tuple[np.ndarray, list[str]]:
     """GVPT2 fundamentals as probes/gvpt2_labels.py computes them, and every mode's D2h label."""
+    from e8_symmetry import degenerate_pairs
     from gvpt2_labels import gvpt2
     from hot_band_desk_naphthalene import characters, classify
     from s1_anharmonic_level import harmonic_modes
@@ -91,7 +92,8 @@ def our_fundamentals(setting: Path) -> tuple[np.ndarray, list[str]]:
     with open(setting / "ref.json", encoding="utf-8") as fh:
         mol = json.load(fh)["molecule"]
     labels = classify(characters(mol["symbols"], np.array(mol["geometry"], float).reshape(-1, 3), q))
-    nu = gvpt2(arrays["omega_cm"], arrays["phi_ijk"], arrays["phi_iijj_sym"], B, zeta)["nu_gvpt2"]
+    pairs = degenerate_pairs(mol["symbols"], np.array(mol["geometry"], float).reshape(-1, 3), q)
+    nu = gvpt2(arrays["omega_cm"], arrays["phi_ijk"], arrays["phi_iijj"], B, zeta, pairs)["nu_gvpt2"]
     return np.asarray(nu, float), labels
 
 

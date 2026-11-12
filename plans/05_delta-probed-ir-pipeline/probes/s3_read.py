@@ -5,14 +5,14 @@ shift carry from S2's and S2b's small molecules to tetracene and coronene?
 
 <sets.json> and <targets.json> are lists of computed sets as probes/s2b_read.py reads them; the training molecules and the targets go
 through the same loader in S2b's main scope. Every model is fitted once on all training molecules and predicts the targets' window modes;
-a degenerate pair (ω within PAIR_TOL) counts once, as the mean of its two members' truth and prediction. Per family, pooled over the
-targets: the verdict model is S2b's best curve model for the family; transfer holds when its rms is ≤ LINE_LICENSE and below (c)'s; a
+a symmetry pair (amendment 6: the point group's pair named in the target's label file) counts once, as the mean of its two members'
+truth and prediction. Per family, pooled over the targets: the verdict model is S2b's best curve model for the family; transfer holds
+when its rms is ≤ LINE_LICENSE and below (c)'s; a
 family with fewer than MIN_MODES target modes gets no verdict. The size penalty divides the target rms by that model's rms at 'all' in S2b.
 """
 from __future__ import annotations
 
 import argparse
-import itertools
 import json
 import os
 import sys
@@ -28,7 +28,7 @@ from s2_xtb_read import X2_GRID, build, config_predictor, load_modes, predict_x1
 from s2b_read import READ_SCOPES, load_set, merge, read_sets  # noqa: E402
 
 MAIN_SCOPE = READ_SCOPES[0]
-PAIR_TOL = 0.5          # cm⁻¹: two window modes this close are one degenerate pair
+PAIR_MATCH_CM = 1e-6    # a label file's pair frequency names the scoped mode with the same harmonic ω (both read from one report)
 MIN_MODES = 6           # target modes of a family below which no verdict is read
 MODELS = ("c", "b", "x1", "x2*", "x0")
 
@@ -48,28 +48,30 @@ def predictors(x2_config_name: str | None) -> dict[str, Predictor]:
     return out
 
 
-def pair_groups(omega: np.ndarray, tol: float = PAIR_TOL) -> list[np.ndarray]:
-    """Indices of the modes, grouped so that a mode within tol of its neighbour in ω shares its group; a group of more than two is refused."""
-    order = np.argsort(omega)
-    groups, current = [], [order[0]] if len(order) else []
-    for i, j in itertools.pairwise(order):
-        if omega[j] - omega[i] <= tol:
-            current.append(j)
-        else:
-            groups.append(np.array(current))
-            current = [j]
-    if current:
-        groups.append(np.array(current))
-    big = [g for g in groups if len(g) > 2]
-    if big:
-        raise ValueError(f"{len(big)} group(s) of more than two modes within {tol} cm⁻¹: ω {[omega[g].round(2).tolist() for g in big]}")
+def pair_groups(omega: np.ndarray, pair_omega: list[tuple[float, float]]) -> list[np.ndarray]:
+    """Indices of the modes in ω order, each symmetry pair (given by its two harmonic frequencies, from the label file) as one group; a pair
+    with one member outside the modes leaves the other alone."""
+    paired: dict[int, int] = {}
+    for wa, wb in pair_omega:
+        ia, ib = (np.flatnonzero(np.isclose(omega, w_, rtol=0.0, atol=PAIR_MATCH_CM)) for w_ in (wa, wb))
+        if len(ia) > 1 or len(ib) > 1:
+            raise ValueError(f"pair ({wa:.3f}, {wb:.3f}) matches more than one mode per member")
+        if len(ia) and len(ib):
+            paired[int(ia[0])], paired[int(ib[0])] = int(ib[0]), int(ia[0])
+    groups, seen = [], set()
+    for i in np.argsort(omega):
+        if int(i) in seen:
+            continue
+        g = sorted({int(i), paired.get(int(i), int(i))})
+        seen.update(g)
+        groups.append(np.array(g))
     return groups
 
 
-def target_rows(train: dict, test: dict, models: dict[str, Predictor]) -> dict[str, Any]:
-    """One target's window modes with truth and every model's prediction, its degenerate pairs collapsed to their means."""
+def target_rows(train: dict, test: dict, models: dict[str, Predictor], pair_omega: list[tuple[float, float]]) -> dict[str, Any]:
+    """One target's window modes with truth and every model's prediction, its symmetry pairs collapsed to their means."""
     preds = {name: np.asarray(p(train, test), float) for name, p in models.items()}
-    groups = pair_groups(test["omega"])
+    groups = pair_groups(test["omega"], pair_omega)
     fam = []
     for g in groups:
         kinds = set(test["family"][g])
@@ -121,7 +123,7 @@ def family_read(rows: dict[str, dict[str, Any]], verdicts: dict[str, dict[str, A
     return out
 
 
-def read_targets(train_by_scaf: dict, targets_by_scaf: dict, s2b_main: dict[str, Any]) -> dict[str, Any]:
+def read_targets(train_by_scaf: dict, targets_by_scaf: dict, s2b_main: dict[str, Any], notes: dict[str, dict[str, Any]]) -> dict[str, Any]:
     """Every target's rows with each family's models (x2* at S2b's choice for the family), then the per-family read."""
     train = concat([m for ms in train_by_scaf.values() for m in ms])
     verdicts, choice = s2b_main["verdicts"], s2b_main.get("x2_choice", {})
@@ -129,7 +131,8 @@ def read_targets(train_by_scaf: dict, targets_by_scaf: dict, s2b_main: dict[str,
     for mols in targets_by_scaf.values():
         for m in mols:
             test = concat([m])
-            per_family = {fa: target_rows(train, test, predictors(choice.get(fa))) for fa in FAMILIES}
+            pair_omega = notes[m["id"]]["pair_omega"]
+            per_family = {fa: target_rows(train, test, predictors(choice.get(fa)), pair_omega) for fa in FAMILIES}
             base = per_family[FAMILIES[0]]
             pred = {name: base["pred"][name].copy() for name in MODELS if name != "x2*" and name in base["pred"]}
             pred["x2*"] = np.full(len(base["truth"]), np.nan)
@@ -162,8 +165,11 @@ def label_notes(sets_path: str) -> dict[str, dict[str, Any]]:
             if name.endswith(".json"):
                 with open(os.path.join(s.gvpt2_dir, name), encoding="utf-8") as fh:
                     g = json.load(fh)
+                if "degenerate_pairs" not in g:
+                    raise ValueError(f"{name}: a label without degenerate_pairs predates amendment 6; relabel with probes/gvpt2_labels.py")
                 notes[g["id"]] = {"moved": g["moved"], "skipped_degenerate": g["skipped_degenerate"],
-                                  "polyad_bridges": g["polyad_bridges"]}
+                                  "polyad_bridges": g["polyad_bridges"], "degenerate_pairs": g["degenerate_pairs"],
+                                  "pair_omega": [[g["omega"][i], g["omega"][j]] for i, j in g["degenerate_pairs"]]}
     return notes
 
 
@@ -190,11 +196,12 @@ def main() -> int:
     targets_by_scaf, target_counts, excl_targets = load_scope(a.targets)
     if not targets_by_scaf:
         raise SystemExit("no target with a G label and an xtb force field: nothing to read")
-    read = read_targets(train_by_scaf, targets_by_scaf, s2b_main)
+    notes = label_notes(a.targets)
+    read = read_targets(train_by_scaf, targets_by_scaf, s2b_main, notes)
     res = {"registration": "PreRegistration_2026-11-02_S3_Route_A_Transfer.md", "scope": MAIN_SCOPE,
            "targets": sorted(read["rows"]), "training_scaffolds": len(train_by_scaf), "counts": {"train": train_counts, "targets": target_counts},
            "excluded": {**excl_train, **excl_targets}, "pairs": {t: r["pairs"] for t, r in read["rows"].items()},
-           "label_notes": label_notes(a.targets),
+           "label_notes": notes,
            "read": {"families": read["families"],
                     "rows": {t: {"omega": r["omega"], "family": r["family"], "truth": r["truth"], "pred": r["pred"]} for t, r in read["rows"].items()}}}
     os.makedirs(a.out, exist_ok=True)

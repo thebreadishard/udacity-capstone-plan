@@ -19,20 +19,22 @@ def _rec(omega, family, delta, xtb=None, mol_id="t"):
             "o": np.zeros(len(omega)), "xtb": np.asarray(delta if xtb is None else xtb, float)}
 
 
-def test_pairs_collapse_and_triples_are_refused():
-    groups = S.pair_groups(np.array([1000.0, 1000.3, 1200.0, 1500.0, 1500.4]))
-    assert sorted(len(g) for g in groups) == [1, 2, 2]
-    with pytest.raises(ValueError, match="more than two"):
-        S.pair_groups(np.array([900.0, 900.2, 900.4]))
+def test_symmetry_pairs_collapse_and_close_neighbours_do_not():
+    omega = np.array([1000.0, 1000.3, 1200.0, 1500.0, 1500.9])
+    groups = S.pair_groups(omega, [(1500.0, 1500.9), (1000.3, 2400.0)])      # a split pair kept; a pair with a member outside the modes
+    assert [g.tolist() for g in groups] == [[0], [1], [2], [3, 4]]
+    assert [len(g) for g in S.pair_groups(omega, [])] == [1] * 5               # neighbours within 0.5 cm-1 are not a pair by themselves
+    with pytest.raises(ValueError, match="more than one mode"):
+        S.pair_groups(np.array([900.0, 900.0, 950.0]), [(900.0, 950.0)])
 
 
 def test_target_rows_average_a_pair_and_refuse_one_across_families():
     test = _rec([800.0, 800.2, 1300.0], ["CH-oop", "CH-oop", "ring-ip"], [-4.0, -6.0, -10.0])
     models = {"c": lambda tr, te: np.array([1.0, 3.0, 5.0])}
-    r = S.target_rows({}, test, models)
+    r = S.target_rows({}, test, models, [(800.0, 800.2)])
     assert r["pairs"] == 1 and np.allclose(r["truth"], [-5.0, -10.0]) and np.allclose(r["pred"]["c"], [2.0, 5.0])
     with pytest.raises(ValueError, match="spans families"):
-        S.target_rows({}, _rec([800.0, 800.2], ["CH-oop", "ring-ip"], [0.0, 0.0]), models)
+        S.target_rows({}, _rec([800.0, 800.2], ["CH-oop", "ring-ip"], [0.0, 0.0]), models, [(800.0, 800.2)])
 
 
 def _rows(n, err_b, err_c, family="ring-ip", mol="t"):
@@ -72,7 +74,7 @@ def test_read_targets_end_to_end_with_x2_chosen_for_one_family(monkeypatch):
     targets = {"tetracene": [_rec(om, fams, -0.01 * om, mol_id="tetracene")]}
     s2b = {"verdicts": {"CH-oop": {"best_curve_model": "x2*", "rms_at_all": 1.0}, "ring-ip": {"best_curve_model": "b", "rms_at_all": 1.0}},
            "x2_choice": {"CH-oop": S.X2_GRID[0].name}}
-    res = S.read_targets(train, targets, s2b)
+    res = S.read_targets(train, targets, s2b, {"tetracene": {"pair_omega": [(1800.0, 1800.3)]}})
     row = res["rows"]["tetracene"]
     assert row["pairs"] == 1 and len(row["truth"]) == 13
     assert np.all(np.isfinite(row["pred"]["x2*"][row["family"] == "CH-oop"])) and np.all(np.isnan(row["pred"]["x2*"][row["family"] == "ring-ip"]))

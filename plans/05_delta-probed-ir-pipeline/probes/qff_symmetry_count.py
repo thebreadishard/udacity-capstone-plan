@@ -26,7 +26,7 @@ import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-from e8_symmetry import BOHR, point_group_ops  # noqa: E402
+from e8_symmetry import BOHR, point_group_ops, rep_matrices, symmetrize  # noqa: E402
 from s1_anharmonic_level import external_basis  # noqa: E402
 
 SELECTION = os.path.join(HERE, "results_m1", "large_labels_price_2026-10-12", "selection.json")
@@ -64,24 +64,6 @@ def tetracene_ideal():
     xyz = [(x, y, 0.0) for x, y in uniq] + [(x, y, 0.0) for x, y in hs]
     assert len(uniq) == 18 and len(hs) == 12
     return ["C"] * 18 + ["H"] * 12, np.array(xyz) / BOHR
-
-
-def rep_matrices(ops, n):
-    D = []
-    for R, p in ops:
-        M = np.zeros((3 * n, 3 * n))
-        for i in range(n):
-            M[3 * p[i]:3 * p[i] + 3, 3 * i:3 * i + 3] = R
-        D.append(M)
-    return D
-
-
-def symmetrize(symbols, x_bohr):
-    """The geometry averaged over its group (x_i ← mean_g R_gᵀ x_perm_g(i)): an optimised geometry is symmetric only to its convergence, and
-    the classification below needs exact invariance (benzene's corpus geometry gave 0 totally symmetric modes and a split pair without it)."""
-    x = np.asarray(x_bohr, float) - np.asarray(x_bohr, float).mean(0)
-    ops = point_group_ops(symbols, x)
-    return np.mean([np.array([R.T @ x[p[i]] for i in range(len(x))]) for R, p in ops], axis=0)
 
 
 def count(symbols, x_bohr, seed=0):

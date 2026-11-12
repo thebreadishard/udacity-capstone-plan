@@ -10,8 +10,9 @@ atoms onto same-element atoms with the same pairwise distances (Kabsch), kept wh
 tolerance; for planar molecules the reflection through the plane and its products are added. No character tables, no labels — only what the
 reconstruction needs.
 
-Functions: point_group_ops, orbits, unique_displacements, reconstruct, self_check. Validation: python e8_symmetry.py --validate (benzene's 72
-CCSD(T) gradients → 12; naphthalene's analytic B3LYP Hessian from the corpus → 30 rows; both must reproduce the full matrix).
+Functions: point_group_ops, rep_matrices, symmetrize, degenerate_pairs, orbits, unique_displacements, reconstruct, self_check.
+Validation: python e8_symmetry.py --validate (benzene's 72 CCSD(T) gradients → 12; naphthalene's analytic B3LYP Hessian from the
+corpus → 30 rows; both must reproduce the full matrix).
 """
 import argparse
 import itertools
@@ -184,6 +185,60 @@ def self_check(H, ops, n):
             M[3 * p[k]:3 * p[k] + 3, 3 * k:3 * k + 3] = R
         worst = max(worst, float(np.abs(H - M @ H @ M.T).max()))
     return worst
+
+
+
+ORBIT_PLANE_MIN = 0.5   # a mode's images span a plane when their second singular value is at least this fraction of the first
+PAIR_WEIGHT_MIN = 0.5   # a mode carries a pair when at least this much of its norm lies in the pair's plane
+
+
+def rep_matrices(ops: list, n: int) -> list[np.ndarray]:
+    """The 3n × 3n Cartesian representation matrix of every operation (R, perm)."""
+    D = []
+    for R, p in ops:
+        M = np.zeros((3 * n, 3 * n))
+        for i in range(n):
+            M[3 * p[i]:3 * p[i] + 3, 3 * i:3 * i + 3] = R
+        D.append(M)
+    return D
+
+
+def symmetrize(symbols: list[str], x_bohr: np.ndarray) -> np.ndarray:
+    """The geometry averaged over its group (x_i <- mean_g R_g^T x_perm_g(i)): an optimised geometry is symmetric only to its convergence, and
+    a classification by the group needs exact invariance (benzene's corpus geometry gave 0 totally symmetric modes and a split pair without it)."""
+    x = np.asarray(x_bohr, float) - np.asarray(x_bohr, float).mean(0)
+    ops = point_group_ops(symbols, x)
+    return np.mean([np.array([R.T @ x[p[i]] for i in range(len(x))]) for R, p in ops], axis=0)
+
+
+def degenerate_pairs(symbols: list[str], coords_bohr: np.ndarray, q: np.ndarray) -> list[tuple[int, int]]:
+    """The mode pairs (a, b), a < b, that span a two-dimensional irreducible representation of the molecule's point group.
+
+    q (3n x M) holds the mass-weighted normal modes in columns. A mode's images under the group span one direction when it belongs to a
+    one-dimensional representation and a plane when it belongs to a two-dimensional one; its partner is the other mode that lies in that plane.
+    Degeneracy is a property of the group, not of a frequency gap: an asymmetric top has no pair however close two of its modes lie, and a
+    symmetric top's pair counts as one however far the quadrature has split it. Raises when an orbit spans more than a plane, a plane is not
+    carried by a second mode, or two modes do not name each other."""
+    x = symmetrize(symbols, coords_bohr)
+    D = rep_matrices(point_group_ops(symbols, x, tol=1e-6), len(symbols))
+    partner: dict[int, int] = {}
+    for i in range(q.shape[1]):
+        U, s, _ = np.linalg.svd(np.array([d @ q[:, i] for d in D]).T, full_matrices=False)
+        if len(s) < 2 or s[1] < ORBIT_PLANE_MIN * s[0]:
+            continue
+        if len(s) > 2 and s[2] > ORBIT_PLANE_MIN * s[0]:
+            raise ValueError(f"mode {i}'s images span more than a plane: irreducible representations above dimension two are not handled")
+        overlap = ((U[:, :2].T @ q) ** 2).sum(0)
+        overlap[i] = 0.0
+        j = int(np.argmax(overlap))
+        if overlap[j] < PAIR_WEIGHT_MIN:
+            raise ValueError(f"mode {i}'s plane is not carried by a second mode (largest overlap {overlap[j]:.2f})")
+        partner[i] = j
+    unpaired = sorted(i for i, j in partner.items() if partner.get(j) != i)
+    if unpaired:
+        raise ValueError(f"modes {unpaired} name a partner that does not name them back")
+    return sorted({(min(i, j), max(i, j)) for i, j in partner.items()})
+
 
 
 # ------------------------------------------------------------------------------------------------------------- validation

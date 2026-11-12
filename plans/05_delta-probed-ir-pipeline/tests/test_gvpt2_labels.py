@@ -45,14 +45,14 @@ def _force_field(n=4, cubic=0.0, seed=0):
 
 def test_without_resonances_gvpt2_equals_dvpt2():
     w, p3, p4, B, zeta = _force_field()
-    r = G.gvpt2(w, p3, p4, B, zeta)
+    r = G.gvpt2(w, p3, p4, B, zeta, [])
     assert r["n_resonances"] == 0 and r["moved"] == [] and np.array_equal(r["nu_gvpt2"], r["nu_dvpt2"])
 
 
 @pytest.mark.skipif(not HAS_PYVPT2, reason="pyVPT2 is installed in the WSL env 'vpt2' only")
 def test_a_resonant_dyad_keeps_its_trace():
     w, p3, p4, B, zeta = _force_field(cubic=60.0)
-    r = G.gvpt2(w, p3, p4, B, zeta)
+    r = G.gvpt2(w, p3, p4, B, zeta, [])
     assert r["moved"] == [1]
     _nu, chi, _f = G.vpt2(w, p3, p4, B, zeta, G.FERMI_WINDOW, G.FERMI_MIN_K)
     overtone, _band = G.overtones_and_bands(w, chi)
@@ -62,3 +62,14 @@ def test_a_resonant_dyad_keeps_its_trace():
                                        ftype=1)])
     assert states[(1,)] + states[(0, 0)] == pytest.approx(r["nu_dvpt2"][1] + overtone[0])
     assert r["nu_gvpt2"][1] == pytest.approx(states[(1,)])
+
+
+
+@pytest.mark.skipif(not HAS_PYVPT2, reason="pyVPT2 is installed in the WSL env 'vpt2' only")
+def test_a_pair_averages_the_quartic_constants_and_stays_deperturbed():
+    w, p3, p4, B, zeta = _force_field(cubic=60.0)
+    r = G.gvpt2(w, p3, p4, B, zeta, [(0, 2)])
+    assert r["moved"] == [] and r["skipped_degenerate"] == [[1, [0, 0]]]
+    averaged = G.symmetry_average(p4, [(0, 2)])
+    assert np.array_equal(r["nu_dvpt2"], G.vpt2(w, p3, averaged, B, zeta, G.FERMI_WINDOW, G.FERMI_MIN_K)[0])
+    assert not np.array_equal(averaged, p4)

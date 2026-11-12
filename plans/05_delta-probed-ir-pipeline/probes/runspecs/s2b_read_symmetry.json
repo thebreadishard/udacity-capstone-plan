@@ -1,0 +1,13 @@
+{"name": "s2b_read_symmetry",
+ "purpose": "TASKS 53, S2b amendment 2 (12 Nov; the user: 'Eerst repareren'): S2b's registered read repeated with the same script on the labels relabelled with degeneracy from the point group (probes/relabel_sets.py -> probes/results_m1/labels_symmetry_2026-11-12/sets.json); the first read stays in s2b_read_2026-11-12/read",
+ "host": "laptop",
+ "workdir": "probes/results_m1/labels_symmetry_2026-11-12",
+ "command": "echo \"=== (S2BS) start $(date '+%F %T')\" && cd ../../.. && PYTHONUTF8=1 python probes/s2b_read.py --sets probes/results_m1/labels_symmetry_2026-11-12/sets.json --out probes/results_m1/labels_symmetry_2026-11-12/s2b_read && echo \"=== (S2BS) done $(date '+%F %T')\"",
+ "sources": [{"local": "probes/s2b_read.py"}, {"local": "probes/s2_read.py"}, {"local": "probes/s2_search.py"}, {"local": "probes/s2_xtb_read.py"},
+             {"local": "probes/relabel_sets.py"}, {"local": "probes/gvpt2_labels.py"}, {"local": "probes/e8_symmetry.py"}],
+ "progress": {"regex": "^\\(S2BR\\) |^=== \\(S2BS\\) ", "max_gap_minutes": 120},
+ "marker_regex": "^=== \\(S2BS\\) (start|done)",
+ "end_regex": "^=== \\(S2BS\\) done",
+ "threads": 4,
+ "estimate": {"hours": 3, "basis": "the first read's own: started 12 Nov 02:4x, the same script and the same 37 molecules"},
+ "memory": {"peak_gb": 3.0, "basis": "an estimate, not capped: the first read's (one CPU python with torch, the molecules' mode arrays under 100 MB)"}}

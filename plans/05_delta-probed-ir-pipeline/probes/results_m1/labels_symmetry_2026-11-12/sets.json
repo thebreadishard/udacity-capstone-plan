@@ -1,0 +1,39 @@
+[
+ {
+  "name": "S2",
+  "root": "probes/results_m1/s2_anharmonic_2026-10-18/s2",
+  "selection": "probes/results_m1/s2_training_set_2026-10-14/selection.json",
+  "gvpt2_dir": "probes/results_m1/labels_symmetry_2026-11-12/S2/gvpt2",
+  "xtb_root": "probes/results_m1/s2_xtb_2026-10-18/xtb",
+  "xtb_gvpt2_dir": "probes/results_m1/labels_symmetry_2026-11-12/S2/gvpt2_x",
+  "extra": {
+   "A_8448043181": "probes/results_m1/s1_anharmonic_benzene_2026-10-13/s1_benzene/G"
+  }
+ },
+ {
+  "name": "S2b",
+  "root": "probes/results_m1/s2b1_server_2026-11-11/s2b",
+  "selection": "probes/results_m1/s2b_training_set_2026-10-19/selection.json",
+  "gvpt2_dir": "probes/results_m1/labels_symmetry_2026-11-12/S2b/gvpt2",
+  "xtb_root": "probes/results_m1/s2b_xtb_2026-11-02/xtb",
+  "xtb_gvpt2_dir": "probes/results_m1/labels_symmetry_2026-11-12/S2b/gvpt2_x",
+  "extra": {
+   "A_541c53d1a5": "probes/results_m1/s2b2_server_2026-11-11/s2b/A_541c53d1a5/G",
+   "A_a1e6ec1862": "probes/results_m1/s2b2_server_2026-11-11/s2b/A_a1e6ec1862/G",
+   "A_a6412e1ae4": "probes/results_m1/s2b2_server_2026-11-11/s2b/A_a6412e1ae4/G",
+   "A_ff98e1160d": "probes/results_m1/s2b2_server_2026-11-11/s2b/A_ff98e1160d/G",
+   "P3_1ba8fe779a": "probes/results_m1/s2b2_server_2026-11-11/s2b/P3_1ba8fe779a/G",
+   "P3_1e34c6eeef": "probes/results_m1/s2b2_server_2026-11-11/s2b/P3_1e34c6eeef/G",
+   "P3_5592613777": "probes/results_m1/s2b2_server_2026-11-11/s2b/P3_5592613777/G",
+   "A_593ba8280d": "probes/results_m1/s2b3_server_2026-11-09/s2b/A_593ba8280d/G",
+   "A_8d1f3c46b0": "probes/results_m1/s2b3_server_2026-11-09/s2b/A_8d1f3c46b0/G",
+   "A_bce5bae234": "probes/results_m1/s2b3_server_2026-11-09/s2b/A_bce5bae234/G",
+   "A_e72997e726": "probes/results_m1/s2b3_server_2026-11-09/s2b/A_e72997e726/G",
+   "A_fead28d796": "probes/results_m1/s2b3_server_2026-11-09/s2b/A_fead28d796/G",
+   "B_052693bd01": "probes/results_m1/s2b3_server_2026-11-09/s2b/B_052693bd01/G",
+   "P3_97c2db1a08": "probes/results_m1/s2b3_server_2026-11-09/s2b/P3_97c2db1a08/G",
+   "P3_b36c153df2": "probes/results_m1/s2b3_server_2026-11-09/s2b/P3_b36c153df2/G",
+   "P3_d2345d9fcf": "probes/results_m1/s2b3_server_2026-11-09/s2b/P3_d2345d9fcf/G"
+  }
+ }
+]

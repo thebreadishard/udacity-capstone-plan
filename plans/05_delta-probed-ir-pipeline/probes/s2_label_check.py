@@ -35,14 +35,19 @@ FERMI_WINDOW = 200.0     # cm⁻¹, dpir.qff's default and the stored labels' se
 REPRODUCE_TOL = 1e-6     # cm⁻¹
 
 
+def reference_modes(setting_dir: str) -> tuple[list[str], np.ndarray, np.ndarray, np.ndarray]:
+    """Symbols, geometry (bohr, N x 3), harmonic ω (cm⁻¹) and mass-weighted normal modes (3N x M) of a molecule's reference record."""
+    from s1_anharmonic_level import harmonic_modes
+    path = os.path.join(setting_dir, "ref.json")
+    with open(path, encoding="utf-8") as fh:
+        ref = json.load(fh)
+    omega, q = harmonic_modes(path)
+    return ref["molecule"]["symbols"], np.array(ref["molecule"]["geometry"], float).reshape(-1, 3), omega, q
+
+
 def molecule_inputs(setting_dir):
     """Force constants, harmonic data, rotational constants and Coriolis ζ of one molecule, from its report and reference record."""
-    from s1_anharmonic_level import harmonic_modes
-    with open(os.path.join(setting_dir, "ref.json"), encoding="utf-8") as fh:
-        ref = json.load(fh)
-    symbols = ref["molecule"]["symbols"]
-    geom = np.array(ref["molecule"]["geometry"], float).reshape(-1, 3)
-    _omega, q = harmonic_modes(os.path.join(setting_dir, "ref.json"))
+    symbols, geom, _omega, q = reference_modes(setting_dir)
     with np.load(os.path.join(setting_dir, "qff_report.npz")) as z:
         arrays = {k: z[k] for k in z.files}
     return arrays, rotational_constants(geom, symbols), coriolis_zeta(q, symbols, geom)
