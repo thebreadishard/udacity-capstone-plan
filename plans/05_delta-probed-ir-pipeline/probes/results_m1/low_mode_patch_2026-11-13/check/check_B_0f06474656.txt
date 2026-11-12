@@ -1,0 +1,3 @@
+B_0f06474656 b3lyp: lowest label 9.51 → repaired 15.82, FD 15.69; max |repaired − FD| 0.203 cm⁻¹ (at 125.7)
+B_0f06474656 wb97x: lowest label 55.42 → repaired 58.02, FD 57.98; max |repaired − FD| 0.431 cm⁻¹ (at 323.1)
+verdict PASS (tolerance 0.5 cm⁻¹)
