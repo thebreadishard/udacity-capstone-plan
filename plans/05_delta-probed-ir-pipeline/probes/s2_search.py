@@ -16,6 +16,7 @@ import json
 import os
 import sys
 import warnings
+from collections.abc import Callable
 from dataclasses import dataclass
 
 import numpy as np
@@ -169,11 +170,12 @@ def family_rms(folds, family):
     return rms(p - t), len(t)
 
 
-def nested(by_scaf, cfgs):
-    """The nested read: per outer scaffold and family, the configuration chosen on the inner folds predicts the outer held-out modes."""
+def nested(by_scaf, cfgs, on_outer: Callable[[int, int], None] | None = None):
+    """The nested read: per outer scaffold and family, the configuration chosen on the inner folds predicts the outer held-out modes.
+    on_outer(k, n) is called after the k-th of n outer scaffolds (a run's progress line; the read does not depend on it)."""
     scafs = sorted(by_scaf)
     chosen, outer = {fa: [] for fa in FAMILIES}, {fa: {"truth": [], "pred": []} for fa in FAMILIES}
-    for s in scafs:
+    for k, s in enumerate(scafs, 1):
         inner_scafs = [t for t in scafs if t != s]
         inner = {c: loso_predictions(c, by_scaf, inner_scafs) for c in cfgs}
         test = window_table(by_scaf[s])
@@ -187,6 +189,8 @@ def nested(by_scaf, cfgs):
             pred = fit_on(best, by_scaf, inner_scafs, s)["pred"]
             outer[fa]["truth"].append(test["delta"][sel])
             outer[fa]["pred"].append(pred[sel])
+        if on_outer is not None:
+            on_outer(k, len(scafs))
     result = {}
     for fa in FAMILIES:
         if outer[fa]["truth"]:

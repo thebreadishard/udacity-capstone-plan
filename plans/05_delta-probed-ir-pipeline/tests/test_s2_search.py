@@ -60,3 +60,10 @@ def test_the_network_stops_early_and_keeps_its_best_epoch():
     folds = S.loso_predictions(S.Config("mlp", "F2", 1e-2), d, sorted(d)[:3])
     epochs = [f["epoch"] for f in folds.values()]
     assert all(1 <= e <= S.CAP_SHARE * S.MLP_MAX_EPOCHS for e in epochs)
+def test_the_nested_read_reports_each_outer_scaffold_and_its_result_does_not_depend_on_it():
+    d = dataset(local_effect=30.0)
+    cfgs = [S.Config("ridge", "F1"), S.Config("ridge", "F2")]
+    seen = []
+    with_callback = S.nested(d, cfgs, on_outer=lambda k, n: seen.append((k, n)))
+    assert seen == [(k, len(d)) for k in range(1, len(d) + 1)]
+    assert with_callback == S.nested(d, cfgs)

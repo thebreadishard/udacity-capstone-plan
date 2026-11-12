@@ -212,9 +212,9 @@ def read_scope(by_scaf: dict[str, list[dict]], plan: ReadPlan) -> dict[str, Any]
     """Every read of one scope's molecules and the per-family verdicts."""
     x0 = x0_read(by_scaf)
     progress("x0 done")
-    x2 = nested(by_scaf, X2_GRID)
+    x2 = nested(by_scaf, X2_GRID, on_outer=lambda k, n: progress(f"x2 nested fold {k}/{n}"))
     progress("x2 nested done")
-    search = nested(by_scaf, list(plan.search_configs))
+    search = nested(by_scaf, list(plan.search_configs), on_outer=lambda k, n: progress(f"search nested fold {k}/{n}"))
     progress("search nested done")
     choice = x2_choice(x2)
     fam_curves = curves(by_scaf, choice, plan)
