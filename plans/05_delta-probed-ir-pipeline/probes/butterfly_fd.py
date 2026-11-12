@@ -159,8 +159,9 @@ def point_record(geometry: dict, coords: np.ndarray, cfg: FdConfig, grid: tuple[
         energy = finish_by_newton(mf)
     if not mf.converged:
         raise RuntimeError(f"SCF not converged at grid {grid}")
-    with_response = mf.Gradients().set(grid_response=True).kernel()
-    without = mf.Gradients().set(grid_response=False).kernel()
+    # nuc_grad_method imports the gradient module itself; mf.Gradients exists only once pyscf.grad.rks is imported (it failed 12 Nov 08:13)
+    with_response = mf.nuc_grad_method().set(grid_response=True).kernel()
+    without = mf.nuc_grad_method().set(grid_response=False).kernel()
     return {"energy_hartree": float(energy), "gradient": np.asarray(with_response).tolist(),
             "gradient_no_grid_response": np.asarray(without).tolist()}, mf.make_rdm1()
 

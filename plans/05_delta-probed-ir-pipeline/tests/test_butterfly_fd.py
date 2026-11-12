@@ -81,6 +81,29 @@ def test_the_patched_hessian_keeps_an_exact_column_and_moves_with_a_shifted_one(
     assert np.isclose(BFD.patched_lowest(mode, h @ Y[:, 0] - 0.05 * Y[:, 0]), w[0] - 0.05)
 
 
+FRESH_POINT = """
+import sys
+sys.path[:0] = [{probes!r}, {corpus!r}]
+import numpy as np
+import butterfly_fd as BFD
+geometry = {water!r}
+cfg = BFD.FdConfig(None, None, "b3lyp", ((50, 194), (75, 302)), (0.01, 0.02), 1, 2000, False)
+with open({log!r}, "w", encoding="utf-8") as log:
+    rec, _ = BFD.point_record(geometry, np.asarray(geometry["coords_bohr"]), cfg, (50, 194), None, log)
+print(len(rec["gradient"]), len(rec["gradient_no_grid_response"]))
+"""
+
+
+def test_a_point_runs_in_a_fresh_interpreter(tmp_path):
+    import subprocess
+
+    code = FRESH_POINT.format(probes=str(PLAN / "probes"), corpus=str(PLAN / "modules" / "05_support_predictor" / "corpus"),
+                              water=WATER, log=str(tmp_path / "pyscf.log"))
+    done = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, timeout=600, check=False)
+    assert done.returncode == 0, done.stderr[-2000:]
+    assert done.stdout.split() == ["3", "3"]
+
+
 def test_water_control_reproduces_the_analytic_curvature(tmp_path):
     from analytic_hessians import labels_ks, labels_mol
 
