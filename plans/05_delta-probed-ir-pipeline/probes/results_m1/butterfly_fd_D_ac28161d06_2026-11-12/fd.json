@@ -1,0 +1,75 @@
+{
+ "molecule": "D_ac28161d06",
+ "xc": "b3lyp",
+ "analytic_lowest_cm": -9.456902727982484,
+ "verdict": "POSITIVE",
+ "control_matches": false,
+ "steps_bohr": [
+  0.01,
+  0.02
+ ],
+ "software": {
+  "pyscf": "2.15.0",
+  "pyscf_git": null,
+  "numpy": "2.5.2",
+  "python": "3.12.14",
+  "sha256": {
+   "analytic_hessians.py": "d2fe7e631870",
+   "apt.py": "b22c29d0575f"
+  }
+ },
+ "rows": [
+  {
+   "grid": [
+    99,
+    590
+   ],
+   "step_bohr": 0.01,
+   "gradient": 5.096890774065596,
+   "energy": 5.077751394784124,
+   "patched_lowest": 5.092796945311815,
+   "control": 3.380617093358097,
+   "stationarity_dE_dq": -1.0725586665822634e-08,
+   "q": 3.4042471886574055
+  },
+  {
+   "grid": [
+    99,
+    590
+   ],
+   "step_bohr": 0.02,
+   "gradient": 5.212875068400254,
+   "energy": 5.135561835081351,
+   "patched_lowest": 5.208818058122854,
+   "control": 3.5556643935542254,
+   "stationarity_dE_dq": -1.0725586665822634e-08,
+   "q": 6.808494377314811
+  },
+  {
+   "grid": [
+    150,
+    974
+   ],
+   "step_bohr": 0.01,
+   "gradient": 4.036171336500809,
+   "energy": 4.012519421806011,
+   "patched_lowest": 4.033454084722807,
+   "control": 4.331131049360605,
+   "stationarity_dE_dq": -3.488634226811408e-09,
+   "q": 3.4042471886574055
+  },
+  {
+   "grid": [
+    150,
+    974
+   ],
+   "step_bohr": 0.02,
+   "gradient": 4.183290695519042,
+   "energy": 4.086009498803429,
+   "patched_lowest": 4.180680704162761,
+   "control": 4.468379921926678,
+   "stationarity_dE_dq": -3.488634226811408e-09,
+   "q": 6.808494377314811
+  }
+ ]
+}
