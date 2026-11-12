@@ -5,7 +5,8 @@ Option 3 (`probes/butterfly_fd.py`, fd.json) found the mode real: gradients with
 curvature of +3.4/+3.6 cm⁻¹ along the label Hessian's lowest mode v, against the label's own −9.46. Gradients and the analytic Hessian share
 the frozen-grid energy, so the two should agree; the candidate registered there is 2.14.0's multi-root Krylov CPHF, which stops before its
 solution satisfies its equations (software ledger 44; pyscf#3384, in 2.15.0). Here pyscf 2.15.0 computes the analytic B3LYP Hessian at the
-label geometry and settings (the same `reference` as TASKS 201 step 2) and the curvature along the same v.
+label geometry with the labels' own SCF and Hessian call (`analytic_hessians.labels_scf`, then `mf.Hessian().kernel()`), so it differs
+from the label in the pyscf version only, and the curvature along the same v.
 
 Verdict, registered before the run, on f215 = the 2.15.0 Hessian's frequency along v:
     CPHF        |f215 − control| ≤ CONTROL_TOLERANCE_CM for the control at both steps of the label grid (option 3's rows)
@@ -23,16 +24,16 @@ import os
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, TextIO
 
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "modules" / "05_support_predictor" / "corpus"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from analytic_hessians import labels_mol
+from analytic_hessians import FUNCTIONALS, labels_mol, labels_scf
 from butterfly_fd import CONTROL_TOLERANCE_CM, Mode, frequency_cm, lowest_mode
 from butterfly_scan import LABEL_GRID, write_json
-from hessian_grid_response_fd import STEP_BOHR, FdHessianConfig, frequencies, reference
+from hessian_grid_response_fd import frequencies
 from library_log import PYSCF_LOG_NAME
 from pyscf import __version__ as pyscf_version
 from pyscf import lib
@@ -122,6 +123,15 @@ def markdown(record: dict[str, Any]) -> str:
     return "\n".join(lines) + "\n"
 
 
+def analytic_hessian(geometry: dict, max_memory_mb: int, lib_log: TextIO) -> np.ndarray:
+    """The labels route's B3LYP Hessian (3N, 3N), symmetrised, at the label grid, on the running pyscf."""
+    mol = labels_mol(geometry, lib_log, max_memory=max_memory_mb)
+    mf, _energy = labels_scf(mol, dict(FUNCTIONALS)[XC], LABEL_GRID, newton_finish=True)
+    n3 = 3 * mol.natm
+    H = mf.Hessian().kernel().transpose(0, 2, 1, 3).reshape(n3, n3)
+    return 0.5 * (H + H.T)
+
+
 def parse_args(argv: list[str] | None = None) -> CphfCheckConfig:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("molecule", type=Path, help="folder with geometry.json and hessian_b3lyp_analytic.npz (the label)")
@@ -150,9 +160,8 @@ def main(argv: list[str] | None = None) -> None:
         return
     lib.num_threads(cfg.threads)
     cfg.out.mkdir(parents=True, exist_ok=True)
-    grf_cfg = FdHessianConfig(cfg.molecule, cfg.out, (XC,), LABEL_GRID, STEP_BOHR, cfg.threads, cfg.max_memory_mb, False)
     with open(cfg.out / PYSCF_LOG_NAME, "a", encoding="utf-8") as lib_log:
-        _dm, H_215 = reference(geometry, grf_cfg, XC, lib_log)
+        H_215 = analytic_hessian(geometry, cfg.max_memory_mb, lib_log)
     print(f"(CPHF) {cfg.molecule.name}: pyscf {pyscf_version} analytic Hessian done", flush=True)
     np.savez_compressed(cfg.out / f"hessian_{XC}_analytic_{pyscf_version.replace('.', '')}.npz", H_raw=H_215, grid=np.array(LABEL_GRID))
     record = {"molecule": cfg.molecule.name, "xc": XC, "grid": list(LABEL_GRID), "pyscf": pyscf_version,
