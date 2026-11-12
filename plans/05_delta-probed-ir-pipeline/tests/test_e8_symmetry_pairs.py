@@ -1,7 +1,6 @@
 """probes/e8_symmetry.py degenerate_pairs (TASKS 53, 12 Nov 2026): degeneracy comes from the point group, not from a frequency gap.
 Benzene (D6h) has ten pairs, also when noise splits them by more than the old 0.5 cm-1 gap; ideal tetracene (D2h) has none, however close
 two of its modes lie; a mode set that does not carry the group's pairs is refused."""
-import json
 import sys
 from pathlib import Path
 
@@ -12,14 +11,16 @@ PLAN = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PLAN / "probes"))
 sys.path.insert(0, str(PLAN / "src"))
 from e8_symmetry import degenerate_pairs, point_group_ops, rep_matrices, symmetrize  # noqa: E402
-from qff_symmetry_count import BENZENE, tetracene_ideal  # noqa: E402
+from qff_symmetry_count import BOHR, tetracene_ideal  # noqa: E402
 
 from dpir.qff import harmonic  # noqa: E402
 
 
 def _benzene():
-    g = json.loads(Path(BENZENE).read_text(encoding="utf-8"))
-    return list(g["symbols"]), np.asarray(g["coords_bohr"], float)
+    """Ideal D6h benzene (C-C 1.39 Å, C-H 1.09 Å), bohr; built here because the corpus geometry is not in git."""
+    ang = np.arange(6) * np.pi / 3
+    ring = np.stack([np.cos(ang), np.sin(ang), np.zeros(6)], 1)
+    return ["C"] * 6 + ["H"] * 6, np.vstack([1.39 * ring, 2.48 * ring]) / BOHR
 
 
 def _symmetric_hessian(symbols, x, seed=1, noise=0.0):
