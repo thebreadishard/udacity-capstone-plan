@@ -29,7 +29,7 @@ sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, "..", "src"))
 from s2_read import FAMILIES, LINE_LICENSE, WINDOW, load_selection, options_from_args, rms, write_atomic  # noqa: E402
 
-from dpir.qff import coriolis_zeta, degenerate_groups, rotational_constants, symmetry_average, vpt2  # noqa: E402
+from dpir.qff import DEGENERACY_CM, coriolis_zeta, rotational_constants, symmetry_average, vpt2  # noqa: E402
 
 FERMI_WINDOW = 200.0     # cm⁻¹, dpir.qff's default and the stored labels' setting
 REPRODUCE_TOL = 1e-6     # cm⁻¹
@@ -53,6 +53,22 @@ def molecule_inputs(setting_dir):
     return arrays, rotational_constants(geom, symbols), coriolis_zeta(q, symbols, geom)
 
 
+def legacy_gap_pairs(omega_cm: np.ndarray) -> list[tuple[int, int]]:
+    """The pairs dpir.qff averaged phi_iijj_sym over before TASKS 204: every two consecutive modes within DEGENERACY_CM (overlapping pairs
+    inside a longer chain), the old assemble_qff's rule verbatim."""
+    return [(i, i + 1) for i in range(len(omega_cm) - 1) if abs(omega_cm[i] - omega_cm[i + 1]) < DEGENERACY_CM]
+
+
+def report_pairs(arrays: dict) -> list[tuple[int, int]]:
+    """The pairs a QFF report's phi_iijj_sym was averaged over: those it stores (dpir.qff since TASKS 204), else the old builder's rule;
+    raises unless they reproduce the stored phi_iijj_sym from the stored phi_iijj."""
+    stored = "degenerate_pairs" in arrays
+    pairs = [(int(a), int(b)) for a, b in arrays["degenerate_pairs"]] if stored else legacy_gap_pairs(arrays["omega_cm"])
+    if not np.allclose(symmetry_average(arrays["phi_iijj"], pairs), arrays["phi_iijj_sym"], rtol=1e-10, atol=1e-10):
+        raise ValueError("the report's phi_iijj_sym is not phi_iijj averaged over the pairs it was built with")
+    return pairs
+
+
 def treatments(arrays, B, zeta):
     """Δ_anh per mode under every treatment; raises when the stored ν are not reproduced."""
     w, p3 = arrays["omega_cm"], arrays["phi_ijk"]
@@ -65,7 +81,7 @@ def treatments(arrays, B, zeta):
     out = {"K0": nu_sym - w,
            "K1": vpt2(w, p3, p4, B, zeta, FERMI_WINDOW, 1.0)[0] - w,
            "none": vpt2(w, p3, p4, B, zeta, 0.0, 0.0)[0] - w}
-    pairs = [tuple(g) for g in degenerate_groups(w) if len(g) == 2]     # the pairs the report averaged over
+    pairs = report_pairs(arrays)
     for route in ("a", "b"):
         p4r = symmetry_average(arrays[f"phi_iijj_route_{route}"], pairs)
         out[f"route_{route}"] = vpt2(w, p3, p4r, B, zeta, FERMI_WINDOW, 0.0)[0] - w

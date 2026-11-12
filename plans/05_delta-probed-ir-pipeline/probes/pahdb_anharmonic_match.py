@@ -92,7 +92,7 @@ def our_fundamentals(setting: Path) -> tuple[np.ndarray, list[str]]:
     with open(setting / "ref.json", encoding="utf-8") as fh:
         mol = json.load(fh)["molecule"]
     labels = classify(characters(mol["symbols"], np.array(mol["geometry"], float).reshape(-1, 3), q))
-    pairs = degenerate_pairs(mol["symbols"], np.array(mol["geometry"], float).reshape(-1, 3), q)
+    pairs = degenerate_pairs(mol["symbols"], np.array(mol["geometry"], float).reshape(-1, 3), q, omega)
     nu = gvpt2(arrays["omega_cm"], arrays["phi_ijk"], arrays["phi_iijj"], B, zeta, pairs)["nu_gvpt2"]
     return np.asarray(nu, float), labels
 

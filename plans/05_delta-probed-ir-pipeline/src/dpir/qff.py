@@ -49,6 +49,8 @@ from dataclasses import dataclass, field
 
 import numpy as np
 
+from dpir.symmetry import degenerate_pairs
+
 ROUTE_NOISE_LIMIT_CM = 10.0   # cm⁻¹; largest allowed quartic route disagreement and cubic route spread (see 'Noise guard')
 
 
@@ -60,7 +62,9 @@ AMU_ME = 1822.888486209
 BOHR_ANGSTROM = 0.529177210903
 ROT_CONST_AMU_A2_CM = 16.857629206  # h/(8π²c) in amu Å² cm⁻¹
 MASS = {"H": 1.00782503223, "C": 12.0, "N": 14.00307400443, "O": 15.99491461957}
-DEGENERACY_CM = 0.5  # modes closer than this (cm⁻¹) are treated as exactly degenerate
+# modes closer than this (cm⁻¹) have no fixed eigenvectors, so the analysis basis is aligned inside them (align_degenerate_subspaces);
+# degeneracy that the physics averages over is the point group's (dpir.symmetry.degenerate_pairs, TASKS 204)
+DEGENERACY_CM = 0.5
 
 
 @dataclass
@@ -98,7 +102,7 @@ class QFF:
     phi4: np.ndarray  # (n, n) φ_iijj, mean of the two routes off the diagonal
     route_a: np.ndarray  # (n, n) displace j, read H_ii
     route_b: np.ndarray  # (n, n) displace i, read H_jj
-    pairs: list[tuple[int, int]] = field(default_factory=list)  # exactly degenerate pairs
+    pairs: list[tuple[int, int]] = field(default_factory=list)  # the point group's degenerate pairs (dpir.symmetry)
 
     @property
     def route_disagreement(self) -> np.ndarray:
@@ -196,7 +200,8 @@ def fix_mode_signs(q: np.ndarray) -> np.ndarray:
 
 
 def degenerate_groups(omega_cm: np.ndarray, tol_cm: float = DEGENERACY_CM) -> list[list[int]]:
-    """Consecutive modes within ``tol_cm`` of each other, as index groups (singletons included)."""
+    """Consecutive modes within ``tol_cm`` of each other, as index groups (singletons included): numerically near-degenerate modes, whose
+    eigenvectors the harmonic analysis does not fix; not the symmetry pairs (``dpir.symmetry.degenerate_pairs``)."""
     groups: list[list[int]] = []
     for i in range(len(omega_cm)):
         if groups and abs(omega_cm[i] - omega_cm[groups[-1][-1]]) < tol_cm:
@@ -271,8 +276,10 @@ def align_degenerate_subspaces(harm: Harmonic, recs: list[HessianRecord], i0: in
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-def assemble_qff(omega_cm: np.ndarray, H0: np.ndarray, Hp: dict[int, np.ndarray], Hn: dict[int, np.ndarray], disp: float) -> QFF:
-    """Central differences of the reduced-coordinate Hessians ``H0`` (reference), ``Hp[i]``/``Hn[i]`` (mode i displaced ±disp).
+def assemble_qff(omega_cm: np.ndarray, H0: np.ndarray, Hp: dict[int, np.ndarray], Hn: dict[int, np.ndarray], disp: float,
+                 pairs: list[tuple[int, int]]) -> QFF:
+    """Central differences of the reduced-coordinate Hessians ``H0`` (reference), ``Hp[i]``/``Hn[i]`` (mode i displaced ±disp); ``pairs``
+    are the point group's degenerate mode pairs, carried for the symmetry average.
 
     All inputs in atomic units (E_h per reduced coordinate²); the result is in cm⁻¹.
     """
@@ -295,10 +302,8 @@ def assemble_qff(omega_cm: np.ndarray, H0: np.ndarray, Hp: dict[int, np.ndarray]
             route_a[i, j] = (Hp[j][i, i] + Hn[j][i, i] - 2 * H0[i, i]) / d**2  # displace j, read H_ii
             route_b[i, j] = (Hp[i][j, j] + Hn[i][j, j] - 2 * H0[j, j]) / d**2  # displace i, read H_jj
             phi4[i, j] = 0.5 * (route_a[i, j] + route_b[i, j])
-    # neighbouring modes within the degeneracy tolerance, pairwise (as the probe did; a triply degenerate group gives two
-    # overlapping pairs — the symmetry averaging below is then order-dependent, an open item in QUALITY_POLICY.md)
-    pairs = [(i, i + 1) for i in range(n - 1) if abs(omega_cm[i] - omega_cm[i + 1]) < DEGENERACY_CM]
-    return QFF(np.array(omega_cm, float), phi3 * HARTREE_CM, spread * HARTREE_CM, phi4 * HARTREE_CM, route_a * HARTREE_CM, route_b * HARTREE_CM, pairs)
+    return QFF(np.array(omega_cm, float), phi3 * HARTREE_CM, spread * HARTREE_CM, phi4 * HARTREE_CM, route_a * HARTREE_CM, route_b * HARTREE_CM,
+               [tuple(p) for p in pairs])
 
 
 def qff_from_records(recs: list[HessianRecord], disp: float, allow_noisy: bool = False) -> tuple[QFF, Harmonic, HessianRecord, dict]:
@@ -325,11 +330,13 @@ def qff_from_records(recs: list[HessianRecord], disp: float, allow_noisy: bool =
         raise ValueError(f"modes without a ± pair: {missing}")
     A = harm.A
     toQ = lambda H: A.T @ H @ A  # noqa: E731
-    qff = assemble_qff(harm.omega_cm, toQ(ref.H), {i: toQ(h) for i, h in Hp.items()}, {i: toQ(h) for i, h in Hn.items()}, disp)
+    pairs = degenerate_pairs(ref.symbols, ref.geom.reshape(-1, 3), harm.q, harm.omega_cm)
+    qff = assemble_qff(harm.omega_cm, toQ(ref.H), {i: toQ(h) for i, h in Hp.items()}, {i: toQ(h) for i, h in Hn.items()}, disp, pairs)
     d4 = qff.route_disagreement
     quartic_max = float(d4.max()) if d4.size else 0.0
     cubic_max = float(qff.cubic_spread.max()) if qff.cubic_spread.size else 0.0
     info = {"reference_file": ref.file, "assignment_residual_max": max(v[3] for v in asg.values()), "subspaces_aligned": n_aligned,
+            "symmetry_pairs": len(pairs),
             "quartic_route_disagreement_max": quartic_max, "cubic_route_spread_max": cubic_max}
     # `not (x <= limit)` so that a NaN anywhere in the Hessians also stops the run (review of 30 Sep: NaN > limit is False)
     if not allow_noisy and not (quartic_max <= ROUTE_NOISE_LIMIT_CM and cubic_max <= ROUTE_NOISE_LIMIT_CM):
@@ -342,7 +349,7 @@ def qff_from_records(recs: list[HessianRecord], disp: float, allow_noisy: bool =
 
 
 def symmetry_average(phi4: np.ndarray, pairs: list[tuple[int, int]]) -> np.ndarray:
-    """Average φ_aa,jj with φ_bb,jj (and φ_aaaa with φ_bbbb) for every exactly degenerate pair (a, b)."""
+    """Average φ_aa,jj with φ_bb,jj (and φ_aaaa with φ_bbbb) for every symmetry pair (a, b) of the point group."""
     out = phi4.copy()
     n = len(phi4)
     for a, b in pairs:
@@ -522,7 +529,7 @@ def report(cache_dir: str, recs: list[HessianRecord], qff: QFF, harm: Harmonic, 
         pycol = f"{py[i]:.1f}" if py else "—"
         lines.append(f"| {i} | {w[i]:.1f} | {nu_raw[i]:.1f} | {nu_raw[i] - w[i]:+.1f} | {nu_sym[i]:.1f} | {nu_sym[i] - w[i]:+.1f} | {pycol} | {tag} |")
     arrays = dict(omega_cm=w, phi_ijk=qff.phi3, phi_iijj=qff.phi4, phi_iijj_route_a=qff.route_a, phi_iijj_route_b=qff.route_b, phi_iijj_sym=phi4s,
-                  chi_raw=chi_raw, chi_sym=chi_sym, nu_raw=nu_raw, nu_sym=nu_sym)
+                  degenerate_pairs=np.array(qff.pairs, dtype=int).reshape(-1, 2), chi_raw=chi_raw, chi_sym=chi_sym, nu_raw=nu_raw, nu_sym=nu_sym)
     return "\n".join(lines) + "\n", arrays
 
 

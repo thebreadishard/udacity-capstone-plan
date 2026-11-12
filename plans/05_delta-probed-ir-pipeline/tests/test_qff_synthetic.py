@@ -86,7 +86,8 @@ def test_constants_recovered_exactly_with_rotated_degenerate_basis(model_molecul
     np.testing.assert_allclose(qff.route_a, qff.route_b, atol=1e-6)
     assert qff.route_disagreement.max() < 1e-6
     assert qff.cubic_spread.max() < 1e-6
-    assert qff.pairs == [(1, 2)]
+    # the model molecule is C1, so its exact degeneracy is accidental: the basis is aligned inside it (above) but no constant is averaged
+    assert qff.pairs == [] and info["symmetry_pairs"] == 0
 
 
 def test_without_alignment_the_assignment_fails(model_molecule):
@@ -170,10 +171,10 @@ def test_route_labels_are_not_swapped():
     H0 = np.diag(w) / HARTREE_CM
     Hp = {i: H0.copy() for i in range(n)}
     Hn = {i: H0.copy() for i in range(n)}
-    base = assemble_qff(w, H0, Hp, Hn, DISP)
+    base = assemble_qff(w, H0, Hp, Hn, DISP, [])
     assert base.route_disagreement.max() == 0.0
     Hp[2][0, 0] += 1e-6  # file "mode 2, +", entry H_00: route a for (i=0, j=2) and, by definition, route b for (i=2, j=0)
-    pert = assemble_qff(w, H0, Hp, Hn, DISP)
+    pert = assemble_qff(w, H0, Hp, Hn, DISP, [])
     assert np.argwhere(~np.isclose(pert.route_a, base.route_a)).tolist() == [[0, 2]]
     assert np.argwhere(~np.isclose(pert.route_b, base.route_b)).tolist() == [[2, 0]]
     np.testing.assert_allclose(pert.route_a[0, 2] - base.route_a[0, 2], 1e-6 / DISP**2 * HARTREE_CM)

@@ -5,7 +5,8 @@ it induces. So the block rows of one atom per orbit determine the whole Hessian:
 build their block rows by central differences, and copy them onto the equivalent atoms with R · Rᵀ. Rows reached by more than one operation
 give a consistency check (their spread is a noise measure of the gradients).
 
-Point-group detection works from the geometry alone: candidate operations are the orthogonal maps that send three non-collinear reference
+Point-group detection (since 12 Nov 2026 in src/dpir/symmetry.py, imported here) works from the geometry alone: candidate operations
+are the orthogonal maps that send three non-collinear reference
 atoms onto same-element atoms with the same pairwise distances (Kabsch), kept when they map every atom onto a same-element atom within a
 tolerance; for planar molecules the reflection through the plane and its products are added. No character tables, no labels — only what the
 reconstruction needs.
@@ -15,98 +16,20 @@ Validation: python e8_symmetry.py --validate (benzene's 72 CCSD(T) gradients →
 corpus → 30 rows; both must reproduce the full matrix).
 """
 import argparse
-import itertools
 import json
 import os
+import sys
 
 import numpy as np
 
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "src"))
+try:
+    from dpir.symmetry import degenerate_pairs, point_group_ops, rep_matrices, symmetrize  # noqa: F401  (re-exported: probes import them from here)
+except ImportError as exc:   # a flat server copy without the package (bootstrap_anchors_cpx62.sh and the CCX53 row scripts ship it so)
+    raise ImportError("e8_symmetry takes its operations from src/dpir/symmetry.py since 12 Nov 2026 (TASKS 204): ship "
+                      "src/dpir/__init__.py and src/dpir/symmetry.py as dpir/ beside it") from exc
+
 BOHR = 0.529177210903
-
-
-def _kabsch(A, B):
-    """Orthogonal R (proper or improper) minimising |R A − B| for 3 × m point sets A, B (columns), both already centred."""
-    U, _, Vt = np.linalg.svd(B @ A.T)
-    return U @ Vt
-
-
-def _kabsch_both(A, B):
-    """Kabsch's solution and the one with the weakest singular direction flipped (13 Oct 2026). For three atoms nearly coplanar with the
-    centre the weakest direction is undetermined, so a proper operation can come out improper or the reverse; both are tried."""
-    U, _, Vt = np.linalg.svd(B @ A.T)
-    return [U @ Vt, U @ np.diag([1.0, 1.0, -1.0]) @ Vt]
-
-
-def point_group_ops(symbols, coords_bohr, tol=0.02):
-    """All orthogonal operations (R, perm) with R x_i ≈ x_perm[i] and same elements. tol in bohr. Includes the identity."""
-    x = np.asarray(coords_bohr, float); com = x.mean(0); x = x - com; n = len(x)
-    sym = list(symbols)
-    ops = []
-
-    # planar? normal vector
-    ev, R0 = np.linalg.eigh(x.T @ x); normal = R0[:, 0] if ev[0] < 1e-6 * max(ev[-1], 1.0) else None
-    keys = set()
-
-    def accept(R):
-        """Return (R_refit, perm) for a new operation, else None. Identity of an operation = (perm, proper/improper); R is refit over all atoms."""
-        y = x @ R.T; perm = []
-        for i in range(n):
-            d = np.linalg.norm(x - y[i], axis=1); j = int(np.argmin(d))
-            if d[j] > tol or sym[j] != sym[i]:
-                return None
-            perm.append(j)
-        if len(set(perm)) != n:
-            return None
-        improper = np.linalg.det(R) < 0
-        key = (tuple(perm), bool(improper))
-        if key in keys:
-            return None
-        Rf = _kabsch(x.T, x[perm].T)                        # best proper or improper map over all atoms
-        if (np.linalg.det(Rf) < 0) != improper:
-            if normal is None:
-                return None
-            Rf = (np.eye(3) - 2 * np.outer(normal, normal)) @ Rf
-        if np.abs(x @ Rf.T - x[perm]).max() > tol:
-            return None
-        keys.add(key)
-        return Rf, perm
-
-    # reference triple: three non-collinear atoms (prefer heavy)
-    order = sorted(range(n), key=lambda i: (sym[i] == "H", -np.linalg.norm(x[i])))
-    ref = None
-    for a, b, c in itertools.combinations(order, 3):
-        if np.linalg.norm(np.cross(x[b] - x[a], x[c] - x[a])) > 1e-3:
-            ref = (a, b, c); break
-    a, b, c = ref; dab, dac, dbc = (np.linalg.norm(x[a] - x[b]), np.linalg.norm(x[a] - x[c]), np.linalg.norm(x[b] - x[c]))
-    cands = []
-    for a2 in range(n):
-        if sym[a2] != sym[a]:
-            continue
-        for b2 in range(n):
-            if b2 == a2 or sym[b2] != sym[b] or abs(np.linalg.norm(x[a2] - x[b2]) - dab) > tol:
-                continue
-            for c2 in range(n):
-                if c2 in (a2, b2) or sym[c2] != sym[c] or abs(np.linalg.norm(x[a2] - x[c2]) - dac) > tol or abs(np.linalg.norm(x[b2] - x[c2]) - dbc) > tol:
-                    continue
-                A = np.array([x[a], x[b], x[c]]).T; B = np.array([x[a2], x[b2], x[c2]]).T
-                for R in _kabsch_both(A, B):
-                    cands.append(R)
-                    if normal is not None:                  # the improper partner through the molecular plane
-                        S = np.eye(3) - 2 * np.outer(normal, normal); cands.append(S @ R); cands.append(R @ S)
-    for R in cands:
-        if np.allclose(R @ R.T, np.eye(3), atol=1e-6):
-            r = accept(R)
-            if r is not None:
-                ops.append(r)
-    # close under products (groups here are small; identity of an operation = its key)
-    changed = True
-    while changed:
-        changed = False
-        for (R1, _p1), (R2, _p2) in list(itertools.product(ops, ops)):
-            r = accept(R1 @ R2)
-            if r is not None:
-                ops.append(r); changed = True
-    return ops
 
 
 def orbits(ops, n):
@@ -187,57 +110,6 @@ def self_check(H, ops, n):
     return worst
 
 
-
-ORBIT_PLANE_MIN = 0.5   # a mode's images span a plane when their second singular value is at least this fraction of the first
-PAIR_WEIGHT_MIN = 0.5   # a mode carries a pair when at least this much of its norm lies in the pair's plane
-
-
-def rep_matrices(ops: list, n: int) -> list[np.ndarray]:
-    """The 3n × 3n Cartesian representation matrix of every operation (R, perm)."""
-    D = []
-    for R, p in ops:
-        M = np.zeros((3 * n, 3 * n))
-        for i in range(n):
-            M[3 * p[i]:3 * p[i] + 3, 3 * i:3 * i + 3] = R
-        D.append(M)
-    return D
-
-
-def symmetrize(symbols: list[str], x_bohr: np.ndarray) -> np.ndarray:
-    """The geometry averaged over its group (x_i <- mean_g R_g^T x_perm_g(i)): an optimised geometry is symmetric only to its convergence, and
-    a classification by the group needs exact invariance (benzene's corpus geometry gave 0 totally symmetric modes and a split pair without it)."""
-    x = np.asarray(x_bohr, float) - np.asarray(x_bohr, float).mean(0)
-    ops = point_group_ops(symbols, x)
-    return np.mean([np.array([R.T @ x[p[i]] for i in range(len(x))]) for R, p in ops], axis=0)
-
-
-def degenerate_pairs(symbols: list[str], coords_bohr: np.ndarray, q: np.ndarray) -> list[tuple[int, int]]:
-    """The mode pairs (a, b), a < b, that span a two-dimensional irreducible representation of the molecule's point group.
-
-    q (3n x M) holds the mass-weighted normal modes in columns. A mode's images under the group span one direction when it belongs to a
-    one-dimensional representation and a plane when it belongs to a two-dimensional one; its partner is the other mode that lies in that plane.
-    Degeneracy is a property of the group, not of a frequency gap: an asymmetric top has no pair however close two of its modes lie, and a
-    symmetric top's pair counts as one however far the quadrature has split it. Raises when an orbit spans more than a plane, a plane is not
-    carried by a second mode, or two modes do not name each other."""
-    x = symmetrize(symbols, coords_bohr)
-    D = rep_matrices(point_group_ops(symbols, x, tol=1e-6), len(symbols))
-    partner: dict[int, int] = {}
-    for i in range(q.shape[1]):
-        U, s, _ = np.linalg.svd(np.array([d @ q[:, i] for d in D]).T, full_matrices=False)
-        if len(s) < 2 or s[1] < ORBIT_PLANE_MIN * s[0]:
-            continue
-        if len(s) > 2 and s[2] > ORBIT_PLANE_MIN * s[0]:
-            raise ValueError(f"mode {i}'s images span more than a plane: irreducible representations above dimension two are not handled")
-        overlap = ((U[:, :2].T @ q) ** 2).sum(0)
-        overlap[i] = 0.0
-        j = int(np.argmax(overlap))
-        if overlap[j] < PAIR_WEIGHT_MIN:
-            raise ValueError(f"mode {i}'s plane is not carried by a second mode (largest overlap {overlap[j]:.2f})")
-        partner[i] = j
-    unpaired = sorted(i for i, j in partner.items() if partner.get(j) != i)
-    if unpaired:
-        raise ValueError(f"modes {unpaired} name a partner that does not name them back")
-    return sorted({(min(i, j), max(i, j)) for i, j in partner.items()})
 
 
 

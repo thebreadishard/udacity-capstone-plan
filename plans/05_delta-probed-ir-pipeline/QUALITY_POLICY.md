@@ -181,3 +181,18 @@ degenerate pair, so for pair × pair blocks the result depends on pair order (th
 preserved; χ_sym pair × pair entries are not). Kept identical to the probe for this promotion so that the committed numbers
 stay bit-for-bit; the fix is a separate tested change that re-pins the benzene arrays.
 
+### Review record, 12 November 2026 (dpir.symmetry, TASKS 204)
+
+Promoted: `point_group_ops` (from probes/e8_symmetry.py, which now re-exports it), `rep_matrices`, `symmetrize` and `degenerate_pairs`;
+`dpir.qff` averages φ_iijj_sym over the point group's pairs and keeps the 0.5 cm⁻¹ gap only for aligning the basis inside numerically
+near-degenerate modes. The operations reproduce the probe's on six point groups bit for bit (tests/data/point_group_ops_golden.json,
+pinned before the move); benzene T2 reproduces its committed arrays. The second reader found, and the promotion then repaired: (1) the
+golden file was not staged; (2) the orbit classification raised when noise mixed a pair with a near mode of another representation (3 of
+8 seeds at 5e-4) — pairs now come from the group-averaged mode operator, whose two-dimensional eigenspaces are exact, assigned to the two
+modes of largest weight (≥ 0.5 each) and kept only where the group acts irreducibly (an accidental exact degeneracy is not a pair);
+(3) a geometry far from its symmetry gave a subset of the group and lost pairs silently — the geometry is symmetrised to a fixed point,
+the operations must be a closed group, and otherwise the call refuses; (4) the label check's fallback took gap groups of two, not the
+old builder's overlapping pairs — now the old rule verbatim, and the pairs must reproduce the stored φ_iijj_sym; (5) the negative control
+used a 5 cm⁻¹ gap — now a mode 0.2 cm⁻¹ beside a pair (benzene) and beside a neighbour (tetracene), which the old rule pairs; (6) the
+rewrite script logged no provenance — added; minor: the golden writer refuses to re-pin, the duplicate test file went, a stale comment.
+On the 78 relabelled force fields of S2, S2b and S3 the new pairs equal the labels' of 12 Nov molecule by molecule.

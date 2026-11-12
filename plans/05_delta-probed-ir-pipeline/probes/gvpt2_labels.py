@@ -75,7 +75,7 @@ def symmetry_pairs(setting_dir: str, omega_cm: np.ndarray) -> list[tuple[int, in
     symbols, geom, omega, q = reference_modes(setting_dir)
     if not np.allclose(omega, omega_cm, atol=1e-6):
         raise ValueError(f"{setting_dir}: the reference record's modes are not the force field's")
-    return degenerate_pairs(symbols, geom, q)
+    return degenerate_pairs(symbols, geom, q, omega)
 
 
 def gvpt2(w: np.ndarray, p3: np.ndarray, p4_raw: np.ndarray, B: np.ndarray, zeta: np.ndarray, pairs: list[tuple[int, int]]) -> dict:
