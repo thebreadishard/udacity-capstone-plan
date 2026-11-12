@@ -14,11 +14,9 @@ CORE_ORBITALS = {"H": 0, "He": 0, "Li": 1, "Be": 1, "B": 1, "C": 1, "N": 1, "O":
                  "Na": 5, "Mg": 5, "Al": 5, "Si": 5, "P": 5, "S": 5, "Cl": 5, "Ar": 5}
 
 
-def project_tr(H: np.ndarray, masses: np.ndarray, x: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
-    """(H with the six translations and rotations projected out by the mass-weighted projector, back in Cartesian units; the mass-weighted
-    H before the projection). x in bohr, masses in amu."""
+def rigid_basis(masses: np.ndarray, x: np.ndarray) -> np.ndarray:
+    """An orthonormal basis (3N, 6) of the mass-weighted translations and rotations about the centre of mass; x in bohr, masses in amu."""
     n = len(masses)
-    sm = np.sqrt(np.repeat(masses * AMU2AU, 3))
     r = x - (x * masses[:, None]).sum(0) / masses.sum()
     D = []
     for k in range(3):
@@ -31,6 +29,15 @@ def project_tr(H: np.ndarray, masses: np.ndarray, x: np.ndarray) -> tuple[np.nda
         v = np.cross(np.tile(e, (n, 1)), r)
         D.append((v * np.sqrt(masses)[:, None]).ravel())
     q, _ = np.linalg.qr(np.array(D).T)
+    return q
+
+
+def project_tr(H: np.ndarray, masses: np.ndarray, x: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """(H with the six translations and rotations projected out by the mass-weighted projector, back in Cartesian units; the mass-weighted
+    H before the projection). x in bohr, masses in amu."""
+    n = len(masses)
+    sm = np.sqrt(np.repeat(masses * AMU2AU, 3))
+    q = rigid_basis(masses, x)
     P = np.eye(3 * n) - q @ q.T
     Hmw = H / np.outer(sm, sm)
     return (P @ Hmw @ P) * np.outer(sm, sm), Hmw
