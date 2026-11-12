@@ -28,27 +28,11 @@ import numpy as np
 
 M05 = Path(__file__).resolve().parents[1] / "modules" / "05_support_predictor" / "m05"
 sys.path.insert(0, str(M05))
-from learning_curve_layerA import AMU2AU, FAMILIES, HARTREE2CM, molecule_features  # noqa: E402
+from learning_curve_layerA import FAMILIES, molecule_features  # noqa: E402
+from qc_common import translation_residual, write_atomic  # noqa: E402  (numpy only, shared with hessian_grid_response_fd)
 
 TAGS = ("b3lyp", "wb97x")
 NOISE_LEVELS_CM = (0.5, 1.0, 3.0)      # label-noise estimates counted per family; 3.0 is decision 53's line
-
-
-def signed_cm(k_au: float) -> float:
-    """A mass-weighted curvature (hartree / (bohr^2 me)) as a signed frequency in cm-1."""
-    return float(np.sign(k_au) * np.sqrt(abs(k_au)) * HARTREE2CM)
-
-
-def translation_residual(H: np.ndarray, masses_amu: np.ndarray) -> tuple[float, list[float]]:
-    """max|H t| over the three unit translations and their curvatures as signed frequencies (cm-1)."""
-    H = 0.5 * (H + H.T)
-    worst, freqs = 0.0, []
-    for ax in range(3):
-        t = np.zeros(H.shape[0])
-        t[ax::3] = 1.0
-        worst = max(worst, float(np.abs(H @ t).max()))
-        freqs.append(signed_cm(t @ H @ t / (masses_amu.sum() * AMU2AU)))
-    return worst, freqs
 
 
 def molecule_row(mol_dir: Path) -> tuple[dict, dict[str, list[float]]]:
@@ -85,14 +69,6 @@ def summary(rows: list[dict], noise: dict[str, list[float]]) -> dict:
             **{f"above_{lvl:g}": int(sum(x > lvl for x in v)) for lvl in NOISE_LEVELS_CM}}
         for f, v in noise.items()}
     return out
-
-
-def write_atomic(path: Path, text: str) -> None:
-    """Text through a temp file in the same folder, moved over the target."""
-    fd, tmp = tempfile.mkstemp(dir=path.parent, suffix=".tmp")
-    with os.fdopen(fd, "w", encoding="utf-8", newline="") as fh:
-        fh.write(text)
-    os.replace(tmp, path)
 
 
 def markdown(s: dict) -> str:

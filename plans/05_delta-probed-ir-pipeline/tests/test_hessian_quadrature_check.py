@@ -9,6 +9,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "probes"))
 HQC = pytest.importorskip("hessian_quadrature_check")
+QC = pytest.importorskip("qc_common")
 
 
 def _spring_hessian(coords: np.ndarray, k: float = 0.3) -> np.ndarray:
@@ -32,7 +33,7 @@ def test_a_translation_invariant_hessian_has_no_residual_and_a_known_error_is_re
     assert worst < 1e-12 and max(abs(f) for f in freqs) < 1e-3
     eps = 1e-5
     worst, freqs = HQC.translation_residual(H + eps * np.eye(12), masses)
-    expected = math.sqrt(eps * len(masses) / (masses.sum() * HQC.AMU2AU)) * HQC.HARTREE2CM
+    expected = math.sqrt(eps * len(masses) / (masses.sum() * QC.AMU2AU)) * QC.HARTREE2CM
     assert np.isclose(worst, eps) and np.allclose(freqs, expected)
     assert HQC.translation_residual(H - eps * np.eye(12), masses)[1][0] < 0
 

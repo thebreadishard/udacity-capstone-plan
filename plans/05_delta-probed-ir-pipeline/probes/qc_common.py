@@ -1,6 +1,10 @@
-"""Constants and the translation/rotation projection shared by the anchor pipeline — numpy only, so the CC Hessian probe (pyscf), the
+"""Constants, the translation/rotation projection, the translation residual and an atomic text writer — numpy only, so the CC Hessian probe (pyscf), the
 composite tools (any python, psi4's in WSL) and the deck rehearsal (module 05's python) import one implementation instead of keeping copies."""
 from __future__ import annotations
+
+import os
+import tempfile
+from pathlib import Path
 
 import numpy as np
 
@@ -30,3 +34,29 @@ def project_tr(H: np.ndarray, masses: np.ndarray, x: np.ndarray) -> tuple[np.nda
     P = np.eye(3 * n) - q @ q.T
     Hmw = H / np.outer(sm, sm)
     return (P @ Hmw @ P) * np.outer(sm, sm), Hmw
+
+
+def signed_cm(k_au: float) -> float:
+    """A mass-weighted curvature (hartree / (bohr^2 me)) as a signed frequency in cm-1."""
+    return float(np.sign(k_au) * np.sqrt(abs(k_au)) * HARTREE2CM)
+
+
+def translation_residual(H: np.ndarray, masses_amu: np.ndarray) -> tuple[float, list[float]]:
+    """max|H t| over the three unit translations and their curvatures as signed frequencies (cm-1); both 0 for a translation-invariant
+    energy's exact Hessian."""
+    H = 0.5 * (H + H.T)
+    worst, freqs = 0.0, []
+    for ax in range(3):
+        t = np.zeros(H.shape[0])
+        t[ax::3] = 1.0
+        worst = max(worst, float(np.abs(H @ t).max()))
+        freqs.append(signed_cm(t @ H @ t / (masses_amu.sum() * AMU2AU)))
+    return worst, freqs
+
+
+def write_atomic(path: Path, text: str) -> None:
+    """Text through a temp file in the same folder, moved over the target."""
+    fd, tmp = tempfile.mkstemp(dir=path.parent, suffix=".tmp")
+    with os.fdopen(fd, "w", encoding="utf-8", newline="") as fh:
+        fh.write(text)
+    os.replace(tmp, path)
