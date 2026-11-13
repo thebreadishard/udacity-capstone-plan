@@ -205,3 +205,49 @@ after the rehearsal, the change is dated here before tetracene is read.
 probes/gvpt2_labels.py treated two modes as degenerate when their ω lay within 0.5 cm⁻¹ (`dpir.qff.degenerate_groups`): it averaged their semi-diagonal quartic constants (the builder's `phi_iijj_sym`, with overlapping pairs along a chain) and left every resonance touching them deperturbed. Degeneracy is a property of the point group: an asymmetric top has none, and a symmetric top's pair stays a pair however far the quadrature splits it. Found on 12 Nov while looking at tetracene's skipped resonances (tetracene is D2h). The labels now take the pairs from the group (`e8_symmetry.degenerate_pairs`: a mode's images under the operations span a plane, its partner is the other mode in that plane; tests/test_e8_symmetry_pairs.py) and average the raw `phi_iijj` over those pairs only. Every set was relabelled by `probes/relabel_sets.py` into `probes/results_m1/labels_symmetry_2026-11-12/` (force fields and selections unchanged; the old labels kept). Window fundamentals (550–2000 cm⁻¹), new minus old GVPT2: S2 G 12 of 432 modes changed by more than 0.05 cm⁻¹, rms 0.31, max 5.08; S2 X rms 4.50, max 64.4 (A_a848c04a21: two modes at 669.6 cm⁻¹ had 726.9 and 603.2, now 662.5 and 667.6); S2b G 43 of 959, rms 1.79, max 34.8 (A_cce0ad25a5); S2b X rms 1.37, max 18.7; S3 G tetracene max 0.67, coronene 11 of 70 modes, max 8.93 (its G labels had 31 pairs by the gap, one true pair split by 0.70 cm⁻¹ missed and a non-degenerate mode 0.2 cm⁻¹ from a pair averaged into it; now 34 pairs on G and X alike); S3 X tetracene 18 of 54, max 6.52. Benzene keeps 10 pairs.
 
 For the read: the training sets and targets are the relabelled ones (`labels_symmetry_2026-11-12/sets.json` and `targets.json`); the S2b read used is its repeat on those labels (S2b amendment 2); a degenerate pair counts once when it is a pair of the point group named in the target's label file (`degenerate_pairs`), not when two modes lie within 0.5 cm⁻¹ — tetracene then has no pair and coronene 34. The models, the line and the verdict rule are unchanged.
+
+## Amendment 7 (13 November 2026, 17:2x — before the second read, the first standing)
+
+The read of 12 November stands on the record and is not withdrawn. This amendment registers a **second** read of the same targets
+against the same models, differing in one thing: what is done with a mode that second-order perturbation theory cannot state.
+
+### Why a second read
+
+The first read gave the 'other' family rms 41.18 cm⁻¹ against the line of 3.0, and two of its 25 modes carried it: coronene's mode 36
+(807.1 cm⁻¹, error −190.7) and mode 24 (642.9, −75.3). The other 23 give 3.84. Those two modes are marked by
+`dpir.vpt2_domain` as outside VPT2's domain (strain 0.222 and 0.103; `GoalGathering/notes/Design_2026-11-13_VPT2_Domain_Marks.md`),
+and the diagnosis is recorded in the obstacle ledger for 13 November: not the grid (two grids agree on φ_iiii within 0.7 %), not a
+resonance (GVPT2 = DVPT2; the one near-resonant triple has φ = 0 by symmetry), but D6h forbidding the cubic constants that cancel the
+quartic term, so the whole quartic term lands on the fundamental. A fundamental the method cannot state is not a prediction target.
+
+### What the second read does
+
+1. Every label is the relabelled one of 13 November (`labels_domain_2026-11-13`), which carries a `vpt2_domain` record. Those labels
+   are the 12 November ones to 4.5e-13 cm⁻¹ on every mode of all 78 label files, so this read differs from the first by the exclusion
+   and by nothing else; the check is in the scratchpad and its result in the ledger.
+2. `probes/s3_read.py --marked exclude`: a marked mode is left out of its family's statistics, on the targets **and** on the training
+   molecules, and the report names how many went from each. Four training modes in three molecules go with it.
+3. The reading rule is unchanged: line 3.0 cm⁻¹ per family, the verdict model from the S2b read, `transfer_holds` as registered.
+4. A control read with `--marked keep` is run beside it and must reproduce the first read's numbers. If it does not, the pipeline
+   changed something it should not have, and the second read is void.
+
+### What is reported apart, not inside
+
+The two excluded coronene modes are reported with the fundamentals the non-perturbative block gives them (TASKS 209:
+mode 24 681.45 cm⁻¹, mode 36 969.41, in `probes/results_m1/solved_modes_2026-11-13/coronene/solved_modes_pair.md`) beside the
+network's prediction for them. They are not folded into any family rms, because an rms over two label methods is a number nobody can
+read.
+
+### What this read cannot do, said in advance
+
+Excluding the two modes does not make the model right about them. Their solved shifts are +38.5 and +162.3 cm⁻¹ where the network
+predicts about −10, and the training set holds nothing like them (TASKS 210: of 3,129 modes in 57 force fields, 8 reach a strain of
+0.08 and not one is labelable). So the second read answers a narrower question than the first appeared to: **does the learned shift
+carry on the modes our method can state?** Whether it carries on modes like coronene's 24 and 36 is not answered here and needs a
+corpus that contains them.
+
+### The prediction, before the read
+
+The 'other' family reads near 3.84 cm⁻¹ and therefore close to the line, while CH-oop and ring-ip move little, because their worst
+modes (coronene 823.1 and 780.4, errors −23.0 and −21.8) are mode 36's x-matrix partners and are **not** themselves marked, so they
+stay in. If 'other' comes out far from 3.84, something other than these two modes is at work and this amendment's reasoning is wrong.
