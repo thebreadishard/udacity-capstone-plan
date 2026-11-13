@@ -1,0 +1,52 @@
+{
+ "id": "coronene",
+ "block": "pair",
+ "marked": [
+  24,
+  36
+ ],
+ "modes": [
+  {
+   "mode": 24,
+   "omega_cm": 642.9393964152789,
+   "nu_vpt2_cm": 709.1574442449655,
+   "partner": 36,
+   "partner_share": 0.10894807687440244,
+   "route_spread_cm": 1.501276654002936,
+   "block": [
+    24,
+    36
+   ],
+   "outside_cm": 14.962604187740226,
+   "covered": true,
+   "second_order_cm": 694.1948400572253,
+   "solved": true,
+   "block_exact_cm": 666.4843287073395,
+   "quanta": 60,
+   "overlap": 0.9247145724446515,
+   "correction_cm": -27.710511349885792,
+   "nu_corrected_cm": 681.4469328950797
+  },
+  {
+   "mode": 36,
+   "omega_cm": 807.0896514159117,
+   "nu_vpt2_cm": 986.1894645574348,
+   "partner": 24,
+   "partner_share": 0.08678962459513793,
+   "route_spread_cm": 1.501276654002936,
+   "block": [
+    36,
+    24
+   ],
+   "outside_cm": 55.20507744327858,
+   "covered": true,
+   "second_order_cm": 930.9843871141562,
+   "solved": true,
+   "block_exact_cm": 914.2031771337265,
+   "quanta": 60,
+   "overlap": 0.924714572444628,
+   "correction_cm": -16.781209980429708,
+   "nu_corrected_cm": 969.4082545770051
+  }
+ ]
+}

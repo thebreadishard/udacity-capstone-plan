@@ -45,6 +45,7 @@ import glob
 import itertools
 import json
 import os
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 
 import numpy as np
@@ -92,6 +93,19 @@ class Harmonic:
         return self.omega * HARTREE_CM
 
 
+@dataclass(frozen=True)
+class BlockQuartic:
+    """A block's quartic constants in cm⁻¹, keyed by sorted index tuple, and the spread of the routes that reached each one."""
+
+    constants: dict[tuple[int, int, int, int], float]
+    spread: dict[tuple[int, int, int, int], float]
+
+    @property
+    def worst_spread(self) -> float:
+        """The largest disagreement between routes over the block, cm⁻¹ — zero where no constant had a second route."""
+        return max(self.spread.values(), default=0.0)
+
+
 @dataclass
 class QFF:
     """Assembled quartic force field in cm⁻¹, with both finite-difference routes kept."""
@@ -102,12 +116,21 @@ class QFF:
     phi4: np.ndarray  # (n, n) φ_iijj, mean of the two routes off the diagonal
     route_a: np.ndarray  # (n, n) displace j, read H_ii
     route_b: np.ndarray  # (n, n) displace i, read H_jj
+    phi_ijkk: np.ndarray  # (n, n, n) φ_ijkk = d²H_ij/dq_k², every semi-diagonal quartic constant the displaced Hessians hold
     pairs: list[tuple[int, int]] = field(default_factory=list)  # the point group's degenerate pairs (dpir.symmetry)
 
     @property
     def route_disagreement(self) -> np.ndarray:
         """|route a − route b| on the strict upper triangle, as a flat array."""
         return np.abs(self.route_a - self.route_b)[np.triu_indices(len(self.omega_cm), 1)]
+
+    def block_quartic(self, modes: Sequence[int]) -> BlockQuartic:
+        """This force field's `block_quartic` (the module function) on its own tensor."""
+        return block_quartic(self.phi_ijkk, modes)
+
+    def block_cubic(self, modes: Sequence[int]) -> dict[tuple[int, int, int], float]:
+        """This force field's `block_cubic` (the module function) on its own cubic tensor."""
+        return block_cubic(self.phi3, modes)
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -276,6 +299,43 @@ def align_degenerate_subspaces(harm: Harmonic, recs: list[HessianRecord], i0: in
 # ----------------------------------------------------------------------------------------------------------------------
 
 
+def _checked_block(modes: Sequence[int]) -> list[int]:
+    """A block's modes, refused unless they are distinct and few enough for a semi-diagonal force field to describe."""
+    out = list(modes)
+    if len(set(out)) != len(out) or not out:
+        raise ValueError(f"block {out}: distinct modes")
+    if len(out) > 2:
+        raise ValueError(f"block {out}: a block of {len(out)} modes needs quartic constants with four distinct indices, which "
+                         f"displacements along one mode at a time never measure")
+    return out
+
+
+def block_quartic(phi_ijkk: np.ndarray, modes: Sequence[int]) -> BlockQuartic:
+    """Every quartic constant of a block of modes, keyed by its sorted index tuple, in cm⁻¹, with the spread of the routes that
+    reached it.
+
+    φ_ijkl is fully symmetric, but these Hessians were taken along one mode at a time, so only the constants with a repeated pair are
+    measured: φ_ijkk for any i, j, k. A block of two modes needs exactly those (φ_iiii, φ_iiij, φ_iijj, φ_ijjj, φ_jjjj), and a block
+    of three or more also needs φ_ijkl with four distinct indices, which no displacement along a single mode reaches — so a larger
+    block is refused rather than filled with zeros. Of a two-mode block's five constants only φ_iijj has two routes (displace j and
+    read H_ii, or displace i and read H_jj); the others have one, and their spread is zero because nothing checks them, not because
+    they are certain.
+    """
+    modes = _checked_block(modes)
+    routes: dict[tuple[int, int, int, int], list[float]] = {}
+    for i, j, k in itertools.product(modes, repeat=3):
+        routes.setdefault(tuple(sorted((i, j, k, k))), []).append(float(phi_ijkk[i, j, k]))
+    return BlockQuartic({key: float(np.mean(v)) for key, v in routes.items()},
+                        {key: float(max(v) - min(v)) for key, v in routes.items()})
+
+
+def block_cubic(phi_ijk: np.ndarray, modes: Sequence[int]) -> dict[tuple[int, int, int], float]:
+    """Every cubic constant of a block of modes, keyed by its sorted index tuple, in cm⁻¹. The cubic tensor is complete, so each one
+    is read once."""
+    modes = _checked_block(modes)
+    return {key: float(phi_ijk[key]) for key in (tuple(sorted(t)) for t in itertools.product(modes, repeat=3))}
+
+
 def assemble_qff(omega_cm: np.ndarray, H0: np.ndarray, Hp: dict[int, np.ndarray], Hn: dict[int, np.ndarray], disp: float,
                  pairs: list[tuple[int, int]]) -> QFF:
     """Central differences of the reduced-coordinate Hessians ``H0`` (reference), ``Hp[i]``/``Hn[i]`` (mode i displaced ±disp); ``pairs``
@@ -291,6 +351,9 @@ def assemble_qff(omega_cm: np.ndarray, H0: np.ndarray, Hp: dict[int, np.ndarray]
         routes = ((Hp[i][j, k] - Hn[i][j, k]) / (2 * d), (Hp[j][k, i] - Hn[j][k, i]) / (2 * d), (Hp[k][i, j] - Hn[k][i, j]) / (2 * d))
         phi3[i, j, k] = np.mean(routes)
         spread[i, j, k] = max(routes) - min(routes)
+    phi_ijkk = np.zeros((n, n, n))
+    for i, j, k in itertools.product(range(n), repeat=3):
+        phi_ijkk[i, j, k] = (Hp[k][i, j] + Hn[k][i, j] - 2 * H0[i, j]) / d**2   # displace k, read the Hessian element (i, j)
     phi4 = np.zeros((n, n))
     route_a = np.zeros((n, n))
     route_b = np.zeros((n, n))
@@ -302,8 +365,8 @@ def assemble_qff(omega_cm: np.ndarray, H0: np.ndarray, Hp: dict[int, np.ndarray]
             route_a[i, j] = (Hp[j][i, i] + Hn[j][i, i] - 2 * H0[i, i]) / d**2  # displace j, read H_ii
             route_b[i, j] = (Hp[i][j, j] + Hn[i][j, j] - 2 * H0[j, j]) / d**2  # displace i, read H_jj
             phi4[i, j] = 0.5 * (route_a[i, j] + route_b[i, j])
-    return QFF(np.array(omega_cm, float), phi3 * HARTREE_CM, spread * HARTREE_CM, phi4 * HARTREE_CM, route_a * HARTREE_CM, route_b * HARTREE_CM,
-               [tuple(p) for p in pairs])
+    return QFF(np.array(omega_cm, float), phi3 * HARTREE_CM, spread * HARTREE_CM, phi4 * HARTREE_CM, route_a * HARTREE_CM,
+               route_b * HARTREE_CM, phi_ijkk * HARTREE_CM, [tuple(p) for p in pairs])
 
 
 def qff_from_records(recs: list[HessianRecord], disp: float, allow_noisy: bool = False) -> tuple[QFF, Harmonic, HessianRecord, dict]:
@@ -529,7 +592,8 @@ def report(cache_dir: str, recs: list[HessianRecord], qff: QFF, harm: Harmonic, 
         pycol = f"{py[i]:.1f}" if py else "—"
         lines.append(f"| {i} | {w[i]:.1f} | {nu_raw[i]:.1f} | {nu_raw[i] - w[i]:+.1f} | {nu_sym[i]:.1f} | {nu_sym[i] - w[i]:+.1f} | {pycol} | {tag} |")
     arrays = dict(omega_cm=w, phi_ijk=qff.phi3, phi_iijj=qff.phi4, phi_iijj_route_a=qff.route_a, phi_iijj_route_b=qff.route_b, phi_iijj_sym=phi4s,
-                  degenerate_pairs=np.array(qff.pairs, dtype=int).reshape(-1, 2), chi_raw=chi_raw, chi_sym=chi_sym, nu_raw=nu_raw, nu_sym=nu_sym)
+                  phi_ijkk=qff.phi_ijkk, degenerate_pairs=np.array(qff.pairs, dtype=int).reshape(-1, 2), chi_raw=chi_raw, chi_sym=chi_sym,
+                  nu_raw=nu_raw, nu_sym=nu_sym)
     return "\n".join(lines) + "\n", arrays
 
 

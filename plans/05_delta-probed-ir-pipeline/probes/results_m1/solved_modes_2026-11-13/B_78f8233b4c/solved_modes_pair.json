@@ -1,0 +1,26 @@
+{
+ "id": "B_78f8233b4c",
+ "block": "pair",
+ "marked": [
+  10
+ ],
+ "modes": [
+  {
+   "mode": 10,
+   "omega_cm": 509.352753402354,
+   "nu_vpt2_cm": 311.64298087648626,
+   "partner": 53,
+   "partner_share": 0.07183952679778764,
+   "route_spread_cm": 1.398521348673512,
+   "block": [
+    10,
+    53
+   ],
+   "outside_cm": -191.81240011953184,
+   "covered": false,
+   "second_order_cm": 503.4553809960181,
+   "solved": false,
+   "reason": "the potential of the block (10, 53) falls back to its origin at q = 5.6, inside 1.5 times the reach 15.5 of the largest basis: a variational answer there is the runaway, not a fundamental; this block needs a measured potential"
+  }
+ ]
+}

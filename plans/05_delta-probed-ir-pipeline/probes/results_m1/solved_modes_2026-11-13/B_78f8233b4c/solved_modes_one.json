@@ -1,0 +1,29 @@
+{
+ "id": "B_78f8233b4c",
+ "block": "one",
+ "marked": [
+  10
+ ],
+ "modes": [
+  {
+   "mode": 10,
+   "omega_cm": 509.352753402354,
+   "nu_vpt2_cm": 311.64298087648626,
+   "partner": 53,
+   "partner_share": 0.07183952679778764,
+   "route_spread_cm": 0.0,
+   "block": [
+    10
+   ],
+   "outside_cm": -292.03901017417013,
+   "covered": false,
+   "second_order_cm": 603.6819910506564,
+   "solved": true,
+   "block_exact_cm": 655.6619466699813,
+   "quanta": 60,
+   "overlap": 0.8962695126628304,
+   "correction_cm": 51.97995561932487,
+   "reason": "the block does not cover the breakdown: VPT2 puts -292.0 cm-1 outside it, over 0.10 x omega = 50.9"
+  }
+ ]
+}

@@ -1,0 +1,52 @@
+{
+ "id": "B_410ac0fb2f",
+ "block": "pair",
+ "marked": [
+  8,
+  11
+ ],
+ "modes": [
+  {
+   "mode": 8,
+   "omega_cm": 518.097498275226,
+   "nu_vpt2_cm": 618.150866632881,
+   "partner": 12,
+   "partner_share": 0.07859560036731424,
+   "route_spread_cm": 0.6867262893134694,
+   "block": [
+    8,
+    12
+   ],
+   "outside_cm": -339.23614073727606,
+   "covered": false,
+   "second_order_cm": 957.3870073701571,
+   "solved": true,
+   "block_exact_cm": 750.8733837281939,
+   "quanta": 60,
+   "overlap": 0.8959126354544059,
+   "correction_cm": -206.51362364196325,
+   "reason": "the block does not cover the breakdown: VPT2 puts -339.2 cm-1 outside it, over 0.10 x omega = 51.8"
+  },
+  {
+   "mode": 11,
+   "omega_cm": 593.6609110588377,
+   "nu_vpt2_cm": 461.67583003416314,
+   "partner": 10,
+   "partner_share": 0.0700063706337716,
+   "route_spread_cm": 0.14558749224426037,
+   "block": [
+    11,
+    10
+   ],
+   "outside_cm": -169.37036521218226,
+   "covered": false,
+   "second_order_cm": 631.0461952463454,
+   "solved": true,
+   "block_exact_cm": 694.7439792937412,
+   "quanta": 60,
+   "overlap": 0.7723034783695979,
+   "correction_cm": 63.69778404739577,
+   "reason": "the block does not cover the breakdown: VPT2 puts -169.4 cm-1 outside it, over 0.10 x omega = 59.4"
+  }
+ ]
+}

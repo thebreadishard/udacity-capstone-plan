@@ -224,3 +224,64 @@ def test_imaginary_mode_is_an_error(model_molecule):
     H = Msqrt[:, None] * (q @ np.diag(lam) @ q.T) * Msqrt[None, :]
     with pytest.raises(ValueError, match="imaginary"):
         harmonic(H, symbols, geom)
+def test_the_quartic_tensor_is_exact_on_the_model_potential(model_molecule):
+    """The model holds φ_iiii and φ_iijj and nothing else, so φ_ijkk must be the model's φ4 on the diagonal of (i, j) and zero off it."""
+    recs, A_true, _phi3, phi4 = model_records(model_molecule, 0.0)
+    qff, harm, *_ = qff_from_records(recs, DISP)
+    P = np.rint(np.linalg.pinv(A_true) @ harm.A)
+    expected = np.einsum("ak,ai,kj->ij", phi4, P**2, P**2) * HARTREE_CM
+    n = len(OMEGA)
+    for i in range(n):
+        np.testing.assert_allclose(qff.phi_ijkk[i, i, :], expected[i, :], rtol=1e-7, atol=1e-6)
+        for j in range(n):
+            if i != j:
+                np.testing.assert_allclose(qff.phi_ijkk[i, j, :], 0.0, atol=1e-6)
+
+
+def test_the_tensor_holds_the_pair_matrix_it_generalises():
+    n = 3
+    w = np.array([500.0, 800.0, 1200.0])
+    H0 = np.diag(w) / HARTREE_CM
+    rng = np.random.default_rng(7)
+    Hp, Hn = {}, {}
+    for k in range(n):
+        a, b = (rng.normal(0, 1e-4, (n, n)) for _ in range(2))
+        Hp[k], Hn[k] = H0 + (a + a.T) / 2, H0 + (b + b.T) / 2
+    q = assemble_qff(w, H0, Hp, Hn, DISP, [])
+    for i in range(n):
+        assert q.phi_ijkk[i, i, i] == pytest.approx(q.phi4[i, i], rel=1e-12)
+        for j in range(n):
+            if i != j:
+                assert q.phi_ijkk[i, i, j] == pytest.approx(q.route_a[i, j], rel=1e-12)   # displace j, read H_ii
+                assert q.phi_ijkk[j, j, i] == pytest.approx(q.route_b[i, j], rel=1e-12)   # displace i, read H_jj
+    assert q.phi_ijkk.shape == (n, n, n)
+    np.testing.assert_allclose(q.phi_ijkk, q.phi_ijkk.transpose(1, 0, 2), rtol=1e-12)      # symmetric in the Hessian's two indices
+
+
+def test_a_block_of_two_gives_its_five_constants_and_a_larger_one_is_refused():
+    n = 4
+    w = np.array([500.0, 800.0, 1200.0, 1600.0])
+    H0 = np.diag(w) / HARTREE_CM
+    rng = np.random.default_rng(11)
+    Hp, Hn = {}, {}
+    for k in range(n):
+        a, b = (rng.normal(0, 1e-4, (n, n)) for _ in range(2))
+        Hp[k], Hn[k] = H0 + (a + a.T) / 2, H0 + (b + b.T) / 2
+    q = assemble_qff(w, H0, Hp, Hn, DISP, [])
+    block = q.block_quartic([1, 3])
+    assert sorted(block.constants) == [(1, 1, 1, 1), (1, 1, 1, 3), (1, 1, 3, 3), (1, 3, 3, 3), (3, 3, 3, 3)]
+    assert block.constants[(1, 1, 1, 1)] == pytest.approx(q.phi4[1, 1])
+    assert block.constants[(1, 1, 1, 3)] == pytest.approx(q.phi_ijkk[1, 3, 1])     # displace mode 1, read H_13
+    # phi_iijj is the only constant of a two-mode block with two routes: it is their mean, and phi4 is the same mean
+    assert block.constants[(1, 1, 3, 3)] == pytest.approx(0.5 * (q.phi_ijkk[1, 1, 3] + q.phi_ijkk[3, 3, 1]))
+    assert block.constants[(1, 1, 3, 3)] == pytest.approx(q.phi4[1, 3])
+    assert block.spread[(1, 1, 3, 3)] == pytest.approx(abs(q.phi_ijkk[1, 1, 3] - q.phi_ijkk[3, 3, 1]))
+    assert block.worst_spread == pytest.approx(block.spread[(1, 1, 3, 3)]) and block.worst_spread > 0
+    assert [block.spread[k] for k in block.spread if k != (1, 1, 3, 3)] == [0.0] * 4   # one route each, so nothing checks them
+    alone = q.block_quartic([3])
+    assert alone.constants == {(3, 3, 3, 3): pytest.approx(q.phi4[3, 3])} and alone.worst_spread == 0.0
+    with pytest.raises(ValueError, match="four distinct indices"):
+        q.block_quartic([0, 1, 2])
+    for bad in ([], [1, 1]):
+        with pytest.raises(ValueError, match="distinct modes"):
+            q.block_quartic(bad)
