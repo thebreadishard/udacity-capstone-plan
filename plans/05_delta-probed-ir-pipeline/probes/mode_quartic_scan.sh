@@ -12,11 +12,14 @@ for a in "$@"; do if [ "$a" = "--dry-run" ]; then MODE=$a; else MODES+=("$a"); f
 PW=/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline
 CAP_MB=${CAP_MB:-4096}
 THREADS=${THREADS:-8}
+STEPS=${STEPS:-0.5}
+GRIDS=${GRIDS:-"75,302 99,590"}
 say() { echo "=== (MQS) $* $(date '+%F %T')"; }
 
-[ -n "$MODE" ] || say "start: modes ${MODES[*]} of $SETTING, cap $CAP_MB MB, $THREADS threads, pyscf 2.15.0"
-ARGS="probes/mode_quartic_scan.py $PW/$SETTING $PW/$OUT --modes ${MODES[*]} --threads $THREADS $MODE"
+[ -n "$MODE" ] || say "start: modes ${MODES[*]} of $SETTING, steps $STEPS, grids $GRIDS, cap $CAP_MB MB, $THREADS threads, pyscf 2.15.0"
+ARGS="probes/mode_quartic_scan.py $PW/$SETTING $PW/$OUT --modes ${MODES[*]} --steps $STEPS --grids $GRIDS --threads $THREADS $MODE"
 MSYS_NO_PATHCONV=1 wsl -e bash -c "export PYSCF_TMPDIR=\$HOME/qc_tmp TMPDIR=\$HOME/qc_tmp OMP_NUM_THREADS=$THREADS PYTHONUNBUFFERED=1; \
   mkdir -p \$HOME/qc_tmp; cd $PW && bash $PW/probes/wsl_capped.sh $CAP_MB -- /usr/bin/time -f '(MQS) max RSS %M kB, wall %e s' \
   \$HOME/qc215/bin/python $ARGS" || { say "RUN FAILED: the quartic scan (exit $?)"; exit 1; }
-[ -n "$MODE" ] || say "done: $(grep -o '"reading": "[A-Z]*"' "$(cd "$(dirname "$0")/.." && pwd)/$OUT/scan.json" | cut -d'"' -f4 | tr '\n' ' ')"
+[ -n "$MODE" ] || say "done: $(grep -oE '"(step_)?reading": "[A-Z_]*"' "$(cd "$(dirname "$0")/.." && pwd)/$OUT/scan.json" \
+  | cut -d'"' -f4 | tr '\n' ' ')"
