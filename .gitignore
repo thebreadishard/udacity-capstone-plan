@@ -84,6 +84,11 @@ plans/*/**/worker_stdout.txt
 # a laptop run's live log (TASKS 195, 10 Nov 2026): a commit's pre-commit stash rewrote chain42.log and chain44.log under their runners;
 # runspec refuses to launch a run whose log git tracks, and tools/backup_data.py mirrors probes/results_m1 whole
 plans/*/probes/results_m1/chain*.log
+# 13 Nov 2026: the same for the cation runspecs' live logs, found when `runspec.py validate` refused all three. Only the bare names a
+# runner writes into; the timestamped copies a relaunch rotates away are finished evidence and stay tracked.
+plans/*/probes/results_m1/cation_analytic.log
+plans/*/probes/results_m1/cation_analytic_8g.log
+plans/*/probes/results_m1/cation_analytic_12g.log
 # corpus manifest snapshots, editor backups, notebook execution logs (re-runnable; the four tracked stay)
 plans/*/modules/*/corpus/manifest.csv.pre_*
 *.bak

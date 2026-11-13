@@ -48,3 +48,20 @@ def test_a_job_that_writes_nothing_prints_no_progress(tmp_path):
 def test_missing_options_are_refused(tmp_path):
     r = subprocess.run([BASH, SCRIPT.as_posix(), "--tag", "T", "--", "true"], capture_output=True, text=True, timeout=SHELL_HANG_GUARD_S, check=False)
     assert r.returncode == 2 and "usage" in r.stderr
+
+
+def test_the_cpu_heartbeat_follows_a_busy_command(tmp_path):
+    """TASKS 208: a command that computes without writing anything still proves it is alive."""
+    body = "python -c \"import time; t=time.time()\nwhile time.time()-t < 4: pass\"\n"
+    r = _run(tmp_path, body, "--cpu-heartbeat")
+    assert r.returncode == 0, r.stderr
+    beats = [line for line in r.stdout.splitlines() if "cpu: the command's tree at" in line]
+    assert beats, r.stdout
+    assert "progress:" not in r.stdout
+
+
+def test_the_cpu_heartbeat_stays_quiet_on_a_sleeping_command(tmp_path):
+    """A process that waits is what the gap alarm is for, so it must not be given a heartbeat."""
+    r = _run(tmp_path, "sleep 4\n", "--cpu-heartbeat")
+    assert r.returncode == 0
+    assert "cpu: the command's tree at" not in r.stdout
