@@ -1,0 +1,36 @@
+{
+ "setting": "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/routea_server_2026-11-10/routea/coronene/G",
+ "h": 0.5,
+ "grids": [
+  "75,302",
+  "99,590"
+ ],
+ "modes": {
+  "36": {
+   "omega_qff_cm": 807.0896514159117,
+   "phi_qff_cm": 711.0647894175921,
+   "75,302": {
+    "omega_cm": 811.4062751353308,
+    "phi_cm": 459.95376695790844
+   },
+   "99,590": {
+    "omega_cm": 811.8993735588291,
+    "phi_cm": 456.64141220365275
+   },
+   "reading": "UNRESOLVED"
+  },
+  "24": {
+   "omega_qff_cm": 642.9393964152789,
+   "phi_qff_cm": 129.96424368988372,
+   "75,302": {
+    "omega_cm": 643.7258764507001,
+    "phi_cm": 107.27134079395805
+   },
+   "99,590": {
+    "omega_cm": 643.4157621094708,
+    "phi_cm": 106.63930684996
+   },
+   "reading": "POTENTIAL"
+  }
+ }
+}
