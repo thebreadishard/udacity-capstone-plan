@@ -1,0 +1,6 @@
+{"rule": "S3's targets (PreRegistration_2026-11-02_S3_Route_A_Transfer.md): tetracene and coronene, never in S2 or S2b; each its own scaffold",
+ "selected": [
+  {"id": "tetracene", "smiles": "c1ccc2cc3cc4ccccc4cc3cc2c1", "n_atoms": 30, "rigid": true, "scaffold": "c1ccc2cc3cc4ccccc4cc3cc2c1"},
+  {"id": "coronene", "smiles": "c1cc2ccc3ccc4ccc5ccc6ccc1c1c2c3c4c5c61", "n_atoms": 36, "rigid": true,
+   "scaffold": "c1cc2ccc3ccc4ccc5ccc6ccc1c1c2c3c4c5c61"}
+ ]}
