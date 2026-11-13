@@ -1,0 +1,69 @@
+{
+ "setting": "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/routea_server_2026-11-10/routea/coronene/G",
+ "steps": [
+  0.25,
+  0.5,
+  1.0
+ ],
+ "grids": [
+  "75,302"
+ ],
+ "measured": [
+  {
+   "mode": 36,
+   "grid": "75,302",
+   "step": 0.25,
+   "omega_cm": 807.6985089431774,
+   "phi_cm": 637.9265377937176
+  },
+  {
+   "mode": 36,
+   "grid": "75,302",
+   "step": 0.5,
+   "omega_cm": 811.4062751353308,
+   "phi_cm": 459.95376695790844
+  },
+  {
+   "mode": 36,
+   "grid": "75,302",
+   "step": 1.0,
+   "omega_cm": 834.5655424638381,
+   "phi_cm": 182.0425604130971
+  },
+  {
+   "mode": 24,
+   "grid": "75,302",
+   "step": 0.25,
+   "omega_cm": 643.3763422609774,
+   "phi_cm": 124.04898988508808
+  },
+  {
+   "mode": 24,
+   "grid": "75,302",
+   "step": 0.5,
+   "omega_cm": 643.7258764507001,
+   "phi_cm": 107.27134079395805
+  },
+  {
+   "mode": 24,
+   "grid": "75,302",
+   "step": 1.0,
+   "omega_cm": 647.1847314381296,
+   "phi_cm": 65.7650813440273
+  }
+ ],
+ "modes": {
+  "36": {
+   "omega_qff_cm": 807.0896514159117,
+   "phi_qff_cm": 711.0647894175921,
+   "step_reading": "STEP_DEPENDENT",
+   "phi_extrapolated_cm": 697.2507947389872
+  },
+  "24": {
+   "omega_qff_cm": 642.9393964152789,
+   "phi_qff_cm": 129.96424368988372,
+   "step_reading": "STEP_DEPENDENT",
+   "phi_extrapolated_cm": 129.6415395821314
+  }
+ }
+}

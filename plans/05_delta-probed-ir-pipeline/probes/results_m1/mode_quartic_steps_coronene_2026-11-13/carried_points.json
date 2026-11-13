@@ -1,0 +1,60 @@
+{
+ "reason": "TASKS 207 (b): carry the quartic scan's computed points into the step run's directory under their displacement names, so the step\nstudy recomputes none of them. The first run's directory is left exactly as it is (its scan.json is the registered grid read); each copy\nnames its source. Offsets k of that run were multiples of h = 0.5, so k = +-1 is a displacement of +-0.5 and k = +-2 of +-1.0.",
+ "first_run_step": 0.5,
+ "points": [
+  {
+   "from": "probes/results_m1/mode_quartic_coronene_2026-11-13/75_302/Q0.json",
+   "to": "probes/results_m1/mode_quartic_steps_coronene_2026-11-13/75_302/Q0.json",
+   "displacement": 0.0,
+   "energy_hartree": -921.8787010615779
+  },
+  {
+   "from": "probes/results_m1/mode_quartic_coronene_2026-11-13/75_302/mode36_+1.json",
+   "to": "probes/results_m1/mode_quartic_steps_coronene_2026-11-13/75_302/mode36_+0.500000.json",
+   "displacement": 0.5,
+   "energy_hartree": -921.8782334741406
+  },
+  {
+   "from": "probes/results_m1/mode_quartic_coronene_2026-11-13/75_302/mode36_-1.json",
+   "to": "probes/results_m1/mode_quartic_steps_coronene_2026-11-13/75_302/mode36_-0.500000.json",
+   "displacement": -0.5,
+   "energy_hartree": -921.8782334741384
+  },
+  {
+   "from": "probes/results_m1/mode_quartic_coronene_2026-11-13/75_302/mode36_+2.json",
+   "to": "probes/results_m1/mode_quartic_steps_coronene_2026-11-13/75_302/mode36_+1.000000.json",
+   "displacement": 1.0,
+   "energy_hartree": -921.876765221087
+  },
+  {
+   "from": "probes/results_m1/mode_quartic_coronene_2026-11-13/75_302/mode36_-2.json",
+   "to": "probes/results_m1/mode_quartic_steps_coronene_2026-11-13/75_302/mode36_-1.000000.json",
+   "displacement": -1.0,
+   "energy_hartree": -921.8767652210888
+  },
+  {
+   "from": "probes/results_m1/mode_quartic_coronene_2026-11-13/75_302/mode24_+1.json",
+   "to": "probes/results_m1/mode_quartic_steps_coronene_2026-11-13/75_302/mode24_+0.500000.json",
+   "displacement": 0.5,
+   "energy_hartree": -921.8783331598893
+  },
+  {
+   "from": "probes/results_m1/mode_quartic_coronene_2026-11-13/75_302/mode24_-1.json",
+   "to": "probes/results_m1/mode_quartic_steps_coronene_2026-11-13/75_302/mode24_-0.500000.json",
+   "displacement": -0.5,
+   "energy_hartree": -921.8783331598936
+  },
+  {
+   "from": "probes/results_m1/mode_quartic_coronene_2026-11-13/75_302/mode24_+2.json",
+   "to": "probes/results_m1/mode_quartic_steps_coronene_2026-11-13/75_302/mode24_+1.000000.json",
+   "displacement": 1.0,
+   "energy_hartree": -921.8772141809445
+  },
+  {
+   "from": "probes/results_m1/mode_quartic_coronene_2026-11-13/75_302/mode24_-2.json",
+   "to": "probes/results_m1/mode_quartic_steps_coronene_2026-11-13/75_302/mode24_-1.000000.json",
+   "displacement": -1.0,
+   "energy_hartree": -921.8772141809577
+  }
+ ]
+}

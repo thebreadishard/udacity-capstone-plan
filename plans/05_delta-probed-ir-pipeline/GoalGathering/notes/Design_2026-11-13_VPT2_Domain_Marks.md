@@ -49,13 +49,20 @@ marked mode is not discarded but solved without perturbation theory (TASKS 209).
 
 ## 4. What a mark means
 
-A marked mode is a measurement this method cannot make. Nothing is dropped and nothing is silently kept: the marks travel in the label,
-and a reader that cannot treat a marked mode calls `require_unmarked`, which raises and names the modes. A reader that can treat them
-says so in its own words. A label written before this check carries no `vpt2_domain` record, and `require_unmarked` refuses that too
-rather than reading it as clean.
+A marked mode is a measurement this method cannot make. Nothing is dropped and nothing is silently kept: the marks travel in the label
+and onto a loaded molecule, and a G mode whose xtb partner is marked is marked too, because its Δ_xtb feature would be a number the
+theory could not state. Every reader states what it does with them, through `marked_to_drop` and one of `MARKED_POLICIES` — `raise`
+(refuse the label), `exclude` (leave the modes out and report how many went) or `keep` (use them, for a comparison that means to show
+what they do). There is no default: `probes/s3_read.py` takes a required `--marked`. A label written before this check carries no
+`vpt2_domain` record, and that is refused under every policy, because unchecked is not clean — relabel it.
 
-## 5. What is still open
+## 5. The quartic constants are right (settled 13 November 2026)
 
-φ_iiii(36) itself is not pinned: the displaced-Hessian QFF has 711.1 cm⁻¹ where the energy stencil at h = 0.5 has 456.6, 36 % apart.
-The run `mode_quartic_steps_coronene` (h = 0.25, 0.5, 1.0 at route A's own grid) says whether the energy route is converged in the step.
-If it is not, the quartic truncation itself is the limit and a sextic term along these modes is the next question, with a cost.
+φ_iiii(36) looked unpinned — the displaced-Hessian QFF had 711.1 cm⁻¹ where the energy stencil at h = 0.5 had 456.6, 36 % apart. The run
+`mode_quartic_steps_coronene` (h = 0.25, 0.5, 1.0 at route A's own grid) settled it: the stencil's leading error goes as h², and the
+h → 0 value of its two smallest steps is 697.25 cm⁻¹ for mode 36 (1.9 % from the QFF) and 129.64 for mode 24 (0.25 %). The gap was the
+step, not the routes. The force fields are sound, and what these marks catch is the theory, not the data.
+
+Beside that, the fitted h² coefficient gives a sixth derivative near −5,700 cm⁻¹ — at q = 1 that is 27 % of the quartic term, so the
+mode's potential is not quartic over the amplitude it is sampled on. That is a second, independent reason why a quartic force field
+perturbed to second order cannot state this fundamental, and it points the same way: solve the mode's own potential (TASKS 209).
