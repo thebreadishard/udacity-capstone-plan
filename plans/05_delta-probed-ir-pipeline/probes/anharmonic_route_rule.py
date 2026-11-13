@@ -54,26 +54,40 @@ def route_rule(s2b_read: dict[str, Any], s3_read: dict[str, Any]) -> dict[str, d
     return {fa: route_for_family(verdicts.get(fa), families.get(fa)) for fa in sorted(set(verdicts) | set(families))}
 
 
+def no_shift_rms(s3_read: dict[str, Any]) -> dict[str, float]:
+    """Per family, the rms of the true shift over the target modes the read kept: the error a harmonic position carries."""
+    truths: dict[str, list[float]] = {}
+    for rows in s3_read["read"]["rows"].values():
+        for family, truth in zip(rows["family"], rows["truth"], strict=True):
+            truths.setdefault(family, []).append(truth)
+    return {fa: math.sqrt(math.fsum(t * t for t in ts) / len(ts)) for fa, ts in truths.items()}
+
+
 def report(res: dict[str, dict[str, Any]], s3_read: dict[str, Any]) -> list[str]:
     """The rule's reading: per family its route, error bar and reason, with the per-target numbers behind it."""
     families, targets = s3_read["read"]["families"], s3_read["targets"]
     lines = [f"# The anharmonic route per family (TASKS 178, step 1), line {LINE_LICENSE} cm⁻¹", "",
              "Rule: `GoalGathering/notes/PreRegistration_2026-11-04_Anharmonic_Route_Rule.md`, registered before either read.",
              f"S3's read: {s3_read['registration']}, marked-mode policy `{s3_read.get('marked_policy', '—')}`.", "",
-             "| family | n | route | error bar | verdict model | " + " | ".join(targets) + " | reason |",
-             "|---|---|---|---|---|" + "---|" * (len(targets) + 1)]
+             "| family | n | route | error bar | verdict model | " + " | ".join(targets) + " | harmonic position | reason |",
+             "|---|---|---|---|---|" + "---|" * (len(targets) + 2)]
+    harmonic = no_shift_rms(s3_read)
     for fa, r in res.items():
         entry = families.get(fa)
         model = (entry or {}).get("verdict_model", "—")
         per = [f"{entry['per_molecule'][t][model]:.2f}" if entry and model in entry.get("per_molecule", {}).get(t, {}) else "—"
                for t in targets]
         bar = "—" if r["error_bar_cm"] is None else f"{r['error_bar_cm']:.2f}"
+        plain = f"{harmonic[fa]:.2f}" if fa in harmonic else "—"
         lines.append(f"| {fa} | {entry['n'] if entry else 0} | {r['route'] or 'no step'} | {bar} | {model} | "
-                     + " | ".join(per) + f" | {r['reason']} |")
+                     + " | ".join(per) + f" | {plain} | {r['reason']} |")
     licensed = [fa for fa, r in res.items() if r["route"]]
     lines += ["", "Licensed, an anharmonic step in the pipeline: "
               + (", ".join(licensed) if licensed
-                 else "no family. Every band keeps its harmonic position with the pipeline's HARMONIC_NOTE.")]
+                 else "no family. Every band keeps its harmonic position with the pipeline's HARMONIC_NOTE."),
+              "", "The last column is the rms of the true shift over the same modes, the error a harmonic position carries. It is not "
+              "part of the rule, which was registered on 4 November and reads as it reads; it is there so a reader can see what the "
+              "rule's outcome costs per family."]
     return lines
 
 

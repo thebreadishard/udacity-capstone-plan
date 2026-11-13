@@ -57,17 +57,28 @@ def test_the_reading_names_the_targets_and_the_licence():
                    "ring-ip": {"n": 12, "verdict_model": "x1",
                                "per_molecule": {"tetracene": {"x1": 1.5}, "coronene": {"x1": 2.4}}},
                    "CH-oop": {"n": 8, "verdict_model": "x2*",
-                              "per_molecule": {"tetracene": {"x2*": 4.5}, "coronene": {"x2*": 11.9}}}}}}
+                              "per_molecule": {"tetracene": {"x2*": 4.5}, "coronene": {"x2*": 11.9}}}},
+                        "rows": {"tetracene": {"family": ["ring-ip", "CH-oop"], "truth": [-6.0, -3.0]},
+                                 "coronene": {"family": ["ring-ip"], "truth": [-8.0]}}}}
     text = "\n".join(R.report(res, s3_read))
-    assert "| tetracene | coronene |" in text
-    assert "| ring-ip | 12 | x1 | 2.00 | x1 | 1.50 | 2.40 | carries |" in text
-    assert "| CH-oop | 8 | no step | — | x2* | 4.50 | 11.90 | neither carries |" in text
+    assert "| tetracene | coronene | harmonic position |" in text
+    assert "| ring-ip | 12 | x1 | 2.00 | x1 | 1.50 | 2.40 | 7.07 | carries |" in text
+    assert "| CH-oop | 8 | no step | — | x2* | 4.50 | 11.90 | 3.00 | neither carries |" in text
     assert "Licensed, an anharmonic step in the pipeline: ring-ip" in text
 
 
 def test_the_reading_says_so_when_no_family_is_licensed():
     res = {"other": {"route": None, "error_bar_cm": None, "reason": "neither carries"}}
-    s3_read = {"registration": "r.md", "targets": ["tetracene"], "read": {"families": {}}}
+    s3_read = {"registration": "r.md", "targets": ["tetracene"], "read": {"families": {}, "rows": {}}}
     text = "\n".join(R.report(res, s3_read))
     assert "no family. Every band keeps its harmonic position" in text
-    assert "| other | 0 | no step | — | — | — | neither carries |" in text
+    assert "| other | 0 | no step | — | — | — | — | neither carries |" in text
+
+
+def test_the_harmonic_column_is_the_rms_of_the_true_shift():
+    s3_read = {"read": {"rows": {
+        "tetracene": {"family": ["ring-ip", "ring-ip"], "truth": [-3.0, -4.0]},
+        "coronene": {"family": ["ring-ip", "CH-oop"], "truth": [-5.0, -12.0]}}}}
+    got = R.no_shift_rms(s3_read)
+    assert got["ring-ip"] == pytest.approx(math.sqrt((9.0 + 16.0 + 25.0) / 3))
+    assert got["CH-oop"] == pytest.approx(12.0)
