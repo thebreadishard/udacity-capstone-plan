@@ -46,3 +46,28 @@ def test_a_family_without_target_modes_gets_no_step():
     got = R.route_rule(s2b, {"read": {"families": {"ring-ip": s3(12, c=4.0, x1=2.0)}}})
     assert got["CH-stretch"]["route"] is None and "0 target mode" in got["CH-stretch"]["reason"]
     assert got["ring-ip"]["route"] == "x1"
+
+
+def test_the_reading_names_the_targets_and_the_licence():
+    res = {"ring-ip": {"route": "x1", "error_bar_cm": 2.0, "reason": "carries"},
+           "CH-oop": {"route": None, "error_bar_cm": None, "reason": "neither carries"}}
+    s3_read = {"registration": "PreRegistration_2026-11-02_S3_Route_A_Transfer.md", "marked_policy": "exclude",
+               "targets": ["tetracene", "coronene"],
+               "read": {"families": {
+                   "ring-ip": {"n": 12, "verdict_model": "x1",
+                               "per_molecule": {"tetracene": {"x1": 1.5}, "coronene": {"x1": 2.4}}},
+                   "CH-oop": {"n": 8, "verdict_model": "x2*",
+                              "per_molecule": {"tetracene": {"x2*": 4.5}, "coronene": {"x2*": 11.9}}}}}}
+    text = "\n".join(R.report(res, s3_read))
+    assert "| tetracene | coronene |" in text
+    assert "| ring-ip | 12 | x1 | 2.00 | x1 | 1.50 | 2.40 | carries |" in text
+    assert "| CH-oop | 8 | no step | — | x2* | 4.50 | 11.90 | neither carries |" in text
+    assert "Licensed, an anharmonic step in the pipeline: ring-ip" in text
+
+
+def test_the_reading_says_so_when_no_family_is_licensed():
+    res = {"other": {"route": None, "error_bar_cm": None, "reason": "neither carries"}}
+    s3_read = {"registration": "r.md", "targets": ["tetracene"], "read": {"families": {}}}
+    text = "\n".join(R.report(res, s3_read))
+    assert "no family. Every band keeps its harmonic position" in text
+    assert "| other | 0 | no step | — | — | — | neither carries |" in text

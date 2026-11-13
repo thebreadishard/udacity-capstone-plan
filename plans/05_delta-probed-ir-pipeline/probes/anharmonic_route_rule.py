@@ -4,6 +4,8 @@ route A's targets).
 
     python anharmonic_route_rule.py --s2b-read <s2b_read.json> --s3-read <s3_read.json> --out <route_rule.json>
 
+The reading is written beside the record, as `<out>` with a `.md` suffix.
+
 A family gets S2b's verdict model when S3's transfer line holds for it; otherwise the family mean (c) when (c)'s own target rms meets the
 same line; otherwise no anharmonic step (the band stays harmonic). A family S3 cannot judge (fewer than MIN_MODES target modes, or no S2b
 verdict) gets no step. The error bar is the chosen model's rms on the targets.
@@ -52,6 +54,29 @@ def route_rule(s2b_read: dict[str, Any], s3_read: dict[str, Any]) -> dict[str, d
     return {fa: route_for_family(verdicts.get(fa), families.get(fa)) for fa in sorted(set(verdicts) | set(families))}
 
 
+def report(res: dict[str, dict[str, Any]], s3_read: dict[str, Any]) -> list[str]:
+    """The rule's reading: per family its route, error bar and reason, with the per-target numbers behind it."""
+    families, targets = s3_read["read"]["families"], s3_read["targets"]
+    lines = [f"# The anharmonic route per family (TASKS 178, step 1), line {LINE_LICENSE} cm⁻¹", "",
+             "Rule: `GoalGathering/notes/PreRegistration_2026-11-04_Anharmonic_Route_Rule.md`, registered before either read.",
+             f"S3's read: {s3_read['registration']}, marked-mode policy `{s3_read.get('marked_policy', '—')}`.", "",
+             "| family | n | route | error bar | verdict model | " + " | ".join(targets) + " | reason |",
+             "|---|---|---|---|---|" + "---|" * (len(targets) + 1)]
+    for fa, r in res.items():
+        entry = families.get(fa)
+        model = (entry or {}).get("verdict_model", "—")
+        per = [f"{entry['per_molecule'][t][model]:.2f}" if entry and model in entry.get("per_molecule", {}).get(t, {}) else "—"
+               for t in targets]
+        bar = "—" if r["error_bar_cm"] is None else f"{r['error_bar_cm']:.2f}"
+        lines.append(f"| {fa} | {entry['n'] if entry else 0} | {r['route'] or 'no step'} | {bar} | {model} | "
+                     + " | ".join(per) + f" | {r['reason']} |")
+    licensed = [fa for fa, r in res.items() if r["route"]]
+    lines += ["", "Licensed, an anharmonic step in the pipeline: "
+              + (", ".join(licensed) if licensed
+                 else "no family. Every band keeps its harmonic position with the pipeline's HARMONIC_NOTE.")]
+    return lines
+
+
 def main(argv: list[str] | None = None) -> int:
     """Command line."""
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
@@ -60,8 +85,10 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--out", required=True)
     a = ap.parse_args(argv)
     with open(a.s2b_read, encoding="utf-8") as f2, open(a.s3_read, encoding="utf-8") as f3:
-        res = route_rule(json.load(f2), json.load(f3))
+        s2b, s3 = json.load(f2), json.load(f3)
+    res = route_rule(s2b, s3)
     write_atomic(a.out, json.dumps(res, indent=1))
+    write_atomic(os.path.splitext(a.out)[0] + ".md", "\n".join(report(res, s3)) + "\n")
     for fa, r in res.items():
         print(f"{fa}: {r['route'] or 'no anharmonic step'} — {r['reason']}")
     return 0

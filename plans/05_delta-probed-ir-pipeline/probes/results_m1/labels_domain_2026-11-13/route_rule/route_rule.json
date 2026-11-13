@@ -1,0 +1,17 @@
+{
+ "CH-oop": {
+  "route": null,
+  "error_bar_cm": null,
+  "reason": "neither carries: x2* 8.38, (c) 9.27 against 3.0"
+ },
+ "other": {
+  "route": null,
+  "error_bar_cm": null,
+  "reason": "neither carries: x2* 3.84, (c) 4.34 against 3.0"
+ },
+ "ring-ip": {
+  "route": null,
+  "error_bar_cm": null,
+  "reason": "neither carries: x2* 3.37, (c) 8.47 against 3.0"
+ }
+}
