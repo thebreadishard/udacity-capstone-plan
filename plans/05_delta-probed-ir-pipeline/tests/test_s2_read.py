@@ -100,7 +100,8 @@ def test_the_scope_drops_only_the_flagged_modes():
 def test_gvpt2_labels_must_match_the_reports_omega(tmp_path):
     p = tmp_path / "m.json"
     p.write_text('{"omega": [500.0, 1000.0], "nu_gvpt2": [495.0, 990.0]}', encoding="utf-8")
-    assert list(R.gvpt2_delta(str(p), np.array([500.0, 1000.0]))) == [-5.0, -10.0]
+    delta, marked = R.gvpt2_delta(str(p), np.array([500.0, 1000.0]))
+    assert list(delta) == [-5.0, -10.0] and marked is None        # a label without vpt2_domain is unchecked, not clean
     with pytest.raises(ValueError):
         R.gvpt2_delta(str(p), np.array([500.0, 1001.0]))
 

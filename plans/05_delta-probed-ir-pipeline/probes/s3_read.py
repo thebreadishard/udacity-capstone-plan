@@ -23,9 +23,20 @@ import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-from s2_read import FAMILIES, LINE_LICENSE, XTB_KEY, concat, fit_predict, rms, write_atomic  # noqa: E402
+from s2_read import (  # noqa: E402
+    FAMILIES,
+    LINE_LICENSE,
+    XTB_KEY,
+    apply_marked_policy,
+    concat,
+    fit_predict,
+    rms,
+    write_atomic,
+)
 from s2_xtb_read import X2_GRID, build, config_predictor, load_modes, predict_x1  # noqa: E402
 from s2b_read import READ_SCOPES, load_set, merge, read_sets  # noqa: E402
+
+from dpir.vpt2_domain import MARKED_POLICIES  # noqa: E402
 
 MAIN_SCOPE = READ_SCOPES[0]
 PAIR_MATCH_CM = 1e-6    # a label file's pair frequency names the scoped mode with the same harmonic ω (both read from one report)
@@ -154,6 +165,11 @@ def report(res: dict[str, Any]) -> list[str]:
     lines += ["", f"Degenerate pairs collapsed: {res['pairs']}. Excluded: {res['excluded'] or 'none'}."]
     lines += [f"- {t}: {len(n['moved'])} mode(s) moved by a polyad, {len(n['skipped_degenerate'])} resonance(s) skipped beside a "
               f"degenerate mode, {n['polyad_bridges']} polyad bridge(s)" for t, n in res["label_notes"].items()]
+    dropped = res["marked_dropped"]
+    total = sum(sum(part.values()) for part in dropped.values())
+    lines += ["", f"Modes outside VPT2's domain (TASKS 207), policy `{res['marked_policy']}`: "
+                  + (f"{total} dropped — targets {dropped['targets'] or 'none'}, training {dropped['train'] or 'none'}"
+                     if total else "none dropped")]
     return lines
 
 
@@ -173,14 +189,30 @@ def label_notes(sets_path: str) -> dict[str, dict[str, Any]]:
     return notes
 
 
-def load_scope(sets_path: str) -> tuple[dict, dict, dict]:
-    """A sets file's molecules in the main scope with their xtb partners, the build counts and the exclusions."""
+def drop_marked(by_scaf: dict, policy: str) -> tuple[dict, dict[str, int]]:
+    """Every molecule under the read's stated policy for the modes VPT2 cannot hold, and how many each one lost."""
+    out, dropped = {}, {}
+    for scaf, mols in by_scaf.items():
+        kept = []
+        for m in mols:
+            rec, n = apply_marked_policy(m, policy, m["id"])
+            if n:
+                dropped[m["id"]] = n
+            kept.append(rec)
+        out[scaf] = kept
+    return out, dropped
+
+
+def load_scope(sets_path: str, policy: str) -> tuple[dict, dict, dict, dict[str, int]]:
+    """A sets file's molecules in the main scope with their xtb partners, the build counts, the exclusions, and the modes each
+    molecule lost to `policy` (TASKS 207)."""
     parts = {s.name: load_set(s) for s in read_sets(sets_path)}
     g_by_scaf, x_by_id = merge(parts)
     dirs = {m["id"]: (m["dir"], x_by_id[m["id"]]["dir"]) for ms in g_by_scaf.values() for m in ms if m["id"] in x_by_id}
     by_scaf, counts = build(g_by_scaf, x_by_id, load_modes(dirs), MAIN_SCOPE)
     excluded = {i: f"{name}: {w}" for name, p in parts.items() for i, w in {**p["excluded_g"], **p["excluded_x"]}.items()}
-    return by_scaf, counts, excluded
+    by_scaf, dropped = drop_marked(by_scaf, policy)
+    return by_scaf, counts, excluded, dropped
 
 
 def main() -> int:
@@ -189,11 +221,13 @@ def main() -> int:
     ap.add_argument("--s2b-read", required=True)
     ap.add_argument("--targets", required=True)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--marked", required=True, choices=MARKED_POLICIES,
+                    help="what to do with a mode outside VPT2's domain (TASKS 207): refuse the read, leave it out, or keep it")
     a = ap.parse_args()
     with open(a.s2b_read, encoding="utf-8") as fh:
         s2b_main = json.load(fh)["scopes"][MAIN_SCOPE]["read"]
-    train_by_scaf, train_counts, excl_train = load_scope(a.sets)
-    targets_by_scaf, target_counts, excl_targets = load_scope(a.targets)
+    train_by_scaf, train_counts, excl_train, dropped_train = load_scope(a.sets, a.marked)
+    targets_by_scaf, target_counts, excl_targets, dropped_targets = load_scope(a.targets, a.marked)
     if not targets_by_scaf:
         raise SystemExit("no target with a G label and an xtb force field: nothing to read")
     notes = label_notes(a.targets)
@@ -201,7 +235,8 @@ def main() -> int:
     res = {"registration": "PreRegistration_2026-11-02_S3_Route_A_Transfer.md", "scope": MAIN_SCOPE,
            "targets": sorted(read["rows"]), "training_scaffolds": len(train_by_scaf), "counts": {"train": train_counts, "targets": target_counts},
            "excluded": {**excl_train, **excl_targets}, "pairs": {t: r["pairs"] for t, r in read["rows"].items()},
-           "label_notes": notes,
+           "label_notes": notes, "marked_policy": a.marked,
+           "marked_dropped": {"train": dropped_train, "targets": dropped_targets},
            "read": {"families": read["families"],
                     "rows": {t: {"omega": r["omega"], "family": r["family"], "truth": r["truth"], "pred": r["pred"]} for t, r in read["rows"].items()}}}
     os.makedirs(a.out, exist_ok=True)

@@ -18,11 +18,12 @@ anharmonicity from breakdown with a wide margin on both sides, and marks 8 modes
 The partner share catches a mode whose correction is carried by one coupling even when the total stays small; it marks conservatively,
 because a marked mode is not discarded but solved without perturbation theory (TASKS 209).
 
-A marked mode is a measurement this method cannot make. Nothing here drops one: the marks travel with the label, and a reader must say
-what it does with them (`require_unmarked`), so no marked mode can enter a fit unnoticed.
+A marked mode is a measurement this method cannot make. Nothing here drops one: the marks travel with the label, and every reader
+states what it does with them (`marked_to_drop`, one of MARKED_POLICIES), so no marked mode can enter a fit unnoticed.
 """
 from __future__ import annotations
 
+from collections.abc import Sequence
 from dataclasses import dataclass
 
 import numpy as np
@@ -30,6 +31,7 @@ import numpy as np
 STRAIN_MAX = 0.10          # |nu - omega| / omega
 PARTNER_MAX = 0.10         # max_{j != i} |x_ij| / omega_i
 OMEGA_FLOOR_CM = 1.0       # a frequency below this is not a denominator; such a mode is marked outright
+MARKED_POLICIES = ("raise", "exclude", "keep")   # what a reader may do with a marked mode; it states one, there is no default
 
 
 @dataclass(frozen=True)
@@ -96,11 +98,22 @@ def as_record(domains: list[ModeDomain]) -> dict[str, object]:
             "marked": list(marked_modes(domains)), "diagnostics": [d.as_record() for d in domains if d.marked]}
 
 
-def require_unmarked(record: dict[str, object], context: str) -> None:
-    """Raise unless the label has no marked mode. A reader that cannot treat a marked mode calls this; one that can says so in its own
-    words rather than leaving the question open."""
-    marked = record.get("marked")
+def marked_to_drop(marked: Sequence[int] | None, policy: str, context: str) -> tuple[int, ...]:
+    """The modes a reader must leave out, under its stated policy. Every reader of a label states one, so no marked mode enters a fit
+    unnoticed and no reader carries a default:
+
+        raise    refuse the label outright (the reader has no treatment for a marked mode)
+        exclude  leave the marked modes out, and say in the report how many went
+        keep     use them anyway, for a comparison that means to show what they do
+
+    `marked` is a label's `vpt2_domain["marked"]`, or the marked modes of a molecule already loaded. None means the label was written
+    before this check; that is refused under every policy, because unchecked is not clean — relabel it.
+    """
+    if policy not in MARKED_POLICIES:
+        raise ValueError(f"{context}: policy {policy!r}, one of {MARKED_POLICIES}")
     if marked is None:
-        raise ValueError(f"{context}: the label carries no vpt2_domain record, so its modes were never checked")
-    if marked:
-        raise ValueError(f"{context}: modes {list(marked)} are outside VPT2's domain (TASKS 207); say what to do with them")
+        raise ValueError(f"{context}: no vpt2_domain record, so these modes were never checked against VPT2's domain (TASKS 207)")
+    found = tuple(int(i) for i in marked)
+    if policy == "raise" and found:
+        raise ValueError(f"{context}: modes {list(found)} are outside VPT2's domain (TASKS 207); say what to do with them")
+    return found if policy == "exclude" else ()

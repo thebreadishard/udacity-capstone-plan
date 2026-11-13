@@ -38,12 +38,35 @@ def test_modes_mixed_beyond_recognition_have_no_partner():
     assert (partner[:3] == -1).all() and (partner[3:] == np.arange(3, 6)).all() and np.allclose(overlap[:3], 4 / 9)
 
 
+def _side(delta, marked=(), checked=True):
+    """A molecule as s2_read.load_molecule leaves it, so far as attach_xtb reads it."""
+    mask = np.zeros(len(delta), bool)
+    mask[list(marked)] = True
+    return {"delta": np.asarray(delta, float), "vpt2_marked": mask, "vpt2_checked": checked}
+
+
 def test_attach_xtb_follows_the_partner_and_leaves_nan_without_one():
     q = orthonormal(6, 4, 2)
     qx = q[:, [1, 0, 2, 3]].copy()
     qx[:, 3] = q[:, 3] * 0.5 + q[:, 2] * np.sqrt(0.75)  # overlap 0.25 with its own mode
-    rec = X.attach_xtb({"delta": np.zeros(4)}, {"delta": np.array([10.0, 20.0, 30.0, 40.0])}, q, qx)
+    rec = X.attach_xtb(_side(np.zeros(4)), _side([10.0, 20.0, 30.0, 40.0]), q, qx)
     assert rec["xtb"][0] == 20.0 and rec["xtb"][1] == 10.0 and np.isnan(rec["xtb"][3]) and rec["no_xtb"].tolist() == [False, False, False, True]
+    assert not rec["vpt2_marked"].any() and rec["vpt2_checked"]
+
+
+def test_a_mode_inherits_the_mark_of_its_xtb_partner():
+    q = orthonormal(6, 4, 2)
+    qx = q[:, [1, 0, 2, 3]].copy()
+    qx[:, 3] = q[:, 3] * 0.5 + q[:, 2] * np.sqrt(0.75)      # mode 3 has no partner, so it can inherit nothing
+    rec = X.attach_xtb(_side(np.zeros(4), marked=[2]), _side([10.0, 20.0, 30.0, 40.0], marked=[1, 3]), q, qx)
+    # xtb mode 1 is G mode 0's partner, so mode 0 is marked; mode 2 was marked on the G side already
+    assert rec["vpt2_marked"].tolist() == [True, False, True, False]
+
+
+def test_an_unchecked_side_makes_the_pair_unchecked():
+    q = orthonormal(6, 4, 2)
+    rec = X.attach_xtb(_side(np.zeros(4)), _side(np.zeros(4), checked=False), q, q.copy())
+    assert not rec["vpt2_checked"]
 
 
 def synthetic(n_scaf=10, per=24, seed=3):

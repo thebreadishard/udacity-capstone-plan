@@ -65,10 +65,14 @@ def match_modes(q_g: np.ndarray, q_x: np.ndarray, min_overlap: float = MIN_OVERL
 
 
 def attach_xtb(rec_g: dict, rec_x: dict, q_g: np.ndarray, q_x: np.ndarray) -> dict:
-    """The G molecule with its per-mode Δ_xtb (nan where no partner) and the boolean 'no_xtb'."""
+    """The G molecule with its per-mode Δ_xtb (nan where no partner) and the boolean 'no_xtb'. A mode whose xtb partner is outside
+    VPT2's domain is marked on the G side too (TASKS 207): its Δ_xtb feature would be a number the theory could not state."""
     partner, overlap = match_modes(q_g, q_x)
-    xtb = np.where(partner >= 0, np.asarray(rec_x["delta"])[np.maximum(partner, 0)], np.nan)
-    return {**rec_g, XTB_KEY: xtb, "no_xtb": partner < 0, "xtb_overlap": overlap}
+    has = partner >= 0
+    xtb = np.where(has, np.asarray(rec_x["delta"])[np.maximum(partner, 0)], np.nan)
+    marked = rec_g["vpt2_marked"] | (has & np.asarray(rec_x["vpt2_marked"])[np.maximum(partner, 0)])
+    return {**rec_g, XTB_KEY: xtb, "no_xtb": ~has, "xtb_overlap": overlap,
+            "vpt2_marked": marked, "vpt2_checked": bool(rec_g["vpt2_checked"] and rec_x["vpt2_checked"])}
 
 
 def window(rec: dict) -> np.ndarray:

@@ -36,6 +36,8 @@ sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, "..", "src"))
 from e8_cc_locality import families, mode_shares  # noqa: E402
 
+from dpir.vpt2_domain import marked_modes, marked_to_drop, mode_domains  # noqa: E402
+
 FAMILIES = ("CH-stretch", "CH-oop", "ring-ip", "other")
 WINDOW = (550.0, 2000.0)
 KS = (4, 6, 8, 10)
@@ -68,13 +70,30 @@ def linear_xh_share(q, symbols, coords_bohr, partners=()):
 
 
 def gvpt2_delta(path, omega):
-    """Δ_anh = ν(GVPT2) − ω from a probes/gvpt2_labels.py file, after checking its ω against the report's."""
+    """Δ_anh = ν(GVPT2) − ω from a probes/gvpt2_labels.py file, with the modes that label marked as outside VPT2's domain (TASKS 207,
+    None where the label predates the check), after checking its ω against the report's."""
     with open(path, encoding="utf-8") as fh:
         g = json.load(fh)
     w = np.asarray(g["omega"])
     if w.shape != omega.shape or not np.allclose(w, omega, atol=1e-6):
         raise ValueError(f"{path}: ω does not match the molecule's report")
-    return np.asarray(g["nu_gvpt2"]) - w
+    domain = g.get("vpt2_domain")
+    return np.asarray(g["nu_gvpt2"]) - w, (None if domain is None else tuple(int(i) for i in domain["marked"]))
+
+
+def report_marks(z, omega):
+    """The modes a force field's own DVPT2 numbers put outside VPT2's domain, None where the report predates `chi_sym`."""
+    if "chi_sym" not in z.files or "nu_sym" not in z.files:
+        return None
+    return marked_modes(mode_domains(omega, np.asarray(z["nu_sym"]), np.asarray(z["chi_sym"])))
+
+
+def marked_mask(marked, n):
+    """A per-mode boolean of the marked modes; all False where nothing was checked, which `vpt2_checked` then tells apart."""
+    mask = np.zeros(n, bool)
+    if marked:
+        mask[list(marked)] = True
+    return mask
 
 
 def search_features(q, symbols, coords_bohr, omega):
@@ -114,11 +133,26 @@ def load_molecule(setting_dir, gvpt2_file=None, features=False):
     x = np.array(r["molecule"]["geometry"], float).reshape(-1, 3)
     m = np.array([MASS[s] for s in sym])
     h, o, planar = mode_shares(q, sym, m, x)
-    delta = gvpt2_delta(gvpt2_file, np.asarray(z["omega_cm"])) if gvpt2_file else np.asarray(z["nu_sym"]) - np.asarray(z["omega_cm"])
+    if gvpt2_file:
+        delta, marked = gvpt2_delta(gvpt2_file, np.asarray(z["omega_cm"]))
+    else:
+        delta = np.asarray(z["nu_sym"]) - np.asarray(z["omega_cm"])
+        marked = report_marks(z, np.asarray(z["omega_cm"]))
     return {"omega": omega, "delta": delta, "family": families(omega, q, sym, m, x), "h": h, "o": o, "planar": bool(planar),
             "linear_xh": linear_xh_share(q, sym, x) >= LINEAR_XH_SHARE,
             "large_amplitude": linear_xh_share(q, sym, x, LABILE_PARTNERS) >= LINEAR_XH_SHARE,
+            "vpt2_marked": marked_mask(marked, len(omega)), "vpt2_checked": marked is not None,
             **(search_features(q, sym, x, omega) if features else {})}, ""
+
+
+def apply_marked_policy(rec, policy, context):
+    """One molecule under a reader's stated policy for the modes VPT2 cannot hold, and how many it dropped. The reader states the
+    policy; this never chooses one (dpir.vpt2_domain.MARKED_POLICIES)."""
+    marked = np.flatnonzero(rec["vpt2_marked"]).tolist() if rec["vpt2_checked"] else None
+    drop = marked_to_drop(marked, policy, context)
+    if not drop:
+        return rec, 0
+    return apply_scope(rec, "vpt2_marked"), len(drop)
 
 
 def design(omega, fam, h, o):

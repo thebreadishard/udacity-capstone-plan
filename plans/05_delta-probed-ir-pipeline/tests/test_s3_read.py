@@ -81,3 +81,45 @@ def test_read_targets_end_to_end_with_x2_chosen_for_one_family(monkeypatch):
     ch = res["families"]["CH-oop"]
     assert ch["verdict_model"] == "x2*" and ch["rms"]["x2*"] == pytest.approx(0.5)
     assert res["families"]["ring-ip"]["n"] == 7 and res["families"]["ring-ip"]["reading"].startswith("transfer")
+def _marked_rec(marked, checked=True):
+    rec = _rec([600.0, 700.0, 800.0], ["ring-ip"] * 3, [1.0, 2.0, 3.0], mol_id="m")
+    rec["vpt2_marked"] = np.zeros(3, bool)
+    rec["vpt2_marked"][list(marked)] = True
+    rec["vpt2_checked"] = checked
+    return rec
+
+
+def test_exclude_drops_exactly_the_marked_modes():
+    kept, n = S.apply_marked_policy(_marked_rec([1]), "exclude", "m")
+    assert n == 1 and kept["omega"].tolist() == [600.0, 800.0] and kept["delta"].tolist() == [1.0, 3.0]
+    assert kept["family"].tolist() == ["ring-ip", "ring-ip"] and not kept["vpt2_marked"].any()
+
+
+def test_keep_leaves_the_molecule_as_it_is_and_raise_refuses_it():
+    rec = _marked_rec([1, 2])
+    same, n = S.apply_marked_policy(rec, "keep", "m")
+    assert n == 0 and same["omega"].tolist() == rec["omega"].tolist()
+    with pytest.raises(ValueError, match=r"modes \[1, 2\] are outside"):
+        S.apply_marked_policy(rec, "raise", "m")
+
+
+def test_a_clean_molecule_is_untouched_by_every_policy():
+    rec = _marked_rec([])
+    for policy in ("raise", "exclude", "keep"):
+        same, n = S.apply_marked_policy(rec, policy, "m")
+        assert n == 0 and same["omega"].tolist() == rec["omega"].tolist()
+
+
+def test_an_unchecked_label_is_refused_whatever_the_policy():
+    rec = _marked_rec([], checked=False)
+    for policy in ("raise", "exclude", "keep"):
+        with pytest.raises(ValueError, match="never checked"):
+            S.apply_marked_policy(rec, policy, "m")
+
+
+def test_drop_marked_counts_per_molecule():
+    by_scaf = {"s1": [_marked_rec([0]), _marked_rec([])], "s2": [_marked_rec([1, 2])]}
+    by_scaf["s1"][1]["id"], by_scaf["s2"][0]["id"] = "clean", "two"
+    out, dropped = S.drop_marked(by_scaf, "exclude")
+    assert dropped == {"m": 1, "two": 2}
+    assert [len(r["omega"]) for r in out["s1"]] == [2, 3] and len(out["s2"][0]["omega"]) == 1

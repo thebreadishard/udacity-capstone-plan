@@ -13,5 +13,7 @@ cd "$P"
 for f in "$SETS" "$S2B" "$TARGETS"; do [ -f "$f" ] || { echo "=== (S3R) STOPPED: $f missing $(date '+%F %T')"; exit 1; }; done
 [ "${1:-}" = "--dry-run" ] && { echo "(S3R) dry run: inputs present"; exit 0; }
 echo "=== (S3R) start $(date '+%F %T')"
-PYTHONUTF8=1 PYTHONUNBUFFERED=1 python probes/s3_read.py --sets "$SETS" --s2b-read "$S2B" --targets "$TARGETS" --out "$OUT"
+MARKED=${MARKED:?set MARKED to raise, exclude or keep - what this read does with a mode outside the VPT2 domain, TASKS 207}
+PYTHONUTF8=1 PYTHONUNBUFFERED=1 python probes/s3_read.py --sets "$SETS" --s2b-read "$S2B" --targets "$TARGETS" --out "$OUT" \
+  --marked "$MARKED"
 echo "=== (S3R) done $(date '+%F %T')"

@@ -8,12 +8,13 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from dpir.vpt2_domain import (
+    MARKED_POLICIES,
     PARTNER_MAX,
     STRAIN_MAX,
     as_record,
     marked_modes,
+    marked_to_drop,
     mode_domains,
-    require_unmarked,
 )
 
 
@@ -75,14 +76,25 @@ def test_shapes_are_refused():
         mode_domains(np.zeros(3), np.zeros(3), _chi(2))
 
 
-def test_a_reader_must_say_what_it_does_with_a_marked_mode():
+def test_a_clean_label_passes_every_policy():
     clean = as_record(mode_domains(np.array([3186.5]), np.array([3014.1]), _chi(1, -10.0)))
     assert clean["marked"] == [] and clean["diagnostics"] == [] and clean["strain_max"] == STRAIN_MAX
-    require_unmarked(clean, "a clean label")
+    for policy in MARKED_POLICIES:
+        assert marked_to_drop(clean["marked"], policy, "a clean label") == ()
 
+
+def test_a_reader_must_say_what_it_does_with_a_marked_mode():
     broken = as_record(mode_domains(np.array([642.9, 807.1]), np.array([709.2, 986.3]), _chi(2, 44.4, {(0, 1): 69.8})))
     assert broken["marked"] == [0, 1] and len(broken["diagnostics"]) == 2
     with pytest.raises(ValueError, match=r"modes \[0, 1\] are outside"):
-        require_unmarked(broken, "coronene")
-    with pytest.raises(ValueError, match="never checked"):
-        require_unmarked({}, "a label from before the check")
+        marked_to_drop(broken["marked"], "raise", "coronene")
+    assert marked_to_drop(broken["marked"], "exclude", "coronene") == (0, 1)
+    assert marked_to_drop(broken["marked"], "keep", "coronene") == ()
+    with pytest.raises(ValueError, match="policy 'quietly'"):
+        marked_to_drop(broken["marked"], "quietly", "coronene")
+
+
+def test_an_unchecked_label_is_refused_under_every_policy():
+    for policy in MARKED_POLICIES:
+        with pytest.raises(ValueError, match="never checked"):
+            marked_to_drop(None, policy, "a label from before the check")
