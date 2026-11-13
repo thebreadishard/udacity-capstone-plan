@@ -118,7 +118,7 @@ def markdown(record: dict[str, Any]) -> str:
              f"Lowest projected frequency: label {record['lowest_cm']['label']:+.2f}, {record['pyscf']} "
              f"{record['lowest_cm']['analytic_215']:+.2f} cm-1.",
              f"Per mode, {record['pyscf']} minus label: rms {d['rms_cm']:.3f}, max |Δ| {d['max_abs_cm']:.3f} cm-1; "
-             f"below 100 cm-1 ({d['modes_below_100']} modes) rms {d['rms_below_100_cm']} cm-1.",
+             f"below 100 cm-1 ({d['modes_below_100']} modes) rms {d['rms_below_100_cm']:.4f} cm-1.",
              "Translation residual max|H t|: " + ", ".join(f"{k} {v['max_Ht']:.2e}" for k, v in record["translation"].items()) + "."]
     return "\n".join(lines) + "\n"
 
