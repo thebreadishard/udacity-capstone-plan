@@ -4,11 +4,13 @@
 set -euo pipefail
 P=$(cd "$(dirname "$0")/.." && pwd)
 R=probes/results_m1
-L=$R/labels_symmetry_2026-11-12
+# LABELS, TARGETS and OUT default to the first read's (12 Nov); amendment 7's second read passes the relabelled root of 13 Nov.
+# S2B is not derived from LABELS: both reads take their model choices from the same S2b read.
+L=${LABELS:-$R/labels_symmetry_2026-11-12}
 SETS=$L/sets.json
-S2B=$L/s2b_read/s2b_read.json
-TARGETS=$L/targets.json
-OUT=$L/s3_read
+S2B=${S2B:-$R/labels_symmetry_2026-11-12/s2b_read/s2b_read.json}
+TARGETS=${TARGETS:-$L/targets.json}
+OUT=${OUT:-$L/s3_read}
 cd "$P"
 for f in "$SETS" "$S2B" "$TARGETS"; do [ -f "$f" ] || { echo "=== (S3R) STOPPED: $f missing $(date '+%F %T')"; exit 1; }; done
 [ "${1:-}" = "--dry-run" ] && { echo "(S3R) dry run: inputs present"; exit 0; }
