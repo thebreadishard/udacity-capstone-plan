@@ -34,6 +34,7 @@ from s2_label_check import molecule_inputs, reference_modes  # noqa: E402
 from s2_read import ReadOptions, load_selection, options_from_args, write_atomic  # noqa: E402
 
 from dpir.qff import symmetry_average, vpt2  # noqa: E402
+from dpir.vpt2_domain import as_record, mode_domains  # noqa: E402
 
 FERMI_WINDOW = 200.0     # cm⁻¹, pyVPT2's FERMI_OMEGA_THRESH default
 FERMI_MIN_K = 1.0        # cm⁻¹, pyVPT2's FERMI_K_THRESH default (Martin et al. 1995)
@@ -80,7 +81,8 @@ def symmetry_pairs(setting_dir: str, omega_cm: np.ndarray) -> list[tuple[int, in
 
 def gvpt2(w: np.ndarray, p3: np.ndarray, p4_raw: np.ndarray, B: np.ndarray, zeta: np.ndarray, pairs: list[tuple[int, int]]) -> dict:
     """DVPT2 (K 1) and GVPT2 fundamentals of one force field. The semi-diagonal quartic constants are averaged over the symmetry pairs
-    (`degenerate_pairs`); resonances touching a pair's mode are not diagonalised."""
+    (`degenerate_pairs`); resonances touching a pair's mode are not diagonalised. `vpt2_domain` marks the fundamentals the theory cannot
+    hold (TASKS 207), measured on the fundamentals this function returns."""
     nu_dep, chi, fermi = vpt2(w, p3, symmetry_average(p4_raw, pairs), B, zeta, FERMI_WINDOW, FERMI_MIN_K)
     degenerate = {i for pair in pairs for i in pair}
     kept = [(k, pair) for k, pair in fermi if not ({k, *pair} & degenerate)]
@@ -92,7 +94,7 @@ def gvpt2(w: np.ndarray, p3: np.ndarray, p4_raw: np.ndarray, B: np.ndarray, zeta
         nu, moved = process_fermi_solver(kept, list(range(len(w))), nu, overtone, band, p3)
     return {"nu_dvpt2": nu_dep, "nu_gvpt2": nu, "moved": sorted(int(i) for i in moved), "n_resonances": len(fermi),
             "skipped_degenerate": [[int(k), [int(x) for x in pair]] for k, pair in fermi if (k, pair) not in kept],
-            "polyad_bridges": polyad_bridges(kept)}
+            "polyad_bridges": polyad_bridges(kept), "vpt2_domain": as_record(mode_domains(w, nu, chi))}
 
 
 def solver_provenance() -> dict:
@@ -128,11 +130,13 @@ def write_labels(root: str, selection: str, options: ReadOptions, out_dir: str) 
                "moved": r["moved"], "n_resonances": r["n_resonances"], "skipped_degenerate": r["skipped_degenerate"],
                "degenerate_pairs": [list(p) for p in pairs],
                "polyad_bridges": r["polyad_bridges"], "fermi_window": FERMI_WINDOW, "fermi_min_k": FERMI_MIN_K,
-               "solver": provenance}
+               "vpt2_domain": r["vpt2_domain"], "solver": provenance}
         write_atomic(os.path.join(out_dir, f"{rec['id']}.json"), json.dumps(out, indent=1))
         shift = np.abs(np.array(out["nu_gvpt2"]) - np.array(out["nu_dvpt2_k1"]))
+        marked = r["vpt2_domain"]["marked"]
         print(f"{rec['id']}: {r['n_resonances']} resonances, {len(r['moved'])} fundamentals moved (max {shift.max():.1f} cm⁻¹), "
-              f"{len(pairs)} symmetry pairs, {len(r['skipped_degenerate'])} resonances skipped beside them, {r['polyad_bridges']} polyad bridges")
+              f"{len(pairs)} symmetry pairs, {len(r['skipped_degenerate'])} resonances skipped beside them, {r['polyad_bridges']} polyad bridges"
+              + (f"; OUTSIDE VPT2's DOMAIN: modes {marked}" if marked else ""))
 
 
 if __name__ == "__main__":

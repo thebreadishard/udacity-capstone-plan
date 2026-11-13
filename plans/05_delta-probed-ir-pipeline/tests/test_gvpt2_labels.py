@@ -73,3 +73,30 @@ def test_a_pair_averages_the_quartic_constants_and_stays_deperturbed():
     averaged = G.symmetry_average(p4, [(0, 2)])
     assert np.array_equal(r["nu_dvpt2"], G.vpt2(w, p3, averaged, B, zeta, G.FERMI_WINDOW, G.FERMI_MIN_K)[0])
     assert not np.array_equal(averaged, p4)
+def test_a_sound_force_field_leaves_every_mode_inside_the_domain():
+    w, p3, p4, B, zeta = _force_field()
+    record = G.gvpt2(w, p3, p4, B, zeta, [])["vpt2_domain"]
+    assert record["marked"] == [] and record["diagnostics"] == []
+    assert record["strain_max"] == 0.10 and record["partner_max"] == 0.10
+
+
+def test_a_quartic_constant_that_swamps_its_mode_is_marked():
+    # coronene's case in miniature: no cubic term to cancel it, so the whole quartic lands on the fundamental
+    w, p3, p4, B, zeta = _force_field()
+    p4 = p4.copy()
+    p4[1, 1] = 16 * 0.2 * w[1]                      # x_ii = phi_iiii/16 = 0.2 omega, so the shift is far over the threshold
+    r = G.gvpt2(w, p3, p4, B, zeta, [])
+    assert r["vpt2_domain"]["marked"] == [1]
+    only = r["vpt2_domain"]["diagnostics"][0]
+    assert only["mode"] == 1 and only["nu_cm"] == pytest.approx(r["nu_gvpt2"][1]) and only["strain"] > 0.10
+    assert any("strain" in reason for reason in only["reasons"])
+
+
+def test_one_coupling_alone_marks_its_two_modes():
+    w, p3, p4, B, zeta = _force_field()
+    p4 = p4.copy()
+    p4[0, 2] = p4[2, 0] = 4 * 0.15 * w[0]           # x_ij = phi_iijj/4 = 0.15 omega_0, over the threshold for mode 0
+    record = G.gvpt2(w, p3, p4, B, zeta, [])["vpt2_domain"]
+    assert 0 in record["marked"]
+    first = next(d for d in record["diagnostics"] if d["mode"] == 0)
+    assert first["partner"] == 2 and first["partner_share"] > 0.10
