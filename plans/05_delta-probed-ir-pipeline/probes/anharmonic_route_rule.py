@@ -47,6 +47,40 @@ def route_for_family(s2b_verdict: dict[str, Any] | None, s3_entry: dict[str, Any
             "reason": f"neither carries: {model} {r_model:.2f}, (c) {r_c:.2f} against {LINE_LICENSE}"}
 
 
+def printed_for_family(s2b_verdict: dict[str, Any] | None, s3_entry: dict[str, Any] | None,
+                       harmonic_cm: float | None) -> dict[str, Any]:
+    """What the pipeline prints for one family, and why (PreRegistration_2026-11-14_Printed_Band_Position.md).
+
+    The printed estimate is the family's S2b verdict model with its measured target rms as the stated bar - not as a licence, which
+    is `route_for_family`'s question and a stricter one. A family the targets cannot judge at size gets no step, as rule 4 of the
+    route rule says; and a step that does not beat the harmonic position is not printed, because printing a worse estimate than the
+    one we would otherwise print is the one thing the registration forbids.
+    """
+    if s3_entry is None or s3_entry["n"] < MIN_MODES:
+        n = 0 if s3_entry is None else s3_entry["n"]
+        return {"model": None, "bar_cm": None, "reason": f"not checked at size: {n} target mode(s) < {MIN_MODES}"}
+    if s2b_verdict is None:
+        return {"model": None, "bar_cm": None, "reason": "no S2b verdict for this family"}
+    model = s2b_verdict["best_curve_model"]
+    bar = s3_entry["rms"].get(model, math.nan)
+    if harmonic_cm is None or not bar < harmonic_cm:
+        return {"model": None, "bar_cm": None,
+                "reason": f"the step does not beat the harmonic position: {model} {bar:.2f} against {harmonic_cm:.2f}"
+                          if harmonic_cm is not None else "the harmonic position's own error is not known for this family"}
+    return {"model": model, "bar_cm": bar, "harmonic_cm": harmonic_cm, "beats_harmonic_by_cm": harmonic_cm - bar,
+            "reason": f"{model} {bar:.2f} against the harmonic position's {harmonic_cm:.2f} cm-1, "
+                      f"{harmonic_cm / bar:.1f} times better; no licence is claimed"}
+
+
+def printed_rule(s2b_read: dict[str, Any], s3_read: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    """Every family's printed estimate, from the same two reads the licensing rule uses."""
+    verdicts = s2b_read["scopes"][MAIN_SCOPE]["read"]["verdicts"]
+    families = s3_read["read"]["families"]
+    harmonic = no_shift_rms(s3_read)
+    return {fa: printed_for_family(verdicts.get(fa), families.get(fa), harmonic.get(fa))
+            for fa in sorted(set(verdicts) | set(families))}
+
+
 def route_rule(s2b_read: dict[str, Any], s3_read: dict[str, Any]) -> dict[str, dict[str, Any]]:
     """Every family that S2b's main scope or S3's targets name."""
     verdicts = s2b_read["scopes"][MAIN_SCOPE]["read"]["verdicts"]
@@ -63,8 +97,21 @@ def no_shift_rms(s3_read: dict[str, Any]) -> dict[str, float]:
     return {fa: math.sqrt(math.fsum(t * t for t in ts) / len(ts)) for fa, ts in truths.items()}
 
 
-def report(res: dict[str, dict[str, Any]], s3_read: dict[str, Any]) -> list[str]:
-    """The rule's reading: per family its route, error bar and reason, with the per-target numbers behind it."""
+def printed_lines(printed: dict[str, dict[str, Any]]) -> list[str]:
+    """The printed table: what the pipeline puts on a band, and the bar it states (TASKS 211, registered 14 Nov 2026)."""
+    lines = ["", "## What the pipeline prints", "",
+             "Registration: `GoalGathering/notes/PreRegistration_2026-11-14_Printed_Band_Position.md`. A printed estimate states a "
+             "measured bar; it claims no licence, which is the table above and a stricter question.", "",
+             "| family | printed | bar (cm⁻¹) | harmonic position (cm⁻¹) | why |", "|---|---|---|---|---|"]
+    for fa, p in sorted(printed.items()):
+        bar = "—" if p["bar_cm"] is None else f"{p['bar_cm']:.2f}"
+        plain = "—" if p.get("harmonic_cm") is None else f"{p['harmonic_cm']:.2f}"
+        lines.append(f"| {fa} | {p['model'] or 'harmonic position'} | {bar} | {plain} | {p['reason']} |")
+    return lines
+
+
+def report(res: dict[str, dict[str, Any]], printed: dict[str, dict[str, Any]], s3_read: dict[str, Any]) -> list[str]:
+    """The rule's reading: per family its route, error bar and reason, with the per-target numbers behind it, and what is printed."""
     families, targets = s3_read["read"]["families"], s3_read["targets"]
     lines = [f"# The anharmonic route per family (TASKS 178, step 1), line {LINE_LICENSE} cm⁻¹", "",
              "Rule: `GoalGathering/notes/PreRegistration_2026-11-04_Anharmonic_Route_Rule.md`, registered before either read.",
@@ -88,7 +135,7 @@ def report(res: dict[str, dict[str, Any]], s3_read: dict[str, Any]) -> list[str]
               "", "The last column is the rms of the true shift over the same modes, the error a harmonic position carries. It is not "
               "part of the rule, which was registered on 4 November and reads as it reads; it is there so a reader can see what the "
               "rule's outcome costs per family."]
-    return lines
+    return lines + printed_lines(printed)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -100,11 +147,16 @@ def main(argv: list[str] | None = None) -> int:
     a = ap.parse_args(argv)
     with open(a.s2b_read, encoding="utf-8") as f2, open(a.s3_read, encoding="utf-8") as f3:
         s2b, s3 = json.load(f2), json.load(f3)
-    res = route_rule(s2b, s3)
-    write_atomic(a.out, json.dumps(res, indent=1))
-    write_atomic(os.path.splitext(a.out)[0] + ".md", "\n".join(report(res, s3)) + "\n")
-    for fa, r in res.items():
-        print(f"{fa}: {r['route'] or 'no anharmonic step'} — {r['reason']}")
+    licensed, printed = route_rule(s2b, s3), printed_rule(s2b, s3)
+    record = {"licence_registration": "PreRegistration_2026-11-04_Anharmonic_Route_Rule.md",
+              "printed_registration": "PreRegistration_2026-11-14_Printed_Band_Position.md",
+              "s2b_read": a.s2b_read, "s3_read": a.s3_read, "window": s2b.get("window"), "window_name": s2b.get("window_name"),
+              "licensed": licensed, "printed": printed}
+    write_atomic(a.out, json.dumps(record, indent=1))
+    write_atomic(os.path.splitext(a.out)[0] + ".md", "\n".join(report(licensed, printed, s3)) + "\n")
+    for fa in sorted(set(licensed) | set(printed)):
+        step = printed[fa]["model"] or "no step"
+        print(f"{fa}: licensed {licensed[fa]['route'] or 'no'}, printed {step} — {printed[fa]['reason']}")
     return 0
 
 

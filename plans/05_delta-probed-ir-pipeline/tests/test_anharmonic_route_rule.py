@@ -60,7 +60,7 @@ def test_the_reading_names_the_targets_and_the_licence():
                               "per_molecule": {"tetracene": {"x2*": 4.5}, "coronene": {"x2*": 11.9}}}},
                         "rows": {"tetracene": {"family": ["ring-ip", "CH-oop"], "truth": [-6.0, -3.0]},
                                  "coronene": {"family": ["ring-ip"], "truth": [-8.0]}}}}
-    text = "\n".join(R.report(res, s3_read))
+    text = "\n".join(R.report(res, {}, s3_read))
     assert "| tetracene | coronene | harmonic position |" in text
     assert "| ring-ip | 12 | x1 | 2.00 | x1 | 1.50 | 2.40 | 7.07 | carries |" in text
     assert "| CH-oop | 8 | no step | — | x2* | 4.50 | 11.90 | 3.00 | neither carries |" in text
@@ -70,7 +70,7 @@ def test_the_reading_names_the_targets_and_the_licence():
 def test_the_reading_says_so_when_no_family_is_licensed():
     res = {"other": {"route": None, "error_bar_cm": None, "reason": "neither carries"}}
     s3_read = {"registration": "r.md", "targets": ["tetracene"], "read": {"families": {}, "rows": {}}}
-    text = "\n".join(R.report(res, s3_read))
+    text = "\n".join(R.report(res, {}, s3_read))
     assert "no family. Every band keeps its harmonic position" in text
     assert "| other | 0 | no step | — | — | — | — | neither carries |" in text
 
@@ -82,3 +82,43 @@ def test_the_harmonic_column_is_the_rms_of_the_true_shift():
     got = R.no_shift_rms(s3_read)
     assert got["ring-ip"] == pytest.approx(math.sqrt((9.0 + 16.0 + 25.0) / 3))
     assert got["CH-oop"] == pytest.approx(12.0)
+
+
+# ------------------------------------------------------------------ what is printed (TASKS 211, registered 14 Nov 2026)
+
+VERDICT_X2 = {"best_curve_model": "x2*"}
+
+
+def test_a_step_that_beats_the_harmonic_position_is_printed_with_its_measured_bar():
+    entry = {"n": 20, "rms": {"x2*": 6.21, "c": 6.50}}
+    got = R.printed_for_family(VERDICT_X2, entry, 134.24)
+    assert got["model"] == "x2*" and got["bar_cm"] == 6.21
+    assert got["beats_harmonic_by_cm"] == pytest.approx(128.03)
+    assert "21.6 times better" in got["reason"] and "no licence" in got["reason"]
+
+
+def test_a_step_that_does_not_beat_the_harmonic_position_is_not_printed():
+    entry = {"n": 20, "rms": {"x2*": 9.0, "c": 8.0}}
+    got = R.printed_for_family(VERDICT_X2, entry, 8.5)
+    assert got["model"] is None and got["bar_cm"] is None
+    assert "does not beat the harmonic position" in got["reason"]
+
+
+def test_a_family_the_targets_cannot_judge_at_size_gets_no_step():
+    got = R.printed_for_family(VERDICT_X2, {"n": R.MIN_MODES - 1, "rms": {"x2*": 0.1}}, 100.0)
+    assert got["model"] is None and "not checked at size" in got["reason"]
+    assert R.printed_for_family(VERDICT_X2, None, 100.0)["model"] is None
+
+
+def test_a_family_without_a_verdict_model_gets_no_step():
+    got = R.printed_for_family(None, {"n": 20, "rms": {"c": 1.0}}, 100.0)
+    assert got["model"] is None and "no S2b verdict" in got["reason"]
+
+
+def test_the_printed_table_names_the_model_the_bar_and_what_it_beats():
+    printed = {"ring-ip": {"model": "x2*", "bar_cm": 3.37, "harmonic_cm": 26.23, "reason": "r"},
+               "CH-oop": {"model": None, "bar_cm": None, "reason": "no"}}
+    text = "\n".join(R.printed_lines(printed))
+    assert "| ring-ip | x2* | 3.37 | 26.23 | r |" in text
+    assert "| CH-oop | harmonic position | — | — | no |" in text
+    assert "claims no licence" in text

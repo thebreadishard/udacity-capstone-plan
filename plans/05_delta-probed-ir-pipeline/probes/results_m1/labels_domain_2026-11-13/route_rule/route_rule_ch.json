@@ -1,0 +1,27 @@
+{
+ "licence_registration": "PreRegistration_2026-11-04_Anharmonic_Route_Rule.md",
+ "printed_registration": "PreRegistration_2026-11-14_Printed_Band_Position.md",
+ "s2b_read": "probes/results_m1/labels_domain_2026-11-13/s2b_read_ch/s2b_read.json",
+ "s3_read": "probes/results_m1/labels_domain_2026-11-13/s3_read_ch/s3_read.json",
+ "window": [
+  2800.0,
+  Infinity
+ ],
+ "window_name": "ch",
+ "licensed": {
+  "CH-stretch": {
+   "route": null,
+   "error_bar_cm": null,
+   "reason": "neither carries: x2* 6.21, (c) 6.50 against 3.0"
+  }
+ },
+ "printed": {
+  "CH-stretch": {
+   "model": "x2*",
+   "bar_cm": 6.214339442402264,
+   "harmonic_cm": 134.24269652968337,
+   "beats_harmonic_by_cm": 128.0283570872811,
+   "reason": "x2* 6.21 against the harmonic position's 134.24 cm-1, 21.6 times better; no licence is claimed"
+  }
+ }
+}

@@ -12,3 +12,13 @@ S3's read: PreRegistration_2026-11-02_S3_Route_A_Transfer.md, marked-mode policy
 Licensed, an anharmonic step in the pipeline: no family. Every band keeps its harmonic position with the pipeline's HARMONIC_NOTE.
 
 The last column is the rms of the true shift over the same modes, the error a harmonic position carries. It is not part of the rule, which was registered on 4 November and reads as it reads; it is there so a reader can see what the rule's outcome costs per family.
+
+## What the pipeline prints
+
+Registration: `GoalGathering/notes/PreRegistration_2026-11-14_Printed_Band_Position.md`. A printed estimate states a measured bar; it claims no licence, which is the table above and a stricter question.
+
+| family | printed | bar (cm⁻¹) | harmonic position (cm⁻¹) | why |
+|---|---|---|---|---|
+| CH-oop | x2* | 8.38 | 12.48 | x2* 8.38 against the harmonic position's 12.48 cm-1, 1.5 times better; no licence is claimed |
+| other | x2* | 3.84 | 8.20 | x2* 3.84 against the harmonic position's 8.20 cm-1, 2.1 times better; no licence is claimed |
+| ring-ip | x2* | 3.37 | 26.23 | x2* 3.37 against the harmonic position's 26.23 cm-1, 7.8 times better; no licence is claimed |

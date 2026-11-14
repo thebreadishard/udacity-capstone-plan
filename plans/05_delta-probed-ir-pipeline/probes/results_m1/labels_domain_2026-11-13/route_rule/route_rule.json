@@ -1,17 +1,48 @@
 {
- "CH-oop": {
-  "route": null,
-  "error_bar_cm": null,
-  "reason": "neither carries: x2* 8.38, (c) 9.27 against 3.0"
+ "licence_registration": "PreRegistration_2026-11-04_Anharmonic_Route_Rule.md",
+ "printed_registration": "PreRegistration_2026-11-14_Printed_Band_Position.md",
+ "s2b_read": "probes/results_m1/labels_symmetry_2026-11-12/s2b_read/s2b_read.json",
+ "s3_read": "probes/results_m1/labels_domain_2026-11-13/s3_read_exclude/s3_read.json",
+ "window": null,
+ "window_name": null,
+ "licensed": {
+  "CH-oop": {
+   "route": null,
+   "error_bar_cm": null,
+   "reason": "neither carries: x2* 8.38, (c) 9.27 against 3.0"
+  },
+  "other": {
+   "route": null,
+   "error_bar_cm": null,
+   "reason": "neither carries: x2* 3.84, (c) 4.34 against 3.0"
+  },
+  "ring-ip": {
+   "route": null,
+   "error_bar_cm": null,
+   "reason": "neither carries: x2* 3.37, (c) 8.47 against 3.0"
+  }
  },
- "other": {
-  "route": null,
-  "error_bar_cm": null,
-  "reason": "neither carries: x2* 3.84, (c) 4.34 against 3.0"
- },
- "ring-ip": {
-  "route": null,
-  "error_bar_cm": null,
-  "reason": "neither carries: x2* 3.37, (c) 8.47 against 3.0"
+ "printed": {
+  "CH-oop": {
+   "model": "x2*",
+   "bar_cm": 8.380851401821456,
+   "harmonic_cm": 12.476763692152412,
+   "beats_harmonic_by_cm": 4.095912290330956,
+   "reason": "x2* 8.38 against the harmonic position's 12.48 cm-1, 1.5 times better; no licence is claimed"
+  },
+  "other": {
+   "model": "x2*",
+   "bar_cm": 3.838739720576501,
+   "harmonic_cm": 8.195380445995744,
+   "beats_harmonic_by_cm": 4.3566407254192425,
+   "reason": "x2* 3.84 against the harmonic position's 8.20 cm-1, 2.1 times better; no licence is claimed"
+  },
+  "ring-ip": {
+   "model": "x2*",
+   "bar_cm": 3.3693915119946882,
+   "harmonic_cm": 26.2333046222988,
+   "beats_harmonic_by_cm": 22.86391311030411,
+   "reason": "x2* 3.37 against the harmonic position's 26.23 cm-1, 7.8 times better; no licence is claimed"
+  }
  }
 }
