@@ -52,12 +52,13 @@ from apt import (
 from pyscf import dft, lib
 
 sys.path.insert(1, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "probes"))
+from constants import AMU2AU
 from library_log import PYSCF_LOG_NAME, pyscf_mole
+from vibrations import LABEL_TAGS, mass_weights, rigid_basis, signed_cm
 
-AMU2AU = 1822.888486209
-AU2CM = 219474.6313705
 APT_FILE = "dipole_b3lyp_cphf.npz"     # the name the export and module 08 read; route B writes it too
-FUNCTIONALS = (("b3lyp", "b3lyp"), ("wb97x", "wb97x"))
+XC_BY_TAG = {"b3lyp": "b3lyp", "wb97x": "wb97x"}        # the label tags' functionals; the tags themselves are vibrations.LABEL_TAGS
+FUNCTIONALS = tuple((tag, XC_BY_TAG[tag]) for tag in LABEL_TAGS)
 IMAGINARY_BELOW = 0.0                  # cm⁻¹: every negative mode, as pyscf and module 05 count it (TASKS 188; psi4_worker's FD count: −10)
 SPIN_CONTAMINATION = 0.05              # |<S²> − S(S+1)| above which a warning is printed
 MAX_MEMORY_MB = 20000                  # pyscf's max_memory (its blocking target); a run under a memory cap passes a smaller one
@@ -118,19 +119,8 @@ def software():
 def project_tr(H, masses, x):
     """Project translations and rotations out of a Cartesian Hessian (mass-weighted projector, then back), as psi4 does for H_projected."""
     n = len(masses)
-    sm = np.sqrt(np.repeat(masses * AMU2AU, 3))
-    r = x - (x * masses[:, None]).sum(0) / masses.sum()
-    D = []
-    for k in range(3):
-        v = np.zeros((n, 3))
-        v[:, k] = 1.0
-        D.append((v * np.sqrt(masses)[:, None]).ravel())
-    for k in range(3):
-        e = np.zeros(3)
-        e[k] = 1.0
-        v = np.cross(np.tile(e, (n, 1)), r)
-        D.append((v * np.sqrt(masses)[:, None]).ravel())
-    q, _ = np.linalg.qr(np.array(D).T)
+    sm = mass_weights(masses)
+    q = rigid_basis(masses, x)
     P = np.eye(3 * n) - q @ q.T
     Hp = P @ (H / np.outer(sm, sm)) @ P
     return Hp * np.outer(sm, sm)
@@ -139,9 +129,7 @@ def project_tr(H, masses, x):
 def freqs_cm(Hp, masses):
     """Harmonic frequencies (cm-1, 3N long, imaginary negative) of a Cartesian Hessian in hartree/bohr^2 with masses in amu — the corpus convention."""
     sm = np.sqrt(np.repeat(masses, 3))
-    w = np.linalg.eigvalsh(Hp / np.outer(sm, sm))
-    f = np.sqrt(np.abs(w) / AMU2AU) * AU2CM
-    return np.where(w < 0, -f, f)
+    return np.asarray(signed_cm(np.linalg.eigvalsh(Hp / np.outer(sm, sm)) / AMU2AU), float)
 
 
 def vib_only(f):
