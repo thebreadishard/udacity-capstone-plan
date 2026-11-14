@@ -54,6 +54,7 @@ from pyscf import dft, lib
 sys.path.insert(1, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "probes"))
 from constants import AMU2AU
 from library_log import PYSCF_LOG_NAME, pyscf_mole
+from scf_policy import LABEL_ROUTE, converged_scf
 from vibrations import (
     LABEL_TAGS,
     LOW_MODE_CM,
@@ -74,7 +75,6 @@ FUNCTIONALS = tuple((tag, XC_BY_TAG[tag]) for tag in LABEL_TAGS)
 IMAGINARY_BELOW = 0.0                  # cm⁻¹: every negative mode, as pyscf and module 05 count it (TASKS 188; psi4_worker's FD count: −10)
 SPIN_CONTAMINATION = 0.05              # |<S²> − S(S+1)| above which a warning is printed
 MAX_MEMORY_MB = 20000                  # pyscf's max_memory (its blocking target); a run under a memory cap passes a smaller one
-NEWTON_MAX_CYCLE = 50                  # the second-order finish's macro iterations (pyscf's SCF default)
 # A displaced point of the low-mode repair is converged for a finite difference, not for a label, so its two thresholds come from
 # that error budget and from a measured noise floor. T_76dfc434db (60 atoms) showed both floors on 14 Nov 2026: the energy oscillates
 # by 1.4e-10 hartree a macro iteration and |g| sits at 2.75e-8, so a label's conv_tol of 1e-11 and a conv_tol_grad of 1e-8 cannot be
@@ -193,27 +193,11 @@ def labels_ks(mol, xc, grid):
     return mf
 
 
-def finish_by_newton(mf) -> float:
-    """Finish a DIIS SCF that stalled near its threshold with pyscf's second-order solver from its own orbitals, as pyscf's
-    examples/scf/22-newton.py does (`newton().kernel(mo_coeff, mo_occ)`), then restart the plain SCF from that density: the Hessian is
-    built on the usual RKS/UKS object, and `mf.converged` stays that object's own verdict. HBC's ωB97X (1 Nov 2026) stalled at |g| 1.5e-8
-    with the energy still falling 1.3e-10 a cycle against conv_tol 1e-11."""
-    second = mf.newton()
-    second.max_cycle = NEWTON_MAX_CYCLE                   # its own budget: the stalled run's max_cycle is copied into it
-    # and its own threshold: pyscf's SecondOrderSCF.kernel passes self.conv_tol_grad (soscf/newton_ah.py), so the caller's tight value
-    # is copied in too, and the solver stalls above it -- T_76dfc434db spent 50 macro iterations at |g| 1.83e-8 against 1e-8 on
-    # 14 Nov 2026 and the run failed. None leaves it pyscf's own sqrt(conv_tol) (newton_ah.py:526); the restart below keeps the
-    # caller's threshold as the verdict, which is the recipe probes/scf_converge.py follows for the S1/S2 paths.
-    second.conv_tol_grad = None
-    second.kernel(mf.mo_coeff, mf.mo_occ)
-    if not second.converged:
-        return mf.e_tot
-    return mf.kernel(dm0=second.make_rdm1())
-
-
 def labels_scf(mol, xc, grid, newton_finish=False, *,  # noqa: PLR0913  (two thresholds, a fallback switch and a density)
                conv_tol: float | None = None, conv_tol_grad: float | None = None, dm0: Any = None):
-    """The labels route's converged SCF; with newton_finish a stalled DIIS run gets `finish_by_newton`; raises when it does not converge.
+    """The labels route's converged SCF; with newton_finish a stalled DIIS run gets the shared policy's second-order fallback
+    (`scf_policy.converged_scf` with the LABEL_ROUTE preset, the recipe probes/scf_converge.py follows for the S1/S2 paths);
+    raises when it does not converge.
 
     conv_tol, conv_tol_grad and dm0 are what a displaced point of the low-mode repair needs: its own two thresholds, set from the
     finite difference's error budget rather than from a label's standard (FD_CONV_TOL, FD_CONV_TOL_GRAD), and the previous point's
@@ -224,10 +208,9 @@ def labels_scf(mol, xc, grid, newton_finish=False, *,  # noqa: PLR0913  (two thr
         mf.conv_tol = conv_tol
     if conv_tol_grad is not None:
         mf.conv_tol_grad = conv_tol_grad
+    if newton_finish:
+        return converged_scf(mf, LABEL_ROUTE, log=lambda line: print(f"{xc}:{line}", flush=True), dm0=dm0)
     e = mf.kernel(dm0=dm0)
-    if not mf.converged and newton_finish:
-        print(f"{xc}: DIIS stopped unconverged at E = {e:.12f}; finishing by the second-order solver", flush=True)
-        e = finish_by_newton(mf)
     if not mf.converged:
         raise RuntimeError(f"{xc}: SCF not converged")
     return mf, e
