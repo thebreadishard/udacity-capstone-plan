@@ -3,33 +3,18 @@ composite tools (any python, psi4's in WSL) and the deck rehearsal (module 05's 
 from __future__ import annotations
 
 import os
+import sys
 import tempfile
 from pathlib import Path
 
 import numpy as np
 
-AMU2AU = 1822.888486209          # electron masses per atomic mass unit
-HARTREE2CM = 219474.6313705      # cm⁻¹ per hartree
+# the constants, the rigid motions and the signed frequency live beside the label route that writes the Hessians (TASKS 216, 14 Nov 2026)
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "modules" / "05_support_predictor" / "corpus"))
+from constants import AMU2AU, HARTREE2CM  # noqa: I001,F401  the path line above blocks sorting; HARTREE2CM is re-exported here
+from vibrations import rigid_basis, signed_cm
 CORE_ORBITALS = {"H": 0, "He": 0, "Li": 1, "Be": 1, "B": 1, "C": 1, "N": 1, "O": 1, "F": 1, "Ne": 1,     # frozen core per element
                  "Na": 5, "Mg": 5, "Al": 5, "Si": 5, "P": 5, "S": 5, "Cl": 5, "Ar": 5}
-
-
-def rigid_basis(masses: np.ndarray, x: np.ndarray) -> np.ndarray:
-    """An orthonormal basis (3N, 6) of the mass-weighted translations and rotations about the centre of mass; x in bohr, masses in amu."""
-    n = len(masses)
-    r = x - (x * masses[:, None]).sum(0) / masses.sum()
-    D = []
-    for k in range(3):
-        v = np.zeros((n, 3))
-        v[:, k] = 1.0
-        D.append((v * np.sqrt(masses)[:, None]).ravel())
-    for k in range(3):
-        e = np.zeros(3)
-        e[k] = 1.0
-        v = np.cross(np.tile(e, (n, 1)), r)
-        D.append((v * np.sqrt(masses)[:, None]).ravel())
-    q, _ = np.linalg.qr(np.array(D).T)
-    return q
 
 
 def project_tr(H: np.ndarray, masses: np.ndarray, x: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
@@ -41,11 +26,6 @@ def project_tr(H: np.ndarray, masses: np.ndarray, x: np.ndarray) -> tuple[np.nda
     P = np.eye(3 * n) - q @ q.T
     Hmw = H / np.outer(sm, sm)
     return (P @ Hmw @ P) * np.outer(sm, sm), Hmw
-
-
-def signed_cm(k_au: float) -> float:
-    """A mass-weighted curvature (hartree / (bohr^2 me)) as a signed frequency in cm-1."""
-    return float(np.sign(k_au) * np.sqrt(abs(k_au)) * HARTREE2CM)
 
 
 def translation_residual(H: np.ndarray, masses_amu: np.ndarray) -> tuple[float, list[float]]:

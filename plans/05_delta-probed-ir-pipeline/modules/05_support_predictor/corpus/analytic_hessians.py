@@ -52,16 +52,32 @@ from apt import (
 from pyscf import dft, lib
 
 sys.path.insert(1, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "probes"))
+from constants import AMU2AU
+from grid_response_blocked import blocked_grid_response
 from library_log import PYSCF_LOG_NAME, pyscf_mole
+from vibrations import (
+    LABEL_TAGS,
+    LOW_MODE_CM,
+    STEP_BOHR,
+    column,
+    displacement,
+    low_mode_directions,
+    mass_weights,
+    patched_hessian,
+    rigid_basis,
+    signed_cm,
+    vibrational_modes,
+)
 
-AMU2AU = 1822.888486209
-AU2CM = 219474.6313705
 APT_FILE = "dipole_b3lyp_cphf.npz"     # the name the export and module 08 read; route B writes it too
-FUNCTIONALS = (("b3lyp", "b3lyp"), ("wb97x", "wb97x"))
+XC_BY_TAG = {"b3lyp": "b3lyp", "wb97x": "wb97x"}        # the label tags' functionals; the tags themselves are vibrations.LABEL_TAGS
+FUNCTIONALS = tuple((tag, XC_BY_TAG[tag]) for tag in LABEL_TAGS)
 IMAGINARY_BELOW = 0.0                  # cm⁻¹: every negative mode, as pyscf and module 05 count it (TASKS 188; psi4_worker's FD count: −10)
 SPIN_CONTAMINATION = 0.05              # |<S²> − S(S+1)| above which a warning is printed
 MAX_MEMORY_MB = 20000                  # pyscf's max_memory (its blocking target); a run under a memory cap passes a smaller one
 NEWTON_MAX_CYCLE = 50                  # the second-order finish's macro iterations (pyscf's SCF default)
+FD_CONV_TOL_GRAD = 1e-8                # a displaced point's DIIS threshold: a gradient error of 1e-8 over 2h = 0.01 bohr is
+                                       # 1e-6 hartree/bohr^2, against translation residuals of about 1e-4 (TASKS 201 step 2)
 
 
 @dataclass(frozen=True)
@@ -118,19 +134,8 @@ def software():
 def project_tr(H, masses, x):
     """Project translations and rotations out of a Cartesian Hessian (mass-weighted projector, then back), as psi4 does for H_projected."""
     n = len(masses)
-    sm = np.sqrt(np.repeat(masses * AMU2AU, 3))
-    r = x - (x * masses[:, None]).sum(0) / masses.sum()
-    D = []
-    for k in range(3):
-        v = np.zeros((n, 3))
-        v[:, k] = 1.0
-        D.append((v * np.sqrt(masses)[:, None]).ravel())
-    for k in range(3):
-        e = np.zeros(3)
-        e[k] = 1.0
-        v = np.cross(np.tile(e, (n, 1)), r)
-        D.append((v * np.sqrt(masses)[:, None]).ravel())
-    q, _ = np.linalg.qr(np.array(D).T)
+    sm = mass_weights(masses)
+    q = rigid_basis(masses, x)
     P = np.eye(3 * n) - q @ q.T
     Hp = P @ (H / np.outer(sm, sm)) @ P
     return Hp * np.outer(sm, sm)
@@ -139,9 +144,7 @@ def project_tr(H, masses, x):
 def freqs_cm(Hp, masses):
     """Harmonic frequencies (cm-1, 3N long, imaginary negative) of a Cartesian Hessian in hartree/bohr^2 with masses in amu — the corpus convention."""
     sm = np.sqrt(np.repeat(masses, 3))
-    w = np.linalg.eigvalsh(Hp / np.outer(sm, sm))
-    f = np.sqrt(np.abs(w) / AMU2AU) * AU2CM
-    return np.where(w < 0, -f, f)
+    return np.asarray(signed_cm(np.linalg.eigvalsh(Hp / np.outer(sm, sm)) / AMU2AU), float)
 
 
 def vib_only(f):
@@ -203,16 +206,84 @@ def finish_by_newton(mf) -> float:
     return mf.kernel(dm0=second.make_rdm1())
 
 
-def labels_scf(mol, xc, grid, newton_finish=False):
-    """The labels route's converged SCF; with newton_finish a stalled DIIS run gets `finish_by_newton`; raises when it does not converge."""
+def labels_scf(mol, xc, grid, newton_finish=False, *, conv_tol_grad: float | None = None, dm0: Any = None):
+    """The labels route's converged SCF; with newton_finish a stalled DIIS run gets `finish_by_newton`; raises when it does not converge.
+
+    conv_tol_grad and dm0 are the two settings a displaced point of the low-mode repair needs: its gradient must be tighter than a
+    label's (FD_CONV_TOL_GRAD), and it starts from the previous point's density. The second-order finish never inherits the tight
+    threshold, which is what `finish_by_newton` guards.
+    """
     mf = labels_ks(mol, xc, grid)
-    e = mf.kernel()
+    if conv_tol_grad is not None:
+        mf.conv_tol_grad = conv_tol_grad
+    e = mf.kernel(dm0=dm0)
     if not mf.converged and newton_finish:
         print(f"{xc}: DIIS stopped unconverged at E = {e:.12f}; finishing by the second-order solver", flush=True)
         e = finish_by_newton(mf)
     if not mf.converged:
         raise RuntimeError(f"{xc}: SCF not converged")
     return mf, e
+
+
+def displaced_gradient(geometry: dict, coords: np.ndarray, xc: str, run: LabelsRun, lib_log: TextIO,
+                       dm0: Any = None) -> tuple[np.ndarray, Any]:
+    """The grid-response gradient at a displaced geometry, and its density for the next point.
+
+    The grid is built at the displaced coordinates, so it moves with the atoms; `blocked_grid_response` is pyscf's response of the
+    quadrature weights, evaluated block by block. The charge and spin come from the run, so a cation's point is a cation's.
+    """
+    mol = labels_mol({**geometry, "coords_bohr": np.asarray(coords, float).tolist()}, lib_log, run.charge, run.spin, run.max_memory_mb)
+    mf, _e = labels_scf(mol, xc, run.grid, newton_finish=True, conv_tol_grad=FD_CONV_TOL_GRAD, dm0=dm0)
+    with blocked_grid_response():
+        gradient = mf.nuc_grad_method().set(grid_response=True).kernel()
+    return np.asarray(gradient, float), mf.make_rdm1()
+
+
+def measured_columns(geometry: dict, directions: np.ndarray, xc: str, run: LabelsRun, lib_log: TextIO) -> np.ndarray:
+    """The Hessian's columns along each direction (3N, k), from central differences of grid-response gradients: two points each."""
+    masses = np.array(geometry["masses_amu"])
+    coords = np.array(geometry["coords_bohr"])
+    columns = []
+    dm0 = None
+    for j in range(directions.shape[1]):
+        step, q = displacement(directions[:, j], masses)
+        gradients = []
+        for sign in (1, -1):
+            t0 = time.time()
+            gradient, dm0 = displaced_gradient(geometry, coords + sign * step, xc, run, lib_log, dm0)
+            gradients.append(gradient)
+            print(f"  low-mode point {xc} dir {j} {'plus' if sign > 0 else 'minus'}: {time.time() - t0:.0f} s", flush=True)
+        columns.append(column(gradients[0], gradients[1], q, masses))
+    return np.column_stack(columns)
+
+
+def repair_low_modes(geometry: dict, hessians: dict[str, np.ndarray], run: LabelsRun, lib_log: TextIO,
+                     below_cm: float = LOW_MODE_CM) -> tuple[dict[str, np.ndarray], dict]:
+    """The label Hessians with their soft modes recomputed from grid-response curvature, and the record of what was done.
+
+    pyscf's CPU DFT Hessian leaves out the derivative of the quadrature weights, which moves a mode below LOW_MODE_CM by up to 6
+    cm-1 and one above it by less than 0.5 (TASKS 201 step 2). The directions are the modes below the threshold in either label,
+    merged, so both functionals are repaired along the same ones. Returns ({}, {}) when the molecule has no soft mode.
+
+    below_cm is the registered threshold; only a test passes another, to make a stiff mode 'low' and exercise the measurement on a
+    molecule where the analytic Hessian is already right.
+    """
+    masses = np.array(geometry["masses_amu"])
+    coords = np.array(geometry["coords_bohr"])
+    modes = {tag: vibrational_modes(hessians[tag], masses, coords) for tag in sorted(hessians)}
+    U = low_mode_directions([modes[tag] for tag in sorted(modes)], below_cm)
+    if U.shape[1] == 0:
+        return {}, {}
+    repaired, record = {}, {"below_cm": below_cm, "directions": int(U.shape[1]), "step_bohr": STEP_BOHR, "per_functional": {}}
+    for tag in sorted(hessians):
+        C = measured_columns(geometry, U, XC_BY_TAG[tag], run, lib_log)
+        repaired[tag] = patched_hessian(hessians[tag], masses, U, C)
+        before = modes[tag].omega_cm
+        after = vibrational_modes(repaired[tag], masses, coords).omega_cm
+        record["per_functional"][tag] = {"lowest_label_cm": float(min(before)), "lowest_repaired_cm": float(min(after)),
+                                         "max_change_cm": float(np.abs(np.sort(after) - np.sort(before)).max())}
+        print(f"  low-mode repair {tag}: lowest {min(before):.2f} -> {min(after):.2f} cm-1 along {U.shape[1]} direction(s)", flush=True)
+    return repaired, record
 
 
 def write_apt(d, hobj, response, Hp, masses, grid, stamp):  # noqa: PLR0913  (the APT record's inputs; called from one place)
@@ -265,16 +336,30 @@ def compute_hessian(d: str, mol: Any, tag: str, xc: str, run: LabelsRun) -> tupl
     return 0.5 * (Hc + Hc.T), e, hobj, response
 
 
-def save_hessian(d: str, tag: str, Hc: np.ndarray, Hp: np.ndarray, fr: np.ndarray, e: float, run: LabelsRun) -> None:  # noqa: PLR0913
-    """hessian_<tag>_analytic.npz (one record's fields)."""
-    np.savez_compressed(f"{d}/hessian_{tag}_analytic.npz", H_raw=Hc, H_projected=Hp, freq_cm=fr, energy=float(e), grid=np.array(run.grid),
-                        charge=run.charge, spin=run.spin, reference="UKS" if run.spin else "RKS", software=json.dumps(run.stamp, sort_keys=True))
+def save_hessian(d: str, tag: str, Hc: np.ndarray, Hp: np.ndarray, fr: np.ndarray, e: float,  # noqa: PLR0913  (one record's fields)
+                 run: LabelsRun, *, unrepaired: np.ndarray | None = None, repair: dict | None = None, pending: bool = False) -> None:
+    """hessian_<tag>_analytic.npz (one record's fields).
+
+    `unrepaired` and `repair` are given once the low-mode repair has run: the label is then the repaired Hessian, the analytic one
+    stays beside it as `H_raw_unrepaired`, and `low_mode_patch` records the threshold, the step and what moved — the same key
+    `probes/low_mode_swap.py` writes, so a reader cannot tell the two sources apart and an auditor can. `pending` marks the file
+    written before the repair: the Hessian reaches the disk ahead of the APT, as it always has, but such a file is not a finished
+    label and `--reuse-existing` refuses it.
+    """
+    fields = dict(H_raw=Hc, H_projected=Hp, freq_cm=fr, energy=float(e), grid=np.array(run.grid), charge=run.charge, spin=run.spin,
+                  reference="UKS" if run.spin else "RKS", software=json.dumps(run.stamp, sort_keys=True))
+    if unrepaired is not None:
+        fields["H_raw_unrepaired"] = unrepaired
+        fields["low_mode_patch"] = json.dumps({"route": "analytic_hessians.repair_low_modes", **(repair or {})}, sort_keys=True)
+    if pending:
+        fields["low_mode_pending"] = True
+    np.savez_compressed(f"{d}/hessian_{tag}_analytic.npz", **fields)
 
 
-def check_entry(d: str, tag: str, Hc: np.ndarray, fr: np.ndarray, e: float, t0: float, stamp: dict) -> dict:  # noqa: PLR0913
+def check_entry(d: str, tag: str, Hc: np.ndarray, fr: np.ndarray, e: float, seconds: float, stamp: dict) -> dict:  # noqa: PLR0913
     """analytic_check.json's entry for one functional: against the corpus psi4 Hessian when the folder has one, else the analytic numbers alone."""
     if not os.path.exists(f"{d}/hessian_{tag}.npz"):
-        entry = dict(freq_analytic=vib_only(fr).tolist(), energy=float(e), seconds=round(time.time() - t0), corpus_file="absent", software=stamp)
+        entry = dict(freq_analytic=vib_only(fr).tolist(), energy=float(e), seconds=round(seconds), corpus_file="absent", software=stamp)
         print(f"{d} {tag}: {entry['seconds']} s; no corpus psi4 file to compare with; lowest vib {vib_only(fr)[:3].round(1).tolist()} cm-1",
               flush=True)
         return entry
@@ -282,44 +367,103 @@ def check_entry(d: str, tag: str, Hc: np.ndarray, fr: np.ndarray, e: float, t0: 
     fa, fc = vib_only(fr), vib_only(corpus["freq_cm"])     # the six trans/rot entries (smallest |value|) dropped; imaginary modes stay, negative
     entry = dict(freq_analytic=fa.tolist(), freq_corpus=fc.tolist(), dH_max=float(np.abs(Hc - corpus["H_raw"]).max()),
                  dH_rms=float(np.sqrt(np.mean((Hc - corpus["H_raw"]) ** 2))), energy=float(e), energy_corpus=float(corpus["energy"]),
-                 seconds=round(time.time() - t0), software=stamp)
+                 seconds=round(seconds), software=stamp)
     print(f"{d} {tag}: {entry['seconds']} s; |H_analytic − H_corpus| max {entry['dH_max']:.2e} rms {entry['dH_rms']:.2e}; "
           f"max |Δfreq| {np.abs(fa - fc).max():.0f} cm-1", flush=True)
     return entry
 
 
-def process_molecule(d: str, run: LabelsRun, lib_log: TextIO) -> list[str]:
-    """The run's functionals on one molecule folder; returns its APT errors (the Hessians are written whatever the APT does)."""
-    with open(d + "/geometry.json", encoding="utf-8") as fh:
-        g = json.load(fh)
-    x, masses = np.array(g["coords_bohr"]), np.array(g["masses_amu"])
-    mol = labels_mol(g, lib_log, run.charge, run.spin, run.max_memory_mb)
-    out, imaginary, apt_errors = {}, {}, []
-    for tag, xc in (f for f in FUNCTIONALS if f[0] in run.functionals):
-        t0 = time.time()
-        saved = f"{d}/hessian_{tag}_analytic.npz"
-        load = run.compare_only or (run.reuse_existing and os.path.exists(saved))
-        if load:
-            z = np.load(saved)
-            Hc, Hp, e, response = z["H_raw"], z["H_projected"], float(z["energy"]), None
-            if not run.compare_only:
-                print(f"{d} {tag}: analytic Hessian reused from {os.path.basename(saved)}", flush=True)
-        else:
-            Hc, e, hobj, response = compute_hessian(d, mol, tag, xc, run)
-            Hp = project_tr(Hc, masses, x)
+def refresh_apt_summary(d: str, Hp: np.ndarray, masses: np.ndarray) -> bool:
+    """Recompute the APT file's frequency and intensity summary from the Hessian the folder ends up with; False when there is no file.
+
+    `write_apt` has to run while the Hessian object is alive, so its summary is made with the analytic Hessian. When the low-mode
+    repair then moves the soft modes, the stored polar tensors stay valid — they are Cartesian — but the summary does not, and one
+    file should not carry two Hessians' worth of numbers.
+    """
+    path = f"{d}/{APT_FILE}"
+    if not os.path.exists(path):
+        return False
+    with np.load(path, allow_pickle=False) as z:
+        fields = {k: z[k] for k in z.files}
+    fields["freq_cm"], fields["intensity_km_mol"] = intensities(fields["apt"], Hp, masses)
+    np.savez_compressed(path, **fields)
+    return True
+
+
+def analytic_label(d: str, mol: Any, tag: str, xc: str, run: LabelsRun,  # noqa: PLR0913  (one functional's whole context)
+                   geometry: dict, apt_errors: list[str]) -> tuple[np.ndarray, float, float, bool]:
+    """One functional's analytic Hessian, its energy, its seconds, and whether the file it came from already carries a repair.
+
+    It reaches the disk here, awaiting the repair.
+
+    The APT is written here as well, because it needs the Hessian object alive. The finished label is written in `write_labels`,
+    once the repair has had its say.
+    """
+    t0 = time.time()
+    saved = f"{d}/hessian_{tag}_analytic.npz"
+    if run.compare_only or (run.reuse_existing and os.path.exists(saved)):
+        with np.load(saved, allow_pickle=False) as z:
+            if "low_mode_pending" in z.files:
+                raise RuntimeError(f"{d} {tag}: {os.path.basename(saved)} was written before its low-mode repair; delete it and rerun")
+            Hc, e = np.asarray(z["H_raw"], float), float(z["energy"])
+            repaired_already = "low_mode_patch" in z.files
+        if not run.compare_only:
+            print(f"{d} {tag}: analytic Hessian reused from {os.path.basename(saved)}"
+                  f"{' (it carries a low-mode repair)' if repaired_already else ''}", flush=True)
+        return Hc, e, time.time() - t0, repaired_already
+    masses, x = np.array(geometry["masses_amu"]), np.array(geometry["coords_bohr"])
+    Hc, e, hobj, response = compute_hessian(d, mol, tag, xc, run)
+    Hp = project_tr(Hc, masses, x)
+    save_hessian(d, tag, Hc, Hp, freqs_cm(Hp, masses), e, run, pending=True)   # on disk before the APT, as it has always been
+    if response is not None:
+        try:
+            print(f"{d} b3lyp: {write_apt(d, hobj, response, Hp, masses, run.grid, run.stamp)}", flush=True)
+        except Exception as exc:  # noqa: BLE001, RUF100 — reported, exit status 3 after both functionals (BLE001 is pre-commit's rule)
+            apt_errors.append(f"{d}: {exc}")
+            print(f"{d} b3lyp: APT FAILED: {exc}", flush=True)
+    return Hc, e, time.time() - t0, False
+
+
+def write_labels(d: str, run: LabelsRun, labels: dict[str, tuple[np.ndarray, float, float, bool]],
+                 repaired: dict[str, np.ndarray], repair: dict, geometry: dict) -> tuple[dict, dict]:
+    """The finished label files, and (analytic_check.json's entries, the imaginary count per functional)."""
+    masses, x = np.array(geometry["masses_amu"]), np.array(geometry["coords_bohr"])
+    out, imaginary = {}, {}
+    for tag, (Hc, e, seconds, _repaired_already) in labels.items():
+        final = repaired.get(tag, Hc)
+        Hp = project_tr(final, masses, x)
         # frequencies from the projected Hessian by the corpus's own convention: a 3N-long list, imaginary modes negative, six ~0 entries.
         # (pyscf's harmonic_analysis drops a mode when an imaginary one falls in its trans/rot window — 62 instead of 63 entries on A2_3a2982dd85.)
         fr = freqs_cm(Hp, masses)
         imaginary[tag] = int((vib_only(fr) < IMAGINARY_BELOW).sum())
-        if not load:
-            save_hessian(d, tag, Hc, Hp, fr, e, run)
-        if response is not None:                  # after the Hessian is on disk: an APT failure never costs the Hessian
-            try:
-                print(f"{d} b3lyp: {write_apt(d, hobj, response, Hp, masses, run.grid, run.stamp)}", flush=True)
-            except Exception as exc:  # noqa: BLE001, RUF100 — reported, exit status 3 after both functionals (BLE001 is pre-commit's rule)
-                apt_errors.append(f"{d}: {exc}")
-                print(f"{d} b3lyp: APT FAILED: {exc}", flush=True)
-        out[tag] = check_entry(d, tag, Hc, fr, e, t0, run.stamp)
+        if not run.compare_only:
+            save_hessian(d, tag, final, Hp, fr, e, run,
+                         unrepaired=Hc if tag in repaired else None, repair=repair if tag in repaired else None)
+            if tag in repaired and refresh_apt_summary(d, Hp, masses):
+                print(f"{d} {tag}: the APT's frequency summary refreshed on the repaired Hessian", flush=True)
+        out[tag] = check_entry(d, tag, final, fr, e, seconds, run.stamp)
+    return out, imaginary
+
+
+def process_molecule(d: str, run: LabelsRun, lib_log: TextIO) -> list[str]:
+    """The run's functionals on one molecule folder; returns its APT errors (the Hessians are written whatever the APT does).
+
+    Three phases, because the repair's directions are the soft modes of *both* labels: the Hessians, then the repair, then the
+    files (TASKS 216, `Design_2026-11-14_Low_Mode_Repair_In_The_Label_Route.md`).
+    """
+    with open(d + "/geometry.json", encoding="utf-8") as fh:
+        g = json.load(fh)
+    mol = labels_mol(g, lib_log, run.charge, run.spin, run.max_memory_mb)
+    apt_errors: list[str] = []
+    labels = {tag: analytic_label(d, mol, tag, xc, run, g, apt_errors)
+              for tag, xc in (f for f in FUNCTIONALS if f[0] in run.functionals)}
+    already = {tag for tag, label in labels.items() if label[3]}
+    if already and already != set(labels):
+        raise RuntimeError(f"{d}: {sorted(already)} carry a low-mode repair and {sorted(set(labels) - already)} do not; "
+                           "the folder is half repaired, which no reader can tell apart from a whole one")
+    repaired, repair = (({}, {}) if run.compare_only or already
+                        else repair_low_modes(g, {t: v[0] for t, v in labels.items()}, run, lib_log))
+    out, imaginary = write_labels(d, run, labels, repaired, repair, g)
     with open(d + "/analytic_check.json", "w", encoding="utf-8") as fh:
         json.dump(out, fh, indent=1)
     if not run.compare_only and mark_imaginary(d, imaginary):
