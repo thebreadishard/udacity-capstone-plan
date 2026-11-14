@@ -19,6 +19,25 @@ from .pipeline import NETWORK
 from .replay import replay_run
 
 MODE_RE = re.compile(r"mode (\d+)[^0-9]{0,40}?(\d{3,4}\.\d) cm", re.I)
+ANCHOR_REGISTRY = "modules/05_support_predictor/out/ANCHORS_STATUS.json"   # decision 62: one carried entry per molecule
+
+
+def carried_anchor(mol_id: str, name: str) -> dict | None:
+    """The coupled-cluster Hessian in force for this molecule, as the anchor registry has it, or None when it has none.
+
+    The registry (`m05/anchor_registry.py`, decision 62) is the project's own answer to "which anchor is this molecule's", with the
+    level, the basis tier, the kind, the date, the digest and the checks that passed. The anchored rung quotes that entry; before
+    this, the certificate could only show what a regular expression found in an evidence page.
+    """
+    registry = json.loads((PLAN / ANCHOR_REGISTRY).read_text(encoding="utf-8"))["anchors"]
+    carried = [e for e in registry if e["status"] == "carried"]
+    for key, value in (("mol_id", mol_id), ("name", name)):
+        match = [e for e in carried if e[key] == value]
+        if len(match) > 1:
+            raise ValueError(f"the anchor registry carries {len(match)} entries for {key} {value}; it allows one")
+        if match:
+            return match[0]
+    return None
 
 
 def commit_hash() -> str:
@@ -108,6 +127,11 @@ def certificate(row: dict, catalog: Catalog) -> dict:
     if mol:
         shape["accuracy"] = carried_accuracy()
     coverage = anchor_coverage(row.get("evidence", []), ub) if rung >= 4 else []
+    entry = carried_anchor(row["id"], row["name"]) if rung >= 4 else None
+    anchor = dict(registry=ANCHOR_REGISTRY, entry=entry,
+                  note=("the anchor in force for this molecule, with the checks it passed" if entry else
+                        "rung 4 is claimed but the anchor registry carries no entry for this molecule" if rung >= 4 else
+                        "\u2014 not anchored (rung < 4)"))
     run = replay_run(mol) if mol else None
     cost = []
     if run:
@@ -133,13 +157,26 @@ def certificate(row: dict, catalog: Catalog) -> dict:
     return dict(kind="certificate", date=time.strftime("%Y-%m-%d %H:%M"), molecule=dict(id=row["id"], name=row["name"], smiles=row.get("smiles"), formula=row.get("formula"),
                 layer=row.get("layer"), n_atoms=row.get("n_atoms"), flags=row.get("flags", [])),
                 rung=dict(reached=rung, label=RUNG_LABELS[rung], ladder=ladder), spectrum=freqs, spectral_shape=shape, per_band_budget=budget,
-                anchor_coverage=coverage,
+                anchor=anchor, anchor_coverage=coverage,
                 laboratory=catalog.lab_bands(row["name"]) if rung >= 5 else dict(n_bands=0, note="not validated against a laboratory record (rung < 5)"),
                 cost_record=cost, provenance=prov,
                 statement=(f"{row['name']}: rung {rung} ({RUNG_LABELS[rung]}). The cheap-level spectrum is served with the laboratory tolerance per family; no predicted "
                            "correction is shown in this record — the pipeline serves it for the licensed families ("
                            + ", ".join(lic["licensed_families"]) + "; decision 65); the anchor coverage lists what coupled-cluster evidence exists "
                            "and where it is wider than the tolerance."))
+
+
+def anchor_markdown(c: dict) -> list[str]:
+    """The page's 'anchor in force' block: the registry's entry, or the plain statement that a rung 4 has none."""
+    entry = c["anchor"]["entry"]
+    if entry:
+        return ["", "## The anchor in force", "",
+                f"**{entry['level']}** ({entry['kind']}, basis tier {entry['tier']}), registered {entry['date']}, "
+                f"`{entry['path']}` (sha16 `{entry['sha16']}`).", "", f"Checks that passed: {entry['checks']}.", "",
+                f"Source: `{c['anchor']['registry']}`, the project's anchor registry."]
+    if c["rung"]["reached"] >= 4:
+        return ["", "## The anchor in force", "", f"**None.** {c['anchor']['note']}."]
+    return []
 
 
 def to_markdown(c: dict) -> str:
@@ -157,6 +194,7 @@ def to_markdown(c: dict) -> str:
         L.append(f"| {fam} | {b['n_modes']} | {b['omega_range'][0]}–{b['omega_range'][1]} | {b['u_band_lab']} | — | {b['u_band_source']} |")
     if c["per_band_budget"]:
         L.append(""); L.append("*Ensemble ±:* " + next(iter(c["per_band_budget"].values()))["ensemble_note"] + ".")
+    L += anchor_markdown(c)
     if c["anchor_coverage"]:
         L += ["", "## Anchor coverage (coupled-cluster evidence)", "", "| family | modes read | RMS vs CCSD(T) | u_band | reading | evidence |", "|---|---|---|---|---|---|"]
         for a in c["anchor_coverage"]:
