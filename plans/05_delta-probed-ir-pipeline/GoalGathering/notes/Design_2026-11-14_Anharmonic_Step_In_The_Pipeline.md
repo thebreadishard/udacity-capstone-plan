@@ -67,9 +67,14 @@ which is a thing the certificate already does for other reasons.
 
 ## 5. The shape of the code
 
-- **The artefact.** One file per family with the fitted model and the recipe that made it: the configuration S2b's nested read chose,
-  the training molecules by id, the feature set, the bar, and the read it comes from. Written by a probe, never by the pipeline, and
-  loaded read-only. A model the pipeline cannot trace to a read it refuses to use.
+- **The artefact is the training table, not a fitted model.** Every model in `s3_read.predictors` is a `(train, test)` closure that
+  fits and predicts in one call, so nothing is serialised anywhere today, and serialising one here would add a pickle, a library
+  version to match and a second code path to keep honest. The artefact is instead the pooled training table the read fitted on —
+  the window modes of every training molecule with their features, their Δ_anh and their Δ_xtb — beside the configuration S2b's
+  nested read chose per family, the bar, the training molecules by id and the read it comes from. The pipeline calls the same
+  predictor with that table and the molecule's own, which is the very code path the read ran. It is a few hundred kilobytes and
+  the fit is milliseconds. Written by a probe, never by the pipeline, and loaded read-only; a table the pipeline cannot trace to
+  a read it refuses to use.
 - **The step.** One function that takes the network's spectrum and the molecule's features and returns, per mode, the printed
   position, the bar and the route taken. It never looks at a file; what it needs is passed in.
 - **The certificate.** `HARMONIC_NOTE` goes. Each band's line names the route (model with its bar, no step because the mode is marked
