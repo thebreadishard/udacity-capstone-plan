@@ -94,3 +94,14 @@ lambda because `Gradients(mycc).kernel()` looked right and its pair checks passe
 - **"Validated" is written only with the number and the counterpart**: not "validated on benzene" but "gradient
   against finite differences of the energy on water, 1e-7". A validation claim without a number counts as not done,
   and a later reader (including a later session of me) may not build on it.
+
+## Improvements reach the end product
+Since 14 November 2026 (the user: 'De pijplijn moet alle kwaliteitsverhogende lessen bevatten, direct in een stap of indirect in het
+neurale netwerk'). The pipeline uses the best labels we have, the network trains on the most correct molecules we have, and the printed
+prediction is the best one we can make, anharmonicity included. So a measurement is never the deliverable:
+- **Every improvement we find gets a TASKS row for putting it into the end product**, in the same turn it is measured, naming what it
+  changes — a pipeline step, a label, a training input, the certificate's wording. A better number nobody integrated is a number we do
+  not have.
+- **Every piece of software we write or fix gets a PR candidate row for its upstream where one applies** (pyscf's CPU grid-response
+  Hessian is TASKS 202). Our own tooling has no upstream and needs none. A PR is drafted by me and posted only on the user's word.
+
