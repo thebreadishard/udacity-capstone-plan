@@ -7,7 +7,7 @@ the columns along *those* directions and the two are compared directly. That lea
 label Hessian they start from was written by pyscf 2.14.0, the route would recompute it with 2.15.0 — and tests what they do share:
 the displacement, the SCF, the blocked grid response and the central difference.
 
-    python probes/label_route_vs_probe.py --id D_ac28161d06
+    python probes/label_route_vs_probe.py --id D_ac28161d06 [--max-memory 2048] [--threads 8]
 """
 from __future__ import annotations
 
@@ -24,9 +24,11 @@ sys.path.insert(0, str(PLAN / "probes"))
 
 TOL_COLUMN = 1e-6        # hartree/bohr^2: a gradient threshold of 1e-8 over a step of 0.01 bohr leaves about 1e-8 in a column
 LABEL_TAGS = ("b3lyp", "wb97x")
+PYSCF_MB = 2048          # pyscf's max_memory: the value the probe ran this molecule with (low_mode_patch.sh, half its 4096 MB
+                         # cap), so the blocked grid response plans the same way on both sides and stays inside the cap
 
 
-def compare(mol_dir: Path, patch_dir: Path, out: Path) -> int:
+def compare(mol_dir: Path, patch_dir: Path, out: Path, max_memory_mb: int) -> int:
     """Ask the route for the columns the probe measured, and report the largest difference per functional."""
     import analytic_hessians as AH
     from label_route_pin import GRID, threads
@@ -35,9 +37,10 @@ def compare(mol_dir: Path, patch_dir: Path, out: Path) -> int:
     threads()
     geometry = json.loads((mol_dir / "geometry.json").read_text(encoding="utf-8"))
     run = AH.LabelsRun(grid=GRID, charge=int(geometry["charge"]), spin=int(geometry["multiplicity"]) - 1,
-                       compare_only=False, apt=False, stamp=AH.software())
+                       compare_only=False, apt=False, stamp=AH.software(), max_memory_mb=max_memory_mb)
     out.mkdir(parents=True, exist_ok=True)
-    worst, record = 0.0, {"id": mol_dir.name, "tolerance": TOL_COLUMN, "per_functional": {}}
+    worst, record = 0.0, {"id": mol_dir.name, "tolerance": TOL_COLUMN, "max_memory_mb": max_memory_mb,
+                          "per_functional": {}}
     with (out / PYSCF_LOG_NAME).open("a", encoding="utf-8") as lib_log:
         for tag in LABEL_TAGS:
             with np.load(patch_dir / f"hessian_{tag}_analytic_grfpatch.npz", allow_pickle=False) as z:
@@ -61,12 +64,14 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--molecules", type=Path, default=PLAN / "modules/05_support_predictor/corpus/molecules")
     ap.add_argument("--patches", type=Path, default=PLAN / "probes/results_m1/low_mode_patch_2026-11-13/corpus")
     ap.add_argument("--out", type=Path, default=PLAN / "probes/results_m1/label_route_vs_probe_2026-11-14")
+    ap.add_argument("--max-memory", type=int, default=PYSCF_MB,
+                    help="pyscf's max_memory in MB; it must stay below the run's cgroup cap (default the probe's own value)")
     a = ap.parse_args(argv)
     mol_dir, patch_dir = a.molecules / a.id, a.patches / a.id
     for path in (mol_dir / "geometry.json", patch_dir / "hessian_b3lyp_analytic_grfpatch.npz"):
         if not path.is_file():
             raise SystemExit(f"{path} is missing: the comparison needs a folder the probe has patched")
-    return compare(mol_dir, patch_dir, a.out)
+    return compare(mol_dir, patch_dir, a.out, a.max_memory)
 
 
 if __name__ == "__main__":
