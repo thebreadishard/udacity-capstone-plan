@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 
 pytest.importorskip("pyscf")
-from pyscf import dft, gto  # noqa: E402
+from pyscf import dft, gto
 
 PLAN = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PLAN / "probes"))
@@ -49,18 +49,21 @@ def test_a_kept_response_gives_the_same_hessian():
     """hessian_with_response(hobj, solve_response(hobj)) is the Hessian of kernel(): the caller can keep h1ao for refine_response."""
     m = _water_b3lyp()
     hobj = m.Hessian()
-    H, mo1 = hessian_with_response(hobj, solve_response(hobj))
+    H, _mo1 = hessian_with_response(hobj, solve_response(hobj))
     assert np.abs(H - m.Hessian().kernel()).max() < 1e-12
 
 
 def test_refine_response_repairs_a_perturbed_response(mf):
-    """TASKS 44 (a), 12 Oct 2026: a response pushed 1e-4 off in the virtual space (residual 3.8e-4, APT 9.6e-4 e off) is brought back below the
-    bound in one round, to the APT of the refined unperturbed response within 1.6e-7 e (measured); pyscf's own water response, 3.0e-5 off its
-    system, goes to 1.4e-7. A bound of zero stops after max_rounds."""
+    """TASKS 44 (a), 12 Oct 2026; premise refreshed 14 Nov 2026 (TASKS 213): a response pushed 1e-4 off in the virtual space
+    (residual 3.8e-4, APT 9.6e-4 e off) is brought back below the bound in one round, to the APT of the refined unperturbed
+    response within 1.6e-7 e (measured). pyscf's own response used to be 3.0e-5 off its system and to need a round; since
+    2.15.0's Krylov CPHF fix (#2702, ours) it is 3.0e-10 off and needs none, so what is pinned is that a round runs exactly
+    when the solver's residual is outside the bound. A bound of zero stops after max_rounds."""
     hobj = mf.Hessian()
     resp = solve_response(hobj)
     mo1, info = refine_response(hobj, resp.mo1, resp.h1ao)
-    assert info["residual_after"] <= CPHF_BOUND < info["residual_before"] and info["rounds"] == 1
+    assert info["residual_after"] <= CPHF_BOUND
+    assert info["rounds"] == (0 if info["residual_before"] <= CPHF_BOUND else 1)
     o, v = mf.mo_occ > 0, mf.mo_occ == 0
     rng = np.random.default_rng(0)
     noise = [np.einsum("pa,xai->xpi", mf.mo_coeff[:, v], 1e-4 * rng.standard_normal((3, int(v.sum()), int(o.sum())))) for _ in resp.mo1]
@@ -68,6 +71,7 @@ def test_refine_response_repairs_a_perturbed_response(mf):
     fixed, info_bad = refine_response(hobj, bad, resp.h1ao)
     P = apt_from_mo1(mf, mo1)
     assert np.abs(apt_from_mo1(mf, bad) - P).max() > 1e-4
+    assert info_bad["residual_before"] > CPHF_BOUND and info_bad["rounds"] >= 1       # the refinement is needed, and runs
     assert info_bad["residual_after"] <= CPHF_BOUND and np.abs(apt_from_mo1(mf, fixed) - P).max() < 1e-6
     assert refine_response(hobj, resp.mo1, resp.h1ao, bound=0.0, max_rounds=2)[1]["rounds"] == 2
 
@@ -81,7 +85,7 @@ def test_the_per_column_fallback_finishes_what_the_batched_rounds_leave(mf):
     o, v = mf.mo_occ > 0, mf.mo_occ == 0
     rng = np.random.default_rng(1)
     bad = [m + np.einsum("pa,xai->xpi", mf.mo_coeff[:, v], 1e-4 * rng.standard_normal((3, int(v.sum()), int(o.sum())))) for m in resp.mo1]
-    stays, info0 = refine_response(hobj, bad, resp.h1ao, max_rounds=0, per_column=False)
+    _stays, info0 = refine_response(hobj, bad, resp.h1ao, max_rounds=0, per_column=False)
     fixed, info1 = refine_response(hobj, bad, resp.h1ao, max_rounds=0)
     assert info0["residual_after"] > CPHF_BOUND and info0["columns_fallback"] == 0
     assert info1["residual_after"] <= CPHF_BOUND and info1["rounds"] == 0 and info1["columns_fallback"] == 3 * mf.mol.natm

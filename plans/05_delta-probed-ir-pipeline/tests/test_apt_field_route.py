@@ -43,9 +43,12 @@ def test_grid_response_makes_the_sum_rule_exact_for_dft():
 
 
 def test_the_refined_response_puts_route_c_on_the_field_route_for_dft():
-    """TASKS 44 (a), 12 Oct 2026: pyscf's Krylov CPHF stops early for DFT (pyscf #2702); on water B3LYP at (50, 194) route C's APT is 6e-5 e
-    off the field route, the refined one 7.5e-6 (measured; the field error at F = 1e-3 is ~9e-6). Against the field route without grid response,
-    the derivative the analytic Hessian takes."""
+    """TASKS 44 (a), 12 Oct 2026; premise refreshed 14 Nov 2026 (TASKS 213). When pyscf's Krylov CPHF stopped early for DFT
+    (#2702, ours) route C's APT was 6e-5 e off the field route and the refined one 7.5e-6. pyscf 2.15.0 carries the fix, so
+    the solver's own response is already inside the bound (5.7e-10): route C sits 7.31e-6 from the field route, inside the
+    field error of about 9e-6 at F = 1e-3, and the refined response is the same array to 1.8e-15 (measured, ~/qc215). What is
+    pinned is that both agree with the field route inside 2e-5 and that refining never makes it worse. Against the field
+    route without grid response, the derivative the analytic Hessian takes."""
     mol = _mol()
     settings = {"xc": "b3lyp", "grid": (50, 194)}
     mf = scf_in_field(mol, settings, np.zeros(3))
@@ -54,7 +57,8 @@ def test_the_refined_response_puts_route_c_on_the_field_route_for_dft():
     P_c = apt_from_mo1(mf, resp.mo1)
     P_r = apt_from_mo1(mf, refine_response(hobj, resp.mo1, resp.h1ao)[0])
     P_no = apt_field(mol, settings, 1e-3, log=lambda *a, **k: None)[0]
-    assert np.abs(P_r - P_no).max() < 2e-5 < np.abs(P_c - P_no).max()
+    off_c, off_r = np.abs(P_c - P_no).max(), np.abs(P_r - P_no).max()
+    assert off_r < 2e-5 and off_c < 2e-5 and off_r <= off_c + 1e-12
 
 
 def test_a_restart_resumes_from_the_checkpoint_and_refuses_another_field(tmp_path):

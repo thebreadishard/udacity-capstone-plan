@@ -81,7 +81,9 @@ def test_the_upstream_cphf_solves_water_with_lindep_and_restores_the_release_s_k
     released = lib.krylov
     x = solve(fvind, mo_energy, mo_occ, h1, max_cycle=30)[0]
     assert lib.krylov is released
-    assert K.passes_lindep(module) and not K.passes_lindep(cphf)
+    # Until pyscf 2.15.0 only master passed the linear-dependence case; the release carries the fix of #2702 (ours) now, so
+    # both do, and this line also says the installed pyscf is new enough for the label route (TASKS 213).
+    assert K.passes_lindep(module) and K.passes_lindep(cphf)
     assert K.relative_residual(fvind, mo_energy, mo_occ, h1, x) < 1e-6
 
 

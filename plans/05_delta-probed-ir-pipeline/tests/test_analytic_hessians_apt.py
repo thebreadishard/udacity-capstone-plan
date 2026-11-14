@@ -31,7 +31,11 @@ def test_the_b3lyp_pass_writes_the_apt_and_the_check_file_keeps_its_shape(tmp_pa
     d = _run(tmp_path, monkeypatch)
     z = np.load(d / AH.APT_FILE)
     assert str(z["route"]) == "hessian_response_refined" and bool(z["passed"]) and float(z["sum_rule_max"]) < AH.SUM_RULE_LIMIT
-    assert float(z["cphf_residual_after"]) <= AH.CPHF_BOUND < float(z["cphf_residual_before"]) and int(z["cphf_refine_rounds"]) >= 1
+    before, after, rounds = float(z["cphf_residual_before"]), float(z["cphf_residual_after"]), int(z["cphf_refine_rounds"])
+    # A round runs exactly when the solver's own residual is outside the bound. Since pyscf 2.15.0 it is inside it
+    # (5.7e-10 on water against 1e-6), so none runs; that the refinement works when it is needed is pinned by the
+    # zero-bound run below and by tests/test_apt_route_c.py (TASKS 213).
+    assert after <= AH.CPHF_BOUND and (rounds == 0 if before <= AH.CPHF_BOUND else rounds >= 1)
     assert z["apt"].shape == (3, 9) and len(z["intensity_km_mol"]) == 3
     assert set(json.loads((d / "analytic_check.json").read_text())) == {"b3lyp", "wb97x"}
 
