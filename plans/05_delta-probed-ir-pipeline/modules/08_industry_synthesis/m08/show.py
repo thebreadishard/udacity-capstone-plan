@@ -21,14 +21,15 @@ from pathlib import Path, PureWindowsPath
 import numpy as np
 
 from . import live_certificate as LC
+from . import paths
 from . import pipeline as P
 from .spectrum import GRID, broadened
 
 # isort: split
 from rungC_intensities import mode_intensities  # module 05's code, on the path through m08.pipeline
 
-RESULTS = P.PLAN / "probes" / "results_m1"
-M05 = P.PLAN / "modules" / "05_support_predictor"
+RESULTS = paths.resolve("probes/results_m1", must_exist=False)
+M05 = paths.resolve("modules/05_support_predictor", must_exist=False)
 TEMPLATE = Path(__file__).with_name("show_template.html")
 OUT = P.PLAN / "modules" / "08_industry_synthesis" / "out" / "pipeline_show.html"
 DEFAULT_RUNS = (RESULTS / "pipeline_benzene_computed_2026-11-03" / "benzene", RESULTS / "pipeline_demo_v04_2026-10-30" / "phenanthrene",

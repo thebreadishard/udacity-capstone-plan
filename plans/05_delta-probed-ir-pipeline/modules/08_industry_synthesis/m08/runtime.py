@@ -8,6 +8,7 @@ import json
 import math
 from pathlib import Path
 
+from . import paths
 from . import pipeline as P
 from .prices import host_class
 
@@ -15,7 +16,7 @@ from .prices import host_class
 # probes/, on the path through m08.pipeline
 import anchor_plan as AP
 
-RESULTS = P.PLAN / "probes" / "results_m1"
+RESULTS = paths.resolve("probes/results_m1", must_exist=False)
 HALF_HOUR_S = 1800.0                   # the demo's live run (the user's demo plan, 30 Oct 2026)
 
 

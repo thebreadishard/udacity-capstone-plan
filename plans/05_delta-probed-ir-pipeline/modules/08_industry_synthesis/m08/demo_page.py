@@ -16,6 +16,7 @@ from pathlib import Path
 import numpy as np
 
 from . import live_certificate as LC
+from . import paths
 from . import pipeline as P
 from .spectrum import broadened
 
@@ -23,7 +24,7 @@ from .spectrum import broadened
 # module 05's code, on the path through m08.pipeline
 from rungC_intensities import mode_intensities
 
-RESULTS = P.PLAN / "probes" / "results_m1"
+RESULTS = paths.resolve("probes/results_m1", must_exist=False)
 OUT = P.PLAN / "modules" / "08_industry_synthesis" / "out" / "pipeline_demo.html"
 FAMILY_ORDER = ("CH-stretch", "ring-ip", "CH-oop", "other")
 CURVES = (("truth", "ωB97X truth"), ("network", "network (corrected)"), ("b3lyp", "B3LYP (uncorrected)"))
@@ -239,7 +240,7 @@ def _provenance(panels: list[Panel]) -> str:
     for p in panels:
         pv = p.certificate["provenance"]
         models = ", ".join(m["sha16"][:8] for m in p.certificate["network"]["models"])
-        folder = p.demo.folder.relative_to(P.PLAN).as_posix()
+        folder = paths.relative_to_plan(p.demo.folder)
         rows.append(f"<tr><td>{_e(p.certificate['molecule']['name'])}</td><td><code>{_e(folder)}</code></td>"
                     f"<td><code>{_e(pv['run_commit'][:8])}</code></td><td><code>{_e(models)}</code></td></tr>")
     return ('<section><h2>Sources</h2><div class="scroll"><table class="small"><thead><tr><th>molecule</th><th>result folder</th>'
