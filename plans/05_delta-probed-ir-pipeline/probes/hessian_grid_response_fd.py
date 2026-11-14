@@ -27,12 +27,13 @@ import numpy as np
 CORPUS_CODE = Path(__file__).resolve().parents[1] / "modules" / "05_support_predictor" / "corpus"
 sys.path.insert(0, str(CORPUS_CODE))
 from analytic_hessians import (  # noqa: E402  (the corpus code lives in the module's folder, not on the path)
+    FD_CONV_TOL,
+    FD_CONV_TOL_GRAD,
     FUNCTIONALS,
     MAX_MEMORY_MB,
-    finish_by_newton,
     freqs_cm,
-    labels_ks,
     labels_mol,
+    labels_scf,
     project_tr,
     vib_only,
 )
@@ -44,7 +45,6 @@ from pyscf import lib  # noqa: E402
 from qc_common import translation_residual, write_atomic  # noqa: E402
 
 STEP_BOHR = 0.005              # the frozen-grid check's step (probes/hessian_fixed_grid_fd.py: 0.06 cm-1 from the analytic on benzene)
-CONV_TOL_GRAD = 1e-8           # a gradient error of 1e-8 over 2h = 0.01 bohr is 1e-6 Eh/bohr², against translation residuals ≈ 1e-4
 LOW_MODE_CM = 100.0            # 'low' modes for the summary: the family 'other' holds them
 XYZ = "xyz"
 
@@ -75,14 +75,13 @@ class FdHessianConfig:
 
 
 def converged_scf(mol: Any, xc_tag: str, grid: tuple[int, int], dm0: Any) -> Any:
-    """The labels route's KS object at grid, converged (second-order finish when DIIS stalls); raises when it does not converge."""
-    mf = labels_ks(mol, dict(FUNCTIONALS)[xc_tag], grid)
-    mf.conv_tol_grad = CONV_TOL_GRAD
-    mf.kernel(dm0=dm0)
-    if not mf.converged:
-        finish_by_newton(mf)
-    if not mf.converged:
-        raise RuntimeError(f"{xc_tag} SCF not converged")
+    """The labels route's KS object at a displaced geometry, converged to the finite difference's own thresholds.
+
+    One SCF path for the label route and this probe (TASKS 212): `labels_scf` holds the recipe (DIIS, the second-order finish when
+    DIIS stalls, the plain object as the verdict) and `FD_CONV_TOL`/`FD_CONV_TOL_GRAD` the thresholds a displaced point needs.
+    """
+    mf, _e = labels_scf(mol, dict(FUNCTIONALS)[xc_tag], grid, newton_finish=True,
+                        conv_tol=FD_CONV_TOL, conv_tol_grad=FD_CONV_TOL_GRAD, dm0=dm0)
     return mf
 
 

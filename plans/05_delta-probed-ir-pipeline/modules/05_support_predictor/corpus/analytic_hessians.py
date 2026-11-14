@@ -75,8 +75,14 @@ IMAGINARY_BELOW = 0.0                  # cm⁻¹: every negative mode, as pyscf 
 SPIN_CONTAMINATION = 0.05              # |<S²> − S(S+1)| above which a warning is printed
 MAX_MEMORY_MB = 20000                  # pyscf's max_memory (its blocking target); a run under a memory cap passes a smaller one
 NEWTON_MAX_CYCLE = 50                  # the second-order finish's macro iterations (pyscf's SCF default)
-FD_CONV_TOL_GRAD = 1e-8                # a displaced point's DIIS threshold: a gradient error of 1e-8 over 2h = 0.01 bohr is
-                                       # 1e-6 hartree/bohr^2, against translation residuals of about 1e-4 (TASKS 201 step 2)
+# A displaced point of the low-mode repair is converged for a finite difference, not for a label, so its two thresholds come from
+# that error budget and from a measured noise floor. T_76dfc434db (60 atoms) showed both floors on 14 Nov 2026: the energy oscillates
+# by 1.4e-10 hartree a macro iteration and |g| sits at 2.75e-8, so a label's conv_tol of 1e-11 and a conv_tol_grad of 1e-8 cannot be
+# reached there at all -- the second-order solver spent 50 macro iterations and 2.9 h proving it, twice. A gradient uncertainty of
+# 1e-7 over a step whose mass-weighted length is about 1.5 leaves 3e-8 hartree/bohr^2 in the measured column, three orders below the
+# 1e-4 translation residual the analytic Hessian itself carries. The margins over the measured floors are 3.6x and 7x.
+FD_CONV_TOL_GRAD = 1e-7                # the displaced point's orbital-gradient threshold
+FD_CONV_TOL = 1e-9                     # the displaced point's energy threshold; a label's own stays 1e-11 (labels_ks)
 
 
 @dataclass(frozen=True)
@@ -205,14 +211,17 @@ def finish_by_newton(mf) -> float:
     return mf.kernel(dm0=second.make_rdm1())
 
 
-def labels_scf(mol, xc, grid, newton_finish=False, *, conv_tol_grad: float | None = None, dm0: Any = None):
+def labels_scf(mol, xc, grid, newton_finish=False, *,  # noqa: PLR0913  (two thresholds, a fallback switch and a density)
+               conv_tol: float | None = None, conv_tol_grad: float | None = None, dm0: Any = None):
     """The labels route's converged SCF; with newton_finish a stalled DIIS run gets `finish_by_newton`; raises when it does not converge.
 
-    conv_tol_grad and dm0 are the two settings a displaced point of the low-mode repair needs: its gradient must be tighter than a
-    label's (FD_CONV_TOL_GRAD), and it starts from the previous point's density. The second-order finish never inherits the tight
-    threshold, which is what `finish_by_newton` guards.
+    conv_tol, conv_tol_grad and dm0 are what a displaced point of the low-mode repair needs: its own two thresholds, set from the
+    finite difference's error budget rather than from a label's standard (FD_CONV_TOL, FD_CONV_TOL_GRAD), and the previous point's
+    density to start from. The second-order finish never inherits a tight gradient threshold, which `finish_by_newton` guards.
     """
     mf = labels_ks(mol, xc, grid)
+    if conv_tol is not None:
+        mf.conv_tol = conv_tol
     if conv_tol_grad is not None:
         mf.conv_tol_grad = conv_tol_grad
     e = mf.kernel(dm0=dm0)
@@ -236,7 +245,7 @@ def displaced_gradient(geometry: dict, coords: np.ndarray, xc: str, run: LabelsR
     from grid_response_blocked import blocked_grid_response
 
     mol = labels_mol({**geometry, "coords_bohr": np.asarray(coords, float).tolist()}, lib_log, run.charge, run.spin, run.max_memory_mb)
-    mf, _e = labels_scf(mol, xc, run.grid, newton_finish=True, conv_tol_grad=FD_CONV_TOL_GRAD, dm0=dm0)
+    mf, _e = labels_scf(mol, xc, run.grid, newton_finish=True, conv_tol=FD_CONV_TOL, conv_tol_grad=FD_CONV_TOL_GRAD, dm0=dm0)
     with blocked_grid_response():
         gradient = mf.nuc_grad_method().set(grid_response=True).kernel()
     return np.asarray(gradient, float), mf.make_rdm1()
