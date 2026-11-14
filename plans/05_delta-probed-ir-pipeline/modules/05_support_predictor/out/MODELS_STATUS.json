@@ -571,5 +571,47 @@
   "version": "",
   "chain": "35s2",
   "note": "chain 35's seed 2 at epoch cap 500 (TASKS 169); read 3 Nov 17:5x: early stop at epoch 131 (best 0.0420 at 111, against 0.0412); as v1.3.1 with seeds 0 and 1 worse on ring-ip (b), CH-oop (a8) and 'other' (b) (out/holdout_a_clean_read_v131_2026-11-03.md); not carried, v1.3 stays (decision 57)"
+ },
+ "E7_rungC_chain42_arm0_model_n978_seed0.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "42",
+  "note": "chain 42 - the four shape molecules as a size test, arms 0 and D; registered 12 Oct 2026; candidate until its read"
+ },
+ "E7_rungC_chain42_arm0_model_n978_seed1.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "42",
+  "note": "chain 42 - the four shape molecules as a size test, arms 0 and D; registered 12 Oct 2026; candidate until its read"
+ },
+ "E7_rungC_chain42_arm0_model_n978_seed2.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "42",
+  "note": "chain 42 - the four shape molecules as a size test, arms 0 and D; registered 12 Oct 2026; candidate until its read"
+ },
+ "E7_rungC_chain42_armD_model_n983_seed0.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "42",
+  "note": "chain 42 - the four shape molecules as a size test, arms 0 and D; registered 12 Oct 2026; candidate until its read"
+ },
+ "E7_rungC_chain42_armD_model_n983_seed1.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "42",
+  "note": "chain 42 - the four shape molecules as a size test, arms 0 and D; registered 12 Oct 2026; candidate until its read"
+ },
+ "E7_rungC_chain42_armD_model_n983_seed2.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "42",
+  "note": "chain 42 - the four shape molecules as a size test, arms 0 and D; registered 12 Oct 2026; candidate until its read"
  }
 }
