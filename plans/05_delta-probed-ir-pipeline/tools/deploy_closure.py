@@ -3,7 +3,8 @@ files needs. 19 Oct 2026: probes/deploy_s2.sh shipped a runner without library_l
 morning, so S2b's first molecule would have failed on import; the list had been kept by hand beside deploy_s1tz.sh's.
 
 What a file needs, when that file exists in the plan:
-  .py — every import (also inside a function) that names a sibling module of the file or a module under src/ (relative imports included;
+  .py — every import (also inside a function) that names a sibling module of the file, a module under src/, or a module of
+        the corpus folder, which the deploy scripts copy in flat beside the probes (relative imports included;
         `from pkg import name` also needs pkg/name.py when it exists);
   .sh — outside comments: $HERE/<file>, probes/<file>.(sh|py), and `-m <package.module>` under src/.
 Prints each missing file with the file that needs it and exits 1; prints the number of files checked and exits 0 when the list is closed.
@@ -15,6 +16,7 @@ import re
 import sys
 from pathlib import Path
 
+CORPUS = Path("modules") / "05_support_predictor" / "corpus"   # the third place an import resolves to on a flat server folder
 SHELL_HERE = re.compile(r"\$\{?HERE\}?/([\w.-]+\.(?:sh|py))")
 SHELL_PROBES = re.compile(r"(?<![\w/])(probes/[\w./-]+\.(?:sh|py))")
 SHELL_MODULE = re.compile(r"-m\s+([A-Za-z_]\w*(?:\.\w+)+)")
@@ -30,7 +32,7 @@ def module_files(dotted: str, roots: list[Path]) -> list[Path]:
 def python_needs(path: Path, plan: Path) -> set[Path]:
     """The plan's files that a Python file imports."""
     tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
-    roots = [path.parent, plan / "src"]
+    roots = [path.parent, plan / "src", plan / CORPUS]
     names: list[tuple[str, list[Path]]] = []
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):

@@ -1,4 +1,5 @@
-"""probes/scf_converge.py (19 Oct 2026): one DIIS → second-order → DIIS convergence for the S1/S2 pyscf paths. On water at B3LYP/6-31G*
+"""probes/scf_converge.py (19 Oct 2026; the shared policy of corpus/scf_policy.py since 14 Nov 2026, TASKS 212): one
+DIIS → second-order → DIIS convergence for the S1/S2 pyscf paths. On water at B3LYP/6-31G*
 (grid 75,302) the fallback, forced by cutting DIIS to 3 cycles, reaches the energy of a plain DIIS run to 1e-10 E_h and says so in its log;
 a run that converges under DIIS returns the same object without a fallback line. Needs pyscf, so it runs in WSL and is skipped elsewhere."""
 import sys
@@ -32,7 +33,8 @@ def test_the_fallback_reaches_the_plain_energy_and_says_so():
     _, e_ref = S.converged_scf(_rks(), log=lines.append)
     out, e_fb = S.converged_scf(_rks(), diis_cycles=3, log=lines.append)
     assert out.converged and abs(e_fb - e_ref) < 1e-10
-    assert lines == ["  SCF: DIIS not converged in 3 cycles; second-order solver"]
+    assert len(lines) == 1 and lines[0].startswith("  SCF: DIIS stopped unconverged at E = -76.4")
+    assert lines[0].endswith("the second-order solver continues from its orbitals")
 
 
 def test_a_budget_that_cannot_run_is_refused():
