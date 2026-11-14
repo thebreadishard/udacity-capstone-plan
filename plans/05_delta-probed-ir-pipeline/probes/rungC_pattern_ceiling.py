@@ -31,7 +31,8 @@ import e7_t2_sqm as T2  # noqa: E402
 
 PATTERNS = ("c", "d", "e", "f", "all")
 DEFAULT_IDS = ("A_8448043181", "A_01f3186607", "A_69789470db", "A_8f6ed7c002")
-AMU2AU = 1822.888486209
+# one definition of each, beside the label route that writes the Hessians (TASKS 221, 14 Nov 2026)
+from qc_common import AMU2AU  # noqa: E402
 
 
 def pattern_pairs(symbols, coords, F_low, pattern: str) -> tuple[np.ndarray, np.ndarray, list]:

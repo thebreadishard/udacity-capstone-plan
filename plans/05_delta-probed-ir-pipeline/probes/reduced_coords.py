@@ -13,7 +13,6 @@ from __future__ import annotations
 
 import numpy as np
 
-HARTREE2CM = 219474.6313632
 
 
 def omega_from_eigenvalue(w: float) -> float:

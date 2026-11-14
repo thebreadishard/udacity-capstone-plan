@@ -24,8 +24,8 @@ import os
 
 import numpy as np
 
-AMU2AU = 1822.888486209
-HARTREE2CM = 219474.6313705
+# one definition of each, beside the label route that writes the Hessians (TASKS 221, 14 Nov 2026)
+from qc_common import AMU2AU, HARTREE2CM
 ASYM_LIMIT = 2e-3            # a.u.; benzene 2.7e-4 (full) / 4.4e-5 (symmetric); the invalid naphthalene 2.2e-2
 TRANS_SUM_LIMIT = 1e-3       # E_h/bohr²; correct CC Hessians 3.2e-6 … 3.1e-5, the frozen-core incident 6.8e-2
 NULL_SPACE_LIMIT_CM = 10.0   # cm⁻¹; the six projected translations/rotations must be ~0

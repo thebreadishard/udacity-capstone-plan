@@ -13,7 +13,8 @@ import json
 import sys
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-HARTREE2CM = 219474.6313632
+# one definition of each, beside the label route that writes the Hessians (TASKS 221, 14 Nov 2026)
+from qc_common import HARTREE2CM  # noqa: E402
 
 
 def main() -> int:

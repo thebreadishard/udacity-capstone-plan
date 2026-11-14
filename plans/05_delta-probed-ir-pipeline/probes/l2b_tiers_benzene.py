@@ -18,7 +18,6 @@ from datetime import datetime
 import numpy as np
 
 THRESH = {"tight": [1e-6, 1e-7], "normal": [1e-5, 1e-6]}
-HARTREE2CM = 219474.6313705
 MODES = [6, 12, 18]
 
 

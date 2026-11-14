@@ -20,8 +20,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from reduced_coords import harmonic_check, omega_from_eigenvalue, reduced_displacement   # noqa: E402  (25 Sep 2026: one displacement convention, checked)
 
 THRESH = {"normal": [1e-5, 1e-6], "tight": [1e-6, 1e-7], "xtight": [1e-7, 1e-8]}
-AMU2AU = 1822.888486209
-HARTREE2CM = 219474.6313705
+# one definition of each, beside the label route that writes the Hessians (TASKS 221, 14 Nov 2026)
+from qc_common import AMU2AU, HARTREE2CM  # noqa: E402
 
 
 def log(msg, out):

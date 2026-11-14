@@ -22,8 +22,8 @@ from typing import NamedTuple
 
 import numpy as np
 
-AMU2AU = 1822.888486209
-HARTREE2CM = 219474.6313705
+# one definition of each, the corpus's own constants module (TASKS 221, 14 Nov 2026)
+from constants import AMU2AU, HARTREE2CM
 # A_k [km/mol] = 974.8802 · |∂μ/∂Q_k|² with ∂μ/∂Q in e/√amu: 1 e/√amu → (2.541746 D / 0.529177 Å)² × 42.2561 km/mol per (D/Å)²/amu = 974.88 km/mol.
 KM_PER_MOL = 974.8802
 SUM_RULE_LIMIT = 5e-4  # e; route B's limit (benzene: CPHF vs FD differ by 4.4e-4 e at most)
