@@ -17,7 +17,8 @@ Each step is one function on existing code:
 Every refusal — the charge state, a radical, no aromatic ring, an element the carried models never saw, a model that is not carried, an
 output folder in use — comes before step 1. The positions are harmonic: no anharmonic shift (the backlog), and the record says so.
 
-    python -m m08.pipeline --name benzene --smiles c1ccccc1 --out <folder> [--threads 4] [--psi4-python <qc env python>] [--no-reuse]
+    python -m m08.pipeline --name benzene --smiles c1ccccc1 --out <folder> [--threads 4] [--psi4-python <qc env python>]
+                          [--pyscf-python <WSL python>] [--no-reuse]
 """
 from __future__ import annotations
 
@@ -55,14 +56,14 @@ from scale_factor_baseline import PAHDB_FACTORS, pahdb_region  # noqa: E402
 
 from dpir.provenance import git_state, provenance  # noqa: E402
 
-PIPELINE_VERSION = "0.9"               # modules/PIPELINE.md
+PIPELINE_VERSION = "0.10"              # modules/PIPELINE.md
 NETWORK = "ΔH-network"
 CORPUS_ROOT = M05 / "corpus"
 CORPUS = CORPUS_ROOT / "molecules"
 PSI4_WORKER = M05 / "corpus" / "psi4_worker.py"
 ANALYTIC = M05 / "corpus" / "analytic_hessians.py"
 WSL_CAPPED = PLAN / "probes" / "wsl_capped.sh"
-WSL_PYSCF = "~/qc05/bin/python"
+WSL_PYSCF = "~/qc215/bin/python"      # pyscf 2.15.0: the low-mode repair needs it, and 2.14.0 refuses it (TASKS 225)
 LOW_GRID = (99, 590)                   # the analytic Hessian's and APT's grid: the corpus's labels, so a reused folder is what step 3 computes
 PYSCF_HEADROOM_MB = 584                # pyscf's max_memory below the cap: probes/cation_analytic_all.sh's measured margin (19 Oct 2026)
 KILLED_AT_CAP = (137, 143)             # wsl_capped.sh's kill, and the systemd scope's (probes/cation_oom_check.sh)
@@ -506,6 +507,8 @@ def parse_args(argv: list[str] | None) -> argparse.Namespace:
     src.add_argument("--smiles")
     src.add_argument("--xyz", type=Path, help="an xyz file in Å; its geometry is the optimisation's start")
     ap.add_argument("--psi4-python", type=Path, help="the qc env's python (default: CORPUS_QC_PYTHON)")
+    ap.add_argument("--pyscf-python",
+                    help="the WSL python step 3 runs the label route on; the low-mode repair needs pyscf 2.15.0 or newer")
     ap.add_argument("--threads", type=int, default=4)
     ap.add_argument("--psi4-memory-gb", type=int, default=4)
     ap.add_argument("--wsl-cap-mb", type=int, default=6144)
@@ -521,7 +524,8 @@ def main(argv: list[str] | None = None) -> int:
     from .runtime import announce
 
     a = parse_args(argv)
-    given = {k: v for k, v in dict(smiles=a.smiles, xyz=a.xyz, psi4_python=a.psi4_python, corpus=a.corpus).items() if v is not None}
+    given = {k: v for k, v in dict(smiles=a.smiles, xyz=a.xyz, psi4_python=a.psi4_python, pyscf_python=a.pyscf_python,
+                                   corpus=a.corpus).items() if v is not None}
     cfg = PipelineConfig(name=a.name, out_root=a.out, threads=a.threads, psi4_memory_gb=a.psi4_memory_gb, wsl_cap_mb=a.wsl_cap_mb,
                          reuse_corpus=not a.no_reuse, reuse_only=a.reuse_only, **given)
     try:

@@ -1,0 +1,41 @@
+{
+ "stored": {
+  "folder": "probes\\results_m1\\pipeline_benzene_computed_2026-11-03\\benzene",
+  "software": {
+   "numpy": "2.5.2",
+   "pyscf": "2.14.0",
+   "pyscf_git": null,
+   "python": "3.12.14",
+   "sha256": {
+    "analytic_hessians.py": "0ea113dae1df",
+    "apt.py": "b22c29d0575f"
+   }
+  }
+ },
+ "fresh": {
+  "folder": "probes\\results_m1\\step3_pyscf_2026-11-14\\fresh",
+  "software": {
+   "numpy": "2.5.2",
+   "pyscf": "2.15.0",
+   "pyscf_git": null,
+   "python": "3.12.14",
+   "sha256": {
+    "analytic_hessians.py": "793d98f96c92",
+    "apt.py": "abf342388bf1"
+   }
+  }
+ },
+ "hessian_max_abs_diff": 2.2360296083046016e-05,
+ "frequency_max_abs_diff_cm": 0.06556186485317994,
+ "frequency_rms_diff_cm": 0.01733571924102101,
+ "lowest_cm": {
+  "stored": 415.40233702479105,
+  "fresh": 415.40234433473876
+ },
+ "apt_max_abs_diff_e": 1.3923182295982883e-06,
+ "sum_rule_max": {
+  "stored": 0.0001060413234734714,
+  "fresh": 0.00010608479493778855
+ },
+ "intensity_max_abs_diff_km_mol": 0.0008953661233590537
+}

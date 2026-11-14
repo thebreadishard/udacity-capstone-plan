@@ -10,6 +10,7 @@ from pathlib import Path
 
 import numpy as np
 import pytest
+from pydantic import ValidationError
 
 from pin_tools import DATA, PIN_CORPUS, PLAN, require_frozen_corpus
 
@@ -184,6 +185,24 @@ def test_the_low_level_runs_b3lyp_alone_under_the_cap(tmp_path):
     inner = argv[4]
     assert "--functionals b3lyp" in inner and f"--max-memory {8192 - P.PYSCF_HEADROOM_MB}" in inner and "wsl_capped.sh 8192 --" in inner
     assert P.wsl_path(cfg.folder) in inner and "OMP_NUM_THREADS=6" in inner
+    assert P.WSL_PYSCF in inner                                   # the default, when the caller names none
+
+
+@pytest.mark.skipif(sys.platform != "win32", reason="the WSL step's command names the laptop's Windows paths")
+def test_the_hessian_step_runs_on_the_interpreter_it_is_given(tmp_path):
+    """TASKS 225: the low-mode repair needs pyscf 2.15.0, so which WSL python step 3 uses is a setting, not a constant.
+
+    The default is the newer one; the older is what the pipeline ran on until 14 November and is what a caller would ask for
+    to reproduce a result from before it."""
+    older = "~/qc05/bin/python"
+    assert older != P.WSL_PYSCF, "the test needs an interpreter that is not the default to tell an override from it"
+    inner = P.low_level_command(config(tmp_path, pyscf_python=older))[4]
+    assert older in inner and P.WSL_PYSCF not in inner
+
+
+def test_an_interpreter_that_is_not_a_path_is_refused(tmp_path):
+    with pytest.raises(ValidationError):
+        config(tmp_path, pyscf_python="python; rm -rf /")
 
 
 @pytest.mark.parametrize("rc, match", [(137, "WSL cap"), (143, "WSL cap"), (3, "APT failed"), (1, "analytic Hessian failed")])
