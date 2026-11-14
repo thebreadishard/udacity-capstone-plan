@@ -53,7 +53,6 @@ from pyscf import dft, lib
 
 sys.path.insert(1, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "probes"))
 from constants import AMU2AU
-from grid_response_blocked import blocked_grid_response
 from library_log import PYSCF_LOG_NAME, pyscf_mole
 from vibrations import (
     LABEL_TAGS,
@@ -232,6 +231,10 @@ def displaced_gradient(geometry: dict, coords: np.ndarray, xc: str, run: LabelsR
     The grid is built at the displaced coordinates, so it moves with the atoms; `blocked_grid_response` is pyscf's response of the
     quadrature weights, evaluated block by block. The charge and spin come from the run, so a cation's point is a cation's.
     """
+    # imported here, not at the top: `grid_response_blocked` follows pyscf's own grid-response code and needs 2.15.0, while the
+    # label route itself runs on 2.14.0 as well (the servers carry it). Only a molecule with a soft mode asks for the newer pyscf.
+    from grid_response_blocked import blocked_grid_response
+
     mol = labels_mol({**geometry, "coords_bohr": np.asarray(coords, float).tolist()}, lib_log, run.charge, run.spin, run.max_memory_mb)
     mf, _e = labels_scf(mol, xc, run.grid, newton_finish=True, conv_tol_grad=FD_CONV_TOL_GRAD, dm0=dm0)
     with blocked_grid_response():
