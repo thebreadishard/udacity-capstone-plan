@@ -82,6 +82,51 @@ def cost_honesty(certs: list[dict]) -> dict:
     return dict(lines_checked=checked, lines_traced=traced, fraction=(traced / checked if checked else None), misses=misses)
 
 
+def under_module(path) -> str:
+    """A written file's path for the record: module-relative when it lies under the module, the plain path otherwise (a test writes
+    its outputs elsewhere, and a record is no reason to crash)."""
+    try:
+        return Path(path).relative_to(HERE).as_posix()
+    except ValueError:
+        return Path(path).as_posix()
+
+
+def draw(sc: dict, fixed: bool) -> tuple[dict, dict | None]:
+    """A scenario's request, with the module-06 placeholder replaced by a candidate: the fixed one for a test, else a fresh draw."""
+    req = dict(sc["request"])
+    if not req["molecule"].startswith("<module-06"):
+        return req, None
+    if fixed:
+        candidate = dict(smiles="c1ccc2c(c1)ccc1c2ccc2cc3ccccc3cc12", source="fixed test candidate (no module-06 draw)")
+    else:
+        from m08.candidates import draw_candidate
+        candidate = draw_candidate()
+    req["molecule"] = candidate["smiles"]
+    return req, candidate
+
+
+def run_one(sc: dict, cat: Catalog, out: Path, fixed_candidate: bool) -> tuple[dict, dict, dict | None]:
+    """One scenario: decide it, write its certificate or run its order, judge it. Returns (result row, ledger row, certificate)."""
+    req, candidate = draw(sc, fixed_candidate)
+    d = decide(Request(**req), cat)
+    cert = worker = None
+    written: tuple = ()
+    if d.kind == "certificate":
+        cert = certificate(cat.find(req["molecule"]), cat)
+        written = write(cert, out / "certificates")
+    if d.kind == "run_order":
+        worker = execute_run_order(d.model_dump(), cat)
+    ok, notes = judge(sc, d, cert, worker)
+    ledger_row = dict(date=d.date, scenario=sc["id"], molecule=d.name or req["molecule"], kind=d.kind, gate=d.gate_named or "",
+                      rules=" ".join(d.rule_ids), line=d.ledger_line)
+    result = dict(id=sc["id"], title=sc["title"], request=req, decision=d.model_dump(),
+                  certificate_files=[under_module(p) for p in written], worker=worker,
+                  candidate=candidate if sc["id"] == "S3" else None, prediction=sc["prediction"], passed=ok, notes=notes)
+    print(f"{sc['id']}: {'pass' if ok else 'FAIL'} — {d.kind}" + (f" ({d.gate_named})" if d.gate_named else "")
+          + (f"  notes: {notes}" if notes else ""))
+    return result, ledger_row, cert
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--with-catalog", action="store_true", help="also run S5: website/export/build_catalog.py (≈ a minute)")
@@ -91,27 +136,12 @@ def main(argv=None) -> int:
     cat = Catalog()
     OUT.mkdir(exist_ok=True); (OUT / "certificates").mkdir(exist_ok=True)
     results = []; certs = []; ledger_rows = []
-    candidate = None
     for sc in S["scenarios"]:
-        req = dict(sc["request"])
-        if req["molecule"].startswith("<module-06"):
-            if a.no_candidate:
-                candidate = dict(smiles="c1ccc2c(c1)ccc1c2ccc2cc3ccccc3cc12", source="fixed test candidate (no module-06 draw)")
-            else:
-                from m08.candidates import draw_candidate
-                candidate = draw_candidate()
-            req["molecule"] = candidate["smiles"]
-        d = decide(Request(**req), cat)
-        cert = worker = None
-        if d.kind == "certificate":
-            cert = certificate(cat.find(req["molecule"]), cat); pj, pm = write(cert, OUT / "certificates"); certs.append(cert)
-        if d.kind == "run_order":
-            worker = execute_run_order(d.model_dump(), cat)
-        ok, notes = judge(sc, d, cert, worker)
-        ledger_rows.append(dict(date=d.date, scenario=sc["id"], molecule=d.name or req["molecule"], kind=d.kind, gate=d.gate_named or "", rules=" ".join(d.rule_ids), line=d.ledger_line))
-        results.append(dict(id=sc["id"], title=sc["title"], request=req, decision=d.model_dump(), certificate_files=[str(p.relative_to(HERE)).replace("\\", "/") for p in ((pj, pm) if cert else ())],
-                            worker=worker, candidate=candidate if sc["id"] == "S3" else None, prediction=sc["prediction"], passed=ok, notes=notes))
-        print(f"{sc['id']}: {'pass' if ok else 'FAIL'} — {d.kind}" + (f" ({d.gate_named})" if d.gate_named else "") + (f"  notes: {notes}" if notes else ""))
+        result, ledger_row, cert = run_one(sc, cat, OUT, a.no_candidate)
+        results.append(result)
+        ledger_rows.append(ledger_row)
+        if cert is not None:
+            certs.append(cert)
     with open(OUT / "requests_ledger.csv", "a", encoding="utf-8", newline="") as fh:
         w = csv.DictWriter(fh, fieldnames=list(ledger_rows[0].keys()))
         if fh.tell() == 0:
@@ -135,7 +165,7 @@ def main(argv=None) -> int:
                licence=cert["provenance"]["licence"] if certs else None, provenance=provenance())
     p = OUT / f"scenario_results_{time.strftime('%Y-%m-%d')}.json"
     json.dump(rec, open(p, "w", encoding="utf-8"), indent=1, ensure_ascii=False)
-    print(f"{rec['n_pass']}/{rec['n_scenarios']} scenarios pass; written {p.relative_to(HERE)}")
+    print(f"{rec['n_pass']}/{rec['n_scenarios']} scenarios pass; written {under_module(p)}")
     return 0 if rec["n_pass"] == rec["n_scenarios"] else 1
 
 
