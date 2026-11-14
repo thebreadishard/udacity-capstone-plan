@@ -25,7 +25,7 @@ sys.path.insert(0, str(MODULE))
 sys.path.insert(0, str(PLAN / "tests"))
 from pin_tools import first_difference  # noqa: E402
 
-GOLDEN = HERE / "fixtures" / "certificates_pin.json"
+GOLDEN = PLAN / "tests" / "data" / "m08_certificates_pin.json"   # the project keeps its goldens together
 PINNED = ("naphthalene", "benzene")
 VOLATILE = (("date",), ("provenance", "commit"))     # the build's minute and the commit it was built at
 
