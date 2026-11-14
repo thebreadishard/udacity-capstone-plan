@@ -8,11 +8,14 @@ import json
 import statistics
 from pathlib import Path
 
+from . import paths
+
 HERE = Path(__file__).resolve().parent
 PLAN = HERE.parents[2]                       # plans/05_delta-probed-ir-pipeline
 REPO = PLAN.parents[1]                       # CapstonePlan
-EXPORT = REPO / "website" / "export" / "out"
-M03 = PLAN / "modules" / "03_lab_scoreboard"
+# every read goes through the one resolver, so a submitted repository reads its frozen snapshot instead (m08/paths.py)
+EXPORT = paths.resolve_repo("website/export/out", must_exist=False)
+M03 = paths.resolve("modules/03_lab_scoreboard", must_exist=False)
 
 # module 03's family rule (build_lab_tables.py, FAMILY_RULE) — copied, not re-derived, so that the two modules agree by construction
 FAMILY_RULE = [

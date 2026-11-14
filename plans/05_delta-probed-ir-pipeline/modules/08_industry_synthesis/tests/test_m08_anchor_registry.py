@@ -61,10 +61,12 @@ def test_a_superseded_entry_is_not_an_anchor() -> None:
 def test_two_carried_entries_for_one_molecule_are_refused(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     """The registry allows one carried anchor per molecule; a second is a mistake the certificate must not average over."""
     import m08.certify as C
+    from m08 import paths
     twice = {"anchors": [dict(mol_id="X_1", name="x", status="carried", level="l", tier="TZ", kind="full",
                               date="2026-11-14", sha16="0" * 16, checks="—", path="p") for _ in range(2)]}
     (tmp_path / "ANCHORS_STATUS.json").write_text(json.dumps(twice), encoding="utf-8")
-    monkeypatch.setattr(C, "PLAN", tmp_path)
+    (tmp_path / paths.PLAN_MARKER).write_text("a plan root for this test\n", encoding="utf-8")   # so the resolver reads it live
+    monkeypatch.setattr(paths, "PLAN", tmp_path)
     monkeypatch.setattr(C, "ANCHOR_REGISTRY", "ANCHORS_STATUS.json")
     with pytest.raises(ValueError, match="allows one"):
         C.carried_anchor("X_1", "x")

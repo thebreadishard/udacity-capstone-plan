@@ -10,7 +10,7 @@ import subprocess
 import time
 from pathlib import Path
 
-from . import prices
+from . import paths, prices
 from . import spectrum as shape_mod
 from .catalog import FAMILY_SOURCE, PLAN, REPO, RUNG_LABELS, Catalog, family
 from .accuracy import APT_OPEN, carried_accuracy
@@ -29,7 +29,7 @@ def carried_anchor(mol_id: str, name: str) -> dict | None:
     level, the basis tier, the kind, the date, the digest and the checks that passed. The anchored rung quotes that entry; before
     this, the certificate could only show what a regular expression found in an evidence page.
     """
-    registry = json.loads((PLAN / ANCHOR_REGISTRY).read_text(encoding="utf-8"))["anchors"]
+    registry = json.loads(paths.resolve(ANCHOR_REGISTRY).read_text(encoding="utf-8"))["anchors"]
     carried = [e for e in registry if e["status"] == "carried"]
     for key, value in (("mol_id", mol_id), ("name", name)):
         match = [e for e in carried if e[key] == value]
@@ -51,13 +51,46 @@ def _rms(xs: list[float]) -> float | None:
     return round(math.sqrt(sum(x * x for x in xs) / len(xs)), 2) if xs else None
 
 
+def read_deck_table(text: str, rel: str, per_family: dict[str, dict]) -> None:
+    """Add a diagonal-deck page's rows to the coverage: a table with a family column and an 'ω′ − ω_CC' column (R0).
+
+    A row whose family the deck spells its own way (ring-breathing-a1g, ring-ip-b1u) is placed by its wavenumber, and a row
+    without a readable deviation is skipped: the page is a reading, not a record with a schema.
+    """
+    header = None
+    for line in text.split("\n"):
+        if not line.startswith("|"):
+            continue
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if cells and cells[0] == "mode":
+            header = cells
+            continue
+        if header and len(cells) == len(header) and cells[0].isdigit():
+            fam_raw = cells[header.index("family")]
+            fam = {"CH-oop": "CH-oop (10.5-15 um; benzene nu11 at 673 included)", "ring-ip": "ring / CH-ip (9-10.5 um)", "CH-ip-bend": "CH-ip-bend (8.6 um)",
+                   "CC-stretch": "CC-stretch (6.2 um)", "CH-stretch": "CH-stretch"}.get(fam_raw)
+            if fam is None:                                          # e.g. ring-breathing-a1g, ring-ip-b1u: placed by their wavenumber
+                try:
+                    fam = family(float(cells[header.index("ω B3LYP")]))
+                except (ValueError, KeyError):
+                    continue
+            try:
+                dev = float(cells[header.index("ω′ − ω_CC")].replace("−", "-"))
+            except (ValueError, KeyError):
+                continue
+            per_family.setdefault(fam, dict(family=fam, evidence=[], modes=[]))
+            if rel not in per_family[fam]["evidence"]:
+                per_family[fam]["evidence"].append(rel)
+            per_family[fam]["modes"].append(dict(mode=int(cells[0]), omega=float(cells[header.index("ω B3LYP")]), dev_vs_ccsdt=dev))
+
+
 def anchor_coverage(evidence: list[str], u_band: dict[str, dict]) -> list[dict]:
     """What the anchor evidence files say per family. Two kinds of file exist today: a per-mode family reading (M3: 'mode 12, 785.3 cm⁻¹') and
     a diagonal-deck table with a family column and an 'ω′ − ω_CC' column (R0). The result is per family: covered or not, and, where the table
     gives it, the RMS of the composite's deviation from CCSD(T) against the laboratory tolerance — the honest failure case shows here."""
     per_family: dict[str, dict] = {}
     for rel in evidence:
-        p = PLAN / rel
+        p = paths.resolve(rel, must_exist=False)
         if not p.exists():
             continue
         text = p.read_text(encoding="utf-8", errors="replace")
@@ -67,30 +100,7 @@ def anchor_coverage(evidence: list[str], u_band: dict[str, dict]) -> list[dict]:
             per_family.setdefault(fam, dict(family=fam, evidence=[], modes=[]))
             per_family[fam]["evidence"].append(rel); per_family[fam]["modes"].append(dict(mode=int(m.group(1)), omega=float(m.group(2))))
             continue
-        header = None
-        for line in text.split("\n"):
-            if not line.startswith("|"):
-                continue
-            cells = [c.strip() for c in line.strip().strip("|").split("|")]
-            if cells and cells[0] == "mode":
-                header = cells; continue
-            if header and len(cells) == len(header) and cells[0].isdigit():
-                fam_raw = cells[header.index("family")]
-                fam = {"CH-oop": "CH-oop (10.5-15 um; benzene nu11 at 673 included)", "ring-ip": "ring / CH-ip (9-10.5 um)", "CH-ip-bend": "CH-ip-bend (8.6 um)",
-                       "CC-stretch": "CC-stretch (6.2 um)", "CH-stretch": "CH-stretch"}.get(fam_raw)
-                if fam is None:                                          # e.g. ring-breathing-a1g, ring-ip-b1u: placed by their wavenumber
-                    try:
-                        fam = family(float(cells[header.index("ω B3LYP")]))
-                    except (ValueError, KeyError):
-                        continue
-                try:
-                    dev = float(cells[header.index("ω′ − ω_CC")].replace("−", "-"))
-                except (ValueError, KeyError):
-                    continue
-                per_family.setdefault(fam, dict(family=fam, evidence=[], modes=[]))
-                if rel not in per_family[fam]["evidence"]:
-                    per_family[fam]["evidence"].append(rel)
-                per_family[fam]["modes"].append(dict(mode=int(cells[0]), omega=float(cells[header.index("ω B3LYP")]), dev_vs_ccsdt=dev))
+        read_deck_table(text, rel, per_family)
     out = []
     for fam, d in per_family.items():
         devs = [m["dev_vs_ccsdt"] for m in d["modes"] if "dev_vs_ccsdt" in m]
@@ -146,7 +156,8 @@ def certificate(row: dict, catalog: Catalog) -> dict:
             cost.append(dict(step="anchor: E8 CCSD(T)/cc-pVDZ Hessian (72 gradients, rented machine, 24 Sep 2026)", eur_ex_vat=None, hours=None, machine="CCX53",
                              source="probes/results_m1/e8_benzene_ccpvdz/E8_locality_benzene.md; the run's hours are not in a cost record yet — shown as not priced, not as €0"))
     prov = dict(release=row.get("releases", []), deck_hash=mol["ledger"]["deck"] if mol else None, commit=commit_hash(), export_built_utc=catalog.summary["built_utc"],
-                export_sources_sha256=catalog.summary.get("sources"), evidence=[dict(path=e, exists=(PLAN / e).exists()) for e in row.get("evidence", [])],
+                export_sources_sha256=catalog.summary.get("sources"),
+                evidence=[dict(path=e, exists=paths.resolve(e, must_exist=False).exists()) for e in row.get("evidence", [])],
                 pre_registrations=["GoalGathering/notes/PreRegistration_2026-09-25_Proof_of_Learning_Layer_B.md", "modules/08_industry_synthesis/PRE_REGISTRATION.md"],
                 family_rule=FAMILY_SOURCE, licence=dict(rule_source=lic["rule_source"], licensed_families=lic["licensed_families"],
                                                         errors=lic["errors"], sources=lic["sources"]))

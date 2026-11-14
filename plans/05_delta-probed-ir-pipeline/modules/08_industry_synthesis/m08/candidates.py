@@ -7,10 +7,11 @@ import csv
 import json
 import sys
 
-from .catalog import PLAN, canonical
+from . import paths
+from .catalog import canonical
 
-M06 = PLAN / "modules" / "06_generative_candidates"
-MANIFEST = PLAN / "modules" / "05_support_predictor" / "corpus" / "manifest.csv"
+M06 = paths.resolve("modules/06_generative_candidates", must_exist=False)
+MANIFEST = paths.resolve("modules/05_support_predictor/corpus/manifest.csv")
 
 
 def corpus_canonicals() -> set[str]:
@@ -51,5 +52,6 @@ def draw_candidate(seed: int = 0, n: int = 200, temperature: float = 1.0, max_he
         if c in corpus:
             continue
         return dict(smiles=c, heavy_atoms=m.GetNumHeavyAtoms(), aromatic_rings=rdMolDescriptors.CalcNumAromaticRings(m), draw_index=k, n_drawn=n, n_valid=n_valid,
-                    source=f"module 06 {run_dir.relative_to(PLAN).as_posix()}/model_seed0.pt (run of 25–26 Sep 2026), generate(n={n}, T={temperature}, seed={seed}); first valid fused-aromatic string not in the corpus")
+                    source=(f"module 06 {paths.relative_to_plan(run_dir)}/model_seed0.pt (run of 25–26 Sep 2026), "
+                            f"generate(n={n}, T={temperature}, seed={seed}); first valid fused-aromatic string not in the corpus"))
     raise RuntimeError("no valid corpus-novel fused-aromatic sample among the draws")

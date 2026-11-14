@@ -54,5 +54,6 @@ def test_a_path_comes_back_plan_relative(monkeypatch: pytest.MonkeyPatch, tmp_pa
     assert P.relative_to_plan(P.PLAN / "modules" / "x.json") == "modules/x.json"
     monkeypatch.setattr(P, "SNAPSHOT", tmp_path)
     assert P.relative_to_plan(tmp_path / "modules" / "x.json") == "modules/x.json"
-    with pytest.raises(ValueError, match="neither"):
-        P.relative_to_plan(Path("C:/elsewhere/x.json") if sys.platform == "win32" else Path("/elsewhere/x.json"))
+    # a path under neither root is the live pipeline's own working directory, and it is quoted as it stands
+    outside = Path("C:/elsewhere/x.json") if sys.platform == "win32" else Path("/elsewhere/x.json")
+    assert P.relative_to_plan(outside) == outside.as_posix()

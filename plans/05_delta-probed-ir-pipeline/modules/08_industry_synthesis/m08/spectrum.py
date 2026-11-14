@@ -18,9 +18,9 @@ from pathlib import Path
 
 import numpy as np
 
-from .catalog import PLAN
+from . import paths
 
-M05 = PLAN / "modules" / "05_support_predictor"
+M05 = paths.resolve("modules/05_support_predictor", must_exist=False)
 CORPUS = M05 / "corpus" / "molecules"
 APT_FILES = ("dipole_b3lyp_cphf.npz", "dipole_b3lyp_fd.npz")
 HESSIAN = "hessian_b3lyp.npz"
@@ -42,7 +42,7 @@ def _ri():
 def _rel(p: Path) -> str:
     """A source path relative to the plan; a pipeline result outside the plan keeps its absolute path."""
     p = Path(p).resolve()
-    return str(p.relative_to(PLAN) if p.is_relative_to(PLAN) else p).replace("\\", "/")
+    return paths.relative_to_plan(p)
 
 
 def _geometry(mid: str) -> dict:
@@ -123,7 +123,7 @@ def anchor_series(mid: str) -> dict | None:
     e = carried_anchor(mid)
     if e is None:
         return None
-    h = PLAN / e["path"]
+    h = paths.resolve(e["path"])
     cc = _cc_apt_at(h, mid)
     b3 = cheap_apt(CORPUS / mid)
     apt, apt_level = (cc, "CCSD(T) (the anchor's own)") if cc is not None else ((b3, "B3LYP (cheap level)") if b3 is not None else (None, None))
@@ -149,7 +149,7 @@ def test_prediction(mid: str, anchor: dict) -> dict | None:
     seeds = []
     for f in files:
         z = np.load(f)
-        s = series(f, masses, PLAN / anchor["apt_source"], H=z["H_low"] + z["dH_pred"])
+        s = series(f, masses, paths.resolve(anchor["apt_source"]), H=z["H_low"] + z["dH_pred"])
         seeds.append(dict(file=_rel(f), mode=str(z["mode"]), low_level=str(z["low_level"]), sticks=s["sticks"],
                           spectrum_overlap=overlap(s["sticks"], anchor["sticks"])))
     ov = [s["spectrum_overlap"] for s in seeds]
@@ -168,7 +168,7 @@ def cheap_hessian(mid: str) -> Path:
 def comparison(mid: str, anchor: dict) -> dict:
     """The cheap Hessian with the anchor's own APT, so the two spectra differ only by the Hessian: its sticks, the spectrum overlap with the
     anchor (only with heights) and the rms of the sorted frequencies."""
-    apt = PLAN / anchor["apt_source"] if anchor["apt_source"] else None
+    apt = paths.resolve(anchor["apt_source"]) if anchor["apt_source"] else None
     c = series(cheap_hessian(mid), np.asarray(_geometry(mid)["masses_amu"], float), apt)
     fa = np.array([x["omega_cm"] for x in anchor["sticks"]]); fc = np.array([x["omega_cm"] for x in c["sticks"]])
     rms = round(float(np.sqrt(np.mean((fa - fc) ** 2))), 1) if len(fa) == len(fc) else None
