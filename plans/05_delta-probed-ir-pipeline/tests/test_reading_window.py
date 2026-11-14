@@ -142,3 +142,18 @@ def calls_without_a_window(path: Path) -> list[str]:
 def test_every_read_passes_the_window_on(name):
     missed = calls_without_a_window(PROBES / name)
     assert not missed, "a call that would silently read the registered window: " + "; ".join(missed)
+
+
+def test_an_open_bound_is_written_as_null_so_the_record_is_json():
+    """Python writes float('inf') as Infinity, which RFC 8259 has no word for and no other parser reads."""
+    import json
+
+    assert R.window_record(R.WINDOW) == [550.0, 2000.0]
+    assert R.window_record(CH) == [2800.0, None]
+    text = json.dumps({"window": R.window_record(CH)})
+    assert "Infinity" not in text
+    assert json.loads(text, parse_constant=_no_constants) == {"window": [2800.0, None]}
+
+
+def _no_constants(name: str):
+    raise AssertionError(f"the record carries {name}, which is not JSON")

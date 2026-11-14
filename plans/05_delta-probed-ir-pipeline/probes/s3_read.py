@@ -33,6 +33,7 @@ from s2_read import (  # noqa: E402
     concat,
     fit_predict,
     rms,
+    window_record,
     window_size,
     write_atomic,
 )
@@ -243,7 +244,7 @@ def main() -> int:
     notes = label_notes(a.targets)
     read = read_targets(train_by_scaf, targets_by_scaf, s2b_main, notes, window)
     res = {"registration": "PreRegistration_2026-11-02_S3_Route_A_Transfer.md", "scope": MAIN_SCOPE,
-           "window": window, "window_name": a.window, "size": size,
+           "window": window_record(window), "window_name": a.window, "size": size,
            "targets": sorted(read["rows"]), "training_scaffolds": len(train_by_scaf), "counts": {"train": train_counts, "targets": target_counts},
            "excluded": {**excl_train, **excl_targets}, "pairs": {t: r["pairs"] for t, r in read["rows"].items()},
            "label_notes": notes, "marked_policy": a.marked,

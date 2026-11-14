@@ -45,6 +45,7 @@ from s2_read import (  # noqa: E402
     extrapolate,
     fit_predict,
     load_selection,
+    window_record,
     window_size,
     write_atomic,
 )
@@ -287,7 +288,7 @@ def main() -> int:
     modes = load_modes(dirs)
     excluded = exclusion_report(parts)
     res: dict[str, Any] = {"registration": "PreRegistration_2026-10-19_S2b_Learning_Curve.md", "sets": list(parts),
-                           "window": plan.window, "window_name": a.window, "quick": a.quick,
+                           "window": window_record(plan.window), "window_name": a.window, "quick": a.quick,
                            "molecules": sum(len(p["used"]) for p in parts.values()), "scaffolds": len(g_by_scaf), "excluded": excluded, "scopes": {}}
     for scope in READ_SCOPES:
         by_scaf, counts = build(g_by_scaf, x_by_id, modes, scope, plan.window)

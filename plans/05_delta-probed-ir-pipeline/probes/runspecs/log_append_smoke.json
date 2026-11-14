@@ -1,0 +1,12 @@
+{"name": "log_append_smoke",
+ "purpose": "TASKS 214: the proof that a run's log keeps everything written to it. probes/log_append_smoke.sh writes one line from the Windows shell, 2,000 from a WSL child under probes/wsl_capped.sh and /usr/bin/time - the arrangement both damaged runs of 14 November had - and three more from the shell. When the run has ended, `python probes/log_append_check.py probes/results_m1/log_append_smoke.log --lines 2000` says whether the log is whole; the check is a second command and not part of the job, because the job's own writer is still draining the pipe while the job runs. Run this after any change to how tools/runspec.py launches a job, and before trusting a log that two processes wrote",
+ "host": "laptop",
+ "workdir": "probes/results_m1",
+ "command": "bash ../log_append_smoke.sh",
+ "sources": [{"local": "probes/log_append_smoke.sh"}, {"local": "probes/log_append_check.py"}, {"local": "probes/wsl_capped.sh"}],
+ "progress": {"regex": "^=== \\(LAS\\) |^wsl 2000:", "max_gap_minutes": 10},
+ "marker_regex": "^=== \\(LAS\\) (start|done)",
+ "end_regex": "^=== \\(LAS\\) done",
+ "threads": 1,
+ "estimate": {"hours": 0.02, "basis": "measured 14 Nov 2026: about three seconds, of which the WSL child's 2,000 lines are most"},
+ "memory": {"peak_gb": 1.0, "basis": "the child runs under a 1,024 MB cgroup cap and prints; nothing is computed"}}

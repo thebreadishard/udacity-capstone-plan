@@ -187,6 +187,12 @@ def fit_predict(train, test):
 XTB_KEY = "xtb"            # amendment 4: Δ_anh of the matched GFN2-xTB mode, carried when every molecule has it
 
 
+def window_record(window: tuple[float, float]) -> list[float | None]:
+    """The reading window as a JSON record: an open upper bound is null, because JSON has no infinity (RFC 8259) and a record is
+    meant to be read outside Python too."""
+    return [window[0], None if math.isinf(window[1]) else window[1]]
+
+
 def in_window(omega, window=WINDOW):
     """The modes of `omega` inside a reading window, both bounds included. The one implementation: every read's filter is this one."""
     omega = np.asarray(omega, float)
@@ -421,7 +427,7 @@ def main():
     if len(by_scaf) < 2:
         raise SystemExit(f"{len(by_scaf)} scaffold(s) with a usable molecule: no leave-one-scaffold-out read")
     rows = curve(by_scaf, window=options.window)
-    res = {"registration": "PreRegistration_2026-10-14_S2_Anharmonic_Shift.md (+ amendment 1)", "window": options.window,
+    res = {"registration": "PreRegistration_2026-10-14_S2_Anharmonic_Shift.md (+ amendment 1)", "window": window_record(options.window),
            "window_name": a.window, "ridge": RIDGE,
            "molecules": used, "excluded": excluded, "scaffolds": len(by_scaf), "curve": rows, "verdict": verdict(rows)}
     os.makedirs(a.out, exist_ok=True)

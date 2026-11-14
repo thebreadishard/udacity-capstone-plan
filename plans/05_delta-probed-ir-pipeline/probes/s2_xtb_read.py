@@ -41,6 +41,7 @@ from s2_read import (  # noqa: E402
     in_window,
     load_selection,
     rms,
+    window_record,
     verdict,
     write_atomic,
 )
@@ -186,7 +187,7 @@ def main() -> int:
     dirs = {m["id"]: (m["dir"], x_by_id[m["id"]]["dir"]) for ms in g_by_scaf.values() for m in ms if m["id"] in x_by_id}
     modes = load_modes(dirs)
     res = {"registration": "PreRegistration_2026-10-14_S2_Anharmonic_Shift.md, amendment 4", "min_overlap": MIN_OVERLAP,
-           "molecules_g": len(used_g), "excluded_g": excluded_g, "excluded_xtb": excluded_x, "window": window,
+           "molecules_g": len(used_g), "excluded_g": excluded_g, "excluded_xtb": excluded_x, "window": window_record(window),
            "window_name": a.window, "scopes": {}}
     for scope in READ_SCOPES:
         by_scaf, counts = build(g_by_scaf, x_by_id, modes, scope, window)

@@ -375,7 +375,14 @@ class Shell:
         n = shlex.quote(spec.name)
         env = RUN_ENV + (f"export OMP_NUM_THREADS={spec.threads} MKL_NUM_THREADS={spec.threads} OPENBLAS_NUM_THREADS={spec.threads}; "
                          if spec.threads else "")
-        wrapped = f"echo $$ > {n}.pid; rm -f {n}.exit; ( {env}{spec.command} ) {'>>' if append else '>'} {n}.log 2>&1; echo $? > {n}.exit"
+        # The job writes into a pipe and one `cat` appends to the log, so no process of the job holds the log's own handle.
+        # On 14 Nov 2026 two runs lost the first kilobytes of their logs, and probes/log_append_smoke.sh reproduces it: with a
+        # child under probes/wsl_capped.sh and /usr/bin/time, a plain ">" loses four of the child's first lines to the shell's
+        # closing ones and ">>" still clips one, because something in that chain writes at an offset of its own that O_APPEND
+        # does not govern. Through the pipe the log is whole. PIPESTATUS[0] keeps the job's exit status, not cat's.
+        empty = "" if append else f": > {n}.log; "
+        wrapped = (f"echo $$ > {n}.pid; rm -f {n}.exit; {empty}( {env}{spec.command} ) 2>&1 | cat >> {n}.log; "
+                   f"echo ${{PIPESTATUS[0]}} > {n}.exit")
         r = self._run([self.bash, (TOOLS / "launch_outside_app.sh").as_posix(), spec.name, (ROOT / spec.workdir).as_posix(), wrapped])
         return r.returncode, r.stdout + r.stderr
 
