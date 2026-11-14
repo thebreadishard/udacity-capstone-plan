@@ -25,8 +25,8 @@ import numpy as np
 import torch
 import torch.nn as nn
 
-AMU2AU = 1822.888486209
-HARTREE2CM = 219474.6313705
+# one definition of each, beside the label route that writes the Hessians (TASKS 221, 14 Nov 2026)
+from units import AMU2AU, HARTREE2CM
 FAMILIES = ["CH-stretch", "CH-oop", "ring-ip", "other"]
 ANALYTIC_ONLY = "analytic_only"   # result.json "labels" of a folder labelled by analytic_hessians.py alone, no psi4 layer (TASKS 49, 12 Oct 2026)
 

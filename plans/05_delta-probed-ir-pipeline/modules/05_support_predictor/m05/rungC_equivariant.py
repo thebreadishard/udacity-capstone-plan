@@ -29,8 +29,8 @@ import numpy as np
 import torch
 import torch.nn as nn
 
-AMU2AU = 1822.888486209
-HARTREE2CM = 219474.6313632
+# one definition of each, beside the label route that writes the Hessians (TASKS 221, 14 Nov 2026)
+from units import AMU2AU
 BOHR2ANG = 0.529177210903
 CUTOFF_BOHR = 5.0 / BOHR2ANG
 N_RBF, N_S, N_V, N_BLOCKS, N_TENSOR = 20, 64, 64, 3, 16

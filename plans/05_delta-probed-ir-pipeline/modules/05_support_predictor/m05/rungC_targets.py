@@ -28,8 +28,8 @@ from pathlib import Path
 import numpy as np
 import scipy.linalg
 
-AMU2AU = 1822.888486209
-HARTREE2CM = 219474.6313705   # learning_curve_layerA.HARTREE2CM; tests/test_rungC_targets.py keeps the two equal
+# one definition of each, beside the label route that writes the Hessians (TASKS 221, 14 Nov 2026)
+from units import AMU2AU, HARTREE2CM
 LAM_REL = 1e-3          # default ridge, relative to the mean diagonal of the normal matrix (λ scan of 1 Oct 2026, registered)
 ROW_CHUNK = 1500
 PINV_RCOND = 1e-10      # singular values of B below this × the largest are null directions (redundant internals); numpy's default cutoff let a 2.7e-16

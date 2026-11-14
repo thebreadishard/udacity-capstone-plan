@@ -12,8 +12,8 @@ eigenvectors (maximum squared overlap) and is the number to read; the sorted key
 import numpy as np
 from scipy.optimize import linear_sum_assignment
 
-AMU2AU = 1822.888486209
-HARTREE2CM = 219474.6313705
+# one definition of each, beside the label route that writes the Hessians (TASKS 221, 14 Nov 2026)
+from units import AMU2AU, HARTREE2CM
 KM_PER_MOL = 974.8802                    # (4.80320 D/Å per e)² × 42.2561 km/mol per (D/Å)²/amu
 GRID = np.arange(500.0, 3500.0, 1.0)
 FWHM = 10.0

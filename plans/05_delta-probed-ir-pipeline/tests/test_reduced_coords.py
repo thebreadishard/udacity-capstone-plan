@@ -7,9 +7,8 @@ import numpy as np
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "probes"))
+from qc_common import AMU2AU  # the one definition; its value is pinned in tests/test_constants.py
 from reduced_coords import harmonic_check, omega_from_eigenvalue, reduced_displacement  # noqa: E402
-
-AMU2AU = 1822.888486209
 
 
 def _diatomic(k_au=0.5, m1=12.0, m2=1.008, r=2.0):

@@ -17,8 +17,8 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-AMU2AU = 1822.888486209
-HARTREE2CM = 219474.6313705
+# one definition of each, beside the label route that writes the Hessians (TASKS 221, 14 Nov 2026)
+from units import AMU2AU, HARTREE2CM
 
 
 def freqs_cm(H, masses):
