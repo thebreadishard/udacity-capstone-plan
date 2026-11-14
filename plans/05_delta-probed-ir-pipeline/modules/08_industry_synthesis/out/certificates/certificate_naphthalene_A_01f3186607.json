@@ -1,6 +1,6 @@
 {
  "kind": "certificate",
- "date": "2026-09-28 20:15",
+ "date": "2026-11-14 18:39",
  "molecule": {
   "id": "A_01f3186607",
   "name": "naphthalene",
@@ -8,7 +8,9 @@
   "formula": "C10H8",
   "layer": "A",
   "n_atoms": 18,
-  "flags": []
+  "flags": [
+   "second_route_agrees"
+  ]
  },
  "rung": {
   "reached": 4,
@@ -27,12 +29,12 @@
    "2": {
     "label": "correction_predicted",
     "reached": false,
-    "note": "—: no family licensed"
+    "note": "— not in this record: the pipeline (m08/pipeline.py) serves it for the licensed families (decision 65)"
    },
    "3": {
     "label": "spectrum_predicted",
     "reached": false,
-    "note": "—: no family licensed"
+    "note": "— not in this record: the pipeline (m08/pipeline.py) serves it for the licensed families (decision 65); heights only where an APT exists"
    },
    "4": {
     "label": "anchored",
@@ -158,6 +160,166 @@
    "source": "website export molecules/A_01f3186607.json ← corpus molecules/A_01f3186607/ (deck 97ed2d67c66b)"
   }
  },
+ "spectral_shape": {
+  "kind": "positions only",
+  "reason": "no dipole derivatives (APT) computed for this molecule — heights are not shown rather than guessed",
+  "accuracy": {
+   "higher_level": "ωB97X/6-31G* (the DFT proxy: the network's ΔH is trained on ωB97X − B3LYP Hessians)",
+   "holdouts": {
+    "a": {
+     "description": "hold-out (a) without its two trained twins (2-naphthoic acid and benzonitrile were trained on as layer-B molecules; TASKS 157): eight layer-A molecules held out on 19 Sep 2026, never trained on under any id",
+     "n_molecules": 8,
+     "readouts": {
+      "ring-ip": {
+       "mean": 1.77,
+       "seeds": [
+        1.95,
+        1.68,
+        1.7
+       ],
+       "target": 3.0,
+       "within_target": true
+      },
+      "CH-stretch": {
+       "mean": 1.19,
+       "seeds": [
+        0.91,
+        1.74,
+        0.91
+       ],
+       "target": 3.0,
+       "within_target": true
+      },
+      "CH-oop": {
+       "mean": 2.17,
+       "seeds": [
+        2.47,
+        2.06,
+        1.99
+       ],
+       "target": 3.0,
+       "within_target": true
+      },
+      "other": {
+       "mean": 3.62,
+       "seeds": [
+        4.09,
+        3.27,
+        3.51
+       ],
+       "target": 3.0,
+       "within_target": false
+      },
+      "coupling_ratio": {
+       "mean": 0.184,
+       "seeds": [
+        0.193,
+        0.176,
+        0.183
+       ],
+       "target": 0.25,
+       "within_target": true
+      }
+     },
+     "shape": {
+      "n_molecules": 8,
+      "cheap": {
+       "spectrum_overlap": 0.277,
+       "intensity_error": 0.227
+      },
+      "corrected": {
+       "spectrum_overlap": 0.979,
+       "intensity_error": 0.097
+      }
+     }
+    },
+    "b": {
+     "description": "hold-out (b): every substituted molecule of two scaffold cores, frozen on 8 Oct 2026 — scaffolds the network never saw",
+     "n_molecules": 39,
+     "readouts": {
+      "ring-ip": {
+       "mean": 2.12,
+       "seeds": [
+        2.25,
+        2.02,
+        2.11
+       ],
+       "target": 3.0,
+       "within_target": true
+      },
+      "CH-stretch": {
+       "mean": 2.5,
+       "seeds": [
+        1.91,
+        3.51,
+        2.08
+       ],
+       "target": 3.0,
+       "within_target": true
+      },
+      "CH-oop": {
+       "mean": 2.7,
+       "seeds": [
+        2.44,
+        2.95,
+        2.72
+       ],
+       "target": 3.0,
+       "within_target": true
+      },
+      "other": {
+       "mean": 3.89,
+       "seeds": [
+        3.65,
+        4.51,
+        3.52
+       ],
+       "target": 3.0,
+       "within_target": false
+      },
+      "coupling_ratio": {
+       "mean": 0.263,
+       "seeds": [
+        0.282,
+        0.243,
+        0.265
+       ],
+       "target": 0.25,
+       "within_target": false
+      }
+     },
+     "shape": {
+      "n_molecules": 31,
+      "cheap": {
+       "spectrum_overlap": 0.366,
+       "intensity_error": 0.511
+      },
+      "corrected": {
+       "spectrum_overlap": 0.967,
+       "intensity_error": 0.236
+      }
+     }
+    }
+   },
+   "target_source": "3 cm⁻¹ per family — decision 53's line for ring-ip, CH-oop and 'other', every family's under decision 65 (the licence) — and the coupling ratio ≤ 0.25 of chain 35's T1 line (probes/chain35_read.py)",
+   "sources": [
+    "E7_rungC_chain35_analytic_eval_frozenb_seed0.json",
+    "E7_rungC_chain35_analytic_eval_frozenb_seed1.json",
+    "E7_rungC_chain35_analytic_eval_frozenb_seed2.json",
+    "E7_rungC_chain35_analytic_a8read_seed0.json",
+    "E7_rungC_chain35_analytic_a8read_seed1.json",
+    "E7_rungC_chain35_analytic_a8read_seed2.json"
+   ],
+   "definitions": {
+    "family": "rms over the family's modes of the corrected frequency's error against the higher level (cm⁻¹); families by module 05's rule (m05/learning_curve_layerA.molecule_features)",
+    "coupling_ratio": "rms of the predicted mode couplings' error over the rms of the couplings themselves; 0 = exact, 1 = no better than none",
+    "spectrum_overlap": "cosine similarity of the two Lorentzian-broadened spectra (FWHM 10 cm⁻¹, 500–3500 cm⁻¹); 1 = identical shape",
+    "intensity_error": "intensity-weighted rms of the relative height error per band, bands paired by the shape of the motion (eigenvector overlap); 0 = identical heights"
+   },
+   "coupled_cluster": "not measured for this network version: the coupled-cluster reads (T3) were made on chain 34, and tests on the 9–11 existing anchors wait for the anchor decision of November 2026",
+   "version": "1.3"
+  }
+ },
  "per_band_budget": {
   "CC-stretch (6.2 um)": {
    "n_modes": 4,
@@ -168,7 +330,7 @@
    "u_band_lab": 15.88,
    "u_band_source": "module 03 u_band_by_record_family.csv, naphthalene, record(s) C91203_0.jdx",
    "ensemble_pm": null,
-   "ensemble_note": "— : no predicted correction is shown; no family licensed: the registered verdict falls at 1,200 admitted layer-B molecules"
+   "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7); not licensed: other (3.62 / 3.89) — seed-mean error on hold-outs (a) / (b) in cm⁻¹ against 3; no coupled-cluster licence)"
   },
   "CC-stretch/CH-ip (7.7 um)": {
    "n_modes": 5,
@@ -179,7 +341,7 @@
    "u_band_lab": 15.87,
    "u_band_source": "module 03 u_band_by_record_family.csv, naphthalene, record(s) C91203_0.jdx",
    "ensemble_pm": null,
-   "ensemble_note": "— : no predicted correction is shown; no family licensed: the registered verdict falls at 1,200 admitted layer-B molecules"
+   "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7); not licensed: other (3.62 / 3.89) — seed-mean error on hold-outs (a) / (b) in cm⁻¹ against 3; no coupled-cluster licence)"
   },
   "CH-ip-bend (8.6 um)": {
    "n_modes": 5,
@@ -190,7 +352,7 @@
    "u_band_lab": 8.59,
    "u_band_source": "module 03 u_band_by_record_family.csv, naphthalene, record(s) C91203_0.jdx",
    "ensemble_pm": null,
-   "ensemble_note": "— : no predicted correction is shown; no family licensed: the registered verdict falls at 1,200 admitted layer-B molecules"
+   "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7); not licensed: other (3.62 / 3.89) — seed-mean error on hold-outs (a) / (b) in cm⁻¹ against 3; no coupled-cluster licence)"
   },
   "CH-oop (10.5-15 um; benzene nu11 at 673 included)": {
    "n_modes": 9,
@@ -201,7 +363,7 @@
    "u_band_lab": 9.61,
    "u_band_source": "module 03 u_band_by_record_family.csv, naphthalene, record(s) C91203_0.jdx",
    "ensemble_pm": null,
-   "ensemble_note": "— : no predicted correction is shown; no family licensed: the registered verdict falls at 1,200 admitted layer-B molecules"
+   "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7); not licensed: other (3.62 / 3.89) — seed-mean error on hold-outs (a) / (b) in cm⁻¹ against 3; no coupled-cluster licence)"
   },
   "CH-stretch": {
    "n_modes": 6,
@@ -212,7 +374,7 @@
    "u_band_lab": 10.24,
    "u_band_source": "module 03 u_band_by_record_family.csv, naphthalene, record(s) C91203_0.jdx",
    "ensemble_pm": null,
-   "ensemble_note": "— : no predicted correction is shown; no family licensed: the registered verdict falls at 1,200 admitted layer-B molecules"
+   "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7); not licensed: other (3.62 / 3.89) — seed-mean error on hold-outs (a) / (b) in cm⁻¹ against 3; no coupled-cluster licence)"
   },
   "above 3200": {
    "n_modes": 2,
@@ -223,7 +385,7 @@
    "u_band_lab": 15.87,
    "u_band_source": "module 03 u_band_by_record_family.csv, naphthalene, record(s) C91203_0.jdx",
    "ensemble_pm": null,
-   "ensemble_note": "— : no predicted correction is shown; no family licensed: the registered verdict falls at 1,200 admitted layer-B molecules"
+   "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7); not licensed: other (3.62 / 3.89) — seed-mean error on hold-outs (a) / (b) in cm⁻¹ against 3; no coupled-cluster licence)"
   },
   "low / skeletal": {
    "n_modes": 10,
@@ -234,7 +396,7 @@
    "u_band_lab": 15.87,
    "u_band_source": "module 03 u_band_by_record_family.csv, naphthalene, record(s) C91203_0.jdx",
    "ensemble_pm": null,
-   "ensemble_note": "— : no predicted correction is shown; no family licensed: the registered verdict falls at 1,200 admitted layer-B molecules"
+   "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7); not licensed: other (3.62 / 3.89) — seed-mean error on hold-outs (a) / (b) in cm⁻¹ against 3; no coupled-cluster licence)"
   },
   "overtone / combination region": {
    "n_modes": 2,
@@ -245,7 +407,7 @@
    "u_band_lab": 15.91,
    "u_band_source": "module 03 u_band_by_record_family.csv, naphthalene, record(s) C91203_0.jdx",
    "ensemble_pm": null,
-   "ensemble_note": "— : no predicted correction is shown; no family licensed: the registered verdict falls at 1,200 admitted layer-B molecules"
+   "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7); not licensed: other (3.62 / 3.89) — seed-mean error on hold-outs (a) / (b) in cm⁻¹ against 3; no coupled-cluster licence)"
   },
   "ring / CH-ip (9-10.5 um)": {
    "n_modes": 5,
@@ -256,21 +418,27 @@
    "u_band_lab": 15.87,
    "u_band_source": "module 03 u_band_by_record_family.csv, naphthalene, record(s) C91203_0.jdx",
    "ensemble_pm": null,
-   "ensemble_note": "— : no predicted correction is shown; no family licensed: the registered verdict falls at 1,200 admitted layer-B molecules"
+   "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7); not licensed: other (3.62 / 3.89) — seed-mean error on hold-outs (a) / (b) in cm⁻¹ against 3; no coupled-cluster licence)"
   }
  },
- "anchor_coverage": [
-  {
-   "family": "CH-oop (10.5-15 um; benzene nu11 at 673 included)",
-   "n_modes": 1,
-   "evidence": [
-    "probes/results_m1/M3_TZ_MODE12_READING_2026-09-20.md"
-   ],
-   "rms_dev_vs_ccsdt": null,
-   "u_band": 9.61,
-   "wider_than_tolerance": false,
-   "reading": "a family reading exists (curvature at DZ and TZ); no per-mode deviation table"
+ "anchor": {
+  "registry": "modules/05_support_predictor/out/ANCHORS_STATUS.json",
+  "entry": {
+   "mol_id": "A_01f3186607",
+   "name": "naphthalene",
+   "path": "modules/05_support_predictor/out/composite_full_naphthalene_2026-10-07.npz",
+   "level": "CCSD(T)/cc-pVDZ + [MP2/cc-pVTZ − MP2/cc-pVDZ]",
+   "tier": "TZ",
+   "kind": "composite",
+   "status": "carried",
+   "date": "2026-10-07",
+   "checks": "MP2 row symmetry spread 2.9e-05 / 4.0e-05; basis step rms 6.3e-03; softest 167, 180 cm⁻¹",
+   "note": "chain 33c promotion rule: VALID",
+   "sha16": "3d37769ea7dcd41c"
   },
+  "note": "the anchor in force for this molecule, with the checks it passed"
+ },
+ "anchor_coverage": [
   {
    "family": "ring / CH-ip (9-10.5 um)",
    "n_modes": 1,
@@ -323,19 +491,23 @@
    "layerA_2026-09-22"
   ],
   "deck_hash": "97ed2d67c66b",
-  "commit": "05a95e2",
-  "export_built_utc": "2026-09-28T18:15:10Z",
+  "commit": "1f561376",
+  "export_built_utc": "2026-11-02T10:01:23Z",
   "export_sources_sha256": {
-   "manifest": "72701046f31b901da9292e06da71f1f4929e13819922e6c9c0db375cee341449",
-   "ledger": "c35bb2df7605f28f394e5316d33487d4c8c031a14ef3c86099afb6d3035237a8"
+   "manifest": "95363ef25aa38e09b9b90296787a0ec62f1c63d0f766f9271598796e9dbd6770",
+   "ledger": "273c8e3c9ab3dc59d50aa3908178b50e56455c7a11ac033fa105ceddd756bf72"
   },
   "evidence": [
    {
-    "path": "probes/results_m1/M3_TZ_MODE22_READING_2026-09-23.md",
+    "path": "modules/05_support_predictor/out/composite_full_naphthalene_2026-10-07.npz",
     "exists": true
    },
    {
-    "path": "probes/results_m1/M3_TZ_MODE12_READING_2026-09-20.md",
+    "path": "probes/results_m1/e8_naphthalene_ccpvdz_tlambda_2026-10-02/E8_locality_naphthalene.md",
+    "exists": true
+   },
+   {
+    "path": "probes/results_m1/M3_TZ_MODE22_READING_2026-09-23.md",
     "exists": true
    }
   ],
@@ -345,30 +517,39 @@
   ],
   "family_rule": "modules/03_lab_scoreboard/build_lab_tables.py FAMILY_RULE (12 Sep 2026)",
   "licence": {
-   "rule_source": "GoalGathering/notes/PreRegistration_2026-09-25_Proof_of_Learning_Layer_B.md",
-   "licensed_families": [],
-   "latest_reading": {
-    "source": "modules/05_support_predictor/out/E7_rungB_layerB_2026-09-27.md",
-    "rows": {
-     "(a)": {
-      "n": 274,
-      "ring_coupling_ratio": 0.61,
-      "corrected_omega_rms": 6.18
-     },
-     "(b)": {
-      "n": 274,
-      "ring_coupling_ratio": 0.64,
-      "corrected_omega_rms": 5.6
-     },
-     "(c)": {
-      "n": 274,
-      "ring_coupling_ratio": 0.7,
-      "corrected_omega_rms": 5.59
-     }
+   "rule_source": "README.md, decision 65",
+   "licensed_families": [
+    "ring-ip",
+    "CH-stretch",
+    "CH-oop"
+   ],
+   "errors": {
+    "ring-ip": {
+     "a": 1.77,
+     "b": 2.12
     },
-    "date": "2026-09-27 18:33"
-   }
+    "CH-stretch": {
+     "a": 1.19,
+     "b": 2.5
+    },
+    "CH-oop": {
+     "a": 2.17,
+     "b": 2.7
+    },
+    "other": {
+     "a": 3.62,
+     "b": 3.89
+    }
+   },
+   "sources": [
+    "E7_rungC_chain35_analytic_eval_frozenb_seed0.json",
+    "E7_rungC_chain35_analytic_eval_frozenb_seed1.json",
+    "E7_rungC_chain35_analytic_eval_frozenb_seed2.json",
+    "E7_rungC_chain35_analytic_a8read_seed0.json",
+    "E7_rungC_chain35_analytic_a8read_seed1.json",
+    "E7_rungC_chain35_analytic_a8read_seed2.json"
+   ]
   }
  },
- "statement": "naphthalene: rung 4 (anchored). The cheap-level spectrum is served with the laboratory tolerance per family; no predicted correction is shown because no family is licensed; the anchor coverage lists what coupled-cluster evidence exists and where it is wider than the tolerance."
+ "statement": "naphthalene: rung 4 (anchored). The cheap-level spectrum is served with the laboratory tolerance per family; no predicted correction is shown in this record — the pipeline serves it for the licensed families (ring-ip, CH-stretch, CH-oop; decision 65); the anchor coverage lists what coupled-cluster evidence exists and where it is wider than the tolerance."
 }

@@ -1,6 +1,6 @@
-# Certificate — benzene (A_8448043181), rung 5 · validated — 2026-09-28 20:15
+# Certificate — benzene (A_8448043181), rung 5 · validated — 2026-11-14 18:39
 
-benzene: rung 5 (validated). The cheap-level spectrum is served with the laboratory tolerance per family; no predicted correction is shown because no family is licensed; the anchor coverage lists what coupled-cluster evidence exists and where it is wider than the tolerance.
+benzene: rung 5 (validated). The cheap-level spectrum is served with the laboratory tolerance per family; no predicted correction is shown in this record — the pipeline serves it for the licensed families (ring-ip, CH-stretch, CH-oop; decision 65); the anchor coverage lists what coupled-cluster evidence exists and where it is wider than the tolerance.
 
 ## Ladder
 
@@ -8,8 +8,8 @@ benzene: rung 5 (validated). The cheap-level spectrum is served with the laborat
 |---|---|---|
 | 0 | listed | reached |
 | 1 | cheap_level_done | reached |
-| 2 | correction_predicted | —: no family licensed |
-| 3 | spectrum_predicted | —: no family licensed |
+| 2 | correction_predicted | — not in this record: the pipeline (m08/pipeline.py) serves it for the licensed families (decision 65) |
+| 3 | spectrum_predicted | — not in this record: the pipeline (m08/pipeline.py) serves it for the licensed families (decision 65); heights only where an APT exists |
 | 4 | anchored | reached |
 | 5 | validated | reached |
 
@@ -17,6 +17,30 @@ benzene: rung 5 (validated). The cheap-level spectrum is served with the laborat
 
 - **b3lyp**: 30 vibrational modes, 0 imaginary; source website export molecules/A_8448043181.json ← corpus molecules/A_8448043181/ (deck 97ed2d67c66b)
 - **wb97x**: 30 vibrational modes, 0 imaginary; source website export molecules/A_8448043181.json ← corpus molecules/A_8448043181/ (deck 97ed2d67c66b)
+
+## Spectral shape (cheap rung; positions and heights)
+
+7 infrared-active bands of 30 modes (the others have height zero and are not drawn); Lorentzian FWHM 10 cm⁻¹. APT modules/05_support_predictor/corpus/molecules/A_8448043181/dipole_b3lyp_cphf.npz; Hessian modules/05_support_predictor/corpus/molecules/A_8448043181/hessian_b3lyp.npz; largest difference to the listed positions 0.05 cm⁻¹.
+
+| band (cm⁻¹) | height (km/mol) | family |
+|---|---|---|
+| 694.6 | 77.57 | CH-oop (10.5-15 um; benzene nu11 at 673 included) |
+| 1068.8 | 3.26 | ring / CH-ip (9-10.5 um) |
+| 1069.1 | 3.25 | ring / CH-ip (9-10.5 um) |
+| 1530.8 | 6.52 | CC-stretch (6.2 um) |
+| 1531.1 | 6.54 | CC-stretch (6.2 um) |
+| 3183.2 | 0.15 | CH-stretch |
+| 3199.4 | 51.88 | CH-stretch |
+| 3199.5 | 51.71 | CH-stretch |
+
+**How well the shape is known** — the carried ΔH-network v1.3 against ωB97X/6-31G* (the DFT proxy: the network's ΔH is trained on ωB97X − B3LYP Hessians); the corrected spectrum is the pipeline's (`m08/pipeline.py`), not this record's:
+
+| hold-out | molecules with an APT | spectrum overlap, uncorrected → corrected | height error, uncorrected → corrected |
+|---|---|---|---|
+| (a) | 8 | 0.277 → 0.979 | 0.227 → 0.097 |
+| (b) | 31 | 0.366 → 0.967 | 0.511 → 0.236 |
+
+*Overlap:* cosine similarity of the two Lorentzian-broadened spectra (FWHM 10 cm⁻¹, 500–3500 cm⁻¹); 1 = identical shape. *Height error:* intensity-weighted rms of the relative height error per band, bands paired by the shape of the motion (eigenvector overlap); 0 = identical heights. *Coupled cluster:* not measured for this network version: the coupled-cluster reads (T3) were made on chain 34, and tests on the 9–11 existing anchors wait for the anchor decision of November 2026. *Open:* the APT itself is computed at the cheap level; its CC-minus-B3LYP difference (≈ 20 % on benzene) is not corrected by any rung yet. *Sources:* E7_rungC_chain35_analytic_eval_frozenb_seed0.json; E7_rungC_chain35_analytic_eval_frozenb_seed1.json; E7_rungC_chain35_analytic_eval_frozenb_seed2.json; E7_rungC_chain35_analytic_a8read_seed0.json; E7_rungC_chain35_analytic_a8read_seed1.json; E7_rungC_chain35_analytic_a8read_seed2.json.
 
 ## Per-band error budget
 
@@ -32,7 +56,15 @@ benzene: rung 5 (validated). The cheap-level spectrum is served with the laborat
 | overtone / combination region | 1 | 1652.8–1652.8 | 15.27 | — | module 03 u_band_by_record_family.csv, benzene, record(s) C71432_0.jdx, C71432_1.jdx |
 | ring / CH-ip (9-10.5 um) | 7 | 968.9–1069.1 | 12.7 | — | module 03 u_band_by_record_family.csv, benzene, record(s) C71432_0.jdx, C71432_1.jdx, C71432_quantir_res0.125_boxcar.jdx |
 
-*Ensemble ±:* — : no predicted correction is shown; no family licensed: the registered verdict falls at 1,200 admitted layer-B molecules.
+*Ensemble ±:* — : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7); not licensed: other (3.62 / 3.89) — seed-mean error on hold-outs (a) / (b) in cm⁻¹ against 3; no coupled-cluster licence).
+
+## The anchor in force
+
+**CCSD(T)/cc-pVTZ** (full, basis tier TZ), registered 2026-10-06, `probes/results_m1/e8_benzene_ccpvtz_oop_2026-10-03/hessian_ccsd_t.npz` (sha16 `4f264c390ec9ffc5`).
+
+Checks that passed: pair ≤ 1.9e-6; energy route gradient 4.8e-6, H_kk 4.7e-4; lambda kernel 7.3e-17.
+
+Source: `modules/05_support_predictor/out/ANCHORS_STATUS.json`, the project's anchor registry.
 
 ## Anchor coverage (coupled-cluster evidence)
 
@@ -55,7 +87,7 @@ benzene: rung 5 (validated). The cheap-level spectrum is served with the laborat
 
 ## Provenance
 
-- releases: layerA2_2026-09-23, layerA2_2026-09-23b, layerA2_2026-09-24, layerA_2026-09-22; deck 97ed2d67c66b; commit 05a95e2; export built 2026-09-28T18:15:10Z
-- evidence: probes/results_m1/e8_benzene_ccpvdz/E8_locality_benzene.md (exists); probes/results_m1/R0_DIAGONAL_READING_2026-09-22.md (exists); probes/results_vpt2/benzene_benchmark_2026-09-22.md (exists)
-- licence: 0 families licensed (GoalGathering/notes/PreRegistration_2026-09-25_Proof_of_Learning_Layer_B.md)
+- releases: layerA2_2026-09-23, layerA2_2026-09-23b, layerA2_2026-09-24, layerA_2026-09-22; deck 97ed2d67c66b; commit 1f561376; export built 2026-11-02T10:01:23Z
+- evidence: probes/results_m1/e8_benzene_ccpvtz_oop_2026-10-03/hessian_ccsd_t.npz (exists); probes/results_m1/e8_benzene_ccpvdz_tlambda/E8_locality_benzene.md (exists); probes/results_m1/R0_DIAGONAL_READING_2026-09-22.md (exists); probes/results_vpt2/benzene_benchmark_2026-09-22.md (exists)
+- licence: 3 families licensed (README.md, decision 65)
 - family rule: modules/03_lab_scoreboard/build_lab_tables.py FAMILY_RULE (12 Sep 2026)
