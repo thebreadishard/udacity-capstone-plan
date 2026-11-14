@@ -192,6 +192,11 @@ def finish_by_newton(mf) -> float:
     with the energy still falling 1.3e-10 a cycle against conv_tol 1e-11."""
     second = mf.newton()
     second.max_cycle = NEWTON_MAX_CYCLE                   # its own budget: the stalled run's max_cycle is copied into it
+    # and its own threshold: pyscf's SecondOrderSCF.kernel passes self.conv_tol_grad (soscf/newton_ah.py), so the caller's tight value
+    # is copied in too, and the solver stalls above it -- T_76dfc434db spent 50 macro iterations at |g| 1.83e-8 against 1e-8 on
+    # 14 Nov 2026 and the run failed. None leaves it pyscf's own sqrt(conv_tol) (newton_ah.py:526); the restart below keeps the
+    # caller's threshold as the verdict, which is the recipe probes/scf_converge.py follows for the S1/S2 paths.
+    second.conv_tol_grad = None
     second.kernel(mf.mo_coeff, mf.mo_occ)
     if not second.converged:
         return mf.e_tot

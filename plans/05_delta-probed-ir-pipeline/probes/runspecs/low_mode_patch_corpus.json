@@ -15,5 +15,5 @@
  "dry_run_args": "--dry-run",
  "threads": 8,
  "resumable": true,
- "estimate": {"hours": 24, "basis": "248 grid-response gradients and 116 reference SCFs of 8-30-atom molecules; the check's points took 106-187 s at 15 atoms beside the CPHF check (8 threads each); about 3-6 min a point for the larger ones"},
+ "estimate": {"hours": 22, "basis": "the 57 molecules of 8-40 atoms ran in 32 h to 14 Nov 2026 (3-12 min a point, 230 points); what is left is T_76dfc434db alone, C42H18 with two low directions, whose first point took 9988 s -- 7 points at that rate, and the resume keeps the one already written"},
  "memory": {"peak_gb": 4.0, "basis": "a bound: probes/wsl_capped.sh stops it at 4096 MB (CAP_MB); the check's 15-atom molecule ran well under it"}}
