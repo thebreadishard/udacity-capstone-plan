@@ -65,6 +65,33 @@ def _refuse(req: Request, reasons: list[str], rule_ids: list[str], gate_named: s
                     ledger_line=f"refusal — {name}: {gate_named}; {'; '.join(reasons)}; needed: {needed}")
 
 
+def reachable_within(budget: float | None, reached: int, cheap: dict, anchor: dict) -> list[str]:
+    """The rungs a budget buys above the one the molecule has, cheapest first. A refusal owes the requester this: 'too expensive'
+    without 'and this is what you can have' is not an answer (DESIGN_2026-09-27 §5; the scenarios' S2, S2b and S3)."""
+    out: list[str] = []
+    if budget is None:
+        return out
+    if reached < 1 and budget >= cheap["eur_ex_vat"]:
+        out.append(f"rung 1 (cheap level) at ≈ €{cheap['eur_ex_vat']:.2f}")
+    if reached < 4 and budget >= anchor["eur_ex_vat"]:
+        out.append(f"rung 4 (anchored, naphthalene-sized) at ≈ €{anchor['eur_ex_vat']:.2f}")
+    return out
+
+
+def within_line(cap: str, reachable: list[str], reached: int, cheap: dict) -> str:
+    """The one sentence both refusals end on: the cap, and what it reaches."""
+    if reachable:
+        return f"{cap}: reachable within it — " + "; ".join(reachable)
+    if reached >= 1:
+        return f"{cap}: nothing above rung {reached} is reachable within it"
+    return f"{cap}: reachable within it — nothing (the cheap rung alone costs ≈ €{cheap['eur_ex_vat']:.2f})"
+
+
+def cap_of(budget: float | None) -> str:
+    """How a refusal names the money it was given."""
+    return f"budget €{budget:.2f}" if budget is not None else "no budget given"
+
+
 def decide(req: Request, catalog: Catalog) -> Decision:  # noqa: PLR0911  one return per gate, in the scenarios' order; its split is TASKS 139
     lic = licence_state()
     # 0. the note is data (module 07, R24): an instruction addressed to the system is refused, not followed
@@ -84,14 +111,9 @@ def decide(req: Request, catalog: Catalog) -> Decision:  # noqa: PLR0911  one re
     # 2. outside the corpus: the cap decides what is reachable
     cheap = prices.step_price("cheap_deck_v1"); anchor = prices.step_price("anchor_e8_cc_hessian_naphthalene")
     if row is None:
-        reachable = []
-        if req.budget_eur is not None and req.budget_eur >= cheap["eur_ex_vat"]:
-            reachable.append(f"rung 1 (cheap level) at ≈ €{cheap['eur_ex_vat']:.2f}")
-        if req.budget_eur is not None and req.budget_eur >= anchor["eur_ex_vat"]:
-            reachable.append(f"rung 4 (anchored, naphthalene-sized) at ≈ €{anchor['eur_ex_vat']:.2f}")
-        cap = f"budget €{req.budget_eur:.2f}" if req.budget_eur is not None else "no budget given"
+        cap = cap_of(req.budget_eur)
         reasons = [f"'{req.molecule}' is not in the corpus (canonical {canonical(req.molecule)}); nothing exists to certify",
-                   f"{cap}: reachable within it — " + ("; ".join(reachable) if reachable else "nothing (the cheap rung alone costs ≈ €" + f"{cheap['eur_ex_vat']:.2f})")]
+                   within_line(cap, reachable_within(req.budget_eur, 0, cheap, anchor), 0, cheap)]
         needed = ("an intake into the corpus factory (deck v1) at the cheap rung's price, then an anchor for the target rung" if req.target_rung >= 4
                   else "an intake into the corpus factory (deck v1)")
         d = _refuse(req, reasons, ["R25", "R32"], f"cap: {cap}; target rung {req.target_rung} not reachable", [cheap, anchor], needed)
@@ -114,10 +136,13 @@ def decide(req: Request, catalog: Catalog) -> Decision:  # noqa: PLR0911  one re
                   if req.target_rung >= 4 else "cheap level not computed")
     needed = f"{missing['what']} — measured on {missing['measured_on']}: ≈ {missing['hours']:.1f} h on a {missing['machine']} ≈ €{missing['eur_ex_vat']:.2f} ex VAT" + (f" ({missing['note']})" if missing.get("note") else "")
     if req.budget_eur is None or req.budget_eur < missing["eur_ex_vat"]:
-        d = _refuse(req, [f"rung {reached} ({RUNG_LABELS[reached]}) exists; target rung {req.target_rung} not reached",
-                          f"budget {'not given' if req.budget_eur is None else f'€{req.budget_eur:.2f}'} does not cover the missing step (≈ €{missing['eur_ex_vat']:.2f})"],
-                    ["R14" if req.target_rung >= 4 else "R25"], gate_named, [missing], needed, row)
-        return d
+        cap = cap_of(req.budget_eur)
+        # the prices of the steps that are actually missing, cheapest first, and what the cap reaches above the rung the molecule has
+        lines = ([cheap] if reached < 1 else []) + ([anchor] if req.target_rung >= 4 else [])
+        return _refuse(req, [f"rung {reached} ({RUNG_LABELS[reached]}) exists; target rung {req.target_rung} not reached",
+                             f"{cap} does not cover the missing step (≈ €{missing['eur_ex_vat']:.2f})",
+                             within_line(cap, reachable_within(req.budget_eur, reached, cheap, anchor), reached, cheap)],
+                       ["R14" if req.target_rung >= 4 else "R25"], f"cap: {cap}; {gate_named}", lines or [missing], needed, row)
     # a run order: the officer proposes 'launch' of a named job; module 07's gate decides — without a passed dry run it forces the dry run first (R01)
     job = f"{'anchor_e8' if req.target_rung >= 4 else 'deck_v1'}:{row['id']}"
     proposal = Proposal(action="launch", args={"host": "CCX53" if req.target_rung >= 4 else "CPX62", "job": job}, rule_id="R01",

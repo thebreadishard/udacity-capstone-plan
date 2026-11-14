@@ -14,7 +14,7 @@ from m08 import prices  # noqa: E402
 from m08.catalog import Catalog, family  # noqa: E402
 from m08.certify import certificate, to_markdown  # noqa: E402
 from m08.licence import state as licence_state  # noqa: E402
-from m08.officer import Request, decide, instruction_in  # noqa: E402
+from m08.officer import Request, cap_of, decide, instruction_in, reachable_within, within_line  # noqa: E402
 from m08.replay import execute_run_order  # noqa: E402
 
 
@@ -160,3 +160,47 @@ def test_the_live_certificate_agrees_with_benzenes_export_certificate(cat):
     page = LC.to_markdown(live)
     assert "not measured for this network version" in page and "| other | 3.62 (" in page          # clean (a), TASKS 157
     assert live["licence"]["licensed_families"] == ["ring-ip", "CH-stretch", "CH-oop"]
+
+
+CHEAP = {"eur_ex_vat": 0.24}
+ANCHOR = {"eur_ex_vat": 36.34}
+
+
+def test_no_budget_reaches_nothing_and_the_sentence_says_which_cap():
+    assert reachable_within(None, 0, CHEAP, ANCHOR) == []
+    assert cap_of(None) == "no budget given"
+    assert cap_of(20.0) == "budget \u20ac20.00"
+
+
+def test_a_budget_reaches_the_rungs_it_covers_cheapest_first():
+    assert reachable_within(0.1, 0, CHEAP, ANCHOR) == []
+    assert len(reachable_within(20.0, 0, CHEAP, ANCHOR)) == 1
+    both = reachable_within(100.0, 0, CHEAP, ANCHOR)
+    assert len(both) == 2 and both[0].startswith("rung 1") and both[1].startswith("rung 4")
+
+
+def test_a_rung_the_molecule_already_has_is_not_offered_again():
+    assert reachable_within(100.0, 1, CHEAP, ANCHOR) == ["rung 4 (anchored, naphthalene-sized) at \u2248 \u20ac36.34"]
+    assert reachable_within(100.0, 4, CHEAP, ANCHOR) == []
+
+
+def test_the_sentence_distinguishes_nothing_affordable_from_nothing_left():
+    assert "the cheap rung alone costs" in within_line("no budget given", [], 0, CHEAP)
+    assert within_line("budget \u20ac1.00", [], 1, CHEAP) == "budget \u20ac1.00: nothing above rung 1 is reachable within it"
+    assert within_line("budget \u20ac100.00", ["rung 4 x"], 1, CHEAP).endswith("reachable within it \u2014 rung 4 x")
+
+
+def test_a_listed_molecule_under_a_short_budget_is_told_what_it_can_have(cat):
+    """Scenario S3: the refusal names the cap, the cheapest rung reachable and both missing prices, not the anchor's price alone."""
+    row = next(r for r in cat.rows if int(r["rung"]) == 0)
+    d = decide(Request(molecule=row["id"], target_rung=4, budget_eur=20.0), cat)
+    assert d.kind == "refusal" and d.gate_named.startswith("cap: budget \u20ac20.00;")
+    assert any("rung 1 (cheap level)" in r for r in d.reasons)
+    assert [p["step"] for p in d.price_lines] == ["cheap_deck_v1", "anchor_e8_cc_hessian_naphthalene"]
+
+
+def test_a_molecule_at_the_cheap_rung_is_not_offered_the_cheap_rung(cat):
+    """Scenario S2: biphenyl has layer A; the refusal prices the anchor only and says nothing above rung 1 is reachable."""
+    d = decide(Request(molecule="biphenyl", target_rung=4, budget_eur=1.0), cat)
+    assert d.kind == "refusal" and [p["step"] for p in d.price_lines] == ["anchor_e8_cc_hessian_naphthalene"]
+    assert any("nothing above rung 1 is reachable" in r for r in d.reasons)
