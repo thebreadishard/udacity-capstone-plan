@@ -247,8 +247,15 @@ def read_scope(by_scaf: dict[str, list[dict]], plan: ReadPlan) -> dict[str, Any]
             "verdicts": verdicts}
 
 
+def quick_plan(window: tuple[float, float]) -> ReadPlan:
+    """The smoke's plan: the whole path — curves, nested search, verdicts, report — on two ks, two subsets and one search
+    configuration, so a change to the read can be exercised in minutes instead of three hours. Not a read."""
+    return ReadPlan(ks=(4, REF_K), n_subsets=2, search_configs=(configs()[0],), window=window)
+
+
 def report(res: dict[str, Any]) -> list[str]:
-    lines = [f"# S2b read — {res['molecules']} molecules in {res['scaffolds']} scaffolds, line 2 ≤ {LINE_LICENSE} cm⁻¹ per family", ""]
+    head = "S2b SMOKE (two subsets, one configuration) — not a read" if res["quick"] else "S2b read"
+    lines = [f"# {head} — {res['molecules']} molecules in {res['scaffolds']} scaffolds, line 2 ≤ {LINE_LICENSE} cm⁻¹ per family", ""]
     for scope, r in res["scopes"].items():
         lines += [f"## Scope {scope}{' (main read)' if scope == READ_SCOPES[0] else ''}", "",
                   f"Molecules without an xtb force field: {len(r['counts']['molecules_without_xtb'])}; G window modes without an xtb partner "
@@ -270,15 +277,17 @@ def main() -> int:
     ap.add_argument("--sets", required=True)
     ap.add_argument("--out", required=True)
     add_window_argument(ap)
+    ap.add_argument("--quick", action="store_true",
+                    help="a smoke, not a read: two ks, two subsets and one search configuration, minutes instead of hours")
     a = ap.parse_args()
-    plan = ReadPlan(window=WINDOWS[a.window])
+    plan = quick_plan(WINDOWS[a.window]) if a.quick else ReadPlan(window=WINDOWS[a.window])
     parts = {s.name: load_set(s, plan.window) for s in read_sets(a.sets)}
     g_by_scaf, x_by_id = merge(parts)
     dirs = {m["id"]: (m["dir"], x_by_id[m["id"]]["dir"]) for ms in g_by_scaf.values() for m in ms if m["id"] in x_by_id}
     modes = load_modes(dirs)
     excluded = exclusion_report(parts)
     res: dict[str, Any] = {"registration": "PreRegistration_2026-10-19_S2b_Learning_Curve.md", "sets": list(parts),
-                           "window": plan.window, "window_name": a.window,
+                           "window": plan.window, "window_name": a.window, "quick": a.quick,
                            "molecules": sum(len(p["used"]) for p in parts.values()), "scaffolds": len(g_by_scaf), "excluded": excluded, "scopes": {}}
     for scope in READ_SCOPES:
         by_scaf, counts = build(g_by_scaf, x_by_id, modes, scope, plan.window)

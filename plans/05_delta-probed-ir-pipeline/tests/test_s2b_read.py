@@ -124,3 +124,17 @@ def test_pure_noise_is_not_licensed_end_to_end():
     for fa, v in r["verdicts"].items():
         assert v["licensed_by"] == [] and v["reading"].startswith("line 2 missed"), fa
         assert v["reference_k"] == 16 and v["training_scaffolds"] == 19
+
+
+def test_the_smoke_plan_is_smaller_but_still_a_valid_plan():
+    quick = B.quick_plan(B.WINDOWS["ch"])
+    assert quick.ks == (4, B.REF_K) and quick.n_subsets == 2 and len(quick.search_configs) == 1
+    assert quick.window == B.WINDOWS["ch"]
+    full = B.ReadPlan()
+    assert len(quick.ks) < len(full.ks) and quick.n_subsets < full.n_subsets and len(quick.search_configs) < len(full.search_configs)
+
+
+def test_a_smoke_says_so_in_the_first_line_of_its_report():
+    res = {"molecules": 3, "scaffolds": 2, "excluded": {}, "scopes": {}, "quick": True}
+    assert B.report(res)[0].startswith("# S2b SMOKE")
+    assert B.report({**res, "quick": False})[0].startswith("# S2b read")
