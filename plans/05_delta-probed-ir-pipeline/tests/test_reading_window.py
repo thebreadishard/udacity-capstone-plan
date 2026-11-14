@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import ast
 import math
+import re
 import sys
 from pathlib import Path
 
@@ -26,7 +27,15 @@ from test_s2_read import molecule
 
 CH = R.WINDOWS["ch"]
 PROBES = PLAN / "probes"
-READS = ("s2_read.py", "s2_xtb_read.py", "s2_search.py", "s2b_read.py", "s3_read.py")
+# the five reads, and everything else in probes/ that imports their window-taking functions: s2_diagnose.py called concat
+# and loso with no window for as long as the guard looked only at the five (14 Nov 2026, the independent review)
+SOURCES = ("s2_read", "s2_xtb_read", "s2_search")
+# the five reads: the files where the window-takers are defined, so a definition there is one of them. Elsewhere only an
+# import from them counts - s1tz_read.py has a `curve` of its own that has nothing to do with these (14 Nov 2026).
+OWN = {*SOURCES, "s2b_read", "s3_read"}
+IMPORTS = re.compile(r"from (" + "|".join(SOURCES) + r") import")
+READS = tuple(sorted({f"{m}.py" for m in SOURCES} | {"s2b_read.py", "s3_read.py"}
+                     | {p.name for p in (PLAN / "probes").glob("*.py") if IMPORTS.search(p.read_text("utf-8"))}))
 # function name → (the position of its window parameter, counting from 0, or None when it is keyword-only in practice)
 WINDOW_TAKERS = {"in_window": 1, "concat": 1, "loso": 4, "curve": 5, "x0_read": 1, "build": 4, "window_size": 1,
                  "window_table": 1, "fit_on": 4, "loso_predictions": 3, "nested": 3, "read_scope": 1, "load_set": 1}
@@ -123,14 +132,28 @@ def test_a_mode_set_without_an_id_is_still_counted():
     assert R.window_size(one)["modes"] == 16
 
 
+def window_taking_names(tree: ast.Module, stem: str) -> set[str]:
+    """The window-taking names this file means: what it imports from the read machinery, and - in the five reads only - what
+    it defines. Matching by name alone flagged s1tz_read.py's own `curve` (14 Nov 2026, the independent review)."""
+    names: set[str] = set()
+    if stem in OWN:
+        names |= {n.name for n in ast.walk(tree) if isinstance(n, ast.FunctionDef)} & set(WINDOW_TAKERS)
+    for node in ast.walk(tree):
+        if isinstance(node, ast.ImportFrom) and node.module in SOURCES:
+            names |= {alias.asname or alias.name for alias in node.names} & set(WINDOW_TAKERS)
+    return names
+
+
 def calls_without_a_window(path: Path) -> list[str]:
     """Every call in `path` to a window-taking function that passes no window, by name and line."""
+    tree = ast.parse(path.read_text(encoding="utf-8"))
+    taking = window_taking_names(tree, path.stem)
     missed = []
-    for node in ast.walk(ast.parse(path.read_text(encoding="utf-8"))):
+    for node in ast.walk(tree):
         if not isinstance(node, ast.Call):
             continue
         name = node.func.id if isinstance(node.func, ast.Name) else getattr(node.func, "attr", None)
-        if name not in WINDOW_TAKERS:
+        if name not in taking:
             continue
         if any(k.arg == "window" for k in node.keywords) or len(node.args) > WINDOW_TAKERS[name]:
             continue
@@ -157,3 +180,9 @@ def test_an_open_bound_is_written_as_null_so_the_record_is_json():
 
 def _no_constants(name: str):
     raise AssertionError(f"the record carries {name}, which is not JSON")
+
+
+def test_the_guard_covers_every_file_that_imports_the_window_takers():
+    """The list is derived, not kept by hand: a new consumer of concat or loso is guarded the day it is written."""
+    assert {"s2_read.py", "s2b_read.py", "s3_read.py", "s2_diagnose.py"} <= set(READS)
+    assert len(READS) >= 8

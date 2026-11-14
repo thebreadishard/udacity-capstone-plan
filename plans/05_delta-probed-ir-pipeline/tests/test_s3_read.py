@@ -123,3 +123,26 @@ def test_drop_marked_counts_per_molecule():
     out, dropped = S.drop_marked(by_scaf, "exclude")
     assert dropped == {"m": 1, "two": 2}
     assert [len(r["omega"]) for r in out["s1"]] == [2, 3] and len(out["s2"][0]["omega"]) == 1
+
+
+# ------------------------------------------- the S2b read must be of this read's window (14 Nov 2026, the independent review)
+
+
+def test_an_s2b_read_of_another_window_is_refused():
+    with pytest.raises(SystemExit, match="belong to other modes"):
+        S.refuse_window_mismatch({"window_name": "mid", "window": [550.0, 2000.0]}, "ch", "s2b_read.json")
+
+
+def test_an_s2b_read_of_the_same_window_passes():
+    S.refuse_window_mismatch({"window_name": "ch", "window": [2800.0, None]}, "ch", "s2b_read.json")
+
+
+def test_a_read_that_predates_the_setting_is_taken_for_the_mid_window_and_nothing_else():
+    S.refuse_window_mismatch({"scopes": {}}, "mid", "old.json")
+    with pytest.raises(SystemExit, match="belong to other modes"):
+        S.refuse_window_mismatch({"scopes": {}}, "ch", "old.json")
+
+
+def test_a_read_that_records_a_window_without_naming_it_is_refused():
+    with pytest.raises(SystemExit, match="does not name it"):
+        S.refuse_window_mismatch({"window": [550.0, 2000.0]}, "mid", "half.json")

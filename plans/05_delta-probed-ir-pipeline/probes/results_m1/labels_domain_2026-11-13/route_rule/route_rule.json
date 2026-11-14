@@ -3,8 +3,11 @@
  "printed_registration": "PreRegistration_2026-11-14_Printed_Band_Position.md",
  "s2b_read": "probes/results_m1/labels_symmetry_2026-11-12/s2b_read/s2b_read.json",
  "s3_read": "probes/results_m1/labels_domain_2026-11-13/s3_read_exclude/s3_read.json",
- "window": null,
- "window_name": null,
+ "window": [
+  550.0,
+  2000.0
+ ],
+ "window_name": "mid (not recorded: that read predates the setting, when 550-2000 was the only window)",
  "licensed": {
   "CH-oop": {
    "route": null,

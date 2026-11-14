@@ -18,12 +18,25 @@ import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-from s2_read import FAMILIES, SCOPES, concat, design, fit_predict, load_selection, loso, options_from_args, rms, write_atomic  # noqa: E402
+from s2_read import (  # noqa: E402
+    FAMILIES,
+    SCOPES,
+    add_window_argument,
+    concat,
+    design,
+    fit_predict,
+    load_selection,
+    loso,
+    options_from_args,
+    rms,
+    window_record,
+    write_atomic,
+)
 
 
-def in_sample(mols):
+def in_sample(mols, window):
     """Both routes fitted on all window modes and scored on the same modes: (truth, pred_b, pred_c, family)."""
-    data = concat(mols)
+    data = concat(mols, window)
     pb, pc, _unseen = fit_predict(data, data)
     return data["delta"], pb, pc, data["family"]
 
@@ -32,13 +45,13 @@ def per_family(truth, pb, pc, fam):
     return {fa: {"n": int((fam == fa).sum()), "b": rms((pb - truth)[fam == fa]), "c": rms((pc - truth)[fam == fa])} for fa in FAMILIES}
 
 
-def held_out_by_molecule(by_scaf, family):
+def held_out_by_molecule(by_scaf, family, window):
     """Per molecule, the held-out rms of one family's window modes (the molecule's scaffold left out)."""
     out = {}
     for s, mols in by_scaf.items():
-        train = concat([m for t, ms in by_scaf.items() if t != s for m in ms])
+        train = concat([m for t, ms in by_scaf.items() if t != s for m in ms], window)
         for m in mols:
-            test = concat([m])
+            test = concat([m], window)
             sel = test["family"] == family
             if sel.any():
                 pb, _pc, _u = fit_predict(train, test)
@@ -46,13 +59,13 @@ def held_out_by_molecule(by_scaf, family):
     return out
 
 
-def largest_errors(by_scaf, n=15):
+def largest_errors(by_scaf, window, n=15):
     """The n largest held-out errors of route (b) over all window modes, each with its molecule, ω, family, truth, prediction and h."""
     rows = []
     for s, mols in by_scaf.items():
-        train = concat([m for t, ms in by_scaf.items() if t != s for m in ms])
+        train = concat([m for t, ms in by_scaf.items() if t != s for m in ms], window)
         for m in mols:
-            test = concat([m])
+            test = concat([m], window)
             pb, _pc, _u = fit_predict(train, test)
             rows += [{"id": m["id"], "omega": float(w), "family": str(f), "delta": float(d), "pred_b": float(p), "h": float(h)}
                      for w, f, d, p, h in zip(test["omega"], test["family"], test["delta"], pb, test["h"], strict=True)]
@@ -67,14 +80,19 @@ def main() -> int:
     ap.add_argument("--out", required=True)
     ap.add_argument("--gvpt2-dir", help="S2 amendment 2: GVPT2 labels from probes/gvpt2_labels.py")
     ap.add_argument("--scope", choices=SCOPES, default="all")
+    add_window_argument(ap)
     a = ap.parse_args()
-    by_scaf, used, _excluded = load_selection(a.root, a.selection, options_from_args(a))
+    options = options_from_args(a)
+    by_scaf, used, _excluded = load_selection(a.root, a.selection, options)
     mols = [m for ms in by_scaf.values() for m in ms]
     n_params = design(np.zeros(1), np.array(["other"]), np.zeros(1), np.zeros(1)).shape[1]
     res = {"labels": "GVPT2" if a.gvpt2_dir else "DVPT2 (stored)", "scope": a.scope,
+           "window": window_record(options.window), "window_name": a.window,
            "molecules": len(used), "scaffolds": len(by_scaf), "route_b_parameters": n_params,
-           "in_sample": per_family(*in_sample(mols)), "held_out": per_family(*loso(by_scaf)[:4]),
-           "other_by_molecule": held_out_by_molecule(by_scaf, "other"), "largest_errors": largest_errors(by_scaf)}
+           "in_sample": per_family(*in_sample(mols, options.window)),
+           "held_out": per_family(*loso(by_scaf, window=options.window)[:4]),
+           "other_by_molecule": held_out_by_molecule(by_scaf, "other", options.window),
+           "largest_errors": largest_errors(by_scaf, options.window)}
     ins, ho = res["in_sample"], res["held_out"]
     lines = [f"# S2 diagnostics — bias or variance? ({len(used)} molecules, {len(by_scaf)} scaffolds, route (b) has {n_params} coefficients; "
              f"labels {res['labels']}, scope {a.scope})", "",

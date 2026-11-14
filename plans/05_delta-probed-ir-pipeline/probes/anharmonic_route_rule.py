@@ -21,7 +21,7 @@ from typing import Any
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-from s2_read import LINE_LICENSE, write_atomic  # noqa: E402
+from s2_read import LINE_LICENSE, WINDOWS, window_record, write_atomic  # noqa: E402
 from s2b_read import READ_SCOPES  # noqa: E402
 from s3_read import MIN_MODES, transfer_holds  # noqa: E402
 
@@ -47,6 +47,17 @@ def route_for_family(s2b_verdict: dict[str, Any] | None, s3_entry: dict[str, Any
             "reason": f"neither carries: {model} {r_model:.2f}, (c) {r_c:.2f} against {LINE_LICENSE}"}
 
 
+def window_of(s2b_read: dict[str, Any]) -> tuple[list[float | None], str]:
+    """The window a read worked in, and its name, as a record may state them.
+
+    A read written before 14 November 2026 records neither, because the window was a module constant then - the 550-2000 cm-1 one,
+    for every read there was. That is said here rather than left as a null for a later reader to guess at.
+    """
+    if "window" in s2b_read:
+        return window_record(tuple(s2b_read["window"])), s2b_read.get("window_name") or "not named by that read"
+    return list(WINDOWS["mid"]), "mid (not recorded: that read predates the setting, when 550-2000 was the only window)"
+
+
 def printed_for_family(s2b_verdict: dict[str, Any] | None, s3_entry: dict[str, Any] | None,
                        harmonic_cm: float | None) -> dict[str, Any]:
     """What the pipeline prints for one family, and why (PreRegistration_2026-11-14_Printed_Band_Position.md).
@@ -63,6 +74,9 @@ def printed_for_family(s2b_verdict: dict[str, Any] | None, s3_entry: dict[str, A
         return {"model": None, "bar_cm": None, "reason": "no S2b verdict for this family"}
     model = s2b_verdict["best_curve_model"]
     bar = s3_entry["rms"].get(model, math.nan)
+    if math.isnan(bar):
+        return {"model": None, "bar_cm": None,
+                "reason": f"the verdict model {model} gave no prediction on the targets, so there is nothing to print"}
     if harmonic_cm is None or not bar < harmonic_cm:
         return {"model": None, "bar_cm": None,
                 "reason": f"the step does not beat the harmonic position: {model} {bar:.2f} against {harmonic_cm:.2f}"
@@ -148,9 +162,13 @@ def main(argv: list[str] | None = None) -> int:
     with open(a.s2b_read, encoding="utf-8") as f2, open(a.s3_read, encoding="utf-8") as f3:
         s2b, s3 = json.load(f2), json.load(f3)
     licensed, printed = route_rule(s2b, s3), printed_rule(s2b, s3)
+    # through window_of, never copied: a read written before it carries Infinity, which no JSON reader outside Python
+    # accepts, or no window at all (14 Nov 2026, the independent review)
+    window, window_name = window_of(s2b)
     record = {"licence_registration": "PreRegistration_2026-11-04_Anharmonic_Route_Rule.md",
               "printed_registration": "PreRegistration_2026-11-14_Printed_Band_Position.md",
-              "s2b_read": a.s2b_read, "s3_read": a.s3_read, "window": s2b.get("window"), "window_name": s2b.get("window_name"),
+              "s2b_read": a.s2b_read, "s3_read": a.s3_read,
+              "window": window, "window_name": window_name,
               "licensed": licensed, "printed": printed}
     write_atomic(a.out, json.dumps(record, indent=1))
     write_atomic(os.path.splitext(a.out)[0] + ".md", "\n".join(report(licensed, printed, s3)) + "\n")

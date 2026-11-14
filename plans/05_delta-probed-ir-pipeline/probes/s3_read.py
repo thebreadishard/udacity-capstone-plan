@@ -220,6 +220,23 @@ def load_scope(sets_path: str, policy: str, window: tuple[float, float]) -> tupl
     return by_scaf, counts, excluded, dropped
 
 
+def refuse_window_mismatch(s2b_record: dict[str, Any], window_name: str, path: str) -> None:
+    """The verdict models must come from a read of the same window as this one.
+
+    Nothing used to compare the two, and probes/s3_read.sh makes the mismatch easy: it defaults S2B to the mid read of
+    12 November while WINDOW is a separate variable, so `WINDOW=ch` alone would have read CH modes against mid-window
+    verdict models and divided by a mid-window rms in the size penalty (14 Nov 2026, the independent review). A record
+    written before the window was a setting says nothing; every read before 14 November was the mid one, so that is what
+    it is taken to be, and nothing else is accepted from it.
+    """
+    theirs = s2b_record.get("window_name", "mid" if "window" not in s2b_record else None)
+    if theirs is None:
+        raise SystemExit(f"{path} records a window but does not name it; re-run that read")
+    if theirs != window_name:
+        raise SystemExit(f"{path} is a {theirs!r} read and this one is {window_name!r}: its verdict models and its "
+                         "rms belong to other modes. Pass the S2b read of the same window.")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--sets", required=True)
@@ -232,15 +249,20 @@ def main() -> int:
     a = ap.parse_args()
     window = WINDOWS[a.window]
     with open(a.s2b_read, encoding="utf-8") as fh:
-        s2b_main = json.load(fh)["scopes"][MAIN_SCOPE]["read"]
+        s2b_record = json.load(fh)
+    refuse_window_mismatch(s2b_record, a.window, a.s2b_read)
+    s2b_main = s2b_record["scopes"][MAIN_SCOPE]["read"]
     train_by_scaf, train_counts, excl_train, dropped_train = load_scope(a.sets, a.marked, window)
     targets_by_scaf, target_counts, excl_targets, dropped_targets = load_scope(a.targets, a.marked, window)
     if not targets_by_scaf:
         raise SystemExit("no target with a G label and an xtb force field: nothing to read")
-    size = {"train": window_size(train_by_scaf, window), "targets": window_size(targets_by_scaf, window)}
-    for part, s in size.items():
-        print(f"(S3R) {part}: {s['molecules']} force fields, {s['modes']} modes in the window ("
-              + ", ".join(f"{fa} {n}" for fa, n in s["per_family"].items()) + ")", flush=True)
+    size = {"train": window_size(train_by_scaf, window), "targets": window_size(targets_by_scaf, window),
+            "note": "counted before symmetry pairs are collapsed to one row; rule 4 counts read.families[<family>].n, "
+                    "which is what is left after the collapsing"}
+    for part in ("train", "targets"):
+        s = size[part]
+        print(f"(S3R) {part}: {s['molecules']} force fields, {s['modes']} modes in the window before degenerate pairs "
+              "are collapsed (" + ", ".join(f"{fa} {n}" for fa, n in s["per_family"].items()) + ")", flush=True)
     notes = label_notes(a.targets)
     read = read_targets(train_by_scaf, targets_by_scaf, s2b_main, notes, window)
     res = {"registration": "PreRegistration_2026-11-02_S3_Route_A_Transfer.md", "scope": MAIN_SCOPE,

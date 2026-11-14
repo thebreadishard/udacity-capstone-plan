@@ -122,3 +122,22 @@ def test_the_printed_table_names_the_model_the_bar_and_what_it_beats():
     assert "| ring-ip | x2* | 3.37 | 26.23 | r |" in text
     assert "| CH-oop | harmonic position | — | — | no |" in text
     assert "claims no licence" in text
+
+
+def test_a_verdict_model_with_no_prediction_says_that_and_not_that_it_lost():
+    """The reason may not assert a comparison that was never made (14 Nov 2026, the independent review)."""
+    got = R.printed_for_family(VERDICT_X2, {"n": 20, "rms": {"c": 6.5}}, 134.24)
+    assert got["model"] is None and got["bar_cm"] is None
+    assert "gave no prediction on the targets" in got["reason"]
+    assert "does not beat" not in got["reason"] and "nan" not in got["reason"]
+
+
+def test_a_window_a_read_predates_is_read_as_the_only_one_there_was():
+    window, name = R.window_of({"scopes": {}})
+    assert window == [550.0, 2000.0] and name.startswith("mid (not recorded")
+
+
+def test_an_open_bound_from_an_older_record_is_written_as_null():
+    """A record written before window_record carries Infinity; copying it through would put it in the new record."""
+    window, name = R.window_of({"window": [2800.0, float("inf")], "window_name": "ch"})
+    assert window == [2800.0, None] and name == "ch"

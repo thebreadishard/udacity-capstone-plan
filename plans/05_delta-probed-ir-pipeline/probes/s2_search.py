@@ -34,6 +34,7 @@ from s2_read import (  # noqa: E402
     load_selection,
     options_from_args,
     rms,
+    window_record,
     write_atomic,
 )
 
@@ -197,7 +198,13 @@ def nested(by_scaf, cfgs, on_outer: Callable[[int, int], None] | None = None, wi
             if not sel.any():
                 continue
             scored = [(family_rms(inner[c], fa)[0], c) for c in cfgs]
-            best = min((x for x in scored if np.isfinite(x[0])), key=lambda x: x[0])[1]
+            finite = [x for x in scored if np.isfinite(x[0])]
+            if not finite:
+                # every configuration scored nan: no inner scaffold has a mode of this family in this window, although the
+                # held-out one does. A bare min() raised here, after the outer folds were already spent (14 Nov 2026).
+                raise ValueError(f"family {fa!r}: no inner scaffold of outer fold {s!r} has a mode inside the window "
+                                 f"{window}, so no configuration can be chosen for it")
+            best = min(finite, key=lambda x: x[0])[1]
             chosen[fa].append(best.name)
             pred = fit_on(best, by_scaf, inner_scafs, s, window)["pred"]
             outer[fa]["truth"].append(test["delta"][sel])
@@ -234,7 +241,8 @@ def main() -> int:
             {"best_epoch_max": max(epochs), "cap_hit": bool(max(epochs) > CAP_SHARE * MLP_MAX_EPOCHS)} if epochs else {})
         print(f"{c.name}: " + ", ".join(f"{fa} {v:.2f}" for fa, v in landscape[c.name].items() if fa in FAMILIES and np.isfinite(v)), flush=True)
     result = nested(by_scaf, cfgs, window=opts.window)
-    res = {"amendment": "2 §3 as corrected (proximity from ω only)", "labels": "GVPT2", "scope": a.scope, "molecules": len(used),
+    res = {"amendment": "2 §3 as corrected (proximity from ω only)", "labels": "GVPT2", "scope": a.scope,
+           "window": window_record(opts.window), "window_name": a.window, "molecules": len(used),
            "scaffolds": len(by_scaf), "line": LINE_LICENSE, "nested": result, "landscape_not_a_score": landscape}
     lines = [f"# S2 search — {len(used)} molecules, {len(by_scaf)} scaffolds, GVPT2 labels, scope {a.scope}", "",
              "## Nested score (line 2: ≤ 3.0 cm⁻¹ per family)", "", "| family | modes | nested rms | licensed | chosen per outer fold |",

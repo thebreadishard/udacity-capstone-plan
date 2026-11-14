@@ -5,7 +5,7 @@
  "s3_read": "probes/results_m1/labels_domain_2026-11-13/s3_read_ch/s3_read.json",
  "window": [
   2800.0,
-  Infinity
+  null
  ],
  "window_name": "ch",
  "licensed": {
