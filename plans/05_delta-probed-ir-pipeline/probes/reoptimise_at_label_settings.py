@@ -35,7 +35,6 @@ CORPUS_CODE = Path(__file__).resolve().parents[1] / "modules" / "05_support_pred
 sys.path.insert(0, str(CORPUS_CODE))
 from analytic_hessians import (  # noqa: E402  (the corpus code lives in the module's folder, not on the path)
     AMU2AU,
-    AU2CM,
     FUNCTIONALS,
     MAX_MEMORY_MB,
     freqs_cm,
@@ -47,6 +46,7 @@ from analytic_hessians import (  # noqa: E402  (the corpus code lives in the mod
 from library_log import PYSCF_LOG_NAME  # noqa: E402
 from pyscf import lib  # noqa: E402
 from pyscf.geomopt import geometric_solver  # noqa: E402
+from vibrations import signed_cm  # noqa: E402
 
 LABEL_XC = dict(FUNCTIONALS)["b3lyp"]
 LABEL_GRID = "99,590"                  # analytic_hessians.py's default grid: the labels are computed there
@@ -93,7 +93,7 @@ def lowest_mode(H_projected: np.ndarray, masses: np.ndarray) -> tuple[float, np.
     w, V = np.linalg.eigh(H_projected / np.outer(sm, sm))
     vib = np.argsort(np.abs(w))[N_TRANS_ROT:]
     k = vib[np.argmin(w[vib])]
-    freq = float(np.sign(w[k]) * np.sqrt(abs(w[k]) / AMU2AU) * AU2CM)
+    freq = float(signed_cm(w[k] / AMU2AU))
     reference = float(vib_only(freqs_cm(H_projected, masses))[0])
     if abs(freq - reference) > MODE_CHECK_TOL_CM:
         raise RuntimeError(f"lowest frequency {freq:.6f} by the eigenvectors, {reference:.6f} by freqs_cm")

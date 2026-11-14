@@ -14,6 +14,7 @@ sys.path.insert(0, str(PLAN / "modules" / "05_support_predictor" / "corpus"))
 pytest.importorskip("pyscf")
 pytest.importorskip("geometric")
 RLS = pytest.importorskip("reoptimise_at_label_settings")
+AMU2AU, HARTREE2CM = (pytest.importorskip("constants").AMU2AU, pytest.importorskip("constants").HARTREE2CM)
 AH = pytest.importorskip("analytic_hessians")
 
 # water slightly off its B3LYP/6-31G* minimum, so the optimisation has work to do
@@ -41,7 +42,7 @@ def _hessian_with_lowest(freq_cm: float) -> tuple[np.ndarray, np.ndarray]:
     rng = np.random.default_rng(0)
     Q, _ = np.linalg.qr(rng.normal(size=(9, 9)))
     freqs = np.array([0.0] * 6 + [freq_cm, 1600.0, 3700.0])
-    w = np.sign(freqs) * (freqs / RLS.AU2CM) ** 2 * RLS.AMU2AU
+    w = np.sign(freqs) * (freqs / HARTREE2CM) ** 2 * AMU2AU
     sm = np.sqrt(np.repeat(masses, 3))
     return (Q @ np.diag(w) @ Q.T) * np.outer(sm, sm), masses
 

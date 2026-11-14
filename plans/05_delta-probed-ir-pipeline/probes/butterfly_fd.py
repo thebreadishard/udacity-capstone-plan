@@ -43,7 +43,6 @@ CORPUS_CODE = Path(__file__).resolve().parents[1] / "modules" / "05_support_pred
 sys.path.insert(0, str(CORPUS_CODE))
 from analytic_hessians import (  # noqa: E402  (the corpus code lives in the module's folder, not on the path)
     AMU2AU,
-    AU2CM,
     FUNCTIONALS,
     MAX_MEMORY_MB,
     finish_by_newton,
@@ -55,6 +54,7 @@ from butterfly_scan import FINE_GRID, LABEL_GRID, write_json  # noqa: E402
 from grid_response_blocked import blocked_grid_response  # noqa: E402
 from library_log import PYSCF_LOG_NAME  # noqa: E402
 from pyscf import lib  # noqa: E402
+from vibrations import signed_cm  # noqa: E402
 
 STEPS_BOHR = (0.01, 0.02)      # the largest atomic displacement; the scan's bend reaches 0.07 bohr
 STEP_AGREEMENT_CM = 2.0
@@ -109,7 +109,7 @@ class Mode:
 
 def frequency_cm(k: float) -> float:
     """A mass-weighted curvature (hartree / (bohr^2 me)) as a signed frequency in cm-1."""
-    return float(np.sign(k) * np.sqrt(abs(k)) * AU2CM)
+    return float(signed_cm(k))
 
 
 def rigid_basis(coords: np.ndarray, sqrt_m: np.ndarray) -> np.ndarray:

@@ -35,15 +35,16 @@ CORPUS_CODE = Path(__file__).resolve().parents[1] / "modules" / "05_support_pred
 sys.path.insert(0, str(CORPUS_CODE))
 from analytic_hessians import (  # noqa: E402  (the corpus code lives in the module's folder, not on the path)
     AMU2AU,
-    AU2CM,
     FUNCTIONALS,
     MAX_MEMORY_MB,
     labels_ks,
     labels_mol,
     software,
 )
+from constants import HARTREE2CM  # noqa: E402
 from library_log import PYSCF_LOG_NAME  # noqa: E402
 from pyscf import lib  # noqa: E402
+from vibrations import signed_cm  # noqa: E402
 
 SCALES = (0.0, 0.5, 1.0, 1.5, 2.0, -1.0)   # multiples of the input geometry's out-of-plane part; 0 = planar, -1 = the mirror image
 LABEL_GRID = (99, 590)                     # analytic_hessians.py's grid: the labels are computed there
@@ -91,7 +92,7 @@ def mode_overlap(out_of_plane: np.ndarray, H_projected: np.ndarray, masses: np.n
     w, V = np.linalg.eigh(H_projected / np.outer(sm, sm))
     vib = np.argsort(np.abs(w))[6:]
     k = vib[np.argmin(w[vib])]
-    freq = float(np.sign(w[k]) * np.sqrt(abs(w[k])) * AU2CM)
+    freq = float(signed_cm(w[k]))
     q = out_of_plane.ravel() * sm
     cosine = float(abs(q @ V[:, k]) / np.linalg.norm(q))
     d = out_of_plane.ravel()
@@ -172,7 +173,7 @@ def main(argv: list[str] | None = None) -> None:
     with np.load(cfg.hessian_file) as z:
         freq, cosine, harmonic = mode_overlap(out_of_plane, z["H_projected"], np.asarray(geometry["masses_amu"], dtype=float))
     print(f"(BFS) {cfg.molecule.name}: largest height {np.abs(out_of_plane).max():.4f} bohr; lowest {cfg.xc_tag} mode {freq:.3f} cm-1, "
-          f"cosine with the out-of-plane part {cosine:.3f}; harmonic dE(1) {harmonic * AU2CM:+.4f} cm-1", flush=True)
+          f"cosine with the out-of-plane part {cosine:.3f}; harmonic dE(1) {harmonic * HARTREE2CM:+.4f} cm-1", flush=True)
     if cfg.dry_run:
         with open(os.devnull, "w", encoding="utf-8") as quiet:
             mol = labels_mol({**geometry, "coords_bohr": planar.tolist()}, quiet, max_memory=cfg.max_memory_mb)
@@ -184,12 +185,12 @@ def main(argv: list[str] | None = None) -> None:
         energies = {g: scan_grid(geometry, planar, out_of_plane, cfg, g, lib_log) for g in cfg.grids}
     call, noise = verdict(energies)
     record = {"molecule": cfg.molecule.name, "xc": cfg.xc_tag, "scales": list(SCALES), "lowest_mode_cm": freq, "cosine": cosine,
-              "harmonic_dE1_cm": harmonic * AU2CM, "noise_cm": noise * AU2CM, "verdict": call, "software": software(),
-              "dE_cm": {f"{g[0]},{g[1]}": {f"{s:+.1f}": (e - en[0.0]) * AU2CM for s, e in en.items()} for g, en in energies.items()}}
+              "harmonic_dE1_cm": harmonic * HARTREE2CM, "noise_cm": noise * HARTREE2CM, "verdict": call, "software": software(),
+              "dE_cm": {f"{g[0]},{g[1]}": {f"{s:+.1f}": (e - en[0.0]) * HARTREE2CM for s, e in en.items()} for g, en in energies.items()}}
     write_json(cfg.out / "scan.json", record)
     for g, row in record["dE_cm"].items():
         print(f"(BFS) dE (cm-1) at {g}: " + "  ".join(f"{s} {v:+.4f}" for s, v in row.items()), flush=True)
-    print(f"(BFS) verdict {call}, noise {noise * AU2CM:.4f} cm-1", flush=True)
+    print(f"(BFS) verdict {call}, noise {noise * HARTREE2CM:.4f} cm-1", flush=True)
 
 
 if __name__ == "__main__":

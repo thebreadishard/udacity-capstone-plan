@@ -29,7 +29,9 @@ ROOT = os.path.abspath(os.path.join(PLAN, "..", ".."))
 STATE = os.path.join(PLAN, "probes", "watch_state", "test_suites.json")
 SYSTEM_PY = r"C:\Users\thebr\AppData\Local\Programs\Python\Python314\python.exe"   # torch, rdkit (memory 'Python interpreters on the laptop')
 VENV_PY = os.path.join(ROOT, ".venv", "Scripts", "python.exe")                     # LangGraph, no torch: module 07
-WSL_PY = "~/qc05/bin/python"                                                        # pyscf
+WSL_PY = "~/qc215/bin/python"   # pyscf 2.15.0, what the label route and the grid-response code run on (14 Nov 2026:
+                                # qc05 carries 2.14.0, which lacks the private name grid_response_blocked.py follows, so
+                                # five files errored at collection and the suite reported FAIL without running)
 STALE_HOURS = 48
 TIMEOUT_S = 1800
 COLUMNS = "400"            # pytest cuts its short summary to the terminal width (80 when there is none): a long test id lost its message

@@ -21,10 +21,16 @@ from collections.abc import Callable, Iterator
 from typing import Any
 
 import numpy as np
+import pyscf
 from pyscf import gto
 from pyscf.dft import gen_grid, numint, radi
 from pyscf.grad import rks as rks_grad
-from pyscf.grad.rks import _d1_dot_, _gga_grad_sum_, _grid_response_reciprocal
+
+try:   # the Stratmann branch's helper arrived in pyscf 2.15.0; this module follows that code line for line
+    from pyscf.grad.rks import _d1_dot_, _gga_grad_sum_, _grid_response_reciprocal
+except ImportError as exc:
+    raise ImportError("grid_response_blocked follows pyscf's grid-response code line for line and needs pyscf 2.15.0 or newer; "
+                      f"this environment has {pyscf.__version__}") from exc
 
 MEMORY_FRACTION = 0.5          # of max_memory for one block's arrays; the rest is the caller's (density matrix, vmat, the AO screen)
 SUPPORTED_XC = ("LDA", "GGA")
