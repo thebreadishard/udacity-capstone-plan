@@ -23,11 +23,16 @@ driver) and `probes/hessian_grid_response_fd.py` (one displaced point). The labe
 
 ## 3. The shape of the change
 
-**One implementation, in the production folder.** A new module `modules/05_support_predictor/corpus/low_mode_repair.py` holds what is
-now split over the three probe files: the projected vibrational modes, the merged low-mode directions, the displaced grid-response
-gradient, and the patched column. `probes/low_mode_patch.py` and `probes/hessian_grid_response_fd.py` then import from it instead of
-carrying their own copies, so the arithmetic exists once (CLAUDE.md, *One implementation of every constant and formula*). The corpus
-folder keeps importing nothing outside itself.
+**One implementation, in the production folder.** Two new leaf modules hold what was split over the probe files:
+`corpus/vibrations.py` for the arithmetic (the rigid motions, a curvature as a signed frequency, the modes, the merged low-mode
+directions, the step, the measured column, the patched Hessian) and `corpus/constants.py` for the two physical constants it needs.
+Both are numpy only, so importing them costs no pyscf, and the probes — `low_mode_patch.py`, `hessian_grid_response_fd.py` and
+`qc_common.py` — import from them instead of carrying their own copies (CLAUDE.md, *One implementation of every constant and
+formula*). The corpus folder keeps importing nothing outside itself. The measurement that produces the columns stays beside the SCF
+in `analytic_hessians.py`, which avoids a cycle between it and the arithmetic.
+
+*Written as `low_mode_repair.py` in the first draft of this note: the pieces turned out to be general (`project_tr` carried its own
+copy of the rigid motions, `qc_common` a second one), so the module is named for what it holds.*
 
 **The trigger is measured, not chosen.** The repair runs when a projected vibrational mode of *either* label falls inside
 |ω| < `LOW_MODE_CM` = 20.0 cm⁻¹. Above that the measured change stays under 0.5 cm⁻¹; below it reaches 6. TASKS 218 asks whether the
