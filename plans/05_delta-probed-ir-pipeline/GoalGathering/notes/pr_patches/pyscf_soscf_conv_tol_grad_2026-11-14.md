@@ -5,10 +5,20 @@ The second order SCF solver inherits `conv_tol_grad` from the object it decorate
 at hand, where its attainable orbital gradient is limited by the numerical noise of the integrals and, for KS methods, of the
 exchange-correlation grid. The solver then spends all of `max_cycle` and reports no convergence although the energy has settled.
 
-How we ran into it: a 60-atom PAH (C42H18), B3LYP/6-31G\* on a (99,590) grid, `conv_tol = 1e-11` and `conv_tol_grad = 1e-8` set for the
-DIIS run, then `mf.newton()` as the fallback. The solver ran its 50 macro iterations in 2.8 hours and stopped at `|g| = 1.83e-8` with
-`delta_E = 4.5e-11`; with `conv_tol_grad` left unset on the Newton object it reaches the derived `sqrt(conv_tol)` and the plain SCF
-restart from its density then converges to the tight threshold.
+How we ran into it, twice on the same 60-atom PAH (C42H18, B3LYP and ωB97X/6-31G\* on a (99,590) grid, `conv_tol = 1e-11` and
+`conv_tol_grad = 1e-8` set for the DIIS run, then `mf.newton()` as the fallback):
+
+- **the gradient threshold.** The solver ran its 50 macro iterations in 2.8 hours and stopped at `|g| = 1.83e-8` with
+  `delta_E = 4.5e-11`. With `conv_tol_grad` left unset on the Newton object it reaches the derived `sqrt(conv_tol)` in a few macro
+  iterations, and the plain SCF restart from its density then converges.
+- **the energy threshold**, on the other functional, where that remedy cannot help. The macro iterations show the calculation's own
+  floor: `delta_E` oscillating at 1.0 to 1.4e-10 with the sign flipping and `|g|` flat at 2.75e-8. `conv_tol = 1e-11` is below that
+  floor, so neither solver can ever report convergence, and `conv_tol_grad = None` makes no difference because the unmet criterion is
+  the energy. Only raising `conv_tol` to something the calculation can reach helps, and unlike `conv_tol_grad` it has no derived
+  default to fall back on.
+
+Both cases cost us hours of a run that was, physically, converged. That is why the note mentions the attributes being copied rather
+than only the one remedy.
 
 ### Change
 
