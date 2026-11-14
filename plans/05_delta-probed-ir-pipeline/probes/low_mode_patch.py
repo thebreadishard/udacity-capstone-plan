@@ -23,79 +23,22 @@ from __future__ import annotations
 
 import argparse
 import json
-from dataclasses import dataclass
+import sys
 from pathlib import Path
 
 import numpy as np
-from qc_common import AMU2AU, rigid_basis, signed_cm, write_atomic
+from qc_common import write_atomic
 
-LOW_MODE_CM = 20.0          # TASKS 201 step 2: above ≈ 20 cm⁻¹ the measured change stays under 0.5 cm⁻¹; below it reaches 6 cm⁻¹
-SUBSPACE_KEEP = 0.3         # a merged direction is kept when its singular value in the union of both functionals' low modes exceeds this
-LABEL_TAGS = ("b3lyp", "wb97x")   # the two label functionals, the corpus files' tags
-STEP_BOHR = 0.01            # the largest atomic displacement of a step, as option 3 (0.01 and 0.02 agreed within 0.15 cm⁻¹ at the fine grid)
-
-
-@dataclass(frozen=True)
-class Modes:
-    """A Hessian's vibrational modes: signed frequencies (cm⁻¹, ascending) and mass-weighted vectors (3N, 3N−6) orthogonal to the rigid
-    motions."""
-
-    omega_cm: np.ndarray
-    vectors: np.ndarray
+CORPUS_CODE = Path(__file__).resolve().parents[1] / "modules" / "05_support_predictor" / "corpus"
+sys.path.insert(0, str(CORPUS_CODE))
+from vibrations import (  # noqa: E402  (the arithmetic lives beside the label route that runs it now: TASKS 216)
+    LABEL_TAGS,
+    LOW_MODE_CM,
+    low_mode_directions,
+    vibrational_modes,
+)
 
 
-def mass_weights(masses_amu: np.ndarray) -> np.ndarray:
-    """√m per Cartesian coordinate in electron masses (3N,)."""
-    return np.sqrt(np.repeat(np.asarray(masses_amu, float) * AMU2AU, 3))
-
-
-def vibrational_modes(H: np.ndarray, masses_amu: np.ndarray, coords_bohr: np.ndarray) -> Modes:
-    """The vibrational modes of a Cartesian Hessian (hartree/bohr²) in the space orthogonal to the mass-weighted rigid motions."""
-    sm = mass_weights(masses_amu)
-    rigid = rigid_basis(np.asarray(masses_amu, float), np.asarray(coords_bohr, float))
-    full, _ = np.linalg.qr(np.hstack([rigid, np.eye(len(sm))]))
-    basis = full[:, rigid.shape[1]:]
-    Hmw = 0.5 * (H + H.T) / np.outer(sm, sm)
-    w, Y = np.linalg.eigh(basis.T @ Hmw @ basis)
-    return Modes(np.array([signed_cm(k) for k in w]), basis @ Y)
-
-
-def low_mode_directions(mode_sets: list[Modes], below_cm: float = LOW_MODE_CM) -> np.ndarray:
-    """One orthonormal set (3N, k) spanning every mode below below_cm in any of the given Hessians; (3N, 0) when there is none."""
-    low = [m.vectors[:, np.abs(m.omega_cm) < below_cm] for m in mode_sets]
-    stacked = np.hstack(low)
-    if stacked.shape[1] == 0:
-        return stacked
-    U, s, _ = np.linalg.svd(stacked, full_matrices=False)
-    return U[:, s > SUBSPACE_KEEP]
-
-
-def displacement(direction: np.ndarray, masses_amu: np.ndarray, step_bohr: float = STEP_BOHR) -> tuple[np.ndarray, float]:
-    """The Cartesian step (N, 3) bohr whose largest atomic displacement is step_bohr along a mass-weighted direction, and its length q
-    in the mass-weighted coordinate (bohr me^1/2)."""
-    d = (direction / mass_weights(masses_amu)).reshape(-1, 3)
-    q = step_bohr / float(np.linalg.norm(d, axis=1).max())
-    return q * d, q
-
-
-def column(gradient_plus: np.ndarray, gradient_minus: np.ndarray, q: float, masses_amu: np.ndarray) -> np.ndarray:
-    """The mass-weighted Hessian column H u from central differences of Cartesian gradients (hartree/bohr) at ± q along u."""
-    return (np.ravel(gradient_plus) - np.ravel(gradient_minus)) / mass_weights(masses_amu) / (2 * q)
-
-
-def patched_hessian(H: np.ndarray, masses_amu: np.ndarray, U: np.ndarray, C: np.ndarray) -> np.ndarray:
-    """The Cartesian Hessian with its mass-weighted rows and columns along U replaced by the measured columns C (both (3N, k)); raises when
-    U is not orthonormal or the shapes differ."""
-    if U.shape != C.shape:
-        raise ValueError(f"directions {U.shape} and columns {C.shape} differ in shape")
-    if U.shape[1] and np.abs(U.T @ U - np.eye(U.shape[1])).max() > 1e-10:
-        raise ValueError("the directions are not orthonormal")
-    sm = mass_weights(masses_amu)
-    Hmw = 0.5 * (H + H.T) / np.outer(sm, sm)
-    Q = np.eye(len(sm)) - U @ U.T
-    S = 0.5 * (U.T @ C + C.T @ U)
-    patched = Q @ Hmw @ Q + C @ U.T + U @ C.T - U @ S @ U.T
-    return 0.5 * (patched + patched.T) * np.outer(sm, sm)
 def read_label(molecule_dir: Path) -> tuple[dict, dict[str, np.ndarray]]:
     """A corpus folder's geometry.json and its two analytic label Hessians (H_raw, hartree/bohr²) by functional tag."""
     geometry = json.loads((molecule_dir / "geometry.json").read_text(encoding="utf-8"))

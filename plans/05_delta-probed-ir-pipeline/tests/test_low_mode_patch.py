@@ -1,81 +1,93 @@
-"""probes/low_mode_patch.py (TASKS 201 step 3): the patch recovers a Hessian exactly when the label's error lies along the directions, and
-leaves it untouched outside them; the low-mode directions of two functionals merge into one orthonormal set; a displacement's largest
-atomic step and the central-difference column are exact on a quadratic energy; bad inputs are refused."""
+"""probes/low_mode_patch.py — what the probe owns once the arithmetic lives in the corpus (TASKS 201, 216).
+
+The formulas moved to `modules/05_support_predictor/corpus/vibrations.py` on 14 November 2026, where `tests/test_vibrations.py`
+pins them; what stays here is the probe's own job: reading a corpus folder's two analytic labels, finding the molecules whose
+labels carry a soft mode, and counting the directions. That job had no test before the move. numpy only.
+"""
+from __future__ import annotations
+
+import json
 import sys
 from pathlib import Path
 
 import numpy as np
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "probes"))
-import low_mode_patch as L
+PLAN = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(PLAN / "probes"))
+sys.path.insert(0, str(PLAN / "modules" / "05_support_predictor" / "corpus"))
+import low_mode_patch as L  # noqa: E402
+import vibrations as V  # noqa: E402
+from constants import AMU2AU, HARTREE2CM  # noqa: E402
 
-MASSES = np.array([12.0, 12.0, 1.008, 1.008, 14.003])
-RNG = np.random.default_rng(7)
-COORDS = RNG.normal(scale=2.0, size=(5, 3))
-
-
-def _hessian(seed=1):
-    A = np.random.default_rng(seed).normal(size=(15, 15))
-    return 0.02 * (A @ A.T) / 15
+MASSES = [15.99491461956, 1.00782503207, 1.00782503207]
+COORDS = [[0.0, 0.0, 0.0], [0.0, -1.4305, 1.1093], [0.0, 1.4305, 1.1093]]
 
 
-def test_vibrational_modes_are_orthogonal_to_the_rigid_motions():
-    m = L.vibrational_modes(_hessian(), MASSES, COORDS)
-    assert m.vectors.shape == (15, 9) and np.all(np.diff(m.omega_cm) >= 0)
-    rigid = L.rigid_basis(MASSES, COORDS)
-    np.testing.assert_allclose(rigid.T @ m.vectors, 0.0, atol=1e-10)
+def hessian_with(omega_cm: list[float]) -> np.ndarray:
+    """A water Hessian whose three vibrational frequencies are the ones given (cm⁻¹), on a fixed vibrational basis."""
+    masses, coords = np.array(MASSES), np.array(COORDS)
+    basis = V.vibrational_modes(np.diag(np.arange(1.0, 10.0)), masses, coords).vectors
+    curvature = np.sign(omega_cm) * (np.asarray(omega_cm, float) / HARTREE2CM) ** 2 * AMU2AU
+    sm = np.sqrt(np.repeat(np.asarray(masses) * AMU2AU, 3))
+    return (basis @ np.diag(curvature / AMU2AU) @ basis.T) * np.outer(sm, sm)
 
 
-def test_the_patch_recovers_the_true_hessian_when_the_error_lies_along_the_directions():
-    H_true = _hessian(1)
-    sm = L.mass_weights(MASSES)
-    U = L.vibrational_modes(H_true, MASSES, COORDS).vectors[:, :2]
-    A = np.random.default_rng(3).normal(scale=1e-3, size=(15, 2))
-    E_mw = U @ A.T + A @ U.T
-    H_label = H_true + E_mw * np.outer(sm, sm)
-    C = (H_true / np.outer(sm, sm)) @ U
-    np.testing.assert_allclose(L.patched_hessian(H_label, MASSES, U, C), H_true, atol=1e-12)
+def write_molecule(folder: Path, omega_by_tag: dict[str, list[float]]) -> None:
+    """A corpus folder as the probe expects it: a geometry and one analytic label file per functional."""
+    folder.mkdir(parents=True, exist_ok=True)
+    (folder / "geometry.json").write_text(json.dumps(dict(symbols=["O", "H", "H"], coords_bohr=COORDS, masses_amu=MASSES,
+                                                          charge=0, multiplicity=1)), encoding="utf-8")
+    for tag, omega in omega_by_tag.items():
+        np.savez(folder / f"hessian_{tag}_analytic.npz", H_raw=hessian_with(omega), freq_cm=np.zeros(9))
 
 
-def test_the_patch_leaves_the_label_alone_outside_the_directions():
-    H = _hessian(2)
-    sm = L.mass_weights(MASSES)
-    modes = L.vibrational_modes(H, MASSES, COORDS)
-    U = modes.vectors[:, :1]
-    C = (H / np.outer(sm, sm)) @ U + 1e-3 * U          # a measured curvature 1e-3 above the label's along U
-    P = L.patched_hessian(H, MASSES, U, C)
-    rest = modes.vectors[:, 1:]
-    Hmw, Pmw = H / np.outer(sm, sm), P / np.outer(sm, sm)
-    np.testing.assert_allclose(rest.T @ Pmw @ rest, rest.T @ Hmw @ rest, atol=1e-12)
-    assert float(U[:, 0] @ Pmw @ U[:, 0]) == pytest.approx(float(U[:, 0] @ Hmw @ U[:, 0]) + 1e-3, rel=1e-9)
+def test_read_label_gives_the_geometry_and_both_hessians(tmp_path: Path) -> None:
+    write_molecule(tmp_path / "A_1", {tag: [12.0, 1600.0, 3700.0] for tag in V.LABEL_TAGS})
+    geometry, hessians = L.read_label(tmp_path / "A_1")
+    assert geometry["symbols"] == ["O", "H", "H"]
+    assert set(hessians) == set(V.LABEL_TAGS)
+    assert all(h.shape == (9, 9) for h in hessians.values())
 
 
-def test_low_mode_directions_merge_the_functionals():
-    H1 = _hessian(4)
-    modes1 = L.vibrational_modes(H1, MASSES, COORDS)
-    threshold = float(abs(modes1.omega_cm[1])) + 1e-6           # the two lowest modes of the first Hessian
-    U = L.low_mode_directions([modes1, modes1], below_cm=threshold)
-    assert U.shape == (15, 2)
-    np.testing.assert_allclose(U.T @ U, np.eye(2), atol=1e-12)
-    assert L.low_mode_directions([modes1], below_cm=0.0).shape == (15, 0)
+def test_label_directions_find_the_soft_mode_and_only_that(tmp_path: Path) -> None:
+    write_molecule(tmp_path / "A_1", {tag: [12.0, 1600.0, 3700.0] for tag in V.LABEL_TAGS})
+    assert L.label_directions(tmp_path / "A_1").shape == (9, 1)
+    write_molecule(tmp_path / "A_2", {tag: [120.0, 1600.0, 3700.0] for tag in V.LABEL_TAGS})
+    assert L.label_directions(tmp_path / "A_2").shape[1] == 0
 
 
-def test_displacement_and_column_are_exact_on_a_quadratic_energy():
-    H = _hessian(5)
-    u = L.vibrational_modes(H, MASSES, COORDS).vectors[:, 0]
-    step, q = L.displacement(u, MASSES, step_bohr=0.01)
-    assert float(np.linalg.norm(step, axis=1).max()) == pytest.approx(0.01)
-    sm = L.mass_weights(MASSES)
-    np.testing.assert_allclose(step.ravel() * sm, q * u, atol=1e-14)
-    g = lambda x: H @ x.ravel()  # noqa: E731  the gradient of a quadratic energy
-    np.testing.assert_allclose(L.column(g(step), g(-step), q, MASSES), (H / np.outer(sm, sm)) @ u, atol=1e-12)
+def test_one_functional_below_the_threshold_is_enough(tmp_path: Path) -> None:
+    """The directions are merged over both labels, so a mode soft in one of them is repaired in both."""
+    write_molecule(tmp_path / "A_3", {"b3lyp": [9.0, 1600.0, 3700.0], "wb97x": [120.0, 1600.0, 3700.0]})
+    assert L.label_directions(tmp_path / "A_3").shape[1] == 1
 
 
-def test_bad_inputs_are_refused():
-    H = _hessian(6)
-    U = L.vibrational_modes(H, MASSES, COORDS).vectors[:, :2]
-    with pytest.raises(ValueError, match="differ in shape"):
-        L.patched_hessian(H, MASSES, U, U[:, :1])
-    with pytest.raises(ValueError, match="orthonormal"):
-        L.patched_hessian(H, MASSES, 2 * U, U)
+def test_select_keeps_the_folders_with_a_soft_mode(tmp_path: Path) -> None:
+    molecules = tmp_path / "molecules"
+    write_molecule(molecules / "A_low", {tag: [12.0, 1600.0, 3700.0] for tag in V.LABEL_TAGS})
+    write_molecule(molecules / "A_stiff", {tag: [120.0, 1600.0, 3700.0] for tag in V.LABEL_TAGS})
+    (molecules / "A_unlabelled").mkdir()
+    assert L.select(molecules) == {"A_low": 1}
+
+
+def test_select_reads_the_threshold_it_is_given(tmp_path: Path) -> None:
+    molecules = tmp_path / "molecules"
+    write_molecule(molecules / "A_mid", {tag: [60.0, 1600.0, 3700.0] for tag in V.LABEL_TAGS})
+    assert L.select(molecules) == {}
+    assert L.select(molecules, below_cm=100.0) == {"A_mid": 1}
+
+
+def test_a_folder_without_both_labels_is_left_out(tmp_path: Path) -> None:
+    molecules = tmp_path / "molecules"
+    write_molecule(molecules / "A_half", {"b3lyp": [12.0, 1600.0, 3700.0]})
+    assert L.select(molecules) == {}
+    with pytest.raises(FileNotFoundError):
+        L.read_label(molecules / "A_half")
+
+
+def test_the_probe_takes_its_arithmetic_from_the_corpus_module() -> None:
+    """One implementation: the names the probe uses are the corpus module's own objects, not copies of them."""
+    assert L.vibrational_modes is V.vibrational_modes
+    assert L.low_mode_directions is V.low_mode_directions
+    assert L.LOW_MODE_CM == V.LOW_MODE_CM

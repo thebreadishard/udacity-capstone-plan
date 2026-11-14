@@ -19,8 +19,10 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from low_mode_patch import LOW_MODE_CM, read_label, vibrational_modes
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "modules" / "05_support_predictor" / "corpus"))
+from low_mode_patch import read_label
 from qc_common import write_atomic
+from vibrations import LOW_MODE_CM, vibrational_modes
 
 PLAN = Path(__file__).resolve().parents[1]
 CORPUS = PLAN / "modules" / "05_support_predictor" / "corpus" / "molecules"

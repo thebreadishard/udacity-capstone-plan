@@ -8,9 +8,11 @@ import numpy as np
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "probes"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "modules" / "05_support_predictor" / "corpus"))
 import low_mode_patch as L
 import low_mode_patch_check as C
-from qc_common import HARTREE2CM
+from constants import HARTREE2CM
+from vibrations import LABEL_TAGS, mass_weights, vibrational_modes
 
 MASSES = [15.99491461956, 1.00782503207, 1.00782503207]
 COORDS = [[0.0, 0.0, 0.0], [0.0, -1.4305, 1.1093], [0.0, 1.4305, 1.1093]]
@@ -18,9 +20,9 @@ COORDS = [[0.0, 0.0, 0.0], [0.0, -1.4305, 1.1093], [0.0, 1.4305, 1.1093]]
 
 def _hessian_with(omega_cm):
     """A water Hessian with the given vibrational frequencies (cm⁻¹) along a fixed vibrational basis."""
-    base = L.vibrational_modes(np.diag(np.arange(1.0, 10.0)), np.array(MASSES), np.array(COORDS)).vectors
+    base = vibrational_modes(np.diag(np.arange(1.0, 10.0)), np.array(MASSES), np.array(COORDS)).vectors
     k = (np.asarray(omega_cm) / HARTREE2CM) ** 2
-    sm = L.mass_weights(np.array(MASSES))
+    sm = mass_weights(np.array(MASSES))
     return (base @ np.diag(k) @ base.T) * np.outer(sm, sm)
 
 
@@ -28,7 +30,7 @@ def _folder(root, name, omega_label, omega_patched, omega_fd):
     for sub in ("patch", "fd", "mol"):
         (root / sub / name).mkdir(parents=True)
     (root / "mol" / name / "geometry.json").write_text(json.dumps({"masses_amu": MASSES, "coords_bohr": COORDS}), encoding="utf-8")
-    for tag in L.LABEL_TAGS:
+    for tag in LABEL_TAGS:
         np.savez(root / "patch" / name / f"hessian_{tag}_analytic_grfpatch.npz", H_raw=_hessian_with(omega_patched),
                  freq_label_vib_cm=np.array(omega_label))
         np.savez(root / "fd" / name / f"fd_hessian_{tag}.npz", H_fd=_hessian_with(omega_fd))
