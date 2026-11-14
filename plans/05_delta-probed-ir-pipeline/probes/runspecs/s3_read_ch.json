@@ -1,0 +1,13 @@
+{"name": "s3_read_ch",
+ "purpose": "TASKS 219, second half: S3's read on the CH-stretch window, with the verdict model S2b's CH read chooses, predicting coronene's and tetracene's CH stretches. Registered in GoalGathering/notes/PreRegistration_2026-11-14_CH_Stretch_Anharmonic_Read.md; what is printed follows PreRegistration_2026-11-14_Printed_Band_Position.md - the step only if it beats the harmonic position by this read's own numbers, and no licence is claimed (a -170 cm-1 correction to 3 cm-1 would be 2 %). Waits for s2b_read_ch, whose s2b_read.json it reads",
+ "host": "laptop",
+ "workdir": "probes/results_m1/labels_domain_2026-11-13",
+ "command": "bash ../../wait_then_run.sh s2b_read_ch.log '^=== \\(S2BC\\) done' -- env WINDOW=ch MARKED=exclude LABELS=probes/results_m1/labels_domain_2026-11-13 TARGETS=probes/results_m1/labels_domain_2026-11-13/S3_targets/targets.json S2B=probes/results_m1/labels_domain_2026-11-13/s2b_read_ch/s2b_read.json OUT=probes/results_m1/labels_domain_2026-11-13/s3_read_ch bash ../../s3_read.sh",
+ "sources": [{"local": "probes/s3_read.py"}, {"local": "probes/s2b_read.py"}, {"local": "probes/s2_read.py"}, {"local": "probes/s2_search.py"},
+             {"local": "probes/s2_xtb_read.py"}, {"local": "probes/s3_read.sh"}, {"local": "probes/wait_then_run.sh"}],
+ "progress": {"regex": "^\\(S3R\\) |^=== \\(S3R\\) ", "max_gap_minutes": 120, "start_regex": "^=== \\(WAIT\\) condition met"},
+ "marker_regex": "^=== \\(S3R\\) (start|done)|^=== \\(WAIT\\) condition met",
+ "end_regex": "^=== \\(S3R\\) done",
+ "threads": 4,
+ "estimate": {"hours": 1, "basis": "the mid-window S3 read's own hour (every model is fitted once on the training molecules), plus the wait for s2b_read_ch"},
+ "memory": {"peak_gb": 3.0, "basis": "the mid-window S3 read's own: one CPU python with torch, the molecules' mode arrays under 100 MB"}}

@@ -31,11 +31,14 @@ from s2_read import (  # noqa: E402
     FAMILIES,
     LINE_LICENSE,
     WINDOW,
+    WINDOWS,
     XTB_KEY,
     ReadOptions,
+    add_window_argument,
     apply_scope,
     curve,
     fit_predict,
+    in_window,
     load_selection,
     rms,
     verdict,
@@ -75,10 +78,6 @@ def attach_xtb(rec_g: dict, rec_x: dict, q_g: np.ndarray, q_x: np.ndarray) -> di
             "vpt2_marked": marked, "vpt2_checked": bool(rec_g["vpt2_checked"] and rec_x["vpt2_checked"])}
 
 
-def window(rec: dict) -> np.ndarray:
-    return (rec["omega"] >= WINDOW[0]) & (rec["omega"] <= WINDOW[1])
-
-
 def config_predictor(cfg: Config) -> Callable[[dict, dict], tuple[np.ndarray, np.ndarray, int]]:
     """One search configuration in s2_read.curve's 'b' slot; route (c) and the unseen-family count as route (b) has them (an unseen family's
     modes get the training mean, as route (b) does)."""
@@ -94,14 +93,15 @@ def config_predictor(cfg: Config) -> Callable[[dict, dict], tuple[np.ndarray, np
 predict_x1 = config_predictor(X1)      # x1: the FX ridge
 
 
-def x0_read(by_scaf: dict) -> dict:
+def x0_read(by_scaf: dict, window: tuple[float, float] = WINDOW) -> dict:
     """Δ_xtb as the prediction, per family over the window modes: rms, Pearson r, and route (c)'s leave-one-scaffold-out rms on the same modes."""
     from s2_read import loso
-    t, _, c, f, _ = loso(by_scaf)
+    t, _, c, f, _ = loso(by_scaf, window=window)
     mols = [m for ms in by_scaf.values() for m in ms]
-    truth = np.concatenate([m["delta"][window(m)] for m in mols])
-    pred = np.concatenate([m[XTB_KEY][window(m)] for m in mols])
-    fam = np.concatenate([m["family"][window(m)] for m in mols])
+    keep = [in_window(m["omega"], window) for m in mols]
+    truth = np.concatenate([m["delta"][w] for m, w in zip(mols, keep, strict=True)])
+    pred = np.concatenate([m[XTB_KEY][w] for m, w in zip(mols, keep, strict=True)])
+    fam = np.concatenate([m["family"][w] for m, w in zip(mols, keep, strict=True)])
     out = {}
     for fa in FAMILIES:
         sel = fam == fa
@@ -113,7 +113,7 @@ def x0_read(by_scaf: dict) -> dict:
     return out
 
 
-def build(g_by_scaf: dict, x_by_id: dict, modes: dict, scope: str) -> tuple[dict, dict]:
+def build(g_by_scaf: dict, x_by_id: dict, modes: dict, scope: str, window: tuple[float, float] = WINDOW) -> tuple[dict, dict]:
     """The scoped G molecules that have an xtb force field, with Δ_xtb; modes without an xtb partner dropped. Returns (by scaffold, counts)."""
     counts = {"molecules_without_xtb": [], "modes_without_partner": 0, "window_modes_without_partner": 0}
     out = {}
@@ -127,17 +127,18 @@ def build(g_by_scaf: dict, x_by_id: dict, modes: dict, scope: str) -> tuple[dict
             if scope != "all":
                 rec = apply_scope(rec, "large_amplitude")
             counts["modes_without_partner"] += int(rec["no_xtb"].sum())
-            counts["window_modes_without_partner"] += int((rec["no_xtb"] & window(rec)).sum())
+            counts["window_modes_without_partner"] += int((rec["no_xtb"] & in_window(rec["omega"], window)).sum())
             rec = apply_scope(rec, "no_xtb")
             out.setdefault(scaf, []).append(rec)
     return out, counts
 
 
-def read_scope(by_scaf: dict) -> dict:
+def read_scope(by_scaf: dict, window: tuple[float, float] = WINDOW) -> dict:
     """x0, x1 (curve and verdict) and x2 (nested) on one scope's molecules."""
-    rows = curve(by_scaf, predict=predict_x1)
+    rows = curve(by_scaf, predict=predict_x1, window=window)
     x1_family = {fa: {**v, "licensed": bool(v["b"] <= LINE_LICENSE)} for fa, v in rows["all"]["per_family"].items()}
-    return {"x0": x0_read(by_scaf), "x1": {"curve": rows, "verdict": verdict(rows), "per_family": x1_family}, "x2": nested(by_scaf, X2_GRID)}
+    return {"x0": x0_read(by_scaf, window), "x1": {"curve": rows, "verdict": verdict(rows), "per_family": x1_family},
+            "x2": nested(by_scaf, X2_GRID, window=window)}
 
 
 def load_modes(ids_dirs: dict) -> dict:
@@ -174,20 +175,24 @@ def main() -> int:
     ap.add_argument("--xtb-root", required=True)
     ap.add_argument("--xtb-gvpt2-dir", required=True)
     ap.add_argument("--out", required=True)
+    add_window_argument(ap)
     a = ap.parse_args()
-    extra = dict(e.split("=", 1) for e in a.extra)
-    g_by_scaf, used_g, excluded_g = load_selection(a.root, a.selection, ReadOptions(setting="G", extra=extra, gvpt2_dir=a.gvpt2_dir))
-    x_by_scaf, _used_x, excluded_x = load_selection(a.xtb_root, a.selection, ReadOptions(setting="X", gvpt2_dir=a.xtb_gvpt2_dir))
+    extra, window = dict(e.split("=", 1) for e in a.extra), WINDOWS[a.window]
+    g_by_scaf, used_g, excluded_g = load_selection(
+        a.root, a.selection, ReadOptions(setting="G", extra=extra, gvpt2_dir=a.gvpt2_dir, window=window))
+    x_by_scaf, _used_x, excluded_x = load_selection(
+        a.xtb_root, a.selection, ReadOptions(setting="X", gvpt2_dir=a.xtb_gvpt2_dir, window=window))
     x_by_id = {m["id"]: m for ms in x_by_scaf.values() for m in ms}
     dirs = {m["id"]: (m["dir"], x_by_id[m["id"]]["dir"]) for ms in g_by_scaf.values() for m in ms if m["id"] in x_by_id}
     modes = load_modes(dirs)
     res = {"registration": "PreRegistration_2026-10-14_S2_Anharmonic_Shift.md, amendment 4", "min_overlap": MIN_OVERLAP,
-           "molecules_g": len(used_g), "excluded_g": excluded_g, "excluded_xtb": excluded_x, "scopes": {}}
+           "molecules_g": len(used_g), "excluded_g": excluded_g, "excluded_xtb": excluded_x, "window": window,
+           "window_name": a.window, "scopes": {}}
     for scope in READ_SCOPES:
-        by_scaf, counts = build(g_by_scaf, x_by_id, modes, scope)
+        by_scaf, counts = build(g_by_scaf, x_by_id, modes, scope, window)
         if len(by_scaf) < 2:
             raise SystemExit(f"scope {scope}: {len(by_scaf)} scaffold(s) with xtb partners — no leave-one-scaffold-out read")
-        res["scopes"][scope] = {"counts": counts, "scaffolds": len(by_scaf), "read": read_scope(by_scaf)}
+        res["scopes"][scope] = {"counts": counts, "scaffolds": len(by_scaf), "read": read_scope(by_scaf, window)}
     os.makedirs(a.out, exist_ok=True)
     write_atomic(os.path.join(a.out, "s2_xtb_read.json"), json.dumps(res, indent=1, default=float))
     lines = report(res)

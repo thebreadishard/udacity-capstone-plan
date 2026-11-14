@@ -26,11 +26,14 @@ sys.path.insert(0, HERE)
 from s2_read import (  # noqa: E402
     FAMILIES,
     LINE_LICENSE,
+    WINDOWS,
     XTB_KEY,
+    add_window_argument,
     apply_marked_policy,
     concat,
     fit_predict,
     rms,
+    window_size,
     write_atomic,
 )
 from s2_xtb_read import X2_GRID, build, config_predictor, load_modes, predict_x1  # noqa: E402
@@ -134,14 +137,15 @@ def family_read(rows: dict[str, dict[str, Any]], verdicts: dict[str, dict[str, A
     return out
 
 
-def read_targets(train_by_scaf: dict, targets_by_scaf: dict, s2b_main: dict[str, Any], notes: dict[str, dict[str, Any]]) -> dict[str, Any]:
+def read_targets(train_by_scaf: dict, targets_by_scaf: dict, s2b_main: dict[str, Any], notes: dict[str, dict[str, Any]],
+                 window: tuple[float, float]) -> dict[str, Any]:
     """Every target's rows with each family's models (x2* at S2b's choice for the family), then the per-family read."""
-    train = concat([m for ms in train_by_scaf.values() for m in ms])
+    train = concat([m for ms in train_by_scaf.values() for m in ms], window)
     verdicts, choice = s2b_main["verdicts"], s2b_main.get("x2_choice", {})
     rows = {}
     for mols in targets_by_scaf.values():
         for m in mols:
-            test = concat([m])
+            test = concat([m], window)
             pair_omega = notes[m["id"]]["pair_omega"]
             per_family = {fa: target_rows(train, test, predictors(choice.get(fa)), pair_omega) for fa in FAMILIES}
             base = per_family[FAMILIES[0]]
@@ -203,13 +207,13 @@ def drop_marked(by_scaf: dict, policy: str) -> tuple[dict, dict[str, int]]:
     return out, dropped
 
 
-def load_scope(sets_path: str, policy: str) -> tuple[dict, dict, dict, dict[str, int]]:
+def load_scope(sets_path: str, policy: str, window: tuple[float, float]) -> tuple[dict, dict, dict, dict[str, int]]:
     """A sets file's molecules in the main scope with their xtb partners, the build counts, the exclusions, and the modes each
     molecule lost to `policy` (TASKS 207)."""
-    parts = {s.name: load_set(s) for s in read_sets(sets_path)}
+    parts = {s.name: load_set(s, window) for s in read_sets(sets_path)}
     g_by_scaf, x_by_id = merge(parts)
     dirs = {m["id"]: (m["dir"], x_by_id[m["id"]]["dir"]) for ms in g_by_scaf.values() for m in ms if m["id"] in x_by_id}
-    by_scaf, counts = build(g_by_scaf, x_by_id, load_modes(dirs), MAIN_SCOPE)
+    by_scaf, counts = build(g_by_scaf, x_by_id, load_modes(dirs), MAIN_SCOPE, window)
     excluded = {i: f"{name}: {w}" for name, p in parts.items() for i, w in {**p["excluded_g"], **p["excluded_x"]}.items()}
     by_scaf, dropped = drop_marked(by_scaf, policy)
     return by_scaf, counts, excluded, dropped
@@ -223,16 +227,23 @@ def main() -> int:
     ap.add_argument("--out", required=True)
     ap.add_argument("--marked", required=True, choices=MARKED_POLICIES,
                     help="what to do with a mode outside VPT2's domain (TASKS 207): refuse the read, leave it out, or keep it")
+    add_window_argument(ap)
     a = ap.parse_args()
+    window = WINDOWS[a.window]
     with open(a.s2b_read, encoding="utf-8") as fh:
         s2b_main = json.load(fh)["scopes"][MAIN_SCOPE]["read"]
-    train_by_scaf, train_counts, excl_train, dropped_train = load_scope(a.sets, a.marked)
-    targets_by_scaf, target_counts, excl_targets, dropped_targets = load_scope(a.targets, a.marked)
+    train_by_scaf, train_counts, excl_train, dropped_train = load_scope(a.sets, a.marked, window)
+    targets_by_scaf, target_counts, excl_targets, dropped_targets = load_scope(a.targets, a.marked, window)
     if not targets_by_scaf:
         raise SystemExit("no target with a G label and an xtb force field: nothing to read")
+    size = {"train": window_size(train_by_scaf, window), "targets": window_size(targets_by_scaf, window)}
+    for part, s in size.items():
+        print(f"(S3R) {part}: {s['molecules']} force fields, {s['modes']} modes in the window ("
+              + ", ".join(f"{fa} {n}" for fa, n in s["per_family"].items()) + ")", flush=True)
     notes = label_notes(a.targets)
-    read = read_targets(train_by_scaf, targets_by_scaf, s2b_main, notes)
+    read = read_targets(train_by_scaf, targets_by_scaf, s2b_main, notes, window)
     res = {"registration": "PreRegistration_2026-11-02_S3_Route_A_Transfer.md", "scope": MAIN_SCOPE,
+           "window": window, "window_name": a.window, "size": size,
            "targets": sorted(read["rows"]), "training_scaffolds": len(train_by_scaf), "counts": {"train": train_counts, "targets": target_counts},
            "excluded": {**excl_train, **excl_targets}, "pairs": {t: r["pairs"] for t, r in read["rows"].items()},
            "label_notes": notes, "marked_policy": a.marked,

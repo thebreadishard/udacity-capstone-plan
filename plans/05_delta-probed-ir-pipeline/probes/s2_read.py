@@ -24,6 +24,7 @@ same subsets for both routes) and 'all'; per k the mean of the pooled rms over t
 """
 import argparse
 import json
+import math
 import os
 import sys
 from dataclasses import dataclass, field
@@ -39,7 +40,10 @@ from e8_cc_locality import families, mode_shares  # noqa: E402
 from dpir.vpt2_domain import marked_modes, marked_to_drop, mode_domains  # noqa: E402
 
 FAMILIES = ("CH-stretch", "CH-oop", "ring-ip", "other")
-WINDOW = (550.0, 2000.0)
+# The reading windows, cm-1. 'mid' is the registered S2/S2b/S3 window and the carried recipe; 'ch' is TASKS 219's CH-stretch
+# read, whose lower bound is the corpus's own family classifier's and which imposes no upper bound (the family decides).
+WINDOWS = {"mid": (550.0, 2000.0), "ch": (2800.0, math.inf)}
+WINDOW = WINDOWS["mid"]
 KS = (4, 6, 8, 10)
 N_SUBSETS = 20
 RIDGE = 1e-3
@@ -183,15 +187,35 @@ def fit_predict(train, test):
 XTB_KEY = "xtb"            # amendment 4: Δ_anh of the matched GFN2-xTB mode, carried when every molecule has it
 
 
-def concat(mols):
+def in_window(omega, window=WINDOW):
+    """The modes of `omega` inside a reading window, both bounds included. The one implementation: every read's filter is this one."""
+    omega = np.asarray(omega, float)
+    return (omega >= window[0]) & (omega <= window[1])
+
+
+def concat(mols, window=WINDOW):
     """The window modes of a list of molecules, stacked (with the Δ_xtb column when every molecule carries one)."""
     keys = ("omega", "delta", "family", "h", "o") + ((XTB_KEY,) if mols and all(XTB_KEY in m for m in mols) else ())
     out = {k: np.concatenate([m[k] for m in mols]) for k in keys}
-    w = (out["omega"] >= WINDOW[0]) & (out["omega"] <= WINDOW[1])
+    w = in_window(out["omega"], window)
     return {k: v[w] for k, v in out.items()}
 
 
-def loso(mols_by_scaffold, k=None, rng=None, predict=fit_predict):
+def window_size(by_scaf, window=WINDOW) -> dict:
+    """The read's own size before any model is fitted: per molecule and in all, how many modes of each family the window holds.
+    Rule 4 of the anharmonic route rule turns on this count, so every read records it."""
+    per_molecule, totals = {}, dict.fromkeys(FAMILIES, 0)
+    for mols in by_scaf.values():
+        for m in mols:
+            keep = in_window(m["omega"], window)
+            counts = {fa: int(((m["family"] == fa) & keep).sum()) for fa in FAMILIES}
+            per_molecule[m.get("id", f"mode set {len(per_molecule)}")] = counts
+            for fa, n in counts.items():
+                totals[fa] += n
+    return {"molecules": len(per_molecule), "modes": sum(totals.values()), "per_family": totals, "per_molecule": per_molecule}
+
+
+def loso(mols_by_scaffold, k=None, rng=None, predict=fit_predict, window=WINDOW):
     """One leave-one-scaffold-out pass; with k, each held-out scaffold trains on k of its training scaffolds drawn from rng. `predict`
     (train, test) → (pred_b, pred_c, unseen) is route (b)/(c)'s fit_predict unless a read passes its own (amendment 4's x1 in the 'b' slot).
     Returns pooled arrays (truth, pred_b, pred_c, family) over all held-out window modes and the unseen-family count."""
@@ -201,8 +225,8 @@ def loso(mols_by_scaffold, k=None, rng=None, predict=fit_predict):
         others = [t for t in scafs if t != s]
         if k is not None:
             others = list(rng.choice(others, size=min(k, len(others)), replace=False))
-        train = concat([m for t in others for m in mols_by_scaffold[t]])
-        test = concat(mols_by_scaffold[s])
+        train = concat([m for t in others for m in mols_by_scaffold[t]], window)
+        test = concat(mols_by_scaffold[s], window)
         if len(test["omega"]) == 0:
             continue
         b, c, u = predict(train, test)
@@ -211,6 +235,8 @@ def loso(mols_by_scaffold, k=None, rng=None, predict=fit_predict):
         pc.append(c)
         fam.append(test["family"])
         unseen += u
+    if not truth:
+        raise ValueError(f"no held-out scaffold has a mode inside the window {window} cm-1: there is nothing to read")
     return np.concatenate(truth), np.concatenate(pb), np.concatenate(pc), np.concatenate(fam), unseen
 
 
@@ -226,7 +252,7 @@ def mean_se(values):
     return float(v.mean()), float(v.std(ddof=1) / np.sqrt(v.size)) if v.size > 1 else 0.0
 
 
-def curve(mols_by_scaffold, ks=KS, n_subsets=N_SUBSETS, seed=0, predict=fit_predict):
+def curve(mols_by_scaffold, ks=KS, n_subsets=N_SUBSETS, seed=0, predict=fit_predict, window=WINDOW):
     """Amendment 1's learning curve: per k, the pooled rms of (b) and (c) as mean ± SE over the subsets, and the same per family; 'all' once.
     A k with no fewer training scaffolds than 'all' has is not a subsample (every draw is the full set) and gets no row. `predict` as in
     loso (the 'b' entries are the passed predictor's)."""
@@ -237,7 +263,7 @@ def curve(mols_by_scaffold, ks=KS, n_subsets=N_SUBSETS, seed=0, predict=fit_pred
         rb, rc, un = [], [], 0
         fam_b, fam_c = {fa: [] for fa in FAMILIES}, {fa: [] for fa in FAMILIES}
         for _ in range(n_subsets):
-            t, b, c, f, u = loso(mols_by_scaffold, k, rng, predict)
+            t, b, c, f, u = loso(mols_by_scaffold, k, rng, predict, window)
             rb.append(rms(b - t))
             rc.append(rms(c - t))
             un += u
@@ -250,7 +276,7 @@ def curve(mols_by_scaffold, ks=KS, n_subsets=N_SUBSETS, seed=0, predict=fit_pred
             (fb, fbs), (fc, fcs) = mean_se(fam_b[fa]), mean_se(fam_c[fa])
             per_family[fa] = {"b": fb, "b_se": fbs, "c": fc, "c_se": fcs}
         rows[str(k)] = {"b": mb, "b_se": sb, "c": mc, "c_se": sc, "unseen_family_modes": un, "per_family": per_family}
-    t, b, c, f, un = loso(mols_by_scaffold, predict=predict)
+    t, b, c, f, un = loso(mols_by_scaffold, predict=predict, window=window)
     fam_rows = {fa: {"n": int((f == fa).sum()), "b": rms((b - t)[f == fa]), "c": rms((c - t)[f == fa])} for fa in FAMILIES}
     rows["all"] = {"b": rms(b - t), "b_se": 0.0, "c": rms(c - t), "c_se": 0.0, "unseen_family_modes": un, "n_modes": len(t),
                    "per_family": fam_rows, "k": n_train}
@@ -325,6 +351,7 @@ class ReadOptions:
     switches the labels to probes/gvpt2_labels.py's <id>.json (amendment 2); scope 'no-linear-xh' drops the linear X–H modes (amendment 2),
     'no-large-amplitude' also the N–H and O–H ones (amendment 3); `features` attaches the search's per-mode features."""
     setting: str = "G"
+    window: tuple[float, float] = WINDOW
     extra: dict = field(default_factory=dict)
     gvpt2_dir: str | None = None
     scope: str = "all"
@@ -338,9 +365,17 @@ class ReadOptions:
 
 
 def options_from_args(a) -> ReadOptions:
-    """The command line's --setting/--extra/--gvpt2-dir/--scope as ReadOptions (the attributes a parser may lack take their defaults)."""
-    return ReadOptions(setting=vars(a).get("setting", "G"), extra=dict(e.split("=", 1) for e in a.extra),
+    """The command line's --setting/--extra/--gvpt2-dir/--scope/--window as ReadOptions (attributes a parser may lack take their
+    defaults; --window is added by add_window_argument)."""
+    return ReadOptions(setting=vars(a).get("setting", "G"), window=WINDOWS[vars(a).get("window", "mid")],
+                       extra=dict(e.split("=", 1) for e in a.extra),
                        gvpt2_dir=vars(a).get("gvpt2_dir"), scope=vars(a).get("scope", "all"))
+
+
+def add_window_argument(ap: argparse.ArgumentParser) -> None:
+    """--window on a read's command line, the same option in every read: a name from WINDOWS, the carried recipe as the default."""
+    ap.add_argument("--window", choices=sorted(WINDOWS), default="mid",
+                    help="the reading window: 'mid' 550-2000 cm-1 (the registered read), 'ch' 2800 cm-1 and up (TASKS 219)")
 
 
 NO_DIRECTORY = "no directory"   # the exclusion reason of a selected molecule whose folder is absent (a setup error, not a property)
@@ -349,7 +384,8 @@ NO_DIRECTORY = "no directory"   # the exclusion reason of a selected molecule wh
 def load_selection(root, selection_path, options: ReadOptions = ReadOptions()):  # noqa: B008  a frozen dataclass is an immutable default
     """The selected molecules grouped by scaffold, the used ones listed and the excluded ones with their reason (the registration's noise
     rule), read as `options` say."""
-    setting, extra, gvpt2_dir, scope, features = options.setting, options.extra, options.gvpt2_dir, options.scope, options.features
+    setting, extra, gvpt2_dir = options.setting, options.extra, options.gvpt2_dir
+    scope, features, window = options.scope, options.features, options.window
     with open(selection_path, encoding="utf-8") as fh:
         sel = json.load(fh)["selected"]
     by_scaf, used, excluded = {}, [], {}
@@ -365,7 +401,7 @@ def load_selection(root, selection_path, options: ReadOptions = ReadOptions()): 
         rec["id"], rec["dir"] = m["id"], d
         by_scaf.setdefault(m["scaffold"], []).append(rec)
         used.append({"id": m["id"], "scaffold": m["scaffold"], "planar": rec["planar"], "n_modes": len(rec["omega"]),
-                     "n_window": int(((rec["omega"] >= WINDOW[0]) & (rec["omega"] <= WINDOW[1])).sum())})
+                     "n_window": int(in_window(rec["omega"], window).sum())})
     return by_scaf, used, excluded
 
 
@@ -378,12 +414,15 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--gvpt2-dir", help="amendment 2: GVPT2 labels from probes/gvpt2_labels.py instead of the stored DVPT2 ones")
     ap.add_argument("--scope", choices=SCOPES, default="all", help="amendment 2 §2, amendment 3")
+    add_window_argument(ap)
     a = ap.parse_args()
-    by_scaf, used, excluded = load_selection(a.root, a.selection, options_from_args(a))
+    options = options_from_args(a)
+    by_scaf, used, excluded = load_selection(a.root, a.selection, options)
     if len(by_scaf) < 2:
         raise SystemExit(f"{len(by_scaf)} scaffold(s) with a usable molecule: no leave-one-scaffold-out read")
-    rows = curve(by_scaf)
-    res = {"registration": "PreRegistration_2026-10-14_S2_Anharmonic_Shift.md (+ amendment 1)", "window": WINDOW, "ridge": RIDGE,
+    rows = curve(by_scaf, window=options.window)
+    res = {"registration": "PreRegistration_2026-10-14_S2_Anharmonic_Shift.md (+ amendment 1)", "window": options.window,
+           "window_name": a.window, "ridge": RIDGE,
            "molecules": used, "excluded": excluded, "scaffolds": len(by_scaf), "curve": rows, "verdict": verdict(rows)}
     os.makedirs(a.out, exist_ok=True)
     write_atomic(os.path.join(a.out, "s2_read.json"), json.dumps(res, indent=1))

@@ -1,0 +1,12 @@
+{"name": "s2b_read_ch",
+ "purpose": "TASKS 219, registered in GoalGathering/notes/PreRegistration_2026-11-14_CH_Stretch_Anharmonic_Read.md: S2b's read, unchanged, on the CH-stretch window (2800 cm-1 and up) instead of the registered 550-2000. The CH stretches never entered S2b or S3, so the family has no verdict model, and under rule 4 of the anharmonic route rule a family without one gets no step - which would print the band an astronomer looks at first harmonic, about 170 cm-1 off. Same machinery as the registered read; the labels are the carried root labels_domain_2026-11-13 (symmetry degeneracy and the VPT2-domain marks), the most correct we have. The smoke of 14 Nov 17:5x says what the read will see: 37 force fields, 288 CH-stretch modes in training and 24 on the two targets (coronene 12, tetracene 12), so rule 4's floor of six is cleared. The mid-window read is untouched beside it",
+ "host": "laptop",
+ "workdir": "probes/results_m1/labels_domain_2026-11-13",
+ "command": "echo \"=== (S2BC) start $(date '+%F %T')\" && cd ../../.. && PYTHONUTF8=1 PYTHONUNBUFFERED=1 python probes/s2b_read.py --sets probes/results_m1/labels_domain_2026-11-13/sets.json --out probes/results_m1/labels_domain_2026-11-13/s2b_read_ch --window ch && echo \"=== (S2BC) done $(date '+%F %T')\"",
+ "sources": [{"local": "probes/s2b_read.py"}, {"local": "probes/s2_read.py"}, {"local": "probes/s2_search.py"}, {"local": "probes/s2_xtb_read.py"}],
+ "progress": {"regex": "^\\(S2BR\\) |^=== \\(S2BC\\) ", "max_gap_minutes": 120},
+ "marker_regex": "^=== \\(S2BC\\) (start|done)",
+ "end_regex": "^=== \\(S2BC\\) done",
+ "threads": 4,
+ "estimate": {"hours": 3, "basis": "the mid-window read of 12 November on the same 37 molecules took about 3 h; the CH window holds fewer modes per molecule (a PAH has about as many CH stretches as hydrogens), so this is an upper bound. It runs beside the m06 reproduction, which has six of the laptop's sixteen threads"},
+ "memory": {"peak_gb": 3.0, "basis": "the mid-window read's own: one CPU python with torch, the molecules' mode arrays under 100 MB"}}

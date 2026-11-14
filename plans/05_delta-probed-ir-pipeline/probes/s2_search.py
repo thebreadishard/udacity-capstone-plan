@@ -23,7 +23,19 @@ import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-from s2_read import FAMILIES, LINE_LICENSE, RIDGE, SCOPES, WINDOW, load_selection, options_from_args, rms, write_atomic  # noqa: E402
+from s2_read import (  # noqa: E402
+    FAMILIES,
+    LINE_LICENSE,
+    RIDGE,
+    SCOPES,
+    WINDOW,
+    add_window_argument,
+    in_window,
+    load_selection,
+    options_from_args,
+    rms,
+    write_atomic,
+)
 
 FEATURE_SETS = ("F1", "F2", "F3")
 XTB_FEATURES = "FX"                    # S2 amendment 4: F1 + Δ_xtb of the matched GFN2-xTB mode
@@ -60,12 +72,12 @@ def configs() -> list[Config]:
     return out
 
 
-def window_table(mols):
+def window_table(mols, window=WINDOW):
     """All window modes of a list of molecules: label, family, ω, h, o, then local (· × 9), prox (· × 2) and Δ_xtb where every molecule
     carries them."""
     keys = ("delta", "family", "omega", "h", "o", *(k for k in ("local", "prox", "xtb") if mols and all(k in m for m in mols)))
     out = {k: np.concatenate([m[k] for m in mols]) for k in keys}
-    w = (out["omega"] >= WINDOW[0]) & (out["omega"] <= WINDOW[1])
+    w = in_window(out["omega"], window)
     return {k: v[w] for k, v in out.items()}
 
 
@@ -149,19 +161,20 @@ def mlp_fit_predict(cfg, X, y, Xt, train_scaffolds):
     return m.predict(Xt), best_epoch
 
 
-def fit_on(cfg, by_scaf, train_scafs, test_scaf):
+def fit_on(cfg, by_scaf, train_scafs, test_scaf, window=WINDOW):
     """One configuration fitted on the window modes of `train_scafs`, evaluated on `test_scaf`'s: labels, families, predictions, epoch."""
     train_mols = [(t, m) for t in train_scafs for m in by_scaf[t]]
-    train = window_table([m for _t, m in train_mols])
-    train_scaf = np.concatenate([[t] * int(window_table([m])["omega"].size) for t, m in train_mols])
-    test = window_table(by_scaf[test_scaf])
+    train = window_table([m for _t, m in train_mols], window)
+    train_scaf = np.concatenate([[t] * int(window_table([m], window)["omega"].size) for t, m in train_mols])
+    test = window_table(by_scaf[test_scaf], window)
     pred, epoch = fit_predict(cfg, train, test, train_scaf)
     return {"truth": test["delta"], "family": test["family"], "pred": pred, "epoch": epoch}
 
 
-def loso_predictions(cfg, by_scaf, scaffolds):
+def loso_predictions(cfg, by_scaf, scaffolds, window=WINDOW):
     """Leave-one-scaffold-out over `scaffolds`: per held-out scaffold with window modes, fit_on's result."""
-    return {s: fit_on(cfg, by_scaf, [t for t in scaffolds if t != s], s) for s in scaffolds if window_table(by_scaf[s])["omega"].size}
+    return {s: fit_on(cfg, by_scaf, [t for t in scaffolds if t != s], s, window)
+            for s in scaffolds if window_table(by_scaf[s], window)["omega"].size}
 
 
 def family_rms(folds, family):
@@ -170,15 +183,15 @@ def family_rms(folds, family):
     return rms(p - t), len(t)
 
 
-def nested(by_scaf, cfgs, on_outer: Callable[[int, int], None] | None = None):
+def nested(by_scaf, cfgs, on_outer: Callable[[int, int], None] | None = None, window=WINDOW):
     """The nested read: per outer scaffold and family, the configuration chosen on the inner folds predicts the outer held-out modes.
     on_outer(k, n) is called after the k-th of n outer scaffolds (a run's progress line; the read does not depend on it)."""
     scafs = sorted(by_scaf)
     chosen, outer = {fa: [] for fa in FAMILIES}, {fa: {"truth": [], "pred": []} for fa in FAMILIES}
     for k, s in enumerate(scafs, 1):
         inner_scafs = [t for t in scafs if t != s]
-        inner = {c: loso_predictions(c, by_scaf, inner_scafs) for c in cfgs}
-        test = window_table(by_scaf[s])
+        inner = {c: loso_predictions(c, by_scaf, inner_scafs, window) for c in cfgs}
+        test = window_table(by_scaf[s], window)
         for fa in FAMILIES:
             sel = test["family"] == fa
             if not sel.any():
@@ -186,7 +199,7 @@ def nested(by_scaf, cfgs, on_outer: Callable[[int, int], None] | None = None):
             scored = [(family_rms(inner[c], fa)[0], c) for c in cfgs]
             best = min((x for x in scored if np.isfinite(x[0])), key=lambda x: x[0])[1]
             chosen[fa].append(best.name)
-            pred = fit_on(best, by_scaf, inner_scafs, s)["pred"]
+            pred = fit_on(best, by_scaf, inner_scafs, s, window)["pred"]
             outer[fa]["truth"].append(test["delta"][sel])
             outer[fa]["pred"].append(pred[sel])
         if on_outer is not None:
@@ -208,18 +221,19 @@ def main() -> int:
     ap.add_argument("--gvpt2-dir", required=True)
     ap.add_argument("--scope", choices=SCOPES, default="no-large-amplitude")
     ap.add_argument("--out", required=True)
+    add_window_argument(ap)
     a = ap.parse_args()
     opts = options_from_args(a)
     by_scaf, used, _excluded = load_selection(a.root, a.selection, type(opts)(**{**opts.__dict__, "features": True}))
     cfgs = configs()
     landscape = {}
     for c in cfgs:
-        folds = loso_predictions(c, by_scaf, sorted(by_scaf))
+        folds = loso_predictions(c, by_scaf, sorted(by_scaf), opts.window)
         epochs = [f["epoch"] for f in folds.values() if f["epoch"] is not None]
         landscape[c.name] = {fa: family_rms(folds, fa)[0] for fa in FAMILIES} | (
             {"best_epoch_max": max(epochs), "cap_hit": bool(max(epochs) > CAP_SHARE * MLP_MAX_EPOCHS)} if epochs else {})
         print(f"{c.name}: " + ", ".join(f"{fa} {v:.2f}" for fa, v in landscape[c.name].items() if fa in FAMILIES and np.isfinite(v)), flush=True)
-    result = nested(by_scaf, cfgs)
+    result = nested(by_scaf, cfgs, window=opts.window)
     res = {"amendment": "2 §3 as corrected (proximity from ω only)", "labels": "GVPT2", "scope": a.scope, "molecules": len(used),
            "scaffolds": len(by_scaf), "line": LINE_LICENSE, "nested": result, "landscape_not_a_score": landscape}
     lines = [f"# S2 search — {len(used)} molecules, {len(by_scaf)} scaffolds, GVPT2 labels, scope {a.scope}", "",

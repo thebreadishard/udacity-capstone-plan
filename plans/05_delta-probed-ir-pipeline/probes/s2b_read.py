@@ -32,7 +32,22 @@ import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-from s2_read import FAMILIES, LINE_LICENSE, N_SUBSETS, NO_DIRECTORY, ReadOptions, curve, extrapolate, fit_predict, load_selection, write_atomic  # noqa: E402
+from s2_read import (  # noqa: E402
+    FAMILIES,
+    LINE_LICENSE,
+    N_SUBSETS,
+    NO_DIRECTORY,
+    WINDOW,
+    WINDOWS,
+    ReadOptions,
+    add_window_argument,
+    curve,
+    extrapolate,
+    fit_predict,
+    load_selection,
+    window_size,
+    write_atomic,
+)
 from s2_search import Config, configs, nested  # noqa: E402
 from s2_xtb_read import MIN_OVERLAP, X2_GRID, build, config_predictor, load_modes, predict_x1, x0_read  # noqa: E402
 
@@ -66,6 +81,7 @@ class ReadPlan:
     """The registered read's settings; a test passes fewer subsets or a smaller search."""
     ks: tuple[int, ...] = CURVE_KS
     n_subsets: int = N_SUBSETS
+    window: tuple[float, float] = WINDOW
     search_configs: tuple[Config, ...] = field(default_factory=lambda: tuple(configs()))
 
     def __post_init__(self) -> None:
@@ -89,11 +105,13 @@ def read_sets(path: str) -> list[ComputedSet]:
     return sets
 
 
-def load_set(s: ComputedSet) -> dict[str, Any]:
+def load_set(s: ComputedSet, window: tuple[float, float] = WINDOW) -> dict[str, Any]:
     """A set's G molecules by scaffold (with the search's features), its xtb molecules by id, and both exclusion lists."""
-    g_by_scaf, used, excluded_g = load_selection(s.root, s.selection, ReadOptions(setting="G", extra=s.extra, gvpt2_dir=s.gvpt2_dir, features=True))
+    g_by_scaf, used, excluded_g = load_selection(
+        s.root, s.selection, ReadOptions(setting="G", extra=s.extra, gvpt2_dir=s.gvpt2_dir, features=True, window=window))
     refuse_missing_g(s.name, excluded_g)
-    x_by_scaf, _, excluded_x = load_selection(s.xtb_root, s.selection, ReadOptions(setting="X", gvpt2_dir=s.xtb_gvpt2_dir))
+    x_by_scaf, _, excluded_x = load_selection(
+        s.xtb_root, s.selection, ReadOptions(setting="X", gvpt2_dir=s.xtb_gvpt2_dir, window=window))
     return {"g": g_by_scaf, "x": {m["id"]: m for ms in x_by_scaf.values() for m in ms}, "used": used,
             "excluded_g": excluded_g, "excluded_x": excluded_x}
 
@@ -152,7 +170,7 @@ def family_rows(rows: dict[str, dict], slot: str, family: str) -> dict[str, dict
 def curves(by_scaf: dict[str, list[dict]], choice: dict[str, Config], plan: ReadPlan) -> dict[str, dict[str, dict]]:
     """Per family and curve model, its curve rows (the same subsets for every model: each curve draws from default_rng(0) in one order)."""
     def run(predict):
-        return curve(by_scaf, ks=plan.ks, n_subsets=plan.n_subsets, predict=predict)
+        return curve(by_scaf, ks=plan.ks, n_subsets=plan.n_subsets, predict=predict, window=plan.window)
     bc, x1 = run(fit_predict), run(predict_x1)
     x2 = {cfg.name: run(config_predictor(cfg)) for cfg in {c.name: c for c in choice.values()}.values()}
     out = {}
@@ -210,11 +228,12 @@ def progress(message: str) -> None:
 
 def read_scope(by_scaf: dict[str, list[dict]], plan: ReadPlan) -> dict[str, Any]:
     """Every read of one scope's molecules and the per-family verdicts."""
-    x0 = x0_read(by_scaf)
+    x0 = x0_read(by_scaf, plan.window)
     progress("x0 done")
-    x2 = nested(by_scaf, X2_GRID, on_outer=lambda k, n: progress(f"x2 nested fold {k}/{n}"))
+    x2 = nested(by_scaf, X2_GRID, on_outer=lambda k, n: progress(f"x2 nested fold {k}/{n}"), window=plan.window)
     progress("x2 nested done")
-    search = nested(by_scaf, list(plan.search_configs), on_outer=lambda k, n: progress(f"search nested fold {k}/{n}"))
+    search = nested(by_scaf, list(plan.search_configs), on_outer=lambda k, n: progress(f"search nested fold {k}/{n}"),
+                    window=plan.window)
     progress("search nested done")
     choice = x2_choice(x2)
     fam_curves = curves(by_scaf, choice, plan)
@@ -250,21 +269,25 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--sets", required=True)
     ap.add_argument("--out", required=True)
+    add_window_argument(ap)
     a = ap.parse_args()
-    plan = ReadPlan()
-    parts = {s.name: load_set(s) for s in read_sets(a.sets)}
+    plan = ReadPlan(window=WINDOWS[a.window])
+    parts = {s.name: load_set(s, plan.window) for s in read_sets(a.sets)}
     g_by_scaf, x_by_id = merge(parts)
     dirs = {m["id"]: (m["dir"], x_by_id[m["id"]]["dir"]) for ms in g_by_scaf.values() for m in ms if m["id"] in x_by_id}
     modes = load_modes(dirs)
     excluded = exclusion_report(parts)
     res: dict[str, Any] = {"registration": "PreRegistration_2026-10-19_S2b_Learning_Curve.md", "sets": list(parts),
+                           "window": plan.window, "window_name": a.window,
                            "molecules": sum(len(p["used"]) for p in parts.values()), "scaffolds": len(g_by_scaf), "excluded": excluded, "scopes": {}}
     for scope in READ_SCOPES:
-        by_scaf, counts = build(g_by_scaf, x_by_id, modes, scope)
-        progress(f"scope {scope}: {len(by_scaf)} scaffolds")
+        by_scaf, counts = build(g_by_scaf, x_by_id, modes, scope, plan.window)
+        size = window_size(by_scaf, plan.window)
+        progress(f"scope {scope}: {len(by_scaf)} scaffolds, {size['molecules']} force fields, {size['modes']} modes in the "
+                 + "window (" + ", ".join(f"{fa} {n}" for fa, n in size["per_family"].items()) + ")")
         if len(by_scaf) < 2:
             raise SystemExit(f"scope {scope}: {len(by_scaf)} scaffold(s) with xtb partners — no leave-one-scaffold-out read")
-        res["scopes"][scope] = {"counts": counts, "scaffolds": len(by_scaf), "read": read_scope(by_scaf, plan)}
+        res["scopes"][scope] = {"counts": counts, "scaffolds": len(by_scaf), "size": size, "read": read_scope(by_scaf, plan)}
     os.makedirs(a.out, exist_ok=True)
     write_atomic(os.path.join(a.out, "s2b_read.json"), json.dumps(res, indent=1, default=float))
     lines = report(res)

@@ -74,7 +74,7 @@ def test_read_targets_end_to_end_with_x2_chosen_for_one_family(monkeypatch):
     targets = {"tetracene": [_rec(om, fams, -0.01 * om, mol_id="tetracene")]}
     s2b = {"verdicts": {"CH-oop": {"best_curve_model": "x2*", "rms_at_all": 1.0}, "ring-ip": {"best_curve_model": "b", "rms_at_all": 1.0}},
            "x2_choice": {"CH-oop": S.X2_GRID[0].name}}
-    res = S.read_targets(train, targets, s2b, {"tetracene": {"pair_omega": [(1800.0, 1800.3)]}})
+    res = S.read_targets(train, targets, s2b, {"tetracene": {"pair_omega": [(1800.0, 1800.3)]}}, S.WINDOWS["mid"])
     row = res["rows"]["tetracene"]
     assert row["pairs"] == 1 and len(row["truth"]) == 13
     assert np.all(np.isfinite(row["pred"]["x2*"][row["family"] == "CH-oop"])) and np.all(np.isnan(row["pred"]["x2*"][row["family"] == "ring-ip"]))
