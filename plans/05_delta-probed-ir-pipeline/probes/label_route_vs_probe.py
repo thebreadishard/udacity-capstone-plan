@@ -22,7 +22,9 @@ PLAN = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PLAN / "modules" / "05_support_predictor" / "corpus"))
 sys.path.insert(0, str(PLAN / "probes"))
 
-TOL_COLUMN = 1e-6        # hartree/bohr^2: a gradient threshold of 1e-8 over a step of 0.01 bohr leaves about 1e-8 in a column
+TOL_COLUMN = 1e-6        # hartree/bohr^2, the registered bound: a gradient threshold of 1e-8 over a step of 0.01 bohr leaves
+                         # about 1e-8 in a column. It is absolute, and a soft mode's column is small (7.7e-9 on D_ac28161d06),
+                         # so the record also carries the difference as a fraction of the column - see `relative` below.
 LABEL_TAGS = ("b3lyp", "wb97x")
 PYSCF_MB = 2048          # pyscf's max_memory: the value the probe ran this molecule with (low_mode_patch.sh, half its 4096 MB
                          # cap), so the blocked grid response plans the same way on both sides and stays inside the cap
@@ -48,9 +50,14 @@ def compare(mol_dir: Path, patch_dir: Path, out: Path, max_memory_mb: int) -> in
             route_columns = AH.measured_columns(geometry, directions, AH.XC_BY_TAG[tag], run, lib_log)
             difference = float(np.abs(route_columns - probe_columns).max())
             worst = max(worst, difference)
+            # the column of a mode at a few cm-1 is itself tiny, so the absolute bound alone does not say whether the two
+            # routes agree; the fraction of the column's largest entry does, and is recorded beside it (14 Nov 2026).
+            norm = float(np.abs(probe_columns).max())
+            relative = difference / norm if norm > 0 else float("nan")
             record["per_functional"][tag] = {"directions": int(directions.shape[1]), "max_difference": difference,
-                                             "column_norm": float(np.abs(probe_columns).max())}
-            print(f"(LRVP) {tag}: {directions.shape[1]} direction(s), largest difference {difference:.3e} hartree/bohr^2", flush=True)
+                                             "column_norm": norm, "relative": relative}
+            print(f"(LRVP) {tag}: {directions.shape[1]} direction(s), largest difference {difference:.3e} hartree/bohr^2"
+                  f" = {relative:.2%} of the column", flush=True)
     record["worst"] = worst
     record["passed"] = worst <= TOL_COLUMN
     (out / "label_route_vs_probe.json").write_text(json.dumps(record, indent=1), encoding="utf-8")
