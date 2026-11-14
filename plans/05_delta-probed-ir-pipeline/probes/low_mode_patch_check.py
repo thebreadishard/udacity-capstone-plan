@@ -16,7 +16,8 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from low_mode_patch import LABEL_TAGS, vibrational_modes
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "modules" / "05_support_predictor" / "corpus"))
+from vibrations import LABEL_TAGS, vibrational_modes
 
 TOLERANCE_CM = 0.5
 

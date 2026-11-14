@@ -28,8 +28,16 @@ from analytic_hessians import FUNCTIONALS, freqs_cm, labels_mol, project_tr, sof
 from butterfly_scan import LABEL_GRID, write_json
 from hessian_grid_response_fd import FdHessianConfig, converged_scf, point_record
 from library_log import PYSCF_LOG_NAME
-from low_mode_patch import LABEL_TAGS, LOW_MODE_CM, STEP_BOHR, column, displacement, label_directions, patched_hessian, read_label
+from low_mode_patch import label_directions, read_label
 from pyscf import lib
+from vibrations import (
+    LABEL_TAGS,
+    LOW_MODE_CM,
+    STEP_BOHR,
+    column,
+    displacement,
+    patched_hessian,
+)
 
 if tuple(tag for tag, _ in FUNCTIONALS) != LABEL_TAGS:
     raise ImportError(f"the labels' functionals {FUNCTIONALS} are not low_mode_patch's {LABEL_TAGS}")

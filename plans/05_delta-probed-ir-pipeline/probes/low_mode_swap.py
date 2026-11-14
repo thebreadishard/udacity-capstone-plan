@@ -24,8 +24,9 @@ from typing import Any
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from low_mode_patch import LOW_MODE_CM
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "modules" / "05_support_predictor" / "corpus"))
 from qc_common import write_atomic
+from vibrations import LOW_MODE_CM
 
 PLAN = Path(__file__).resolve().parents[1]
 CORPUS = PLAN / "modules" / "05_support_predictor" / "corpus"
