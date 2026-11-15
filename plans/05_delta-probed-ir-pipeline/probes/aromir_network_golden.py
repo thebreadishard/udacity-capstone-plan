@@ -14,6 +14,7 @@ with the rigid motions projected out: the network's arithmetic does not care tha
 from __future__ import annotations
 
 import json
+import os
 import sys
 import tempfile
 from pathlib import Path
@@ -93,14 +94,21 @@ def random_model(ctor: dict, seed: int) -> HybridDeltaFModel:
     return model.eval()
 
 
+def moved_into_place(tmp: Path, target: Path) -> None:
+    """A pin is written beside its target and moved over it, so a stopped run leaves no half-written pin."""
+    os.replace(tmp, target)
+
+
 def pin(name: str, cfg: dict, out: Path, seed: int) -> None:
     model = random_model(cfg["ctor"], seed)
-    save_file({k: v.contiguous() for k, v in model.state_dict().items()}, out / f"{name}.safetensors")
+    save_file({k: v.contiguous() for k, v in model.state_dict().items()}, out / f"{name}.tmp.safetensors")
+    moved_into_place(out / f"{name}.tmp.safetensors", out / f"{name}.safetensors")
     primitives: IC.PrimitiveSettings = cfg["primitives"]
     record = {"ctor": cfg["ctor"], "head": "hybrid", "pattern": cfg["pattern"], "seed": seed}
     if primitives != IC.CARRIED:
         record |= {"angle_choice": primitives.angle_choice, "dihedral_encoding": primitives.dihedral_encoding}
-    (out / f"{name}.json").write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
+    (out / f"{name}.json.tmp").write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
+    moved_into_place(out / f"{name}.json.tmp", out / f"{name}.json")
     settings = TensorSettings(aux="both", head="hybrid", pattern=cfg["pattern"], aux_target=None, ls_lam=None, primitives=primitives)
     for k, molecule in enumerate(cfg["molecules"]):
         symbols, coords = start_geometry(MOLECULES[molecule])
@@ -115,14 +123,17 @@ def pin(name: str, cfg: dict, out: Path, seed: int) -> None:
             t = RI.input_tensors_of(d, settings)
             dH = RI.delta_H(model, t).numpy()
         # the integers say where a mismatch starts; every float input reaches ΔH through a drawn weight, so ΔH pins those
-        np.savez_compressed(out / f"{name}_{molecule}.npz", symbols=np.array(symbols), coords_bohr=coords, hessian=H, delta_h=dH,
+        np.savez_compressed(out / f"{name}_{molecule}.tmp.npz", symbols=np.array(symbols), coords_bohr=coords, hessian=H, delta_h=dH,
                             pairs=t["pairs"].numpy().astype(np.int32), pair_classes=t["pcls"].numpy().astype(np.int8),
                             hinge_classes=t["hidx"].numpy().astype(np.int8), odd=t["podd"].numpy())
+        moved_into_place(out / f"{name}_{molecule}.tmp.npz", out / f"{name}_{molecule}.npz")
         print(f"{name} {molecule}: {len(symbols)} atoms, {t['B'].shape[0]} primitives, {len(t['pairs'])} pairs, "
               f"classes {sorted(set(t['pcls'].tolist()))}, hinges {sorted(set(t['hidx'].tolist()))}, max |dH| {np.abs(dH).max():.3e}", flush=True)
 
 
 def main() -> None:
+    if len(sys.argv) != 2:
+        raise SystemExit("usage: python probes/aromir_network_golden.py <out folder>")
     out = Path(sys.argv[1])
     out.mkdir(parents=True, exist_ok=True)
     torch.set_num_threads(1)
