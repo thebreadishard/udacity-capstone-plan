@@ -1,4 +1,4 @@
-# Certificate — benzene (A_8448043181), rung 5 · validated — 2026-11-14 18:39
+# Certificate — benzene (A_8448043181), rung 5 · validated — 2026-11-15 02:48
 
 benzene: rung 5 (validated). The cheap-level spectrum is served with the laboratory tolerance per family; no predicted correction is shown in this record — the pipeline serves it for the licensed families (ring-ip, CH-stretch, CH-oop; decision 65); the anchor coverage lists what coupled-cluster evidence exists and where it is wider than the tolerance.
 
@@ -87,7 +87,7 @@ Source: `modules/05_support_predictor/out/ANCHORS_STATUS.json`, the project's an
 
 ## Provenance
 
-- releases: layerA2_2026-09-23, layerA2_2026-09-23b, layerA2_2026-09-24, layerA_2026-09-22; deck 97ed2d67c66b; commit 1f561376; export built 2026-11-02T10:01:23Z
+- releases: layerA2_2026-09-23, layerA2_2026-09-23b, layerA2_2026-09-24, layerA_2026-09-22; deck 97ed2d67c66b; commit 04241d7f; export built 2026-11-02T10:01:23Z
 - evidence: probes/results_m1/e8_benzene_ccpvtz_oop_2026-10-03/hessian_ccsd_t.npz (exists); probes/results_m1/e8_benzene_ccpvdz_tlambda/E8_locality_benzene.md (exists); probes/results_m1/R0_DIAGONAL_READING_2026-09-22.md (exists); probes/results_vpt2/benzene_benchmark_2026-09-22.md (exists)
 - licence: 3 families licensed (README.md, decision 65)
 - family rule: modules/03_lab_scoreboard/build_lab_tables.py FAMILY_RULE (12 Sep 2026)
