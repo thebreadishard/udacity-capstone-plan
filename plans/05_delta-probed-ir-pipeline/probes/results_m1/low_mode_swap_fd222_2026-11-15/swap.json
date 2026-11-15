@@ -1,0 +1,89 @@
+{
+ "registration": "PreRegistration_2026-11-14_Low_Mode_Label_Swap.md",
+ "dry_run": false,
+ "molecules": 2,
+ "files": 4,
+ "swapped": 4,
+ "refused": [],
+ "imaginary_cleared": [],
+ "imaginary_gained": [],
+ "max_collateral_cm": 0.1128,
+ "rows": [
+  {
+   "id": "B_2804096c51",
+   "tag": "b3lyp",
+   "swapped": true,
+   "reason": "",
+   "lowest_label_cm": 15.754733147432429,
+   "lowest_patched_cm": 19.903730703189012,
+   "directions": 1,
+   "targeted_change_cm": [
+    4.149
+   ],
+   "max_collateral_cm": 0.0012,
+   "targeted_turned_imaginary": 0,
+   "sha256_before": "7b63a98f90bc272678dba7f9696d16724e669e4fdf7230d65efa12597ab2c12d",
+   "sha256_patch": "869fcc6e28d07cc12919fe34b2dde3bad9df53d273528b2c3f31951a1c4fb9aa",
+   "ok": true,
+   "sha256_after": "9b5eee8e5e6978bca2514d78834453dd61b1299a8258ab771b908bcb91cf1bbe",
+   "kept": "modules\\05_support_predictor\\corpus\\superseded_2026-11-15\\B_2804096c51\\hessian_b3lyp_analytic.npz"
+  },
+  {
+   "id": "B_2804096c51",
+   "tag": "wb97x",
+   "swapped": true,
+   "reason": "",
+   "lowest_label_cm": 63.13271581355537,
+   "lowest_patched_cm": 65.89570960488668,
+   "directions": 1,
+   "targeted_change_cm": [
+    2.763
+   ],
+   "max_collateral_cm": 0.0204,
+   "targeted_turned_imaginary": 0,
+   "sha256_before": "b0256c71a58059124bfd72687264e2e99cdb321ff95e5910c4c9ede26ad767f2",
+   "sha256_patch": "5a9826041ae1ab4643161932c6188c295af7014e4f4a488d5bd5a6c9b5ab0943",
+   "ok": true,
+   "sha256_after": "40e2b0eff4827905237bfda509d381e5cf0e5f15866208c380e309d0a5d53a68",
+   "kept": "modules\\05_support_predictor\\corpus\\superseded_2026-11-15\\B_2804096c51\\hessian_wb97x_analytic.npz"
+  },
+  {
+   "id": "B_6c1f2b1966",
+   "tag": "b3lyp",
+   "swapped": true,
+   "reason": "",
+   "lowest_label_cm": 9.26527525094474,
+   "lowest_patched_cm": 7.642598817168066,
+   "directions": 1,
+   "targeted_change_cm": [
+    1.6227
+   ],
+   "max_collateral_cm": 0.0,
+   "targeted_turned_imaginary": 0,
+   "sha256_before": "f86fe6c5d2b8a26b9452bf00f4c97d6738386b05761c45029bef5b234a8efdd3",
+   "sha256_patch": "b12867e67f44af1dd2eb3ce372921c707dc36fb77d6d82f24cee3da53fbbe449",
+   "ok": true,
+   "sha256_after": "1103649745f0ca46d59b8a74fb25fe5dfdb000e6534ce677044e26151ac2d24f",
+   "kept": "modules\\05_support_predictor\\corpus\\superseded_2026-11-15\\B_6c1f2b1966\\hessian_b3lyp_analytic.npz"
+  },
+  {
+   "id": "B_6c1f2b1966",
+   "tag": "wb97x",
+   "swapped": true,
+   "reason": "",
+   "lowest_label_cm": 49.57144926736647,
+   "lowest_patched_cm": 49.156075735683714,
+   "directions": 1,
+   "targeted_change_cm": [
+    0.4154
+   ],
+   "max_collateral_cm": 0.1128,
+   "targeted_turned_imaginary": 0,
+   "sha256_before": "4efe6f4a56266aba57dce6ea2735d82f0b41e83634521a8ed936228a8dcaf55f",
+   "sha256_patch": "2d9aece6d1830e3656721bbe3b0b4347a544a15f8422da64829bc8d3e7b27bdd",
+   "ok": true,
+   "sha256_after": "e4ff8f5e833af77e503522f0a40509941c16538902fddf5dad03e08511ab80ae",
+   "kept": "modules\\05_support_predictor\\corpus\\superseded_2026-11-15\\B_6c1f2b1966\\hessian_wb97x_analytic.npz"
+  }
+ ]
+}

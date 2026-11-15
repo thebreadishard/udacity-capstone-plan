@@ -49,6 +49,7 @@ POOL_LAYERS = "A,A2,B,P3,P3c"
 EPOCH_CAP = 300
 CAP_MARGIN = 0.10                          # decision 51: a best epoch within 10 % of the cap means the cap, not the data, stopped it
 THREADS = "8"
+MAX_GAP_MINUTES = 120                      # the run-spec schema's ceiling; the chain runner prints progress every 30 min
 LINES = {**dict.fromkeys(P.FAMILIES, 3.0), P.RATIO: 0.25}
 OUT = "out/v14"
 SPACE = {"lr": (1e-4, 1e-3), "weight_decay": (1e-5, 1e-3),
@@ -190,7 +191,7 @@ def runspec(name: str, tag: str, purpose: str, hours: float, basis: str) -> dict
             "command": f"python ../chain_runner.py probes/runs/{name}.json",
             "sources": [{"local": "probes/chain_runner.py"}, {"local": "probes/v14_search.py"}, {"local": "probes/promotion_read.py"},
                         {"local": f"{M05_REL}/m05/rungC_train.py"}],
-            "progress": {"regex": f"^=== \\({tag}\\) progress: |^\\({tag}\\) .* done ", "max_gap_minutes": 180,
+            "progress": {"regex": f"^=== \\({tag}\\) progress: |^\\({tag}\\) .* done ", "max_gap_minutes": MAX_GAP_MINUTES,
                          "start_regex": f"^=== \\({tag}\\) starting: "},
             "marker_regex": f"^=== \\({tag}\\) (armed|starting|resuming|RUN FAILED|run done)", "end_regex": f"^=== \\({tag}\\) run done",
             "fail_regex": f"^=== \\({tag}\\) RUN FAILED", "dry_run_args": "--dry-run", "resumable": True,

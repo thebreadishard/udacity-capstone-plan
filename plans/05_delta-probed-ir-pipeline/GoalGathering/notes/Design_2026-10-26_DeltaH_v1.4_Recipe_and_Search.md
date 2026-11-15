@@ -210,3 +210,14 @@ checkpoint), scaffold-fold cross-validation of the selection score, a batch size
 **The code** (branch `v14-search-power`, in its own worktree): `rungC_config.py` (`lr_schedule`, `learning_rate`, the refusal of a cosine
 no longer than its warm-up), `rungC_train.py` (the epoch's rate, the record's `lr_schedule`), `probes/v14_search.py`, their tests. The
 trainer's pin was rewritten: with the new key `lr_schedule` removed it equals the old pin entry for entry, every weight digest included.
+
+**The list is frozen: 15 Nov 2026, 21:5x, before the first training.** `out/v14/configs.json`, 16 configurations, sha256
+`1d4887457642e49b109f266a669f4abb0029c09686b38f6a790e7c406a6719e8`; the carried version named in it is chain 35's three checkpoints
+(`out/E7_rungC_chain35_analytic_model_n750_seed{0,1,2}.pt`). The corpus it runs on: the 222 pool molecules' analytic labels merged at
+21:2x by a checked copy (`probes/labels_merge_checked.py`; 888 files, every `geometry.json` byte-equal;
+`probes/results_m1/labels_server_final_2026-11-15/merge_fd222.json`), and the two of them with a label mode below 20 cm⁻¹ repaired and
+swapped (B_2804096c51 B3LYP 15.75 → 19.90, ωB97X 63.13 → 65.90 cm⁻¹; B_6c1f2b1966 9.27 → 7.64, 49.57 → 49.16; the largest change
+outside the repaired mode 0.113 cm⁻¹ against the registered 0.5; `probes/results_m1/low_mode_swap_fd222_2026-11-15/swap.json`, the
+originals under `corpus/superseded_2026-11-15/`). Smoked first on that corpus: c03_control_schedule and c04 through the trainer's
+`--smoke` at an epoch cap of 7 (mechanics only). The run spec the search writes asked for a progress gap of 180 minutes against the
+schema's 120; corrected in `probes/v14_search.py` with a test, and in the stage-1 run spec — the list itself was not touched.

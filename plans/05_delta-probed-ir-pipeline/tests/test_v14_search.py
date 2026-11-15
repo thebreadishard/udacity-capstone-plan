@@ -11,7 +11,9 @@ pytest.importorskip("torch")
 PLAN = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PLAN / "probes"))
 sys.path.insert(0, str(PLAN / "modules" / "05_support_predictor" / "m05"))
+sys.path.insert(0, str(PLAN / "tools"))
 import promotion_read as P  # noqa: E402
+import runspec as RUNSPEC  # noqa: E402
 import v14_search as V  # noqa: E402
 from rungC_config import config_from_argv  # noqa: E402
 
@@ -165,6 +167,7 @@ def test_plan_to_read3_end_to_end(sandbox):
     for c in configs:
         write_record(root, V.prefix(c, "s1a"), {0: stage1[c.name] + 0.01})
         write_record(root, V.prefix(c, "s1b"), {1: stage1[c.name] - 0.01})
+    RUNSPEC.RunSpec.model_validate_json((root / "probes" / "runspecs" / "v14_stage1.json").read_text(encoding="utf-8"))
     stage1_chain = json.loads((root / "probes" / "runs" / "v14_stage1.json").read_text(encoding="utf-8"))
     trainings = [s for s in stage1_chain["steps"] if s["label"].startswith("train ")]
     assert [s["argv"][s["argv"].index("--seeds") + 1] for s in trainings] == ["0"] * len(configs) + ["1"] * len(configs)
@@ -179,7 +182,9 @@ def test_plan_to_read3_end_to_end(sandbox):
     for c in configs:
         if c.name in [*chosen, "c00_control"]:
             write_record(root, V.prefix(c, "s2"), {V.STAGE2_SEED: stage1[c.name]})
+    RUNSPEC.RunSpec.model_validate_json((root / "probes" / "runspecs" / "v14_stage2.json").read_text(encoding="utf-8"))
     V.cmd_read2()
+    RUNSPEC.RunSpec.model_validate_json((root / "probes" / "runspecs" / "v14_final.json").read_text(encoding="utf-8"))
     best = json.loads((root / "m05" / V.OUT / "read2.json").read_text(encoding="utf-8"))["winner"]
     assert best == chosen[0]
     final = json.loads((root / "probes" / "runs" / "v14_final.json").read_text(encoding="utf-8"))

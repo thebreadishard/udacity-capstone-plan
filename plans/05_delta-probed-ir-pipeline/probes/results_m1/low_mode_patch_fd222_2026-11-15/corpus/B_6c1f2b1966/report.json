@@ -1,0 +1,17 @@
+{
+ "id": "B_6c1f2b1966",
+ "directions": 1,
+ "below_cm": 20.0,
+ "functionals": {
+  "b3lyp": {
+   "lowest_label_cm": 9.26527525094474,
+   "lowest_patched_cm": 7.642598817168066,
+   "max_abs_change_cm": 1.6226764337766735
+  },
+  "wb97x": {
+   "lowest_label_cm": 49.57144926736647,
+   "lowest_patched_cm": 49.156075735683714,
+   "max_abs_change_cm": 0.4153735316827536
+  }
+ }
+}
