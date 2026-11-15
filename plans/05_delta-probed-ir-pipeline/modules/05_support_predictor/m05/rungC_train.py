@@ -31,7 +31,7 @@ import holdout_twins as HT
 import internal_coords as IC
 import rungC_intensities as RI
 from e7_rungB_pairs import molecule_pairs, readouts
-from rungC_config import KRING_WEIGHT, SMOKE_HOLDOUT, SMOKE_POOL, TrainConfig, parse_config
+from rungC_config import KRING_WEIGHT, SMOKE_HOLDOUT, SMOKE_POOL, TrainConfig, learning_rate, parse_config
 from rungC_equivariant import (
     AGGREGATION,
     BOHR2ANG,
@@ -392,14 +392,16 @@ class Fold:
 
 
 def _fit(model, loss: LossSettings, cfg: TrainConfig, fold: Fold, seed: int, log) -> tuple[list, int]:
-    """AdamW, one molecule per step, gradient norm clipped at 5; with validation ids the best state on their auxiliary term is kept and,
-    with patience, restored. Returns (history, best epoch)."""
+    """AdamW at the epoch's learning rate (`rungC_config.learning_rate`), one molecule per step, gradient norm clipped at 5; with
+    validation ids the best state on their auxiliary term is kept and, with patience, restored. Returns (history, best epoch)."""
     tensors, train_ids, val_ids = fold.tensors, fold.fit_ids, fold.val_ids
     opt = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)
     rng = np.random.default_rng(seed)
     hist, t0 = [], time.time()
     best, best_state, best_ep, since = float("inf"), None, 0, 0
     for ep in range(cfg.epochs):
+        for group in opt.param_groups:
+            group["lr"] = learning_rate(cfg.lr, cfg.lr_schedule, ep, cfg.epochs)
         model.train()
         tot_main = tot_aux = 0.0
         for k in rng.permutation(len(train_ids)):
@@ -871,7 +873,7 @@ def new_record(cfg: TrainConfig, corpus: Corpus, target_residuals: dict) -> dict
                 pool_max_atoms=cfg.pool_max_atoms, holdout_s=t.get("s", []),
                 n_molecules=len(corpus.mols), holdout_a=t["a"], holdout_b=t["b"], scaffold_cores=corpus.cores, pool=len(corpus.pool),
                 pool_ids=corpus.pool, pool_layers=cfg.pool_layers, sizes=corpus.sizes, seeds=corpus.seeds, epochs=cfg.epochs, lr=cfg.lr,
-                weight_decay=cfg.weight_decay,
+                weight_decay=cfg.weight_decay, lr_schedule=cfg.lr_schedule,
                 aux_weight=cfg.aux_weight, loss=cfg.loss, scale=cfg.scale, inner_val=cfg.inner_val, patience=cfg.patience,
                 pretrained=cfg.pretrained, aggregation=cfg.aggregation, pretrained_elements=cfg.pretrained_elements, aux_mode=cfg.aux,
                 zero_hlow=cfg.zero_hlow, overfit_one=cfg.overfit_one, tensor_input=cfg.tensor_input, head=cfg.head, sqm_scale=cfg.sqm_scale,
@@ -887,7 +889,8 @@ def new_record(cfg: TrainConfig, corpus: Corpus, target_residuals: dict) -> dict
 
 
 def table_header(cfg: TrainConfig, date: str) -> list[str]:
-    recipe = (f"recipe: lr {cfg.lr}, epochs {cfg.epochs}, loss {cfg.loss}, aux weight {cfg.aux_weight}, internal term {cfg.aux}, output scale "
+    schedule = "" if cfg.lr_schedule == "constant" else f" ({cfg.lr_schedule} schedule)"
+    recipe = (f"recipe: lr {cfg.lr}{schedule}, epochs {cfg.epochs}, loss {cfg.loss}, aux weight {cfg.aux_weight}, internal term {cfg.aux}, output scale "
               f"{cfg.scale}, inner validation {cfg.inner_val}, patience {cfg.patience}; pool layers {cfg.pool_layers}; {cfg.aggregation} aggregation")
     if cfg.zero_hlow:
         recipe += "; H_low input zeroed (diagnostic 1)"

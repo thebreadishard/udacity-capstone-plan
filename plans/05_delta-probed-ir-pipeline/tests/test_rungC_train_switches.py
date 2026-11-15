@@ -9,6 +9,7 @@ import pytest
 torch = pytest.importorskip("torch")
 M05 = Path(__file__).resolve().parents[1] / "modules" / "05_support_predictor" / "m05"
 sys.path.insert(0, str(M05))
+import rungC_config as RC_CONFIG  # noqa: E402
 import rungC_equivariant as RC  # noqa: E402
 import rungC_train as RT  # noqa: E402
 from rungC_config import TrainConfig  # noqa: E402
@@ -64,6 +65,28 @@ def test_inner_split_is_deterministic_and_disjoint():
     assert (v1, f1) == (v2, f2) and len(v1) == 3 and not set(v1) & set(f1) and sorted(v1 + f1) == sorted(ids)
     assert v3 != v1
     assert RT.inner_split(ids, seed=0, fraction=0.0) == ([], ids)
+
+
+def test_the_cosine_schedule_sets_each_epochs_rate(monkeypatch):
+    """The optimiser steps at the epoch's rate under 'cosine' and at --lr throughout under 'constant'."""
+    tensors = _water_tensors(3)
+    seen = []
+    step = torch.optim.AdamW.step
+
+    def recording_step(self, *args, **kwargs):
+        seen.append(self.param_groups[0]["lr"])
+        return step(self, *args, **kwargs)
+
+    monkeypatch.setattr(torch.optim.AdamW, "step", recording_step)
+    epochs = RC_CONFIG.LR_WARMUP_EPOCHS + 3
+    for schedule in RC_CONFIG.LR_SCHEDULES:
+        seen.clear()
+        cfg = TrainConfig(molecules="-", out_prefix="-", epochs=epochs, lr=1e-3, lr_schedule=schedule)
+        RT.train_one(list(tensors), tensors, 0, cfg, log=lambda s: None)
+        per_epoch = seen[::len(tensors)]
+        assert len(seen) == epochs * len(tensors)
+        assert per_epoch == pytest.approx([RC_CONFIG.learning_rate(1e-3, schedule, ep, epochs) for ep in range(epochs)])
+    assert per_epoch[0] < per_epoch[RC_CONFIG.LR_WARMUP_EPOCHS - 1] and per_epoch[-1] == pytest.approx(1e-3 * RC_CONFIG.LR_FLOOR)
 
 
 def test_defaults_are_the_registered_recipe_and_switches_run():

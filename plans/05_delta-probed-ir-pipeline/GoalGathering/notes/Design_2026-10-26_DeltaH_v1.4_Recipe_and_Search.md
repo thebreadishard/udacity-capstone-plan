@@ -146,3 +146,67 @@ Wednesday: chain 35's read → code (§7) → chain 44 if kept → v1.4 stage 1 
 ## 10. Amendment, 12 Nov 2026, 21:3x — the target is a categorical of the search (before the frozen list is written)
 
 The user, 8 Nov ('bij 3 de verkorte route'): no separate chain 44; projected and ridge become a categorical of the search (§8's option (b)). `probes/v14_search.py`: the control keeps the carried target (projected); a second one-factor ablation, `c02_control_target`, is the control with the ridge target (`--aux-target ls`); each drawn configuration takes its target by a fair coin of its own generator (seed 20261027), so every other drawn value is what it was (tested); the drawn configurations are named from c03. The list is 27 configurations (stage 1 ≈ 54 h). `plan` no longer takes `--target`. Stage 2's target check stays: the winner is also trained with the other target (three seeds), so the choice is checked at the winning hyperparameters. The search runs on the corpus with the 222's labels merged (TASKS 171).
+
+## 11. Amendment, 15 Nov 2026, 19:2x — the search's power, the schedule, the repaired labels (before the frozen list is written)
+
+The user, 15 Nov, asked before the launch whether the search was world class, and on the answer: 'Verbeterd, leersnelheid moet altijd
+onderdeel zijn van onze zoektocht. Start zodra het kan.' and 'Ja, v1.4 op de gerepareerde labels.' No configuration has been drawn into a
+file and no v1.4 training has run; `out/v14/` does not exist.
+
+**What was weak.** The registration's care stands (a frozen hashed list, a scaffold-grouped selection set, the control, the no-worsening
+rule, two SE, the losers reported). Its power did not: stage 1 ranked 27 configurations on one seed while v1.3's three seeds differ by up
+to 0.8 cm⁻¹ within a family on hold-out (a) (CH-stretch 0.91 / 1.74 / 0.91, 'other' 4.09 / 3.27 / 3.51; `out/E7_rungC_chain35_analytic_a8read_seed*.json`);
+24 points covered seven ranges and two coins; the learning rate was constant although chain 35's best epochs were 101, 162 and 198 of a cap
+of 200 (`out/E7_rungC_chain35_analytic.json`); and two of the seven ranges were the loss weights, on which 34b/34c measured no response and
+§5 predicts none.
+
+**What changes.**
+1. **The learning-rate schedule is a categorical of the search**: `constant` (the carried recipe) or `cosine` — a linear warm-up over five
+   epochs, then half a cosine from the drawn rate down to 1 % of it at the epoch cap (`rungC_config.learning_rate`, `--lr-schedule`). A new
+   one-factor ablation, `c03_control_schedule`, is the control with the cosine. The rule from now on: the learning rate, its value and its
+   schedule, is part of every search of ours.
+2. **The two loss weights are no longer drawn**: every configuration carries the control's (K-ring 0.3, K-diagonal 0.1).
+3. **Stage 1 trains two seeds of every configuration** (0 and 1) and ranks by their mean score; stage 2 adds the third seed (2) for the
+   best four and the control, so the winner rule still reads three seeds. The list is 16 configurations — the control, its three ablations
+   and 12 drawn (named from c04) — and the price is what §10's was: 32 + 5 + 3 trainings against 27 + 10 + 3.
+4. **The three two-valued choices of a drawn configuration (parity or pair features, target, schedule) are dealt as one design**, not
+   by fair coins: the eight combinations and the half fraction in which an even number of the three differ from the carried value,
+   shuffled once (seed 20261027). Every value comes six times and every pair of two choices' values three times. With twelve
+   configurations the coins gave ten of one target. Seen on the list alone, before any training; the drawn ranges keep seed 20261026.
+5. **A cosine configuration trains every epoch of the cap** (`--patience 300`: never stopped, the best state on the inner validation
+   term restored at the end). The carried patience of 20 would end it near epoch 120–180, as chain 35's constant-rate seeds ended, with
+   the rate still at 0.35–0.67 of its value: a warm-up and a mild decay, not the anneal the schedule is. **Decision 51's cap rule is
+   the constant rate's**: under the cosine the rate reaches its floor at the cap by construction, so a late best epoch is the schedule
+   working, and a higher cap would be another schedule, not a rerun; the reads mark such a seed LATE and refuse nothing. A cosine
+   training therefore costs about 3.5 h against 2 h, and the search about 100 h instead of 80.
+6. **Each seed of stage 1 is a step of its own** (records `…s1a_…` for seed 0, `…s1b_…` for seed 1), every configuration's seed 0
+   first: a restart loses one training, and the first pass is a complete one-seed ranking should the laptop stop there.
+7. **The winner rule's bias is named.** Two of a candidate's three seeds are the ones stage 1 chose it on and the control was not
+   chosen, so the two-SE comparison flatters a candidate. read2 prints seed 2 alone beside the mean, and the promotion of §5 on the
+   hold-outs, which no selection touched, stays the guard. Three fresh seeds in stage 2 would remove the bias for ten more trainings;
+   that is the user's to ask for.
+8. **The labels.** The search trains and selects on the corpus as it stands after the low-mode repair's swap of 14 Nov (TASKS 201, 216)
+   and with the 222 pool molecules' analytic labels merged (TASKS 171). The hold-out labels are repaired too, so the promotion compares
+   like with like only because the final chain reads the carried version's three checkpoints again on the same folders
+   (`_write_final_chain`: `eval_carried_seed*`); v1.3's published numbers (1.77 / 2.12 …) are not the comparison.
+
+**What does not change.** The space's ranges for the learning rate, the weight decay, the body and the head; the selection set (`26:0.15`),
+the pool layers, the epoch cap and patience; the score, the no-worsening rule, the two-SE winner rule, the target check at the winner and
+the promotion of §5. One change per version (the user, 30 Oct) is kept in this sense: the schedule is a setting the search chooses, the
+network's parts are v1.3's with what §2 already added; v1.5 remains the order-free inputs alone.
+
+**Predictions, written before any number.** The cosine control (c03) beats the control on the selection score by more than their seed
+spread; the winner, if there is one, carries the cosine; the seed spread of a cosine configuration is smaller than a constant one's;
+capacity matters less than the schedule. If c03 does not beat the control, the plateau seen in chain 35's best epochs was noise in the
+inner validation term and not a rate that stayed too high.
+
+**Reviewed before the list was frozen** by an independent reader (15 Nov, 19:4x), whose findings are points 4 to 7 as they stand: the
+first draft kept patience 20 under the cosine, shuffled the three choices separately, trained both seeds in one step and did not name
+the winner rule's bias. The 222's labels need the low-mode repair before the search (they were made with the code of 7 Nov).
+
+**Not in this version, named for the next search:** stopping poor configurations early (successive halving; it needs a resumable
+checkpoint), scaffold-fold cross-validation of the selection score, a batch size above one, an averaged copy of the weights.
+
+**The code** (branch `v14-search-power`, in its own worktree): `rungC_config.py` (`lr_schedule`, `learning_rate`, the refusal of a cosine
+no longer than its warm-up), `rungC_train.py` (the epoch's rate, the record's `lr_schedule`), `probes/v14_search.py`, their tests. The
+trainer's pin was rewritten: with the new key `lr_schedule` removed it equals the old pin entry for entry, every weight digest included.
