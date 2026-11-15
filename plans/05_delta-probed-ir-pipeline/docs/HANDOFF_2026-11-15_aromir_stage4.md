@@ -42,3 +42,19 @@ network trained on the corpus after the swap of 14 November (v1.4) is `yes`.
 
 The release itself (the laptop's steps of stage 3's note, now with `--soft-mode-repair no` for v1.3), the comparison on a real soft
 mode above, and the model card's text.
+
+## Added later that day: the model card
+
+`aromir card --release <folder> [--out MODEL_CARD.md]` writes a release's model card from the release's own files (`src/aromir/card.py`):
+the summary and licensed families, the error table with each seed's value, the training set's size, elements and atom range, how the
+training Hessians were prepared, the limits (level, harmonic, domain, sizes, unlicensed families, the atom-order statement chosen from
+the recipe, uncorrected heights), the architecture with its parameter count, and the tensor files' sha256. No number is typed.
+
+Two things the card takes verbatim from this repository's records, to reword here before a release is public:
+
+- the hold-outs' descriptions and the coupled-cluster note are `m08.accuracy`'s constants (`HOLDOUTS`, `CLEAN_A`, `CC_NOTE`) and name
+  internal things — 'TASKS 157', 'chain 34', 'layer-A', 'the anchor decision of November 2026'. `probes/aromir_model_card.py` is
+  the place to give the release a reader's wording;
+- the design note's sentence on the atom-order spread (up to 2.9 cm⁻¹ between two writings of phenanthrene, `probes/
+  network_invariance_check.py`) is not on the card: that number is in no release file. If the card should state it, the evaluation
+  record needs a field for it.
