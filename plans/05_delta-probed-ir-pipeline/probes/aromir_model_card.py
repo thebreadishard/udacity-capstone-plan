@@ -9,7 +9,7 @@ aromir (`thebreadishard/aromir`) ships a network's weights with two JSON files, 
                  checkpoints and the corpus, so it runs on the laptop.
 
     python probes/aromir_model_card.py evaluation <out.json> --version 1.3 --models E7_rungC_chain35_analytic_model_n750_seed{0,1,2}.pt
-    python probes/aromir_model_card.py training <out.json> --version 1.3 --models <the same names>
+    python probes/aromir_model_card.py training <out.json> --version 1.3 --models <the same names> --soft-mode-repair no
 """
 from __future__ import annotations
 
@@ -42,7 +42,7 @@ def evaluation(version: str, models: tuple[str, ...]) -> dict:
             "coupled_cluster": acc["coupled_cluster"], "sources": acc["sources"]}
 
 
-def training(version: str, models: tuple[str, ...]) -> dict:
+def training(version: str, models: tuple[str, ...], soft_mode_repair: bool) -> dict:
     """The training set's elements, atom-count range and canonical SMILES (every molecule a model fitted or stopped on), and the
     hold-outs' canonical SMILES — `m08.seen`'s index, by which the live certificate says whether the network has seen a molecule."""
     from m08 import pipeline as P
@@ -55,7 +55,7 @@ def training(version: str, models: tuple[str, ...]) -> dict:
     for smiles, (holdout, _ids) in sorted(seen.holdout.items()):
         held_out.setdefault(holdout, []).append(smiles)
     return {"network_version": version, "elements": [e.capitalize() for e in elements], "min_atoms": sizes[0], "max_atoms": sizes[1],
-            "trained_smiles": sorted(seen.trained), "held_out_smiles": held_out}
+            "trained_smiles": sorted(seen.trained), "held_out_smiles": held_out, "soft_mode_repair": soft_mode_repair}
 
 
 def main() -> None:
@@ -64,8 +64,16 @@ def main() -> None:
     ap.add_argument("out", type=Path)
     ap.add_argument("--version", required=True)
     ap.add_argument("--models", nargs="+", required=True, help="the model files' names, as the registry and the evaluation records name them")
+    ap.add_argument("--soft-mode-repair", choices=("yes", "no"),
+                    help="training only: were the models trained on the corpus after the low-mode label swap of 14 Nov 2026 "
+                         "(TASKS 216)? v1.3 (chain 35): no. aromir then prepares a molecule's Hessian the same way")
     a = ap.parse_args()
-    record = {"evaluation": evaluation, "training": training}[a.what](a.version, tuple(a.models))
+    if a.what == "training":
+        if a.soft_mode_repair is None:
+            raise SystemExit("training needs --soft-mode-repair yes|no: whether the models saw repaired low-mode labels")
+        record = training(a.version, tuple(a.models), a.soft_mode_repair == "yes")
+    else:
+        record = evaluation(a.version, tuple(a.models))
     write_json(a.out, record)
     print(f"[aromir model card] {a.what}: {a.out}", flush=True)
 
