@@ -1,7 +1,9 @@
 """Regression pin of the read machinery `probes/s2_read.py` shares with S2b and S3 (concat → loso → curve) and of
 `probes/s2_xtb_read.py`'s x0 read, written before the reading window became a setting instead of a module constant (TASKS 219, the
 CH-stretch read). The window is threaded through concat, loso, curve, in_window, x0_read and build; this pin says that the reads inside
-550-2000 cm-1, which are registered and already published, give the same numbers afterwards, to the bit.
+550-2000 cm-1, which are registered and already published, give the same numbers afterwards — to REL_TOL, not to the bit: the pin runs
+on every machine, and GitHub's runner image of 11 Nov 2026 gave 0.05445599912157338 where every earlier machine gave …61214, on a
+commit that had been green (15 Nov). The reads are published to 0.01 cm-1; 1e-9 relative is seven digits finer.
 
 Synthetic molecules only (the generator of tests/test_s2_read.py, shared rather than copied), so the pin is fast and needs no run
 output. What it does not cover is the loader and the file formats; tests/test_s2_read.py and tests/test_s2_xtb_read.py do.
@@ -26,6 +28,7 @@ import s2_read as R
 from test_s2_read import dataset, molecule
 
 GOLDEN = DATA / "s2_read_golden.json"
+REL_TOL = 1e-9
 OUTSIDE = (300.0, 520.0, 2100.0, 2850.0, 3050.0)   # below, just below, above, and two CH-stretch positions: none inside 550-2000
 
 
@@ -70,8 +73,16 @@ def test_the_shared_read_machinery_is_unchanged():
     if not GOLDEN.is_file():
         pytest.skip(f"{GOLDEN.name} is missing: write it with --write-golden before the change it pins")
     difference = first_difference(json.loads(json.dumps(record(), default=float)),
-                                  json.loads(GOLDEN.read_text(encoding="utf-8")))
+                                  json.loads(GOLDEN.read_text(encoding="utf-8")), rel_tol=REL_TOL)
     assert difference is None, f"the read moved at {difference}"
+
+
+def test_the_tolerance_passes_rounding_and_nothing_larger():
+    assert first_difference({"a": [0.05445599912157338]}, {"a": [0.05445599912161214]}, rel_tol=REL_TOL) is None
+    assert first_difference({"a": [0.05445599912157338]}, {"a": [0.05445599912161214]}) == "$.a[0]: 0.05445599912157338 vs 0.05445599912161214"
+    assert first_difference({"a": 0.0544560}, {"a": 0.0544561}, rel_tol=REL_TOL) is not None      # the seventh digit: a change
+    assert first_difference({"a": 1}, {"a": 2}, rel_tol=REL_TOL) is not None                      # integers stay exact
+    assert first_difference({"a": 0.0}, {"a": 5e-10}, rel_tol=REL_TOL) is None                    # near zero: absolute
 
 
 if __name__ == "__main__":
