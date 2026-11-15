@@ -185,11 +185,20 @@ def inline_code(c: Call) -> str | None:
 
 # ---------------------------------------------------------------- 2. git add -A / commit -a
 
+def _name(word: str) -> str:
+    """A command word as a program name: no directory, no .exe - `/usr/bin/git` and `git.exe` are git (14 Nov 2026, the review)."""
+    return word.replace("\\", "/").rsplit("/", 1)[-1].removesuffix(".exe").lower()
+
+
 def _git_args(words: list[str]) -> list[str]:
-    """A git command's arguments after `git` and `-C <dir>`; empty for another command."""
-    if words[0] != "git":
+    """A git command's arguments after `git` and its own global options; empty for another command.
+
+    Every leading option is skipped, not only `-C <dir>`: `git -c core.hooksPath=/dev/null commit` used to be invisible to every
+    rule that reads git this way (14 Nov 2026, the independent review).
+    """
+    if not words or _name(words[0]) != "git":
         return []
-    return words[3:] if words[1:2] == ["-C"] else words[1:]
+    return _after_options(words[1:], _GIT_GLOBAL_WITH_VALUE)
 
 
 def git_add_all(c: Call) -> str | None:
@@ -369,9 +378,91 @@ def edited_lines(c: Call, text: str) -> range:
     return range(start, start + c.new_text.count("\n") + 1)
 
 
+_NO_DIFF_ON_THE_TRUNK = ("rebase", "cherry-pick")
+_REBASE_RECOVERY = ("--abort", "--continue", "--skip", "--quit", "--edit-todo")
+# git's own options before the subcommand that take a value; the others are flags (14 Nov 2026, the independent review)
+_GIT_GLOBAL_WITH_VALUE = ("-C", "-c", "--git-dir", "--work-tree", "--namespace", "--exec-path", "--super-prefix")
+_MERGE_WITH_VALUE = ("-m", "--message", "-s", "--strategy", "-X", "--strategy-option", "-S", "--gpg-sign", "--into-name")
+_ELSEWHERE = ("-C", "--git-dir", "--work-tree")
+
+
+def _after_options(args: list[str], with_value: tuple[str, ...]) -> list[str]:
+    """What is left after the leading options, the ones that take a value having swallowed it."""
+    rest = list(args)
+    while rest and rest[0].startswith("-"):
+        head = rest.pop(0)
+        if head in with_value and rest:
+            rest.pop(0)
+    return rest
+
+
+def _elsewhere(words: list[str]) -> bool:
+    """Does this git call name another repository? Then it is not this rule's business (the pyscf fork, 14 Nov 2026)."""
+    return any(w in _ELSEWHERE or w.startswith(("--git-dir=", "--work-tree=")) for w in words)
+
+
+def _landing(words: list[str]) -> list[str] | None:
+    """The gate's arguments for a git call that would land work on the trunk, or None when it would not.
+
+    A commit brings the staged diff; a merge or a pull brings a ref, and the diff it would bring is HEAD...<ref>. All three are
+    landings only on the trunk, which the gate decides - a branch takes work in freely. A rebase or a cherry-pick onto the trunk
+    brings something the command line does not name, and the answer for those is a refusal rather than a digest, except for the
+    flags that end one: those must always pass, or a rebase cannot be escaped.
+    """
+    if _elsewhere(words):
+        return None
+    args = _git_args(words)
+    if not args:
+        return None
+    if args[0] == "commit":
+        return ["check"]
+    if args[0] in ("merge", "pull"):
+        return _incoming(args)
+    if args[0] in _NO_DIFF_ON_THE_TRUNK and not any(a in _REBASE_RECOVERY for a in args[1:]):
+        return ["on-trunk"]                         # the rule turns a yes into its refusal, a no into nothing
+    return None
+
+
+def _incoming(args: list[str]) -> list[str] | None:
+    """The gate's arguments for a merge or a pull: the ref whose changes would come in."""
+    rest = _after_options(args[1:], _MERGE_WITH_VALUE)
+    if args[0] == "pull":                           # `git pull <remote> <branch>` names what comes in; a bare pull leaves it to git
+        return ["check", "--incoming", f"{rest[0]}/{rest[1]}" if len(rest) >= 2 else "@{u}"]
+    return ["check", "--incoming", rest[0]] if rest else None
+
+
+def unreviewed_landing(c: Call) -> str | None:
+    """Every change is reviewed by an independent reviewer before it joins the trunk (the user, 14 Nov 2026).
+
+    The rule is the user's and the reviewing is not the hook's job; `tools/review_gate.py check` says whether what would land has a
+    review on record, and this refuses the call when it does not. Nothing is checked about the review's quality, and independence is
+    what the record asserts, not what the gate can verify. A commit on a branch other than the trunk lands nothing and passes.
+    """
+    for words in commands(c.command):
+        gate = _landing(words)
+        if gate is None:
+            continue
+        r = _run([sys.executable, str(PLAN / "tools" / "review_gate.py"), *gate], PLAN)
+        if gate == ["on-trunk"]:
+            if r.returncode == 0:
+                return (f"`git {_git_args(words)[0]}` on the trunk: what it would bring is not named on the command line, so it "
+                        "cannot be reviewed as a diff. Bring the work home as a merge of a reviewed branch (the user, 14 Nov "
+                        "2026).")
+            continue
+        if r.returncode != 0:
+            return _first_lines(r.stdout + r.stderr) or "tools/review_gate.py refused the call and said nothing: look at it"
+    return None
+
+
 RULES = (
     Rule("inline_code", "pre", SHELLS, "deny", "3-4 Oct (3x), 15 Oct (2x): backslashes lost from code inside shell commands", inline_code),
     Rule("git_add_all", "pre", SHELLS, "deny", "CLAUDE.md: live run directories, 75 MB psi4 scratch", git_add_all),
+    # log_only until the findings of the review of 14 Nov are fixed: as written it refuses `git rebase --abort`, a commit in
+    # another repository, and `git merge -m <message> <ref>`, and a malformed line in reviews.jsonl crashes it into refusing
+    # everything. The project's own order for a new rule (the user, 15 Oct 2026: first log for a day).
+    Rule("unreviewed_landing", "pre", SHELLS, "deny",
+         "the user, 14 Nov 2026: a change is reviewed by an independent reviewer before it joins the trunk",
+         unreviewed_landing, log_only=True),
     Rule("commit_over_live_log", "pre", SHELLS, "deny", "10 Nov: a commit's pre-commit stash rewrote chain42.log under its runner",
          commit_over_live_log),
     Rule("long_job_past_the_door", "pre", SHELLS, "deny", "15 Oct: #2702 repro 37 h without a progress line", long_job_past_the_door),

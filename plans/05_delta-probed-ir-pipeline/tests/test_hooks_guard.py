@@ -186,7 +186,8 @@ def test_commands_reads_command_words_only():
 
 
 def test_every_rule_names_its_incident_and_a_known_decision():
-    assert len(G.RULES) == 9 and len({r.name for r in G.RULES}) == 9     # 27 Oct: clean_code_after_edit merged; 10 Nov: commit_over_live_log
+    # 27 Oct: clean_code_after_edit merged; 10 Nov: commit_over_live_log; 14 Nov: unreviewed_commit
+    assert len(G.RULES) == 10 and len({r.name for r in G.RULES}) == 10
     assert all(r.incident and r.decision in ("deny", "ask", "post") and r.event in ("pre", "post") for r in G.RULES)
 
 
@@ -262,3 +263,117 @@ def test_the_log_reader_counts_per_rule_and_lists_distinct_examples(tmp_path):
     assert "| git_add_all | deny | 3 | 1 |" in text and "## git_add_all: 2 distinct" in text and "... and 1 more" in text
     assert "no longer has: retired_rule" in text and text.isascii()
     assert RL.load(log, since="2026-10-16T02") == rows[2:]
+
+
+# ------------------------------------------- every diff is reviewed before it is committed (the user, 14 Nov 2026)
+
+
+def asked(monkeypatch, code: int = 0, out: str = "ok") -> list[list[str]]:
+    """Record what the rule asks the gate, and answer with `code`."""
+    calls: list[list[str]] = []
+
+    def run(args, _cwd):
+        calls.append([str(a) for a in args])
+        return subprocess.CompletedProcess(args, code, stdout=out, stderr="")
+
+    monkeypatch.setattr(G, "_run", run)
+    return calls
+
+
+def test_a_call_that_lands_nothing_is_left_alone(monkeypatch):
+    def never(*_a, **_k):
+        raise AssertionError("the gate was asked about a call that lands nothing")
+
+    monkeypatch.setattr(G, "_run", never)
+    assert G.unreviewed_landing(bash("git status --short")) is None
+    assert G.unreviewed_landing(bash("git add -u tools")) is None
+    assert G.unreviewed_landing(bash("git switch -c branch")) is None
+
+
+def test_a_commit_asks_about_the_staged_diff(monkeypatch):
+    calls = asked(monkeypatch)
+    assert G.unreviewed_landing(bash("git commit -F msg.txt")) is None
+    assert calls and calls[0][-1:] == ["check"]
+
+
+def test_a_merge_asks_about_what_the_branch_would_bring(monkeypatch):
+    calls = asked(monkeypatch)
+    assert G.unreviewed_landing(bash("git merge --no-ff my-branch")) is None
+    assert calls[0][-3:] == ["check", "--incoming", "my-branch"]
+
+
+def test_a_pull_asks_about_the_upstream(monkeypatch):
+    calls = asked(monkeypatch)
+    assert G.unreviewed_landing(bash("git pull")) is None
+    assert calls[0][-3:] == ["check", "--incoming", "@{u}"]
+
+
+def test_a_landing_with_no_review_is_refused(monkeypatch):
+    asked(monkeypatch, code=1, out="review gate: the staged diff for master (abc, 2 file(s)) has no independent review.\n")
+    reason = G.unreviewed_landing(bash("git commit -m 'x'"))
+    assert reason is not None and "no independent review" in reason
+
+
+def test_a_rebase_or_a_cherry_pick_on_the_trunk_is_refused_outright(monkeypatch):
+    asked(monkeypatch, code=0)                       # the gate says HEAD is the trunk
+    for command in ("git rebase origin/master", "git cherry-pick 1f561376", "git rebase -i HEAD~3"):
+        reason = G.unreviewed_landing(bash(command))
+        assert reason is not None and "merge of a reviewed branch" in reason
+
+
+def test_a_rebase_off_the_trunk_is_free(monkeypatch):
+    """Tidying a feature branch is the thing the rule wants to leave alone (14 Nov 2026, the review's B1)."""
+    asked(monkeypatch, code=1)                       # the gate says HEAD is not the trunk
+    assert G.unreviewed_landing(bash("git rebase -i HEAD~3")) is None
+
+
+def test_a_rebase_can_always_be_escaped(monkeypatch):
+    def never(*_a, **_k):
+        raise AssertionError("the recovery flags must not even reach the gate")
+
+    monkeypatch.setattr(G, "_run", never)
+    for command in ("git rebase --abort", "git rebase --continue", "git rebase --skip",
+                    "git cherry-pick --abort", "git rebase --quit", "git rebase --edit-todo"):
+        assert G.unreviewed_landing(bash(command)) is None
+
+
+def test_a_git_call_wearing_options_is_still_seen(monkeypatch):
+    """`git -c core.hooksPath=/dev/null commit` used to pass this rule and pre-commit together (14 Nov 2026, the review's A1)."""
+    for command in ("git -c core.hooksPath=/dev/null commit -m x", "git --no-pager commit -m x",
+                    "git.exe commit -m x", "/usr/bin/git commit -m x"):
+        calls = asked(monkeypatch)
+        assert G.unreviewed_landing(bash(command)) is None
+        assert calls and calls[0][-1:] == ["check"], command
+
+
+def test_a_call_aimed_at_another_repository_is_not_this_rules_business(monkeypatch):
+    """The pyscf fork: judging its commit by this repository's index made that worktree unusable (the review's B6)."""
+    def never(*_a, **_k):
+        raise AssertionError("another repository is not this rule's business")
+
+    monkeypatch.setattr(G, "_run", never)
+    assert G.unreviewed_landing(bash("git -C ../pyscf commit -m x")) is None
+    assert G.unreviewed_landing(bash("git -C ../pyscf rebase upstream/master")) is None
+    assert G.unreviewed_landing(bash("git --git-dir=../pyscf/.git commit -m x")) is None
+
+
+def test_a_merge_message_is_not_read_as_the_branch(monkeypatch):
+    """`git merge -m 'bring it home' side` asked git for a revision called 'bring it home' (the review's B2)."""
+    for command, incoming in (("git merge -m 'bring side home' side", "side"), ("git merge -X ours side", "side"),
+                              ("git merge -s recursive side", "side"), ("git merge --no-ff side", "side")):
+        calls = asked(monkeypatch)
+        G.unreviewed_landing(bash(command))
+        assert calls[0][-3:] == ["check", "--incoming", incoming], command
+
+
+def test_an_explicit_pull_names_what_comes_in(monkeypatch):
+    """`git pull origin master` ignored its own refspec and asked about @{u} (the review's B3)."""
+    calls = asked(monkeypatch)
+    G.unreviewed_landing(bash("git pull origin master"))
+    assert calls[0][-3:] == ["check", "--incoming", "origin/master"]
+
+
+def test_a_gate_that_refuses_without_a_word_still_says_something(monkeypatch):
+    asked(monkeypatch, code=1, out="")
+    reason = G.unreviewed_landing(bash("git commit -m 'x'"))
+    assert reason is not None and "said nothing" in reason

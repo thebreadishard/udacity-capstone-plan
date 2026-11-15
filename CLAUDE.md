@@ -78,6 +78,18 @@ before the commit — ruff's project set is the floor, not the bar:
 Never `git add -A`: the run directories are written live and `results_vpt2/benzene_vpt2_psi4.out` is
 75 MB of psi4 scratch. Name the paths. Compile-check first.
 
+Since 14 November 2026 (the user, after an independent review of that day's reads found six real things, two of them records
+already wrong on disk): **every change is reviewed by an independent reviewer before it joins the trunk.** The review is of
+the whole change, once, at the point where it would become part of what we have — not of every commit on the way there, so
+work on a branch is free and comes home reviewed. Give the diff to a **fresh** agent (not a fork: a fork inherits this
+context and is not independent) with the files, what is already ruled out and where the holes are suspected — not the
+verdict. Answer every finding, then record it with `python tools/review_gate.py record --reviewer <agent id> --findings <n>
+--verdict <one line>` (add `--incoming <branch>` for a merge) and land it. `guard.py`'s `unreviewed_landing` rule refuses a
+commit on the trunk, and a merge or a pull into it, when what would land has no record; a commit on another branch passes,
+and a rebase or a cherry-pick onto the trunk is refused because what it brings is not a diff the command line names. Changed
+content is a changed digest and needs its own review. The hook cannot do the reviewing and cannot verify independence —
+the record asserts it.
+
 ## Evidence
 Every number in a document traces to a run log or a source. `probes/check_reading_copy_numbers.py`
 audits the reading copy; write the equivalent script for any check that repeats. Mechanical checks are
