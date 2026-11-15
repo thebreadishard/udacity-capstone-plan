@@ -1,5 +1,6 @@
 """probes/v14_search.py on synthetic records: the frozen list (deterministic, in range, every configuration a valid trainer command), the
 plan's refusals, the score, the winner rule (no-worsening, two SE, the cap), and plan → read1 → read2 → read3 end to end."""
+import collections
 import json
 import sys
 from pathlib import Path
@@ -40,25 +41,41 @@ def test_the_list_is_frozen_in_range_and_holds_both_variants():
         assert c.body_width in V.SPACE["body_width"] and c.hybrid_hidden in V.SPACE["hybrid_hidden"]
     assert {c.parity for c in a} == {True, False}
     assert {c.target for c in a} == set(V.TARGETS)
+    assert {c.schedule for c in a} == set(V.SCHEDULES)
+    half = V.N_DRAWN // 2
+    assert sum(c.parity for c in a) == half and sum(c.target == V.CARRIED_TARGET for c in a) == half
+    assert sum(c.schedule == V.CARRIED_SCHEDULE for c in a) == half
+    pairs = [(lambda c: (c.parity, c.target)), (lambda c: (c.parity, c.schedule)), (lambda c: (c.target, c.schedule))]
+    for pair in pairs:                                           # every pair of two choices' values: three of the twelve
+        assert sorted(collections.Counter(pair(c) for c in a).values()) == [3, 3, 3, 3]
+    assert len({(c.parity, c.target, c.schedule) for c in a}) == 8
+    assert {(c.kring_weight, c.kdiag_weight) for c in a} == {(V.control().kring_weight, V.control().kdiag_weight)}
 
 
-def test_the_target_coin_leaves_every_other_drawn_value_as_it_was():
-    with_one_target = [V.replace(c, target=V.CARRIED_TARGET) for c in V.draw(target_seed=1)]
-    assert with_one_target == [V.replace(c, target=V.CARRIED_TARGET) for c in V.draw(target_seed=2)]
+def test_the_dealt_choices_leave_every_drawn_range_as_it_was():
+    def without_choices(configs):
+        return [V.replace(c, parity=False, target=V.CARRIED_TARGET, schedule=V.CARRIED_SCHEDULE) for c in configs]
+    assert without_choices(V.draw(choices_seed=1)) == without_choices(V.draw(choices_seed=2))
 
 
-def test_the_frozen_list_holds_the_control_and_its_two_ablations():
-    c, parity, target = V.frozen_list()[:3]
+def test_the_choices_are_dealt_as_one_design_in_a_seeded_order():
+    assert V.dealt_choices(12, seed=1) == V.dealt_choices(12, seed=1) != V.dealt_choices(12, seed=2)
+    assert len(set(V.dealt_choices(8, seed=1))) == 8                                  # the first eight: every combination once
+
+
+def test_the_frozen_list_holds_the_control_and_its_three_ablations():
+    c, parity, target, schedule = V.frozen_list()[:4]
     assert c == V.control() and c.target == V.CARRIED_TARGET and not c.parity
     assert parity == V.replace(c, name="c01_control_parity", parity=True)
     assert target == V.replace(c, name="c02_control_target", target="ls")
-    assert len(V.frozen_list()) == 3 + V.N_DRAWN and len({x.name for x in V.frozen_list()}) == 3 + V.N_DRAWN
+    assert schedule == V.replace(c, name="c03_control_schedule", schedule="cosine")
+    assert len(V.frozen_list()) == 4 + V.N_DRAWN and len({x.name for x in V.frozen_list()}) == 4 + V.N_DRAWN
 
 
 def test_the_control_is_the_carried_recipe():
     c = V.control()
-    assert (c.lr, c.weight_decay, c.body_width, c.body_blocks, c.hybrid_hidden, c.kring_weight, c.kdiag_weight, c.parity) == \
-           (3e-4, 1e-4, 64, 3, 256, 0.3, 0.1, False)
+    assert (c.lr, c.weight_decay, c.body_width, c.body_blocks, c.hybrid_hidden, c.kring_weight, c.kdiag_weight, c.parity, c.schedule) == \
+           (3e-4, 1e-4, 64, 3, 256, 0.3, 0.1, False, "constant")
 
 
 def test_every_configuration_is_a_valid_trainer_command():
@@ -67,13 +84,24 @@ def test_every_configuration_is_a_valid_trainer_command():
         cfg = config_from_argv(argv[2:])                      # past '{python}' and the script; refusals raise here
         assert (cfg.lr, cfg.weight_decay, cfg.body_width, cfg.hybrid_hidden) == (c.lr, c.weight_decay, c.body_width, c.hybrid_hidden)
         assert cfg.parity_odd_mixed == c.parity and cfg.pair_features == (not c.parity)
-        assert cfg.aux_target == c.target
+        assert cfg.aux_target == c.target and cfg.lr_schedule == c.schedule and cfg.seeds == "0"
+        assert cfg.patience == (V.EPOCH_CAP if c.schedule == "cosine" else 20)     # a cosine trains to its cap
+        assert (cfg.kring_weight, cfg.kdiag_weight) == (0.3, 0.1)
         assert cfg.pool_layers == V.POOL_LAYERS and cfg.selection_split == V.SELECTION and cfg.epochs == V.EPOCH_CAP
         assert argv.count("--lr") == 1
 
 
 def test_score_is_one_on_the_lines():
     assert V.score(ON_LINES) == pytest.approx(1.0)
+
+
+def test_the_cap_rule_is_the_constant_rates_only():
+    late = V.SeedRead({}, {}, best_epoch=V.EPOCH_CAP - 1, cap=V.EPOCH_CAP)
+    early = V.SeedRead({}, {}, best_epoch=100, cap=V.EPOCH_CAP)
+    assert V.at_cap(late, "constant") and not V.at_cap(early, "constant")
+    assert not V.at_cap(late, "cosine")                        # the cosine ends at the cap by construction
+    assert V.epoch_note(late, "constant").endswith("AT CAP") and V.epoch_note(late, "cosine").endswith("LATE")
+    assert V.epoch_note(early, "cosine") == "100"
 
 
 def stage2(name, scores, worse=(), cap=False):
@@ -135,15 +163,22 @@ def test_plan_to_read3_end_to_end(sandbox):
     stage1 = {c.name: 0.05 * k for k, c in enumerate(configs)}                      # the later the configuration, the better its score
     stage1["c00_control"] = 0.3
     for c in configs:
-        write_record(root, V.prefix(c, "s1"), {0: stage1[c.name]})
+        write_record(root, V.prefix(c, "s1a"), {0: stage1[c.name] + 0.01})
+        write_record(root, V.prefix(c, "s1b"), {1: stage1[c.name] - 0.01})
+    stage1_chain = json.loads((root / "probes" / "runs" / "v14_stage1.json").read_text(encoding="utf-8"))
+    trainings = [s for s in stage1_chain["steps"] if s["label"].startswith("train ")]
+    assert [s["argv"][s["argv"].index("--seeds") + 1] for s in trainings] == ["0"] * len(configs) + ["1"] * len(configs)
     V.cmd_read1()
-    chosen = json.loads((root / "m05" / V.OUT / "read1.json").read_text(encoding="utf-8"))["stage2"]
+    read1 = json.loads((root / "m05" / V.OUT / "read1.json").read_text(encoding="utf-8"))
+    chosen = read1["stage2"]
     assert chosen == [c.name for c in configs[::-1][:V.STAGE2_BEST]]
+    assert all(len(v) == len(V.STAGE1_SEEDS) for v in read1["seed_scores"].values())
+    stage2_chain = json.loads((root / "probes" / "runs" / "v14_stage2.json").read_text(encoding="utf-8"))
+    assert all(s["argv"][s["argv"].index("--seeds") + 1] == str(V.STAGE2_SEED) for s in stage2_chain["steps"][:-1])
     assert json.loads((root / "probes" / "runs" / "v14_stage2.json").read_text(encoding="utf-8"))["steps"][-1]["argv"][-1] == "read2"
     for c in configs:
         if c.name in [*chosen, "c00_control"]:
-            sh = stage1[c.name]
-            write_record(root, V.prefix(c, "s2"), {1: sh + 0.01, 2: sh - 0.01})
+            write_record(root, V.prefix(c, "s2"), {V.STAGE2_SEED: stage1[c.name]})
     V.cmd_read2()
     best = json.loads((root / "m05" / V.OUT / "read2.json").read_text(encoding="utf-8"))["winner"]
     assert best == chosen[0]
@@ -166,13 +201,18 @@ def test_read2_refuses_a_winner_at_the_cap(sandbox):
     root, carried = sandbox
     V.cmd_plan(carried)
     configs, _ = V.load_list()
-    for k, c in enumerate(configs):
-        write_record(root, V.prefix(c, "s1"), {0: 0.3 if k == 0 else 0.05 * k})
+    constant = [c.name for c in configs[4:] if c.schedule == "constant"][-1]        # the cap rule is the constant rate's
+    shift = {c.name: 0.3 if k == 0 else 0.05 * k for k, c in enumerate(configs)}
+    shift[constant] = 0.05 * len(configs) + 0.1                                     # the clear best of stage 1
+    for c in configs:
+        write_record(root, V.prefix(c, "s1a"), {0: shift[c.name]})
+        write_record(root, V.prefix(c, "s1b"), {1: shift[c.name] + 0.02})
     V.cmd_read1()
     chosen = json.loads((root / "m05" / V.OUT / "read1.json").read_text(encoding="utf-8"))["stage2"]
-    for k, c in enumerate(configs):
+    assert chosen[0] == constant
+    for c in configs:
         if c.name in [*chosen, "c00_control"]:
-            sh = 0.3 if k == 0 else 0.05 * k
-            write_record(root, V.prefix(c, "s2"), {1: sh, 2: sh + 0.02}, best_epoch=V.EPOCH_CAP if c.name == chosen[0] else 100)
+            write_record(root, V.prefix(c, "s2"), {V.STAGE2_SEED: shift[c.name] + 0.01},
+                         best_epoch=V.EPOCH_CAP if c.name == constant else 100)
     with pytest.raises(SystemExit, match="within 10% of the cap"):
         V.cmd_read2()

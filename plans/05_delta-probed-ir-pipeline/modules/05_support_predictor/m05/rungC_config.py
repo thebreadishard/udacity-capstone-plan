@@ -15,15 +15,18 @@ from collections.abc import Callable, Sequence
 from pathlib import Path
 from typing import Literal
 
+from internal_coords import PrimitiveSettings
 from learning_curve_layerA import FAMILIES
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
-from internal_coords import PrimitiveSettings
 from rungC_equivariant import AGGREGATION, AGGREGATIONS, AUX_WEIGHT, N_BLOCKS, N_S
 from rungC_targets import LAM_REL
 
 KRING_WEIGHT = 1.0
 HYBRID_HIDDEN = 128
 WEIGHT_DECAY = 1e-4
+LR_SCHEDULES = ("constant", "cosine")
+LR_WARMUP_EPOCHS = 5         # cosine: the rate climbs linearly to its value over these epochs, so a high rate does not meet a fresh head
+LR_FLOOR = 0.01              # cosine: the rate ends at this fraction of its value at the epoch cap, not at zero
 MAX_SELECTION_FRACTION = 0.3
 EPOCHS = 60
 SMOKE_EPOCHS = 2
@@ -32,6 +35,22 @@ SMOKE_HOLDOUT = 3
 NAMED_SIZES = ("all", "half")
 HYBRID_ONLY = {"sqm_scale": "--sqm-scale", "pair_features": "--pair-features", "parity_odd_mixed": "--parity-odd-mixed",
                "hinge_feature": "--hinge-feature", "save_model": "--save-model"}
+
+
+def learning_rate(lr: float, schedule: str, epoch: int, epochs: int) -> float:
+    """The learning rate of one epoch (0-based) of a run capped at `epochs`.
+
+    'constant' is `lr`. 'cosine' climbs linearly to `lr` over the first LR_WARMUP_EPOCHS epochs and then follows half a cosine down
+    to LR_FLOOR · lr at the last epoch of the cap; a run that early stopping ends sooner has simply used the first part of the curve.
+    """
+    if schedule == "constant":
+        return lr
+    if schedule != "cosine":
+        raise ValueError(f"lr schedule {schedule!r}: one of {LR_SCHEDULES}")
+    if epoch < LR_WARMUP_EPOCHS:
+        return lr * (epoch + 1) / LR_WARMUP_EPOCHS
+    progress = min((epoch - LR_WARMUP_EPOCHS + 1) / max(epochs - LR_WARMUP_EPOCHS, 1), 1.0)
+    return lr * (LR_FLOOR + (1.0 - LR_FLOOR) * 0.5 * (1.0 + math.cos(math.pi * progress)))
 
 
 class TrainConfig(BaseModel):
@@ -48,6 +67,7 @@ class TrainConfig(BaseModel):
     epochs: int | None = Field(None, ge=1)
     lr: float = Field(1e-3, gt=0)
     weight_decay: float = Field(WEIGHT_DECAY, ge=0)
+    lr_schedule: Literal["constant", "cosine"] = "constant"
     selection_split: str | None = None
     split: Literal["e6", "layerB"] = "e6"
     use_analytic: bool = False
@@ -291,6 +311,8 @@ CONFLICTS: tuple[tuple[Callable[[TrainConfig], object], str], ...] = (   # (trut
      "--ls-lam is the ridge of the ls/kfit targets; the projected target has none"),
     (lambda c: c.loss == "internal" and c.aux_weight != AUX_WEIGHT,
      "--aux-weight weighs the internal term beside the Cartesian one; --loss internal trains on the internal term alone"),
+    (lambda c: c.lr_schedule == "cosine" and c.epochs is not None and c.epochs <= LR_WARMUP_EPOCHS,
+     f"--lr-schedule cosine warms up over {LR_WARMUP_EPOCHS} epochs; --epochs must exceed that for the rate to come down at all"),
     (lambda c: c.patience and not c.inner_val,
      "--patience stops on the inner validation set; --inner-val 0 has none, so early stopping would be off"),
     (lambda c: c.pretrained and c.tensor_input,
@@ -334,6 +356,9 @@ def build_parser(description: str) -> argparse.ArgumentParser:
     ap.add_argument("--scale", default="rms", choices=["rms", "class"],
                     help="Cartesian head: output scale = training RMS ΔH (registered) or one per entry class")
     ap.add_argument("--weight-decay", type=float, default=WEIGHT_DECAY, help="AdamW's decoupled weight decay")
+    ap.add_argument("--lr-schedule", default="constant", choices=LR_SCHEDULES,
+                    help=f"'cosine' = a linear warm-up over {LR_WARMUP_EPOCHS} epochs, then a cosine from --lr down to {LR_FLOOR:g} of it at "
+                         "the epoch cap; 'constant' (the carried recipe) keeps --lr")
     ap.add_argument("--selection-split", default=None, metavar="SEED:FRACTION",
                     help="a selection set for choosing hyperparameters: whole scaffold cores drawn from the pool with this seed until "
                          "the fraction of the pool is reached; never trained, read as hold-out (sel)")
