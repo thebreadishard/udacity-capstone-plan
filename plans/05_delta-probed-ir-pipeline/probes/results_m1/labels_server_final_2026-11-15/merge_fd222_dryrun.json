@@ -1,0 +1,17 @@
+{
+ "source": "probes\\results_m1\\labels_server_final_2026-11-15\\fd222\\molecules",
+ "corpus": "modules\\05_support_predictor\\corpus\\molecules",
+ "dry_run": true,
+ "label_files": [
+  "hessian_b3lyp_analytic.npz",
+  "hessian_wb97x_analytic.npz",
+  "dipole_b3lyp_cphf.npz",
+  "analytic_check.json"
+ ],
+ "source_molecules": 222,
+ "to_copy": 888,
+ "refusals": [],
+ "identical": {},
+ "copied": {},
+ "error": null
+}
