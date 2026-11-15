@@ -50,11 +50,20 @@ the summary and licensed families, the error table with each seed's value, the t
 training Hessians were prepared, the limits (level, harmonic, domain, sizes, unlicensed families, the atom-order statement chosen from
 the recipe, uncorrected heights), the architecture with its parameter count, and the tensor files' sha256. No number is typed.
 
-Two things the card takes verbatim from this repository's records, to reword here before a release is public:
+Two things the card first took verbatim from this repository's records; both prepared the same day (the user: 'bereid de twee punten voor'):
 
-- the hold-outs' descriptions and the coupled-cluster note are `m08.accuracy`'s constants (`HOLDOUTS`, `CLEAN_A`, `CC_NOTE`) and name
-  internal things — 'TASKS 157', 'chain 34', 'layer-A', 'the anchor decision of November 2026'. `probes/aromir_model_card.py` is
-  the place to give the release a reader's wording;
-- the design note's sentence on the atom-order spread (up to 2.9 cm⁻¹ between two writings of phenanthrene, `probes/
-  network_invariance_check.py`) is not on the card: that number is in no release file. If the card should state it, the evaluation
-  record needs a field for it.
+- **The wording.** `probes/aromir_model_card.py` now maps `m08.accuracy`'s texts (`CLEAN_A`, `HOLDOUTS`, `CC_NOTE`), which name
+  tasks, chains and layers, to a reader's wording (`reader_wording`), keyed by the full text: a description that changes there, or a
+  new hold-out, is refused instead of reaching the card in the plan's words. **The wording is a proposal for the user to read:**
+  (a) 'eight molecules set aside on 19 September 2026, before any network was trained, and never trained on in any form (two more
+  molecules of that set, 2-naphthoic acid and benzonitrile, are left out of this read because the network had trained on them under
+  another identifier)'; (b) 'every substituted molecule of two ring scaffolds, set aside on 8 October 2026; the network trained on
+  no molecule of either scaffold'; coupled cluster 'not measured for this network version'. v1.3's record was regenerated with it
+  (aromir `tests/data/release/evaluation_v1.3.json`).
+- **The atom-order spread.** aromir's evaluation record takes an optional `atom_order_spread` (max_cm, n_molecules, n_orders,
+  source) and the card prints it; without it the card says the spread was not measured. The script reads it from a record of
+  `probes/network_invariance_check.py --what smiles --out`, refusing another kind of record or one that ran other models (tried on
+  four synthetic records: a good one, a zero, a 'permutation' record, a record of two of the three models). **The measurement itself
+  needs the models: laptop.** `python probes/network_invariance_check.py <corpus ids> --what smiles --seeds 5 --out <spread.json>`,
+  then `aromir_model_card.py evaluation … --order-spread <spread.json>`. Which molecules: the design note's 2.9 cm⁻¹ was phenanthrene;
+  stage 2's finding 3 asks for one whose geometry is less symmetric than its bond graph as well.
