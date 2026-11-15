@@ -1,7 +1,7 @@
 # Handoff — review gate, 14 November 2026
 
 Written from a cloud session so the Remote Control session "Udacity capstone plan"
-(`session_01VWdrJ55zPXMXxMRm6peAio`, laptop, context ~906k of 1M) can pick up after compaction. Source: that
+(laptop, context ~906k of 1M) can pick up after compaction. Source: that
 session's own transcript, turns 19:44–19:55 UTC. Its laptop process ended at 20:05:43 UTC (`host_exit`); the
 session was archived automatically and unarchived on the user's word.
 
