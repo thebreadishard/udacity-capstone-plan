@@ -1,0 +1,98 @@
+{
+ "network_version": "1.3",
+ "higher_level": "ωB97X/6-31G* (the DFT proxy: the network's ΔH is trained on ωB97X − B3LYP Hessians)",
+ "licence_line_cm": 3.0,
+ "holdouts": {
+  "a": {
+   "description": "eight molecules set aside on 19 September 2026, before any network was trained, and never trained on in any form (two more molecules of that set, 2-naphthoic acid and benzonitrile, are left out of this read because the network had trained on them under another identifier)",
+   "n_molecules": 8
+  },
+  "b": {
+   "description": "every substituted molecule of two ring scaffolds, set aside on 8 October 2026; the network trained on no molecule of either scaffold",
+   "n_molecules": 39
+  }
+ },
+ "errors_cm": {
+  "ring-ip": {
+   "a": 1.77,
+   "b": 2.12
+  },
+  "CH-stretch": {
+   "a": 1.19,
+   "b": 2.5
+  },
+  "CH-oop": {
+   "a": 2.17,
+   "b": 2.7
+  },
+  "other": {
+   "a": 3.62,
+   "b": 3.89
+  }
+ },
+ "seed_errors_cm": {
+  "ring-ip": {
+   "a": [
+    1.95,
+    1.68,
+    1.7
+   ],
+   "b": [
+    2.25,
+    2.02,
+    2.11
+   ]
+  },
+  "CH-stretch": {
+   "a": [
+    0.91,
+    1.74,
+    0.91
+   ],
+   "b": [
+    1.91,
+    3.51,
+    2.08
+   ]
+  },
+  "CH-oop": {
+   "a": [
+    2.47,
+    2.06,
+    1.99
+   ],
+   "b": [
+    2.44,
+    2.95,
+    2.72
+   ]
+  },
+  "other": {
+   "a": [
+    4.09,
+    3.27,
+    3.51
+   ],
+   "b": [
+    3.65,
+    4.51,
+    3.52
+   ]
+  }
+ },
+ "coupled_cluster": "not measured for this network version",
+ "sources": [
+  "E7_rungC_chain35_analytic_eval_frozenb_seed0.json",
+  "E7_rungC_chain35_analytic_eval_frozenb_seed1.json",
+  "E7_rungC_chain35_analytic_eval_frozenb_seed2.json",
+  "E7_rungC_chain35_analytic_a8read_seed0.json",
+  "E7_rungC_chain35_analytic_a8read_seed1.json",
+  "E7_rungC_chain35_analytic_a8read_seed2.json"
+ ],
+ "atom_order_spread": {
+  "max_cm": 10.73,
+  "n_molecules": 3,
+  "n_orders": 5,
+  "source": "order_spread_smiles.json"
+ }
+}

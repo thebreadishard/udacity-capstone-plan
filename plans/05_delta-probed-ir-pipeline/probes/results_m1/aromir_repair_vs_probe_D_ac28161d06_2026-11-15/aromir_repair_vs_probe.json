@@ -1,0 +1,23 @@
+{
+ "id": "D_ac28161d06",
+ "n_directions": 1,
+ "lowest_before_cm": {
+  "aromir": -7.4827222107327,
+  "probe": -7.4827222107882765
+ },
+ "lowest_after_cm": {
+  "aromir": 7.051823458369563,
+  "probe": 7.051584670383986,
+  "difference": 0.00023878798557763758
+ },
+ "largest_change_cm": 14.534545669102263,
+ "direction_overlap": 0.9999482924016866,
+ "curvature_along_own_direction_au": {
+  "aromir": 1.0333766689329941e-09,
+  "probe": 1.1003923934405728e-09
+ },
+ "cross_curvature_au": {
+  "probe_direction_on_aromir_column": 1.0303347982676902e-09,
+  "aromir_direction_on_probe_column": 1.030469087808795e-09
+ }
+}
