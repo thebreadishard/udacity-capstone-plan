@@ -352,11 +352,16 @@ def test_the_shell_never_inherits_stdin(monkeypatch):
 
 
 def test_a_relaunch_appends_to_the_log(monkeypatch):
+    """Since 14 Nov 2026 the job writes into a pipe and one `cat` appends, so two writers cannot overwrite each other;
+    a fresh launch empties the log first and the exit code comes from the job, not from cat (TASKS 214)."""
     calls = []
     monkeypatch.setattr(R.Shell, "_run", lambda self, args, timeout=120, cwd=None: calls.append(args) or subprocess.CompletedProcess(args, 0, "1", ""))
     R.Shell("bash").launch_laptop(spec())
     R.Shell("bash").launch_laptop(spec(), append=True)
-    assert ") > demo.log 2>&1" in calls[0][-1] and ") >> demo.log 2>&1" in calls[1][-1]
+    fresh, again = calls[0][-1], calls[1][-1]
+    assert ") 2>&1 | cat >> demo.log" in fresh and ": > demo.log;" in fresh
+    assert ") 2>&1 | cat >> demo.log" in again and ": > demo.log;" not in again
+    assert "${PIPESTATUS[0]} > demo.exit" in fresh
 
 
 # ---------------------------------------------------------------- the memory budget and unbuffered output (19 Oct 2026)
