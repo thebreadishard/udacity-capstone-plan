@@ -45,13 +45,13 @@ from analytic_hessians import (  # noqa: E402  (the corpus code lives in the mod
     AMU2AU,
     FUNCTIONALS,
     MAX_MEMORY_MB,
-    finish_by_newton,
     labels_ks,
     labels_mol,
     software,
 )
 from butterfly_scan import FINE_GRID, LABEL_GRID, write_json  # noqa: E402
 from grid_response_blocked import blocked_grid_response  # noqa: E402
+from scf_policy import LABEL_ROUTE, converged_scf  # noqa: E402
 from library_log import PYSCF_LOG_NAME  # noqa: E402
 from pyscf import lib  # noqa: E402
 from vibrations import signed_cm  # noqa: E402
@@ -159,7 +159,8 @@ def point_record(geometry: dict, coords: np.ndarray, cfg: FdConfig, grid: tuple[
     mf.conv_tol, mf.conv_tol_grad = CONV_TOL, CONV_TOL_GRAD
     energy = mf.kernel(dm0=dm0)
     if not mf.converged:
-        energy = finish_by_newton(mf)
+        # the shared policy's second-order fallback, which finish_by_newton became (TASKS 212, 14 Nov 2026)
+        mf, energy = converged_scf(mf, LABEL_ROUTE, log=lambda line: print(line, flush=True))
     if not mf.converged:
         raise RuntimeError(f"SCF not converged at grid {grid}")
     # nuc_grad_method imports the gradient module itself; mf.Gradients exists only once pyscf.grad.rks is imported (it failed 12 Nov 08:13)

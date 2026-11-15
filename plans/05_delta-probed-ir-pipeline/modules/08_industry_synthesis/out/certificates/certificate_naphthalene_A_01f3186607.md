@@ -1,4 +1,4 @@
-# Certificate — naphthalene (A_01f3186607), rung 4 · anchored — 2026-11-14 18:39
+# Certificate — naphthalene (A_01f3186607), rung 4 · anchored — 2026-11-15 02:48
 
 naphthalene: rung 4 (anchored). The cheap-level spectrum is served with the laboratory tolerance per family; no predicted correction is shown in this record — the pipeline serves it for the licensed families (ring-ip, CH-stretch, CH-oop; decision 65); the anchor coverage lists what coupled-cluster evidence exists and where it is wider than the tolerance.
 
@@ -61,7 +61,7 @@ Source: `modules/05_support_predictor/out/ANCHORS_STATUS.json`, the project's an
 
 ## Provenance
 
-- releases: layerA2_2026-09-23, layerA2_2026-09-23b, layerA2_2026-09-24, layerA_2026-09-22; deck 97ed2d67c66b; commit 1f561376; export built 2026-11-02T10:01:23Z
+- releases: layerA2_2026-09-23, layerA2_2026-09-23b, layerA2_2026-09-24, layerA_2026-09-22; deck 97ed2d67c66b; commit 04241d7f; export built 2026-11-02T10:01:23Z
 - evidence: modules/05_support_predictor/out/composite_full_naphthalene_2026-10-07.npz (exists); probes/results_m1/e8_naphthalene_ccpvdz_tlambda_2026-10-02/E8_locality_naphthalene.md (exists); probes/results_m1/M3_TZ_MODE22_READING_2026-09-23.md (exists)
 - licence: 3 families licensed (README.md, decision 65)
 - family rule: modules/03_lab_scoreboard/build_lab_tables.py FAMILY_RULE (12 Sep 2026)

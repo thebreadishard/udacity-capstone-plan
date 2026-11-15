@@ -31,6 +31,6 @@
   "network": "candidate generator",
   "version": "0.1",
   "chain": "reproduction of 14 Nov 2026 (run spec m06_seed2_repro)",
-  "note": "seed 2 trained once more by the registered protocol (m06/train.py, 20 epochs, 6 threads, the same dataset) into a dated folder of its own, so that one run's log, checkpoint and samples belong together (TASKS 20). Running since 14 Nov 16:53; the checkpoint is rewritten each epoch, so until the run ends this file is a partial model and no number of it is quoted. The 26 September numbers stay where they are; this is appended, as the rule of 28 September asks"
+  "note": "seed 2 trained once more by the registered protocol (m06/train.py, 20 epochs, 6 threads, the same dataset) into a dated folder of its own, so that one run's log, checkpoint and samples belong together (TASKS 20). Finished 15 Nov 2026 after 20 epochs: train 0.522, val 0.553, validity(200) 0.95 on the last epoch, against 0.923 for the 26 September seed-2 run and 0.647 for the reverted re-execution of 5 October. The 26 September numbers stay where they are; this is appended, as the rule of 28 September asks"
  }
 }

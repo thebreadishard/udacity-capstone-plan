@@ -7,7 +7,7 @@
              {"local": "modules/06_generative_candidates/m06/data.py"}, {"local": "modules/06_generative_candidates/m06/evaluate.py"}],
  "progress": {"regex": "^epoch |^train |^\\{", "max_gap_minutes": 90},
  "marker_regex": "^(train |epoch 20 )",
- "end_regex": "^epoch 20 ",
+ "end_regex": "^epoch 20:",
  "threads": 6,
  "estimate": {"hours": 10, "basis": "the stored seed-2 log (notebook/out/seed2/train_log_seed2.json): 20 epochs of 1,614-1,857 s, 9.33 h in all, on six threads; seed 1 took 11.59 h. The 1,313 s of the first version of this spec is one epoch, not the run, and the 90-minute progress gap is three times the longest stored epoch"},
  "memory": {"peak_gb": 3.0, "basis": "a 3 M-parameter decoder on CPU with batch 128; the notebook's own runs stayed inside the laptop's budget beside an 8-thread pyscf job"}}
