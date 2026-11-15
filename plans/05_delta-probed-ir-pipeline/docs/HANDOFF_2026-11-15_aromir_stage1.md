@@ -5,7 +5,7 @@ supervisor meeting of 25 Nov, preferably with network v1.4; decisions of that mo
 position included, v1.3 if v1.4 is late, the repository public, 0.1 = a working `aromir spectrum` with certificate and model card
 (PyPI, conda-forge, the Hub and the reproduction test stay with v1.0).
 
-## What is in `thebreadishard/aromir` (commit 4ef9586, branch `main`)
+## What is in `thebreadishard/aromir` (commits 4ef9586 and c976e44, branch `main`; CI green on Linux and macOS, Python 3.11 and 3.13)
 
 `src/aromir/`: `constants`, `errors`, `molecule` (Geometry), `admission` (the refusals), `geometry` (canonical order, start geometry),
 `dft` (the level, SCF with the second-order finish), `optimisation` (geomeTRIC), `response` (the kept response, the residual check, the
