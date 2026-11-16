@@ -18,6 +18,7 @@ import re
 import shutil
 import subprocess
 import sys
+import time
 from collections.abc import Callable
 from pathlib import Path
 from typing import ClassVar
@@ -434,6 +435,58 @@ def test_an_unseen_move_can_be_undone_to_where_the_gate_left_the_trunk(sb: Sandb
     assert "nothing moved it unseen" in sb.tool("status", "--unseen").stdout
 
 
+def test_a_move_back_does_not_launder_an_unseen_move(sb: Sandbox) -> None:
+    """Back to the known commit and forward again: the journal must not come to list the unseen commit as one the trunk
+    held (16 Nov 2026, the third review: the back-move's line had it as trunk_before, and that counted)."""
+    known, unseen = sb.rev(), sb.rev("side")
+    sb.git("switch", "-q", "--detach")
+    for _ in range(2):                                # back and forth, twice
+        sb.past_the_hooks("update-ref", MASTER, unseen)
+        since = len(sb.decisions())
+        sb.git("update-ref", MASTER, known)
+        line = sb.judged_landing(since)
+        assert (line["trunk_before"], line["held"]) == (known, True)
+        done = sb.try_git("update-ref", MASTER, unseen)
+        assert done.returncode != 0 and UNREVIEWED in done.stderr
+    assert unseen not in json.dumps([(d.get("trunk_before"), d.get("trunk_after")) for d in sb.decisions()])
+    sb.git("switch", "-q", "master")
+    sb.commit({"TASKS.md": "a row\n"}, "the trunk is where the gate left it, and free for the board")
+
+
+def test_what_log_only_let_land_is_not_a_commit_the_trunk_held(logging_sb: Sandbox) -> None:
+    """Under log_only a would-be-refused move lands, and a board-only commit on top of an unseen move passes: neither makes
+    a commit the trunk may freely return to once the gate refuses."""
+    sb, known = logging_sb, logging_sb.rev()
+    sb.git("merge", "-q", "side")
+    landed = sb.decisions()[-1]
+    assert (landed["trunk_after"], landed["allowed"], landed["held"]) == (sb.rev(), False, False)
+    sb.git("reset", "-q", "--hard", known)
+    sb.git("switch", "-q", "--detach")
+    sb.git("branch", "-C", "side", "master")
+    sb.git("switch", "-q", "master")
+    sb.commit({"TASKS.md": "a row\n"}, "board, on top of the unseen move")
+    on_top = sb.decisions()[-1]
+    assert (on_top["trunk_before"], on_top["trunk_after"], on_top["allowed"], on_top["held"]) == (known, sb.rev(), True, False)
+
+
+@pytest.mark.parametrize("swap", [{"never_reviewed": ["**"]}, {"log_only": True}])
+def test_an_unseen_move_is_not_judged_by_the_configuration_it_brought(sb: Sandbox, swap: dict) -> None:
+    """A commit that reviews nothing, or only logs, put on the trunk with the hooks off, used to make the next commits pass."""
+    sb.git("switch", "-q", "-c", "evil")
+    sb.configure(**swap)
+    sb.stage({"e.py": "evil\n", "tools/review_gate.json": (sb.repo / "tools" / "review_gate.json").read_text(encoding="utf-8")})
+    sb.git("commit", "-q", "-m", "code, and a configuration that waves it through")
+    sb.git("switch", "-q", "--detach")
+    sb.past_the_hooks("update-ref", MASTER, "evil")
+    sb.git("switch", "-q", "master")
+    for files in ({"TASKS.md": "a row\n"}, {"a.py": "three\n"}):
+        sb.stage(files)
+        done = sb.try_git("commit", "-q", "-m", "after the swap")
+        assert done.returncode != 0 and "without this hook" in done.stderr and "log only" not in done.stderr
+    status = sb.tool("status", "--unseen").stdout
+    assert "[code] e.py" in status and "[tooling config] tools/review_gate.json" in status and "the hook refuses" in status
+
+
 def test_an_unseen_move_of_unreviewed_paths_is_logged_and_passes(sb: Sandbox) -> None:
     sb.git("switch", "-q", "--detach")
     sb.git("branch", "-C", "docs", "master")
@@ -655,6 +708,19 @@ def test_a_pull_of_work_made_elsewhere_lands_after_its_review(sb: Sandbox) -> No
     assert (sb.repo / "e.py").exists() and "reviewed by agent-7" in sb.judged_landing(2)["reason"]
 
 
+def test_the_command_line_works_from_a_linked_worktrees_own_copy(sb: Sandbox) -> None:
+    """CLAUDE.md tells a session to run `python tools/review_gate.py status ...`, and sessions work in worktrees."""
+    linked = sb.root / "linked"
+    sb.git("worktree", "add", "-q", str(linked), "side")
+    done = sb.run([sys.executable, str(linked / "tools" / "review_gate.py"), "status", "--merge", "side"], cwd=linked)
+    assert done.returncode == 0 and "[code] s.py" in done.stdout, done.stderr
+    assert done.stdout == sb.tool("status", "--merge", "side").stdout
+    assert sb.run([sys.executable, str(linked / "tools" / "review_gate.py"), "record", "--merge", "side", "--reviewer", "w",
+                   "--findings", "0", "--verdict", "clean"], cwd=linked).returncode == 0
+    sb.git("merge", "-q", "side")                     # the record made in the worktree is the main checkout's too
+    assert "reviewed by w" in sb.judged_landing(1)["reason"]
+
+
 def test_a_merge_that_conflicts_has_no_key_until_it_is_resolved(sb: Sandbox) -> None:
     sb.commit({"TASKS.md": "the trunk's own row\n"}, "conflicts with docs")
     done = sb.tool("status", "--merge", "docs")
@@ -705,6 +771,18 @@ def test_parallel_records_all_arrive(sb: Sandbox) -> None:
     lines = [json.loads(line) for line in sb.state(R.RECORDS).read_text(encoding="utf-8").splitlines()]
     assert sorted(entry["reviewer"] for entry in lines) == [f"agent-{n}" for n in range(8)]
     assert not sb.state(R.RECORDS + ".lock").exists()
+
+
+def test_a_lock_left_by_a_dead_process_is_broken_and_logged(sb: Sandbox) -> None:
+    """A leftover lock cost eleven seconds and then refused every move of the trunk (16 Nov 2026, the third review)."""
+    lock = sb.state(R.DECISIONS + ".lock")
+    lock.write_text("pid 1 since long ago\n", encoding="utf-8")
+    long_ago = time.time() - R.LOCK_STALE_S - 5
+    os.utime(lock, (long_ago, long_ago))
+    started = time.monotonic()
+    done = sb.try_git("merge", "-q", "docs")
+    assert done.returncode == 0 and "broke decisions.log.lock" in done.stderr and time.monotonic() - started < R.LOCK_WAIT_S
+    assert sb.judged_landing(1)["allowed"] and "pid 1 since long ago" in sb.state("locks.log").read_text(encoding="utf-8")
 
 
 def test_a_lock_nobody_releases_is_named_instead_of_waited_for(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -853,8 +931,13 @@ def _python_not_there(sb: Sandbox) -> None:
 
 
 def _configuration_on_the_trunk_unreadable(sb: Sandbox) -> None:
-    (sb.repo / "tools" / "review_gate.json").write_text("{not json", encoding="utf-8")
-    sb.past_the_hooks("commit", "-q", "-m", "a broken configuration", "tools/review_gate.json")
+    """Landed with a record, the one way it can arrive: past the hooks it would be an unseen move, judged by the
+    configuration before it."""
+    sb.git("switch", "-q", "-c", "broken")
+    sb.commit({"tools/review_gate.json": "{not json"}, "a broken configuration")
+    sb.git("switch", "-q", "master")
+    sb.record("--merge", "broken")
+    sb.git("merge", "-q", "broken")
 
 
 BROKEN = {"review_gate.py missing": _gate_file_missing, "review_gate.py does not compile": _gate_file_does_not_compile,
@@ -867,7 +950,12 @@ def test_a_broken_installation_refuses_trunk_moves_only_with_the_repair_in_one_l
     done = sb.try_git("merge", "-q", "docs")
     assert done.returncode != 0
     ours = [line for line in done.stderr.splitlines() if line.startswith("review gate: this move of")]
-    assert len(ours) == 1 and "install_git_hooks.py install" in ours[0] and "uninstall" in ours[0]
+    assert len(ours) == 1
+    if how.startswith("the trunk"):                   # the gate ran and said why; `install` would mend nothing there
+        assert "reason it gave above" in ours[0] and "install" not in ours[0]
+        assert "cannot be read" in done.stderr and "install_git_hooks.py uninstall" in done.stderr
+    else:
+        assert "install_git_hooks.py install" in ours[0] and "uninstall" in ours[0]
     if how.startswith("the trunk"):
         sb.git("merge", "--abort")                    # that case left a true merge open; undoing it moves no ref and passes
     sb.git("switch", "-q", "side")                    # everything that is not the trunk still works
@@ -1017,6 +1105,13 @@ def test_an_exclusion_wins_over_every_class() -> None:
     assert config.reviewed_class("m/out/a.py") is None and config.reviewed_class("m/a.py") == "code"
 
 
+def test_a_configuration_with_a_key_twice_is_refused() -> None:
+    """json keeps the last value and the shim's grep finds the first: `log_only` twice would be two different switches."""
+    text = '{"log_only": true, ' + json.dumps(GOOD)[1:]
+    with pytest.raises(R.GateError, match="log_only is there more than once"):
+        R.parse_config(text, "a file")
+
+
 def test_a_missing_configuration_is_refused(tmp_path: Path) -> None:
     with pytest.raises(R.GateError, match="cannot be read"):
         R.load_config(tmp_path / "none.json")
@@ -1104,4 +1199,5 @@ def test_the_shim_starts_no_process_before_it_knows_the_trunk_moves(hook: str) -
     assert not any(word in early for word in ("$(", "`", "cat", "grep", "sed", "git ", "python"))
     assert ('[ "$1" = prepared ] || exit 0' in early) is (hook == "reference-transaction")
     assert '[ -x "$python" ] && [ -f "$gate" ]' in late and Path(sys.executable).as_posix() in late
+    assert "--trunk 'refs/heads/master' --config-path 'tools/review_gate.json'" in late
     assert hooks.GATE.as_posix() in late and f'[ "$status" = {R.REFUSED} ] && exit 1' in late

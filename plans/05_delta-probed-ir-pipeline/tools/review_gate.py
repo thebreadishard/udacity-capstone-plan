@@ -44,7 +44,8 @@ records, never ancestry, so grafts and a shallow boundary cannot bend it.
 **The records.** `<git common dir>/review-gate/records.jsonl`, one JSON line per review, shared by every worktree and outside any
 tree - a record tracked in the tree could never name the tree that contains it. `tools/reviews.jsonl` is the tracked copy for
 later readers, written by `export` after the fact; nothing reads it back. `decisions.log` beside the records is the journal: one
-line per judged move, with the trunk's commit before and after. Both are appended under a lock file.
+line per judged move, with the trunk's commit before and after. Both are appended under a lock file; a lock left by a process
+that died is broken once it is a minute old, and `locks.log` says so.
 
     python tools/review_gate.py status [--staged | --merge <ref> | --tip <ref> | --unseen]   what lands, its reviewed paths, its key
     python tools/review_gate.py check  [--staged | --merge <ref> | --tip <ref> | --unseen]   exit 1 when it would be refused
@@ -60,12 +61,15 @@ line per judged move, with the trunk's commit before and after. Both are appende
 `git branch -C <branch> <trunk>` fires nothing, `-M` only the deletion of the trunk), and a call with `-c core.hooksPath=...` or
 an edit under `.git` runs no hook at all. So the next hook compares: a trunk that is not where the journal's last line left it
 was moved unseen, and that move is judged first, from the commit the gate last knew - like any landing, with `record --unseen`
-as its record. Until it has one, no further move of the trunk and no push of it passes, except a move back to a commit the
-journal lists. `install` writes the first line, so the gate starts from the trunk as it is.
+as its record, and under the configuration of that last known commit, not the one the unseen move brought. Until it has
+one, no further move of the trunk and no push of it passes, except a move back to a commit the gate let the trunk onto.
+`install` writes the first line, so the gate starts from the trunk as it is.
 
 **Decisions a reader should know.**
-* The trunk may always move to a commit the journal lists as one it held: an undo lands nothing that was not there. Being an
-  ancestor is not enough - `git merge -s ours <branch>` makes any branch an ancestor without landing a line of it.
+* The trunk may always move to a commit the gate itself let it onto (a journal line marked `held`): an undo lands nothing
+  that was not there. Being an ancestor is not enough - `git merge -s ours <branch>` makes any branch an ancestor without
+  landing a line of it - and neither is having been found on the trunk: a commit that arrived unseen, or landed only
+  because of log_only, is judged like any other when the trunk goes there again.
 * Deleting the trunk lands nothing and is logged. Refusing it would do harm: `git branch -M <branch> <trunk>` deletes
   <branch> before it asks about the trunk and does not put it back when refused (tested); the renamed trunk is caught as an
   unseen move instead. Creating the trunk is a landing onto no code at all. Making it a symbolic ref is refused: later moves
@@ -84,7 +88,11 @@ after `decisions.log` is removed; `install_git_hooks.py check` says whether the 
 skips `pre-push`, and a remote runs none of this: the remote's trunk is protected only by the guard's rule against that flag
 and by what the remote itself enforces. A refusal comes after git has built what it would land, so a refused fast-forward or
 pull leaves the index and the working tree changed (the message names the command that puts them back); `check` before the
-command avoids that. A commit made elsewhere is judged when it arrives on the local trunk.
+command avoids that. A commit made elsewhere is judged when it arrives on the local trunk. The shim runs this file from the
+main checkout's working tree, so an uncommitted edit of it changes the gate: running the trunk's copy instead would put a git
+call and a cache in front of every trunk move and take away the way to try a mended gate before it lands, while the file is a
+reviewed path and an edit of it shows in `git status`. If this file does not compile, `install_git_hooks.py` cannot be
+imported either: restore the file (`git checkout -- tools/review_gate.py`) before `uninstall`.
 """
 from __future__ import annotations
 
@@ -109,6 +117,7 @@ DECISIONS = "decisions.log"
 REJECTED = {RECORDS: "records.rejected.jsonl", DECISIONS: "decisions.rejected.log"}
 GIT_TIMEOUT_S = 30                   # every git call the gate makes; a git that hangs is a refusal with this reason, not a hung hook
 LOCK_WAIT_S = 10
+LOCK_STALE_S = 60                    # nothing the gate does under a lock takes a second
 ID_LENGTH = 20                       # hex digits kept of each code-state digest
 RECORD_FIELDS = ("key", "reviewer", "findings", "verdict")
 CONFIG_FIELDS = ("trunk", "log_only", "reviewed", "never_reviewed")
@@ -179,9 +188,19 @@ class GateConfig:
                      if any(_matcher(p).fullmatch(path) for p in patterns)), None)
 
 
+def _no_duplicate_keys(pairs: list[tuple[str, object]]) -> dict[str, object]:
+    """json keeps the last of two equal keys, and the shim's grep finds the first: `log_only` written twice would be one
+    thing to the gate and another to the shim. Such a file is no configuration."""
+    keys = [key for key, _ in pairs]
+    twice = sorted({key for key in keys if keys.count(key) > 1})
+    if twice:
+        raise ValueError(f"the key {', '.join(twice)} is there more than once")
+    return dict(pairs)
+
+
 def parse_config(text: str, source: str) -> GateConfig:
     try:
-        raw = json.loads(text)
+        raw = json.loads(text, object_pairs_hook=_no_duplicate_keys)
     except ValueError as e:
         raise GateError(f"{source}: the gate's configuration cannot be read: {e}") from e
     if not isinstance(raw, dict) or sorted(raw) != sorted(CONFIG_FIELDS):
@@ -202,12 +221,18 @@ def load_config(path: Path = CONFIG) -> GateConfig:
 
 # ---------------------------------------------------------------- git, and the configuration the trunk holds
 
-def run_git(cwd: Path | None, *args: str, ok: tuple[int, ...] = (0,)) -> subprocess.CompletedProcess[str]:
-    """One git call of the gate: real objects only (no replacement refs), bounded in time, an unexpected exit is the reason."""
+_NAMES_A_REPOSITORY = ("GIT_DIR", "GIT_WORK_TREE", "GIT_COMMON_DIR", "GIT_INDEX_FILE", "GIT_PREFIX")
+
+
+def run_git(cwd: Path | None, *args: str, ok: tuple[int, ...] = (0,), own_checkout: bool = False,
+            ) -> subprocess.CompletedProcess[str]:
+    """One git call of the gate: real objects only (no replacement refs), bounded in time, an unexpected exit is the reason.
+    `own_checkout` asks about the checkout `cwd` is in, whatever repository a hook's GIT_* variables name."""
+    env = {k: v for k, v in os.environ.items() if not (own_checkout and k in _NAMES_A_REPOSITORY)}
+    env["GIT_NO_REPLACE_OBJECTS"] = "1"
     try:
         done = subprocess.run(["git", *args], cwd=cwd, capture_output=True, text=True, encoding="utf-8",
-                              errors="surrogateescape", timeout=GIT_TIMEOUT_S, check=False,
-                              env=os.environ | {"GIT_NO_REPLACE_OBJECTS": "1"})
+                              errors="surrogateescape", timeout=GIT_TIMEOUT_S, check=False, env=env)
     except (OSError, subprocess.TimeoutExpired) as e:
         raise GateError(f"git {' '.join(args)} did not run: {e}") from e
     if done.returncode not in ok:
@@ -220,14 +245,11 @@ def common_dir(cwd: Path | None) -> Path:
     return Path(run_git(cwd, "rev-parse", "--path-format=absolute", "--git-common-dir").stdout.strip())
 
 
-def tracked_config_path(cwd: Path | None) -> str:
-    """The configuration's path inside the repository's trees: this module's checkout is the main one, beside `.git`."""
-    top = common_dir(cwd).parent
-    try:
-        return CONFIG.relative_to(top.resolve()).as_posix()
-    except ValueError:
-        raise GateError(f"{CONFIG} is not inside the repository at {top}, so the trunk cannot hold the gate's "
-                        "configuration") from None
+@functools.cache
+def tracked_config_path() -> str:
+    """The configuration's path inside the repository's trees, asked of the checkout this file is in - the main one or a
+    linked worktree, the path is the same (16 Nov 2026: derived from the main checkout, it failed in every worktree)."""
+    return run_git(CONFIG.parent, "rev-parse", "--show-prefix", own_checkout=True).stdout.strip() + CONFIG.name
 
 
 @functools.cache
@@ -236,11 +258,10 @@ def commit_at(cwd: Path | None, rev: str) -> str | None:
     return run_git(cwd, "rev-parse", "--verify", "--quiet", f"{rev}^{{commit}}", ok=(0, 1)).stdout.strip() or None
 
 
-def config_on(cwd: Path | None, commit: str | None) -> GateConfig | None:
-    """The configuration a commit holds, None when it holds none."""
+def config_on(cwd: Path | None, commit: str | None, path: str) -> GateConfig | None:
+    """The configuration a commit holds at `path`, None when it holds none."""
     if commit is None:
         return None
-    path = tracked_config_path(cwd)
     blob = run_git(cwd, "cat-file", "blob", f"{commit}:{path}", ok=(0, 128))
     if blob.returncode == 0:
         return parse_config(blob.stdout, f"{commit[:10]}:{path}")
@@ -249,13 +270,34 @@ def config_on(cwd: Path | None, commit: str | None) -> GateConfig | None:
     return None
 
 
-def open_gate(cwd: Path | None = None, trunk: str | None = None) -> Gate:
-    """The gate for the repository git finds from `cwd`, under the configuration its trunk holds now - at a hook, the commit
-    the move starts from. `trunk` is the ref a shim was installed for; without it the file beside this module names it."""
+def read_journal(cwd: Path | None, trunk: str) -> list[tuple[str | None, str | None, bool]]:
+    """(trunk before, trunk after, held) of every move judged for this trunk, oldest first. `held` says the gate let the
+    trunk onto `after`: only such a commit is one the trunk may return to."""
+    return [(e["trunk_before"], e["trunk_after"], e.get("held") is True)
+            for e in read_state(common_dir(cwd) / STATE_DIR / DECISIONS) if e.get("trunk") == trunk]
+
+
+def last_known(journal: list[tuple[str | None, str | None, bool]]) -> str | None:
+    """The commit the journal's last line left the trunk at; after a deletion, the last commit it had."""
+    return journal[-1][1] or journal[-1][0]
+
+
+def open_gate(cwd: Path | None = None, trunk: str | None = None, config_path: str | None = None) -> Gate:
+    """The gate for the repository git finds from `cwd`, under the configuration of the commit the gate last knew the trunk
+    at: the trunk itself - at a hook, the commit the move starts from - unless it was moved unseen, and then the journal's
+    last commit, so that an unseen move is never judged by the configuration it brought. `trunk` and `config_path` are what
+    a shim was installed with; without them the file beside this module and its own checkout say."""
     name = trunk or load_config().trunk
     if not _TRUNK.fullmatch(name):
         raise GateError(f"trunk {name!r}: a full branch ref is expected, like refs/heads/master")
-    config = config_on(cwd, commit_at(cwd, name)) or load_config()
+    now, journal = commit_at(cwd, name), read_journal(cwd, name)
+    judged_from = now if not journal or now == journal[-1][1] else last_known(journal)
+    try:
+        config = config_on(cwd, judged_from, config_path or tracked_config_path()) or load_config()
+    except GateError as e:
+        raise GateError(f"{e}\n  No move of {name} can be judged while that commit holds this configuration, the one that "
+                        "would mend it included: `python tools/install_git_hooks.py uninstall`, land the mended file, "
+                        "`install` again.") from e
     if config.trunk != name:
         raise GateError(f"the configuration on {name} names {config.trunk} as the trunk: land that change on {config.trunk} "
                         "too and run `python tools/install_git_hooks.py install`")
@@ -297,7 +339,8 @@ class Verdict:
     allowed: bool
     reason: str
     key: str | None = None
-    move: tuple[str | None, str | None] | None = None    # the trunk's commit before and after, for a move this hook governs
+    move: tuple[str | None, str | None] | None = None    # the trunk's commit before and after, for the journal
+    happened: bool = False     # an unseen move: the trunk is there already, whatever this transaction's fate
 
 
 def code_id(entries: dict[str, str]) -> str:
@@ -364,25 +407,55 @@ def _replace_text(path: Path, text: str) -> None:
     os.replace(tmp, path)
 
 
-def _append_line(path: Path, line: str) -> None:
-    """One line at the end of a file that several processes write (eight parallel `record` calls lost two lines to a
-    read-modify-write, 16 Nov 2026): the lock file is created exclusively, and whoever holds it appends."""
-    path.parent.mkdir(parents=True, exist_ok=True)
-    lock = path.with_name(path.name + ".lock")
+def _take_lock(lock: Path) -> None:
+    """Create the lock file exclusively. A lock older than LOCK_STALE_S was left by a process that died (a leftover lock
+    cost eleven seconds and then refused every move of the trunk, 16 Nov 2026): it is broken, and `locks.log` says so."""
     deadline = time.monotonic() + LOCK_WAIT_S
     while True:
         try:
-            os.close(os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY))
-            break
+            fd = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
         except (FileExistsError, PermissionError) as e:      # Windows answers PermissionError while the holder removes it
+            if _broke_stale(lock):
+                continue
             if time.monotonic() > deadline:
-                raise GateError(f"{lock} has been held for {LOCK_WAIT_S} s: delete it if no review_gate.py is running") from e
+                raise GateError(f"{lock} has been held for {LOCK_WAIT_S} s: it is broken by itself once it is {LOCK_STALE_S} s "
+                                "old, or delete it if no review_gate.py is running") from e
             time.sleep(0.02)
+        else:
+            with os.fdopen(fd, "w", encoding="utf-8") as fh:
+                fh.write(f"pid {os.getpid()} since {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
+            return
+
+
+def _broke_stale(lock: Path) -> bool:
+    try:
+        age = time.time() - lock.stat().st_mtime
+        if age <= LOCK_STALE_S:
+            return False
+        holder = lock.read_text(encoding="utf-8").strip() or "nobody on record"
+        lock.unlink()
+    except FileNotFoundError:
+        return True                              # released or broken by another process meanwhile: try again
+    except OSError:
+        return False                             # its holder is at work on it: wait as for any held lock
+    note = f"{time.strftime('%Y-%m-%d %H:%M:%S')} broke {lock.name}, {age:.0f} s old, left by {holder}"
+    with lock.with_name("locks.log").open("a", encoding="utf-8", newline="\n") as fh:
+        fh.write(note + "\n")
+    print(f"review gate: {note}", file=sys.stderr)
+    return True
+
+
+def _append_line(path: Path, line: str) -> None:
+    """One line at the end of a file that several processes write (eight parallel `record` calls lost two lines to a
+    read-modify-write, 16 Nov 2026): whoever holds the lock file appends."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    lock = path.with_name(path.name + ".lock")
+    _take_lock(lock)
     try:
         with path.open("a", encoding="utf-8", newline="\n") as fh:
             fh.write(line + "\n")
     finally:
-        os.unlink(lock)
+        lock.unlink(missing_ok=True)
 
 
 def _set_aside(path: Path) -> tuple[int, int]:
@@ -442,14 +515,14 @@ class Gate:
         return common_dir(self.cwd) / STATE_DIR
 
     @functools.cached_property
-    def journal(self) -> list[tuple[str | None, str | None]]:
-        """(trunk before, trunk after) of every move a hook judged for this trunk, oldest first; read once per call."""
-        return [(e["trunk_before"], e["trunk_after"]) for e in read_state(self.state_dir / DECISIONS)
-                if e.get("trunk") == self.config.trunk]
+    def journal(self) -> list[tuple[str | None, str | None, bool]]:
+        """The journal's lines for this trunk (read_journal); read once per call."""
+        return read_journal(self.cwd, self.config.trunk)
 
     def held(self, commit: str) -> bool:
-        """Has the trunk been at this commit, by the journal?"""
-        return any(commit in pair for pair in self.journal)
+        """Did the gate let the trunk onto this commit? Where the trunk merely was found is not enough: a commit that
+        arrived unseen would be laundered by one move back and forth (16 Nov 2026, the third review)."""
+        return any(after == commit and held for _, after, held in self.journal)
 
     def commit_of(self, rev: str) -> str | None:
         """The commit a revision names, None when it names nothing."""
@@ -556,10 +629,9 @@ class Gate:
 
     def unseen_move(self, now: str | None) -> tuple[str | None, str | None] | None:
         """(the commit the gate last knew, the trunk now) when the trunk is not where the journal's last line left it."""
-        if not self.journal or now in self.journal[-1]:
+        if not self.journal or now == self.journal[-1][1]:       # not the line's before: the trunk left that commit
             return None
-        before, after = self.journal[-1]
-        return after or before, now              # after a deletion the last commit the trunk had is the one to compare with
+        return last_known(self.journal), now
 
     def unseen(self) -> Landing | None:
         """The unseen move as a landing, for the command line; None when there is none."""
@@ -572,30 +644,34 @@ class Gate:
                             "--unseen")
 
     def judge_unseen(self, now: str | None) -> Verdict | None:
-        """The verdict on a move of the trunk no hook saw; None when the trunk is where the gate left it."""
+        """The verdict on a move of the trunk no hook saw; None when the trunk is where the gate left it. A pass is a move
+        the gate lets stand, and is journalled as one."""
         move = self.unseen_move(now)
         if move is None:
             return None
         inner = self.judge_move(move[0], move[1], "--unseen")
         lead = (f"{self.config.trunk} was moved {_short(move[0])} -> {_short(move[1])} without this hook (a branch copied or "
                 "renamed over it, hooks switched off, an edit under .git), and that move is judged before any other. ")
-        return replace(inner, reason=lead + inner.reason)
+        return replace(inner, reason=lead + inner.reason, move=move if inner.allowed else None, happened=True)
 
-    def after_unseen(self, now: str | None, judge: Callable[[], list[Verdict]]) -> list[Verdict]:
-        """The verdicts of `judge`, behind the one on an unseen move - alone when the gate refuses that one."""
+    def after_unseen(self, now: str | None, judge: Callable[[str | None], list[Verdict]]) -> list[Verdict]:
+        """The verdicts of `judge`, behind the one on an unseen move - alone when the gate refuses that one. `judge` is
+        given the commit its journal lines start from: the trunk, or the last commit the gate knew when the trunk's own
+        was not let stand."""
         unseen = self.judge_unseen(now)
         if unseen is None:
-            return judge()
+            return judge(now)
         if not unseen.allowed and not self.config.log_only:
             return [unseen]
-        return [unseen, *judge()]
+        return [unseen, *judge(now if unseen.allowed else last_known(self.journal))]
 
     def baseline(self, hook: str) -> bool:
         """Start the journal from the trunk as it is, unless it has a line for this trunk already; whether it was written."""
         if self.journal:
             return False
         now = self.commit_of(self.config.trunk)
-        self.log(hook, Verdict(True, f"the gate starts from {self.config.trunk} at {_short(now)}", move=(now, now)), lands=True)
+        self.log(hook, Verdict(True, f"the gate starts from {self.config.trunk} at {_short(now)}", move=(now, now)),
+                 lands=True, held=True)
         return True
 
     # ------------------------------------------------------------ the hooks
@@ -614,19 +690,21 @@ class Gate:
         if not moves:                            # the trunk stays where it is: putting a working tree back must always work
             return []
 
-        def judged() -> list[Verdict]:
-            return [self._governed(old, new) for new in moves]
+        def judged(before: str | None) -> list[Verdict]:
+            return [self._governed(old, new, before) for new in moves]
 
-        if all(new is not None and self.held(new) for new in moves):
-            return judged()                      # back to where the gate knew the trunk: also the way out of an unseen move
+        unseen = self.unseen_move(old)
+        if unseen and all(new is not None and self.held(new) for new in moves):
+            return judged(unseen[0])             # back to where the gate let the trunk: also the way out of an unseen move
         return self.after_unseen(old, judged)
 
-    def _governed(self, old: str | None, new: str | None) -> Verdict:
-        """The verdict on one move of this repository's trunk, with what the journal needs and the way back after a refusal."""
+    def _governed(self, old: str | None, new: str | None, before: str | None) -> Verdict:
+        """The verdict on one move of this repository's trunk from `old`, with the way back after a refusal and what the
+        journal needs: `before` is the commit the gate knew the trunk at, which is `old` unless that arrived unseen."""
         verdict = self.judge_move(old, new)
         after = self.commit_of(new.removeprefix("ref:")) if new and new.startswith("ref:") else new
         advice = "" if verdict.allowed or new is None or new.startswith("ref:") else _put_back(new)
-        return replace(verdict, reason=verdict.reason + advice, move=(old, after))
+        return replace(verdict, reason=verdict.reason + advice, move=(before, after))
 
     def on_pre_push(self, updates: str) -> list[Verdict]:
         """One verdict per pushed ref that lands on a remote's trunk: `<local ref> <local oid> <remote ref> <remote oid>`."""
@@ -635,25 +713,27 @@ class Gate:
         if not pushes:
             return []
         now = self.commit_of(self.config.trunk)
-        return self.after_unseen(now, lambda: [self.judge_push(new, remote_old) for new, remote_old in pushes])
+        return self.after_unseen(now, lambda _before: [self.judge_push(new, remote_old) for new, remote_old in pushes])
 
-    def log(self, hook: str, verdict: Verdict, *, lands: bool) -> None:
-        """One line of the journal. A governed move also says where it leaves the trunk: at the new commit when the
-        transaction goes on (`lands`), at the old one when the gate refuses it."""
+    def log(self, hook: str, verdict: Verdict, *, lands: bool, held: bool) -> None:
+        """One line of the journal. A governed move also says where it leaves the trunk - at the new commit when the
+        transaction goes on (`lands`), at the old one when the gate refuses it - and whether the gate let it there (`held`):
+        under log_only a move lands that the gate would refuse, and that commit is not one to return to freely."""
         entry = {"time": time.strftime("%Y-%m-%d %H:%M:%S"), "hook": hook, "allowed": verdict.allowed,
                  "refused": not verdict.allowed and not self.config.log_only, "key": verdict.key,
                  "reason": verdict.reason.splitlines()[0]}
         if verdict.move:
             entry.update(trunk=self.config.trunk, trunk_before=verdict.move[0],
-                         trunk_after=verdict.move[1] if lands else verdict.move[0])
+                         trunk_after=verdict.move[1] if lands else verdict.move[0], held=held and lands)
         _append_line(self.state_dir / DECISIONS, json.dumps(entry, sort_keys=True))
 
     def settle(self, hook: str, verdicts: list[Verdict]) -> int:
         """Log every verdict, print the refusals, and give the hook's exit code: REFUSED only when the gate acts."""
         refused = [v for v in verdicts if not v.allowed]
         acts = bool(refused) and not self.config.log_only
-        for verdict in verdicts:
-            self.log(hook, verdict, lands=not acts)
+        for verdict in verdicts:             # an unseen move has happened already, whatever becomes of this transaction
+            self.log(hook, verdict, lands=verdict.happened or not acts,
+                     held=verdict.allowed if verdict.happened else not refused)
         prefix = "review gate (log only, nothing is refused): " if self.config.log_only else "review gate: "
         for verdict in refused:
             print(prefix + verdict.reason, file=sys.stderr)
@@ -672,10 +752,6 @@ class Gate:
             entry["note"] = review.note
         _append_line(path, json.dumps(entry, sort_keys=True))
         return entry
-
-    def repair(self) -> dict[str, tuple[int, int]]:
-        """Set aside the malformed lines of the records and of the journal; file name -> (kept, set aside)."""
-        return {name: _set_aside(self.state_dir / name) for name in _PARSERS}
 
     def export(self, target: Path) -> int:
         """Add the records the tracked log does not hold yet; the number added."""
@@ -783,6 +859,7 @@ def _parser() -> argparse.ArgumentParser:
     hook = sub.add_parser("hook", help="what the installed shims call, with the updates on stdin")
     hook.add_argument("hook", choices=("reference-transaction", "pre-push"))
     hook.add_argument("--trunk", required=True, help="the trunk ref the shim was installed for")
+    hook.add_argument("--config-path", help="the configuration's path inside the repository, as the shim was installed with")
     hook.add_argument("rest", nargs="*", help="reference-transaction: the state; pre-push: the remote's name and URL")
     sub.add_parser("repair", help="set the malformed lines of the records and of the journal aside")
     export = sub.add_parser("export", help="add the records to the tracked log, for later readers")
@@ -790,11 +867,13 @@ def _parser() -> argparse.ArgumentParser:
     return ap
 
 
+def repair(cwd: Path | None = None) -> dict[str, tuple[int, int]]:
+    """Set aside the malformed lines of the records and of the journal; file name -> (kept, set aside). It opens no gate:
+    a journal that cannot be read is what it is for."""
+    return {name: _set_aside(common_dir(cwd) / STATE_DIR / name) for name in _PARSERS}
+
+
 def _dispatch(gate: Gate, a: argparse.Namespace) -> int:
-    if a.what == "repair":
-        for name, (kept, aside) in gate.repair().items():
-            print(f"review gate: {name}: {kept} line(s) kept, {aside} malformed line(s) moved to {REJECTED[name]}")
-        return 0
     if a.what == "export":
         print(f"review gate: {gate.export(a.to)} record(s) added to {a.to}")
         return 0
@@ -812,11 +891,15 @@ def main(argv: list[str] | None = None) -> int:
         stream.reconfigure(errors="backslashreplace")
     is_hook = a.what == "hook"
     try:
-        gate = open_gate(trunk=a.trunk if is_hook else None)
+        if a.what == "repair":
+            for name, (kept, aside) in repair().items():
+                print(f"review gate: {name}: {kept} line(s) kept, {aside} malformed line(s) moved to {REJECTED[name]}")
+            return 0
         if is_hook:
+            gate = open_gate(trunk=a.trunk, config_path=a.config_path)
             state = a.rest[0] if a.hook == "reference-transaction" and a.rest else None
             return run_hook(gate, a.hook, state, sys.stdin.read())
-        return _dispatch(gate, a)
+        return _dispatch(open_gate(), a)
     except GateError as e:
         print(f"review gate: {e}", file=sys.stderr)
         return BROKEN if is_hook else 1

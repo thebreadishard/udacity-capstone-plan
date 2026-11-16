@@ -15,10 +15,11 @@ and leaves unless a line names the trunk. `pre-push` leaves unless a remote's tr
 **A broken installation.** The shim holds four things fixed at install time: the trunk, the python that ran the installer, the
 path of `review_gate.py` beside this file, and the configuration's path inside the repository. When that python or that file
 is missing (git run from WSL sees neither under a `C:/` path) or the gate ends with anything but its two exit codes, the shim
-decides alone, on moves of the trunk only (an update that leaves it where it is passes), and by the one switch: it reads
-`log_only` from the trunk's own `review_gate.json` with git and passes the move when it says true; otherwise it refuses with
-one line that names the repair. `check` compares the
-installed text with what `install` would write now, so a moved checkout or another python shows as stale.
+decides alone (a gate that ran and could not judge has said why, and the shim says only that), on moves of the trunk only
+(an update that leaves it where it is passes), and by the one switch: it reads `log_only` from the trunk's own
+`review_gate.json` with git and passes the move when it says true; otherwise it refuses with one line that names the repair.
+`check` compares the installed text with what `install` would write now, so a moved checkout or another python shows as
+stale.
 
 The hooks directory is shared by every worktree, so the installer refuses to run from a linked worktree: the shim would point
 at a checkout that goes away. It refuses a trunk that does not hold the gate's configuration: the hook reads the reviewed set
@@ -68,19 +69,20 @@ _SHIM = """#!/bin/sh
 python='@PYTHON@'
 gate='@GATE@'
 if [ -x "$python" ] && [ -f "$gate" ]; then
-    printf '%s' "$updates" | "$python" -I -S "$gate" hook @HOOK@ --trunk '@TRUNK@' "$@"
+    printf '%s' "$updates" | "$python" -I -S "$gate" hook @HOOK@ --trunk '@TRUNK@' --config-path '@CONFIG@' "$@"
     status=$?
     [ "$status" = 0 ] && exit 0
     [ "$status" = @REFUSED@ ] && exit 1
+    [ "$status" = @BROKEN@ ] && why="the gate could not judge it, for the reason it gave above."
 fi
 # The gate could not run. An update that leaves the trunk where it is passes: putting a working tree back must always work.
 [ "$hit" = "$(git rev-parse --quiet --verify '@TRUNK@')" ] && exit 0
 # The one switch is still the trunk's own configuration, read here as the gate reads it.
 if git cat-file blob '@TRUNK@:@CONFIG@' 2>/dev/null | grep -q '"log_only"[[:space:]]*:[[:space:]]*true'; then
-    echo "review gate (log only, nothing is refused): the gate could not run. @REPAIR@" >&2
+    echo "review gate (log only, nothing is refused): ${why:-the gate could not run. @REPAIR@}" >&2
     exit 0
 fi
-echo "review gate: this move of @TRUNK@ is refused, because the gate could not run ($python $gate). @REPAIR@" >&2
+echo "review gate: this move of @TRUNK@ is refused: ${why:-the gate could not run ($python $gate). @REPAIR@}" >&2
 exit 1
 """
 _REPAIR = "Repair: python tools/install_git_hooks.py install - or uninstall, to work without the gate."
@@ -98,7 +100,8 @@ def _sh_word(value: Path | str) -> str:
 def shim(hook: str, trunk: str, config_path: str) -> str:
     """The text of one hook as it would be installed now."""
     values = {"@MARKER@": MARKER, "@FILTER@": _FILTERS[hook], "@PYTHON@": _sh_word(sys.executable), "@GATE@": _sh_word(GATE),
-              "@HOOK@": hook, "@TRUNK@": trunk, "@CONFIG@": _sh_word(config_path), "@REFUSED@": str(review_gate.REFUSED), "@REPAIR@": _REPAIR}
+              "@HOOK@": hook, "@TRUNK@": trunk, "@CONFIG@": _sh_word(config_path), "@REFUSED@": str(review_gate.REFUSED), "@REPAIR@": _REPAIR,
+              "@BROKEN@": str(review_gate.BROKEN)}
     text = _SHIM
     for name, value in values.items():
         text = text.replace(name, value)
@@ -129,7 +132,7 @@ def state_of(path: Path, wanted: str) -> str:
 
 def _states(gate: review_gate.Gate) -> dict[Path, tuple[str, str]]:
     """hook file -> (its state, the text install would write)"""
-    directory, config_path = hooks_dir(), review_gate.tracked_config_path(gate.cwd)
+    directory, config_path = hooks_dir(), review_gate.tracked_config_path()
     wanted = {directory / hook: shim(hook, gate.config.trunk, config_path) for hook in HOOKS}
     return {path: (state_of(path, text), text) for path, text in wanted.items()}
 
@@ -138,8 +141,8 @@ def install(gate: review_gate.Gate) -> int:
     trunk = gate.commit_of(gate.config.trunk)
     if trunk is None:
         raise GateError(f"the trunk {gate.config.trunk} of review_gate.json does not exist in this repository")
-    if review_gate.config_on(gate.cwd, trunk) is None:
-        raise GateError(f"{gate.config.trunk} does not hold {review_gate.tracked_config_path(gate.cwd)}: land the gate on the "
+    if review_gate.config_on(gate.cwd, trunk, review_gate.tracked_config_path()) is None:
+        raise GateError(f"{gate.config.trunk} does not hold {review_gate.tracked_config_path()}: land the gate on the "
                         "trunk first, the hook reads its configuration there")
     states = _states(gate)
     foreign = [str(path) for path, (state, _) in states.items() if state == "foreign"]

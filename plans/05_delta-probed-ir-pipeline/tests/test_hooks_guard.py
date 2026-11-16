@@ -73,10 +73,24 @@ def test_commit_over_live_log_only_for_a_commit(command, hit):
 @pytest.mark.parametrize("command, hit", [
     ("git push --no-verify origin side:master", True), ("git push origin master --no-verify", True),
     ("git -c x=y push --no-verify", True), ("GIT.EXE push --no-verify", True),
+    ("git push --no-veri origin side:master", True), ("git push --no-verif", True),       # git takes any unambiguous abbreviation
+    ("git push --no-v", False), ("git push --no-thin origin master", False),              # ambiguous to git, and another flag
     ("git push origin master", False), ("git commit --no-verify -m x", False), ("echo 'git push --no-verify'", False),
 ])
 def test_a_push_that_skips_the_review_gates_hook_is_refused(command, hit):
     assert ("push_past_the_hook" in names(bash(command))) is hit
+
+
+@pytest.mark.parametrize("command, hit", [
+    ("git -c core.hooksPath=/dev/null commit -m x", True), ("git -c CORE.HOOKSPATH= update-ref refs/heads/master side", True),
+    ("git --config-env=core.hooksPath=NOWHERE push origin side:master", True),
+    ("git --config-env core.hooksPath=NOWHERE commit -m x", True), ("GIT.EXE -C repo -c core.hooksPath=x merge side", True),
+    ("git config core.hooksPath /dev/null", True), ("git config --local --unset core.hooksPath", False),
+    ("git config --get core.hooksPath", False), ("git -c user.name=x commit -m 'never -c core.hooksPath=x'", False),
+    ("git commit -m x", False), ("git log --grep core.hooksPath", False),
+])
+def test_a_git_call_that_switches_the_hooks_off_is_refused(command, hit):
+    assert ("hooks_switched_off" in names(bash(command))) is hit
 
 
 @pytest.mark.parametrize("command", ["git -c x=y reset --hard HEAD~1", "GIT.EXE push --force", "git --attr-source HEAD clean -fd"])
@@ -205,9 +219,9 @@ def test_commands_reads_command_words_only():
 
 
 def test_every_rule_names_its_incident_and_a_known_decision():
-    # 27 Oct: clean_code_after_edit merged; 10 Nov: commit_over_live_log; 16 Nov: push_past_the_hook. The review gate's
-    # decision is not a rule here: its one implementation is tools/review_gate.py, called by git's own hooks.
-    assert len(G.RULES) == 10 and len({r.name for r in G.RULES}) == 10
+    # 27 Oct: clean_code_after_edit merged; 10 Nov: commit_over_live_log; 16 Nov: push_past_the_hook, hooks_switched_off.
+    # The review gate's decision is not a rule here: its one implementation is tools/review_gate.py, called by git's hooks.
+    assert len(G.RULES) == 11 and len({r.name for r in G.RULES}) == 11
     assert all(r.incident and r.decision in ("deny", "ask", "post") and r.event in ("pre", "post") for r in G.RULES)
 
 

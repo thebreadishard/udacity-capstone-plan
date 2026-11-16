@@ -46,7 +46,7 @@ writing before the assertions pass — that emptied a probe script on 14 Septemb
   `check` by hand uses up one-time events the watch must see (anchors3's end, 19 Oct).
 
 ## Hooks
-`tools/hooks/guard.py` (plan 05) runs before every shell, Edit and Write call and after every edit: ten rules from incidents
+`tools/hooks/guard.py` (plan 05) runs before every shell, Edit and Write call and after every edit: eleven rules from incidents
 (TASKS 64). A refused call names its rule and reason; fix the call rather than exempting it. `# hook-exempt: <reason>` is for a case the
 user asked for, and is logged.
 
@@ -93,9 +93,11 @@ land it. `review_gate.py check <selector>` beforehand says whether it would pass
   main checkout; `install_git_hooks.py check` says whether they are in place.
 - **Seen at the next move**: what git reports to no hook — a branch copied or renamed over the trunk (`git branch -C/-M`), a
   call with hooks switched off, an edit under `.git`. The gate keeps a journal of where it left the trunk; a trunk found
-  elsewhere is judged first (`status --unseen`, `record --unseen`), and until then only a move back to a commit the journal
-  lists passes.
-- **Accepted limits**: `git push --no-verify` skips `pre-push` (guard.py refuses the flag, the remote enforces nothing); a
+  elsewhere is judged first (`status --unseen`, `record --unseen`), under the configuration from before that move, and
+  until then only a move back to a commit the gate itself let the trunk onto passes.
+- **Accepted limits**: `git push --no-verify` skips `pre-push`, and `-c core.hooksPath=…` skips every hook (guard.py refuses
+  both in a session's own calls, not behind a git alias; the remote enforces nothing); `tools/review_gate.py` runs from the
+  main checkout's working tree, so an uncommitted edit of it changes the gate; a
   clone without the shims is not guarded; code-like files under `**/out/**` and `probes/results_m1/**` land unreviewed — a
   script that a run or a tool executes never lives there. Run specs and chain files are launch records and are not reviewed.
 - `tools/review_gate.json` is the one place for the trunk, the reviewed set and the `log_only` switch (while true: the gate
@@ -108,6 +110,9 @@ land it. `review_gate.py check <selector>` beforehand says whether it would pass
 - The records are `.git/review-gate/records.jsonl`, shared by the worktrees (`review_gate.py repair` sets malformed lines
   aside, `export` copies the records into the tracked `tools/reviews.jsonl`). The hook cannot do the reviewing and cannot
   verify independence — the record asserts it.
+- When the gate itself is broken: `python tools/install_git_hooks.py uninstall` is the way out (also for a malformed
+  `review_gate.json` on the trunk, where no move can be judged). If `tools/review_gate.py` does not compile, the installer
+  cannot be imported either: restore that file first (`git checkout -- tools/review_gate.py`), then uninstall.
 
 ## Evidence
 Every number in a document traces to a run log or a source. `probes/check_reading_copy_numbers.py`
