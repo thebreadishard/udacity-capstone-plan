@@ -11,16 +11,16 @@ Oc1ccccc1: the harmonic infrared spectrum of ΔH network v1.3 (3 seeds), B3LYP/6
 
 | position (cm⁻¹) | height (km/mol) | range over seeds and mean | B3LYP | scaled B3LYP | family | licensed | family's measured error (a) / (b), cm⁻¹ |
 |---|---|---|---|---|---|---|---|
-| 246.6 | 0.0 | 246.5–246.9 | 233.8 | 228.9 | other | yes | 2.78 / 2.77 |
-| 418.2 | 0.0 | 417.3–418.6 | 406.9 | 398.4 | other | yes | 2.78 / 2.77 |
-| 429.6 | 0.0 | 426.6–432.6 | 359.6 | 352.0 | other | yes | 2.78 / 2.77 |
-| 435.7 | 0.0 | 433.4–439.3 | 422.6 | 413.7 | other | yes | 2.78 / 2.77 |
-| 529.8 | 0.0 | 528.9–530.8 | 518.2 | 507.3 | other | yes | 2.78 / 2.77 |
-| 539.0 | 0.0 | 538.8–539.4 | 535.4 | 524.2 | other | yes | 2.78 / 2.77 |
-| 636.5 | 0.0 | 636.2–636.6 | 632.9 | 619.6 | other | yes | 2.78 / 2.77 |
+| 246.6 | 0.0 | 246.5–246.9 | 233.8 | 228.9 | other | yes, on thin ground (see above) | 2.78 / 2.77 |
+| 418.2 | 0.0 | 417.3–418.6 | 406.9 | 398.4 | other | yes, on thin ground (see above) | 2.78 / 2.77 |
+| 429.6 | 0.0 | 426.6–432.6 | 359.6 | 352.0 | other | yes, on thin ground (see above) | 2.78 / 2.77 |
+| 435.7 | 0.0 | 433.4–439.3 | 422.6 | 413.7 | other | yes, on thin ground (see above) | 2.78 / 2.77 |
+| 529.8 | 0.0 | 528.9–530.8 | 518.2 | 507.3 | other | yes, on thin ground (see above) | 2.78 / 2.77 |
+| 539.0 | 0.0 | 538.8–539.4 | 535.4 | 524.2 | other | yes, on thin ground (see above) | 2.78 / 2.77 |
+| 636.5 | 0.0 | 636.2–636.6 | 632.9 | 619.6 | other | yes, on thin ground (see above) | 2.78 / 2.77 |
 | 713.4 | 0.0 | 712.9–714.0 | 700.0 | 685.3 | CH-oop | yes | 1.64 / 1.88 |
 | 779.3 | 0.0 | 778.6–780.5 | 762.5 | 746.5 | CH-oop | yes | 1.64 / 1.88 |
-| 840.5 | 0.0 | 839.8–841.3 | 833.1 | 815.6 | other | yes | 2.78 / 2.77 |
+| 840.5 | 0.0 | 839.8–841.3 | 833.1 | 815.6 | other | yes, on thin ground (see above) | 2.78 / 2.77 |
 | 844.5 | 0.0 | 844.1–845.0 | 824.4 | 807.1 | CH-oop | yes | 1.64 / 1.88 |
 | 910.2 | 0.0 | 909.3–911.0 | 885.1 | 866.5 | CH-oop | yes | 1.64 / 1.88 |
 | 984.0 | 0.0 | 982.9–985.5 | 951.9 | 931.9 | CH-oop | yes | 1.64 / 1.88 |
@@ -60,7 +60,7 @@ Each hold-out molecule was read in one orientation and one atom order. For this 
 
 ## How well the network is known
 
-The rms error of the corrected band positions of the seeds' mean against ωB97X/6-31G*, in cm⁻¹: what this certificate's positions are. In square brackets the 95 % interval when the hold-out's molecules are resampled. The licence is read on the band error of the seeds' mean, the error of what the release delivers; chosen on 16 November 2026, after it and the first-order error per seed had both been measured on both hold-outs.
+The rms error of the corrected band positions of the seeds' mean against ωB97X/6-31G*, in cm⁻¹: what this certificate's positions are. In square brackets the 95 % interval when the hold-out's molecules are resampled. The licence is read on the band error of the seeds' mean, the error of what the release delivers, as recorded to two decimals; chosen on 16 November 2026, after it and the first-order error per seed had both been measured on both hold-outs.
 
 | family | (a), 8 molecules | (b), 39 molecules | within the licence line |
 |---|---|---|---|
@@ -72,7 +72,7 @@ The rms error of the corrected band positions of the seeds' mean against ωB97X/
 - 'other' is within the licence line on hold-out (a) at 2.78 cm⁻¹, on 8 molecules: resampling those molecules puts the error between 1.68 and 3.76 cm⁻¹, and 30% of the resamples lie above the line.
 - (a): eight molecules set aside on 19 September 2026, before any network was trained, and never trained on in any form (two more molecules of that set, 2-naphthoic acid and benzonitrile, are left out of this read because the network had trained on them under another identifier)
 - (b): every substituted molecule of two ring scaffolds, set aside on 8 October 2026; the network trained on no molecule of either scaffold
-- sources: E7_rungC_chain35_analytic_eval_frozenb_seed0.json; E7_rungC_chain35_analytic_eval_frozenb_seed1.json; E7_rungC_chain35_analytic_eval_frozenb_seed2.json; E7_rungC_chain35_analytic_a8read_seed0.json; E7_rungC_chain35_analytic_a8read_seed1.json; E7_rungC_chain35_analytic_a8read_seed2.json; band errors: `aromir evaluate` at aromir 406b0ef+evaluation on the two hold-outs as probes/results_m1/aromir_audit_fixes_2026-11-16/holdouts_for_aromir.py of thebreadishard/udacity-capstone-plan (plan 05) writes them; counterpart probes/results_m1/aromir_product_error_2026-11-16/product_error.json
+- sources: every error in this record: `aromir evaluate` on the two hold-outs as probes/results_m1/aromir_audit_fixes_2026-11-16/holdouts_for_aromir.py of thebreadishard/udacity-capstone-plan (plan 05) writes them; counterpart for the band errors: probes/results_m1/aromir_product_error_2026-11-16/product_error.json; the hold-outs' molecules, and the first-order errors the training runs recorded themselves (within 0.08 cm⁻¹): E7_rungC_chain35_analytic_eval_frozenb_seed0.json, E7_rungC_chain35_analytic_eval_frozenb_seed1.json, E7_rungC_chain35_analytic_eval_frozenb_seed2.json, E7_rungC_chain35_analytic_a8read_seed0.json, E7_rungC_chain35_analytic_a8read_seed1.json, E7_rungC_chain35_analytic_a8read_seed2.json
 
 For comparison, the first-order error of each seed alone, the number a training run reports: its mean over the seeds, each seed's value in brackets. It is not the error of what is printed above.
 
@@ -80,8 +80,8 @@ For comparison, the first-order error of each seed alone, the number a training 
 |---|---|---|
 | ring-ip | 1.77 (1.95, 1.68, 1.70) | 2.12 (2.25, 2.02, 2.11) |
 | CH-stretch | 1.19 (0.91, 1.74, 0.91) | 2.50 (1.91, 3.51, 2.08) |
-| CH-oop | 2.17 (2.47, 2.06, 1.99) | 2.70 (2.44, 2.95, 2.72) |
-| other | 3.62 (4.09, 3.27, 3.51) | 3.89 (3.65, 4.51, 3.52) |
+| CH-oop | 2.17 (2.46, 2.05, 1.99) | 2.73 (2.46, 2.93, 2.80) |
+| other | 3.62 (4.09, 3.27, 3.51) | 3.89 (3.65, 4.51, 3.51) |
 
 A family is a rule, and its name is the evaluation's:
 

@@ -1,0 +1,13 @@
+{"name": "aromir_audit_e7_soft",
+ "purpose": "TASKS 245 (aromir audit, finding C3), 16 Nov 2026: the audit's count again before the fix is claimed - of the corpus molecules with an analytic B3LYP Hessian, how many have an imaginary lowest mode at the stored geometry (the molecules `aromir spectrum` with v1.3 refused after the full cost) and how many a mode below 20 cm-1. The audit's own script (e7_soft), read-only on the corpus, in WSL under probes/wsl_capped.sh beside the live training.",
+ "host": "laptop",
+ "workdir": "probes/results_m1/aromir_audit_fixes_2026-11-16/rerun",
+ "command": "MSYS_NO_PATHCONV=1 wsl -e bash -c \"export OMP_NUM_THREADS=3 PYTHONUNBUFFERED=1 PYTHONUTF8=1; cd /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/aromir_audit_fixes_2026-11-16/rerun && cp e7_soft.py.txt e7_soft.py && cp common.py.txt common.py && bash ../../../wsl_capped.sh 2000 -- /usr/bin/time -f '(E7) max RSS %M kB, wall %e s' /home/thebreadishard/aromir_dev/bin/python e7_soft.py; rm -f e7_soft.py common.py\"",
+ "sources": [{"local": "probes/wsl_capped.sh"}],
+ "progress": {"regex": "corpus molecules|examples|\\(E7\\)", "max_gap_minutes": 20},
+ "marker_regex": "corpus molecules with an analytic|^KILLED|\\(E7\\) max RSS|Traceback",
+ "end_regex": "\\(E7\\) max RSS",
+ "threads": 3,
+ "resumable": false,
+ "estimate": {"hours": 0.1, "basis": "the scan of 1,240 geometries with an SVD each took 34 s on 16 Nov (aromir_pinv_scan); this one loads 1,154 Hessians through /mnt/c and diagonalises each"},
+ "memory": {"peak_gb": 2.0, "basis": "a bound: probes/wsl_capped.sh stops it at 2000 MB"}}
