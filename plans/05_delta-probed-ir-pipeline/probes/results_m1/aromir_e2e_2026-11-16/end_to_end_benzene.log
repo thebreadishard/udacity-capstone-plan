@@ -1,0 +1,7 @@
+c1ccccc1 (A_8448043181): aromir end to end against the corpus's ωB97X bands, 30 bands
+  family      bands  corrected rms  largest  B3LYP rms
+  ring-ip        13           1.34     2.62      17.70
+  CH-stretch      6           0.52     1.09      42.46
+  CH-oop          6           1.98     3.20      22.65
+  other           5           0.39     0.54      10.18
+  all            30           1.28     3.20      24.82

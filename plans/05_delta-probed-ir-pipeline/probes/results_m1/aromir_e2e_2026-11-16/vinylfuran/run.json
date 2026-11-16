@@ -1,0 +1,135 @@
+{
+ "asked": {
+  "command": "spectrum",
+  "smiles": "C=Cc1ccoc1",
+  "start_geometry_sha256": "9e406cec9302656124a614bd345815181e6dc18d55744e14d6b1c117edda66f3",
+  "level": {
+   "functional": "b3lyp",
+   "basis": "6-31g*",
+   "grid": [
+    99,
+    590
+   ]
+  }
+ },
+ "left_saddle_point": {
+  "imaginary_cm": -12.352910329097826,
+  "restart": [
+   [
+    4.545175042761389,
+    -0.48056526212681766,
+    -0.007222084810057462
+   ],
+   [
+    2.4961053678383114,
+    0.9938115384819086,
+    -0.1943538931030432
+   ],
+   [
+    -0.14494664702484444,
+    0.19856507010278876,
+    -0.022031396477015533
+   ],
+   [
+    -2.316719037722809,
+    1.8237095683696556,
+    -0.3140864531037348
+   ],
+   [
+    -4.3940075276291815,
+    0.3476317188363583,
+    -0.017179966563131758
+   ],
+   [
+    -3.698627925140512,
+    -2.0936561469174104,
+    0.4441749054543916
+   ],
+   [
+    -1.1289895007803934,
+    -2.1537451810338992,
+    0.43621259293425396
+   ],
+   [
+    6.433187360382756,
+    0.3070435705148002,
+    -0.15922809337845317
+   ],
+   [
+    4.422574898152247,
+    -2.5097642986352895,
+    0.300361592931108
+   ],
+   [
+    2.7664300986641397,
+    3.011165901720444,
+    -0.510847831712421
+   ],
+   [
+    -2.2891246471444444,
+    3.8312430720456647,
+    -0.6985516654334347
+   ],
+   [
+    -6.402047417133699,
+    0.6997978430974645,
+    -0.06982046811873217
+   ],
+   [
+    -0.291317638913587,
+    -3.9801072736757597,
+    0.7860301285947934
+   ]
+  ]
+ },
+ "steps": {
+  "optimisation 1": {
+   "timestamp_utc": "2026-11-16T15:54:18+00:00",
+   "command": "/home/thebreadishard/aromir_dev/bin/aromir spectrum C=Cc1ccoc1 --out probes/results_m1/aromir_e2e_2026-11-16/vinylfuran --threads 8 --max-memory-mb 2048",
+   "python": "3.12.14",
+   "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+   "packages": {
+    "aromir": "0.1.0.dev0",
+    "pyscf": "2.15.0",
+    "geometric": "1.1.1",
+    "rdkit": "2026.9.2",
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "torch": "2.14.0+cpu",
+    "safetensors": "0.8.0"
+   }
+  },
+  "low level 1": {
+   "timestamp_utc": "2026-11-16T16:17:33+00:00",
+   "command": "/home/thebreadishard/aromir_dev/bin/aromir spectrum C=Cc1ccoc1 --out probes/results_m1/aromir_e2e_2026-11-16/vinylfuran --threads 8 --max-memory-mb 2048",
+   "python": "3.12.14",
+   "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+   "packages": {
+    "aromir": "0.1.0.dev0",
+    "pyscf": "2.15.0",
+    "geometric": "1.1.1",
+    "rdkit": "2026.9.2",
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "torch": "2.14.0+cpu",
+    "safetensors": "0.8.0"
+   }
+  },
+  "soft modes 1": {
+   "timestamp_utc": "2026-11-16T16:18:59+00:00",
+   "command": "/home/thebreadishard/aromir_dev/bin/aromir spectrum C=Cc1ccoc1 --out probes/results_m1/aromir_e2e_2026-11-16/vinylfuran --threads 8 --max-memory-mb 2048",
+   "python": "3.12.14",
+   "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+   "packages": {
+    "aromir": "0.1.0.dev0",
+    "pyscf": "2.15.0",
+    "geometric": "1.1.1",
+    "rdkit": "2026.9.2",
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "torch": "2.14.0+cpu",
+    "safetensors": "0.8.0"
+   }
+  }
+ }
+}

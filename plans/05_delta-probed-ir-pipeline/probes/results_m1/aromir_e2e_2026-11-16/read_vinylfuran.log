@@ -1,0 +1,16 @@
+aromir, first attempt: 12 steps, energy -307.4198686869
+  analytic Hessian, lowest 4:     [-13.87, 210.84, 248.72, 462.07]
+  soft modes measured, lowest 4:  [-12.35, 210.84, 248.72, 462.07]
+  soft-mode record (directions, positions before and after): [1.0, -13.87, -12.35, 1.52]
+corpus B_1e0fa2d7f0, hessian_b3lyp_analytic.npz, lowest 4: [-11.95, 211.0, 248.77, 461.89]
+corpus B_1e0fa2d7f0, hessian_b3lyp.npz, lowest 4: [-13.56, 210.95, 248.75, 462.06]
+aromir, second attempt after -12.35 cm-1 and a step of 0.1 bohr: 100 steps, not converged
+  step  displacement rms/max   trust     gradient rms/max     energy          change
+     1  5.113e-04/1.212e-03  1.000e-01  8.419e-05/1.899e-04  -307.4198687121  -4.359e-07
+     2  8.701e-04/1.759e-03  1.000e-01  9.320e-05/2.194e-04  -307.4198687135  -1.406e-09
+    97  3.882e-04/8.290e-04  4.250e-04  2.273e-06/3.912e-06  -307.4198693878  -5.370e-09
+    98  4.090e-04/8.734e-04  4.250e-04  1.355e-06/2.419e-06  -307.4198693934  -5.551e-09
+    99  4.248e-04/9.073e-04  4.250e-04  1.322e-06/2.320e-06  -307.4198693990  -5.599e-09
+   100  5.642e-05/1.205e-04  4.250e-04  1.343e-06/2.269e-06  -307.4198693996  -6.703e-10
+  energy below the saddle point at the end: -0.16 cm-1; over the last 50 steps the energy fell 0.039 cm-1
+  geomeTRIC's GAU_TIGHT, which aromir asks for: energy 1e-6, gradient rms 1e-5 / max 1.5e-5, displacement rms 4e-5 / max 6e-5

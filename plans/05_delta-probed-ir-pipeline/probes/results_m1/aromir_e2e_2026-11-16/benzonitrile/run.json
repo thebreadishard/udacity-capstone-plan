@@ -1,0 +1,16 @@
+{
+ "asked": {
+  "command": "spectrum",
+  "smiles": "N#Cc1ccccc1",
+  "start_geometry_sha256": "32a62784b4ab4681cb1a2d7e2fa8be216d2fb695d21c0ee255a64cd897bc7f88",
+  "level": {
+   "functional": "b3lyp",
+   "basis": "6-31g*",
+   "grid": [
+    99,
+    590
+   ]
+  }
+ },
+ "left_saddle_point": null
+}

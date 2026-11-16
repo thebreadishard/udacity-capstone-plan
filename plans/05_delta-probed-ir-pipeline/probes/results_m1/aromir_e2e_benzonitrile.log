@@ -1,0 +1,6 @@
+=== (AROMIR) start
+bd2b0e5 The review of a9d8d7c answered: a saddle point's files are read before the second attempt
+WARN: Krylov solver reached subspace convergence but true residual |aop(x)+x-b| = 4.839e-04 exceeds tolerance 1.3e-07. Falling back to per-root solve.
+done: 33 bands, 33 of them licensed; certificate in probes/results_m1/aromir_e2e_2026-11-16/benzonitrile/certificate.md
+(AROMIR) max RSS 2440324 kB, wall 1435.44 s
+=== (AROMIR) done: benzonitrile, exit 0

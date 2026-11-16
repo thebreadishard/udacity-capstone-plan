@@ -1,0 +1,6 @@
+=== (AROMIR) start
+WARN: Krylov solver reached subspace convergence but true residual |aop(x)+x-b| = 3.565e-04 exceeds tolerance 1.3e-07. Falling back to per-root solve.
+failed: the geometry optimisation did not converge in 100 steps
+Command exited with non-zero status 1
+(AROMIR) max RSS 2206472 kB, wall 4029.40 s
+=== (AROMIR) done: vinylfuran, exit 0

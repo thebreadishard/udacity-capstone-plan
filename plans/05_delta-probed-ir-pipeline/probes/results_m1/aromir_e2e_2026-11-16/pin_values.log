@@ -1,0 +1,9 @@
+rdkit 2026.09.2
+    ("c1ccccc1", "CCCCCCHHHHHH", {'Angle': 12, 'Dihedral': 24, 'Distance': 12, 'OutOfPlane': 6}),
+    ("Oc1ccccc1", "OCCCCCCHHHHHH", {'Angle': 13, 'Dihedral': 26, 'Distance': 13, 'OutOfPlane': 6}),
+    ("N#Cc1ccccc1", "NCCCCCCCHHHHH", {'Angle': 12, 'Dihedral': 24, 'Distance': 13, 'LinearAngle': 2, 'OutOfPlane': 6}),
+    ("c1ccc(-c2ccccc2)cc1", "CCCCCCCCCCCCHHHHHHHHHH", {'Angle': 24, 'Dihedral': 52, 'Distance': 23, 'OutOfPlane': 12}),
+    ("Cc1ccc2ccccc2c1", "CCCCCCCCCCCHHHHHHHHHH", {'Angle': 26, 'Dihedral': 50, 'Distance': 22, 'OutOfPlane': 10}),
+    ("FC(F)(F)c1ccncc1", "FCFFCCCNCCHHHH", {'Angle': 17, 'Dihedral': 26, 'Distance': 14, 'OutOfPlane': 5}),
+    ("Clc1ccsc1", "ClCCCSCHHH", {'Angle': 9, 'Dihedral': 16, 'Distance': 9, 'OutOfPlane': 4}),
+benzene backwards -> [8, 7, 6, 11, 10, 9, 2, 1, 0, 5, 4, 3]

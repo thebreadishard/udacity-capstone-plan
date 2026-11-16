@@ -1,0 +1,6 @@
+stored_benzonitrile.npz: A_3100da3761, 13 atoms
+stored_biphenyl.npz: A_fdc27f1bd1, 22 atoms
+benzene ring-ip     13 bands: band error rms 1.2020, largest 2.3231; first order per seed 0.9594 2.8141 1.3519
+benzene CH-stretch   6 bands: band error rms 0.9184, largest 1.5126; first order per seed 0.6741 1.4202 0.7597
+benzene CH-oop       6 bands: band error rms 1.9816, largest 3.2665; first order per seed 2.9201 2.1665 1.4810
+benzene other        5 bands: band error rms 0.4655, largest 0.5718; first order per seed 1.1005 1.2143 0.8034

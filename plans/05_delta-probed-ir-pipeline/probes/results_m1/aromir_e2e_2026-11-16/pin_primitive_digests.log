@@ -1,0 +1,7 @@
+c1ccccc1                54 primitives  8a29dc53095653b0  ['Distance 1-2', 'Distance 1-6', 'Distance 1-7'] … Dihedral 11-5-6-12
+Oc1ccccc1               58 primitives  fbdc9025ebd8c517  ['Distance 1-2', 'Distance 1-8', 'Distance 2-3'] … Dihedral 12-6-7-13
+N#Cc1ccccc1             57 primitives  aac36f1a329109a7  ['Distance 1-2', 'Distance 2-3', 'Distance 3-4'] … Dihedral 12-7-8-13
+c1ccc(-c2ccccc2)cc1    111 primitives  127bde54247917be  ['Distance 1-2', 'Distance 1-12', 'Distance 1-13'] … Dihedral 21-11-12-22
+Cc1ccc2ccccc2c1        108 primitives  92f124889e606d97  ['Distance 1-2', 'Distance 1-12', 'Distance 1-13'] … Dihedral 9-10-11-21
+FC(F)(F)c1ccncc1        62 primitives  1cb425f6f0d99e77  ['Distance 1-2', 'Distance 2-3', 'Distance 2-4'] … Dihedral 13-9-10-14
+Clc1ccsc1               38 primitives  f1c6c17e5e664788  ['Distance 1-2', 'Distance 2-3', 'Distance 2-6'] … Dihedral 4-5-6-9

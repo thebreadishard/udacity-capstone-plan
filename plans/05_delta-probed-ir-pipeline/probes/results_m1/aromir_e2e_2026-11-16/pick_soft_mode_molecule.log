@@ -1,0 +1,13 @@
+54 molecules with an analytic B3LYP lowest mode below 20 cm-1 in absolute value
+B_1e0fa2d7f0     13 atoms  furan+vinyl                     C=Cc1ccoc1                         analytic [-11.67, 211.0, 248.77] measured [-11.95, 211.0, 248.77]
+B_0f06474656     15 atoms  pyridine+OH+CF3                 Oc1cncc(C(F)(F)F)c1                analytic [9.51, 125.54, 171.37] measured [15.82, 125.54, 171.37]
+B_0c36df327e     16 atoms  pyridine+CHO+CF3                O=Cc1cncc(C(F)(F)F)c1              analytic [16.44, 90.17, 138.71] measured [17.73, 90.17, 138.71]
+B_18324e4e8f     16 atoms  pyridine+CHO+CF3                O=Cc1cc(C(F)(F)F)ccn1              analytic [6.84, 120.62, 124.51] measured [14.08, 120.62, 124.51]
+B_1f4e104c2d     16 atoms  pyridine+COOH+NO2               O=C(O)c1ncccc1[N+](=O)[O-]         analytic [13.57, 100.74, 105.22] measured [14.49, 100.75, 105.22]
+B_071969578d     17 atoms  benzene+CF3+ethynyl             C#Cc1cccc(C(F)(F)F)c1              analytic [13.52, 114.79, 115.64] measured [14.53, 114.79, 115.64]
+B_12bea1a68e     17 atoms  pyridine+COOH+CF3               O=C(O)c1cncc(C(F)(F)F)c1           analytic [14.26, 58.31, 122.15] measured [17.68, 58.31, 122.15]
+B_1a0c9dbf4c     17 atoms  pyridine+CF3+CF3                FC(F)(F)c1cccc(C(F)(F)F)n1         analytic [11.51, 22.1, 110.2] measured [14.54, 22.11, 110.2]
+B_04f049ae58     18 atoms  pyridine+CH3+OCH3               COc1ccc(C)nc1                      analytic [-10.96, 84.73, 145.1] measured [-7.17, 84.73, 145.1]
+B_0a82cfae8a     18 atoms  benzothiophene+CF3              FC(F)(F)c1ccc2sccc2c1              analytic [17.48, 81.91, 158.2] measured [16.39, 81.91, 158.2]
+B_0e479d2c02     18 atoms  benzene+CF3+CF3                 FC(F)(F)c1cccc(C(F)(F)F)c1         analytic [13.0, 16.68, 112.22] measured [10.98, 17.54, 112.22]
+B_128d17d28c     18 atoms  pyridine+CF3+CONH2              NC(=O)c1cncc(C(F)(F)F)c1           analytic [19.43, 57.55, 116.41] measured [18.64, 57.55, 116.41]
