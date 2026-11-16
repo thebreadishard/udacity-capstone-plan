@@ -1,5 +1,5 @@
 """The pipeline's first version (TASKS 146, decision 64; `PIPELINE_BUILD_NOTE_2026-10-29.md`): one neutral, closed-shell aromatic molecule in
-— a SMILES or an xyz file — and its harmonic infrared spectrum out, band positions and heights, computed on the laptop alone.
+— a SMILES or an xyz file — and its infrared spectrum out, band positions and heights, computed on the laptop alone.
 
 Each step is one function on existing code:
 
@@ -12,13 +12,18 @@ Each step is one function on existing code:
    and its APT;
 4. `correction` — the carried ΔH network's seeds through `m05/rungC_infer.py`: their mean ΔH and each seed's;
 5. `spectra` — `m08.spectrum.series` on H_low + ΔH with the B3LYP APT, each seed's positions beside it, and as the baseline only the
-   B3LYP spectrum with PAHdb's factor per region (`probes/scale_factor_baseline.py`).
+   B3LYP spectrum with PAHdb's factor per region (`probes/scale_factor_baseline.py`);
+6. `anharmonic.step` (`m08/anharmonic.py`, TASKS 211; on unless --no-anharmonic) — each band's anharmonic position ν = ω + Δ_anh
+   beside its harmonic ω: the registered model x2* on the molecule's GFN2-xTB quartic force field (computed in WSL under
+   `probes/wsl_capped.sh`), carried from the B3LYP modes to the corrected bands by mode overlap. A band the step cannot serve keeps ω
+   and says why; a molecule whose force field cannot be made keeps every ω and says why. No licence is claimed for ν.
 
 Every refusal — the charge state, a radical, no aromatic ring, an element the carried models never saw, a model that is not carried, an
-output folder in use — comes before step 1. The positions are harmonic: no anharmonic shift (the backlog), and the record says so.
+output folder in use — comes before step 1, and so does the reading of the anharmonic step's artefact. The record says of every band
+which position it prints (`m08/positions.py`).
 
     python -m m08.pipeline --name benzene --smiles c1ccccc1 --out <folder> [--threads 4] [--psi4-python <qc env python>]
-                          [--pyscf-python <WSL python>] [--no-reuse]
+                          [--pyscf-python <WSL python>] [--no-reuse] [--no-anharmonic]
 """
 from __future__ import annotations
 
@@ -56,7 +61,7 @@ from scale_factor_baseline import PAHDB_FACTORS, pahdb_region  # noqa: E402
 
 from dpir.provenance import git_state, provenance  # noqa: E402
 
-PIPELINE_VERSION = "0.10"              # modules/PIPELINE.md
+PIPELINE_VERSION = "0.11"              # modules/PIPELINE.md
 NETWORK = "ΔH-network"
 CORPUS_ROOT = M05 / "corpus"
 CORPUS = CORPUS_ROOT / "molecules"
@@ -71,7 +76,6 @@ APT_FAILED = 3                         # analytic_hessians.py: the Hessian is wr
 CORRECTION = "correction.npz"
 TRUTH_HESSIAN = "hessian_wb97x_analytic.npz"   # a corpus folder's ωB97X Hessian: the network's target
 REUSE_SETTINGS = R.Settings(deck=RC.DECK, grid=LOW_GRID, cphf_bound=CPHF_BOUND, sum_rule_limit=SUM_RULE_LIMIT)
-HARMONIC_NOTE = "harmonic positions: the anharmonic shift is not in this version (backlog; TASKS 53)"
 
 
 class Refused(Exception):
@@ -113,6 +117,9 @@ class PipelineConfig(BaseModel):
     reuse_corpus: bool = True                # TASKS 150: steps 2–3 from the corpus where it holds the molecule at these settings
     reuse_only: bool = False                 # TASKS 146: refuse a molecule the corpus cannot give steps 2–3 for, before computing
     corpus: Path = CORPUS_ROOT               # its manifest.csv and molecules/
+    anharmonic: bool = True                  # TASKS 211: step 6, each band's ν = ω + Δ_anh (decided 14 Nov 2026: on by default)
+    anharmonic_shards: int = Field(2, ge=1, le=16)              # dxtb processes of the xtb force field; threads // shards threads each
+    anharmonic_cap_mb: int = Field(1536, ge=1024, le=16384)     # its WSL cap: the bound probes/runspecs/routea_xtb.json ran under
 
     @field_validator("models")
     @classmethod
@@ -139,6 +146,8 @@ class PipelineConfig(BaseModel):
             raise ValueError(f"{self.xyz}: no such xyz file")
         if self.reuse_only and not self.reuse_corpus:
             raise ValueError("--reuse-only with --no-reuse: nothing could run")
+        if self.anharmonic_shards > self.threads:
+            raise ValueError(f"{self.anharmonic_shards} force-field processes on {self.threads} threads: more processes than cores")
         return self
 
     @property
@@ -457,7 +466,7 @@ def spectra(d: Path, dH: np.ndarray, dH_seeds: list[np.ndarray]) -> dict:
     b3lyp = series(hessian, masses, apt)
     baseline = dict(b3lyp, sticks=scaled_baseline(b3lyp["sticks"]),
                     label=f"baseline only: B3LYP/6-31G* scaled by PAHdb's factors {list(PAHDB_FACTORS)} per region (probes/scale_factor_baseline.py)")
-    return {"network": net, "baseline": baseline, "note": HARMONIC_NOTE}
+    return {"network": net, "baseline": baseline}
 
 
 def write_json(path: Path, rec: dict) -> None:
@@ -470,7 +479,12 @@ def run(cfg: PipelineConfig) -> dict:
     """The whole pipeline for one molecule; the record is written to <folder>/pipeline.json and returned."""
     import torch
 
+    from . import anharmonic as AN  # that module imports this one
+
     adm = admit(cfg)
+    # the step's artefact is read and checked here, before the first step computes anything
+    step6 = AN.Request(cfg.name, cfg.folder, AN.load_artefact() if cfg.anharmonic else None,
+                       AN.FieldSettings.of(cfg.threads, cfg.anharmonic_shards, cfg.anharmonic_cap_mb))
     launched = provenance()          # before the first step: a commit made during the run must not be named as the code that ran
     torch.set_num_threads(cfg.threads)
     d = cfg.folder
@@ -487,8 +501,11 @@ def run(cfg: PipelineConfig) -> dict:
     progress.done("network")
     progress.start("spectrum")
     out = spectra(d, dH, dH_seeds)
-    progress.done("spectrum")
     seconds["correction_and_spectra"] = round(time.time() - t, 1)
+    t = time.time()
+    out = AN.step(step6, dH, out)                            # inside the spectrum station: the show's map keeps its six
+    seconds["anharmonic"] = round(time.time() - t, 1)
+    progress.done("spectrum")
     rec = {"pipeline_version": PIPELINE_VERSION, "name": cfg.name,
            "input": {"smiles": cfg.smiles, "xyz": cfg.xyz, "xyz_atom_order": xyz_order(cfg) if cfg.xyz is not None else None},
            "settings": cfg.model_dump(mode="json"), "admission": vars(adm) | {"inside_training_sizes": adm.inside_training_sizes},
@@ -515,6 +532,10 @@ def parse_args(argv: list[str] | None) -> argparse.Namespace:
     ap.add_argument("--no-reuse", action="store_true", help="compute steps 2-3 even where the corpus holds the molecule (TASKS 150)")
     ap.add_argument("--corpus", type=Path, help="the corpus folder to reuse from (default: module 05's)")
     ap.add_argument("--reuse-only", action="store_true", help="refuse, before computing, a molecule the corpus cannot give steps 2-3 for")
+    ap.add_argument("--no-anharmonic", action="store_true",
+                    help="skip step 6: every band at its harmonic position, and the record says the step was switched off (TASKS 211)")
+    ap.add_argument("--anharmonic-shards", type=int, default=2, help="dxtb processes of the GFN2-xTB force field (step 6)")
+    ap.add_argument("--anharmonic-cap-mb", type=int, default=1536, help="the WSL memory cap of the GFN2-xTB force field (step 6)")
     ap.add_argument("--check-only", action="store_true", help="the refusal checks alone (a run spec's dry run): nothing is computed or written")
     return ap.parse_args(argv)
 
@@ -527,7 +548,8 @@ def main(argv: list[str] | None = None) -> int:
     given = {k: v for k, v in dict(smiles=a.smiles, xyz=a.xyz, psi4_python=a.psi4_python, pyscf_python=a.pyscf_python,
                                    corpus=a.corpus).items() if v is not None}
     cfg = PipelineConfig(name=a.name, out_root=a.out, threads=a.threads, psi4_memory_gb=a.psi4_memory_gb, wsl_cap_mb=a.wsl_cap_mb,
-                         reuse_corpus=not a.no_reuse, reuse_only=a.reuse_only, **given)
+                         reuse_corpus=not a.no_reuse, reuse_only=a.reuse_only, anharmonic=not a.no_anharmonic,
+                         anharmonic_shards=a.anharmonic_shards, anharmonic_cap_mb=a.anharmonic_cap_mb, **given)
     try:
         if a.check_only:
             adm = admit(cfg)

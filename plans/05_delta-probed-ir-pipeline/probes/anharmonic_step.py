@@ -52,7 +52,6 @@ NO_XTB_PARTNER = "no-xtb-partner"
 XTB_PARTNER_MARKED = "xtb-partner-marked"
 UNMEASURED = "unmeasured"
 MIXED_BAND = "mixed-band"
-NO_FORCE_FIELD = "no-force-field"
 MODE_REASONS = (LARGE_AMPLITUDE, NO_XTB_PARTNER, XTB_PARTNER_MARKED)     # the label-free rule, in the order it is asked
 REASON_TEXT = {
     LARGE_AMPLITUDE: "a large-amplitude mode (half or more of its hydrogen motion on an sp-carbon, N–H or O–H hydrogen): the model "
@@ -62,7 +61,6 @@ REASON_TEXT = {
                         "theory can state",
     UNMEASURED: "no model was measured for this family in this range",
     MIXED_BAND: f"the corrected band mixes B3LYP modes (its partner overlaps below {MIN_OVERLAP}), so no mode's step is its own",
-    NO_FORCE_FIELD: "the molecule has no GFN2-xTB force field",
 }
 NOT_MEASURED_TEXT = (f"the step's error is not measured for this kind of mode (family '{NOT_MEASURED_FAMILY}' with an out-of-plane "
                      f"share of {NOT_MEASURED_O} or more)")

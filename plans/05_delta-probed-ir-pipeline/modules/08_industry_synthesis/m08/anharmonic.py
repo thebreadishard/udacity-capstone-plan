@@ -1,0 +1,282 @@
+"""Step 6 of the pipeline (TASKS 211): each band's anharmonic position ν = ω + Δ_anh, printed as the best estimate where the step
+applies, with no licence claimed for it (`m08/positions.py`).
+
+The step is `probes/anharmonic_step.py`'s and nothing is modelled here. This module gives it what it needs of one molecule and
+writes down what came back:
+
+1. the molecule's B3LYP modes, from the Hessian of step 3 at the geometry of step 2 (`Modes.from_hessian`, the training path's own
+   `dpir.qff.harmonic`);
+2. its GFN2-xTB quartic force field with that field's GVPT2 label: `probes/xtb_field_for_step.sh` in WSL under
+   `probes/wsl_capped.sh`, started from a reference record written into `<result>/anharmonic/G/` — the two existing runners
+   (`xtb_anharmonic.sh`, `gvpt2_labels.py`), called as the repository calls them;
+3. `mode_steps` on the two with the committed artefact, then `carry_to_bands` onto the modes of H_low + ΔH, by overlap.
+
+Every network stick of the record gets its ν, its Δ_anh, the family's bar and the reason where it has no step; the whole output is
+saved beside the other steps' files as `anharmonic.json`. A molecule the step cannot serve — an element the model never saw, a
+B3LYP Hessian `dpir.qff.harmonic` refuses, a force field that fails, is noisy or is stopped at the cap — keeps its harmonic
+positions and the record says why: the run does not fail. Anything else that goes wrong is an error and raises.
+
+    python -m m08.anharmonic <pipeline result folder> [--shards 2] [--cap-mb 1536] [--threads 4] [--dry-run]
+
+adds the step to a finished result (its pipeline.json is rewritten with the sticks' ν; the certificate is written again by
+`python -m m08.live_certificate <folder>`).
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import re
+import shlex
+import sys
+import time
+from dataclasses import dataclass
+from pathlib import Path
+
+import numpy as np
+
+from . import pipeline as P
+from . import positions as POS
+
+# isort: split
+# probes/ and module 05's code, on the path through m08.pipeline
+import anharmonic_step as AS
+import rungC_intensities as RINT
+from anchor_registry import sha16
+
+FIELD_SCRIPT = P.PLAN / "probes" / "xtb_field_for_step.sh"
+FOLDER, RECORD, LOG = "anharmonic", "anharmonic.json", "anharmonic_field.log"
+MODEL_ELEMENTS = frozenset(AS.MASS)          # the elements of the model's training molecules (dpir.qff's mass table holds no other)
+STICK_TOL_CM = 0.051                         # the record rounds positions to 0.1 cm⁻¹
+MIN_CAP_MB = 1024                            # below this one dxtb process of a 12-atom molecule does not fit beside the label step
+FAILED_LINE = re.compile(r"^=== \(ANH\) FAILED: (.*?) \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$", re.MULTILINE)
+PEAK_LINE = re.compile(r"^=== \(ANH\) peak memory (\d+) MB", re.MULTILINE)
+SOFTWARE = ("GFN2-xTB: the minimum by xtb, the Hessians by dxtb (central differences of its forces) at ±0.10 along every mode, "
+            "dpir.qff; GVPT2 by probes/gvpt2_labels.py with pyVPT2's polyad solver (probes/xtb_field_for_step.sh)")
+
+
+class NotApplied(Exception):
+    """The step cannot serve this molecule; `reason` is what the record and the certificate say, `field` the force-field run's
+    record where one was started."""
+
+    def __init__(self, reason: str, field: dict | None = None) -> None:
+        super().__init__(reason)
+        self.reason = reason
+        self.field = field
+
+
+@dataclass(frozen=True)
+class FieldSettings:
+    """How the force field is computed: `shards` dxtb processes of `omp_threads` threads each, under a WSL cap of `cap_mb`."""
+    shards: int
+    omp_threads: int
+    cap_mb: int
+
+    def __post_init__(self) -> None:
+        if min(self.shards, self.omp_threads) < 1 or self.cap_mb < MIN_CAP_MB:
+            raise ValueError(f"force-field settings {self}: at least one shard and one thread, and a cap of {MIN_CAP_MB} MB or more")
+
+    @classmethod
+    def of(cls, threads: int, shards: int, cap_mb: int) -> FieldSettings:
+        """`threads` cores shared out over `shards` processes."""
+        if shards < 1:
+            raise ValueError(f"{shards} force-field processes: at least one")
+        return cls(shards, max(1, threads // shards), cap_mb)
+
+
+def load_artefact() -> AS.Artefact:
+    """The committed artefact, checked (`anharmonic_step.load_artefact`): the pipeline reads it before any computation."""
+    return AS.load_artefact()
+
+
+def artefact_record(artefact: AS.Artefact) -> dict:
+    """What a result keeps of the artefact it used: the file, its hash, the commit and date it was written at, its bars."""
+    path = Path(AS.ARTEFACT)
+    return {"file": path.relative_to(P.PLAN).as_posix(), "sha16": sha16(path), "commit": artefact.header["commit"],
+            "written": artefact.header["written"], "bars_cm": AS.bars(artefact),
+            "training_molecules": len(artefact.header["training_molecules"])}
+
+
+def geometry(d: Path) -> tuple[list[str], np.ndarray, np.ndarray]:
+    """The result folder's atoms: symbols as dpir.qff writes them, coordinates in bohr, masses in amu."""
+    g = json.loads((d / "geometry.json").read_text(encoding="utf-8"))
+    return [s.capitalize() for s in g["symbols"]], np.asarray(g["coords_bohr"], float).reshape(-1, 3), np.asarray(g["masses_amu"], float)
+
+
+def b3lyp_modes(symbols: list[str], coords: np.ndarray, H_low: np.ndarray) -> AS.Modes:
+    """The molecule's B3LYP modes as the model's inputs need them, or the reason the model cannot take this molecule."""
+    unseen = sorted(set(symbols) - MODEL_ELEMENTS)
+    if unseen:
+        raise NotApplied(f"element(s) {', '.join(unseen)} outside the anharmonic model's training set ({', '.join(sorted(MODEL_ELEMENTS))})")
+    try:
+        return AS.Modes.from_hessian(H_low, symbols, coords)
+    except ValueError as e:
+        raise NotApplied(f"the B3LYP modes are not the 3N−6 the force field needs: {e}") from e
+
+
+def write_reference(d: Path, symbols: list[str], coords: np.ndarray, H_low: np.ndarray) -> Path:
+    """The B3LYP minimum as the reference record `xtb_anharmonic.sh` starts from (<result>/anharmonic/G/ref.json); its folder."""
+    g = d / FOLDER / "G"
+    g.mkdir(parents=True, exist_ok=True)
+    P.write_json(g / "ref.json", {"driver": "hessian", "model": {"method": "b3lyp", "basis": "6-31g*"},
+                                  "molecule": {"symbols": symbols, "geometry": coords.ravel().tolist()},
+                                  "return_result": np.asarray(H_low, float).ravel().tolist()})
+    return g
+
+
+def field_command(name: str, d: Path, s: FieldSettings, dry: bool = False) -> list[str]:
+    """The WSL command of the force field and its label, under the memory cap; with `dry`, the script's own check of its tools."""
+    q, w = shlex.quote, P.wsl_path
+    inner = (f"export SHARDS={s.shards} OMP_NUM_THREADS={s.omp_threads} PYTHONUNBUFFERED=1; "
+             f"bash {q(w(P.WSL_CAPPED))} {s.cap_mb} -- bash {q(w(FIELD_SCRIPT))} {q(name)} {q(w(d / FOLDER / 'G'))} {q(w(d / FOLDER))}"
+             + (" --dry-run" if dry else ""))
+    return ["wsl.exe", "-e", "bash", "-lc", inner]
+
+
+def force_field(name: str, d: Path, s: FieldSettings) -> tuple[AS.XtbField, dict]:
+    """The molecule's GFN2-xTB force field with its GVPT2 label, computed in WSL from <result>/anharmonic/G/ref.json; and the
+    run's record (seconds, peak memory where the cap's scope reports it). Raises NotApplied where there is no usable field."""
+    t = time.time()
+    rc = P._run(field_command(name, d, s), d / LOG, "GFN2-xTB quartic force field and its GVPT2 label (WSL)")
+    log = (d / LOG).read_text(encoding="utf-8", errors="replace")
+    peak = PEAK_LINE.search(log)
+    record = {"seconds": round(time.time() - t, 1), "peak_memory_mb": int(peak.group(1)) if peak else None, "shards": s.shards,
+              "omp_threads": s.omp_threads, "cap_mb": s.cap_mb, "software": SOFTWARE, "log": LOG}
+    if rc in P.KILLED_AT_CAP:
+        raise NotApplied(f"the GFN2-xTB force field was stopped at the WSL cap of {s.cap_mb} MB ({LOG})", record)
+    if rc != 0:
+        failed = FAILED_LINE.findall(log)
+        raise NotApplied(f"the GFN2-xTB force field could not be made: {failed[-1] if failed else f'exit {rc}'} ({LOG})", record)
+    x = d / FOLDER / "xtb" / name / "X"
+    try:
+        return AS.XtbField.from_folder(str(x), str(d / FOLDER / "gvpt2_x" / f"{name}.json")), record
+    except (ValueError, OSError) as e:
+        raise NotApplied(f"the GFN2-xTB force field cannot be read: {e}", record) from e
+
+
+def low_hessian(d: Path) -> np.ndarray:
+    """Step 3's B3LYP Hessian of a result folder (Cartesian, hartree/bohr², projected)."""
+    with np.load(d / P.RI.LOW_HESSIAN) as z:
+        return np.asarray(z["H_projected"], float)
+
+
+def dry_run(req: Request) -> int:
+    """Everything the step checks before the force field's first Hessian: the artefact (loaded by the caller), the molecule's B3LYP
+    modes, the reference record, and the WSL script's own dry run under the cap. The exit code."""
+    symbols, coords, _ = geometry(req.folder)
+    H_low = low_hessian(req.folder)
+    try:
+        b3lyp_modes(symbols, coords, H_low)
+    except NotApplied as e:
+        print(f"[anharmonic] dry run: the step would not be applied — {e.reason}", flush=True)
+        return 0
+    write_reference(req.folder, symbols, coords, H_low)
+    return P._run(field_command(req.name, req.folder, req.settings, dry=True), req.folder / "anharmonic_dry_run.log",
+                  "dry run of the GFN2-xTB force field's tools (WSL)")
+
+
+def corrected_modes(H: np.ndarray, masses: np.ndarray, sticks: list[dict]) -> np.ndarray:
+    """The mass-weighted modes of the corrected Hessian in the sticks' order (ascending position), checked against the sticks."""
+    w, _, L = RINT.mode_intensities(H, masses, np.zeros((3, H.shape[0])), return_modes=True)
+    order = np.argsort(w)
+    if len(sticks) != len(w) or max(abs(s["omega_cm"] - x) for s, x in zip(sticks, w[order], strict=True)) > STICK_TOL_CM:
+        raise RuntimeError("the recorded network spectrum is not the one H_low + ΔH gives")
+    return L[:, order]
+
+
+def stick_entry(omega_cm: float, band: AS.BandStep, steps: list[AS.ModeStep]) -> tuple[float | None, dict]:
+    """A stick's ν and its anharmonic block, rounded as the record rounds positions; ν is the recorded ω plus the recorded Δ_anh."""
+    delta = None if band.delta_anh_cm is None else round(band.delta_anh_cm, 1)
+    entry = {"delta_anh_cm": delta, "bar_cm": band.bar_cm, "reason": band.reason, "error_not_measured": band.error_not_measured,
+             "family": None if band.mode is None else steps[band.mode].family, "b3lyp_mode": band.mode, "overlap": round(band.overlap, 3)}
+    return (None if delta is None else round(omega_cm + delta, 1)), entry
+
+
+def counts(bands: list[AS.BandStep]) -> dict:
+    no_step: dict[str, int] = {}
+    for b in bands:
+        if b.reason is not None:
+            no_step[b.reason] = no_step.get(b.reason, 0) + 1
+    return {"stepped": sum(b.reason is None for b in bands), "error_not_measured": sum(b.error_not_measured for b in bands),
+            "no_step": no_step}
+
+
+def with_summary(out: dict, summary: dict) -> dict:
+    """The spectra with the step's summary and the sentence about the positions the record prints."""
+    return {**out, "anharmonic": summary, "note": POS.note(summary)}
+
+
+def not_applied(out: dict, reason: str, field: dict | None = None) -> dict:
+    """The spectra of a molecule without the step: every stick harmonic, and the reason once, for the whole spectrum."""
+    for stick in out["network"]["sticks"]:
+        stick["nu_cm"], stick["anharmonic"] = None, None
+    return with_summary(out, {"status": POS.NOT_APPLIED, "reason": reason, "model": AS.MODEL, "field": field})
+
+
+@dataclass(frozen=True)
+class Request:
+    """One molecule's step: its name and result folder, the artefact (None is the switch --no-anharmonic) and the field's settings."""
+    name: str
+    folder: Path
+    artefact: AS.Artefact | None
+    settings: FieldSettings
+
+
+def step(req: Request, dH: np.ndarray, out: dict) -> dict:
+    """Step 6: `out` (step 5's spectra) with each network stick's ν and anharmonic block, the summary and the positions note;
+    `anharmonic.json` holds every mode's and every band's step."""
+    d, artefact = req.folder, req.artefact
+    if artefact is None:
+        return not_applied(out, POS.SWITCHED_OFF)
+    symbols, coords, masses = geometry(d)
+    H_low = low_hessian(d)
+    try:
+        modes = b3lyp_modes(symbols, coords, H_low)
+        write_reference(d, symbols, coords, H_low)
+        xtb, field_record = force_field(req.name, d, req.settings)
+    except NotApplied as e:
+        print(f"[pipeline] anharmonic step not applied: {e.reason}", flush=True)
+        return not_applied(out, e.reason, e.field)
+    steps = AS.mode_steps(modes, xtb, artefact)
+    sticks = out["network"]["sticks"]
+    bands = AS.carry_to_bands(corrected_modes(H_low + dH, masses, sticks), modes.q, steps)
+    for stick, band in zip(sticks, bands, strict=True):
+        stick["nu_cm"], stick["anharmonic"] = stick_entry(stick["omega_cm"], band, steps)
+    summary = {"status": POS.APPLIED, "reason": None, "model": AS.MODEL, "artefact": artefact_record(artefact), "bands": counts(bands),
+               "field": field_record}
+    P.write_json(d / RECORD, {"summary": summary, "modes": [s.as_record() for s in steps],
+                              "bands": [{"omega_cm": s["omega_cm"], "nu_cm": s["nu_cm"], **b.as_record()}
+                                        for s, b in zip(sticks, bands, strict=True)]})
+    print(f"[pipeline] anharmonic step: {summary['bands']['stepped']} of {len(bands)} bands stepped ({RECORD})", flush=True)
+    return with_summary(out, summary)
+
+
+def main(argv: list[str] | None = None) -> int:
+    ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
+    ap.add_argument("result", type=Path, help="a finished pipeline result folder")
+    ap.add_argument("--threads", type=int, default=4)
+    ap.add_argument("--shards", type=int, default=2)
+    ap.add_argument("--cap-mb", type=int, default=1536)
+    ap.add_argument("--dry-run", action="store_true", help="check the artefact, the modes and the WSL tools; compute nothing")
+    a = ap.parse_args(argv)
+    d = a.result.resolve()
+    rec = json.loads((d / "pipeline.json").read_text(encoding="utf-8"))
+    if POS.summary_of(rec["spectra"])["status"] == POS.APPLIED:
+        raise SystemExit(f"{d}: the anharmonic step is already in this result; a result is never overwritten")
+    req = Request(rec["name"], d, load_artefact(), FieldSettings.of(a.threads, a.shards, a.cap_mb))
+    if a.dry_run:
+        return dry_run(req)
+    with np.load(d / P.CORRECTION) as z:
+        dH = z["dH"]
+    print(f"[anharmonic] start: {rec['name']}, {req.settings}", flush=True)
+    t = time.time()
+    rec["spectra"] = step(req, dH, rec["spectra"])
+    rec["seconds"]["anharmonic"] = round(time.time() - t, 1)
+    P.write_json(d / "pipeline.json", rec)
+    s = rec["spectra"]["anharmonic"]
+    print(f"[anharmonic] done: {s['status']}{'' if s['reason'] is None else ' — ' + s['reason']}; {rec['seconds']['anharmonic']} s; "
+          f"field {s['field']}", flush=True)
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
