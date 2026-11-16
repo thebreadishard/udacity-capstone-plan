@@ -1,0 +1,202 @@
+{
+ "_about": "v1.4 on the data (design note 14, 16 Nov 2026): the carried recipe (c00_control) on the whole pool, three seeds, and both arms read on the hold-outs; the promotion is read afterwards by the registered rule",
+ "name": "V14D",
+ "poll_s": 1800,
+ "wait": [],
+ "steps": [
+  {
+   "kind": "cmd",
+   "label": "train c00_control (s3full, seeds 0,1,2)",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/v14/E7_rungC_v14s3full_c00_control.log",
+   "argv": [
+    "{python}",
+    "m05/rungC_train.py",
+    "corpus/molecules",
+    "out/v14/E7_rungC_v14s3full_c00_control",
+    "--use-analytic",
+    "--pool-layers",
+    "A,A2,B,P3,P3c",
+    "--inner-val",
+    "0.15",
+    "--aggregation",
+    "sum",
+    "--head",
+    "hybrid",
+    "--aux",
+    "both",
+    "--kring-weight",
+    "0.3",
+    "--kdiag-weight",
+    "0.1",
+    "--kdiag-mode",
+    "family",
+    "--sqm-scale",
+    "--pair-features",
+    "--aux-weight",
+    "1.0",
+    "--epochs",
+    "300",
+    "--patience",
+    "20",
+    "--lr",
+    "0.0003",
+    "--hybrid-hidden",
+    "256",
+    "--pattern",
+    "f",
+    "--weight-decay",
+    "0.0001",
+    "--body-width",
+    "64",
+    "--body-blocks",
+    "3",
+    "--sizes",
+    "all",
+    "--seeds",
+    "0,1,2",
+    "--threads",
+    "8",
+    "--save-model"
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "register candidates",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/v14/registry_v14_data.log",
+   "glob_args": true,
+   "argv": [
+    "{python}",
+    "m05/model_registry.py",
+    "--add-candidates",
+    "out/v14/E7_rungC_v14s3full_c00_control_model_n*_seed0.pt",
+    "out/v14/E7_rungC_v14s3full_c00_control_model_n*_seed1.pt",
+    "out/v14/E7_rungC_v14s3full_c00_control_model_n*_seed2.pt",
+    "--chain",
+    "v14 search",
+    "--note",
+    "v1.4 search (Design_2026-10-26_DeltaH_v1.4_Recipe_and_Search.md): a model of the search, not a version"
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "eval eval_data_seed0",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/v14/eval_data_seed0.log",
+   "glob_args": true,
+   "argv": [
+    "{python}",
+    "../../probes/rungC_eval_saved.py",
+    "out/v14/E7_rungC_v14s3full_c00_control_model_n*_seed0.pt",
+    "out/v14/eval_data_seed0",
+    "--use-analytic",
+    "--threads",
+    "8",
+    "--allow-any-model",
+    "--holdout-b-file",
+    "corpus/holdout_b_frozen_2026-10-08.txt"
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "eval eval_data_seed1",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/v14/eval_data_seed1.log",
+   "glob_args": true,
+   "argv": [
+    "{python}",
+    "../../probes/rungC_eval_saved.py",
+    "out/v14/E7_rungC_v14s3full_c00_control_model_n*_seed1.pt",
+    "out/v14/eval_data_seed1",
+    "--use-analytic",
+    "--threads",
+    "8",
+    "--allow-any-model",
+    "--holdout-b-file",
+    "corpus/holdout_b_frozen_2026-10-08.txt"
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "eval eval_data_seed2",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/v14/eval_data_seed2.log",
+   "glob_args": true,
+   "argv": [
+    "{python}",
+    "../../probes/rungC_eval_saved.py",
+    "out/v14/E7_rungC_v14s3full_c00_control_model_n*_seed2.pt",
+    "out/v14/eval_data_seed2",
+    "--use-analytic",
+    "--threads",
+    "8",
+    "--allow-any-model",
+    "--holdout-b-file",
+    "corpus/holdout_b_frozen_2026-10-08.txt"
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "eval eval_carried_data_seed0",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/v14/eval_carried_data_seed0.log",
+   "glob_args": true,
+   "argv": [
+    "{python}",
+    "../../probes/rungC_eval_saved.py",
+    "out/E7_rungC_chain35_analytic_model_n750_seed0.pt",
+    "out/v14/eval_carried_data_seed0",
+    "--use-analytic",
+    "--threads",
+    "8",
+    "--allow-any-model",
+    "--holdout-b-file",
+    "corpus/holdout_b_frozen_2026-10-08.txt"
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "eval eval_carried_data_seed1",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/v14/eval_carried_data_seed1.log",
+   "glob_args": true,
+   "argv": [
+    "{python}",
+    "../../probes/rungC_eval_saved.py",
+    "out/E7_rungC_chain35_analytic_model_n750_seed1.pt",
+    "out/v14/eval_carried_data_seed1",
+    "--use-analytic",
+    "--threads",
+    "8",
+    "--allow-any-model",
+    "--holdout-b-file",
+    "corpus/holdout_b_frozen_2026-10-08.txt"
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "eval eval_carried_data_seed2",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/v14/eval_carried_data_seed2.log",
+   "glob_args": true,
+   "argv": [
+    "{python}",
+    "../../probes/rungC_eval_saved.py",
+    "out/E7_rungC_chain35_analytic_model_n750_seed2.pt",
+    "out/v14/eval_carried_data_seed2",
+    "--use-analytic",
+    "--threads",
+    "8",
+    "--allow-any-model",
+    "--holdout-b-file",
+    "corpus/holdout_b_frozen_2026-10-08.txt"
+   ]
+  }
+ ],
+ "outputs": [
+  "modules/05_support_predictor/out/v14/eval_data_seed0.json",
+  "modules/05_support_predictor/out/v14/eval_data_seed1.json",
+  "modules/05_support_predictor/out/v14/eval_data_seed2.json"
+ ]
+}

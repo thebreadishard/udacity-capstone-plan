@@ -363,3 +363,41 @@ beside the scored one in every read, so a reader sees what the amendment changed
 
 **The code** (branch `v14-final-full-pool`, on top of §12's): `probes/v14_search.py` (`EXCLUDED_SELECTION_CORES`, `selection_sets`,
 `make_selection_eval`, `scored_read`, the three reads) and `tests/test_v14_search.py`, the evaluator stubbed.
+
+## 14. Amendment, 16 November 2026, 21:0x: v1.4 is the carried recipe on the whole pool; the search goes on beside it
+
+**After data, on the user's word.** The user wants version 1.4 before the weekend before 25 November ('Bij voorkeur voor het weekend
+voor de 25e'; then, to this proposal, 'Ja, doe dat'). The search as registered cannot give it: 25 trainings of stage 1 are left, about
+6 of stage 2 and 6 of the final chain, some 37 at about 3 h each — the laptop has eight cores and the trainer uses them all, so nothing
+runs beside it — which ends on Saturday 21 or Sunday 22 November at the earliest.
+
+**What was seen when this was written** (read-only, seed 0 of seven of the sixteen configurations; `probes/results_m1/v14_holdout_a_look_2026-11-16/`):
+on the selection set without the biphenylene core (§13) no configuration is below the control — c00 2.96, c03 3.06, c06 3.13, c02 3.13,
+c04 3.28, c01 3.34, c05 3.45 cm⁻¹ (corrected frequencies, per molecule) — while every one of the seven is below every seed of the
+carried version on hold-out (b): 2.18–2.69 against 2.85–3.24, and level with it on hold-out (a) without biphenylene: 1.94–2.59 against
+2.03–2.25. So what the stage trainings show is the data's gain, not a recipe's.
+
+**The amendment.**
+1. The carried recipe — c00_control: the recipe of version 1.3, RECIPE_V11 with the constant rate — is trained on the whole pool
+   (1,080 molecules; three seeds) by the final chain's own whole-pool step, built from `v14_search.train_step(control, "s3full",
+   "0,1,2", selection_split=False)`; chain `probes/runs/v14_data.json`, run spec `v14_data`. Both arms are then read on the hold-outs
+   (`eval_data_seed*`, `eval_carried_data_seed*`).
+2. **The promotion is the registered one** (§5; `promotion_read.compare` and `promotion`: worse on none of the read-outs on either
+   hold-out, by the registered rule). If it passes, these three models are carried as **version 1.4**. If it does not, nothing is
+   carried, and the cause is looked at per molecule before anything else is decided.
+3. The search is paused at a step boundary for this and resumes where it stopped (its runner skips finished steps). Its winner, if it
+   is not the control, replaces version 1.4 only by the registered route: stage 2, the final chain, read3 — then read against version
+   1.4 as the carried version, not against 1.3. If the control wins the search, these three models are the final chain's whole-pool
+   models already.
+4. Nothing else changes: the frozen list and its sha256, the selection set and §13's score, the lines, the two-SE and no-worsening
+   rules, §12's whole-pool retraining for any other winner.
+
+**Stated before any whole-pool model exists** (§12 already says it; repeated because this is now the deciding read): hold-out (b)
+below the carried version on the mean of three seeds; hold-out (a) not above it; biphenylene (A_72b86c2331) at most 4.7 cm⁻¹ on the
+mean of three seeds, where the stage trainings read 7.0–10.3 without its derivatives and the carried version 1.4–2.3 with seven of them.
+
+**What it costs in rigour.** It is the third amendment after data, and it turns 'the search's winner' into 'the control unless the
+search beats it'. The control is the one configuration that was not chosen on any selection score, so no selection bias enters the
+promoted models; what is lost is only that a better recipe, if the remaining nine configurations hold one, arrives later as a
+replacement instead of first. The licence (decision 65 as amended on 16 Nov) is read on the product's quantity for whichever
+version is carried; `probes/product_error_read.py` must be run for the new models before a certificate is made (TASKS 246 (e)).
