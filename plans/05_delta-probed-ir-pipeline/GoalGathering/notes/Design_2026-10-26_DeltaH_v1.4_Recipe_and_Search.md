@@ -221,3 +221,53 @@ outside the repaired mode 0.113 cm⁻¹ against the registered 0.5; `probes/resu
 originals under `corpus/superseded_2026-11-15/`). Smoked first on that corpus: c03_control_schedule and c04 through the trainer's
 `--smoke` at an epoch cap of 7 (mechanics only). The run spec the search writes asked for a progress gap of 180 minutes against the
 schema's 120; corrected in `probes/v14_search.py` with a test, and in the stage-1 run spec — the list itself was not touched.
+
+## 12. Amendment, 16 Nov 2026, 12:1x — the promotion is read on the winner retrained on the whole pool (after data)
+
+**This amendment is written after data.** Stage 1 is running. On 16 Nov the five finished trainings of seed 0 (c00 to c04, records
+`…s1a_…`) were read on hold-out (a), read-only, beside v1.3's three checkpoints (`probes/results_m1/v14_holdout_a_look_2026-11-16/`).
+§5 says the hold-outs are read once, for the winner and the carried version; that look came before the winner exists, and what follows
+was decided knowing its numbers. No whole-pool training has run and no promotion has been read.
+
+**What was seen.** Biphenylene (A_72b86c2331, one of hold-out (a)'s ten molecules) reads a corrected ω rms of 7.03 to 10.35 cm⁻¹ in the
+five trainings (9.57, 7.03, 10.35, 9.60, 9.51) against 1.38 to 2.27 for v1.3's three seeds (2.24, 2.27, 1.38). Hold-out (a)'s
+corrected ω rms is 3.10 to 3.87 in the five against 2.10 to 2.36 for v1.3 (`compare_holdout_a.txt`). All five configurations show it,
+the control included.
+
+**The cause.** The selection split (`26:0.15`) sets 169 molecules of 18 whole scaffold cores aside and leaves a pool of 913. One of the
+18 cores is biphenylene: all 8 biphenylene derivatives are in the selection set and none is trained on, while the carried version
+(chain 35) trained on 7 of them (`relatives.txt`). The same table shows biphenyl (19 derivatives in the selection set, 19 in v1.3's
+pool) and phenanthrene (16 against 12), both hold-out (a) molecules too. The ranking of the configurations is not touched: every
+configuration trains on the same 913. But the promotion of §5 compares the winner's stage checkpoints with a carried version that saw
+those derivatives, and the no-worsening rule would refuse the winner for the split, not for its recipe.
+
+**What changes.**
+1. **The final chain trains the winner's recipe again on the whole pool**: the same trainer command without `--selection-split`, seeds
+   0, 1, 2, records `…s3full_…`. Early stopping uses the trainer's inner validation split, as in every training.
+2. **The promotion is read on those three models.** `eval_winner_seed*` evaluates the whole-pool checkpoints, not the stage checkpoints.
+   read3 refuses a winner eval whose checkpoint was trained with a selection split, or that is not the winner's whole-pool checkpoint
+   of that seed: it reads the checkpoint's name from the eval record and the split from the trainer's record beside the checkpoint.
+3. **Decision 51's cap rule covers the whole-pool trainings**, as read2 applies it to the winner: read3 refuses a constant-rate model
+   whose best epoch lies within 10 % of the cap and marks a cosine one LATE.
+4. read3's report says in one line that the winner was retrained on the whole pool and why.
+
+**What does not change.** The frozen list and its sha256 (§11); the selection rule and the selection set; stages 1 and 2, their chains
+and their records (the stage-1 chain comes out byte for byte from the changed code, pinned by a test); the score and the two-SE winner
+rule; the target check, which stays a selection-set comparison of two arms trained with the split (the winner's three stage seeds
+against the other target's three); the no-worsening rule of §5 and its thresholds; the carried version's three checkpoints, read again
+on the same hold-out folders.
+
+**The price.** Three more trainings: about 7 laptop hours for a constant-rate winner (3 × 2.3 h as stage 1 measures them) and about
+8.5 for a cosine (3 × 2.8 h). The run spec of the final chain states six trainings at the search's planning figures (2 h, 3.5 h) and
+an hour for the evals.
+
+**The caveat that stays.** The whole-pool models trained on the selection set, so they have no untouched selection score, and read3
+prints none. The two hold-outs are the only read of them. The recipe was chosen on 913 molecules and is applied to 1,082; that it
+carries over is assumed, not measured. And the look at hold-out (a) is on the record above: the amendment changes what the candidate
+trains on, not which configuration wins or what it must reach.
+
+**Prediction, written before any whole-pool training.** Biphenylene's corrected ω rms on the three whole-pool models lies nearer the
+carried version's 1.4 to 2.3 cm⁻¹ than the search's 7.0 to 10.3. If it stays above 7, the cause named here is wrong.
+
+**The code** (branch `v14-final-full-pool`, in its own worktree, not merged when this was written): `probes/v14_search.py`
+(`trainer_argv`'s keyword `selection_split`, `_write_final_chain`, `whole_pool_reads`, `cmd_read3`) and `tests/test_v14_search.py`.

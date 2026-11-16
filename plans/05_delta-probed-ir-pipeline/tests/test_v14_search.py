@@ -1,5 +1,6 @@
 """probes/v14_search.py on synthetic records: the frozen list (deterministic, in range, every configuration a valid trainer command), the
-plan's refusals, the score, the winner rule (no-worsening, two SE, the cap), and plan → read1 → read2 → read3 end to end."""
+plan's refusals, the score, the winner rule (no-worsening, two SE, the cap), plan → read1 → read2 → read3 end to end, the final chain's
+whole-pool retraining of the winner with read3's refusals, and the frozen stage-1 chain reproduced from the frozen list."""
 import collections
 import json
 import sys
@@ -18,6 +19,9 @@ import v14_search as V  # noqa: E402
 from rungC_config import config_from_argv  # noqa: E402
 
 ON_LINES = {"diag_rms": {f: 3.0 for f in P.FAMILIES}, P.RATIO: 0.25}
+FROZEN_STAGE1 = PLAN / "probes" / "runs" / "v14_stage1.json"                       # the chain the laptop runs since 15 Nov 2026
+FROZEN_LIST = PLAN / "modules" / "05_support_predictor" / V.OUT / "configs.json"
+FINAL_SEEDS = "0,1,2"
 
 
 @pytest.fixture
@@ -145,17 +149,45 @@ def sel_read(shift: float) -> dict:
             "per_molecule": {"P3c_x": {"corrected_freq_rms": 4.0}, "A_y": {"corrected_freq_rms": 2.0}}}
 
 
-def write_record(root: Path, pre: str, seeds: dict[int, float], best_epoch: int = 100) -> None:
-    rec = {"selection_split": V.SELECTION, "epochs": V.EPOCH_CAP,
-           "curve": {"1000": {"per_seed": [{"seed": s, "sel": sel_read(sh), "best_epoch": best_epoch} for s, sh in seeds.items()]}}}
+def write_record(root: Path, pre: str, seeds: dict[int, float], best_epoch: int = 100, split: bool = True) -> None:
+    """A trainer record as `rungC_train.py` writes it: the selection split and the selection read only when the split was used."""
+    per_seed = [{"seed": s, "best_epoch": best_epoch, **({"sel": sel_read(sh)} if split else {})} for s, sh in seeds.items()]
+    rec = {**({"selection_split": V.SELECTION} if split else {}), "epochs": V.EPOCH_CAP, "curve": {"1000": {"per_seed": per_seed}}}
     (root / "m05" / f"{pre}.json").write_text(json.dumps(rec), encoding="utf-8")
 
 
-def write_eval(root: Path, name: str, shift: float, seed: int) -> None:
+def write_eval(root: Path, name: str, shift: float, seed: int, model: str) -> None:
+    """An eval record as `rungC_eval_saved.py` writes it: `model` is the checkpoint it read, relative to module 05."""
     fam = {f: 3.0 - shift + 0.01 * seed for f in P.FAMILIES}
-    rec = {"holdout_b_file": "corpus/" + P.FROZEN_B, "substituted_analytic": ["m1"],
+    rec = {"model": model, "holdout_b_file": "corpus/" + P.FROZEN_B, "substituted_analytic": ["m1"],
            **{h: {"diag_rms": fam, P.RATIO: 0.2 - shift / 30 + 0.001 * seed} for h in ("a", "b")}}
     (root / "m05" / V.OUT / f"eval_{name}_seed{seed}.json").write_text(json.dumps(rec), encoding="utf-8")
+
+
+def full_checkpoint(w: V.Config, seed: int) -> str:
+    return f"{V.prefix(w, V.FULL_TAG)}_model_n1082_seed{seed}.pt"
+
+
+def assert_final_chain(root: Path, w: V.Config, other: V.Config, carried: list[str]) -> None:
+    """The final chain and its run spec as read2 wrote them: the other target with the split, the winner on the whole pool, six evals."""
+    spec = RUNSPEC.RunSpec.model_validate_json((root / "probes" / "runspecs" / "v14_final.json").read_text(encoding="utf-8"))
+    final = json.loads((root / "probes" / "runs" / "v14_final.json").read_text(encoding="utf-8"))
+    assert spec.estimate.hours == 6 * V.HOURS[w.schedule] + 1.0                     # six trainings and the evals
+    assert spec.progress.max_gap_minutes == V.MAX_GAP_MINUTES and spec.memory.peak_gb == 7.7
+    assert [s["label"].split(" (")[0] for s in final["steps"]] == [
+        f"train {w.name}", f"train {w.name}", *(f"eval eval_{who}_seed{s}" for who in ("winner", "carried") for s in range(3)), "v1.4 search read3"]
+    other_step, full_step = final["steps"][:2]
+    assert other_step == V.train_step(other, "s3other", FINAL_SEEDS)                # the target check's arm keeps the selection split
+    assert other_step["argv"].count("--aux-target") == (other.target != V.CARRIED_TARGET)
+    assert other_step["argv"].count("--selection-split") == 1
+    split_twin = V.trainer_argv(w, V.prefix(w, V.FULL_TAG), FINAL_SEEDS)             # the winner's stage command at this prefix and seeds
+    k = split_twin.index("--selection-split")
+    assert full_step["argv"] == split_twin[:k] + split_twin[k + 2:]                 # the same command, the split alone taken out
+    whole = config_from_argv(full_step["argv"][2:])
+    assert whole.selection_split is None and whole.seeds == FINAL_SEEDS and whole.inner_val > 0   # early stopping keeps its inner split
+    assert [s["argv"][2:4] for s in final["steps"][2:5]] == [
+        [f"{V.OUT}/E7_rungC_v14s3full_{w.name}_model_n*_seed{s}.pt", f"{V.OUT}/eval_winner_seed{s}"] for s in range(3)]
+    assert [s["argv"][2] for s in final["steps"][5:8]] == carried
 
 
 def test_plan_to_read3_end_to_end(sandbox):
@@ -178,28 +210,38 @@ def test_plan_to_read3_end_to_end(sandbox):
     assert all(len(v) == len(V.STAGE1_SEEDS) for v in read1["seed_scores"].values())
     stage2_chain = json.loads((root / "probes" / "runs" / "v14_stage2.json").read_text(encoding="utf-8"))
     assert all(s["argv"][s["argv"].index("--seeds") + 1] == str(V.STAGE2_SEED) for s in stage2_chain["steps"][:-1])
+    by_name = {c.name: c for c in configs}
+    assert stage2_chain["steps"][:-1] == [V.train_step(by_name[n], "s2", str(V.STAGE2_SEED)) for n in ["c00_control", *chosen]]
     assert json.loads((root / "probes" / "runs" / "v14_stage2.json").read_text(encoding="utf-8"))["steps"][-1]["argv"][-1] == "read2"
     for c in configs:
         if c.name in [*chosen, "c00_control"]:
             write_record(root, V.prefix(c, "s2"), {V.STAGE2_SEED: stage1[c.name]})
     RUNSPEC.RunSpec.model_validate_json((root / "probes" / "runspecs" / "v14_stage2.json").read_text(encoding="utf-8"))
     V.cmd_read2()
-    RUNSPEC.RunSpec.model_validate_json((root / "probes" / "runspecs" / "v14_final.json").read_text(encoding="utf-8"))
     best = json.loads((root / "m05" / V.OUT / "read2.json").read_text(encoding="utf-8"))["winner"]
     assert best == chosen[0]
-    final = json.loads((root / "probes" / "runs" / "v14_final.json").read_text(encoding="utf-8"))
     w = next(c for c in configs if c.name == best)
     other = V.replace(w, target=next(t for t in V.TARGETS if t != w.target))
-    assert final["steps"][0]["argv"].count("--aux-target") == (other.target != V.CARRIED_TARGET)
-    assert any(s["argv"][2] == carried[0] for s in final["steps"][1:7])
+    assert_final_chain(root, w, other, carried)
     write_record(root, V.prefix(other, "s3other"), {0: stage1[best] + 0.2, 1: stage1[best] + 0.21, 2: stage1[best] + 0.19})  # larger shift = better
+    stage_checkpoints = [f"{V.prefix(w, tag)}_model_n913_seed{s}.pt" for s, tag in enumerate(("s1a", "s1b", "s2"))]
     for s in range(3):
-        write_eval(root, "winner", 0.5, s)
-        write_eval(root, "carried", 0.1, s)
+        write_eval(root, "winner", 0.5, s, stage_checkpoints[s])                    # what the final chain evaluated before 16 Nov
+        write_eval(root, "carried", 0.1, s, carried[s])
+    with pytest.raises(SystemExit, match="trained with --selection-split"):
+        V.cmd_read3()
+    assert not (root / "m05" / V.OUT / "read3.json").exists()
+    write_record(root, V.prefix(w, V.FULL_TAG), dict.fromkeys(range(3), 0.0), split=False)
+    for s in range(3):
+        write_eval(root, "winner", 0.5, s, full_checkpoint(w, s))
     V.cmd_read3()
     rec = json.loads((root / "m05" / V.OUT / "read3.json").read_text(encoding="utf-8"))
     assert rec["promotion"]["promoted"] and rec["target_check"]["promoted"]          # the other target is better: the choice goes to the user
-    assert "the choice goes to the user" in (root / "m05" / V.OUT / "read3.md").read_text(encoding="utf-8")
+    assert rec["winner_trained_on"] == "whole pool" and rec["winner_best_epochs"] == [100, 100, 100]
+    report = (root / "m05" / V.OUT / "read3.md").read_text(encoding="utf-8")
+    assert "the choice goes to the user" in report
+    (retrained,) = [line for line in report.splitlines() if "retrained on the whole pool" in line]
+    assert "selection-set scores are not shown" in retrained and "biphenylene" in retrained
 
 
 def test_read2_refuses_a_winner_at_the_cap(sandbox):
@@ -221,3 +263,89 @@ def test_read2_refuses_a_winner_at_the_cap(sandbox):
                          best_epoch=V.EPOCH_CAP if c.name == constant else 100)
     with pytest.raises(SystemExit, match="within 10% of the cap"):
         V.cmd_read2()
+
+
+def at_read3(root: Path, carried: list[str], winner_index: int, full_epoch: int = 100) -> V.Config:
+    """Every file read3 reads, written directly: the winner is the frozen list's configuration at `winner_index`."""
+    V.cmd_plan(carried)
+    w = V.load_list()[0][winner_index]
+    other = V.replace(w, target=next(t for t in V.TARGETS if t != w.target))
+    (root / "m05" / V.OUT / "read2.json").write_text(json.dumps({"winner": w.name}), encoding="utf-8")
+    for tag, seed in (("s1a", 0), ("s1b", 1), ("s2", V.STAGE2_SEED)):
+        write_record(root, V.prefix(w, tag), {seed: 0.3})
+    write_record(root, V.prefix(other, "s3other"), dict.fromkeys(range(3), 0.1))
+    write_record(root, V.prefix(w, V.FULL_TAG), dict.fromkeys(range(3), 0.0), best_epoch=full_epoch, split=False)
+    for s in range(3):
+        write_eval(root, "winner", 0.5, s, full_checkpoint(w, s))
+        write_eval(root, "carried", 0.1, s, carried[s])
+    return w
+
+
+def test_read3_refuses_winner_evals_of_any_other_checkpoint(sandbox):
+    root, carried = sandbox
+    w = at_read3(root, carried, winner_index=0)
+    V.cmd_read3()                                                                   # the whole-pool checkpoints: read
+    write_eval(root, "winner", 0.5, 1, full_checkpoint(w, 2))                       # a whole-pool model, the wrong seed
+    with pytest.raises(SystemExit, match="not seed 1 of"):
+        V.cmd_read3()
+    write_eval(root, "winner", 0.5, 1, carried[1])                                  # no trainer checkpoint's name
+    with pytest.raises(SystemExit, match="not a trainer checkpoint"):
+        V.cmd_read3()
+    write_eval(root, "winner", 0.5, 1, "out/elsewhere_model_n1082_seed1.pt")        # a checkpoint without its training's record
+    with pytest.raises(SystemExit, match="no trainer record"):
+        V.cmd_read3()
+    write_eval(root, "winner", 0.5, 1, f"{V.prefix(w, 's1b')}_model_n913_seed1.pt")  # one stage checkpoint among whole-pool ones
+    with pytest.raises(SystemExit, match="trained with --selection-split"):
+        V.cmd_read3()
+
+
+def test_read3_applies_the_cap_rule_to_the_whole_pool_trainings(sandbox, tmp_path_factory, monkeypatch):
+    root, carried = sandbox
+    at_read3(root, carried, winner_index=0, full_epoch=V.EPOCH_CAP)                 # the control: a constant rate, stopped by the cap
+    with pytest.raises(SystemExit, match="within 10% of the cap"):
+        V.cmd_read3()
+    other_root = tmp_path_factory.mktemp("cosine")                                  # c03: the cosine ends at the cap by construction
+    monkeypatch.setattr(V, "M05", other_root / "m05")
+    monkeypatch.setattr(V, "PLAN", other_root)
+    for c in carried:
+        (other_root / "m05" / c).parent.mkdir(parents=True, exist_ok=True)
+        (other_root / "m05" / c).write_bytes(b"x")
+    w = at_read3(other_root, carried, winner_index=3, full_epoch=V.EPOCH_CAP)
+    assert w.schedule == "cosine"
+    V.cmd_read3()
+    assert f"{V.EPOCH_CAP} LATE" in (other_root / "m05" / V.OUT / "read3.md").read_text(encoding="utf-8")
+
+
+def test_the_frozen_stage1_chain_comes_out_byte_identical(sandbox):
+    """The chain in use was written by `plan` on 15 Nov 2026; the same inputs must give the same bytes after any change to the search."""
+    root, _ = sandbox
+    carried = json.loads(FROZEN_LIST.read_text(encoding="utf-8"))["carried_models"]
+    for c in carried:
+        (root / "m05" / c).parent.mkdir(parents=True, exist_ok=True)
+        (root / "m05" / c).write_bytes(b"x")
+    V.cmd_plan(carried)
+    # the repository stores both files with LF; `write_text` on Windows writes CRLF
+    written = {name: path.read_bytes().replace(b"\r\n", b"\n") for name, path in (
+        ("chain", root / "probes" / "runs" / "v14_stage1.json"), ("list", root / "m05" / V.OUT / "configs.json"))}
+    assert written["chain"] == FROZEN_STAGE1.read_bytes().replace(b"\r\n", b"\n")
+    assert written["list"] == FROZEN_LIST.read_bytes().replace(b"\r\n", b"\n")
+
+
+def test_a_stage2_training_is_the_frozen_stage1_command_at_the_third_seed():
+    steps = json.loads(FROZEN_STAGE1.read_text(encoding="utf-8"))["steps"]
+    frozen = {s["argv"][3]: s["argv"] for s in steps if s["label"].startswith("train ")}
+    for c in V.frozen_list():
+        was = frozen[V.prefix(c, "s1a")]
+        k = was.index("--seeds")
+        assert was[k + 1] == "0"
+        assert V.train_step(c, "s2", str(V.STAGE2_SEED))["argv"] == [*was[:3], V.prefix(c, "s2"), *was[4:k + 1], str(V.STAGE2_SEED), *was[k + 2:]]
+
+
+def test_the_selection_split_is_an_explicit_switch_of_the_trainer_command():
+    c = V.control()
+    default, kept, whole = (V.trainer_argv(c, "out/x", "0"), V.trainer_argv(c, "out/x", "0", selection_split=True),
+                            V.trainer_argv(c, "out/x", "0", selection_split=False))
+    assert default == kept and "--selection-split" in kept and "--selection-split" not in whole
+    assert [x for x in kept if x not in ("--selection-split", V.SELECTION)] == whole
+    with pytest.raises(TypeError):
+        V.trainer_argv(c, "out/x", "0", False)                                      # keyword-only: no positional switch
