@@ -1,0 +1,212 @@
+{
+ "criteria": {
+  "energy": 1e-06,
+  "grms": 1e-05,
+  "gmax": 1.5e-05,
+  "drms": 4e-05,
+  "dmax": 6e-05
+ },
+ "source": "probes/results_m1/engine_check_2026-11-01/pyscf/molecules",
+ "rows": [
+  {
+   "id": "A_08dde334d8",
+   "steps": 20,
+   "maxsteps": 100,
+   "convergence_set": "GAU_TIGHT",
+   "max_force_au": 2.810322904167606e-06,
+   "last_step": 19,
+   "last_step_values": {
+    "energy": 1.342e-11,
+    "grms": 1.66e-06,
+    "gmax": 3.112e-06,
+    "drms": 1.972e-05,
+    "dmax": 3.634e-05
+   },
+   "criteria_met": {
+    "energy": true,
+    "grms": true,
+    "gmax": true,
+    "drms": true,
+    "dmax": true
+   },
+   "converged_lines": 1,
+   "failed_lines": 0,
+   "verdict": "converged"
+  },
+  {
+   "id": "A_428228e5a5",
+   "steps": 14,
+   "maxsteps": 100,
+   "convergence_set": "GAU_TIGHT",
+   "max_force_au": 3.9312983339812035e-06,
+   "last_step": 13,
+   "last_step_values": {
+    "energy": 2.074e-10,
+    "grms": 1.589e-06,
+    "gmax": 4.023e-06,
+    "drms": 9.826e-06,
+    "dmax": 1.801e-05
+   },
+   "criteria_met": {
+    "energy": true,
+    "grms": true,
+    "gmax": true,
+    "drms": true,
+    "dmax": true
+   },
+   "converged_lines": 1,
+   "failed_lines": 0,
+   "verdict": "converged"
+  },
+  {
+   "id": "A_541c53d1a5",
+   "steps": 15,
+   "maxsteps": 100,
+   "convergence_set": "GAU_TIGHT",
+   "max_force_au": 9.911268039175525e-06,
+   "last_step": 14,
+   "last_step_values": {
+    "energy": 1.846e-09,
+    "grms": 4.425e-06,
+    "gmax": 9.674e-06,
+    "drms": 2.963e-05,
+    "dmax": 4.48e-05
+   },
+   "criteria_met": {
+    "energy": true,
+    "grms": true,
+    "gmax": true,
+    "drms": true,
+    "dmax": true
+   },
+   "converged_lines": 1,
+   "failed_lines": 0,
+   "verdict": "converged"
+  },
+  {
+   "id": "A_72b86c2331",
+   "steps": 11,
+   "maxsteps": 100,
+   "convergence_set": "GAU_TIGHT",
+   "max_force_au": 1.4255005600372073e-06,
+   "last_step": 10,
+   "last_step_values": {
+    "energy": 6.388e-10,
+    "grms": 7.782e-07,
+    "gmax": 1.463e-06,
+    "drms": 1.283e-05,
+    "dmax": 2.45e-05
+   },
+   "criteria_met": {
+    "energy": true,
+    "grms": true,
+    "gmax": true,
+    "drms": true,
+    "dmax": true
+   },
+   "converged_lines": 1,
+   "failed_lines": 0,
+   "verdict": "converged"
+  },
+  {
+   "id": "A_8448043181",
+   "steps": 5,
+   "maxsteps": 100,
+   "convergence_set": "GAU_TIGHT",
+   "max_force_au": 6.9679639667086235e-06,
+   "last_step": 4,
+   "last_step_values": {
+    "energy": 4.877e-09,
+    "grms": 4.72e-06,
+    "gmax": 8.517e-06,
+    "drms": 3.253e-05,
+    "dmax": 4.278e-05
+   },
+   "criteria_met": {
+    "energy": true,
+    "grms": true,
+    "gmax": true,
+    "drms": true,
+    "dmax": true
+   },
+   "converged_lines": 1,
+   "failed_lines": 0,
+   "verdict": "converged"
+  },
+  {
+   "id": "A_bce5bae234",
+   "steps": 15,
+   "maxsteps": 100,
+   "convergence_set": "GAU_TIGHT",
+   "max_force_au": 3.3425377434781467e-06,
+   "last_step": 14,
+   "last_step_values": {
+    "energy": 1.678e-09,
+    "grms": 1.615e-06,
+    "gmax": 3.861e-06,
+    "drms": 2.374e-05,
+    "dmax": 4.017e-05
+   },
+   "criteria_met": {
+    "energy": true,
+    "grms": true,
+    "gmax": true,
+    "drms": true,
+    "dmax": true
+   },
+   "converged_lines": 1,
+   "failed_lines": 0,
+   "verdict": "converged"
+  },
+  {
+   "id": "A_e72997e726",
+   "steps": 11,
+   "maxsteps": 100,
+   "convergence_set": "GAU_TIGHT",
+   "max_force_au": 6.798895260118343e-06,
+   "last_step": 10,
+   "last_step_values": {
+    "energy": 2.634e-09,
+    "grms": 3.296e-06,
+    "gmax": 7.557e-06,
+    "drms": 3.1e-05,
+    "dmax": 4.726e-05
+   },
+   "criteria_met": {
+    "energy": true,
+    "grms": true,
+    "gmax": true,
+    "drms": true,
+    "dmax": true
+   },
+   "converged_lines": 1,
+   "failed_lines": 0,
+   "verdict": "converged"
+  },
+  {
+   "id": "A_fdc27f1bd1",
+   "steps": 12,
+   "maxsteps": 100,
+   "convergence_set": "GAU_TIGHT",
+   "max_force_au": 2.979791071666682e-06,
+   "last_step": 11,
+   "last_step_values": {
+    "energy": 4.687e-10,
+    "grms": 1.854e-06,
+    "gmax": 4.435e-06,
+    "drms": 2.22e-05,
+    "dmax": 3.71e-05
+   },
+   "criteria_met": {
+    "energy": true,
+    "grms": true,
+    "gmax": true,
+    "drms": true,
+    "dmax": true
+   },
+   "converged_lines": 1,
+   "failed_lines": 0,
+   "verdict": "converged"
+  }
+ ]
+}
