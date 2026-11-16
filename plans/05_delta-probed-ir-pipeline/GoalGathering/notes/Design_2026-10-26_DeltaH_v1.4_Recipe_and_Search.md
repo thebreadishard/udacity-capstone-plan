@@ -244,7 +244,9 @@ those derivatives, and the no-worsening rule would refuse the winner for the spl
 
 **What changes.**
 1. **The final chain trains the winner's recipe again on the whole pool**: the same trainer command without `--selection-split`, seeds
-   0, 1, 2, records `…s3full_…`. Early stopping uses the trainer's inner validation split, as in every training.
+   0, 1, 2, records `…s3full_…`. Early stopping uses the trainer's inner validation split, as in every training. A step `register`
+   then enters the chain's six new checkpoints in the model registry as `candidate`: the evaluator stops on a model the registry does
+   not know (decision 55), and the first version of this amendment had no such step.
 2. **The promotion is read on those three models.** `eval_winner_seed*` evaluates the whole-pool checkpoints, not the stage checkpoints.
    read3 refuses a winner eval whose checkpoint was trained with a selection split, or that is not the winner's whole-pool checkpoint
    of that seed: it reads the checkpoint's name from the eval record and the split from the trainer's record beside the checkpoint.
@@ -272,6 +274,14 @@ prints none. The two hold-outs are the only read of them. The recipe was chosen 
 (the whole-pool checkpoints are named `n1082`, the pool before the same two twins are dropped); that it
 carries over is assumed, not measured. And the look at hold-out (a) is on the record above: the amendment changes what the candidate
 trains on, not which configuration wins or what it must reach.
+
+**Expectation, written before any whole-pool model exists.** The user, 16 Nov: 'als er niets extra's geleerd wordt, dan is er iets
+aan de hand'. The whole pool is 1,080 molecules against the carried version's 750. In the five seed-0 stage trainings (911 molecules)
+hold-out (b) already reads a corrected ω rms of 2.18 to 2.65 cm⁻¹ against the carried version's 2.85 to 3.24, and hold-out (a) without
+biphenylene 1.94 to 2.59 against 2.03 to 2.25 (`probes/results_m1/v14_holdout_a_look_2026-11-16/holdout_a_without.txt`). Expected of
+the whole-pool winner, on the mean of its three seeds: hold-out (b) below the carried version, hold-out (a) not above it. If (a) is
+above, it is looked at per molecule before the promotion is decided either way. read3 prints the two means for both versions and says
+whether the expectation held; it decides nothing, the no-worsening rule does.
 
 **Prediction, written before any whole-pool training.** Biphenylene's corrected ω rms on the three whole-pool models lies nearer the
 carried version's 1.4 to 2.3 cm⁻¹ than the search's 7.0 to 10.3. The statistic: the mean over the three whole-pool seeds of the
@@ -314,9 +324,11 @@ scores, so it will be.
 **The rule.** The score that ranks stage 1, picks the winner in stage 2 and reads the target check is the registered formula read on
 the selection set without the scaffold core biphenylene: 161 of the 169 molecules. The 8 are the molecules of the records' own
 `holdout_sel` whose manifest name is `biphenylene+…`; the code refuses any other count than 8 of 169, so a changed corpus or split
-cannot change the rule unseen. Every read prints the registered score, on all 169, beside the scored one, and says in one line
-whether the two send the same configurations to stage 2 (read1), give the same winner (read2) and decide the target check the same
-way (read3).
+cannot change the rule unseen. Every read prints the registered score, on all 169, beside the scored one, and says in one line what
+the registered score would do: read1 whether it sends the same configurations to stage 2 (the same in the same order, the same in
+another order, or others); read2 whether the winner rule gives the same winner among the stage-2 candidates, which stage 1 chose on
+the scored set (it is not the winner a search run wholly on the registered score would have had); read3 whether the target check
+decides the same way.
 
 **How it is read.** The stage records' selection read is over all 169, so each stage checkpoint is read once more, by the evaluator
 the final chain uses (`rungC_eval_saved.py --eval-ids-file`; it needed no change, and it refuses a set the model trained on). Each
@@ -324,7 +336,14 @@ read (read1, read2, read3) makes the evaluations it lacks before it scores, one 
 and a record is moved into place only when its evaluation has finished. The stage-1 chain is frozen and running and ends in read1, so
 for stage 1 the evaluations can only run there; stage 2 and the final chain use the same path, not chain steps of their own, so
 the path read1 has exercised is the only one. Each evaluation also reads all 169, and the read refuses a record whose score on the
-169 differs from the trainer's own by more than 0.001: a second route to the registered number. Counts: 32 evaluations in read1, 5 in
+169 differs from the trainer's own by more than 0.001: a second route to the registered number. If that check refuses — a label
+repaired in the corpus between a training and its read would do it, honestly — the stage is not readable on the changed labels: the
+changed molecules are named from the two per-molecule read-outs and the route is a recorded amendment here; the tolerance is never
+loosened to let a read through. Before its evaluation a stage checkpoint is entered in the model registry as `candidate` (the
+registrar `chain_runner`'s chains use; a model that has a status keeps it), because the evaluator stops on a model the registry does
+not know. `python probes/v14_search.py seleval [--only CONFIG]` makes and checks the evaluations of every stage training that has
+finished, one line each with its seconds and its difference to the trainer's score: one real evaluation is the smoke run of this path
+before read1 needs it, and the rest can be made ahead. Counts: 32 evaluations in read1, 5 in
 read2, 3 in read3. The time of one is not measured; an evaluation loads the corpus as a training does and predicts hold-outs (a) and
 (b) and the 169, and the search's planning figure for a hold-out evaluation is about 3 minutes.
 
@@ -333,9 +352,9 @@ score's formula and its lines (3 cm⁻¹, 0.25); the two-SE winner rule and the 
 promotion on the whole-pool models, which have no selection score. The 8 biphenylene derivatives stay in the corpus and are trained
 on in §12's whole-pool retraining.
 
-**Fluoranthene stays in.** Its 3 molecules read badly too (median 7.39), but five-membered-ring relatives of it are in the training
-pool: a configuration can learn it from them, so its error says something about a recipe. Biphenylene's four-membered ring has no
-relative in the pool.
+**Fluoranthene stays in.** Its 3 molecules read badly too (median 7.39), but 16 trained molecules carry its cyclopenta-fused ring:
+benzo[k]fluoranthene (5), aza-fluoranthene-1, -4 and -5 (10) and acenaphthene (1). A configuration can learn the ring from them, so
+its error says something about a recipe. No trained molecule has a four-membered ring.
 
 **What this costs in rigour.** A selection rule changed after five of the 32 stage-1 trainings were seen on the set it concerns. What
 limits the damage: the excluded molecules are named by a structural fact fixed before any training (the one four-membered ring, all
