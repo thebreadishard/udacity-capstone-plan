@@ -89,6 +89,9 @@ def test_certificate_sources_and_evidence(cat):
         assert k["source"]
     md = to_markdown(c)
     assert "## Cost record" in md and "## Provenance" in md and "licensed at the DFT proxy" in md
+    assert c["statement"].endswith("where it is wider than the tolerance. Licence caveat: other on hold-out (a) rests on 8 molecules: the 95 % "
+                                   "interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie "
+                                   "under it).")
 
 
 def test_spectral_shape_heights_only_with_an_apt(cat):

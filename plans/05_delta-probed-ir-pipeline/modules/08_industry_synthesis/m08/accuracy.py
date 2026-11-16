@@ -6,6 +6,7 @@ amendment). One implementation for the licence, the live certificate and the exp
 from __future__ import annotations
 
 import json
+import math
 from pathlib import Path
 
 from . import pipeline as P
@@ -102,9 +103,12 @@ def _records(paths: list[Path]) -> list[dict]:
     return out
 
 
-def product_error_record(models: tuple[str, ...]) -> Path:
+def product_error_record(models: tuple[str, ...], sha16: dict[str, str] | None = None) -> Path:
     """The models' product-error record, `<stem>_product_error.json` beside their evaluation records. A version without one is refused
-    with the command that makes it: its licence is not read on the first-order quantity instead."""
+    with the command that makes it: its licence is not read on the first-order quantity instead. The record names the checkpoints it
+    was read on by file name and by hash; a record read on other files of the same names is refused. `sha16` gives the hashes of the
+    files that ran, per file name (a pipeline record's admission); without it the checkpoints beside the records are hashed where this
+    machine has them, and where it has none (the model files are not in git) the names alone are compared."""
     stems = {_stem_seed(name)[0] for name in models}
     if len(stems) != 1:
         raise ValueError(f"the models are of {len(stems)} stems ({sorted(stems)}); a product-error record is one version's")
@@ -114,19 +118,32 @@ def product_error_record(models: tuple[str, ...]) -> Path:
                              f"(README decision 65, amendment of {AMENDED}), which is not measured for {', '.join(models)}; make the "
                              f"record with `{PRODUCT_COMMAND}` (it reads the registry's carried models)")
     with open(path, encoding="utf-8") as f:
-        read_on = json.load(f)["models"]
-    if sorted(read_on) != sorted(models):
-        raise ValueError(f"{path.name} was read on {read_on}, not on {list(models)}; make it again with `{PRODUCT_COMMAND}`")
+        rec = json.load(f)
+    if sorted(rec["models"]) != sorted(models):
+        raise ValueError(f"{path.name} was read on {rec['models']}, not on {list(models)}; make it again with `{PRODUCT_COMMAND}`")
+    ran = {n: P.sha16(M05_OUT / n) for n in models if (M05_OUT / n).is_file()} if sha16 is None else sha16
+    if not set(ran) <= set(models):
+        raise ValueError(f"hashes given for {sorted(set(ran) - set(models))}, which are not among the models {list(models)}")
+    differ = [f"{n} (record {rec['model_sha16'][n]}, file {h})" for n, h in sorted(ran.items()) if rec["model_sha16"][n] != h]
+    if differ:
+        raise ValueError(f"{path.name} was read on other files than these models, whose names it shares: sha16 differs for "
+                         f"{'; '.join(differ)}; make it again with `{PRODUCT_COMMAND}`")
     return path
 
 
 def _product_row(p: dict, family: str) -> dict:
-    """One family's product error as reported: the rms, what it rests on, the molecule-level bootstrap's 95 % interval and whether that
-    interval reaches above the line."""
+    """One family's product error as reported: the rms, what it rests on — its bands, the hold-out's molecules and how many of them
+    have such bands — the molecule-level bootstrap's 95 % interval and whether that interval reaches above the line. A value that is
+    not a finite, non-negative number is refused: a negative rms would pass the line and a NaN bound would hide a crossing interval."""
     if p["rms"] is None:
         raise ValueError(f"the product-error record has no {family} band on a hold-out, so the family has no error there")
+    values = [p["rms"], *p["interval"]]
+    if len(values) != 3 or not all(isinstance(v, (int, float)) and math.isfinite(v) and v >= 0 for v in values):
+        raise ValueError(f"the product-error record's {family} rms and interval must be three finite numbers ≥ 0, not {values}; "
+                         f"make it again with `{PRODUCT_COMMAND}`")
     rms, interval = reported(p["rms"], family), [reported(x, family) for x in p["interval"]]
-    return dict(rms=rms, n_modes=p["n_modes"], n_molecules=p["n_molecules"], interval=interval,
+    return dict(rms=rms, n_modes=p["n_modes"], n_molecules=p["n_molecules"], n_molecules_with_modes=p["n_molecules_with_modes"],
+                interval=interval,
                 share_below_line=round(p["share_below_line"], 2), target=LICENCE_LINE_CM, within_target=rms <= LICENCE_LINE_CM,
                 interval_crosses_line=interval[1] > LICENCE_LINE_CM)
 
@@ -178,10 +195,11 @@ def network_accuracy(records: list[Path], clean: list[Path] | None = None, produ
                 definitions=DEFINITIONS, coupled_cluster=CC_NOTE)
 
 
-def accuracy_of(models: tuple[str, ...]) -> dict:
+def accuracy_of(models: tuple[str, ...], sha16: dict[str, str] | None = None) -> dict:
     """Both quantities for the named model files: their evaluation records, the clean hold-out (a) where they carry it, and their
-    product-error record — without which the version is refused (`NoProductError`), never read on the first-order quantity alone."""
-    return network_accuracy(evaluation_records(models), clean_a_records(models), product_error_record(models))
+    product-error record — without which the version is refused (`NoProductError`), never read on the first-order quantity alone.
+    `sha16`: the hashes of the files that ran, which the record must have been read on (`product_error_record`)."""
+    return network_accuracy(evaluation_records(models), clean_a_records(models), product_error_record(models, sha16))
 
 
 def stated_errors(accuracy: dict) -> tuple[str, dict[str, dict[str, float]]]:

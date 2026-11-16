@@ -26,16 +26,28 @@ def _errors(family: str, errors: dict[str, dict[str, float]]) -> str:
 
 def caveats(accuracy: dict, licensed: list[str]) -> list[str]:
     """One sentence per licensed family and hold-out whose licence rests on an interval that crosses the line — the 97.5th percentile
-    of the bootstrap over molecules lies above it: the interval, the number of molecules and the share of resamples under the line."""
+    of the bootstrap over molecules lies above it: the interval, the number of molecules that have such bands (not every molecule of
+    a hold-out has a CH-oop band) and the share of resamples under the line."""
     out = []
     for f in licensed:
         for h in HOLDOUTS:
             p = accuracy["holdouts"][h][PRODUCT][f]
             if p["interval_crosses_line"]:
-                out.append(f"{f} on hold-out ({h}) rests on {p['n_molecules']} molecules: the 95 % interval of a bootstrap over molecules "
+                n, of = p["n_molecules_with_modes"], p["n_molecules"]
+                rests = f"{n} molecules" if n == of else f"{n} of the hold-out's {of} molecules (the others have no such band)"
+                out.append(f"{f} on hold-out ({h}) rests on {rests}: the 95 % interval of a bootstrap over molecules "
                            f"is {p['interval'][0]}–{p['interval'][1]} cm⁻¹ and crosses the line "
                            f"({round(100 * p['share_below_line'])} % of the resamples lie under it)")
     return out
+
+
+def caveat_sentence(licence: dict) -> str:
+    """The licence's caveats as the one sentence every page prints with the licence — under a table of licensed families or bands and
+    at the end of a statement that names them; '' when there is none. `licence` is `state()`'s result or a certificate's licence block.
+    A certificate stored before the amendment of 16 Nov 2026 has no caveats field: its licence was read on the first-order quantity,
+    for which no interval was measured, so it has none to print."""
+    notes = licence.get("caveats", [])
+    return f"Licence caveat: {'; '.join(notes)}." if notes else ""
 
 
 def state(accuracy: dict | None = None) -> dict:

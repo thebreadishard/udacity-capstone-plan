@@ -27,6 +27,7 @@ from . import seen as S
 from .catalog import FAMILY_SOURCE, Catalog
 from .catalog import family as lab_region
 from .certify import commit_hash
+from .licence import caveat_sentence
 from .licence import state as licence_state
 from .spectrum import cheap_apt, vib_min_cm
 
@@ -132,10 +133,25 @@ def listing(smiles: str, b3lyp_cm: list[float], catalog: Catalog) -> dict | None
     return out
 
 
+def licence_block(lic: dict) -> dict:
+    """What a certificate keeps of the licence (`licence.state`): the statement, the rule's source, the licensed families, the quantity
+    it is read on and its caveats."""
+    return {k: lic[k] for k in ("statement", "rule_source", "licensed_families", "quantity", "quantity_name", "caveats")}
+
+
+def statement(name: str, version: str, n_seeds: int, lic: dict, seen_text: str) -> str:
+    """The certificate's opening sentence; it names the licensed families, so the licence's caveat follows it."""
+    return " ".join(filter(None, [
+        f"{name}: the harmonic infrared spectrum of {P.NETWORK} v{version} ({n_seeds} seeds) — B3LYP/6-31G* corrected "
+        f"toward {A.HIGHER_LEVEL.split(' (')[0]} — with the {lic['quantity_name']} measured on molecules the network never saw; licensed for "
+        f"{', '.join(lic['licensed_families']) or 'no family'} (decision 65), each band marked; at the coupled-cluster level "
+        f"{A.CC_NOTE}. The scaled B3LYP spectrum is shown as the baseline only. This molecule: {seen_text}.", caveat_sentence(lic)]))
+
+
 def certificate(folder: Path, catalog: Catalog) -> dict:
     r = load_result(folder)
     rec, adm = r.record, r.record["admission"]
-    accuracy = A.accuracy_of(r.models)
+    accuracy = A.accuracy_of(r.models, {PureWindowsPath(m["path"]).name: m["sha16"] for m in adm["models"]})
     w_low = RINT.mode_intensities(r.H_low, r.masses, r.apt)[0]
     listed = listing(adm["smiles"], [float(w) for w in w_low], catalog)
     tolerance = catalog.u_band(listed["name"] if listed else rec["name"])
@@ -151,17 +167,13 @@ def certificate(folder: Path, catalog: Catalog) -> dict:
         network=dict(name=P.NETWORK, version=version, models=adm["models"], predicts=A.HIGHER_LEVEL),
         accuracy=accuracy, bands=bands(r, accuracy, tolerance, lic["licensed_families"]),
         tolerance=dict(per_region=tolerance, rule=FAMILY_SOURCE),
-        licence=dict(statement=lic["statement"], rule_source=lic["rule_source"], licensed_families=lic["licensed_families"],
-                     quantity=lic["quantity"], quantity_name=lic["quantity_name"], caveats=lic["caveats"]),
+        licence=licence_block(lic),
         cost=dict(steps_s=rec["seconds"], **prices.price_of_run(sum(rec["seconds"].values()), rec["provenance"]["host"])),
         provenance=dict(result=str(folder), run_commit=rec["provenance"]["commit"], run_dirty=rec["provenance"]["dirty"],
                         certificate_commit=commit_hash(), deck_sha16=rec["deck"]["sha16"], low_level_software=rec["low_level"]["b3lyp"].get("software"),
                         host=rec["provenance"]["host"], note=rec["spectra"]["note"],
                         reused_from=rec["reuse"]["source"] if "reuse" in rec and rec["reuse"]["reused"] else None),
-        statement=(f"{rec['name']}: the harmonic infrared spectrum of {P.NETWORK} v{version} ({len(r.models)} seeds) — B3LYP/6-31G* corrected "
-                   f"toward {A.HIGHER_LEVEL.split(' (')[0]} — with the {lic['quantity_name']} measured on molecules the network never saw; licensed for "
-                   f"{', '.join(lic['licensed_families']) or 'no family'} (decision 65), each band marked; at the coupled-cluster level "
-                   f"{A.CC_NOTE}. The scaled B3LYP spectrum is shown as the baseline only. This molecule: {seen['text']}."))
+        statement=statement(rec["name"], version, len(r.models), lic, seen["text"]))
 
 
 def _band_lines(c: dict) -> list[str]:
@@ -173,7 +185,8 @@ def _band_lines(c: dict) -> list[str]:
         L.append(f"| {b['network_cm']} | {b['km_mol']} | {lo}–{hi} | {b['b3lyp_cm']} | {baseline} | {b['family']} | "
                  f"{'yes' if b['licensed'] else 'no'} | {b['error_cm']['a']} / {b['error_cm']['b']} | {b['lab_region']} | "
                  f"{b['u_band_cm'] if b['u_band_cm'] is not None else '—'} |")
-    return L
+    caveat = caveat_sentence(c["licence"])
+    return [*L, "", f"*{caveat}*"] if caveat else L
 
 
 def _product_lines(a: dict) -> list[str]:

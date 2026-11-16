@@ -21,6 +21,7 @@ FIRST_ORDER = {"a": {"ring-ip": (1.77, [1.95, 1.68, 1.7]), "CH-stretch": (1.19, 
                      "other": (3.89, [3.65, 4.51, 3.52]), "coupling_ratio": (0.263, [0.282, 0.243, 0.265])}}
 N_MOLECULES = {"a": 8, "b": 39}
 PRODUCT_RECORD = "E7_rungC_chain35_analytic_product_error.json"
+WITH_BANDS = {"a": {"ring-ip": 8, "CH-stretch": 8, "CH-oop": 5, "other": 8}, "b": {"ring-ip": 39, "CH-stretch": 39, "CH-oop": 8, "other": 39}}
 PRODUCT = {"a": {"ring-ip": (1.43, [1.13, 1.7], 199), "CH-stretch": (0.95, [0.39, 1.48], 73), "CH-oop": (1.64, [1.19, 1.97], 46),
                  "other": (2.78, [1.68, 3.76], 156)},
            "b": {"ring-ip": (1.91, [1.84, 2.0], 1164), "CH-stretch": (2.19, [1.8, 2.53], 401), "CH-oop": (1.88, [1.56, 2.16], 84),
@@ -42,6 +43,7 @@ def test_the_carried_versions_read_outs_per_seed_and_their_means():
         assert {q: (r["mean"], r["seeds"]) for q, r in got["readouts"].items()} == rows
         assert {f: (p["rms"], p["interval"], p["n_modes"]) for f, p in got["product"].items()} == PRODUCT[h]
         assert all(p["n_molecules"] == N_MOLECULES[h] and p["within_target"] for p in got["product"].values())
+        assert {f: p["n_molecules_with_modes"] for f, p in got["product"].items()} == WITH_BANDS[h]
     crossing = [(h, f) for h in PRODUCT for f, p in acc["holdouts"][h]["product"].items() if p["interval_crosses_line"]]
     assert crossing == [("a", "other")] and acc["licence_quantity"] == "product"
 

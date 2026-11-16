@@ -28,6 +28,7 @@ import argparse
 import json
 import os
 import sys
+import time
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -60,6 +61,9 @@ DEFINITIONS = {
     "certificate_families": "the live certificate's families: learning_curve_layerA.molecule_features on the analytic B3LYP Hessian",
     "interval": "2.5th and 97.5th percentile of the set's rms under resampling of whole molecules; a statement about this hold-out's "
                 "molecules as a sample",
+    "label_sha16": "per hold-out and molecule, the sha16 of the two label files that were read; stored so that a later reader can tell "
+                   "whether the corpus still holds these labels — not compared when the record is read (the corpus is not in git)",
+    "run": "this run on file: its start and end (local time), seconds and peak memory (this process; Windows: peak working set)",
 }
 
 
@@ -121,6 +125,15 @@ def molecule_read(folder: Path, models: tuple[Path, ...]) -> MoleculeRead:
         raise SystemExit(f"{folder.name}: the family rule's modes are not the B3LYP normal modes")
     band = w_net - w_ref[RINT.match_modes(V_net, V_ref)]
     return MoleculeRead(record_family, family, first, family[RINT.match_modes(V_net, V_low)], band)
+
+
+def peak_memory_gb() -> float:
+    """This process's peak resident memory, GB: the peak working set on Windows, the kernel's max RSS (kB on Linux) elsewhere."""
+    if sys.platform == "win32":
+        import psutil
+        return psutil.Process().memory_info().peak_wset / 2 ** 30
+    import resource
+    return resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 2 ** 20
 
 
 def rms(parts: list[np.ndarray]) -> float | None:
@@ -225,12 +238,15 @@ def read_holdouts(cfg: Config, models: tuple[Path, ...], sets: dict[str, tuple[s
     """Every hold-out molecule read once, then per hold-out and family the summary."""
     total, done, out = sum(len(ids) for _, ids in sets.values()), 0, {}
     for h, (key, ids) in sets.items():
-        reads = []
+        reads, hashes = [], {}
         for i in ids:
-            reads.append(molecule_read(cfg.m05 / "corpus" / "molecules" / i, models))
+            folder = cfg.m05 / "corpus" / "molecules" / i
+            reads.append(molecule_read(folder, models))
+            hashes[i] = {name: P.sha16(folder / name) for name in LABELS}
             done += 1
             print(f"product-error {done}/{total} ({h}) {i}", flush=True)
-        out[h] = {"set": key, "n_molecules": len(ids), "ids": ids, "families": {f: family_summary(reads, f) for f in FAMILIES}}
+        out[h] = {"set": key, "n_molecules": len(ids), "ids": ids, "families": {f: family_summary(reads, f) for f in FAMILIES},
+                  "label_sha16": hashes}
     return out
 
 
@@ -269,6 +285,7 @@ def parse(argv: list[str] | None) -> Config:
 
 def main(argv: list[str] | None = None) -> int:
     cfg = parse(argv)
+    started = time.time()
     torch.set_num_threads(cfg.threads)
     models, stem = carried(cfg.m05)
     names = tuple(m.name for m in models)
@@ -282,7 +299,9 @@ def main(argv: list[str] | None = None) -> int:
               "model_sha16": {m.name: P.sha16(m) for m in models}, "labels": {"kind": "analytic", "files": list(LABELS)},
               "sets_from": sources, "line_cm": A.LICENCE_LINE_CM, "definitions": DEFINITIONS,
               "bootstrap": {"seed": BOOTSTRAP_SEED, "draws": BOOTSTRAP_DRAWS, "unit": "molecule"}, "holdouts": holdouts, "checks": checks,
-              "data_root": str(cfg.m05), "provenance": P.provenance()}
+              "data_root": str(cfg.m05), "provenance": P.provenance(),
+              "run": {"started": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(started)), "ended": time.strftime("%Y-%m-%d %H:%M:%S"),
+                      "seconds": round(time.time() - started, 1), "peak_memory_gb": round(peak_memory_gb(), 2), "threads": cfg.threads}}
     write_record(out, record)
     print(f"product error read: {sum(v['n_molecules'] for v in holdouts.values())} molecules, record {out}", flush=True)
     return 0

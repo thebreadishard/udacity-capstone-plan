@@ -28,21 +28,25 @@ SETS = {"a": ("a8", 8), "b": ("b", 39)}
 BENZENE = "A_8448043181"
 
 
-def product_record(folder: Path, rms: dict[str, dict[str, float]], interval: dict[tuple[str, str], list[float]] | None = None,
-                   models: tuple[str, ...] = V13, sets: dict[str, tuple[str, int]] = SETS) -> Path:
+def product_record(folder: Path, rms: dict[str, dict[str, float]], interval: dict[tuple[str, str], list[float]] | None = None,   # noqa: PLR0913  a record's fields
+                   models: tuple[str, ...] = V13, sets: dict[str, tuple[str, int]] = SETS,
+                   with_modes: dict[tuple[str, str], int] | None = None, sha16: dict[str, str] | None = None) -> Path:
     """A product-error record as `probes/product_error_read.py` writes it, with the given rms per hold-out and family; the interval is
-    ±0.1 around the rms unless given."""
+    ±0.1 around the rms unless given, every molecule has the family's bands unless `with_modes` says how many do, and the models'
+    hashes are `sha16` or sixteen zeros."""
     holdouts = {}
     for h, (key, n) in sets.items():
         fams = {}
         for f in FAMILIES:
             x = rms[h][f]
             lo, hi = (interval or {}).get((h, f), [x - 0.1, x + 0.1])
-            fams[f] = {"product": {"rms": x, "n_modes": 40, "n_molecules": n, "n_molecules_with_modes": n, "interval": [lo, hi],
+            fams[f] = {"product": {"rms": x, "n_modes": 40, "n_molecules": n, "n_molecules_with_modes": (with_modes or {}).get((h, f), n),
+                                   "interval": [lo, hi],
                                    "share_below_line": 0.8, "largest_single_molecule_rms": hi}}
         holdouts[h] = {"set": key, "n_molecules": n, "ids": [], "families": fams}
     path = folder / "synthetic_product_error.json"
-    path.write_text(json.dumps({"models": list(models), "holdouts": holdouts}), encoding="utf-8")
+    hashes = {m: "0" * 16 for m in models} | (sha16 or {})
+    path.write_text(json.dumps({"models": list(models), "model_sha16": hashes, "holdouts": holdouts}), encoding="utf-8")
     return path
 
 
@@ -60,8 +64,9 @@ def test_the_two_quantities_differ_and_the_licence_follows_the_products(tmp_path
     acc = accuracy_with(product_record(tmp_path, rms))
     assert acc["licence_quantity"] == A.PRODUCT and set(acc["quantities"]) == {"readouts", A.PRODUCT}
     assert acc["holdouts"]["a"]["readouts"]["other"]["mean"] == 3.62 and acc["holdouts"]["a"][A.PRODUCT]["other"]["rms"] == 2.9
-    assert acc["holdouts"]["b"][A.PRODUCT]["CH-stretch"] == dict(rms=3.2, n_modes=40, n_molecules=39, interval=[3.1, 3.3], share_below_line=0.8,
-                                                                 target=3.0, within_target=False, interval_crosses_line=True)
+    assert acc["holdouts"]["b"][A.PRODUCT]["CH-stretch"] == dict(rms=3.2, n_modes=40, n_molecules=39, n_molecules_with_modes=39,
+                                                                 interval=[3.1, 3.3], share_below_line=0.8, target=3.0, within_target=False,
+                                                                 interval_crosses_line=True)
     s = licence.state(acc)
     assert s["licensed_families"] == ["ring-ip", "CH-oop", "other"] and s["quantity"] == A.PRODUCT
     assert s["errors"]["other"] == {"a": 2.9, "b": 2.9} and s["first_order_errors"]["other"] == {"a": 3.62, "b": 3.89}
@@ -134,7 +139,59 @@ def test_a_family_without_bands_on_a_hold_out_has_no_error_there(tmp_path):
         accuracy_with(path)
 
 
+def test_a_caveat_counts_the_molecules_that_have_the_familys_bands(tmp_path):
+    """CH-oop: five of hold-out (a)'s eight molecules have such a band; the sentence names those five, not the eight."""
+    acc = accuracy_with(product_record(tmp_path, FLAT, {("a", "CH-oop"): [1.0, 3.2], ("a", "other"): [1.0, 3.2]}, with_modes={("a", "CH-oop"): 5}))
+    assert acc["holdouts"]["a"][A.PRODUCT]["CH-oop"]["n_molecules_with_modes"] == 5
+    oop, other = licence.state(acc)["caveats"]
+    assert oop.startswith("CH-oop on hold-out (a) rests on 5 of the hold-out's 8 molecules (the others have no such band): the 95 % interval")
+    assert other.startswith("other on hold-out (a) rests on 8 molecules: the 95 % interval")
+
+
+@pytest.mark.parametrize(("field", "value"), [("rms", -1.0), ("rms", float("nan")), ("rms", float("inf")), ("interval", [1.0, float("nan")]),
+                                              ("interval", [-0.5, 2.0]), ("interval", [1.0]), ("interval", [1.0, None])])
+def test_a_value_that_is_not_a_finite_non_negative_number_is_refused(tmp_path, field, value):
+    """A negative rms would be licensed; a NaN upper bound compares false with the line and would drop the caveat."""
+    path = product_record(tmp_path, FLAT)
+    rec = json.loads(path.read_text(encoding="utf-8"))
+    rec["holdouts"]["b"]["families"]["other"]["product"][field] = value
+    path.write_text(json.dumps(rec), encoding="utf-8")
+    with pytest.raises(ValueError, match="other rms and interval must be three finite numbers ≥ 0"):
+        accuracy_with(path)
+
+
+def test_a_record_read_on_other_files_of_the_same_names_is_refused(tmp_path, monkeypatch):
+    """The record is tied to the checkpoints by hash: the files beside the records where this machine has them, or the hashes a
+    pipeline record names; names alone only where no file and no hash is at hand."""
+    monkeypatch.setattr(A, "M05_OUT", tmp_path)
+    (tmp_path / V13[0]).write_bytes(b"a checkpoint")
+    own = A.P.sha16(tmp_path / V13[0])
+    record = tmp_path / f"E7_rungC_chain35_analytic{A.PRODUCT_SUFFIX}"
+    product_record(tmp_path, FLAT).rename(record)
+    with pytest.raises(ValueError, match=rf"sha16 differs for {V13[0]} \(record 0000000000000000, file {own}\)"):
+        A.product_error_record(V13)
+    product_record(tmp_path, FLAT, sha16={V13[0]: own}).replace(record)
+    assert A.product_error_record(V13) == record                         # seed 0 hashed and equal; seeds 1 and 2 not on this machine
+    assert A.product_error_record(V13, {m: "0" * 16 for m in V13[1:]} | {V13[0]: own}) == record
+    with pytest.raises(ValueError, match=rf"sha16 differs for {V13[2]} \(record 0000000000000000, file ffff\)"):
+        A.product_error_record(V13, {V13[2]: "ffff"})
+    with pytest.raises(ValueError, match="not among the models"):
+        A.product_error_record(V13, {"E7_rungC_other_model_n750_seed0.pt": own})
+
+
 # ------------------------------------------------------------------------------------------------ the read script
+def test_the_read_stores_the_label_files_hashes_and_can_state_its_peak_memory(tmp_path, monkeypatch):
+    require_frozen_corpus()
+    folder = tmp_path / "corpus" / "molecules" / BENZENE
+    shutil.copytree(PIN_CORPUS / "molecules" / BENZENE, folder)
+    monkeypatch.setattr(PE.P, "correction", lambda models, d: (np.zeros((36, 36)), [np.zeros((36, 36))]))
+    cfg = PE.Config(m05=tmp_path, out=None, package=None, threads=1)
+    out = PE.read_holdouts(cfg, (), {"a": ("a8", [BENZENE])})
+    assert out["a"]["label_sha16"] == {BENZENE: {name: PE.P.sha16(folder / name) for name in PE.LABELS}}
+    assert len(out["a"]["label_sha16"][BENZENE]) == 2 and 0.0 < PE.peak_memory_gb() < 64.0
+    assert {"label_sha16", "run"} <= set(PE.DEFINITIONS)
+
+
 def synthetic_read(first: list[list[float]], band: list[float], families: list[str], band_families: list[str] | None = None) -> PE.MoleculeRead:
     fam = np.array(families)
     return PE.MoleculeRead(fam, fam, np.array(first, float), fam if band_families is None else np.array(band_families), np.array(band, float))

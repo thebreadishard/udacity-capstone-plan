@@ -19,6 +19,7 @@ from . import accuracy as A
 from . import live_certificate as LC
 from . import paths
 from . import pipeline as P
+from .licence import caveat_sentence
 from .spectrum import broadened
 
 # isort: split
@@ -174,7 +175,14 @@ def _family_table(p: Panel) -> str:
             f = truth[r["family"]]
             cells += f'<td class=num>{f["network"]:.2f} / {f["B3LYP"]:.2f}</td>'
         body.append(f"<tr>{cells}</tr>")
-    return f'<div class="scroll"><table><thead><tr>{head}</tr></thead><tbody>{"".join(body)}</tbody></table></div>'
+    return (f'<div class="scroll"><table><thead><tr>{head}</tr></thead><tbody>{"".join(body)}</tbody></table></div>'
+            f'{_caveat(p.certificate)}')
+
+
+def _caveat(cert: dict) -> str:
+    """The licence's caveat as a line under a table that shows the licence; nothing when the certificate has none."""
+    text = caveat_sentence(cert["licence"])
+    return f'<p class="muted small">{_e(text)}</p>' if text else ""
 
 
 def _legend(p: Panel) -> str:
@@ -226,16 +234,21 @@ def licence_section(cert: dict) -> str:
             f'<th class=num>hold-out (a), {h["a"]["n_molecules"]} molecules</th><th class=num>hold-out (b), {h["b"]["n_molecules"]} molecules</th>'
             f'<th>licence</th></tr></thead><tbody>{rows}</tbody></table></div><p class="muted small">'
             f'{_e(A.QUANTITY_NAMES[quantity].capitalize())}, rms in cm⁻¹. Spectrum overlap on hold-out (a): {shape["cheap"]["spectrum_overlap"]} uncorrected, '
-            f'{shape["corrected"]["spectrum_overlap"]} corrected.</p><p class="muted small">{_e(h["a"]["description"])}.</p>'
+            f'{shape["corrected"]["spectrum_overlap"]} corrected.</p>{_caveat(cert)}<p class="muted small">{_e(h["a"]["description"])}.</p>'
             f'<p class="muted small">{_e(h["b"]["description"])}.</p></section>')
 
 
-LIMITS = ("Positions are harmonic: the anharmonic shift is not in this version (TASKS 53).",
-          "The coupled-cluster level is not measured for this network version; the anchor decision is in November.",
-          "A molecule that is not planar gets no CH-oop band under the family rule, so those bands count as 'other' and are not licensed.",
-          "Closed-shell neutral molecules only; cations wait for their training rows (TASKS 121).",
-          "The answer depends slightly on the atom order; the pipeline starts from the canonical SMILES so that every writing gives one "
-          "answer, and network v1.5 removes the cause (TASKS 149).")
+def limits(cert: dict) -> tuple[str, ...]:
+    """What this version does not do. Whether the family a non-planar molecule's out-of-plane bands fall in is licensed is read from
+    the certificate, never written here: the licence changes with the network version and with the quantity it is read on."""
+    other = "which is licensed" if "other" in cert["licence"]["licensed_families"] else "which is not licensed"
+    return ("Positions are harmonic: the anharmonic shift is not in this version (TASKS 53).",
+            "The coupled-cluster level is not measured for this network version; the anchor decision is in November.",
+            f"A molecule that is not planar gets no CH-oop band under the family rule, so those bands count as 'other', {other} "
+            "(the table above).",
+            "Closed-shell neutral molecules only; cations wait for their training rows (TASKS 121).",
+            "The answer depends slightly on the atom order; the pipeline starts from the canonical SMILES so that every writing gives one "
+            "answer, and network v1.5 removes the cause (TASKS 149).")
 
 
 def _provenance(panels: list[Panel]) -> str:
@@ -260,12 +273,12 @@ def page(panels: list[Panel]) -> str:
             f'{_e(cert["network"]["name"])} v{_e(cert["network"]["version"])}, with a certificate that says per band how well the network '
             f'is known there. Pipeline {_e(", ".join(sorted({p.certificate["pipeline_version"] for p in panels})))}; built from the result '
             f'folders listed at the end.')
-    limits = "".join(f"<li>{_e(x)}</li>" for x in LIMITS)
+    not_in_this_version = "".join(f"<li>{_e(x)}</li>" for x in limits(cert))
     return (f'<title>Spectrum Pipeline Demo</title><meta name="claude:viewport-fit-sides" content="cover">{STYLE}'
             f'<main class="wrap"><header class="top"><p class="eyebrow">Module 08 · the pipeline</p><h1>From a SMILES string to an infrared '
             f'spectrum</h1><p class="lead">{lead}</p><nav>{" ".join(_nav(p) for p in panels)}</nav></header>'
             f'{steps_section(panels)}{"".join(molecule_section(p) for p in panels)}{licence_section(cert)}'
-            f'<section><h2>Not in this version</h2><ul>{limits}</ul></section>{_provenance(panels)}</main>')
+            f'<section><h2>Not in this version</h2><ul>{not_in_this_version}</ul></section>{_provenance(panels)}</main>')
 
 
 def _nav(p: Panel) -> str:

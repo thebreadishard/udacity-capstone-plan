@@ -14,6 +14,7 @@ from . import paths, prices
 from . import spectrum as shape_mod
 from .catalog import FAMILY_SOURCE, PLAN, REPO, RUNG_LABELS, Catalog, family
 from .accuracy import APT_OPEN, carried_accuracy
+from .licence import caveat_sentence
 from .licence import state as licence_state
 from .pipeline import NETWORK
 from .replay import replay_run
@@ -176,7 +177,7 @@ def certificate(row: dict, catalog: Catalog) -> dict:
                 statement=(f"{row['name']}: rung {rung} ({RUNG_LABELS[rung]}). The cheap-level spectrum is served with the laboratory tolerance per family; no predicted "
                            "correction is shown in this record — the pipeline serves it for the licensed families ("
                            + ", ".join(lic["licensed_families"]) + "; decision 65); the anchor coverage lists what coupled-cluster evidence exists "
-                           "and where it is wider than the tolerance."))
+                           "and where it is wider than the tolerance." + (" " + caveat_sentence(lic) if lic["caveats"] else "")))
 
 
 def anchor_markdown(c: dict) -> list[str]:

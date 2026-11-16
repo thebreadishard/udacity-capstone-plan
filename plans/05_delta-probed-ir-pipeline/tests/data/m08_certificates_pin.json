@@ -390,6 +390,7 @@
         "interval_crosses_line": false,
         "n_modes": 46,
         "n_molecules": 8,
+        "n_molecules_with_modes": 5,
         "rms": 1.64,
         "share_below_line": 1.0,
         "target": 3.0,
@@ -403,6 +404,7 @@
         "interval_crosses_line": false,
         "n_modes": 73,
         "n_molecules": 8,
+        "n_molecules_with_modes": 8,
         "rms": 0.95,
         "share_below_line": 1.0,
         "target": 3.0,
@@ -416,6 +418,7 @@
         "interval_crosses_line": true,
         "n_modes": 156,
         "n_molecules": 8,
+        "n_molecules_with_modes": 8,
         "rms": 2.78,
         "share_below_line": 0.7,
         "target": 3.0,
@@ -429,6 +432,7 @@
         "interval_crosses_line": false,
         "n_modes": 199,
         "n_molecules": 8,
+        "n_molecules_with_modes": 8,
         "rms": 1.43,
         "share_below_line": 1.0,
         "target": 3.0,
@@ -511,6 +515,7 @@
         "interval_crosses_line": false,
         "n_modes": 84,
         "n_molecules": 39,
+        "n_molecules_with_modes": 8,
         "rms": 1.88,
         "share_below_line": 1.0,
         "target": 3.0,
@@ -524,6 +529,7 @@
         "interval_crosses_line": false,
         "n_modes": 401,
         "n_molecules": 39,
+        "n_molecules_with_modes": 39,
         "rms": 2.19,
         "share_below_line": 1.0,
         "target": 3.0,
@@ -537,6 +543,7 @@
         "interval_crosses_line": false,
         "n_modes": 1225,
         "n_molecules": 39,
+        "n_molecules_with_modes": 39,
         "rms": 2.77,
         "share_below_line": 0.99,
         "target": 3.0,
@@ -550,6 +557,7 @@
         "interval_crosses_line": false,
         "n_modes": 1164,
         "n_molecules": 39,
+        "n_molecules_with_modes": 39,
         "rms": 1.91,
         "share_below_line": 1.0,
         "target": 3.0,
@@ -852,7 +860,7 @@
     ]
    }
   },
-  "statement": "benzene: rung 5 (validated). The cheap-level spectrum is served with the laboratory tolerance per family; no predicted correction is shown in this record — the pipeline serves it for the licensed families (ring-ip, CH-stretch, CH-oop, other; decision 65); the anchor coverage lists what coupled-cluster evidence exists and where it is wider than the tolerance."
+  "statement": "benzene: rung 5 (validated). The cheap-level spectrum is served with the laboratory tolerance per family; no predicted correction is shown in this record — the pipeline serves it for the licensed families (ring-ip, CH-stretch, CH-oop, other; decision 65); the anchor coverage lists what coupled-cluster evidence exists and where it is wider than the tolerance. Licence caveat: other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie under it)."
  },
  "naphthalene": {
   "anchor": {
@@ -1182,6 +1190,7 @@
         "interval_crosses_line": false,
         "n_modes": 46,
         "n_molecules": 8,
+        "n_molecules_with_modes": 5,
         "rms": 1.64,
         "share_below_line": 1.0,
         "target": 3.0,
@@ -1195,6 +1204,7 @@
         "interval_crosses_line": false,
         "n_modes": 73,
         "n_molecules": 8,
+        "n_molecules_with_modes": 8,
         "rms": 0.95,
         "share_below_line": 1.0,
         "target": 3.0,
@@ -1208,6 +1218,7 @@
         "interval_crosses_line": true,
         "n_modes": 156,
         "n_molecules": 8,
+        "n_molecules_with_modes": 8,
         "rms": 2.78,
         "share_below_line": 0.7,
         "target": 3.0,
@@ -1221,6 +1232,7 @@
         "interval_crosses_line": false,
         "n_modes": 199,
         "n_molecules": 8,
+        "n_molecules_with_modes": 8,
         "rms": 1.43,
         "share_below_line": 1.0,
         "target": 3.0,
@@ -1303,6 +1315,7 @@
         "interval_crosses_line": false,
         "n_modes": 84,
         "n_molecules": 39,
+        "n_molecules_with_modes": 8,
         "rms": 1.88,
         "share_below_line": 1.0,
         "target": 3.0,
@@ -1316,6 +1329,7 @@
         "interval_crosses_line": false,
         "n_modes": 401,
         "n_molecules": 39,
+        "n_molecules_with_modes": 39,
         "rms": 2.19,
         "share_below_line": 1.0,
         "target": 3.0,
@@ -1329,6 +1343,7 @@
         "interval_crosses_line": false,
         "n_modes": 1225,
         "n_molecules": 39,
+        "n_molecules_with_modes": 39,
         "rms": 2.77,
         "share_below_line": 0.99,
         "target": 3.0,
@@ -1342,6 +1357,7 @@
         "interval_crosses_line": false,
         "n_modes": 1164,
         "n_molecules": 39,
+        "n_molecules_with_modes": 39,
         "rms": 1.91,
         "share_below_line": 1.0,
         "target": 3.0,
@@ -1545,6 +1561,6 @@
     ]
    }
   },
-  "statement": "naphthalene: rung 4 (anchored). The cheap-level spectrum is served with the laboratory tolerance per family; no predicted correction is shown in this record — the pipeline serves it for the licensed families (ring-ip, CH-stretch, CH-oop, other; decision 65); the anchor coverage lists what coupled-cluster evidence exists and where it is wider than the tolerance."
+  "statement": "naphthalene: rung 4 (anchored). The cheap-level spectrum is served with the laboratory tolerance per family; no predicted correction is shown in this record — the pipeline serves it for the licensed families (ring-ip, CH-stretch, CH-oop, other; decision 65); the anchor coverage lists what coupled-cluster evidence exists and where it is wider than the tolerance. Licence caveat: other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie under it)."
  }
 }

@@ -24,6 +24,7 @@ from . import accuracy as A
 from . import live_certificate as LC
 from . import paths
 from . import pipeline as P
+from .licence import caveat_sentence
 from .spectrum import GRID, broadened
 
 # isort: split
@@ -238,7 +239,7 @@ def molecule(folder: Path) -> dict:
             "atlas": atlas_link(cert["molecule"]["listed"]),
             "route": "reused" if reused(rec) else "computed", "pipeline_version": rec["pipeline_version"],
             "stations": stations(rec), "real_time": real_time(rec), "spectrum": spectrum(r, cert), "families": families(cert["bands"]),
-            "error_quantity": A.QUANTITY_NAMES[A.stated_errors(cert["accuracy"])[0]],
+            "error_quantity": A.QUANTITY_NAMES[A.stated_errors(cert["accuracy"])[0]], "licence_caveat": caveat_sentence(cert["licence"]),
             "truth": {"rms_cm": truth["rms_by_rank_cm"], "overlap": truth["overlap"]} if truth else None,
             "seed_spread_cm": max(b["seed_range_cm"][1] - b["seed_range_cm"][0] for b in cert["bands"])}
 
