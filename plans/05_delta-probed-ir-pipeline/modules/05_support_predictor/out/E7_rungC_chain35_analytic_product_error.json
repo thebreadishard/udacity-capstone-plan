@@ -792,18 +792,18 @@
  },
  "data_root": "C:\\Users\\thebr\\Documents\\CapstonePlan\\plans\\05_delta-probed-ir-pipeline\\modules\\05_support_predictor",
  "provenance": {
-  "timestamp_utc": "2026-11-16 14:50:06",
+  "timestamp_utc": "2026-11-16 14:55:16",
   "host": "Asus18",
   "python": "3.14.6",
   "numpy": "2.5.1",
-  "command": "product_error_read.py --package ../aromir_product_error_2026-11-16/product_error.json --threads 2 --m05 ../../../../../../CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor",
-  "commit": "b9f22147008f2a23e0fefd34e3c571d9fd71c482",
-  "dirty": "no"
+  "command": "product_error_read.py --package ../aromir_product_error_2026-11-16/product_error.json --threads 2",
+  "commit": "fcac38c9bba589a47623db42f8a86b31e6fbcfb9",
+  "dirty": "yes"
  },
  "run": {
-  "started": "2026-11-16 15:48:26",
-  "ended": "2026-11-16 15:50:06",
-  "seconds": 100.1,
+  "started": "2026-11-16 15:53:33",
+  "ended": "2026-11-16 15:55:17",
+  "seconds": 103.5,
   "peak_memory_gb": 0.35,
   "threads": 2
  }
