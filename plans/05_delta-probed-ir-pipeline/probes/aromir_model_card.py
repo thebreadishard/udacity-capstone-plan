@@ -2,8 +2,10 @@
 
 aromir (`thebreadishard/aromir`) ships a network's weights with two JSON files, so that no number on its certificate is typed in:
 
-    evaluation   the version's measured error per mode family and hold-out — `m08.accuracy.network_accuracy` on the evaluation records
-                 of the named model files, the function the live certificate and the licence (decision 65) read — with the hold-outs
+    evaluation   the version's first-order read-outs per mode family and hold-out (each seed's first-order diagonal error, averaged
+                 over the seeds) — `m08.accuracy.network_accuracy` on the evaluation records of the named model files. Since 16 Nov
+                 2026 the licence (decision 65, amended) reads another quantity, the error of the corrected band positions of the
+                 seed-mean correction (`m08.accuracy.accuracy_of`), which this card does not carry yet — with the hold-outs
                  described for a reader outside this plan (`reader_wording`) and, when its record is given, the largest change of a
                  band between atom orders;
     training     what the models were trained on — the elements, the atom-count range and the canonical SMILES of every training
@@ -96,7 +98,8 @@ def order_spread(record_path: Path, models: tuple[str, ...]) -> dict:
 
 
 def evaluation(version: str, models: tuple[str, ...], spread_record: Path | None) -> dict:
-    """The families' seed-mean errors on both hold-outs as `network_accuracy` reports them, with the records they were read from, the
+    """The families' first-order read-outs (seed means) on both hold-outs as `network_accuracy` reports them — not the product's error
+    the licence reads since 16 Nov 2026 — with the records they were read from, the
     descriptions in a reader's wording, and the atom-order spread when its record is given."""
     from m08 import accuracy as A
     from promotion_read import FAMILIES

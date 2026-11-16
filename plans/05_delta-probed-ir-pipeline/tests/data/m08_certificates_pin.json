@@ -135,7 +135,7 @@
   },
   "per_band_budget": {
    "CC-stretch (6.2 um)": {
-    "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7); not licensed: other (3.62 / 3.89) — seed-mean error on hold-outs (a) / (b) in cm⁻¹ against 3; no coupled-cluster licence)",
+    "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.43 / 1.91), CH-stretch (0.95 / 2.19), CH-oop (1.64 / 1.88), other (2.78 / 2.77); not licensed: none — error of the corrected band positions of the seed-mean correction on hold-outs (a) / (b) in cm⁻¹ against 3 (decision 65 as amended on 16 Nov 2026); other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie under it); the first-order diagonal error of each seed's correction, averaged over the seeds, which the licence read until then: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7), other (3.62 / 3.89); no coupled-cluster licence)",
     "ensemble_pm": null,
     "n_modes": 3,
     "omega_range": [
@@ -146,7 +146,7 @@
     "u_band_source": "module 03 u_band_by_record_family.csv, benzene, record(s) C71432_0.jdx, C71432_1.jdx"
    },
    "CC-stretch/CH-ip (7.7 um)": {
-    "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7); not licensed: other (3.62 / 3.89) — seed-mean error on hold-outs (a) / (b) in cm⁻¹ against 3; no coupled-cluster licence)",
+    "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.43 / 1.91), CH-stretch (0.95 / 2.19), CH-oop (1.64 / 1.88), other (2.78 / 2.77); not licensed: none — error of the corrected band positions of the seed-mean correction on hold-outs (a) / (b) in cm⁻¹ against 3 (decision 65 as amended on 16 Nov 2026); other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie under it); the first-order diagonal error of each seed's correction, averaged over the seeds, which the licence read until then: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7), other (3.62 / 3.89); no coupled-cluster licence)",
     "ensemble_pm": null,
     "n_modes": 2,
     "omega_range": [
@@ -157,7 +157,7 @@
     "u_band_source": "module 03 u_band_by_record_family.csv, benzene, record(s) C71432_0.jdx, C71432_1.jdx, C71432_quantir_res0.125_boxcar.jdx"
    },
    "CH-ip-bend (8.6 um)": {
-    "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7); not licensed: other (3.62 / 3.89) — seed-mean error on hold-outs (a) / (b) in cm⁻¹ against 3; no coupled-cluster licence)",
+    "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.43 / 1.91), CH-stretch (0.95 / 2.19), CH-oop (1.64 / 1.88), other (2.78 / 2.77); not licensed: none — error of the corrected band positions of the seed-mean correction on hold-outs (a) / (b) in cm⁻¹ against 3 (decision 65 as amended on 16 Nov 2026); other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie under it); the first-order diagonal error of each seed's correction, averaged over the seeds, which the licence read until then: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7), other (3.62 / 3.89); no coupled-cluster licence)",
     "ensemble_pm": null,
     "n_modes": 3,
     "omega_range": [
@@ -168,7 +168,7 @@
     "u_band_source": "module 03 u_band_by_record_family.csv, benzene, record(s) C71432_0.jdx, C71432_1.jdx"
    },
    "CH-oop (10.5-15 um; benzene nu11 at 673 included)": {
-    "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7); not licensed: other (3.62 / 3.89) — seed-mean error on hold-outs (a) / (b) in cm⁻¹ against 3; no coupled-cluster licence)",
+    "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.43 / 1.91), CH-stretch (0.95 / 2.19), CH-oop (1.64 / 1.88), other (2.78 / 2.77); not licensed: none — error of the corrected band positions of the seed-mean correction on hold-outs (a) / (b) in cm⁻¹ against 3 (decision 65 as amended on 16 Nov 2026); other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie under it); the first-order diagonal error of each seed's correction, averaged over the seeds, which the licence read until then: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7), other (3.62 / 3.89); no coupled-cluster licence)",
     "ensemble_pm": null,
     "n_modes": 4,
     "omega_range": [
@@ -179,7 +179,7 @@
     "u_band_source": "module 03 u_band_by_record_family.csv, benzene, record(s) C71432_0.jdx, C71432_1.jdx, C71432_quantir_res0.125_boxcar.jdx"
    },
    "CH-stretch": {
-    "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7); not licensed: other (3.62 / 3.89) — seed-mean error on hold-outs (a) / (b) in cm⁻¹ against 3; no coupled-cluster licence)",
+    "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.43 / 1.91), CH-stretch (0.95 / 2.19), CH-oop (1.64 / 1.88), other (2.78 / 2.77); not licensed: none — error of the corrected band positions of the seed-mean correction on hold-outs (a) / (b) in cm⁻¹ against 3 (decision 65 as amended on 16 Nov 2026); other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie under it); the first-order diagonal error of each seed's correction, averaged over the seeds, which the licence read until then: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7), other (3.62 / 3.89); no coupled-cluster licence)",
     "ensemble_pm": null,
     "n_modes": 5,
     "omega_range": [
@@ -190,7 +190,7 @@
     "u_band_source": "module 03 u_band_by_record_family.csv, benzene, record(s) C71432_0.jdx, C71432_1.jdx, C71432_quantir_res0.125_boxcar.jdx"
    },
    "above 3200": {
-    "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7); not licensed: other (3.62 / 3.89) — seed-mean error on hold-outs (a) / (b) in cm⁻¹ against 3; no coupled-cluster licence)",
+    "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.43 / 1.91), CH-stretch (0.95 / 2.19), CH-oop (1.64 / 1.88), other (2.78 / 2.77); not licensed: none — error of the corrected band positions of the seed-mean correction on hold-outs (a) / (b) in cm⁻¹ against 3 (decision 65 as amended on 16 Nov 2026); other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie under it); the first-order diagonal error of each seed's correction, averaged over the seeds, which the licence read until then: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7), other (3.62 / 3.89); no coupled-cluster licence)",
     "ensemble_pm": null,
     "n_modes": 1,
     "omega_range": [
@@ -201,7 +201,7 @@
     "u_band_source": "module 03 u_band_by_record_family.csv, benzene, record(s) C71432_0.jdx, C71432_1.jdx"
    },
    "low / skeletal": {
-    "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7); not licensed: other (3.62 / 3.89) — seed-mean error on hold-outs (a) / (b) in cm⁻¹ against 3; no coupled-cluster licence)",
+    "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.43 / 1.91), CH-stretch (0.95 / 2.19), CH-oop (1.64 / 1.88), other (2.78 / 2.77); not licensed: none — error of the corrected band positions of the seed-mean correction on hold-outs (a) / (b) in cm⁻¹ against 3 (decision 65 as amended on 16 Nov 2026); other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie under it); the first-order diagonal error of each seed's correction, averaged over the seeds, which the licence read until then: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7), other (3.62 / 3.89); no coupled-cluster licence)",
     "ensemble_pm": null,
     "n_modes": 4,
     "omega_range": [
@@ -212,7 +212,7 @@
     "u_band_source": "module 03 u_band_by_record_family.csv, benzene, record(s) C71432_0.jdx, C71432_1.jdx"
    },
    "overtone / combination region": {
-    "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7); not licensed: other (3.62 / 3.89) — seed-mean error on hold-outs (a) / (b) in cm⁻¹ against 3; no coupled-cluster licence)",
+    "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.43 / 1.91), CH-stretch (0.95 / 2.19), CH-oop (1.64 / 1.88), other (2.78 / 2.77); not licensed: none — error of the corrected band positions of the seed-mean correction on hold-outs (a) / (b) in cm⁻¹ against 3 (decision 65 as amended on 16 Nov 2026); other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie under it); the first-order diagonal error of each seed's correction, averaged over the seeds, which the licence read until then: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7), other (3.62 / 3.89); no coupled-cluster licence)",
     "ensemble_pm": null,
     "n_modes": 1,
     "omega_range": [
@@ -223,7 +223,7 @@
     "u_band_source": "module 03 u_band_by_record_family.csv, benzene, record(s) C71432_0.jdx, C71432_1.jdx"
    },
    "ring / CH-ip (9-10.5 um)": {
-    "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7); not licensed: other (3.62 / 3.89) — seed-mean error on hold-outs (a) / (b) in cm⁻¹ against 3; no coupled-cluster licence)",
+    "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.43 / 1.91), CH-stretch (0.95 / 2.19), CH-oop (1.64 / 1.88), other (2.78 / 2.77); not licensed: none — error of the corrected band positions of the seed-mean correction on hold-outs (a) / (b) in cm⁻¹ against 3 (decision 65 as amended on 16 Nov 2026); other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie under it); the first-order diagonal error of each seed's correction, averaged over the seeds, which the licence read until then: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7), other (3.62 / 3.89); no coupled-cluster licence)",
     "ensemble_pm": null,
     "n_modes": 7,
     "omega_range": [
@@ -261,7 +261,28 @@
    },
    "family_rule": "modules/03_lab_scoreboard/build_lab_tables.py FAMILY_RULE (12 Sep 2026)",
    "licence": {
+    "caveats": [
+     "other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie under it)"
+    ],
     "errors": {
+     "CH-oop": {
+      "a": 1.64,
+      "b": 1.88
+     },
+     "CH-stretch": {
+      "a": 0.95,
+      "b": 2.19
+     },
+     "other": {
+      "a": 2.78,
+      "b": 2.77
+     },
+     "ring-ip": {
+      "a": 1.43,
+      "b": 1.91
+     }
+    },
+    "first_order_errors": {
      "CH-oop": {
       "a": 2.17,
       "b": 2.7
@@ -282,16 +303,20 @@
     "licensed_families": [
      "ring-ip",
      "CH-stretch",
-     "CH-oop"
+     "CH-oop",
+     "other"
     ],
-    "rule_source": "README.md, decision 65",
+    "quantity": "product",
+    "quantity_name": "error of the corrected band positions of the seed-mean correction",
+    "rule_source": "README.md, decision 65 as amended on 16 Nov 2026",
     "sources": [
      "E7_rungC_chain35_analytic_eval_frozenb_seed0.json",
      "E7_rungC_chain35_analytic_eval_frozenb_seed1.json",
      "E7_rungC_chain35_analytic_eval_frozenb_seed2.json",
      "E7_rungC_chain35_analytic_a8read_seed0.json",
      "E7_rungC_chain35_analytic_a8read_seed1.json",
-     "E7_rungC_chain35_analytic_a8read_seed2.json"
+     "E7_rungC_chain35_analytic_a8read_seed2.json",
+     "E7_rungC_chain35_analytic_product_error.json"
     ]
    },
    "pre_registrations": [
@@ -346,8 +371,9 @@
     "coupled_cluster": "not measured for this network version: the coupled-cluster reads (T3) were made on chain 34, and tests on the 9–11 existing anchors wait for the anchor decision of November 2026",
     "definitions": {
      "coupling_ratio": "rms of the predicted mode couplings' error over the rms of the couplings themselves; 0 = exact, 1 = no better than none",
-     "family": "rms over the family's modes of the corrected frequency's error against the higher level (cm⁻¹); families by module 05's rule (m05/learning_curve_layerA.molecule_features)",
+     "family": "the read-outs: rms over the family's B3LYP modes of the first-order diagonal error of a seed's ΔH against the higher level, per seed, and the seeds' mean (cm⁻¹); families by module 05's rule (m05/learning_curve_layerA.molecule_features)",
      "intensity_error": "intensity-weighted rms of the relative height error per band, bands paired by the shape of the motion (eigenvector overlap); 0 = identical heights",
+     "product": "rms over the family's bands of the corrected band position's error against the higher level (cm⁻¹): the seeds' mean ΔH added to the B3LYP Hessian and diagonalised, each corrected band paired to its higher-level band by mode overlap and counted in the family of its B3LYP partner — what the pipeline prints; with the 95 % interval of a bootstrap over whole molecules",
      "spectrum_overlap": "cosine similarity of the two Lorentzian-broadened spectra (FWHM 10 cm⁻¹, 500–3500 cm⁻¹); 1 = identical shape"
     },
     "higher_level": "ωB97X/6-31G* (the DFT proxy: the network's ΔH is trained on ωB97X − B3LYP Hessians)",
@@ -355,6 +381,60 @@
      "a": {
       "description": "hold-out (a) without its two trained twins (2-naphthoic acid and benzonitrile were trained on as layer-B molecules; TASKS 157): eight layer-A molecules held out on 19 Sep 2026, never trained on under any id",
       "n_molecules": 8,
+      "product": {
+       "CH-oop": {
+        "interval": [
+         1.19,
+         1.97
+        ],
+        "interval_crosses_line": false,
+        "n_modes": 46,
+        "n_molecules": 8,
+        "rms": 1.64,
+        "share_below_line": 1.0,
+        "target": 3.0,
+        "within_target": true
+       },
+       "CH-stretch": {
+        "interval": [
+         0.39,
+         1.48
+        ],
+        "interval_crosses_line": false,
+        "n_modes": 73,
+        "n_molecules": 8,
+        "rms": 0.95,
+        "share_below_line": 1.0,
+        "target": 3.0,
+        "within_target": true
+       },
+       "other": {
+        "interval": [
+         1.68,
+         3.76
+        ],
+        "interval_crosses_line": true,
+        "n_modes": 156,
+        "n_molecules": 8,
+        "rms": 2.78,
+        "share_below_line": 0.7,
+        "target": 3.0,
+        "within_target": true
+       },
+       "ring-ip": {
+        "interval": [
+         1.13,
+         1.7
+        ],
+        "interval_crosses_line": false,
+        "n_modes": 199,
+        "n_molecules": 8,
+        "rms": 1.43,
+        "share_below_line": 1.0,
+        "target": 3.0,
+        "within_target": true
+       }
+      },
       "readouts": {
        "CH-oop": {
         "mean": 2.17,
@@ -422,6 +502,60 @@
      "b": {
       "description": "hold-out (b): every substituted molecule of two scaffold cores, frozen on 8 Oct 2026 — scaffolds the network never saw",
       "n_molecules": 39,
+      "product": {
+       "CH-oop": {
+        "interval": [
+         1.56,
+         2.16
+        ],
+        "interval_crosses_line": false,
+        "n_modes": 84,
+        "n_molecules": 39,
+        "rms": 1.88,
+        "share_below_line": 1.0,
+        "target": 3.0,
+        "within_target": true
+       },
+       "CH-stretch": {
+        "interval": [
+         1.8,
+         2.53
+        ],
+        "interval_crosses_line": false,
+        "n_modes": 401,
+        "n_molecules": 39,
+        "rms": 2.19,
+        "share_below_line": 1.0,
+        "target": 3.0,
+        "within_target": true
+       },
+       "other": {
+        "interval": [
+         2.56,
+         2.97
+        ],
+        "interval_crosses_line": false,
+        "n_modes": 1225,
+        "n_molecules": 39,
+        "rms": 2.77,
+        "share_below_line": 0.99,
+        "target": 3.0,
+        "within_target": true
+       },
+       "ring-ip": {
+        "interval": [
+         1.84,
+         2.0
+        ],
+        "interval_crosses_line": false,
+        "n_modes": 1164,
+        "n_molecules": 39,
+        "rms": 1.91,
+        "share_below_line": 1.0,
+        "target": 3.0,
+        "within_target": true
+       }
+      },
       "readouts": {
        "CH-oop": {
         "mean": 2.7,
@@ -487,13 +621,19 @@
       }
      }
     },
+    "licence_quantity": "product",
+    "quantities": {
+     "product": "error of the corrected band positions of the seed-mean correction",
+     "readouts": "first-order diagonal error of each seed's correction, averaged over the seeds"
+    },
     "sources": [
      "E7_rungC_chain35_analytic_eval_frozenb_seed0.json",
      "E7_rungC_chain35_analytic_eval_frozenb_seed1.json",
      "E7_rungC_chain35_analytic_eval_frozenb_seed2.json",
      "E7_rungC_chain35_analytic_a8read_seed0.json",
      "E7_rungC_chain35_analytic_a8read_seed1.json",
-     "E7_rungC_chain35_analytic_a8read_seed2.json"
+     "E7_rungC_chain35_analytic_a8read_seed2.json",
+     "E7_rungC_chain35_analytic_product_error.json"
     ],
     "target_source": "3 cm⁻¹ per family — decision 53's line for ring-ip, CH-oop and 'other', every family's under decision 65 (the licence) — and the coupling ratio ≤ 0.25 of chain 35's T1 line (probes/chain35_read.py)",
     "version": "1.3"
@@ -712,7 +852,7 @@
     ]
    }
   },
-  "statement": "benzene: rung 5 (validated). The cheap-level spectrum is served with the laboratory tolerance per family; no predicted correction is shown in this record — the pipeline serves it for the licensed families (ring-ip, CH-stretch, CH-oop; decision 65); the anchor coverage lists what coupled-cluster evidence exists and where it is wider than the tolerance."
+  "statement": "benzene: rung 5 (validated). The cheap-level spectrum is served with the laboratory tolerance per family; no predicted correction is shown in this record — the pipeline serves it for the licensed families (ring-ip, CH-stretch, CH-oop, other; decision 65); the anchor coverage lists what coupled-cluster evidence exists and where it is wider than the tolerance."
  },
  "naphthalene": {
   "anchor": {
@@ -791,7 +931,7 @@
   },
   "per_band_budget": {
    "CC-stretch (6.2 um)": {
-    "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7); not licensed: other (3.62 / 3.89) — seed-mean error on hold-outs (a) / (b) in cm⁻¹ against 3; no coupled-cluster licence)",
+    "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.43 / 1.91), CH-stretch (0.95 / 2.19), CH-oop (1.64 / 1.88), other (2.78 / 2.77); not licensed: none — error of the corrected band positions of the seed-mean correction on hold-outs (a) / (b) in cm⁻¹ against 3 (decision 65 as amended on 16 Nov 2026); other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie under it); the first-order diagonal error of each seed's correction, averaged over the seeds, which the licence read until then: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7), other (3.62 / 3.89); no coupled-cluster licence)",
     "ensemble_pm": null,
     "n_modes": 4,
     "omega_range": [
@@ -802,7 +942,7 @@
     "u_band_source": "module 03 u_band_by_record_family.csv, naphthalene, record(s) C91203_0.jdx"
    },
    "CC-stretch/CH-ip (7.7 um)": {
-    "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7); not licensed: other (3.62 / 3.89) — seed-mean error on hold-outs (a) / (b) in cm⁻¹ against 3; no coupled-cluster licence)",
+    "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.43 / 1.91), CH-stretch (0.95 / 2.19), CH-oop (1.64 / 1.88), other (2.78 / 2.77); not licensed: none — error of the corrected band positions of the seed-mean correction on hold-outs (a) / (b) in cm⁻¹ against 3 (decision 65 as amended on 16 Nov 2026); other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie under it); the first-order diagonal error of each seed's correction, averaged over the seeds, which the licence read until then: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7), other (3.62 / 3.89); no coupled-cluster licence)",
     "ensemble_pm": null,
     "n_modes": 5,
     "omega_range": [
@@ -813,7 +953,7 @@
     "u_band_source": "module 03 u_band_by_record_family.csv, naphthalene, record(s) C91203_0.jdx"
    },
    "CH-ip-bend (8.6 um)": {
-    "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7); not licensed: other (3.62 / 3.89) — seed-mean error on hold-outs (a) / (b) in cm⁻¹ against 3; no coupled-cluster licence)",
+    "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.43 / 1.91), CH-stretch (0.95 / 2.19), CH-oop (1.64 / 1.88), other (2.78 / 2.77); not licensed: none — error of the corrected band positions of the seed-mean correction on hold-outs (a) / (b) in cm⁻¹ against 3 (decision 65 as amended on 16 Nov 2026); other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie under it); the first-order diagonal error of each seed's correction, averaged over the seeds, which the licence read until then: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7), other (3.62 / 3.89); no coupled-cluster licence)",
     "ensemble_pm": null,
     "n_modes": 5,
     "omega_range": [
@@ -824,7 +964,7 @@
     "u_band_source": "module 03 u_band_by_record_family.csv, naphthalene, record(s) C91203_0.jdx"
    },
    "CH-oop (10.5-15 um; benzene nu11 at 673 included)": {
-    "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7); not licensed: other (3.62 / 3.89) — seed-mean error on hold-outs (a) / (b) in cm⁻¹ against 3; no coupled-cluster licence)",
+    "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.43 / 1.91), CH-stretch (0.95 / 2.19), CH-oop (1.64 / 1.88), other (2.78 / 2.77); not licensed: none — error of the corrected band positions of the seed-mean correction on hold-outs (a) / (b) in cm⁻¹ against 3 (decision 65 as amended on 16 Nov 2026); other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie under it); the first-order diagonal error of each seed's correction, averaged over the seeds, which the licence read until then: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7), other (3.62 / 3.89); no coupled-cluster licence)",
     "ensemble_pm": null,
     "n_modes": 9,
     "omega_range": [
@@ -835,7 +975,7 @@
     "u_band_source": "module 03 u_band_by_record_family.csv, naphthalene, record(s) C91203_0.jdx"
    },
    "CH-stretch": {
-    "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7); not licensed: other (3.62 / 3.89) — seed-mean error on hold-outs (a) / (b) in cm⁻¹ against 3; no coupled-cluster licence)",
+    "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.43 / 1.91), CH-stretch (0.95 / 2.19), CH-oop (1.64 / 1.88), other (2.78 / 2.77); not licensed: none — error of the corrected band positions of the seed-mean correction on hold-outs (a) / (b) in cm⁻¹ against 3 (decision 65 as amended on 16 Nov 2026); other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie under it); the first-order diagonal error of each seed's correction, averaged over the seeds, which the licence read until then: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7), other (3.62 / 3.89); no coupled-cluster licence)",
     "ensemble_pm": null,
     "n_modes": 6,
     "omega_range": [
@@ -846,7 +986,7 @@
     "u_band_source": "module 03 u_band_by_record_family.csv, naphthalene, record(s) C91203_0.jdx"
    },
    "above 3200": {
-    "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7); not licensed: other (3.62 / 3.89) — seed-mean error on hold-outs (a) / (b) in cm⁻¹ against 3; no coupled-cluster licence)",
+    "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.43 / 1.91), CH-stretch (0.95 / 2.19), CH-oop (1.64 / 1.88), other (2.78 / 2.77); not licensed: none — error of the corrected band positions of the seed-mean correction on hold-outs (a) / (b) in cm⁻¹ against 3 (decision 65 as amended on 16 Nov 2026); other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie under it); the first-order diagonal error of each seed's correction, averaged over the seeds, which the licence read until then: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7), other (3.62 / 3.89); no coupled-cluster licence)",
     "ensemble_pm": null,
     "n_modes": 2,
     "omega_range": [
@@ -857,7 +997,7 @@
     "u_band_source": "module 03 u_band_by_record_family.csv, naphthalene, record(s) C91203_0.jdx"
    },
    "low / skeletal": {
-    "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7); not licensed: other (3.62 / 3.89) — seed-mean error on hold-outs (a) / (b) in cm⁻¹ against 3; no coupled-cluster licence)",
+    "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.43 / 1.91), CH-stretch (0.95 / 2.19), CH-oop (1.64 / 1.88), other (2.78 / 2.77); not licensed: none — error of the corrected band positions of the seed-mean correction on hold-outs (a) / (b) in cm⁻¹ against 3 (decision 65 as amended on 16 Nov 2026); other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie under it); the first-order diagonal error of each seed's correction, averaged over the seeds, which the licence read until then: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7), other (3.62 / 3.89); no coupled-cluster licence)",
     "ensemble_pm": null,
     "n_modes": 10,
     "omega_range": [
@@ -868,7 +1008,7 @@
     "u_band_source": "module 03 u_band_by_record_family.csv, naphthalene, record(s) C91203_0.jdx"
    },
    "overtone / combination region": {
-    "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7); not licensed: other (3.62 / 3.89) — seed-mean error on hold-outs (a) / (b) in cm⁻¹ against 3; no coupled-cluster licence)",
+    "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.43 / 1.91), CH-stretch (0.95 / 2.19), CH-oop (1.64 / 1.88), other (2.78 / 2.77); not licensed: none — error of the corrected band positions of the seed-mean correction on hold-outs (a) / (b) in cm⁻¹ against 3 (decision 65 as amended on 16 Nov 2026); other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie under it); the first-order diagonal error of each seed's correction, averaged over the seeds, which the licence read until then: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7), other (3.62 / 3.89); no coupled-cluster licence)",
     "ensemble_pm": null,
     "n_modes": 2,
     "omega_range": [
@@ -879,7 +1019,7 @@
     "u_band_source": "module 03 u_band_by_record_family.csv, naphthalene, record(s) C91203_0.jdx"
    },
    "ring / CH-ip (9-10.5 um)": {
-    "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7); not licensed: other (3.62 / 3.89) — seed-mean error on hold-outs (a) / (b) in cm⁻¹ against 3; no coupled-cluster licence)",
+    "ensemble_note": "— : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.43 / 1.91), CH-stretch (0.95 / 2.19), CH-oop (1.64 / 1.88), other (2.78 / 2.77); not licensed: none — error of the corrected band positions of the seed-mean correction on hold-outs (a) / (b) in cm⁻¹ against 3 (decision 65 as amended on 16 Nov 2026); other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie under it); the first-order diagonal error of each seed's correction, averaged over the seeds, which the licence read until then: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7), other (3.62 / 3.89); no coupled-cluster licence)",
     "ensemble_pm": null,
     "n_modes": 5,
     "omega_range": [
@@ -913,7 +1053,28 @@
    },
    "family_rule": "modules/03_lab_scoreboard/build_lab_tables.py FAMILY_RULE (12 Sep 2026)",
    "licence": {
+    "caveats": [
+     "other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie under it)"
+    ],
     "errors": {
+     "CH-oop": {
+      "a": 1.64,
+      "b": 1.88
+     },
+     "CH-stretch": {
+      "a": 0.95,
+      "b": 2.19
+     },
+     "other": {
+      "a": 2.78,
+      "b": 2.77
+     },
+     "ring-ip": {
+      "a": 1.43,
+      "b": 1.91
+     }
+    },
+    "first_order_errors": {
      "CH-oop": {
       "a": 2.17,
       "b": 2.7
@@ -934,16 +1095,20 @@
     "licensed_families": [
      "ring-ip",
      "CH-stretch",
-     "CH-oop"
+     "CH-oop",
+     "other"
     ],
-    "rule_source": "README.md, decision 65",
+    "quantity": "product",
+    "quantity_name": "error of the corrected band positions of the seed-mean correction",
+    "rule_source": "README.md, decision 65 as amended on 16 Nov 2026",
     "sources": [
      "E7_rungC_chain35_analytic_eval_frozenb_seed0.json",
      "E7_rungC_chain35_analytic_eval_frozenb_seed1.json",
      "E7_rungC_chain35_analytic_eval_frozenb_seed2.json",
      "E7_rungC_chain35_analytic_a8read_seed0.json",
      "E7_rungC_chain35_analytic_a8read_seed1.json",
-     "E7_rungC_chain35_analytic_a8read_seed2.json"
+     "E7_rungC_chain35_analytic_a8read_seed2.json",
+     "E7_rungC_chain35_analytic_product_error.json"
     ]
    },
    "pre_registrations": [
@@ -998,8 +1163,9 @@
     "coupled_cluster": "not measured for this network version: the coupled-cluster reads (T3) were made on chain 34, and tests on the 9–11 existing anchors wait for the anchor decision of November 2026",
     "definitions": {
      "coupling_ratio": "rms of the predicted mode couplings' error over the rms of the couplings themselves; 0 = exact, 1 = no better than none",
-     "family": "rms over the family's modes of the corrected frequency's error against the higher level (cm⁻¹); families by module 05's rule (m05/learning_curve_layerA.molecule_features)",
+     "family": "the read-outs: rms over the family's B3LYP modes of the first-order diagonal error of a seed's ΔH against the higher level, per seed, and the seeds' mean (cm⁻¹); families by module 05's rule (m05/learning_curve_layerA.molecule_features)",
      "intensity_error": "intensity-weighted rms of the relative height error per band, bands paired by the shape of the motion (eigenvector overlap); 0 = identical heights",
+     "product": "rms over the family's bands of the corrected band position's error against the higher level (cm⁻¹): the seeds' mean ΔH added to the B3LYP Hessian and diagonalised, each corrected band paired to its higher-level band by mode overlap and counted in the family of its B3LYP partner — what the pipeline prints; with the 95 % interval of a bootstrap over whole molecules",
      "spectrum_overlap": "cosine similarity of the two Lorentzian-broadened spectra (FWHM 10 cm⁻¹, 500–3500 cm⁻¹); 1 = identical shape"
     },
     "higher_level": "ωB97X/6-31G* (the DFT proxy: the network's ΔH is trained on ωB97X − B3LYP Hessians)",
@@ -1007,6 +1173,60 @@
      "a": {
       "description": "hold-out (a) without its two trained twins (2-naphthoic acid and benzonitrile were trained on as layer-B molecules; TASKS 157): eight layer-A molecules held out on 19 Sep 2026, never trained on under any id",
       "n_molecules": 8,
+      "product": {
+       "CH-oop": {
+        "interval": [
+         1.19,
+         1.97
+        ],
+        "interval_crosses_line": false,
+        "n_modes": 46,
+        "n_molecules": 8,
+        "rms": 1.64,
+        "share_below_line": 1.0,
+        "target": 3.0,
+        "within_target": true
+       },
+       "CH-stretch": {
+        "interval": [
+         0.39,
+         1.48
+        ],
+        "interval_crosses_line": false,
+        "n_modes": 73,
+        "n_molecules": 8,
+        "rms": 0.95,
+        "share_below_line": 1.0,
+        "target": 3.0,
+        "within_target": true
+       },
+       "other": {
+        "interval": [
+         1.68,
+         3.76
+        ],
+        "interval_crosses_line": true,
+        "n_modes": 156,
+        "n_molecules": 8,
+        "rms": 2.78,
+        "share_below_line": 0.7,
+        "target": 3.0,
+        "within_target": true
+       },
+       "ring-ip": {
+        "interval": [
+         1.13,
+         1.7
+        ],
+        "interval_crosses_line": false,
+        "n_modes": 199,
+        "n_molecules": 8,
+        "rms": 1.43,
+        "share_below_line": 1.0,
+        "target": 3.0,
+        "within_target": true
+       }
+      },
       "readouts": {
        "CH-oop": {
         "mean": 2.17,
@@ -1074,6 +1294,60 @@
      "b": {
       "description": "hold-out (b): every substituted molecule of two scaffold cores, frozen on 8 Oct 2026 — scaffolds the network never saw",
       "n_molecules": 39,
+      "product": {
+       "CH-oop": {
+        "interval": [
+         1.56,
+         2.16
+        ],
+        "interval_crosses_line": false,
+        "n_modes": 84,
+        "n_molecules": 39,
+        "rms": 1.88,
+        "share_below_line": 1.0,
+        "target": 3.0,
+        "within_target": true
+       },
+       "CH-stretch": {
+        "interval": [
+         1.8,
+         2.53
+        ],
+        "interval_crosses_line": false,
+        "n_modes": 401,
+        "n_molecules": 39,
+        "rms": 2.19,
+        "share_below_line": 1.0,
+        "target": 3.0,
+        "within_target": true
+       },
+       "other": {
+        "interval": [
+         2.56,
+         2.97
+        ],
+        "interval_crosses_line": false,
+        "n_modes": 1225,
+        "n_molecules": 39,
+        "rms": 2.77,
+        "share_below_line": 0.99,
+        "target": 3.0,
+        "within_target": true
+       },
+       "ring-ip": {
+        "interval": [
+         1.84,
+         2.0
+        ],
+        "interval_crosses_line": false,
+        "n_modes": 1164,
+        "n_molecules": 39,
+        "rms": 1.91,
+        "share_below_line": 1.0,
+        "target": 3.0,
+        "within_target": true
+       }
+      },
       "readouts": {
        "CH-oop": {
         "mean": 2.7,
@@ -1139,13 +1413,19 @@
       }
      }
     },
+    "licence_quantity": "product",
+    "quantities": {
+     "product": "error of the corrected band positions of the seed-mean correction",
+     "readouts": "first-order diagonal error of each seed's correction, averaged over the seeds"
+    },
     "sources": [
      "E7_rungC_chain35_analytic_eval_frozenb_seed0.json",
      "E7_rungC_chain35_analytic_eval_frozenb_seed1.json",
      "E7_rungC_chain35_analytic_eval_frozenb_seed2.json",
      "E7_rungC_chain35_analytic_a8read_seed0.json",
      "E7_rungC_chain35_analytic_a8read_seed1.json",
-     "E7_rungC_chain35_analytic_a8read_seed2.json"
+     "E7_rungC_chain35_analytic_a8read_seed2.json",
+     "E7_rungC_chain35_analytic_product_error.json"
     ],
     "target_source": "3 cm⁻¹ per family — decision 53's line for ring-ip, CH-oop and 'other', every family's under decision 65 (the licence) — and the coupling ratio ≤ 0.25 of chain 35's T1 line (probes/chain35_read.py)",
     "version": "1.3"
@@ -1265,6 +1545,6 @@
     ]
    }
   },
-  "statement": "naphthalene: rung 4 (anchored). The cheap-level spectrum is served with the laboratory tolerance per family; no predicted correction is shown in this record — the pipeline serves it for the licensed families (ring-ip, CH-stretch, CH-oop; decision 65); the anchor coverage lists what coupled-cluster evidence exists and where it is wider than the tolerance."
+  "statement": "naphthalene: rung 4 (anchored). The cheap-level spectrum is served with the laboratory tolerance per family; no predicted correction is shown in this record — the pipeline serves it for the licensed families (ring-ip, CH-stretch, CH-oop, other; decision 65); the anchor coverage lists what coupled-cluster evidence exists and where it is wider than the tolerance."
  }
 }

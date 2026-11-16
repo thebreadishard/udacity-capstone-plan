@@ -44,7 +44,6 @@ import rungC_intensities as RINT  # noqa: E402
 from learning_curve_layerA import molecule_features, normal_modes  # noqa: E402
 from promotion_read import FAMILIES, load_eval_arm  # noqa: E402
 
-SUFFIX = "_product_error.json"
 LABELS = ("hessian_b3lyp_analytic.npz", "hessian_wb97x_analytic.npz")
 FIRST_ORDER_TOL = 0.005        # cm⁻¹: this read against the evaluation records' seed means
 PACKAGE_TOL = 0.01             # cm⁻¹: this read against the package's record, per family and set
@@ -260,7 +259,7 @@ def write_record(path: Path, record: dict) -> None:
 def parse(argv: list[str] | None) -> Config:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--m05", type=Path, default=P.M05, help="the module-05 folder whose corpus/molecules and out/<checkpoints> are read")
-    ap.add_argument("--out", type=Path, default=None, help=f"the record (default: this checkout's module-05 out/<carried stem>{SUFFIX})")
+    ap.add_argument("--out", type=Path, default=None, help=f"the record (default: this checkout's module-05 out/<carried stem>{A.PRODUCT_SUFFIX})")
     ap.add_argument("--package", type=Path, default=None, help="the package's product_error.json: this read must agree with it")
     ap.add_argument("--threads", type=int, default=2)
     a = ap.parse_args(argv)
@@ -273,7 +272,7 @@ def main(argv: list[str] | None = None) -> int:
     torch.set_num_threads(cfg.threads)
     models, stem = carried(cfg.m05)
     names = tuple(m.name for m in models)
-    out = cfg.out or A.M05_OUT / f"{stem}{SUFFIX}"
+    out = cfg.out or A.M05_OUT / f"{stem}{A.PRODUCT_SUFFIX}"
     sets, recorded, sources = holdout_sets(names)
     holdouts = read_holdouts(cfg, models, sets)
     checks = {"first_order_reproduces_evaluation_records": check_first_order(holdouts, recorded)}

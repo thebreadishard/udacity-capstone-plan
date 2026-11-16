@@ -15,6 +15,7 @@ from pathlib import Path
 
 import numpy as np
 
+from . import accuracy as A
 from . import live_certificate as LC
 from . import paths
 from . import pipeline as P
@@ -111,8 +112,9 @@ def svg_spectrum(grid: np.ndarray, curves: dict[str, np.ndarray], label: str) ->
             f'<line class="base" x1="{PAD_L}" x2="{SVG_W - PAD_R}" y1="{_y(0)}" y2="{_y(0)}"/>{"".join(ticks)}{"".join(paths)}{axis}</svg>')
 
 
-def family_rows(bands: list[dict], readouts: dict[str, dict], readouts_b: dict[str, dict]) -> list[dict]:
-    """Per family the certificate's band count and licence, with the network's measured error on hold-outs (a) and (b)."""
+def family_rows(bands: list[dict], errors: dict[str, dict[str, float]]) -> list[dict]:
+    """Per family the certificate's band count and licence, with the network's error on hold-outs (a) and (b) in the quantity the
+    certificate states (`errors`: `accuracy.stated_errors`)."""
     rows = []
     for fam in FAMILY_ORDER:
         mine = [b for b in bands if b["family"] == fam]
@@ -122,7 +124,7 @@ def family_rows(bands: list[dict], readouts: dict[str, dict], readouts_b: dict[s
         if len(licensed) != 1:
             raise ValueError(f"family {fam}: bands disagree on the licence")
         rows.append({"family": fam, "bands": len(mine), "licensed": licensed.pop(),
-                     "error_a": readouts[fam]["mean"], "error_b": readouts_b[fam]["mean"]})
+                     "error_a": errors[fam]["a"], "error_b": errors[fam]["b"]})
     if sum(r["bands"] for r in rows) != len(bands):
         raise ValueError("a band's family is outside " + ", ".join(FAMILY_ORDER))
     return rows
@@ -159,10 +161,10 @@ def _tiles(p: Panel) -> str:
 
 
 def _family_table(p: Panel) -> str:
-    h = p.certificate["accuracy"]["holdouts"]
-    rows = family_rows(p.certificate["bands"], h["a"]["readouts"], h["b"]["readouts"])
+    quantity, errors = A.stated_errors(p.certificate["accuracy"])
+    rows = family_rows(p.certificate["bands"], errors)
     truth = p.vs_corpus["against_truth"]["per_family"] if p.vs_corpus is not None else {}
-    head = "<th>family</th><th class=num>bands</th><th>licence</th><th class=num>error (a) / (b)</th>"
+    head = f"<th>family</th><th class=num>bands</th><th>licence</th><th class=num>{_e(A.QUANTITY_NAMES[quantity])}, (a) / (b)</th>"
     head += "<th class=num>this molecule: network / B3LYP</th>" if truth else ""
     body = []
     for r in rows:
@@ -196,7 +198,7 @@ STEPS = (("Admission", "canonical SMILES; elements and size inside the network's
          ("B3LYP Hessian and APT", "pyscf, analytic, in WSL", "low_level"),
          ("ΔH correction", "ΔH-network, three seeds; their spread is each band's range", "correction_and_spectra"),
          ("Spectra", "double harmonic; corrected and uncorrected", None),
-         ("Certificate", "per band: family, licence, measured error, laboratory tolerance", None))
+         ("Certificate", "per band: family, licence, the family's measured error under its name, laboratory tolerance", None))
 
 
 def steps_section(panels: list[Panel]) -> str:
@@ -212,8 +214,9 @@ def steps_section(panels: list[Panel]) -> str:
 
 def licence_section(cert: dict) -> str:
     h = cert["accuracy"]["holdouts"]
+    quantity, errors = A.stated_errors(cert["accuracy"])
     rows = "".join(
-        f'<tr><td>{_e(f)}</td><td class=num>{h["a"]["readouts"][f]["mean"]:.2f}</td><td class=num>{h["b"]["readouts"][f]["mean"]:.2f}</td>'
+        f'<tr><td>{_e(f)}</td><td class=num>{errors[f]["a"]:.2f}</td><td class=num>{errors[f]["b"]:.2f}</td>'
         f'<td>{_chip(f in cert["licence"]["licensed_families"])}</td></tr>'
         for f in FAMILY_ORDER)
     shape = h["a"]["shape"]
@@ -221,8 +224,8 @@ def licence_section(cert: dict) -> str:
             f'{_e(cert["network"]["predicts"])}. A family is licensed where its error stays within 3 cm⁻¹ on both hold-outs '
             f'({_e(cert["licence"]["rule_source"])}).</p><div class="scroll"><table><thead><tr><th>family</th>'
             f'<th class=num>hold-out (a), {h["a"]["n_molecules"]} molecules</th><th class=num>hold-out (b), {h["b"]["n_molecules"]} molecules</th>'
-            f'<th>licence</th></tr></thead><tbody>{rows}</tbody></table></div><p class="muted small">Seed-mean rms error of the corrected '
-            f'positions, cm⁻¹. Spectrum overlap on hold-out (a): {shape["cheap"]["spectrum_overlap"]} uncorrected, '
+            f'<th>licence</th></tr></thead><tbody>{rows}</tbody></table></div><p class="muted small">'
+            f'{_e(A.QUANTITY_NAMES[quantity].capitalize())}, rms in cm⁻¹. Spectrum overlap on hold-out (a): {shape["cheap"]["spectrum_overlap"]} uncorrected, '
             f'{shape["corrected"]["spectrum_overlap"]} corrected.</p><p class="muted small">{_e(h["a"]["description"])}.</p>'
             f'<p class="muted small">{_e(h["b"]["description"])}.</p></section>')
 

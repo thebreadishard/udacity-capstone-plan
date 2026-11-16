@@ -1,0 +1,609 @@
+{
+ "kind": "product error read",
+ "network": "ΔH-network",
+ "network_version": "1.3",
+ "models": [
+  "E7_rungC_chain35_analytic_model_n750_seed0.pt",
+  "E7_rungC_chain35_analytic_model_n750_seed1.pt",
+  "E7_rungC_chain35_analytic_model_n750_seed2.pt"
+ ],
+ "model_sha16": {
+  "E7_rungC_chain35_analytic_model_n750_seed0.pt": "f930db4af9268a00",
+  "E7_rungC_chain35_analytic_model_n750_seed1.pt": "87734859e866d6f7",
+  "E7_rungC_chain35_analytic_model_n750_seed2.pt": "023b8c142ad5fa52"
+ },
+ "labels": {
+  "kind": "analytic",
+  "files": [
+   "hessian_b3lyp_analytic.npz",
+   "hessian_wb97x_analytic.npz"
+  ]
+ },
+ "sets_from": [
+  "E7_rungC_chain35_analytic_eval_frozenb_seed0.json",
+  "E7_rungC_chain35_analytic_eval_frozenb_seed1.json",
+  "E7_rungC_chain35_analytic_eval_frozenb_seed2.json",
+  "E7_rungC_chain35_analytic_a8read_seed0.json",
+  "E7_rungC_chain35_analytic_a8read_seed1.json",
+  "E7_rungC_chain35_analytic_a8read_seed2.json"
+ ],
+ "line_cm": 3.0,
+ "definitions": {
+  "first_order": "rms over the family's B3LYP modes of the first-order diagonal error of a seed's ΔH against the ωB97X − B3LYP Hessian difference, per seed; 'seed_mean' is the mean of the seeds' values (the evaluation records' diag_rms, which m08.accuracy averages)",
+  "product": "rms over the family's bands of the corrected band position's error: H_B3LYP + the seeds' mean ΔH diagonalised, each band paired to its ωB97X band by mode overlap and counted in the family of its B3LYP partner (what the pipeline prints)",
+  "record_families": "the evaluation records' families: the corpus loader's (finite-difference B3LYP modes), kept by mode index when the analytic Hessians replace them (e7_rungB_reread_analytic.substitute)",
+  "certificate_families": "the live certificate's families: learning_curve_layerA.molecule_features on the analytic B3LYP Hessian",
+  "interval": "2.5th and 97.5th percentile of the set's rms under resampling of whole molecules; a statement about this hold-out's molecules as a sample"
+ },
+ "bootstrap": {
+  "seed": 20261116,
+  "draws": 4000,
+  "unit": "molecule"
+ },
+ "holdouts": {
+  "a": {
+   "set": "a8",
+   "n_molecules": 8,
+   "ids": [
+    "A_08dde334d8",
+    "A_428228e5a5",
+    "A_541c53d1a5",
+    "A_72b86c2331",
+    "A_8448043181",
+    "A_bce5bae234",
+    "A_e72997e726",
+    "A_fdc27f1bd1"
+   ],
+   "families": {
+    "ring-ip": {
+     "first_order": {
+      "seeds": [
+       1.9472458985073005,
+       1.676784923278536,
+       1.6958188466200486
+      ],
+      "seed_mean": 1.7732832228019617,
+      "n_modes": 199
+     },
+     "first_order_certificate_families": {
+      "seeds": [
+       1.9472458985073005,
+       1.676784923278536,
+       1.6958188466200486
+      ],
+      "seed_mean": 1.7732832228019617,
+      "n_modes": 199
+     },
+     "product": {
+      "rms": 1.4289054204514051,
+      "n_modes": 199,
+      "n_molecules": 8,
+      "n_molecules_with_modes": 8,
+      "interval": [
+       1.1291797884720665,
+       1.698219809408727
+      ],
+      "share_below_line": 1.0,
+      "largest_single_molecule_rms": 2.0602826017847207
+     }
+    },
+    "CH-stretch": {
+     "first_order": {
+      "seeds": [
+       0.9135306011552617,
+       1.736514824271749,
+       0.9069190141206779
+      ],
+      "seed_mean": 1.1856548131825628,
+      "n_modes": 73
+     },
+     "first_order_certificate_families": {
+      "seeds": [
+       0.9135306011552617,
+       1.736514824271749,
+       0.9069190141206779
+      ],
+      "seed_mean": 1.1856548131825628,
+      "n_modes": 73
+     },
+     "product": {
+      "rms": 0.9461887075196206,
+      "n_modes": 73,
+      "n_molecules": 8,
+      "n_molecules_with_modes": 8,
+      "interval": [
+       0.3872004436138724,
+       1.4833839944441176
+      ],
+      "share_below_line": 1.0,
+      "largest_single_molecule_rms": 2.2330790755005485
+     }
+    },
+    "CH-oop": {
+     "first_order": {
+      "seeds": [
+       2.4737022097379353,
+       2.057843329323808,
+       1.9872227948486836
+      ],
+      "seed_mean": 2.1729227779701423,
+      "n_modes": 46
+     },
+     "first_order_certificate_families": {
+      "seeds": [
+       2.4737022097379353,
+       2.057843329323808,
+       1.9872227948486836
+      ],
+      "seed_mean": 2.1729227779701423,
+      "n_modes": 46
+     },
+     "product": {
+      "rms": 1.637619317841,
+      "n_modes": 46,
+      "n_molecules": 8,
+      "n_molecules_with_modes": 5,
+      "interval": [
+       1.190596162437781,
+       1.9726623041896167
+      ],
+      "share_below_line": 1.0,
+      "largest_single_molecule_rms": 2.0328673351895294
+     }
+    },
+    "other": {
+     "first_order": {
+      "seeds": [
+       4.093806814851707,
+       3.2652395221326844,
+       3.5129997315190553
+      ],
+      "seed_mean": 3.6240153561678157,
+      "n_modes": 156
+     },
+     "first_order_certificate_families": {
+      "seeds": [
+       4.093806814851707,
+       3.2652395221326844,
+       3.5129997315190553
+      ],
+      "seed_mean": 3.6240153561678157,
+      "n_modes": 156
+     },
+     "product": {
+      "rms": 2.780375851504737,
+      "n_modes": 156,
+      "n_molecules": 8,
+      "n_molecules_with_modes": 8,
+      "interval": [
+       1.6848853270141069,
+       3.7643262931377506
+      ],
+      "share_below_line": 0.69825,
+      "largest_single_molecule_rms": 5.021931715590933
+     }
+    }
+   }
+  },
+  "b": {
+   "set": "b",
+   "n_molecules": 39,
+   "ids": [
+    "A2_00b0ff5a24",
+    "A2_0101e57296",
+    "A2_02c8833bd5",
+    "A2_041da590e8",
+    "A2_043da5bed2",
+    "A2_048ea73dab",
+    "A2_05f5ff045c",
+    "A2_06222c33e3",
+    "A2_066237c4f5",
+    "A2_06873ee7ad",
+    "A2_097651503c",
+    "A2_0dc3aa4eb9",
+    "A2_0e1c741b76",
+    "A2_10d7d03408",
+    "A2_11c681aefb",
+    "A2_1543119d9d",
+    "A2_16521f2764",
+    "A2_1b389dc1d8",
+    "A2_1bb2e3fbf1",
+    "A2_1c2781e93a",
+    "A2_20d3215ce3",
+    "A2_210c322595",
+    "A2_21b688db0c",
+    "A2_27130c4c79",
+    "A2_27370742a0",
+    "A2_27edf7297c",
+    "A2_2931e48c62",
+    "A2_2e154f6054",
+    "A2_2f079d63a1",
+    "A2_3058513f57",
+    "A2_311e979a14",
+    "A2_331729cd47",
+    "A2_372920f181",
+    "A2_3825e7205b",
+    "A2_39baaea0dd",
+    "A2_3b6ae59b2d",
+    "A2_3cf20db4ac",
+    "A2_3f25a88e27",
+    "A2_42ab9eb0a0"
+   ],
+   "families": {
+    "ring-ip": {
+     "first_order": {
+      "seeds": [
+       2.245894037995678,
+       2.0230651192484244,
+       2.1051475806423294
+      ],
+      "seed_mean": 2.124702245962144,
+      "n_modes": 1164
+     },
+     "first_order_certificate_families": {
+      "seeds": [
+       2.245681836317656,
+       2.0230816729922116,
+       2.1050980100883963
+      ],
+      "seed_mean": 2.1246205064660875,
+      "n_modes": 1164
+     },
+     "product": {
+      "rms": 1.9145980989331008,
+      "n_modes": 1164,
+      "n_molecules": 39,
+      "n_molecules_with_modes": 39,
+      "interval": [
+       1.835626035530301,
+       1.9970663360928282
+      ],
+      "share_below_line": 1.0,
+      "largest_single_molecule_rms": 2.5635661883704923
+     }
+    },
+    "CH-stretch": {
+     "first_order": {
+      "seeds": [
+       1.9128425830196154,
+       3.5076314772311714,
+       2.078126076821853
+      ],
+      "seed_mean": 2.4995333790242134,
+      "n_modes": 401
+     },
+     "first_order_certificate_families": {
+      "seeds": [
+       1.9128425830196154,
+       3.5076314772311714,
+       2.078126076821853
+      ],
+      "seed_mean": 2.4995333790242134,
+      "n_modes": 401
+     },
+     "product": {
+      "rms": 2.186380800048085,
+      "n_modes": 401,
+      "n_molecules": 39,
+      "n_molecules_with_modes": 39,
+      "interval": [
+       1.8026567966459903,
+       2.5345079721322223
+      ],
+      "share_below_line": 1.0,
+      "largest_single_molecule_rms": 4.519096894685665
+     }
+    },
+    "CH-oop": {
+     "first_order": {
+      "seeds": [
+       2.4379984599421833,
+       2.9525564032972933,
+       2.722980507175701
+      ],
+      "seed_mean": 2.7045117901383926,
+      "n_modes": 83
+     },
+     "first_order_certificate_families": {
+      "seeds": [
+       2.455301147322567,
+       2.934930184055398,
+       2.802553762235002
+      ],
+      "seed_mean": 2.7309283645376556,
+      "n_modes": 84
+     },
+     "product": {
+      "rms": 1.8798254930467173,
+      "n_modes": 84,
+      "n_molecules": 39,
+      "n_molecules_with_modes": 8,
+      "interval": [
+       1.5566924972003058,
+       2.1589079470211927
+      ],
+      "share_below_line": 1.0,
+      "largest_single_molecule_rms": 2.496216818620692
+     }
+    },
+    "other": {
+     "first_order": {
+      "seeds": [
+       3.6465977676836223,
+       4.51278334959432,
+       3.5171187243920796
+      ],
+      "seed_mean": 3.8921666138900073,
+      "n_modes": 1226
+     },
+     "first_order_certificate_families": {
+      "seeds": [
+       3.6467490067579575,
+       4.514617826767103,
+       3.51343392266733
+      ],
+      "seed_mean": 3.8916002520641304,
+      "n_modes": 1225
+     },
+     "product": {
+      "rms": 2.767707257978158,
+      "n_modes": 1225,
+      "n_molecules": 39,
+      "n_molecules_with_modes": 39,
+      "interval": [
+       2.562445138427195,
+       2.972691928533756
+      ],
+      "share_below_line": 0.98675,
+      "largest_single_molecule_rms": 4.329348151814005
+     }
+    }
+   }
+  }
+ },
+ "checks": {
+  "first_order_reproduces_evaluation_records": {
+   "tolerance_cm": 0.005,
+   "largest_difference_cm": 0.0003106406585819954,
+   "cells": {
+    "a": {
+     "ring-ip": {
+      "here": 1.7732832228019617,
+      "evaluation_records": 1.77328321354061,
+      "difference": 9.2613516855522e-09
+     },
+     "CH-stretch": {
+      "here": 1.1856548131825628,
+      "evaluation_records": 1.185654923283791,
+      "difference": -1.1010122813459589e-07
+     },
+     "CH-oop": {
+      "here": 2.1729227779701423,
+      "evaluation_records": 2.172922660664861,
+      "difference": 1.1730528148845565e-07
+     },
+     "other": {
+      "here": 3.6240153561678157,
+      "evaluation_records": 3.62401528105226,
+      "difference": 7.511555555339555e-08
+     }
+    },
+    "b": {
+     "ring-ip": {
+      "here": 2.124702245962144,
+      "evaluation_records": 2.1247001958650746,
+      "difference": 2.0500970694392606e-06
+     },
+     "CH-stretch": {
+      "here": 2.4995333790242134,
+      "evaluation_records": 2.4995337043672645,
+      "difference": -3.253430511662714e-07
+     },
+     "CH-oop": {
+      "here": 2.7045117901383926,
+      "evaluation_records": 2.7045117047196428,
+      "difference": 8.54187498511294e-08
+     },
+     "other": {
+      "here": 3.8921666138900073,
+      "evaluation_records": 3.8924772545485893,
+      "difference": -0.0003106406585819954
+     }
+    }
+   }
+  },
+  "agrees_with_package": {
+   "source": "probes/results_m1/aromir_product_error_2026-11-16/product_error.json",
+   "tolerance_cm": 0.01,
+   "largest_difference_cm": 3.6233582445532875e-07,
+   "cells": {
+    "a": {
+     "product": {
+      "ring-ip": {
+       "here": 1.4289054204514051,
+       "package": 1.4289053660722633,
+       "difference": 5.437914185613124e-08
+      },
+      "CH-stretch": {
+       "here": 0.9461887075196206,
+       "package": 0.94618844906101,
+       "difference": 2.584586106246789e-07
+      },
+      "CH-oop": {
+       "here": 1.637619317841,
+       "package": 1.6376190414914262,
+       "difference": 2.7634957366906576e-07
+      },
+      "other": {
+       "here": 2.780375851504737,
+       "package": 2.7803758691626337,
+       "difference": -1.7657896478340263e-08
+      }
+     },
+     "first_order_certificate_families": {
+      "ring-ip": {
+       "here": 1.7732832228019617,
+       "package": 1.773283054634697,
+       "difference": 1.6816726478019461e-07
+      },
+      "CH-stretch": {
+       "here": 1.1856548131825628,
+       "package": 1.1856544508467384,
+       "difference": 3.6233582445532875e-07
+      },
+      "CH-oop": {
+       "here": 2.1729227779701423,
+       "package": 2.1729224562275253,
+       "difference": 3.21742616993248e-07
+      },
+      "other": {
+       "here": 3.6240153561678157,
+       "package": 3.6240154290833924,
+       "difference": -7.291557668764881e-08
+      }
+     },
+     "product_interval": {
+      "ring-ip": {
+       "here": [
+        1.1291797884720665,
+        1.698219809408727
+       ],
+       "package": [
+        1.129179558930559,
+        1.6982196973577224
+       ]
+      },
+      "CH-stretch": {
+       "here": [
+        0.3872004436138724,
+        1.4833839944441176
+       ],
+       "package": [
+        0.38720073354140966,
+        1.4833835031760352
+       ]
+      },
+      "CH-oop": {
+       "here": [
+        1.190596162437781,
+        1.9726623041896167
+       ],
+       "package": [
+        1.1905961397289377,
+        1.9726619806548091
+       ]
+      },
+      "other": {
+       "here": [
+        1.6848853270141069,
+        3.7643262931377506
+       ],
+       "package": [
+        1.6848856648012147,
+        3.7643263490746444
+       ]
+      }
+     }
+    },
+    "b": {
+     "product": {
+      "ring-ip": {
+       "here": 1.9145980989331008,
+       "package": 1.914598115322138,
+       "difference": -1.6389037238440096e-08
+      },
+      "CH-stretch": {
+       "here": 2.186380800048085,
+       "package": 2.186380697837924,
+       "difference": 1.022101607794923e-07
+      },
+      "CH-oop": {
+       "here": 1.8798254930467173,
+       "package": 1.8798256032145801,
+       "difference": -1.1016786283235547e-07
+      },
+      "other": {
+       "here": 2.767707257978158,
+       "package": 2.767707270120052,
+       "difference": -1.2141893712680485e-08
+      }
+     },
+     "first_order_certificate_families": {
+      "ring-ip": {
+       "here": 2.1246205064660875,
+       "package": 2.124620597879146,
+       "difference": -9.141305845616898e-08
+      },
+      "CH-stretch": {
+       "here": 2.4995333790242134,
+       "package": 2.4995332214961254,
+       "difference": 1.5752808790736594e-07
+      },
+      "CH-oop": {
+       "here": 2.7309283645376556,
+       "package": 2.7309281815252047,
+       "difference": 1.8301245097163132e-07
+      },
+      "other": {
+       "here": 3.8916002520641304,
+       "package": 3.891600257887242,
+       "difference": -5.823111770553169e-09
+      }
+     },
+     "product_interval": {
+      "ring-ip": {
+       "here": [
+        1.835626035530301,
+        1.9970663360928282
+       ],
+       "package": [
+        1.8356259540030233,
+        1.9970663872576382
+       ]
+      },
+      "CH-stretch": {
+       "here": [
+        1.8026567966459903,
+        2.5345079721322223
+       ],
+       "package": [
+        1.8026567224170078,
+        2.534507673888718
+       ]
+      },
+      "CH-oop": {
+       "here": [
+        1.5566924972003058,
+        2.1589079470211927
+       ],
+       "package": [
+        1.5566925473285718,
+        2.158907855069799
+       ]
+      },
+      "other": {
+       "here": [
+        2.562445138427195,
+        2.972691928533756
+       ],
+       "package": [
+        2.562445174063193,
+        2.972691764140568
+       ]
+      }
+     }
+    }
+   }
+  }
+ },
+ "data_root": "C:\\Users\\thebr\\Documents\\CapstonePlan\\plans\\05_delta-probed-ir-pipeline\\modules\\05_support_predictor",
+ "provenance": {
+  "timestamp_utc": "2026-11-16 14:06:39",
+  "host": "Asus18",
+  "python": "3.14.6",
+  "numpy": "2.5.1",
+  "command": "product_error_read.py --package ../aromir_product_error_2026-11-16/product_error.json --threads 2 --m05 ../../../../../../CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor",
+  "commit": "cc9b80c50c705be4d9f1931bd5e954e5f0533d37",
+  "dirty": "no"
+ }
+}

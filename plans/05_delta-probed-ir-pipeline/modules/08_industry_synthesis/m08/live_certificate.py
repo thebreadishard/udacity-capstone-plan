@@ -1,6 +1,7 @@
 """The certificate of a live pipeline result (`m08/pipeline.py`; build step 4 of TASKS 146): the network's spectrum band by band with the
-seeds' spread, the measured error of the network version that ran — read from its own evaluation records per mode family and hold-out and
-set against the registered target — the B3LYP level and the scaled-B3LYP baseline beside it, the laboratory tolerance of each band's region,
+seeds' spread, the measured error of the network version that ran — per mode family and hold-out, the error of what the pipeline
+delivers from its product-error record (the licence's quantity) and the first-order read-outs of its evaluation records, each under
+its name and set against the registered target — the B3LYP level and the scaled-B3LYP baseline beside it, the laboratory tolerance of each band's region,
 the run's hours and the provenance. Every number names its source. `certify.py` certifies the corpus's recorded molecules from the website
 export; this module certifies a molecule the pipeline computed, from the files in its result folder alone (no network is re-run).
 Written beside the result as certificate.json and certificate.md.
@@ -91,7 +92,8 @@ def mode_families(r: Result, w_low: np.ndarray) -> list[str]:
 def bands(r: Result, accuracy: dict, tolerance: dict[str, dict], licensed: list[str]) -> list[dict]:
     """One row per corrected mode, sorted by position, paired with the B3LYP mode of largest overlap among all its modes
     (`rungC_intensities.match_modes`, the evaluation's pairing): its family, the B3LYP, baseline and network positions, the height, the seeds'
-    range as the record holds it, the measured error of its family on both hold-outs, whether that family is licensed, and the laboratory
+    range as the record holds it, the error of its family on both hold-outs in the quantity the licence reads (`A.stated_errors`), whether
+    that family is licensed, and the laboratory
     tolerance of its region. The B3LYP partner is sought among the family rule's modes (`rule_modes`), so a corrected mode whose partner lies
     under the line of `mode_intensities` (a near-free rotor the network stiffens) keeps its family; it has no baseline, which lists the B3LYP
     spectrum's bands."""
@@ -106,13 +108,13 @@ def bands(r: Result, accuracy: dict, tolerance: dict[str, dict], licensed: list[
     if len(baseline) != len(w_low):
         raise RuntimeError(f"{r.folder.name}: the recorded baseline has {len(baseline)} bands, the B3LYP Hessian {len(w_low)}")
     rank = np.argsort(np.argsort(w_net))
-    readouts = {h: accuracy["holdouts"][h]["readouts"] for h in A.HOLDOUTS}
+    _, errors = A.stated_errors(accuracy)
     rows = []
     for j, k in enumerate(RINT.match_modes(L_net, V_rule)):
         fam, region = families[k], lab_region(float(w_net[j]))
         rows.append(dict(network_cm=round(float(w_net[j]), 1), km_mol=round(float(k_net[j]), 2), seed_range_cm=sticks[rank[j]]["seed_range_cm"],
                          b3lyp_cm=round(float(w_rule[k]), 1), baseline_cm=baseline[int(listed[k])]["omega_cm"] if above[k] else None,
-                         family=fam, licensed=fam in licensed, error_cm={h: readouts[h][fam]["mean"] for h in A.HOLDOUTS}, lab_region=region,
+                         family=fam, licensed=fam in licensed, error_cm=dict(errors[fam]), lab_region=region,
                          u_band_cm=tolerance.get(region, {}).get("u_band")))
     return [row for _, row in sorted(zip(rank, rows, strict=True), key=lambda t: t[0])]      # the record's stick order
 
@@ -133,7 +135,7 @@ def listing(smiles: str, b3lyp_cm: list[float], catalog: Catalog) -> dict | None
 def certificate(folder: Path, catalog: Catalog) -> dict:
     r = load_result(folder)
     rec, adm = r.record, r.record["admission"]
-    accuracy = A.network_accuracy(A.evaluation_records(r.models), A.clean_a_records(r.models))
+    accuracy = A.accuracy_of(r.models)
     w_low = RINT.mode_intensities(r.H_low, r.masses, r.apt)[0]
     listed = listing(adm["smiles"], [float(w) for w in w_low], catalog)
     tolerance = catalog.u_band(listed["name"] if listed else rec["name"])
@@ -149,21 +151,22 @@ def certificate(folder: Path, catalog: Catalog) -> dict:
         network=dict(name=P.NETWORK, version=version, models=adm["models"], predicts=A.HIGHER_LEVEL),
         accuracy=accuracy, bands=bands(r, accuracy, tolerance, lic["licensed_families"]),
         tolerance=dict(per_region=tolerance, rule=FAMILY_SOURCE),
-        licence=dict(statement=lic["statement"], rule_source=lic["rule_source"], licensed_families=lic["licensed_families"]),
+        licence=dict(statement=lic["statement"], rule_source=lic["rule_source"], licensed_families=lic["licensed_families"],
+                     quantity=lic["quantity"], quantity_name=lic["quantity_name"], caveats=lic["caveats"]),
         cost=dict(steps_s=rec["seconds"], **prices.price_of_run(sum(rec["seconds"].values()), rec["provenance"]["host"])),
         provenance=dict(result=str(folder), run_commit=rec["provenance"]["commit"], run_dirty=rec["provenance"]["dirty"],
                         certificate_commit=commit_hash(), deck_sha16=rec["deck"]["sha16"], low_level_software=rec["low_level"]["b3lyp"].get("software"),
                         host=rec["provenance"]["host"], note=rec["spectra"]["note"],
                         reused_from=rec["reuse"]["source"] if "reuse" in rec and rec["reuse"]["reused"] else None),
         statement=(f"{rec['name']}: the harmonic infrared spectrum of {P.NETWORK} v{version} ({len(r.models)} seeds) — B3LYP/6-31G* corrected "
-                   f"toward {A.HIGHER_LEVEL.split(' (')[0]} — with the error measured on molecules the network never saw; licensed for "
+                   f"toward {A.HIGHER_LEVEL.split(' (')[0]} — with the {lic['quantity_name']} measured on molecules the network never saw; licensed for "
                    f"{', '.join(lic['licensed_families']) or 'no family'} (decision 65), each band marked; at the coupled-cluster level "
                    f"{A.CC_NOTE}. The scaled B3LYP spectrum is shown as the baseline only. This molecule: {seen['text']}."))
 
 
 def _band_lines(c: dict) -> list[str]:
-    L = ["| network ω (cm⁻¹) | height (km/mol) | seeds' range | B3LYP ω | baseline ω | family | licensed | measured error (a) / (b), cm⁻¹ | "
-         "laboratory region | u_band (cm⁻¹) |", "|---|---|---|---|---|---|---|---|---|---|"]
+    L = [f"| network ω (cm⁻¹) | height (km/mol) | seeds' range | B3LYP ω | baseline ω | family | licensed | {c['licence']['quantity_name']} "
+         "on (a) / (b), cm⁻¹ | laboratory region | u_band (cm⁻¹) |", "|---|---|---|---|---|---|---|---|---|---|"]
     for b in c["bands"]:
         lo, hi = b["seed_range_cm"]
         baseline = b["baseline_cm"] if b["baseline_cm"] is not None else f"— (B3LYP under {vib_min_cm():g} cm⁻¹)"
@@ -173,9 +176,23 @@ def _band_lines(c: dict) -> list[str]:
     return L
 
 
+def _product_lines(a: dict) -> list[str]:
+    """The quantity the licence reads, per family and hold-out, with what each value rests on."""
+    hs = a["holdouts"]
+    L = [f"The licence reads the {a['quantities'][A.PRODUCT]} ({a['definitions'][A.PRODUCT]}).", "",
+         "| family | " + " | ".join(f"({h}), {v['n_molecules']} molecules" for h, v in hs.items()) + " | line |", "|---|---|---|---|"]
+    for f in A.FAMILIES:
+        cells = [f"{p['rms']} (95 % interval over molecules {p['interval'][0]}–{p['interval'][1]}; {p['n_modes']} bands)"
+                 for p in (v[A.PRODUCT][f] for v in hs.values())]
+        L.append(f"| {f} | " + " | ".join(cells) + f" | {A.LICENCE_LINE_CM:g} |")
+    return L
+
+
 def _accuracy_lines(a: dict) -> list[str]:
     hs = a["holdouts"]
-    L = [f"Against {a['higher_level']}, seed means (each seed's value in brackets); targets: {a['target_source']}.", "",
+    L = [f"Against {a['higher_level']}; two quantities, each under its name.", "", *_product_lines(a), "",
+         f"Beside it the evaluation records' read-outs — the {a['quantities']['readouts']} (each seed's value in brackets), which the "
+         f"licence read until {A.AMENDED} — and the coupling ratio; targets: {a['target_source']}.", "",
          "| read-out | " + " | ".join(f"({h}), {v['n_molecules']} molecules" for h, v in hs.items()) + " | target |", "|---|---|---|---|"]
     for q in QUANTITIES:
         cells = [f"{v['readouts'][q]['mean']} ({', '.join(str(x) for x in v['readouts'][q]['seeds'])})" for v in hs.values()]
@@ -184,7 +201,8 @@ def _accuracy_lines(a: dict) -> list[str]:
     L += ["", "| spectral shape | " + " | ".join(f"({h}), {v['shape']['n_molecules']} with an APT" for h, v in hs.items()) + " |", "|---|---|---|"]
     for k, label in (("spectrum_overlap", "overlap, uncorrected → corrected"), ("intensity_error", "height error, uncorrected → corrected")):
         L.append(f"| {label} | " + " | ".join(f"{v['shape']['cheap'][k]} → {v['shape']['corrected'][k]}" for v in hs.values()) + " |")
-    return [*L, "", f"*Hold-outs:* {hs['a']['description']}; {hs['b']['description']}. *Coupled cluster:* {a['coupled_cluster']}.",
+    return [*L, "", f"*Read-outs:* {a['definitions']['family']}.",
+            f"*Hold-outs:* {hs['a']['description']}; {hs['b']['description']}. *Coupled cluster:* {a['coupled_cluster']}.",
             f"*Sources:* {'; '.join(a['sources'])}."]
 
 
@@ -208,7 +226,7 @@ def to_markdown(c: dict) -> str:
          f"- the network: {m['seen']['text']}", *_truth_lines(m["truth"]),
          "", f"## Spectrum, band by band ({n['name']} v{n['version']}, {len(n['models'])} seeds)", "", *_band_lines(c), "",
          f"*Laboratory region and u_band:* {c['tolerance']['rule']}. *Positions:* {p['note']}.", "",
-         "## How well the network is known (its own evaluation records)", "", *_accuracy_lines(c["accuracy"]), "",
+         "## How well the network is known (its product-error record and its evaluation records)", "", *_accuracy_lines(c["accuracy"]), "",
          f"*Licence:* {c['licence']['statement']} ({c['licence']['rule_source']}).", "", "## Cost", "",
          f"- {k['machine']} ({k['machine_class']}): {k['seconds']} s = {k['hours']} h, € {k['eur_ex_vat']:.2f} ex VAT ({k['source']}); steps "
          + ", ".join(f"{s} {v} s" for s, v in k["steps_s"].items()), "", "## Provenance", "",
