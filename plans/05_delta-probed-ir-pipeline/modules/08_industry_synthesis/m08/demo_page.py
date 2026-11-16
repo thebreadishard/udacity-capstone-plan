@@ -19,6 +19,7 @@ from . import accuracy as A
 from . import live_certificate as LC
 from . import paths
 from . import pipeline as P
+from . import positions as POS
 from .licence import caveat_sentence
 from .spectrum import broadened
 
@@ -197,7 +198,8 @@ def molecule_section(p: Panel) -> str:
             f'pipeline {_e(p.certificate["pipeline_version"])}</p><p class="meta">{_e(p.demo.origin)}</p>'
             f'<p class="meta">The network: {_e(m["seen"]["text"])}.</p></header>'
             f'<div class="tiles">{_tiles(p)}</div><figure class="plot">{svg}<figcaption>{_legend(p)}'
-            f'<span class="lg note">Lorentzian, FWHM 10 cm⁻¹; heights from the B3LYP APT; each panel scaled to its largest peak</span>'
+            f'<span class="lg note">Lorentzian, FWHM 10 cm⁻¹; heights from the B3LYP APT; each panel scaled to its largest peak; '
+            f'{_e(POS.DRAWN)}</span>'
             f"</figcaption></figure>{_family_table(p)}</section>")
 
 
@@ -205,17 +207,26 @@ STEPS = (("Admission", "canonical SMILES; elements and size inside the network's
          ("Geometry", "psi4, B3LYP/6-31G* optimisation", "optimise"),
          ("B3LYP Hessian and APT", "pyscf, analytic, in WSL", "low_level"),
          ("ΔH correction", "ΔH-network, three seeds; their spread is each band's range", "correction_and_spectra"),
-         ("Spectra", "double harmonic; corrected and uncorrected", None),
+         ("Spectra", "double harmonic, corrected and uncorrected; then each band's anharmonic estimate ν = ω + Δ_anh from the molecule's "
+                     "GFN2-xTB force field, for which no licence is claimed", "anharmonic"),
          ("Certificate", "per band: family, licence, the family's measured error under its name, laboratory tolerance", None))
+
+
+def _step_time(steps_s: dict[str, float], key: str | None) -> str:
+    """A step's time on the laptop; '' for a step without a time of its own, a dash where the result has no such step."""
+    if key is None:
+        return ""
+    return _minutes(steps_s[key]) if key in steps_s else "—"
 
 
 def steps_section(panels: list[Panel]) -> str:
     names = "".join(f"<th class=num>{_e(p.certificate['molecule']['name'])}</th>" for p in panels)
     rows = []
     for title, what, key in STEPS:
-        cells = "".join(f"<td class=num>{_minutes(p.certificate['cost']['steps_s'][key]) if key else ''}</td>" for p in panels)
+        cells = "".join(f"<td class=num>{_step_time(p.certificate['cost']['steps_s'], key)}</td>" for p in panels)
         rows.append(f"<tr><td><b>{_e(title)}</b><br><span class=muted>{_e(what)}</span></td>{cells}</tr>")
-    note = "the correction's time covers the spectra and the certificate too"
+    note = ("the correction's time covers the harmonic spectra and the certificate too; the Spectra row's time is the anharmonic "
+            "step's, and a dash there is a result from before that step")
     return (f'<section><h2>Six steps, molecule in, spectrum out</h2><div class="scroll"><table class="steps"><thead><tr><th>step</th>{names}'
             f'</tr></thead><tbody>{"".join(rows)}</tbody></table></div><p class="muted small">Times on the laptop; {note}.</p></section>')
 
@@ -242,7 +253,8 @@ def limits(cert: dict) -> tuple[str, ...]:
     """What this version does not do. Whether the family a non-planar molecule's out-of-plane bands fall in is licensed is read from
     the certificate, never written here: the licence changes with the network version and with the quantity it is read on."""
     other = "which is licensed" if "other" in cert["licence"]["licensed_families"] else "which is not licensed"
-    return ("Positions are harmonic: the anharmonic shift is not in this version (TASKS 53).",
+    positions = POS.of_certificate(cert)
+    return (f"{positions[0].upper()}{positions[1:]}.",
             "The coupled-cluster level is not measured for this network version; the anchor decision is in November.",
             f"A molecule that is not planar gets no CH-oop band under the family rule, so those bands count as 'other', {other} "
             "(the table above).",

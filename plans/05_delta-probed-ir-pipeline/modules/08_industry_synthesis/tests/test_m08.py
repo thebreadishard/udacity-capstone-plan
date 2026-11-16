@@ -10,6 +10,7 @@ import pytest
 HERE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(HERE))
 
+from m08 import positions as POS  # noqa: E402
 from m08 import prices  # noqa: E402
 from m08.catalog import Catalog, family  # noqa: E402
 from m08.certify import certificate, to_markdown  # noqa: E402
@@ -79,6 +80,13 @@ def test_run_order_needs_the_gate_and_the_worker_touches_no_machine(cat):
     assert w["machine_touched"] is False and w["executed"] is False and w["queued"] is True
 
 
+def test_the_officer_says_which_position_the_pipeline_prints(cat):
+    """A corrected rung is the pipeline's; the refusal that says so also says what the pipeline prints and what its licence is on."""
+    d = decide(Request(molecule="naphthalene", target_rung=3, budget_eur=0), cat)
+    assert d.kind == "refusal" and "R14" in d.rule_ids and d.reasons[0].endswith(POS.PIPELINE)
+    assert "the anharmonic position ν = ω + Δ_anh where its anharmonic step applies" in POS.PIPELINE and POS.LICENCE_SCOPE in POS.PIPELINE
+
+
 def test_certificate_sources_and_evidence(cat):
     c = certificate(cat.find("naphthalene"), cat)
     assert c["rung"]["reached"] == 4 and c["spectrum"]["b3lyp"]["n"] == 48
@@ -89,6 +97,9 @@ def test_certificate_sources_and_evidence(cat):
         assert k["source"]
     md = to_markdown(c)
     assert "## Cost record" in md and "## Provenance" in md and "licensed at the DFT proxy" in md
+    # TASKS 211: a catalogue record says which position it prints, in the record and on the page
+    assert c["positions"] == POS.CATALOGUE and "**Positions.** Positions are harmonic (ω): a catalogue record carries no anharmonic step" in md
+    assert "## Spectral shape (cheap rung; harmonic positions and heights)" in md
     assert c["statement"].endswith("where it is wider than the tolerance. Licence caveat: other on hold-out (a) rests on 8 molecules: the 95 % "
                                    "interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie "
                                    "under it).")

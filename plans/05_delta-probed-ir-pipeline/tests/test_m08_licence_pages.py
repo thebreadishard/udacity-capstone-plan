@@ -47,6 +47,11 @@ def amended(stored) -> dict:
     for band in cert["bands"]:
         band["licensed"], band["error_cm"] = band["family"] in lic["licensed_families"], dict(errors[band["family"]])
     cert["statement"] = LC.statement(cert["molecule"]["name"], "1.3", 3, lic, cert["molecule"]["seen"]["text"])
+    # the stored result predates the anharmonic step (pipeline 0.11, TASKS 211): its bands are harmonic and say so
+    summary = LC.POS.summary_of({})
+    cert["positions"] = dict(note=LC.POS.note(summary), anharmonic=summary, drawn=LC.POS.DRAWN)
+    for band in cert["bands"]:
+        band.update(LC.POS.band({"omega_cm": band["network_cm"]}, summary, {}, ""))
     return cert
 
 
