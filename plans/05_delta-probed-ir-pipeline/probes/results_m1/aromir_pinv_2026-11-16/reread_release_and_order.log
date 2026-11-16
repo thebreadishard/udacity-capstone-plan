@@ -1,0 +1,41 @@
+A_3100da3761 (13 atoms) seed0.pt: max|dH| 5.499e-02, max|aromir - trainer| 0.000e+00, bands 0.00e+00 cm-1; masses differ by at most 0.00e+00 amu
+A_3100da3761 (13 atoms) seed1.pt: max|dH| 5.679e-02, max|aromir - trainer| 0.000e+00, bands 0.00e+00 cm-1; masses differ by at most 0.00e+00 amu
+A_3100da3761 (13 atoms) seed2.pt: max|dH| 6.026e-02, max|aromir - trainer| 0.000e+00, bands 0.00e+00 cm-1; masses differ by at most 0.00e+00 amu
+A_541c53d1a5 (24 atoms) seed0.pt: max|dH| 3.178e-02, max|aromir - trainer| 0.000e+00, bands 0.00e+00 cm-1; masses differ by at most 0.00e+00 amu
+A_541c53d1a5 (24 atoms) seed1.pt: max|dH| 3.003e-02, max|aromir - trainer| 0.000e+00, bands 0.00e+00 cm-1; masses differ by at most 0.00e+00 amu
+A_541c53d1a5 (24 atoms) seed2.pt: max|dH| 2.914e-02, max|aromir - trainer| 0.000e+00, bands 0.00e+00 cm-1; masses differ by at most 0.00e+00 amu
+B_0da4a5aea1 (20 atoms) seed0.pt: max|dH| 4.694e-02, max|aromir - trainer| 0.000e+00, bands 0.00e+00 cm-1; masses differ by at most 0.00e+00 amu
+B_0da4a5aea1 (20 atoms) seed1.pt: max|dH| 4.812e-02, max|aromir - trainer| 0.000e+00, bands 0.00e+00 cm-1; masses differ by at most 0.00e+00 amu
+B_0da4a5aea1 (20 atoms) seed2.pt: max|dH| 4.964e-02, max|aromir - trainer| 0.000e+00, bands 0.00e+00 cm-1; masses differ by at most 0.00e+00 amu
+(REREAD) release compare exit 0
+{
+ "A_541c53d1a5": {
+  "max_cm": 2.92,
+  "rms_max_cm": 0.65
+ },
+ "A_fdc27f1bd1": {
+  "max_cm": 10.73,
+  "rms_max_cm": 3.04
+ },
+ "A_ea73419366": {
+  "max_cm": 1.58,
+  "rms_max_cm": 0.44
+ }
+}
+(REREAD) order read as measured: exit 0
+{
+ "A_541c53d1a5": {
+  "max_cm": 2.92,
+  "rms_max_cm": 0.65
+ },
+ "A_fdc27f1bd1": {
+  "max_cm": 10.73,
+  "rms_max_cm": 3.04
+ },
+ "A_ea73419366": {
+  "max_cm": 1.58,
+  "rms_max_cm": 0.44
+ }
+}
+(RANKPINV) pinv calls: {"no cutoff: aromir's pseudo_inverse": 180}; exit 0
+(REREAD) order read with the rank-based B+: exit 0

@@ -1,0 +1,25 @@
+>       np.testing.assert_allclose(force_constants, pinned.T @ hessian @ pinned, atol=1e-9)
+E       AssertionError: 
+E       Not equal to tolerance rtol=1e-07, atol=1e-09
+E       
+E       Mismatched elements: 12985 / 12996 (99.9%)
+E       First 5 mismatches are at indices:
+E        [0, 1]: 0.5618368577075941 (ACTUAL), 0.5618390565806011 (DESIRED)
+E        [0, 2]: 0.374033900023116 (ACTUAL), 0.36354858068821844 (DESIRED)
+E        [0, 3]: 2.018507087342853 (ACTUAL), 2.0163360369755305 (DESIRED)
+E        [0, 4]: -1.6782131305751384 (ACTUAL), -1.6849212937549078 (DESIRED)
+E        [0, 5]: 1.1325927778152813 (ACTUAL), 1.132593631154005 (DESIRED)
+E       Max absolute difference among violations: 8.77156905e+11
+E       Max relative difference among violations: 5.61678852e+14
+E        ACTUAL: array([[ 2.514604e-01,  5.618369e-01,  3.740339e-01, ..., -7.504516e-01,
+E                3.496094e-01,  2.968750e-01],
+E              [ 5.618380e-01, -2.846473e+03,  1.210536e+07, ..., -2.936087e+07,...
+E        DESIRED: array([[ 0.25146 ,  0.561839,  0.363549, ..., -0.725874,  0.365419,
+E                0.251972],
+E              [ 0.561839, -1.517489,  0.232152, ...,  0.074482,  0.503434,...
+
+tests/test_network_pseudo_inverse.py:45: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_network_pseudo_inverse.py::test_the_force_constants_of_a_twisted_biphenyl_do_not_depend_on_the_lapack_build
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 9 deselected in 0.10s

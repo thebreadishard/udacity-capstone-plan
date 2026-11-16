@@ -1,0 +1,46 @@
+delta_h_wsl_fixed.npz against delta_h_windows_before.npz: 76 molecules
+  A_014f8519af     max|dH| 0.05575 / 6.385e+17  max|dH difference| 6.385e+17  bands 1.523e+12 cm-1
+  B_82143a7ce6     max|dH| 0.03867 / 0.03867  max|dH difference| 9.048e-05  bands 2.694e-01 cm-1
+  B_3f1a7eae04     max|dH| 0.04262 / 0.04262  max|dH difference| 7.021e-05  bands 2.136e-01 cm-1
+  B_05fdc68538     max|dH| 0.05237 / 0.05237  max|dH difference| 1.829e-05  bands 1.322e-01 cm-1
+  B_054800b78e     max|dH| 0.03679 / 0.03679  max|dH difference| 1.512e-05  bands 6.275e-02 cm-1
+  largest |dH difference| 6.385e+17 (A_014f8519af); largest band difference 1.523e+12 cm-1 (A_014f8519af); 13 of 76 molecules differ by more than 1e-3 cm-1
+delta_h_wsl_fixed.npz against delta_h_windows_before.npz: 18 molecules
+  A2_3b49468c8c    max|dH| 0.04607 / 0.04607  max|dH difference| 1.223e-06  bands 4.351e-03 cm-1
+  B_889a6ca5bb     max|dH| 0.03986 / 0.03986  max|dH difference| 4.882e-07  bands 1.165e-03 cm-1
+  B_477b567fed     max|dH| 0.06214 / 0.06214  max|dH difference| 1.490e-08  bands 1.234e-05 cm-1
+  B_1f8b44299e     max|dH| 0.04081 / 0.04081  max|dH difference| 9.313e-09  bands 1.210e-05 cm-1
+  P3_0a21840ff5    max|dH| 0.0284 / 0.0284  max|dH difference| 1.211e-08  bands 9.127e-06 cm-1
+  B_d351592aa1     max|dH| 0.03899 / 0.03899  max|dH difference| 1.490e-08  bands 8.777e-06 cm-1
+  B_002e6e1550     max|dH| 0.03828 / 0.03828  max|dH difference| 7.451e-09  bands 8.007e-06 cm-1
+  B_9d342d5ce6     max|dH| 0.035 / 0.035  max|dH difference| 9.313e-09  bands 8.001e-06 cm-1
+  A_5a75c6c39e     max|dH| 0.02612 / 0.02612  max|dH difference| 5.588e-09  bands 6.685e-06 cm-1
+  B_cf8ebc3ad0     max|dH| 0.03919 / 0.03919  max|dH difference| 1.024e-08  bands 5.702e-06 cm-1
+  B_223abbbf04     max|dH| 0.04281 / 0.04281  max|dH difference| 1.118e-08  bands 5.541e-06 cm-1
+  P3_018f8ce9da    max|dH| 0.02891 / 0.02891  max|dH difference| 1.118e-08  bands 5.041e-06 cm-1
+  B_5526e6db5d     max|dH| 0.03742 / 0.03742  max|dH difference| 1.118e-08  bands 4.714e-06 cm-1
+  P3_1ba8fe779a    max|dH| 0.03357 / 0.03357  max|dH difference| 1.024e-08  bands 4.564e-06 cm-1
+  P3_0789b0679f    max|dH| 0.03087 / 0.03087  max|dH difference| 8.382e-09  bands 4.117e-06 cm-1
+  B_2b5b5007ee     max|dH| 0.03819 / 0.03819  max|dH difference| 7.916e-09  bands 4.056e-06 cm-1
+  A2_1b3089a9c8    max|dH| 0.03101 / 0.03101  max|dH difference| 1.024e-08  bands 4.052e-06 cm-1
+  B_576b525cf2     max|dH| 0.03651 / 0.03651  max|dH difference| 1.304e-08  bands 3.676e-06 cm-1
+  largest |dH difference| 1.223e-06 (A2_3b49468c8c); largest band difference 4.351e-03 cm-1 (A2_3b49468c8c); 2 of 18 molecules differ by more than 1e-3 cm-1
+delta_h_wsl_fixed.npz against delta_h_windows_fixed.npz: 76 molecules
+  T_c874e3c6cf     max|dH| 0.1656 / 0.1656  max|dH difference| 2.384e-07  bands 2.099e-04 cm-1
+  T_94b3a9d13a     max|dH| 0.05731 / 0.05731  max|dH difference| 3.353e-08  bands 1.881e-05 cm-1
+  D_ac28161d06     max|dH| 0.02989 / 0.02989  max|dH difference| 1.118e-08  bands 1.808e-05 cm-1
+  largest |dH difference| 2.384e-07 (T_c874e3c6cf); largest band difference 2.099e-04 cm-1 (T_c874e3c6cf); 0 of 76 molecules differ by more than 1e-3 cm-1
+delta_h_windows_fixed.npz against delta_h_windows_before.npz: 76 molecules
+  A_014f8519af     max|dH| 0.05575 / 6.385e+17  max|dH difference| 6.385e+17  bands 1.523e+12 cm-1
+  B_82143a7ce6     max|dH| 0.03867 / 0.03867  max|dH difference| 9.048e-05  bands 2.694e-01 cm-1
+  largest |dH difference| 6.385e+17 (A_014f8519af); largest band difference 1.523e+12 cm-1 (A_014f8519af); 13 of 76 molecules differ by more than 1e-3 cm-1
+delta_h_wsl_before.npz against delta_h_windows_before.npz: 76 molecules
+  B_054800b78e     max|dH| nan / 0.03679  max|dH difference| nan  bands inf cm-1
+  B_05fdc68538     max|dH| nan / 0.05237  max|dH difference| nan  bands inf cm-1
+  B_3f1a7eae04     max|dH| nan / 0.04262  max|dH difference| nan  bands inf cm-1
+  largest |dH difference| 3.754e+33 (B_82143a7ce6); largest band difference inf cm-1 (B_054800b78e); 71 of 76 molecules differ by more than 1e-3 cm-1
+delta_h_wsl_fixed.npz against delta_h_wsl_fixed_9b67be1.npz: 76 molecules
+  B_82143a7ce6     max|dH| 0.03867 / 0.03867  max|dH difference| 9.048e-05  bands 2.694e-01 cm-1
+  B_3f1a7eae04     max|dH| 0.04262 / 0.04262  max|dH difference| 7.021e-05  bands 2.136e-01 cm-1
+  B_05fdc68538     max|dH| 0.05237 / 0.05237  max|dH difference| 1.829e-05  bands 1.322e-01 cm-1
+  largest |dH difference| 9.048e-05 (B_82143a7ce6); largest band difference 2.694e-01 cm-1 (B_82143a7ce6); 12 of 76 molecules differ by more than 1e-3 cm-1

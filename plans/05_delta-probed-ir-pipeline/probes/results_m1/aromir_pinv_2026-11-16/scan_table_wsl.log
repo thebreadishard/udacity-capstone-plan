@@ -1,0 +1,28 @@
+1240 molecules; atoms 8..60
+real/max: min 1.013e-02, median 2.955e-02
+null/max: median 2.978e-16, 99th percentile 1.660e-15, max 3.541e-08
+  null/max in [0, 1e-15): 1168
+  null/max in [1e-15, 1e-14): 71
+  null/max in [1e-14, 1e-12): 0
+  null/max in [1e-12, 1e-10): 0
+  null/max in [1e-10, 1e-06): 1
+  null/max in [1e-06, 1): 0
+default cutoff keeps a wrong count: 72 by the SVD with vectors, 1 by values only
+largest null/max:
+  A_014f8519af    diphenylacetylene                         24 atoms  real 7.144e-02  null 1.300e-07  null/max 3.541e-08  kept 69 of 66
+  D_210c3076e6    PAHdb 284 C22H12                          34 atoms  real 1.833e-01  null 1.553e-14  null/max 3.553e-15  kept 97 of 96
+  D_ac28161d06    PAHdb 538 C24H14                          38 atoms  real 1.275e-01  null 1.548e-14  null/max 3.553e-15  kept 109 of 108
+  T_76dfc434db    hexa-peri-hexabenzocoronene               60 atoms  real 1.757e-01  null 1.605e-14  null/max 3.553e-15  kept 175 of 174
+  T_c874e3c6cf    ovalene                                   46 atoms  real 2.056e-01  null 1.594e-14  null/max 3.553e-15  kept 133 of 132
+  T_94b3a9d13a    coronene                                  36 atoms  real 2.548e-01  null 1.569e-14  null/max 3.553e-15  kept 103 of 102
+  B_576b525cf2    biphenyl+CONH2                            26 atoms  real 5.771e-02  null 7.387e-15  null/max 1.876e-15  kept 73 of 72
+  B_2b5b5007ee    biphenyl+CHO                              24 atoms  real 6.687e-02  null 7.245e-15  null/max 1.841e-15  kept 67 of 66
+smallest real/max:
+  A_7a57a52879    stilbene_E                                26 atoms  real 3.986e-02  real/max 1.013e-02
+  D_8a1c3dddb7    PAHdb 1021 C34H20                         54 atoms  real 4.817e-02  real/max 1.120e-02
+  D_ea2ba4fc5a    PAHdb 1931 C30H18                         48 atoms  real 5.224e-02  real/max 1.225e-02
+  P3_234de46f33   dibenz[a,h]anthracene+OCH3                40 atoms  real 5.499e-02  real/max 1.299e-02
+  P3_0590e0136f   picene+OCH3                               40 atoms  real 6.157e-02  real/max 1.447e-02
+  B_9d342d5ce6    biphenyl+OCH3                             26 atoms  real 5.698e-02  real/max 1.456e-02
+  B_576b525cf2    biphenyl+CONH2                            26 atoms  real 5.771e-02  real/max 1.466e-02
+  D_e1a31cd772    PAHdb 2281 C26H16                         42 atoms  real 6.444e-02  real/max 1.509e-02

@@ -1,0 +1,230 @@
+{
+ "what": "smiles",
+ "seeds": 5,
+ "summary": {
+  "A_541c53d1a5": {
+   "max_cm": 2.92,
+   "rms_max_cm": 0.65
+  },
+  "A_fdc27f1bd1": {
+   "max_cm": 10.73,
+   "rms_max_cm": 3.04
+  },
+  "A_ea73419366": {
+   "max_cm": 1.58,
+   "rms_max_cm": 0.44
+  }
+ },
+ "checks": [
+  {
+   "molecule": "A_541c53d1a5",
+   "seed": 0,
+   "what": "smiles",
+   "n_atoms": 24,
+   "models": [
+    "E7_rungC_chain35_analytic_model_n750_seed0.pt",
+    "E7_rungC_chain35_analytic_model_n750_seed1.pt",
+    "E7_rungC_chain35_analytic_model_n750_seed2.pt"
+   ],
+   "b3lyp_max_abs_diff_cm": 3.581135388230905e-12,
+   "network_max_abs_diff_cm": 2.708301402506436,
+   "network_rms_diff_cm": 0.6472505294003775
+  },
+  {
+   "molecule": "A_541c53d1a5",
+   "seed": 1,
+   "what": "smiles",
+   "n_atoms": 24,
+   "models": [
+    "E7_rungC_chain35_analytic_model_n750_seed0.pt",
+    "E7_rungC_chain35_analytic_model_n750_seed1.pt",
+    "E7_rungC_chain35_analytic_model_n750_seed2.pt"
+   ],
+   "b3lyp_max_abs_diff_cm": 5.8264504332328215e-12,
+   "network_max_abs_diff_cm": 2.91992657999009,
+   "network_rms_diff_cm": 0.6269489324025402
+  },
+  {
+   "molecule": "A_541c53d1a5",
+   "seed": 2,
+   "what": "smiles",
+   "n_atoms": 24,
+   "models": [
+    "E7_rungC_chain35_analytic_model_n750_seed0.pt",
+    "E7_rungC_chain35_analytic_model_n750_seed1.pt",
+    "E7_rungC_chain35_analytic_model_n750_seed2.pt"
+   ],
+   "b3lyp_max_abs_diff_cm": 6.693312570860144e-12,
+   "network_max_abs_diff_cm": 0.909858178609511,
+   "network_rms_diff_cm": 0.31678817900238265
+  },
+  {
+   "molecule": "A_541c53d1a5",
+   "seed": 3,
+   "what": "smiles",
+   "n_atoms": 24,
+   "models": [
+    "E7_rungC_chain35_analytic_model_n750_seed0.pt",
+    "E7_rungC_chain35_analytic_model_n750_seed1.pt",
+    "E7_rungC_chain35_analytic_model_n750_seed2.pt"
+   ],
+   "b3lyp_max_abs_diff_cm": 3.751665644813329e-12,
+   "network_max_abs_diff_cm": 0.9465179039100349,
+   "network_rms_diff_cm": 0.3397404779426684
+  },
+  {
+   "molecule": "A_541c53d1a5",
+   "seed": 4,
+   "what": "smiles",
+   "n_atoms": 24,
+   "models": [
+    "E7_rungC_chain35_analytic_model_n750_seed0.pt",
+    "E7_rungC_chain35_analytic_model_n750_seed1.pt",
+    "E7_rungC_chain35_analytic_model_n750_seed2.pt"
+   ],
+   "b3lyp_max_abs_diff_cm": 3.296918293926865e-12,
+   "network_max_abs_diff_cm": 1.960970832588373,
+   "network_rms_diff_cm": 0.45925741162457884
+  },
+  {
+   "molecule": "A_fdc27f1bd1",
+   "seed": 0,
+   "what": "smiles",
+   "n_atoms": 22,
+   "models": [
+    "E7_rungC_chain35_analytic_model_n750_seed0.pt",
+    "E7_rungC_chain35_analytic_model_n750_seed1.pt",
+    "E7_rungC_chain35_analytic_model_n750_seed2.pt"
+   ],
+   "b3lyp_max_abs_diff_cm": 8.327560863108374e-12,
+   "network_max_abs_diff_cm": 10.724423636976383,
+   "network_rms_diff_cm": 3.036204733648719
+  },
+  {
+   "molecule": "A_fdc27f1bd1",
+   "seed": 1,
+   "what": "smiles",
+   "n_atoms": 22,
+   "models": [
+    "E7_rungC_chain35_analytic_model_n750_seed0.pt",
+    "E7_rungC_chain35_analytic_model_n750_seed1.pt",
+    "E7_rungC_chain35_analytic_model_n750_seed2.pt"
+   ],
+   "b3lyp_max_abs_diff_cm": 6.366462912410498e-12,
+   "network_max_abs_diff_cm": 10.731117979463477,
+   "network_rms_diff_cm": 3.0414503233332053
+  },
+  {
+   "molecule": "A_fdc27f1bd1",
+   "seed": 2,
+   "what": "smiles",
+   "n_atoms": 22,
+   "models": [
+    "E7_rungC_chain35_analytic_model_n750_seed0.pt",
+    "E7_rungC_chain35_analytic_model_n750_seed1.pt",
+    "E7_rungC_chain35_analytic_model_n750_seed2.pt"
+   ],
+   "b3lyp_max_abs_diff_cm": 5.286437954055145e-12,
+   "network_max_abs_diff_cm": 0.7040460537930926,
+   "network_rms_diff_cm": 0.2240777670229134
+  },
+  {
+   "molecule": "A_fdc27f1bd1",
+   "seed": 3,
+   "what": "smiles",
+   "n_atoms": 22,
+   "models": [
+    "E7_rungC_chain35_analytic_model_n750_seed0.pt",
+    "E7_rungC_chain35_analytic_model_n750_seed1.pt",
+    "E7_rungC_chain35_analytic_model_n750_seed2.pt"
+   ],
+   "b3lyp_max_abs_diff_cm": 3.296918293926865e-12,
+   "network_max_abs_diff_cm": 3.1798498057826237,
+   "network_rms_diff_cm": 0.6581856983103258
+  },
+  {
+   "molecule": "A_fdc27f1bd1",
+   "seed": 4,
+   "what": "smiles",
+   "n_atoms": 22,
+   "models": [
+    "E7_rungC_chain35_analytic_model_n750_seed0.pt",
+    "E7_rungC_chain35_analytic_model_n750_seed1.pt",
+    "E7_rungC_chain35_analytic_model_n750_seed2.pt"
+   ],
+   "b3lyp_max_abs_diff_cm": 5.8975047068088315e-12,
+   "network_max_abs_diff_cm": 3.1865451052620983,
+   "network_rms_diff_cm": 0.6236652605118547
+  },
+  {
+   "molecule": "A_ea73419366",
+   "seed": 0,
+   "what": "smiles",
+   "n_atoms": 21,
+   "models": [
+    "E7_rungC_chain35_analytic_model_n750_seed0.pt",
+    "E7_rungC_chain35_analytic_model_n750_seed1.pt",
+    "E7_rungC_chain35_analytic_model_n750_seed2.pt"
+   ],
+   "b3lyp_max_abs_diff_cm": 8.100187187665142e-12,
+   "network_max_abs_diff_cm": 0.8732794419503307,
+   "network_rms_diff_cm": 0.3720628150058417
+  },
+  {
+   "molecule": "A_ea73419366",
+   "seed": 1,
+   "what": "smiles",
+   "n_atoms": 21,
+   "models": [
+    "E7_rungC_chain35_analytic_model_n750_seed0.pt",
+    "E7_rungC_chain35_analytic_model_n750_seed1.pt",
+    "E7_rungC_chain35_analytic_model_n750_seed2.pt"
+   ],
+   "b3lyp_max_abs_diff_cm": 4.519051799434237e-12,
+   "network_max_abs_diff_cm": 1.154928049040791,
+   "network_rms_diff_cm": 0.42111871652666133
+  },
+  {
+   "molecule": "A_ea73419366",
+   "seed": 2,
+   "what": "smiles",
+   "n_atoms": 21,
+   "models": [
+    "E7_rungC_chain35_analytic_model_n750_seed0.pt",
+    "E7_rungC_chain35_analytic_model_n750_seed1.pt",
+    "E7_rungC_chain35_analytic_model_n750_seed2.pt"
+   ],
+   "b3lyp_max_abs_diff_cm": 2.2737367544323206e-12,
+   "network_max_abs_diff_cm": 0.9797631700091642,
+   "network_rms_diff_cm": 0.3894619231629684
+  },
+  {
+   "molecule": "A_ea73419366",
+   "seed": 3,
+   "what": "smiles",
+   "n_atoms": 21,
+   "models": [
+    "E7_rungC_chain35_analytic_model_n750_seed0.pt",
+    "E7_rungC_chain35_analytic_model_n750_seed1.pt",
+    "E7_rungC_chain35_analytic_model_n750_seed2.pt"
+   ],
+   "b3lyp_max_abs_diff_cm": 8.355982572538778e-12,
+   "network_max_abs_diff_cm": 0.8584861296017152,
+   "network_rms_diff_cm": 0.3822306405971368
+  },
+  {
+   "molecule": "A_ea73419366",
+   "seed": 4,
+   "what": "smiles",
+   "n_atoms": 21,
+   "models": [
+    "E7_rungC_chain35_analytic_model_n750_seed0.pt",
+    "E7_rungC_chain35_analytic_model_n750_seed1.pt",
+    "E7_rungC_chain35_analytic_model_n750_seed2.pt"
+   ],
+   "b3lyp_max_abs_diff_cm": 3.439026841078885e-12,
+   "network_max_abs_diff_cm": 1.578609946343704,
+   "network_rms_diff_cm": 0.4408306606677498
+  }
+ ]
+}

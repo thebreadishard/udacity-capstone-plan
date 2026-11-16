@@ -1,0 +1,22 @@
+E7_rungC_v14s1a_c00_control seed 0, selection set of 169: error of the corrected frequencies, cm-1
+  molecule         trainer (Windows)  Linux, rank B+  difference  Linux before
+  A2_1b3089a9c8             1.728010        1.728009     7.5e-07      7.11e+13
+  A2_3b49468c8c             1.348562        1.348562     1.7e-07      1.67e+19
+  A_5a75c6c39e              3.762765        3.762765     3.0e-07      3.29e+14
+  B_002e6e1550              2.107124        2.107124     7.5e-08      1.38e+14
+  B_1f8b44299e              1.923796        1.923796     3.9e-07      5.14e+14
+  B_223abbbf04              3.304363        3.304364     1.9e-07      2.24e+14
+  B_2b5b5007ee              2.726467        2.726468     8.5e-07      1.75e+13
+  B_477b567fed              3.305393        3.305393     2.9e-07      7.59e+13
+  B_5526e6db5d              2.321286        2.321286     5.5e-08      2.02e+14
+  B_576b525cf2              1.892072        1.892072     3.1e-07      4.51e+13
+  B_889a6ca5bb              2.330160        2.330160     1.6e-07      8.24e+18
+  B_9d342d5ce6              2.097929        2.097928     5.4e-07      8.84e+13
+  B_cf8ebc3ad0              2.261744        2.261744     1.2e-07       1.4e+13
+  B_d351592aa1              2.151960        2.151959     3.5e-07      2.78e+14
+  P3_018f8ce9da             4.210013        4.210013     7.5e-08      2.85e+13
+  P3_0789b0679f             2.353055        2.353055     6.1e-07      4.18e+13
+  P3_0a21840ff5             3.577541        3.577541     1.1e-07      3.33e+13
+  P3_1ba8fe779a             1.363652        1.363651     5.0e-07      2.95e+13
+  largest difference among the 18: 8.53e-07 cm-1 (B_2b5b5007ee); among all 169: 3.56e-06 cm-1 (A2_3a06a80d61)
+  the set's rms: trainer 3.639055, Linux with the rank-based B+ 3.639055, Linux before 1.437e+18

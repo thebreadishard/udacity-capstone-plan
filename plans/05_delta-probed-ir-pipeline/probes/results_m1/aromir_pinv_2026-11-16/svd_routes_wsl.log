@@ -1,0 +1,12 @@
+Linux numpy 2.5.4: B (114, 69), 3N-6 = 63
+  values only: s[60..67] = 2.422e-01 1.961e-01 1.548e-01 7.041e-02 5.750e-16 5.046e-16 4.278e-16 3.663e-16
+    default cutoff 3.894e-15 keeps 63; largest null value 5.750e-16, 1/smallest kept 1.420e+01
+  with vectors (pinv's route): s[60..67] = 2.422e-01 1.961e-01 1.548e-01 7.041e-02 7.021e-15 4.600e-16 4.455e-16 4.272e-16
+    default cutoff 3.894e-15 keeps 64; largest null value 7.021e-15, 1/smallest kept 1.424e+14
+  rank-63 pseudo-inverse from the SVD with vectors: max|B+| 3.29652
+  np.linalg.pinv(B, rcond=1e-15): max|B+| 1.08048e+13, max|difference to rank-63| 1.080e+13
+  np.linalg.pinv(B, rcond=1e-13): max|B+| 3.29652, max|difference to rank-63| 4.441e-16
+  np.linalg.pinv(B, rcond=1e-10): max|B+| 3.29652, max|difference to rank-63| 4.441e-16
+  np.linalg.pinv(B, rcond=1e-06): max|B+| 3.29652, max|difference to rank-63| 4.441e-16
+  scipy gesdd with vectors: first null 8.776e-16, largest null 8.776e-16
+  scipy gesvd with vectors: first null 2.737e-16, largest null 2.737e-16

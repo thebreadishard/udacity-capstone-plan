@@ -1,0 +1,16 @@
+A_014f8519af: 24 atoms, primitives {'Distance': 25, 'Angle': 24, 'LinearAngle': 4, 'OutOfPlane': 12, 'Dihedral': 52}
+  s[66] = 7.144e-02 (last real): share of the right vector in the rigid motions 0.000001; left vector on Angle 0.56, LinearAngle 0.29
+  s[67] = 1.300e-07: share of the right vector in the rigid motions 1.000000; left vector on Dihedral 0.62, LinearAngle 0.35
+  s[68] = 7.365e-15: share of the right vector in the rigid motions 1.000000; left vector on Dihedral 0.63, LinearAngle 0.35
+  s[69] = 4.140e-15: share of the right vector in the rigid motions 1.000000; left vector on Dihedral 0.80, OutOfPlane 0.10
+  s[70] = 1.034e-15: share of the right vector in the rigid motions 1.000000; left vector on Dihedral 0.56, Angle 0.30
+  s[71] = 4.378e-16: share of the right vector in the rigid motions 1.000000; left vector on Dihedral 0.77, Angle 0.14
+  s[72] = 4.180e-16: share of the right vector in the rigid motions 1.000000; left vector on Dihedral 0.68, Angle 0.18
+B_889a6ca5bb: 23 atoms, primitives {'Distance': 24, 'Angle': 24, 'LinearAngle': 2, 'OutOfPlane': 12, 'Dihedral': 52}
+  s[63] = 7.041e-02 (last real): share of the right vector in the rigid motions 0.000094; left vector on Angle 0.95, Distance 0.04
+  s[64] = 7.021e-15: share of the right vector in the rigid motions 1.000000; left vector on Dihedral 0.60, Angle 0.27
+  s[65] = 4.600e-16: share of the right vector in the rigid motions 1.000000; left vector on Dihedral 0.58, OutOfPlane 0.24
+  s[66] = 4.455e-16: share of the right vector in the rigid motions 1.000000; left vector on Dihedral 0.67, Angle 0.17
+  s[67] = 4.272e-16: share of the right vector in the rigid motions 1.000000; left vector on Dihedral 0.67, OutOfPlane 0.16
+  s[68] = 3.631e-16: share of the right vector in the rigid motions 1.000000; left vector on Dihedral 0.56, Angle 0.23
+  s[69] = 3.278e-16: share of the right vector in the rigid motions 1.000000; left vector on Dihedral 0.53, OutOfPlane 0.41

@@ -1,0 +1,10 @@
+Linux python 3.12.14 numpy 2.5.4 torch 2.14.0+cpu aromir 0.1.0.dev0 release v1.3; B_889a6ca5bb, 23 atoms
+  B (114, 69) float64, 3N-6 = 63; singular values (1-based) 60..67:
+    2.422e-01 1.961e-01 1.548e-01 7.041e-02 5.750e-16 5.046e-16 4.278e-16 3.663e-16
+  s_max 3.894459e+00; last real s[63] 7.041447e-02; first null s[64] 5.750e-16; ratio null/real 8.166e-15; null/s_max 1.476e-16
+  numpy's default cutoff 1e-15 * s_max = 3.894e-15: keeps 63 values (the rank is 63)
+  np.linalg.pinv(B): max|B+| 1.08048e+13
+  aromir internal_force_constants: max|F| 1.24431, finite True
+  seed 0: max|dH| 0.0381066, finite True
+  seed 1: max|dH| 0.0391979, finite True
+  seed 2: max|dH| 0.039865, finite True

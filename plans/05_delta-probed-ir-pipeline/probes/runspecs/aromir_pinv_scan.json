@@ -1,0 +1,13 @@
+{"name": "aromir_pinv_scan",
+ "purpose": "TASKS 236 step (1), 16 Nov 2026: for every corpus molecule with a geometry (about 1,180), the 3N-6-th and the next singular value of the Wilson B as aromir builds it, their ratio, and how many values numpy's default pinv cutoff keeps, on the Linux numpy build (2.5.4, OpenBLAS) where `np.linalg.pinv(B)` explodes for biphenyl+CN. It says how wide the gap is that a rank-based pseudo-inverse relies on and whether any molecule has a genuinely small non-null value. Read-only on the corpus. In WSL under probes/wsl_capped.sh so the live training (v14_stage1) cannot lose memory to it.",
+ "host": "laptop",
+ "workdir": "probes/results_m1/aromir_pinv_2026-11-16",
+ "command": "MSYS_NO_PATHCONV=1 wsl -e bash -c \"export OMP_NUM_THREADS=4 PYTHONUNBUFFERED=1 PYTHONUTF8=1; cd /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline && bash probes/wsl_capped.sh 2000 -- /usr/bin/time -f '(SCAN) max RSS %M kB, wall %e s' /home/thebreadishard/aromir_dev/bin/python probes/results_m1/aromir_pinv_2026-11-16/scan_b_gap.py . probes/results_m1/aromir_pinv_2026-11-16/b_gap_scan_wsl.tsv probes/results_m1/aromir_pinv_2026-11-16/b_gap_scan_wsl.json\"",
+ "sources": [{"local": "probes/results_m1/aromir_pinv_2026-11-16/scan_b_gap.py"}, {"local": "probes/wsl_capped.sh"}],
+ "progress": {"regex": "^scan: [0-9]+ of [0-9]+ read", "max_gap_minutes": 10},
+ "marker_regex": "^scan done: |^KILLED|\\(SCAN\\) max RSS|Traceback",
+ "end_regex": "^scan done: ",
+ "threads": 4,
+ "resumable": false,
+ "estimate": {"hours": 0.3, "basis": "the 12-molecule smoke of 16 Nov took 8.8 s in WSL through /mnt/c, 0.7 s a molecule; 1,180 molecules, the larger ones slower"},
+ "memory": {"peak_gb": 2.0, "basis": "a bound: probes/wsl_capped.sh stops it at 2000 MB; the 12-molecule smoke peaked at 0.32 GB"}}

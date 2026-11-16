@@ -1,0 +1,10 @@
+A_3100da3761 seed0.pt: max|dH| 15 Nov 0.0549924783, now 0.0549924783, change 0.0e+00; aromir - trainer now 0.0e+00, bands 0.0e+00 cm-1
+A_3100da3761 seed1.pt: max|dH| 15 Nov 0.0567941256, now 0.0567941256, change 0.0e+00; aromir - trainer now 0.0e+00, bands 0.0e+00 cm-1
+A_3100da3761 seed2.pt: max|dH| 15 Nov 0.0602562614, now 0.0602562614, change 0.0e+00; aromir - trainer now 0.0e+00, bands 0.0e+00 cm-1
+A_541c53d1a5 seed0.pt: max|dH| 15 Nov 0.0317788757, now 0.0317788757, change 0.0e+00; aromir - trainer now 0.0e+00, bands 0.0e+00 cm-1
+A_541c53d1a5 seed1.pt: max|dH| 15 Nov 0.0300258752, now 0.0300258752, change 0.0e+00; aromir - trainer now 0.0e+00, bands 0.0e+00 cm-1
+A_541c53d1a5 seed2.pt: max|dH| 15 Nov 0.0291358307, now 0.0291358307, change 0.0e+00; aromir - trainer now 0.0e+00, bands 0.0e+00 cm-1
+B_0da4a5aea1 seed0.pt: max|dH| 15 Nov 0.0469420999, now 0.0469420999, change 0.0e+00; aromir - trainer now 0.0e+00, bands 0.0e+00 cm-1
+B_0da4a5aea1 seed1.pt: max|dH| 15 Nov 0.0481155105, now 0.0481155105, change 0.0e+00; aromir - trainer now 0.0e+00, bands 0.0e+00 cm-1
+B_0da4a5aea1 seed2.pt: max|dH| 15 Nov 0.0496390015, now 0.0496390015, change 0.0e+00; aromir - trainer now 0.0e+00, bands 0.0e+00 cm-1
+largest change or difference: 0.0e+00 hartree/bohr2 (tolerance of the release check: 1e-6)

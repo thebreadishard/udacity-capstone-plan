@@ -1,0 +1,4 @@
+delta_h_*.npz
+!delta_h_biphenyl_cn_v1.3.npz
+aromir_pinv_scan.log
+aromir_pinv_trainer_eval.log
