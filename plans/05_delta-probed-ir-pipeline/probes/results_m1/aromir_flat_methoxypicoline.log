@@ -1,0 +1,7 @@
+=== (AROMIR) start
+59a4f02 The second review answered: 'flat coordinate' is said only when one step without the criterion was enough
+WARN: Krylov solver reached subspace convergence but true residual |aop(x)+x-b| = 2.880e-04 exceeds tolerance 1.8e-07. Falling back to per-root solve.
+WARN: Krylov solver reached subspace convergence but true residual |aop(x)+x-b| = 3.712e-04 exceeds tolerance 1.8e-07. Falling back to per-root solve.
+done: 48 bands, 48 of them licensed; certificate in probes/results_m1/aromir_flat_2026-11-16/methoxypicoline/certificate.md
+(AROMIR) max RSS 3067484 kB, wall 5902.19 s
+=== (AROMIR) done: methoxypicoline

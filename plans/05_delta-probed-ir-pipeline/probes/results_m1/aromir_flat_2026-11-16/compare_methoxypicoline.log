@@ -1,0 +1,6 @@
+COc1ccc(C)nc1 (B_04f049ae58): aromir's B3LYP positions against the corpus's, 48 bands
+  corpus analytic: rms 14.22, largest 72.37 cm-1 (band at -7.2); above 200 cm-1: rms 9.95
+    lowest 5: aromir [65.2, 83.1, 147.9, 225.9, 244.4]  corpus [-7.17, 84.73, 145.1, 226.42, 251.23]
+  corpus soft modes measured (the label): rms 12.07, largest 49.99 cm-1 (band at 15.2); above 200 cm-1: rms 9.98
+    lowest 5: aromir [65.2, 83.1, 147.9, 225.9, 244.4]  corpus [15.21, 85.06, 145.44, 226.61, 251.2]
+  aromir corrected, lowest 5: [95.6, 109.4, 163.9, 235.8, 252.8]

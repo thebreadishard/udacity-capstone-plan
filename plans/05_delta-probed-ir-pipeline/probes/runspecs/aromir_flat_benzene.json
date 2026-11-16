@@ -3,7 +3,7 @@
  "purpose": "TASKS 248, 16 Nov 2026: `aromir spectrum` end to end on c1ccccc1 (12 atoms, corpus A_8448043181) with the rule for flat coordinates (saved optimiser progress, geomeTRIC's Q-Chem-style test after 100 gradients, the step off a saddle point sized from its curvature, a flat coordinate printed and named): no soft mode: to show that nothing moved against aromir cb01c7c's certificate of 16 Nov. Read against the corpus's B3LYP positions and its label's soft mode (probes/results_m1/aromir_e2e_2026-11-16/end_to_end_against_corpus_b3lyp.py). In WSL from ~/aromir_dev (the code of ~/aromir-src as checked out at launch, its commit on the log's second line; pyscf 2.15.0), capped by probes/wsl_capped.sh beside the live training.",
  "host": "laptop",
  "workdir": "probes/results_m1",
- "command": "MSYS_NO_PATHCONV=1 wsl -e bash -c \"export OMP_NUM_THREADS=8 PYTHONUNBUFFERED=1 PYTHONUTF8=1 PYSCF_TMPDIR=/home/thebreadishard/qc_tmp TMPDIR=/home/thebreadishard/qc_tmp; mkdir -p /home/thebreadishard/qc_tmp; cd /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline && echo '=== (AROMIR) start' && git -C /home/thebreadishard/aromir-src log --oneline -1 && bash probes/wsl_capped.sh 4096 -- /usr/bin/time -f '(AROMIR) max RSS %M kB, wall %e s' /home/thebreadishard/aromir_dev/bin/aromir spectrum 'c1ccccc1' --out probes/results_m1/aromir_flat_2026-11-16/benzene --threads 8 --max-memory-mb 2048; echo '=== (AROMIR) done: benzene'\"",
+ "command": "MSYS_NO_PATHCONV=1 wsl -e bash -c \"export OMP_NUM_THREADS=4 PYTHONUNBUFFERED=1 PYTHONUTF8=1 PYSCF_TMPDIR=/home/thebreadishard/qc_tmp TMPDIR=/home/thebreadishard/qc_tmp; mkdir -p /home/thebreadishard/qc_tmp; cd /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline && echo '=== (AROMIR) start' && git -C /home/thebreadishard/aromir-src log --oneline -1 && bash probes/wsl_capped.sh 4096 -- nice -n 10 /usr/bin/time -f '(AROMIR) max RSS %M kB, wall %e s' /home/thebreadishard/aromir_dev/bin/aromir spectrum 'c1ccccc1' --out probes/results_m1/aromir_flat_2026-11-16/benzene --threads 4 --max-memory-mb 2048; echo '=== (AROMIR) done: benzene'\"",
  "sources": [
   {
    "local": "probes/wsl_capped.sh"
@@ -16,10 +16,10 @@
  },
  "marker_regex": "^=== \\(AROMIR\\) |^KILLED|\\(AROMIR\\) max RSS|^done: |^refused|^failed|^unphysical",
  "end_regex": "^=== \\(AROMIR\\) done: ",
- "threads": 8,
+ "threads": 4,
  "estimate": {
-  "hours": 0.4,
-  "basis": "16 Nov, aromir on 8 threads beside the training: benzene 559 s, benzonitrile 1,435 s, 3-vinylfuran 4,029 s with two optimisations (the second 100 steps) and one Hessian; a second Hessian adds about 23 min for 13 atoms, and fluorine or 18 atoms more basis functions"
+  "hours": 0.7,
+  "basis": "16 Nov, aromir on 8 threads beside the training: benzene 559 s, benzonitrile 1,435 s, 3-vinylfuran 4,029 s with (a run on 4 threads under nice is taken as twice as long) two optimisations (the second 100 steps) and one Hessian; a second Hessian adds about 23 min for 13 atoms, and fluorine or 18 atoms more basis functions"
  },
  "memory": {
   "peak_gb": 4.0,
