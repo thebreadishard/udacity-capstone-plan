@@ -1,0 +1,6 @@
+selection eval E7_rungC_v14s1a_c00_control_seleval_seed0 made in 333 s
+selection eval E7_rungC_v14s1a_c00_control_seleval_seed0: score on all 169 4402825131501928960806736910876672.0000, the trainer's 1.1836, difference 4.4e+33
+FAILED E7_rungC_v14s1a_c00_control: out/v14/E7_rungC_v14s1a_c00_control_seleval_seed0.json does not reproduce the trainer's selection score on all 169: 4402825131501928960806736910876672.0000 against 1.1836 (tolerance 0.001). The labels or the model changed between the training and this read, and the stage is not readable on changed labels. The way out (§13): name the changed molecules (the per-molecule read-outs of out/v14/E7_rungC_v14s1a_c00_control_seleval_seed0.json against the trainer record's) and record an amendment; the tolerance is not loosened
+selection evals: 1 finished trainings read, 1 failed, 3 without a record
+Command exited with non-zero status 1
+(SEL) max RSS 1941428 kB, wall 337.20 s
