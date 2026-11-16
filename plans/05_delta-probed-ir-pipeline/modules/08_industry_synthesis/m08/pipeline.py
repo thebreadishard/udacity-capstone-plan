@@ -18,12 +18,20 @@ Each step is one function on existing code:
    `probes/wsl_capped.sh`), carried from the B3LYP modes to the corrected bands by mode overlap. A band the step cannot serve keeps ω
    and says why; a molecule whose force field cannot be made keeps every ω and says why. No licence is claimed for ν.
 
+**Two deliveries.** A GFN2-xTB force field took 19 minutes for a 12-atom molecule and 53 to 98 for 20 atoms on this laptop
+(`probes/results_m1/s2_xtb_2026-10-18`, two processes), where steps 1–5 take minutes. So the pipeline delivers after step 5: the
+complete record and certificate at harmonic positions, saying that step 6 is running and what it will add. Step 6 then runs under
+a time budget (--anharmonic-minutes, default 120; the force field is stopped there, inside WSL), and the record and certificate
+are written a second time: with each band's ν, its Δ_anh and the step's error bar — or, where the step ran out of time or
+failed, finalised at the harmonic positions with the reason. `pipeline.json` lists both deliveries with their times. A time said
+of 'the pipeline' — the demo's half hour — is the first delivery's; the second adds the anharmonic estimate and nothing else.
+
 Every refusal — the charge state, a radical, no aromatic ring, an element the carried models never saw, a model that is not carried, an
 output folder in use — comes before step 1, and so does the reading of the anharmonic step's artefact. The record says of every band
 which position it prints (`m08/positions.py`).
 
     python -m m08.pipeline --name benzene --smiles c1ccccc1 --out <folder> [--threads 4] [--psi4-python <qc env python>]
-                          [--pyscf-python <WSL python>] [--no-reuse] [--no-anharmonic]
+                          [--pyscf-python <WSL python>] [--no-reuse] [--anharmonic-minutes 120 | --no-anharmonic]
 """
 from __future__ import annotations
 
@@ -34,6 +42,7 @@ import shlex
 import subprocess
 import sys
 import time
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path, PureWindowsPath
 
@@ -117,7 +126,8 @@ class PipelineConfig(BaseModel):
     reuse_corpus: bool = True                # TASKS 150: steps 2–3 from the corpus where it holds the molecule at these settings
     reuse_only: bool = False                 # TASKS 146: refuse a molecule the corpus cannot give steps 2–3 for, before computing
     corpus: Path = CORPUS_ROOT               # its manifest.csv and molecules/
-    anharmonic: bool = True                  # TASKS 211: step 6, each band's ν = ω + Δ_anh (decided 14 Nov 2026: on by default)
+    # TASKS 211: step 6, each band's ν = ω + Δ_anh, on by default (decided 14 Nov 2026) under this time budget; 0 switches it off
+    anharmonic_minutes: float = Field(120, ge=0, le=2880)
     anharmonic_shards: int = Field(2, ge=1, le=16)              # dxtb processes of the xtb force field; threads // shards threads each
     anharmonic_cap_mb: int = Field(1536, ge=1024, le=16384)     # its WSL cap: the bound probes/runspecs/routea_xtb.json ran under
 
@@ -148,11 +158,18 @@ class PipelineConfig(BaseModel):
             raise ValueError("--reuse-only with --no-reuse: nothing could run")
         if self.anharmonic_shards > self.threads:
             raise ValueError(f"{self.anharmonic_shards} force-field processes on {self.threads} threads: more processes than cores")
+        if 0 < self.anharmonic_minutes < 1:
+            raise ValueError(f"an anharmonic time budget of {self.anharmonic_minutes:g} minutes: at least 1, or 0 to switch the step off")
         return self
 
     @property
     def folder(self) -> Path:
         return self.out_root / self.name
+
+    @property
+    def anharmonic(self) -> bool:
+        """Whether step 6 runs: it has a time budget."""
+        return self.anharmonic_minutes > 0
 
 
 @dataclass(frozen=True)
@@ -475,16 +492,56 @@ def write_json(path: Path, rec: dict) -> None:
     os.replace(tmp, path)
 
 
-def run(cfg: PipelineConfig) -> dict:
-    """The whole pipeline for one molecule; the record is written to <folder>/pipeline.json and returned."""
+Deliver = Callable[[Path, str], None]
+ONLY_DELIVERY = "only: harmonic, the anharmonic step is switched off"
+FIRST_DELIVERY = "first: harmonic, the anharmonic step is running"
+SECOND_DELIVERY = "second: with the anharmonic positions"
+FINAL_HARMONIC = "second: harmonic, final — the anharmonic step was not applied"
+
+
+def _deliver(rec: dict, d: Path, what: str, t0: float, deliver: Deliver | None) -> None:
+    """One delivery: the record with this delivery's name and time written to <folder>/pipeline.json, then `deliver` (the
+    certificate's writer) on the folder."""
+    rec["deliveries"].append({"delivery": what, "at": time.strftime("%Y-%m-%d %H:%M:%S"), "seconds_since_start": round(time.time() - t0, 1)})
+    rec["commit_at_end"] = git_state(str(Path(__file__).parent)).get("commit")
+    write_json(d / "pipeline.json", rec)
+    if deliver is not None:
+        deliver(d, what)
+
+
+def _second_delivery(rec: dict, step6, dH: np.ndarray, t0: float, deliver: Deliver | None) -> None:
+    """Step 6 on a record that has been delivered once, and the second delivery. An error in the step is not swallowed: the
+    record is first finalised at its harmonic positions with the error as the reason, delivered, and then the error is raised."""
+    from . import anharmonic as AN  # that module imports this one
+    from . import positions as POS
+
+    t = time.time()
+    try:
+        out = AN.step(step6, dH, rec["spectra"])
+    except Exception as e:
+        rec["spectra"] = AN.not_applied(rec["spectra"], f"the anharmonic step failed: {type(e).__name__}: {e}")
+        rec["seconds"]["anharmonic"] = round(time.time() - t, 1)
+        _deliver(rec, step6.folder, FINAL_HARMONIC, t0, deliver)
+        raise
+    rec["spectra"] = out
+    rec["seconds"]["anharmonic"] = round(time.time() - t, 1)
+    applied = out["anharmonic"]["status"] == POS.APPLIED
+    _deliver(rec, step6.folder, SECOND_DELIVERY if applied else FINAL_HARMONIC, t0, deliver)
+
+
+def run(cfg: PipelineConfig, deliver: Deliver | None = None) -> dict:
+    """The whole pipeline for one molecule; the record is written to <folder>/pipeline.json — after step 5 and again after
+    step 6 — and returned. `deliver(folder, what)` is called at each delivery (the command line writes the certificate there)."""
     import torch
 
     from . import anharmonic as AN  # that module imports this one
 
+    t0 = time.time()
     adm = admit(cfg)
-    # the step's artefact is read and checked here, before the first step computes anything
-    step6 = AN.Request(cfg.name, cfg.folder, AN.load_artefact() if cfg.anharmonic else None,
-                       AN.FieldSettings.of(cfg.threads, cfg.anharmonic_shards, cfg.anharmonic_cap_mb))
+    # the step's artefact is read and checked here — its probe rows predicted — before the first step computes anything
+    step6 = AN.Request(cfg.name, cfg.folder, adm.smiles, AN.load_artefact() if cfg.anharmonic else None,
+                       AN.FieldSettings.of(cfg.threads, cfg.anharmonic_shards, cfg.anharmonic_cap_mb, cfg.anharmonic_minutes)
+                       if cfg.anharmonic else None)
     launched = provenance()          # before the first step: a commit made during the run must not be named as the code that ran
     torch.set_num_threads(cfg.threads)
     d = cfg.folder
@@ -500,19 +557,19 @@ def run(cfg: PipelineConfig) -> dict:
     save_correction(d, dH, dH_seeds, cfg.models)
     progress.done("network")
     progress.start("spectrum")
-    out = spectra(d, dH, dH_seeds)
+    out = AN.first_delivery(step6, spectra(d, dH, dH_seeds))
     seconds["correction_and_spectra"] = round(time.time() - t, 1)
-    t = time.time()
-    out = AN.step(step6, dH, out)                            # inside the spectrum station: the show's map keeps its six
-    seconds["anharmonic"] = round(time.time() - t, 1)
-    progress.done("spectrum")
+    progress.done("spectrum")                                # the six stations are the first delivery's; step 6 has none of its own
     rec = {"pipeline_version": PIPELINE_VERSION, "name": cfg.name,
            "input": {"smiles": cfg.smiles, "xyz": cfg.xyz, "xyz_atom_order": xyz_order(cfg) if cfg.xyz is not None else None},
            "settings": cfg.model_dump(mode="json"), "admission": vars(adm) | {"inside_training_sizes": adm.inside_training_sizes},
            "deck": {"file": str(RC.DECK), "sha16": sha16(RC.DECK)}, "optimisation": {k: psi4.get(k) for k in ("e_opt", "timings_s", "opt_options")},
-           "low_level": check, "reuse": reused, "seconds": seconds, "spectra": out, "provenance": launched,
-           "commit_at_end": git_state(str(Path(__file__).parent)).get("commit")}
-    write_json(d / "pipeline.json", rec)
+           "low_level": check, "reuse": reused, "seconds": seconds, "spectra": out, "provenance": launched, "deliveries": []}
+    if not cfg.anharmonic:
+        _deliver(rec, d, ONLY_DELIVERY, t0, deliver)
+        return rec
+    _deliver(rec, d, FIRST_DELIVERY, t0, deliver)
+    _second_delivery(rec, step6, dH, t0, deliver)
     return rec
 
 
@@ -532,8 +589,12 @@ def parse_args(argv: list[str] | None) -> argparse.Namespace:
     ap.add_argument("--no-reuse", action="store_true", help="compute steps 2-3 even where the corpus holds the molecule (TASKS 150)")
     ap.add_argument("--corpus", type=Path, help="the corpus folder to reuse from (default: module 05's)")
     ap.add_argument("--reuse-only", action="store_true", help="refuse, before computing, a molecule the corpus cannot give steps 2-3 for")
-    ap.add_argument("--no-anharmonic", action="store_true",
-                    help="skip step 6: every band at its harmonic position, and the record says the step was switched off (TASKS 211)")
+    off = ap.add_mutually_exclusive_group()
+    off.add_argument("--no-anharmonic", action="store_true",
+                     help="skip step 6: every band at its harmonic position, and the record says the step was switched off (TASKS 211)")
+    off.add_argument("--anharmonic-minutes", type=float,
+                     help="step 6's time budget (default 120): the force field is stopped there and the certificate finalised as harmonic; "
+                          "0 switches the step off")
     ap.add_argument("--anharmonic-shards", type=int, default=2, help="dxtb processes of the GFN2-xTB force field (step 6)")
     ap.add_argument("--anharmonic-cap-mb", type=int, default=1536, help="the WSL memory cap of the GFN2-xTB force field (step 6)")
     ap.add_argument("--check-only", action="store_true", help="the refusal checks alone (a run spec's dry run): nothing is computed or written")
@@ -545,10 +606,10 @@ def main(argv: list[str] | None = None) -> int:
     from .runtime import announce
 
     a = parse_args(argv)
-    given = {k: v for k, v in dict(smiles=a.smiles, xyz=a.xyz, psi4_python=a.psi4_python, pyscf_python=a.pyscf_python,
-                                   corpus=a.corpus).items() if v is not None}
+    given = {k: v for k, v in dict(smiles=a.smiles, xyz=a.xyz, psi4_python=a.psi4_python, pyscf_python=a.pyscf_python, corpus=a.corpus,
+                                   anharmonic_minutes=0 if a.no_anharmonic else a.anharmonic_minutes).items() if v is not None}
     cfg = PipelineConfig(name=a.name, out_root=a.out, threads=a.threads, psi4_memory_gb=a.psi4_memory_gb, wsl_cap_mb=a.wsl_cap_mb,
-                         reuse_corpus=not a.no_reuse, reuse_only=a.reuse_only, anharmonic=not a.no_anharmonic,
+                         reuse_corpus=not a.no_reuse, reuse_only=a.reuse_only,
                          anharmonic_shards=a.anharmonic_shards, anharmonic_cap_mb=a.anharmonic_cap_mb, **given)
     try:
         if a.check_only:
@@ -559,15 +620,20 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         catalog = Catalog()             # the certificate's catalogue and tolerances: read before any computation
         print(f"[pipeline] {announce(cfg.smiles, cfg.threads)}", flush=True)
-        rec = run(cfg)
+
+        def deliver(folder: Path, what: str) -> None:
+            """The certificate of the record as it stands at this delivery, written over the earlier delivery's."""
+            _, md = write(certificate(folder, catalog), folder)
+            print(f"[pipeline] delivery ({what}): {md}", flush=True)
+
+        rec = run(cfg, deliver)
     except Refused as r:
         print("REFUSED: " + "\n  ".join(["", *r.reasons]), flush=True)
         return 2
     n = len(rec["spectra"]["network"]["sticks"])
     print(f"[pipeline] done: {n} bands, {cfg.folder / 'pipeline.json'} ({sum(rec['seconds'].values()):.0f} s)", flush=True)
-    _, md = write(certificate(cfg.folder, catalog), cfg.folder)
     Progress.load(cfg.folder).finish()
-    print(f"[pipeline] certificate: {md}", flush=True)
+    print(f"[pipeline] certificate: {cfg.folder / 'certificate.md'}", flush=True)      # the last line: a run spec's end marker
     return 0
 
 

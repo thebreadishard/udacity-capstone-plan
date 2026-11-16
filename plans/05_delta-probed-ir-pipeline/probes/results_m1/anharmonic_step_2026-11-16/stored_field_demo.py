@@ -81,7 +81,8 @@ def main() -> int:
     AN.force_field = lambda name, folder, settings: (field, source)      # the one stand-in: the stored field for the WSL run
     with np.load(d / P.CORRECTION) as z:
         dH = z["dH"]
-    rec["spectra"] = AN.step(AN.Request(rec["name"], d, AN.load_artefact(), AN.FieldSettings.of(4, 2, 1536)), dH, rec["spectra"])
+    req = AN.Request(rec["name"], d, rec["admission"]["smiles"], AN.load_artefact(), AN.FieldSettings.of(4, 2, 1536, 120))
+    rec["spectra"] = AN.step(req, dH, rec["spectra"])
     rec["seconds"]["anharmonic"] = 0.0
     rec["pipeline_version"] = f"{P.PIPELINE_VERSION} (step 6 added to a {rec['pipeline_version']} result from a stored force field)"
     P.write_json(d / "pipeline.json", rec)

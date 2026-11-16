@@ -145,7 +145,7 @@ def report(res: dict[str, dict[str, Any]], printed: dict[str, dict[str, Any]], s
     licensed = [fa for fa, r in res.items() if r["route"]]
     lines += ["", "Licensed, an anharmonic step in the pipeline: "
               + (", ".join(licensed) if licensed
-                 else "no family. Every band keeps its harmonic position with the pipeline's HARMONIC_NOTE."),
+                 else "no family: no anharmonic position is licensed. What the pipeline prints is the table below."),
               "", "The last column is the rms of the true shift over the same modes, the error a harmonic position carries. It is not "
               "part of the rule, which was registered on 4 November and reads as it reads; it is there so a reader can see what the "
               "rule's outcome costs per family."]

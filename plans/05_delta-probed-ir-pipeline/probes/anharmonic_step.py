@@ -7,14 +7,18 @@ time: the modes are described by `s2_read.mode_description`, matched to the xtb 
 `s3_read.predictors(<config>)["x2*"](<training table>, <the molecule's modes>)`, the very call the registered read made.
 
 The artefact (`probes/anharmonic_step_fit.py` writes it; the design note of 14 Nov, section 5) is the pooled training table of
-each reading window beside each family's configuration and its measured error bar. A table that names no read, no commit or no
-training molecule is refused.
+each reading window beside each family's configuration and its measured error bar, the training molecules by canonical SMILES
+with their elements, and a dozen probe rows — inputs with the shift the fit gave them. A table that names no read, no commit or
+no training molecule is refused, and so is one whose probe rows this machine's code does not reproduce: loading it runs the
+model once, so a missing library or a changed feature shows before any force field is computed.
 
 Three functions, none of which reads a file it was not handed:
 - `load_artefact`: the artefact as a checked object;
 - `mode_steps`: per B3LYP mode the step, or no step with its reason (the label-free rule of 16 Nov: a large-amplitude mode, a mode
   without an xtb partner, a mode whose xtb partner is outside VPT2's domain; and a mode in a family and range nothing was measured in),
-  the family's bar, and whether the bar was measured for this kind of mode (family 'other' with o ≥ 0.8: it was not);
+  the family's bar — the rms of the step against its VPT2 label, not an error of a position — and whether that bar was measured
+  for this kind of mode (family 'other' with o ≥ 0.8: it was not, and such a step carries none);
+- `agree_on_family`: a step is withheld where a second family rule (the certificate's) names another family for the mode;
 - `carry_to_bands`: the steps carried to the corrected bands by mode overlap, one B3LYP mode per band, never by rank; a band whose
   partner overlaps below 0.5 gets no step.
 """
@@ -39,11 +43,15 @@ from s3_read import predictors  # noqa: E402
 
 from dpir.qff import MASS, harmonic  # noqa: E402
 
-FORMAT = 1
+FORMAT = 2
 MODEL = "x2*"
-ARTEFACT = os.path.join(HERE, "anharmonic_step", "x2star_v1.json")
+ARTEFACT = os.path.join(HERE, "anharmonic_step", "x2star_v2.json")
 TABLE_KEYS = ("omega", "delta", "family", "h", "o", XTB_KEY)      # s2_read.concat's columns, in its order
-REQUIRED = ("commit", "registration", "decisions", "scope", "training_molecules", "windows")
+REQUIRED = ("commit", "registration", "decisions", "scope", "training_molecules", "windows", "molecules", "targets", "elements",
+            "compositions", "probes")
+PROBE_TOLERANCE_CM = 1e-6         # a probe's shift on this machine against the fit's: BLAS and scikit-learn versions move the kernel
+MIN_PROBES = 10                   # ridge's solve by about 1e-10 cm⁻¹; a wrong feature, configuration or table row moves it by whole cm⁻¹
+FEW_MOLECULES = 5                 # a composition the training table holds fewer molecules of than this is named on the certificate
 NOT_MEASURED_FAMILY = "other"     # decision 2 of 16 Nov: every mode a B3LYP label marked lies in this family with o ≥ 0.83, and only
 NOT_MEASURED_O = 0.8              # two of the six are caught without the label; such a band keeps its step and loses its bar's claim
 
@@ -52,6 +60,7 @@ NO_XTB_PARTNER = "no-xtb-partner"
 XTB_PARTNER_MARKED = "xtb-partner-marked"
 UNMEASURED = "unmeasured"
 MIXED_BAND = "mixed-band"
+FAMILY_MISMATCH = "family-mismatch"
 MODE_REASONS = (LARGE_AMPLITUDE, NO_XTB_PARTNER, XTB_PARTNER_MARKED)     # the label-free rule, in the order it is asked
 REASON_TEXT = {
     LARGE_AMPLITUDE: "a large-amplitude mode (half or more of its hydrogen motion on an sp-carbon, N–H or O–H hydrogen): the model "
@@ -61,6 +70,7 @@ REASON_TEXT = {
                         "theory can state",
     UNMEASURED: "no model was measured for this family in this range",
     MIXED_BAND: f"the corrected band mixes B3LYP modes (its partner overlaps below {MIN_OVERLAP}), so no mode's step is its own",
+    FAMILY_MISMATCH: "the step's family rule and the certificate's name different families for this mode, so no family's model is its own",
 }
 NOT_MEASURED_TEXT = (f"the step's error is not measured for this kind of mode (family '{NOT_MEASURED_FAMILY}' with an out-of-plane "
                      f"share of {NOT_MEASURED_O} or more)")
@@ -68,12 +78,14 @@ NOT_MEASURED_TEXT = (f"the step's error is not measured for this kind of mode (f
 
 @dataclass(frozen=True)
 class FamilyModel:
-    """One family's model in one window: S2b's configuration, the registered bar and the artefact's own reproduction of it."""
+    """One family's model in one window: S2b's configuration, the registered bar (the rms of the step against the targets' VPT2
+    labels), the artefact's own reproduction of it, and that rms on each target molecule."""
     config: str
     bar_cm: float
     bar_refit_cm: float
     n_training_modes: int
     n_target_rows: int
+    per_target_rms_cm: dict[str, float]
 
 
 @dataclass(frozen=True)
@@ -136,7 +148,8 @@ class XtbField:
 
 @dataclass(frozen=True)
 class ModeStep:
-    """One B3LYP mode's step: Δ_anh with the family's bar, or None with the reason; `error_not_measured` says the bar is not this mode's."""
+    """One B3LYP mode's step: Δ_anh with the family's bar, or None with the reason. Where `error_not_measured` is set the family's
+    bar is not this mode's, and `bar_cm` is None: a number that was not measured is not carried."""
     mode: int
     omega_cm: float
     family: str
@@ -199,8 +212,62 @@ def load_artefact(path: str = ARTEFACT) -> Artefact:
     seen = [fa for w in windows for fa in w.families]
     if len(set(seen)) != len(seen):
         raise ValueError(f"{path}: a family has a model in two windows: {sorted(seen)}")
+    check_probes(path, windows, raw["probes"])
     return Artefact(windows, {k: v for k, v in raw.items() if k != "windows"}
                     | {"window_sources": {n: {k: v for k, v in w.items() if k != "table"} for n, w in raw["windows"].items()}})
+
+
+def check_probes(path: str, windows: tuple[WindowModel, ...], probes: list[dict[str, Any]]) -> None:
+    """The artefact's probe rows through this machine's model: each stored shift reproduced to PROBE_TOLERANCE_CM, or the
+    artefact is refused. This is the equivalence with the fit that holds where the force fields are absent, and it is the first
+    prediction of a run: it imports the model's library before anything is computed."""
+    by_name = {w.name: w for w in windows}
+    covered = {(p["window"], p["family"]) for p in probes}
+    modelled = {(w.name, fa) for w in windows for fa in w.families}
+    if len(probes) < MIN_PROBES or covered != modelled:
+        raise ValueError(f"{path}: {len(probes)} probe rows over {sorted(covered)}; at least {MIN_PROBES}, over every modelled family")
+    for p in probes:
+        window = by_name[p["window"]]
+        row = {k: np.array([p[k]], str if k == "family" else float) for k in TABLE_KEYS}
+        got = float(predictors(window.families[p["family"]].config)[MODEL](window.table, row)[0])
+        if not abs(got - p["shift_cm"]) <= PROBE_TOLERANCE_CM:
+            raise ValueError(f"{path}: the probe at {p['omega']:.1f} cm⁻¹ ({p['family']}) gives {got:.6f} cm⁻¹ here against the fit's "
+                             f"{p['shift_cm']:.6f}: this code or its libraries are not the fit's")
+
+
+def elements(artefact: Artefact) -> frozenset[str]:
+    """The elements of the training table's molecules: the model has seen no other."""
+    return frozenset(artefact.header["elements"])
+
+
+def composition(artefact: Artefact, symbols: list[str]) -> dict[str, Any]:
+    """How many training molecules are made of exactly the elements of `symbols`, and whether that is few (FEW_MOLECULES)."""
+    key = ",".join(sorted(set(symbols)))
+    n = int(artefact.header["compositions"].get(key, 0))
+    return {"elements": key, "training_molecules": n, "of": len(artefact.header["training_molecules"]), "few": n < FEW_MOLECULES,
+            "targets": artefact.header["target_composition"]}
+
+
+def seen(artefact: Artefact, canonical_smiles: str | None) -> dict[str, Any]:
+    """Whether the model has seen a molecule (RDKit's canonical SMILES, as the fit stored them): in its training table, one of the
+    targets its bars were measured on, or neither. Without a SMILES nothing can be said, and that is what is said."""
+    if canonical_smiles is None:
+        return {"role": "unknown", "id": None}
+    for role, key in (("training", "molecules"), ("target", "targets")):
+        for i, smiles in artefact.header[key].items():
+            if smiles == canonical_smiles:
+                return {"role": role, "id": i}
+    return {"role": "unseen", "id": None}
+
+
+def agree_on_family(steps: list[ModeStep], families: list[str]) -> list[ModeStep]:
+    """The steps with every mode withheld whose family a second rule names differently (the certificate's
+    `learning_curve_layerA.molecule_features` against the step's `e8_cc_locality.families`: two implementations of one rule)."""
+    if len(families) != len(steps):
+        raise ValueError(f"{len(families)} families for {len(steps)} steps")
+    return [s if s.family == f or s.reason is not None else
+            ModeStep(s.mode, s.omega_cm, s.family, s.h, s.o, s.xtb_overlap, None, FAMILY_MISMATCH, None, False, s.window)
+            for s, f in zip(steps, families, strict=True)]
 
 
 def bars(artefact: Artefact) -> dict[str, float]:
@@ -250,12 +317,11 @@ def mode_steps(modes: Modes, xtb: XtbField, artefact: Artefact) -> list[ModeStep
     out = []
     for i in range(n):
         stepped = reason[i] is None
+        flagged = bool(stepped and rec["family"][i] == NOT_MEASURED_FAMILY and rec["o"][i] >= NOT_MEASURED_O)
         out.append(ModeStep(mode=i, omega_cm=float(rec["omega"][i]), family=str(rec["family"][i]), h=float(rec["h"][i]),
                             o=float(rec["o"][i]), xtb_overlap=float(rec["xtb_overlap"][i]),
                             delta_anh_cm=float(delta[i]) if stepped else None, reason=reason[i],
-                            bar_cm=float(bar[i]) if stepped else None,
-                            error_not_measured=bool(stepped and rec["family"][i] == NOT_MEASURED_FAMILY and rec["o"][i] >= NOT_MEASURED_O),
-                            window=name[i]))
+                            bar_cm=float(bar[i]) if stepped and not flagged else None, error_not_measured=flagged, window=name[i]))
     return out
 
 

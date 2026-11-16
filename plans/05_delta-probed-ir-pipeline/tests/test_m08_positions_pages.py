@@ -1,22 +1,32 @@
 """What the live certificate and the pages print of a band's position (`m08/live_certificate.py`, `m08/demo_page.py`,
-`m08/positions.py`; TASKS 211): ν beside ω with the licence kept on ω, the three kinds of band line, a result without the step,
-and the demo page's and the show's sentences. On the frozen corpus's benzene, with the stand-in force field of
-tests/test_m08_anharmonic.py."""
+`m08/positions.py`; TASKS 211): ν beside ω with the licence kept on ω, the bar headed as the step's, the certificate-level
+sentences said once, the three kinds of band line, the first delivery and a result without the step, and the demo page's and the
+show's sentences. On the frozen corpus's benzene, with the stand-in force field of tests/test_m08_anharmonic.py."""
 from __future__ import annotations
 
+import json
 import sys
 
 from pin_tools import PLAN
-from test_m08_anharmonic import APPLIED, artefact, stepped  # noqa: F401  artefact is a fixture
+from test_m08_anharmonic import APPLIED, artefact, request, spectra_of, stepped  # noqa: F401  artefact is a fixture
 from test_m08_live_certificate import ZERO, accuracy, record, result  # noqa: F401  accuracy and result are fixtures
 
 sys.path.insert(0, str(PLAN / "modules" / "08_industry_synthesis"))
+from m08 import anharmonic as AN
 from m08 import demo_page as D
 from m08 import live_certificate as LC
+from m08 import pipeline as P
 from m08 import positions as POS
 
 # isort: split
 import anharmonic_step as AS  # probes/, on the path through m08.pipeline
+
+LICENCE = {"quantity_name": "error", "caveats": []}
+
+
+def certificate_of(rows: list[dict], summary: dict, note: str = "a note") -> dict:
+    """What `_band_lines` and `to_markdown`'s position paragraphs read of a certificate."""
+    return {"bands": rows, "licence": LICENCE, "positions": {"note": note, "cautions": POS.cautions(summary), "anharmonic": summary}}
 
 
 def test_the_certificate_prints_nu_beside_omega_and_keeps_the_licence_on_omega(result, accuracy, artefact, monkeypatch):  # noqa: F811
@@ -27,37 +37,80 @@ def test_the_certificate_prints_nu_beside_omega_and_keeps_the_licence_on_omega(r
     assert all(b["printed_cm"] == (b["nu_cm"] if b["nu_cm"] is not None else b["network_cm"]) for b in rows)
     assert all((b["printed"] == POS.ANHARMONIC) == (b["nu_cm"] is not None) for b in rows)
     assert all(b["licensed"] == (b["family"] in ("ring-ip", "CH-stretch")) for b in rows)          # the licence did not move with ν
+    assert all(b["step_family"] == b["family"] for b in rows if b["nu_cm"] is not None)            # one family per band, by both rules
     stretches = [b for b in rows if b["family"] == "CH-stretch"]
     assert all(b["network_cm"] > 3150 and b["lab_region"] == LC.lab_region(b["nu_cm"]) for b in stretches)   # the region of the printed position
-    cert = {"bands": rows, "licence": {"quantity_name": "error", "caveats": []},
-            "positions": {"note": out["note"], "anharmonic": out["anharmonic"]}}
-    lines = LC._band_lines(cert)
-    assert lines[0].startswith("| best estimate (cm⁻¹) | printed | harmonic ω, network | Δ_anh | ± of ν (measured, not licensed) |")
-    assert "| ω licensed | error of ω on (a) / (b), cm⁻¹ |" in lines[0]
-    first = next(b for b in rows if b["nu_cm"] is not None and b["anharmonic_bar_cm"] is not None)
-    assert f"| {first['nu_cm']} | anharmonic ν | {first['network_cm']} | {first['delta_anh_cm']:+} | {first['anharmonic_bar_cm']} |" in "\n".join(lines)
+    lines = LC._band_lines(certificate_of(rows, out["anharmonic"]))
     text = "\n".join(lines)
+    assert lines[0].startswith(f"| best estimate (cm⁻¹) | printed | harmonic ω, network | Δ_anh | {POS.BAR_HEADER} |")
+    assert "± of Δ_anh, against its VPT2 label" in lines[0] and "± of ν" not in text               # the bar is the step's, not ν's
+    assert "| ω licensed | error of ω on (a) / (b), cm⁻¹ |" in lines[0]
+    first = next(b for b in rows if b["nu_cm"] is not None and b["step_bar_cm"] is not None)
+    assert f"| {first['nu_cm']} | anharmonic ν | {first['network_cm']} | {first['delta_anh_cm']:+} | {first['step_bar_cm']} |" in text
     assert f"Which position each band is printed at ({POS.LICENCE_SCOPE}):" in text
     assert f"- harmonic position, no anharmonic step: {AS.REASON_TEXT[AS.UNMEASURED]} — " in text
-    flagged = [b for b in rows if b["anharmonic_error_measured"] is False]
+    assert "- anharmonic estimate ν = ω + Δ_anh; the step's error is ± 3.37 cm⁻¹ (rms of Δ_anh against its VPT2 label, family ring-ip); " in text
+    flagged = [b for b in rows if b["step_error_measured"] is False]
     assert flagged and f"printed without an error bar: {AS.NOT_MEASURED_TEXT}; no licence is claimed for ν — {len(flagged)} band(s): " in text
     assert all(f"| {b['nu_cm']} | anharmonic ν | {b['network_cm']} | {b['delta_anh_cm']:+} | not measured |" in text for b in flagged)
     assert sum(line.startswith("- ") for line in lines) == len({b["position_note"] for b in rows})
+
+
+def test_the_certificate_says_once_what_nus_error_is_and_what_the_bars_rest_on(result, artefact, monkeypatch):  # noqa: F811
+    """Review findings 1 and 5: under the statement, each once — the bar is the step's and ν carries ω's error too, neither against
+    experiment; the two hydrocarbon targets with the registered row counts; and x2*'s own word on having seen the molecule."""
+    out = stepped(result, artefact, monkeypatch)
+    said = POS.cautions(out["anharmonic"])
+    paragraphs = LC._position_paragraphs(certificate_of([], out["anharmonic"], out["note"]))
+    text = "\n".join(paragraphs)
+    assert paragraphs[0].startswith("**Positions.** Each band is printed at its best estimate")
+    assert "**What the bar is, and what ν's error is.** The bar beside a step is the step's error alone" in text
+    assert "the rms of Δ_anh against its B3LYP VPT2 label — and not the error of ν" in text
+    assert "ν carries ω's error too" in text and "neither of the two is an error against experiment." in text
+    assert "**What the bars rest on.** The bars rest on 2 target molecules, coronene and tetracene, both hydrocarbons" in text
+    assert "target modes: CH-oop 22, other 23, ring-ip 56, CH-stretch 20" in text
+    assert "ring-ip 4.25 / 2.35" in text and "coronene carries the larger error in every family" in text and "they are thin" in text
+    assert text.count("What the bar is") == 1 and text.count("What the bars rest on") == 1
+    assert "This molecule's elements" not in text                       # a hydrocarbon: the table holds 14 of them
+    assert said["seen"] == ("the anharmonic model x2* has this molecule in its training table (A_8448043181, one of 37): for this "
+                            "molecule the step's bar is not an out-of-sample error")
+    few = out["anharmonic"] | {"composition": out["anharmonic"]["composition"] | {"elements": "C,H,O", "training_molecules": 3, "few": True}}
+    assert "**This molecule's elements in the anharmonic model's table.** The training table of x2* holds 3 of 37" in "\n".join(
+        LC._position_paragraphs(certificate_of([], few)))
+
+
+def test_each_model_states_for_itself_whether_it_has_seen_the_molecule():
+    """The statement's 'held out… never trained on' is the ΔH network's; the anharmonic model's line stands beside it."""
+    lic = {"quantity_name": "error", "licensed_families": ["ring-ip"], "caveats": []}
+    s = LC.statement("x", "1.3", 3, lic, "held out: never trained on")
+    assert s.endswith("This molecule and the ΔH network: held out: never trained on.")
+    assert "the harmonic positions ω are licensed for ring-ip (decision 65)" in s and "harmonic infrared spectrum" not in s
+
+
+def test_the_first_delivery_is_a_complete_harmonic_certificate_that_says_what_will_come(result, accuracy, artefact):  # noqa: F811
+    """Review finding 2: the record as the pipeline writes it before step 6 starts — every band harmonic, the certificate's
+    positions paragraph saying that the step runs, under which budget, and what the second delivery adds."""
+    record(result, ZERO, [ZERO])
+    rec = json.loads((result / "pipeline.json").read_text(encoding="utf-8"))
+    out = AN.first_delivery(request(result, artefact), spectra_of(result))
+    P.write_json(result / "pipeline.json", rec | {"spectra": out})
+    rows = LC.bands(LC.load_result(result), accuracy, {}, [])
+    assert len(rows) == 30 and all(b["printed"] == POS.HARMONIC and b["no_step_reason"] == POS.RUNNING and b["nu_cm"] is None for b in rows)
+    cert = certificate_of(rows, out["anharmonic"], out["note"])
+    assert cert["positions"]["cautions"] == {} and LC._band_lines(cert)[-1].startswith("| ")
+    first = LC._position_paragraphs(cert)[0]
+    assert "in this first delivery: the anharmonic step is running, with a time budget of 120 minutes" in first
+    assert "this certificate is written again and adds per band the anharmonic estimate ν = ω + Δ_anh beside ω" in first
+    lines = LC._delivery_lines({"deliveries": [{"delivery": P.FIRST_DELIVERY, "at": "2026-11-16 20:00:00", "seconds_since_start": 324.0}]})
+    assert lines == [f"- delivery — {P.FIRST_DELIVERY}: 2026-11-16 20:00:00, 324.0 s after the start"] and LC._delivery_lines({}) == []
 
 
 def test_a_result_without_the_step_is_one_sentence_not_a_line_per_band(result, accuracy):  # noqa: F811
     record(result, ZERO, [ZERO])                                   # a record as a pipeline before 0.11 wrote it: no anharmonic block
     rows = LC.bands(LC.load_result(result), accuracy, {}, [])
     assert all(b["printed"] == POS.HARMONIC and b["printed_cm"] == b["network_cm"] and b["no_step_reason"] == POS.NOT_APPLIED for b in rows)
-    summary = POS.summary_of({})
-    lines = LC._band_lines({"bands": rows, "licence": {"quantity_name": "error", "caveats": []}, "positions": {"anharmonic": summary}})
+    lines = LC._band_lines(certificate_of(rows, POS.summary_of({})))
     assert lines[-1].startswith("| ") and all("| harmonic ω |" in line and "| — | — |" in line for line in lines[2:])
-
-
-def test_the_statement_licenses_omega_by_name():
-    lic = {"quantity_name": "error", "licensed_families": ["ring-ip"], "caveats": []}
-    s = LC.statement("x", "1.3", 3, lic, "never seen")
-    assert "the harmonic positions ω are licensed for ring-ip (decision 65)" in s and "harmonic infrared spectrum" not in s
 
 
 def test_the_demo_page_and_the_show_say_which_position_they_print():

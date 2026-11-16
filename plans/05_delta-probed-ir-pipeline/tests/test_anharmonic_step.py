@@ -38,19 +38,34 @@ def _table(families: list[str], n: int, lo: float, hi: float, seed: int) -> dict
 
 
 def _family(config: str, table: dict, family: str, bar: float) -> dict:
-    return {"config": config, "bar_cm": bar, "bar_refit_cm": bar, "n_training_modes": table["family"].count(family), "n_target_rows": 9}
+    return {"config": config, "bar_cm": bar, "bar_refit_cm": bar, "n_training_modes": table["family"].count(family), "n_target_rows": 9,
+            "per_target_rms_cm": {"t1": bar - 1.0, "t2": bar + 1.0}}
+
+
+def _probes(name: str, window: dict, per_family: int = 4) -> list[dict]:
+    """Probe rows as the fit writes them: training rows of each modelled family with the shift the read's model gives them."""
+    table = {k: np.asarray(window["table"][k], str if k == "family" else float) for k in A.TABLE_KEYS}
+    rows = []
+    for fa, model in window["families"].items():
+        at = np.flatnonzero(table["family"] == fa)[:per_family]
+        test = {k: table[k][at] for k in A.TABLE_KEYS}
+        shift = S3.predictors(model["config"])["x2*"](table, test)
+        rows += [{"window": name, **{k: test[k][j].item() for k in A.TABLE_KEYS}, "shift_cm": float(shift[j])} for j in range(len(at))]
+    return rows
 
 
 def _record() -> dict:
     """A small artefact of two windows: 'mid' with ring-ip and other, 'ch' with the CH stretches."""
     mid, ch = _table(["ring-ip", "other"], 40, 560.0, 1990.0, 1), _table(["CH-stretch"], 12, 3000.0, 3200.0, 2)
     src = {"marked_policy": "exclude", "route_rule": "rule.json", "s2b_read": "s2b.json", "s3_read": "s3.json"}
+    windows = {"mid": {**src, "window": [550.0, 2000.0], "table": mid,
+                       "families": {"ring-ip": _family(CONFIG, mid, "ring-ip", 3.37), "other": _family(CONFIG, mid, "other", 3.84)}},
+               "ch": {**src, "window": [2800.0, None], "table": ch, "families": {"CH-stretch": _family(CONFIG, ch, "CH-stretch", 6.21)}}}
     return {"format": A.FORMAT, "model": A.MODEL, "commit": "abc", "registration": "reg.md", "decisions": "report.md",
-            "scope": "no-large-amplitude", "training_molecules": ["m1", "m2"],
-            "windows": {"mid": {**src, "window": [550.0, 2000.0], "table": mid,
-                                "families": {"ring-ip": _family(CONFIG, mid, "ring-ip", 3.37), "other": _family(CONFIG, mid, "other", 3.84)}},
-                        "ch": {**src, "window": [2800.0, None], "table": ch,
-                               "families": {"CH-stretch": _family(CONFIG, ch, "CH-stretch", 6.21)}}}}
+            "scope": "no-large-amplitude", "training_molecules": ["m1", "m2", "m3"],
+            "molecules": {"m1": "c1ccccc1", "m2": "c1ccncc1", "m3": "c1ccc2ccccc2c1"}, "targets": {"t1": "c1ccc2cc3ccccc3cc2c1"},
+            "elements": ["C", "H", "N"], "compositions": {"C,H": 2, "C,H,N": 1}, "target_composition": {"t1": "C,H"},
+            "probes": [row for name, w in windows.items() for row in _probes(name, w)], "windows": windows}
 
 
 def _write(tmp_path: Path, record: dict) -> str:
@@ -71,7 +86,7 @@ def test_the_artefact_loads_with_an_open_window_and_its_bars(artefact: A.Artefac
 
 
 def _other_format(r: dict) -> None:
-    r["format"] = 2
+    r["format"] = A.FORMAT + 1
 
 
 def _no_commit(r: dict) -> None:
@@ -102,10 +117,34 @@ def _family_twice(r: dict) -> None:
     r["windows"]["ch"]["families"]["other"] = dict(r["windows"]["mid"]["families"]["other"], n_training_modes=0)
 
 
+def _other_shift(r: dict) -> None:
+    r["probes"][3]["shift_cm"] += 0.01
+
+
+def _other_feature(r: dict) -> None:
+    r["windows"]["mid"]["table"]["h"][0] += 0.2          # a training row that is not the fit's: every 'mid' probe moves
+
+
+def _few_probes(r: dict) -> None:
+    del r["probes"][2:]
+
+
+def _family_without_probe(r: dict) -> None:
+    r["probes"] = [p for p in r["probes"] if p["family"] != "other"]
+
+
+def _no_elements(r: dict) -> None:
+    del r["elements"]
+
+
 @pytest.mark.parametrize(("spoil", "match"), [
     (_other_format, "this code reads format"), (_no_commit, "cannot be traced"), (_no_read, "cannot be traced"),
     (_no_molecules, "cannot be traced"), (_short_column, "differ in length"), (_unknown_config, "not one of the read's"),
-    (_wrong_count, "the record says"), (_family_twice, "the record says|two windows")])
+    (_wrong_count, "the record says"), (_family_twice, "the record says|two windows"),
+    # review finding 3: the probe rows are the equivalence with the fit that needs no force field, checked at every load
+    (_other_shift, "this code or its libraries are not the fit's"), (_other_feature, "not the fit's"),
+    (_few_probes, "at least 10, over every modelled family"), (_family_without_probe, "over every modelled family"),
+    (_no_elements, "cannot be traced")])
 def test_an_artefact_that_cannot_be_trusted_is_refused(tmp_path: Path, spoil, match: str):
     record = _record()
     spoil(record)
@@ -118,6 +157,7 @@ def test_a_family_modelled_in_two_windows_is_refused(tmp_path: Path):
     record["windows"]["ch"]["table"] = _table(["CH-stretch", "other"], 12, 3000.0, 3200.0, 2)
     table = record["windows"]["ch"]["table"]
     record["windows"]["ch"]["families"] = {f: _family(CONFIG, table, f, 5.0) for f in ("CH-stretch", "other")}
+    record["probes"] = [row for name, w in record["windows"].items() for row in _probes(name, w)]
     with pytest.raises(ValueError, match="two windows"):
         A.load_artefact(_write(tmp_path, record))
 
@@ -146,7 +186,8 @@ def test_every_route_a_mode_can_take(artefact: A.Artefact, monkeypatch: pytest.M
     monkeypatch.setattr(A, "describe", lambda modes, xtb: _synthetic_rec())
     steps = A.mode_steps(A.Modes((), np.zeros((0, 3)), np.array(ROUTES["omega"]), np.zeros((0, 9))), None, artefact)
     assert [s.reason for s in steps] == EXPECTED
-    assert [s.bar_cm for s in steps] == [None, 3.37, None, None, 3.84, 3.84, None, 6.21, None]
+    # review finding 7: the flagged mode 4 has a step and no bar — the family's 3.84 was not measured for its kind of mode
+    assert [s.bar_cm for s in steps] == [None, 3.37, None, None, None, 3.84, None, 6.21, None]
     assert [s.window for s in steps] == [None, "mid", None, None, "mid", "mid", None, "ch", None]
     assert all((s.delta_anh_cm is None) == (s.reason is not None) for s in steps)
     assert all(np.isfinite(s.delta_anh_cm) for s in steps if s.reason is None)
@@ -172,7 +213,28 @@ def test_a_step_is_the_reads_own_prediction(artefact: A.Artefact, monkeypatch: p
 
 
 def _step(i: int, delta: float | None, reason: str | None = None, flag: bool = False) -> A.ModeStep:
-    return A.ModeStep(i, 1000.0 + i, "ring-ip", 0.1, 0.0, 0.9, delta, reason, None if delta is None else 3.37, flag, "mid")
+    return A.ModeStep(i, 1000.0 + i, "ring-ip", 0.1, 0.0, 0.9, delta, reason, None if delta is None or flag else 3.37, flag, "mid")
+
+
+def test_a_step_is_withheld_where_a_second_family_rule_disagrees():
+    """Review finding 8: two implementations of the family rule; a mode they name differently gets no step, with the reason."""
+    steps = [_step(0, -10.0), _step(1, -20.0, flag=True), _step(2, None, A.NO_XTB_PARTNER)]
+    assert A.agree_on_family(steps, ["ring-ip"] * 3) == steps
+    out = A.agree_on_family(steps, ["ring-ip", "other", "CH-oop"])
+    assert out[0] == steps[0] and out[2] == steps[2]                        # a mode without a step keeps its own reason
+    assert (out[1].delta_anh_cm, out[1].reason, out[1].bar_cm, out[1].error_not_measured) == (None, A.FAMILY_MISMATCH, None, False)
+    with pytest.raises(ValueError, match="2 families for 3 steps"):
+        A.agree_on_family(steps, ["ring-ip"] * 2)
+
+
+def test_the_artefact_says_what_its_table_holds(artefact: A.Artefact):
+    """Review findings 5 and 6: the training molecules by SMILES, the targets, the elements and how many molecules of each composition."""
+    assert A.elements(artefact) == frozenset({"C", "H", "N"})
+    assert A.seen(artefact, "c1ccncc1") == {"role": "training", "id": "m2"} and A.seen(artefact, "c1ccc2cc3ccccc3cc2c1")["role"] == "target"
+    assert A.seen(artefact, "c1ccoc1") == {"role": "unseen", "id": None} and A.seen(artefact, None) == {"role": "unknown", "id": None}
+    assert A.composition(artefact, ["C", "H", "H", "N"]) == {"elements": "C,H,N", "training_molecules": 1, "of": 3, "few": True,
+                                                             "targets": {"t1": "C,H"}}
+    assert A.composition(artefact, ["C", "O"])["training_molecules"] == 0
 
 
 def test_steps_are_carried_by_overlap_not_by_rank():
@@ -183,7 +245,7 @@ def test_steps_are_carried_by_overlap_not_by_rank():
     bands = A.carry_to_bands(np.stack([q[:, 1], q[:, 0], mixed], axis=1), q, steps)
     assert [b.mode for b in bands] == [1, 0, None]                             # rank would have given 0, 1, 2
     assert [b.delta_anh_cm for b in bands] == [-20.0, -10.0, None]
-    assert bands[0].error_not_measured and bands[0].bar_cm == 3.37 and not bands[1].error_not_measured
+    assert bands[0].error_not_measured and bands[0].bar_cm is None and bands[1].bar_cm == 3.37 and not bands[1].error_not_measured
     assert bands[2].reason == A.MIXED_BAND and bands[2].overlap == pytest.approx(1 / 3) and bands[2].bar_cm is None
     refused = A.carry_to_bands(q[:, [2]], q, steps)[0]                        # the partner's own refusal comes along
     assert (refused.mode, refused.reason, refused.delta_anh_cm) == (2, A.NO_XTB_PARTNER, None)
@@ -212,6 +274,28 @@ def test_the_committed_artefact_holds_the_registered_bars():
     assert A.bars(art) == {"CH-oop": 8.38, "other": 3.84, "ring-ip": 3.37, "CH-stretch": 6.21}
     assert all(abs(m.bar_refit_cm - m.bar_cm) <= 0.01 for w in art.windows for m in w.families.values())
     assert len(art.header["training_molecules"]) == 37 and art.header["commit"]
+    assert sorted(A.elements(art)) == ["C", "H", "N", "O"]
+    assert art.header["compositions"] == {"C,H": 14, "C,H,N": 18, "C,H,N,O": 2, "C,H,O": 3}
+    assert art.header["target_composition"] == {"coronene": "C,H", "tetracene": "C,H"} and len(art.header["probes"]) == 12
+    assert A.seen(art, "c1ccccc1") == {"role": "training", "id": "A_8448043181"} and A.composition(art, ["C", "H", "O"])["few"] is True
+    assert {fa: m.n_target_rows for w in art.windows for fa, m in w.families.items()} == {"CH-oop": 22, "other": 23, "ring-ip": 56,
+                                                                                         "CH-stretch": 20}
+    assert all(m.per_target_rms_cm["coronene"] > m.per_target_rms_cm["tetracene"] for w in art.windows for m in w.families.values())
+
+
+def test_the_pipelines_modes_are_the_training_paths_modes():
+    """Review finding 3: the pipeline builds its B3LYP modes with `Modes.from_hessian`, the training with `Modes.from_ref`. On a
+    reference record that git holds (route A's gate benzene) the two give the same modes, and so the same steps."""
+    ref = PLAN / "probes" / "results_m1" / "routea_2026-11-02" / "gate" / "benzene" / "G" / "ref.json"
+    stored = json.loads(ref.read_text(encoding="utf-8"))
+    n = len(stored["molecule"]["symbols"])
+    a = A.Modes.from_ref(str(ref))
+    b = A.Modes.from_hessian(np.array(stored["return_result"], float).reshape(3 * n, 3 * n), stored["molecule"]["symbols"],
+                             np.array(stored["molecule"]["geometry"], float))
+    assert np.array_equal(a.omega, b.omega) and np.array_equal(a.q, b.q) and a.symbols == b.symbols
+    art = A.load_artefact()
+    field = A.XtbField(-0.01 * a.omega, np.zeros(len(a.omega), bool), a.q)
+    assert A.mode_steps(a, field, art) == A.mode_steps(b, field, art)
 
 
 def _data(*parts: str) -> Path:
@@ -245,7 +329,13 @@ def test_a_training_molecule_gets_exactly_the_training_paths_shift(tmp_path: Pat
         for m in mols:
             x_dir = next(str(Path(s["xtb_root"]) / m["id"] / "X") for s in sets if (Path(s["xtb_root"]) / m["id"]).is_dir())
             x_label = next(str(Path(s["xtb_gvpt2_dir"]) / f"{m['id']}.json") for s in sets if (Path(s["xtb_root"]) / m["id"]).is_dir())
-            steps = A.mode_steps(A.Modes.from_ref(os.path.join(m["dir"], "ref.json")), A.XtbField.from_folder(x_dir, x_label), art)
+            field = A.XtbField.from_folder(x_dir, x_label)
+            steps = A.mode_steps(A.Modes.from_ref(os.path.join(m["dir"], "ref.json")), field, art)
+            ref = json.loads(Path(m["dir"], "ref.json").read_text(encoding="utf-8"))          # and as the pipeline builds its modes
+            n = len(ref["molecule"]["symbols"])
+            assert steps == A.mode_steps(A.Modes.from_hessian(np.array(ref["return_result"], float).reshape(3 * n, 3 * n),
+                                                              ref["molecule"]["symbols"], np.array(ref["molecule"]["geometry"], float)),
+                                         field, art)
             mine = {s.omega_cm: s for s in steps}
             test = concat([m], w.bounds)
             for fa, model in w.families.items():
@@ -253,7 +343,8 @@ def test_a_training_molecule_gets_exactly_the_training_paths_shift(tmp_path: Pat
                 reference = S3.predictors(model.config)["x2*"](w.table, test)[sel]
                 for omega, ref in zip(test["omega"][sel], reference, strict=True):
                     assert mine[float(omega)].delta_anh_cm == pytest.approx(float(ref), abs=1e-9)
-                    assert mine[float(omega)].family == fa and mine[float(omega)].bar_cm == model.bar_cm
+                    step = mine[float(omega)]
+                    assert step.family == fa and step.bar_cm == (None if step.error_not_measured else model.bar_cm)
                     compared += 1
     assert compared > 60
 

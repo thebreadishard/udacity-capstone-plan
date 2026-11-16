@@ -312,7 +312,7 @@ def test_the_record_names_the_commit_at_launch_and_the_commit_at_the_end(tmp_pat
     monkeypatch.setattr(P, "spectra", lambda d, dH, dH_seeds: {"network": {"sticks": []}})
     # the stubbed steps give no geometry; the corpus holds benzene at the reuse settings since 2 Nov, so reuse stays out of this test,
     # and so does step 6, which reads the geometry (its own tests: tests/test_m08_anharmonic.py)
-    rec = P.run(config(tmp_path, reuse_corpus=False, anharmonic=False))
+    rec = P.run(config(tmp_path, reuse_corpus=False, anharmonic_minutes=0))
     assert calls == ["provenance", "start_geometry"]
     assert rec["provenance"]["commit"] == "launch" and rec["commit_at_end"] == "end"
     assert json.loads((tmp_path / "mol" / "pipeline.json").read_text(encoding="utf-8"))["commit_at_end"] == "end"

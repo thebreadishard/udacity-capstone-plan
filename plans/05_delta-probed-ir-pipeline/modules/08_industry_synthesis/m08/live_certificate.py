@@ -154,7 +154,8 @@ def statement(name: str, version: str, n_seeds: int, lic: dict, seen_text: str) 
         f"{name}: the infrared spectrum of {P.NETWORK} v{version} ({n_seeds} seeds) — B3LYP/6-31G* corrected "
         f"toward {A.HIGHER_LEVEL.split(' (')[0]} — with the {lic['quantity_name']} measured on molecules the network never saw; the "
         f"harmonic positions ω are licensed for {', '.join(lic['licensed_families']) or 'no family'} (decision 65), each band marked; at "
-        f"the coupled-cluster level {A.CC_NOTE}. The scaled B3LYP spectrum is shown as the baseline only. This molecule: {seen_text}.",
+        f"the coupled-cluster level {A.CC_NOTE}. The scaled B3LYP spectrum is shown as the baseline only. This molecule and the "
+        f"ΔH network: {seen_text}.",
         caveat_sentence(lic)]))
 
 
@@ -179,7 +180,8 @@ def certificate(folder: Path, catalog: Catalog) -> dict:
         accuracy=accuracy, bands=bands(r, accuracy, tolerance, lic["licensed_families"]),
         tolerance=dict(per_region=tolerance, rule=FAMILY_SOURCE),
         licence=licence_block(lic) | {"concerns": POS.LICENCE_SCOPE},
-        positions=dict(note=POS.note(summary), anharmonic=summary, drawn=POS.DRAWN),
+        positions=dict(note=POS.note(summary), cautions=POS.cautions(summary), anharmonic=summary, drawn=POS.DRAWN),
+        deliveries=rec.get("deliveries", []),
         cost=dict(steps_s=rec["seconds"], **prices.price_of_run(sum(rec["seconds"].values()), rec["provenance"]["host"])),
         provenance=dict(result=str(folder), run_commit=rec["provenance"]["commit"], run_dirty=rec["provenance"]["dirty"],
                         certificate_commit=commit_hash(), deck_sha16=rec["deck"]["sha16"], low_level_software=rec["low_level"]["b3lyp"].get("software"),
@@ -200,14 +202,14 @@ def _position_lines(bands: list[dict]) -> list[str]:
 def _band_lines(c: dict) -> list[str]:
     """The band table: the printed position first, named ν or ω, the harmonic ω and the step beside it; 'ω licensed' is the
     licence of the harmonic position, never of ν. A certificate without the step keeps one sentence instead of a line per kind."""
-    L = ["| best estimate (cm⁻¹) | printed | harmonic ω, network | Δ_anh | ± of ν (measured, not licensed) | height (km/mol) | "
+    L = [f"| best estimate (cm⁻¹) | printed | harmonic ω, network | Δ_anh | {POS.BAR_HEADER} | height (km/mol) | "
          f"seeds' range of ω | B3LYP ω | baseline ω | family | ω licensed | {c['licence']['quantity_name']} of ω on (a) / (b), cm⁻¹ | "
          "laboratory region | u_band (cm⁻¹) |", "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
     for b in c["bands"]:
         lo, hi = b["seed_range_cm"]
         baseline = b["baseline_cm"] if b["baseline_cm"] is not None else f"— (B3LYP under {vib_min_cm():g} cm⁻¹)"
         step = "—" if b["delta_anh_cm"] is None else f"{b['delta_anh_cm']:+}"
-        bar = "—" if b["delta_anh_cm"] is None else ("not measured" if b["anharmonic_bar_cm"] is None else b["anharmonic_bar_cm"])
+        bar = "—" if b["delta_anh_cm"] is None else ("not measured" if b["step_bar_cm"] is None else b["step_bar_cm"])
         L.append(f"| {b['printed_cm']} | {b['printed']} | {b['network_cm']} | {step} | {bar} | {b['km_mol']} | {lo}–{hi} | {b['b3lyp_cm']} | "
                  f"{baseline} | {b['family']} | {'yes' if b['licensed'] else 'no'} | {b['error_cm']['a']} / {b['error_cm']['b']} | "
                  f"{b['lab_region']} | {b['u_band_cm'] if b['u_band_cm'] is not None else '—'} |")
@@ -257,16 +259,42 @@ def _truth_lines(t: dict | None) -> list[str]:
             "(both independent of the atom order)"]
 
 
+CAUTION_LABELS = (("nu_error", "What the bar is, and what ν's error is"), ("targets", "What the bars rest on"),
+                  ("composition", "This molecule's elements in the anharmonic model's table"))
+
+
+def _sentence(text: str) -> str:
+    return f"{text[0].upper()}{text[1:]}."
+
+
+def _position_paragraphs(c: dict) -> list[str]:
+    """Under the statement: the positions sentence, then — once per certificate with the step — what the bar is and what ν's
+    error is, what the bars rest on, and where it applies how few molecules of these elements the model's table holds."""
+    said = c["positions"].get("cautions") or {}
+    L = [f"**Positions.** {_sentence(c['positions']['note'])}", ""]
+    for key, label in CAUTION_LABELS:
+        if said.get(key):
+            L += [f"**{label}.** {_sentence(said[key])}", ""]
+    return L
+
+
+def _delivery_lines(c: dict) -> list[str]:
+    """The pipeline's deliveries of this result with their times; a certificate of an older record has none to list."""
+    return [f"- delivery — {x['delivery']}: {x['at']}, {x['seconds_since_start']} s after the start" for x in c.get("deliveries", [])]
+
+
 def to_markdown(c: dict) -> str:
     m, n, k, p = c["molecule"], c["network"], c["cost"], c["provenance"]
     listed = m["listed"]
+    model_seen = (c["positions"].get("cautions") or {}).get("seen")
     L = [f"# Certificate — {m['name']} · pipeline {c['pipeline_version']} · {c['date']}", "", c["statement"], "",
-         f"**Positions.** {c['positions']['note'][0].upper()}{c['positions']['note'][1:]}.", "", "## Molecule", "",
+         *_position_paragraphs(c), "## Molecule", "",
          f"- {m['smiles']}, {m['formula']}, {m['n_atoms']} atoms ({', '.join(m['elements'])}); the network's training set spans "
          f"{m['training_atoms'][0]}–{m['training_atoms'][1]} atoms: {'inside' if m['inside_training_sizes'] else 'OUTSIDE'}",
          "- catalogue: " + (f"listed as {listed['id']} ({listed['name']}, rung {listed['rung']}); its export's B3LYP positions lie within "
                             f"{listed.get('b3lyp_max_abs_diff_cm', '—')} cm⁻¹ of this run's ({listed['source']})" if listed else "not listed"),
-         f"- the network: {m['seen']['text']}", *_truth_lines(m["truth"]),
+         f"- the ΔH network: {m['seen']['text']}", *([f"- {model_seen}"] if model_seen else []), *_truth_lines(m["truth"]),
+         *_delivery_lines(c),
          "", f"## Spectrum, band by band ({n['name']} v{n['version']}, {len(n['models'])} seeds)", "", *_band_lines(c), "",
          f"*Laboratory region and u_band:* {c['tolerance']['rule']}, read at the printed position.", "",
          "## How well the network is known (its product-error record and its evaluation records)", "", *_accuracy_lines(c["accuracy"]), "",

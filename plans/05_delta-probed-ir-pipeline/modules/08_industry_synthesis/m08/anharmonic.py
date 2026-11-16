@@ -11,12 +11,24 @@ writes down what came back:
    (`xtb_anharmonic.sh`, `gvpt2_labels.py`), called as the repository calls them;
 3. `mode_steps` on the two with the committed artefact, then `carry_to_bands` onto the modes of H_low + ΔH, by overlap.
 
-Every network stick of the record gets its ν, its Δ_anh, the family's bar and the reason where it has no step; the whole output is
-saved beside the other steps' files as `anharmonic.json`. A molecule the step cannot serve — an element the model never saw, a
-B3LYP Hessian `dpir.qff.harmonic` refuses, a force field that fails, is noisy or is stopped at the cap — keeps its harmonic
-positions and the record says why: the run does not fail. Anything else that goes wrong is an error and raises.
+Every network stick of the record gets its ν, its Δ_anh, the step's bar for the family and the reason where it has no step; the
+whole output is saved beside the other steps' files as `anharmonic.json`. A molecule the step cannot serve — an element the
+model's training table does not hold, a B3LYP Hessian `dpir.qff.harmonic` refuses, a force field that fails, is noisy, is stopped
+at the memory cap or does not finish within the time budget — keeps its harmonic positions and the record says why: the run does
+not fail. Anything else that goes wrong is an error and raises; the pipeline has delivered the harmonic result before step 6
+starts, so no error here can lose it (`pipeline.run`).
 
-    python -m m08.anharmonic <pipeline result folder> [--shards 2] [--cap-mb 1536] [--threads 4] [--dry-run]
+The time budget (`FieldSettings.budget_s`; the pipeline's --anharmonic-minutes, default 120) is kept inside WSL: the force
+field runs under `timeout --kill-after=30` — here uutils coreutils 0.10.0, whose own tests are tests/by-util/test_timeout.rs. What
+it does was checked on this WSL on 16 Nov 2026, also under `probes/wsl_capped.sh`: at the budget it sends SIGTERM to its whole
+process group (two background sleeps were gone) and exits 124; a process that ignores SIGTERM makes it exit 137 after the
+kill-after, and it then kills its own child only — a grandchild that ignored the signal was left running. So after a stop (124,
+137 or 143) the command itself kills every process that still names the result's anharmonic folder (checked the same day: one
+such process before, none after). 137 is also the memory cap's exit; the elapsed time tells the two apart. The stopped run's
+finished Hessians stay in <result>/anharmonic/xtb; this pipeline run does not take them up again, but the command below does,
+because `probes/xtb_anharmonic.sh` skips the Hessians it finds.
+
+    python -m m08.anharmonic <pipeline result folder> [--shards 2] [--cap-mb 1536] [--threads 4] [--minutes 120] [--dry-run]
 
 adds the step to a finished result (its pipeline.json is rewritten with the sticks' ν; the certificate is written again by
 `python -m m08.live_certificate <folder>`).
@@ -42,12 +54,16 @@ from . import positions as POS
 import anharmonic_step as AS
 import rungC_intensities as RINT
 from anchor_registry import sha16
+from learning_curve_layerA import molecule_features
 
 FIELD_SCRIPT = P.PLAN / "probes" / "xtb_field_for_step.sh"
 FOLDER, RECORD, LOG = "anharmonic", "anharmonic.json", "anharmonic_field.log"
-MODEL_ELEMENTS = frozenset(AS.MASS)          # the elements of the model's training molecules (dpir.qff's mass table holds no other)
 STICK_TOL_CM = 0.051                         # the record rounds positions to 0.1 cm⁻¹
 MIN_CAP_MB = 1024                            # below this one dxtb process of a 12-atom molecule does not fit beside the label step
+MIN_BUDGET_S = 60                            # a budget under a minute stops every force field: the switch for that is 'off'
+KILL_AFTER_S = 30                            # after the budget's SIGTERM, how long the processes get before SIGKILL
+TIMED_OUT = 124                              # coreutils timeout's exit code when the time ran out
+RULE_FREQ_TOL_CM = 1.0                       # the two rules' B3LYP modes are the same modes: their ω differ by the mass tables only
 FAILED_LINE = re.compile(r"^=== \(ANH\) FAILED: (.*?) \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$", re.MULTILINE)
 PEAK_LINE = re.compile(r"^=== \(ANH\) peak memory (\d+) MB", re.MULTILINE)
 SOFTWARE = ("GFN2-xTB: the minimum by xtb, the Hessians by dxtb (central differences of its forces) at ±0.10 along every mode, "
@@ -66,21 +82,29 @@ class NotApplied(Exception):
 
 @dataclass(frozen=True)
 class FieldSettings:
-    """How the force field is computed: `shards` dxtb processes of `omp_threads` threads each, under a WSL cap of `cap_mb`."""
+    """How the force field is computed: `shards` dxtb processes of `omp_threads` threads each, under a WSL cap of `cap_mb`, and
+    stopped after `budget_s` seconds."""
     shards: int
     omp_threads: int
     cap_mb: int
+    budget_s: int
 
     def __post_init__(self) -> None:
         if min(self.shards, self.omp_threads) < 1 or self.cap_mb < MIN_CAP_MB:
             raise ValueError(f"force-field settings {self}: at least one shard and one thread, and a cap of {MIN_CAP_MB} MB or more")
+        if self.budget_s < MIN_BUDGET_S:
+            raise ValueError(f"a time budget of {self.budget_s} s: at least {MIN_BUDGET_S} s, or the step switched off")
+
+    @property
+    def budget_minutes(self) -> float:
+        return self.budget_s / 60
 
     @classmethod
-    def of(cls, threads: int, shards: int, cap_mb: int) -> FieldSettings:
-        """`threads` cores shared out over `shards` processes."""
+    def of(cls, threads: int, shards: int, cap_mb: int, minutes: float) -> FieldSettings:
+        """`threads` cores shared out over `shards` processes, for at most `minutes`."""
         if shards < 1:
             raise ValueError(f"{shards} force-field processes: at least one")
-        return cls(shards, max(1, threads // shards), cap_mb)
+        return cls(shards, max(1, threads // shards), cap_mb, round(60 * minutes))
 
 
 def load_artefact() -> AS.Artefact:
@@ -93,7 +117,10 @@ def artefact_record(artefact: AS.Artefact) -> dict:
     path = Path(AS.ARTEFACT)
     return {"file": path.relative_to(P.PLAN).as_posix(), "sha16": sha16(path), "commit": artefact.header["commit"],
             "written": artefact.header["written"], "bars_cm": AS.bars(artefact),
-            "training_molecules": len(artefact.header["training_molecules"])}
+            "training_molecules": len(artefact.header["training_molecules"]), "elements": sorted(AS.elements(artefact)),
+            "target_composition": artefact.header["target_composition"],
+            "targets": {fa: {"rows": m.n_target_rows, "per_target_rms_cm": m.per_target_rms_cm}
+                        for w in artefact.windows for fa, m in w.families.items()}}
 
 
 def geometry(d: Path) -> tuple[list[str], np.ndarray, np.ndarray]:
@@ -102,11 +129,13 @@ def geometry(d: Path) -> tuple[list[str], np.ndarray, np.ndarray]:
     return [s.capitalize() for s in g["symbols"]], np.asarray(g["coords_bohr"], float).reshape(-1, 3), np.asarray(g["masses_amu"], float)
 
 
-def b3lyp_modes(symbols: list[str], coords: np.ndarray, H_low: np.ndarray) -> AS.Modes:
-    """The molecule's B3LYP modes as the model's inputs need them, or the reason the model cannot take this molecule."""
-    unseen = sorted(set(symbols) - MODEL_ELEMENTS)
+def b3lyp_modes(symbols: list[str], coords: np.ndarray, H_low: np.ndarray, artefact: AS.Artefact) -> AS.Modes:
+    """The molecule's B3LYP modes as the model's inputs need them, or the reason the model cannot take this molecule: an element
+    its training table (the artefact's own list) does not hold, or modes `dpir.qff.harmonic` refuses."""
+    known = AS.elements(artefact)
+    unseen = sorted(set(symbols) - known)
     if unseen:
-        raise NotApplied(f"element(s) {', '.join(unseen)} outside the anharmonic model's training set ({', '.join(sorted(MODEL_ELEMENTS))})")
+        raise NotApplied(f"element(s) {', '.join(unseen)} outside the anharmonic model's training table ({', '.join(sorted(known))})")
     try:
         return AS.Modes.from_hessian(H_low, symbols, coords)
     except ValueError as e:
@@ -124,11 +153,17 @@ def write_reference(d: Path, symbols: list[str], coords: np.ndarray, H_low: np.n
 
 
 def field_command(name: str, d: Path, s: FieldSettings, dry: bool = False) -> list[str]:
-    """The WSL command of the force field and its label, under the memory cap; with `dry`, the script's own check of its tools."""
+    """The WSL command of the force field and its label, under the memory cap and the time budget (`timeout` signals the whole
+    process group at the budget, and kills what is left KILL_AFTER_S later); with `dry`, the script's own check of its tools."""
     q, w = shlex.quote, P.wsl_path
-    inner = (f"export SHARDS={s.shards} OMP_NUM_THREADS={s.omp_threads} PYTHONUNBUFFERED=1; "
-             f"bash {q(w(P.WSL_CAPPED))} {s.cap_mb} -- bash {q(w(FIELD_SCRIPT))} {q(name)} {q(w(d / FOLDER / 'G'))} {q(w(d / FOLDER))}"
-             + (" --dry-run" if dry else ""))
+    script = f"bash {q(w(FIELD_SCRIPT))} {q(name)} {q(w(d / FOLDER / 'G'))} {q(w(d / FOLDER))}"
+    capped = f"export SHARDS={s.shards} OMP_NUM_THREADS={s.omp_threads} PYTHONUNBUFFERED=1; bash {q(w(P.WSL_CAPPED))} {s.cap_mb} -- "
+    if dry:
+        return ["wsl.exe", "-e", "bash", "-lc", f"{capped}{script} --dry-run"]
+    stops = " || ".join(f"[ $rc -eq {code} ]" for code in (TIMED_OUT, *P.KILLED_AT_CAP))
+    # what a stop may leave: every process that names the folder, but this shell ($$), whose own command line names it too
+    sweep = f"pgrep -f -- {q(w(d / FOLDER))} | grep -vx $$ | xargs -r kill -KILL"
+    inner = f"{capped}timeout --kill-after={KILL_AFTER_S} {s.budget_s} {script}; rc=$?; if {stops}; then {sweep}; fi; exit $rc"
     return ["wsl.exe", "-e", "bash", "-lc", inner]
 
 
@@ -140,7 +175,11 @@ def force_field(name: str, d: Path, s: FieldSettings) -> tuple[AS.XtbField, dict
     log = (d / LOG).read_text(encoding="utf-8", errors="replace")
     peak = PEAK_LINE.search(log)
     record = {"seconds": round(time.time() - t, 1), "peak_memory_mb": int(peak.group(1)) if peak else None, "shards": s.shards,
-              "omp_threads": s.omp_threads, "cap_mb": s.cap_mb, "software": SOFTWARE, "log": LOG}
+              "omp_threads": s.omp_threads, "cap_mb": s.cap_mb, "budget_minutes": s.budget_minutes, "software": SOFTWARE, "log": LOG}
+    # a process that outlived the budget's SIGTERM is killed, and the exit is then the kill's, as at the memory cap: the clock tells
+    if rc == TIMED_OUT or (rc in P.KILLED_AT_CAP and record["seconds"] >= s.budget_s):
+        raise NotApplied(f"{POS.timed_out(s.budget_minutes)}: the GFN2-xTB force field was stopped; its finished Hessians stay in "
+                         f"{FOLDER}/xtb ({LOG})", record)
     if rc in P.KILLED_AT_CAP:
         raise NotApplied(f"the GFN2-xTB force field was stopped at the WSL cap of {s.cap_mb} MB ({LOG})", record)
     if rc != 0:
@@ -165,7 +204,7 @@ def dry_run(req: Request) -> int:
     symbols, coords, _ = geometry(req.folder)
     H_low = low_hessian(req.folder)
     try:
-        b3lyp_modes(symbols, coords, H_low)
+        b3lyp_modes(symbols, coords, H_low, req.artefact)
     except NotApplied as e:
         print(f"[anharmonic] dry run: the step would not be applied — {e.reason}", flush=True)
         return 0
@@ -214,11 +253,38 @@ def not_applied(out: dict, reason: str, field: dict | None = None) -> dict:
 
 @dataclass(frozen=True)
 class Request:
-    """One molecule's step: its name and result folder, the artefact (None is the switch --no-anharmonic) and the field's settings."""
+    """One molecule's step: its name, result folder and canonical SMILES (None where the record names none), the artefact and the
+    field's settings; artefact and settings None is the step switched off."""
     name: str
     folder: Path
+    smiles: str | None
     artefact: AS.Artefact | None
-    settings: FieldSettings
+    settings: FieldSettings | None
+
+    def __post_init__(self) -> None:
+        if (self.artefact is None) != (self.settings is None):
+            raise ValueError("the step is on with an artefact and settings, or off with neither")
+
+
+def first_delivery(req: Request, out: dict) -> dict:
+    """The spectra of the pipeline's first delivery, before step 6 starts: every stick harmonic, and the note that says the step
+    is running and what it will add — or, with the step switched off, that it is off (that delivery is then the only one)."""
+    if req.artefact is None:
+        return not_applied(out, POS.SWITCHED_OFF)
+    for stick in out["network"]["sticks"]:
+        stick["nu_cm"], stick["anharmonic"] = None, None
+    return with_summary(out, {"status": POS.RUNNING, "reason": None, "model": AS.MODEL, "budget_minutes": req.settings.budget_minutes,
+                              "field": None})
+
+
+def certificate_families(d: Path, H_low: np.ndarray, omega: np.ndarray) -> list[str]:
+    """Each B3LYP mode's family by the certificate's rule (`learning_curve_layerA.molecule_features`, as `live_certificate` reads
+    it), in the step's mode order; the two mode lists must be the same modes."""
+    feats = molecule_features(d, lo=H_low, hi=H_low)
+    freq = np.asarray(feats["freq"], float)
+    if freq.shape != omega.shape or np.abs(freq - omega).max() > RULE_FREQ_TOL_CM:
+        raise RuntimeError(f"{d.name}: the certificate's family rule and the anharmonic step do not see the same B3LYP modes")
+    return [str(f) for f in feats["family"]]
 
 
 def step(req: Request, dH: np.ndarray, out: dict) -> dict:
@@ -230,19 +296,19 @@ def step(req: Request, dH: np.ndarray, out: dict) -> dict:
     symbols, coords, masses = geometry(d)
     H_low = low_hessian(d)
     try:
-        modes = b3lyp_modes(symbols, coords, H_low)
+        modes = b3lyp_modes(symbols, coords, H_low, artefact)
         write_reference(d, symbols, coords, H_low)
         xtb, field_record = force_field(req.name, d, req.settings)
     except NotApplied as e:
         print(f"[pipeline] anharmonic step not applied: {e.reason}", flush=True)
         return not_applied(out, e.reason, e.field)
-    steps = AS.mode_steps(modes, xtb, artefact)
+    steps = AS.agree_on_family(AS.mode_steps(modes, xtb, artefact), certificate_families(d, H_low, modes.omega))
     sticks = out["network"]["sticks"]
     bands = AS.carry_to_bands(corrected_modes(H_low + dH, masses, sticks), modes.q, steps)
     for stick, band in zip(sticks, bands, strict=True):
         stick["nu_cm"], stick["anharmonic"] = stick_entry(stick["omega_cm"], band, steps)
     summary = {"status": POS.APPLIED, "reason": None, "model": AS.MODEL, "artefact": artefact_record(artefact), "bands": counts(bands),
-               "field": field_record}
+               "seen": AS.seen(artefact, req.smiles), "composition": AS.composition(artefact, symbols), "field": field_record}
     P.write_json(d / RECORD, {"summary": summary, "modes": [s.as_record() for s in steps],
                               "bands": [{"omega_cm": s["omega_cm"], "nu_cm": s["nu_cm"], **b.as_record()}
                                         for s, b in zip(sticks, bands, strict=True)]})
@@ -256,13 +322,15 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--threads", type=int, default=4)
     ap.add_argument("--shards", type=int, default=2)
     ap.add_argument("--cap-mb", type=int, default=1536)
+    ap.add_argument("--minutes", type=float, default=120, help="the force field's time budget; it is stopped there")
     ap.add_argument("--dry-run", action="store_true", help="check the artefact, the modes and the WSL tools; compute nothing")
     a = ap.parse_args(argv)
     d = a.result.resolve()
     rec = json.loads((d / "pipeline.json").read_text(encoding="utf-8"))
     if POS.summary_of(rec["spectra"])["status"] == POS.APPLIED:
         raise SystemExit(f"{d}: the anharmonic step is already in this result; a result is never overwritten")
-    req = Request(rec["name"], d, load_artefact(), FieldSettings.of(a.threads, a.shards, a.cap_mb))
+    req = Request(rec["name"], d, rec["admission"].get("smiles"), load_artefact(),
+                  FieldSettings.of(a.threads, a.shards, a.cap_mb, a.minutes))
     if a.dry_run:
         return dry_run(req)
     with np.load(d / P.CORRECTION) as z:
