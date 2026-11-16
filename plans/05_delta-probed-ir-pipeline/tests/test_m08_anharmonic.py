@@ -229,7 +229,7 @@ def test_modes_the_force_field_cannot_take_keep_the_run_alive(result, artefact, 
     # round two, finding 4: the reason a certificate prints names what is kept and the command that takes the step up
     (124, "=== (XTB) benzene: 61 Hessians to compute\n=== (SCOPE) stopped at the budget of 7200 s\n",
      "the anharmonic step did not finish within 120 minutes; the force field's finished Hessians are kept in the result's anharmonic/xtb, "
-     "and `python -m m08.anharmonic <result folder>` takes the step up from them (anharmonic_field.log)"),
+     "and `python -m m08.anharmonic <result folder>` takes the step up from them; its scope m08-anharmonic-benzene-"),
     (0, "=== (ANH) done: benzene in 5 s 2026-11-16 20:00:05\n", "cannot be read: ")])
 def test_a_force_field_that_fails_leaves_harmonic_positions_with_the_reason(result, artefact, monkeypatch, rc, log, expect):  # noqa: F811
     record(result, ZERO, [ZERO])
@@ -244,6 +244,12 @@ def test_a_force_field_that_fails_leaves_harmonic_positions_with_the_reason(resu
     assert s["status"] == POS.NOT_APPLIED and expect in s["reason"] and out["note"].startswith("positions are harmonic (ω)")
     assert all(x["nu_cm"] is None for x in out["network"]["sticks"]) and not (result / AN.RECORD).exists()
     assert s["field"]["cap_mb"] == 1536 and s["field"]["budget_minutes"] == 120 and s["field"]["log"] == AN.LOG
+    # round three, B: the scope's unit is in the field's record, and a stop's reason names it with the command that stops it
+    unit = s["field"]["unit"]
+    assert re.fullmatch(r"m08-anharmonic-benzene-[0-9a-f]{10}\.scope", unit)
+    assert (result / AN.FOLDER / AN.UNIT_FILE).read_text(encoding="utf-8") + ".scope" == unit
+    if rc == AN.TIMED_OUT:
+        assert f"its scope {unit} was stopped at the budget and left no process (`wsl -e systemctl --user stop {unit}` would stop" in s["reason"]
     assert (result / AN.FOLDER / "G" / "ref.json").is_file()            # the reference record the runner starts from was written
 
 
@@ -290,13 +296,14 @@ def test_the_runner_reports_its_peak_memory_and_time(result, monkeypatch):  # no
     monkeypatch.setattr(AS.XtbField, "from_folder", classmethod(lambda cls, x, label: seen.update(x=x, label=label) or "field"))
     field, rec = AN.force_field("benzene", result, SETTINGS)
     assert field == "field" and rec["peak_memory_mb"] == 612 and rec["shards"] == 2 and rec["omp_threads"] == 2 and rec["cap_mb"] == 1536
+    assert rec["unit"].startswith("m08-anharmonic-benzene-") and rec["unit"].endswith(".scope")
     assert seen["x"].endswith(str(Path("anharmonic") / "xtb" / "benzene" / "X")) and seen["label"].endswith("benzene.json")
 
 
 def test_the_field_command_is_the_capped_script_under_its_time_budget(tmp_path):
     d = (tmp_path / "mol").resolve()
-    inner = AN.field_command("mol", d, AN.FieldSettings.of(6, 3, 2048, 90))[-1]
-    assert AN.field_command("mol", d, SETTINGS)[:4] == ["wsl.exe", "-e", "bash", "-lc"]
+    inner = AN.field_command("mol", d, AN.FieldSettings.of(6, 3, 2048, 90), AN.scope_unit("mol"))[-1]
+    assert AN.field_command("mol", d, SETTINGS, "u")[:4] == ["wsl.exe", "-e", "bash", "-lc"]
     assert inner.startswith("export SHARDS=3 OMP_NUM_THREADS=2 PYTHONUNBUFFERED=1; bash ")
     # the scope's own script, with a unit name of this run's, the cap, the budget and the kill-after; no process is found by a pattern
     assert re.search(r"/probes/run_in_scope\.sh m08-anharmonic-mol-[0-9a-f]{10} 2048 5400 30 -- bash ", inner)
@@ -304,7 +311,8 @@ def test_the_field_command_is_the_capped_script_under_its_time_budget(tmp_path):
     assert inner.endswith(f"/probes/xtb_field_for_step.sh mol {P.wsl_path(d / 'anharmonic' / 'G')} {folder}")
     assert "pgrep" not in inner and "pkill" not in inner and "wsl_capped" not in inner
     assert AN.scope_unit("mol") != AN.scope_unit("mol")                          # two runs never share a unit
-    assert AN.field_command("mol", d, SETTINGS, dry=True)[-1].endswith(f"{folder} --dry-run")
+    assert AN.field_command("mol", d, SETTINGS, "u", dry=True)[-1].endswith(f"{folder} --dry-run")
+    assert "/probes/run_in_scope.sh named-by-the-caller 1536 7200 30 -- " in AN.field_command("mol", d, SETTINGS, "named-by-the-caller")[-1]
 
 
 @pytest.mark.parametrize(("args", "match"), [((4, 0, 1536, 120), "at least one"), ((4, 2, 512, 120), "at least one"),
@@ -452,11 +460,36 @@ def test_no_sentence_about_nu_can_be_read_as_a_licence():
 
 # ---------------------------------------------------------------- the pipeline's switch and its two deliveries
 
+REQUIRED = dict(name="mol", smiles=BENZENE, models=(PIN_MODEL,), psi4_python=Path(sys.executable))
+
+
 def base_config(tmp_path: Path, **kw: object) -> P.PipelineConfig:
-    return P.PipelineConfig(**(dict(name="mol", out_root=tmp_path, smiles=BENZENE, models=(PIN_MODEL,), psi4_python=Path(sys.executable)) | kw))
+    """A request that asks for the step, with the budget that is to become the default."""
+    return P.PipelineConfig(**(REQUIRED | dict(out_root=tmp_path, anharmonic_minutes=120) | kw))
 
 
-def test_the_step_is_on_by_default_under_a_time_budget_checked_up_front(tmp_path, capsys):
+def test_by_default_no_run_starts_a_force_field_and_the_certificate_says_the_step_exists(tmp_path, monkeypatch):
+    """Round three, A: until the first real run has passed its checks the budget's default is 0. A run that names no budget asks
+    WSL nothing, reads no artefact, starts no runner, delivers once — and its note says the step exists and how to switch it on."""
+    default = P.PipelineConfig(**REQUIRED, out_root=tmp_path, reuse_corpus=False)
+    assert default.anharmonic_minutes == 0 and default.anharmonic is False
+    assert P.PipelineConfig.model_fields["anharmonic_minutes"].default == 0
+    calls: list[str] = []
+    stubbed_run(monkeypatch, calls, preflight=False)
+    for name in ("preflight", "load_artefact"):
+        monkeypatch.setattr(AN, name, lambda name=name: pytest.fail(f"{name} was called although no budget was named"))
+    monkeypatch.setattr(AN, "step", lambda req, dH, out: pytest.fail("step 6 ran although no budget was named"))
+    monkeypatch.setattr(P, "_run", no_runner)
+    delivered: list[str] = []
+    rec = P.run(default, lambda folder, what: delivered.append(what))
+    assert delivered == [P.ONLY_DELIVERY] and rec["spectra"]["anharmonic"]["status"] == POS.NOT_APPLIED
+    assert rec["spectra"]["note"] == ("positions are harmonic (ω): the anharmonic step was not applied — the step exists and was not run: it "
+                                      "is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)")
+    common = ["--name", "m", "--out", str(tmp_path), "--smiles", BENZENE]
+    assert P.parse_args(common).anharmonic_minutes is None and not P.parse_args(common).no_anharmonic      # the command line adds none
+
+
+def test_the_step_is_asked_for_with_a_time_budget_checked_up_front(tmp_path, capsys):
     cfg = base_config(tmp_path)
     assert cfg.anharmonic is True and (cfg.anharmonic_minutes, cfg.anharmonic_shards, cfg.anharmonic_cap_mb) == (120, 2, 1536)
     assert base_config(tmp_path, anharmonic_minutes=0).anharmonic is False
@@ -610,6 +643,55 @@ def test_an_interrupt_in_step_6_finalises_the_harmonic_result_before_it_is_raise
     assert delivered == [P.FIRST_DELIVERY, P.FINAL_HARMONIC] and rec["spectra"]["anharmonic"] == {
         "status": POS.NOT_APPLIED, "reason": reason, "model": "x2*", "field": None}
     assert progress_of(tmp_path)["delivery"]["final"] is True
+
+
+def test_an_interrupts_reason_names_the_scope_that_may_still_run(tmp_path, monkeypatch):
+    """Round three, B: after Ctrl-C the force field's scope in WSL is nobody's child; the certificate's reason names the unit,
+    says it may run on until its own time limit, and gives the command that stops it."""
+    calls: list[str] = []
+    stubbed_run(monkeypatch, calls)
+    monkeypatch.setattr(AN, "load_artefact", lambda: "artefact")
+
+    def interrupted(req: AN.Request, dH: np.ndarray, out: dict) -> dict:
+        (req.folder / AN.FOLDER).mkdir()
+        (req.folder / AN.FOLDER / AN.UNIT_FILE).write_text("m08-anharmonic-mol-0123456789", encoding="utf-8")   # as force_field leaves it
+        raise KeyboardInterrupt
+
+    monkeypatch.setattr(AN, "step", interrupted)
+    with pytest.raises(KeyboardInterrupt):
+        P.run(base_config(tmp_path, reuse_corpus=False))
+    assert stored(tmp_path)["spectra"]["anharmonic"]["reason"] == (
+        "the anharmonic step was interrupted: KeyboardInterrupt; the force field's scope m08-anharmonic-mol-0123456789.scope may still "
+        "run in WSL until its own time limit — `wsl -e systemctl --user stop m08-anharmonic-mol-0123456789.scope` stops it")
+    assert AN.scope_note(tmp_path / "no such result") == ""
+
+
+def test_a_resume_is_a_delivery_like_the_others(tmp_path, monkeypatch):
+    """Round three, D: `python -m m08.anharmonic <folder>` on a result that ran out of time — the record gets delivery 3, the
+    certificate's pair is written, and the progress record's delivery number moves, which is what makes a live show read again."""
+    calls: list[str] = []
+    stubbed_run(monkeypatch, calls)
+    monkeypatch.setattr(AN, "load_artefact", lambda: "artefact")
+    monkeypatch.setattr(AN, "step", lambda req, dH, out: AN.not_applied(out, POS.timed_out(req.settings.budget_minutes)))
+    P.run(base_config(tmp_path, reuse_corpus=False))
+    d = tmp_path / "mol"
+    assert progress_of(tmp_path)["delivery"]["number"] == 2 and [x["number"] for x in stored(tmp_path)["deliveries"]] == [1, 2]
+    np.savez(d / P.CORRECTION, dH=np.zeros(1))
+    monkeypatch.setattr(AN, "step", lambda req, dH, out: out | {"anharmonic": {"status": POS.APPLIED, "reason": None, "field": {}}, "note": "ν"})
+    written = []
+    monkeypatch.setattr("m08.catalog.Catalog", lambda: "catalogue")
+    monkeypatch.setattr("m08.live_certificate.certificate", lambda folder, catalog: {"delivery": len(stored(tmp_path)["deliveries"])})
+    monkeypatch.setattr("m08.live_certificate.write", lambda c, folder: written.append(c) or (folder / "certificate.json", folder / "certificate.md"))
+    assert AN.main([str(d), "--minutes", "30"]) == 0
+    rec = stored(tmp_path)
+    assert [(x["number"], x["delivery"]) for x in rec["deliveries"]] == [(1, P.FIRST_DELIVERY), (2, P.FINAL_HARMONIC), (3, P.RESUMED_DELIVERY)]
+    assert rec["spectra"]["note"] == "ν" and written == [{"delivery": 3}]
+    assert progress_of(tmp_path)["delivery"] == {"number": 3, "final": True,
+                                                 "state": "final: with the anharmonic positions (the step was taken up again)"}
+    (d / "progress.json").unlink()                               # a copied result without a progress record is delivered all the same
+    rec["spectra"]["anharmonic"] = {"status": POS.NOT_APPLIED, "reason": "x"}
+    P.write_json(d / "pipeline.json", rec)
+    assert AN.main([str(d)]) == 0 and stored(tmp_path)["deliveries"][-1]["number"] == 4
 
 
 def test_switched_off_there_is_one_delivery_and_no_force_field(tmp_path, monkeypatch):

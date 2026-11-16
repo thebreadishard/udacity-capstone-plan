@@ -169,6 +169,9 @@ def test_the_live_show_has_the_result_at_the_first_delivery_and_asks_again_at_th
     assert "const delivery = p.delivery ? p.delivery.number : (p.finished ? 1 : 0);" in template
     assert "if (p.finished && live.shown !== delivery && !live.asking) {" in template and "live.shown = delivery;" in template
     assert "p.delivery ? p.delivery.state" in template
+    # round three, C: a fetch that throws leaves the page able to ask again
+    assert "} catch (e) { return; } finally { live.asking = false; }" in template
+    assert template.count("live.asking = false;") == 1 and template.index("live.asking = true;") < template.index("finally { live.asking = false; }")
 
 
 def test_a_result_without_the_step_is_one_sentence_not_a_line_per_band(result, accuracy):  # noqa: F811

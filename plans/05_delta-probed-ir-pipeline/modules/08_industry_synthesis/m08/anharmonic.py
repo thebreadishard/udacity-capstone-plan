@@ -18,7 +18,7 @@ at the memory cap or does not finish within the time budget — keeps its harmon
 not fail. Anything else that goes wrong is an error and raises; the pipeline has delivered the harmonic result before step 6
 starts, so no error here can lose it (`pipeline.run`).
 
-The time budget (`FieldSettings.budget_s`; the pipeline's --anharmonic-minutes, default 120) is kept inside WSL by
+The time budget (`FieldSettings.budget_s`; the pipeline's --anharmonic-minutes) is kept inside WSL by
 `probes/run_in_scope.sh`: the force field runs in a systemd user scope of this run's own name (the memory properties of
 `probes/wsl_capped.sh`, which is not used here because its scope has no name to ask for), under `timeout`. Whatever the exit,
 the script reads the unit's cgroup, kills what is left in it and fails if anything survives — ownership, not a pattern on
@@ -29,8 +29,9 @@ does, because `probes/xtb_anharmonic.sh` skips the Hessians it finds — and the
 
     python -m m08.anharmonic <pipeline result folder> [--shards 2] [--cap-mb 1536] [--threads 4] [--minutes 120] [--dry-run]
 
-adds the step to a finished result (its pipeline.json is rewritten with the sticks' ν; the certificate is written again by
-`python -m m08.live_certificate <folder>`).
+adds the step to a finished result, or takes up one that ran out of time. That is a delivery like the pipeline's own
+(`pipeline._deliver`): pipeline.json gets the sticks' ν and a numbered delivery, the certificate's pair is written again, and the
+result's progress record, where it has one, gets the delivery's number, so that a live show reads the result again.
 """
 from __future__ import annotations
 
@@ -61,6 +62,7 @@ FIELD_SCRIPT = P.PLAN / "probes" / "xtb_field_for_step.sh"
 SCOPE_SCRIPT = P.PLAN / "probes" / "run_in_scope.sh"
 SURVIVORS = 70                               # run_in_scope.sh: processes of the unit outlived SIGKILL
 FOLDER, RECORD, LOG = "anharmonic", "anharmonic.json", "anharmonic_field.log"
+UNIT_FILE = "scope_unit"                     # in <result>/anharmonic: the systemd unit of the force field that was started last
 STICK_TOL_CM = 0.051                         # the record rounds positions to 0.1 cm⁻¹
 MIN_CAP_MB = 1024                            # below this one dxtb process of a 12-atom molecule does not fit beside the label step
 MIN_BUDGET_S = 60                            # a budget under a minute stops every force field: the switch for that is 'off'
@@ -161,12 +163,27 @@ def scope_unit(name: str) -> str:
     return f"m08-anharmonic-{name}-{uuid.uuid4().hex[:10]}"
 
 
-def field_command(name: str, d: Path, s: FieldSettings, dry: bool = False) -> list[str]:
-    """The WSL command of the force field and its label, in a scope of its own name under the memory cap and the time budget
+def stop_command(unit: str) -> str:
+    """What stops a force field's scope by hand, from Windows."""
+    return f"wsl -e systemctl --user stop {unit}.scope"
+
+
+def scope_note(d: Path) -> str:
+    """For the reason of an interrupted step: the scope its force field was started in, which may outlive the interrupt, and the
+    command that stops it; '' where no force field was started."""
+    path = d / FOLDER / UNIT_FILE
+    if not path.is_file():
+        return ""
+    unit = path.read_text(encoding="utf-8").strip()
+    return (f"; the force field's scope {unit}.scope may still run in WSL until its own time limit — `{stop_command(unit)}` stops it")
+
+
+def field_command(name: str, d: Path, s: FieldSettings, unit: str, dry: bool = False) -> list[str]:
+    """The WSL command of the force field and its label, in the scope `unit` under the memory cap and the time budget
     (`probes/run_in_scope.sh`, which leaves no process of the scope behind); with `dry`, the script's own check of its tools."""
     q, w = shlex.quote, P.wsl_path
     inner = (f"export SHARDS={s.shards} OMP_NUM_THREADS={s.omp_threads} PYTHONUNBUFFERED=1; "
-             f"bash {q(w(SCOPE_SCRIPT))} {scope_unit(name)} {s.cap_mb} {s.budget_s} {KILL_AFTER_S} -- "
+             f"bash {q(w(SCOPE_SCRIPT))} {unit} {s.cap_mb} {s.budget_s} {KILL_AFTER_S} -- "
              f"bash {q(w(FIELD_SCRIPT))} {q(name)} {q(w(d / FOLDER / 'G'))} {q(w(d / FOLDER))}" + (" --dry-run" if dry else ""))
     return ["wsl.exe", "-e", "bash", "-lc", inner]
 
@@ -185,15 +202,21 @@ def force_field(name: str, d: Path, s: FieldSettings) -> tuple[AS.XtbField, dict
     """The molecule's GFN2-xTB force field with its GVPT2 label, computed in WSL from <result>/anharmonic/G/ref.json; and the
     run's record (seconds, peak memory where the cap's scope reports it). Raises NotApplied where there is no usable field."""
     t = time.time()
-    rc = P._run(field_command(name, d, s), d / LOG, "GFN2-xTB quartic force field and its GVPT2 label (WSL)")
+    unit = scope_unit(name)
+    (d / FOLDER).mkdir(parents=True, exist_ok=True)
+    (d / FOLDER / UNIT_FILE).write_text(unit, encoding="utf-8")       # before the run: an interrupt must be able to name the scope
+    rc = P._run(field_command(name, d, s, unit), d / LOG, "GFN2-xTB quartic force field and its GVPT2 label (WSL)")
     log = (d / LOG).read_text(encoding="utf-8", errors="replace")
     peak = PEAK_LINE.search(log)
     record = {"seconds": round(time.time() - t, 1), "peak_memory_mb": int(peak.group(1)) if peak else None, "shards": s.shards,
-              "omp_threads": s.omp_threads, "cap_mb": s.cap_mb, "budget_minutes": s.budget_minutes, "software": SOFTWARE, "log": LOG}
+              "omp_threads": s.omp_threads, "cap_mb": s.cap_mb, "budget_minutes": s.budget_minutes, "unit": f"{unit}.scope",
+              "software": SOFTWARE, "log": LOG}
     if rc == SURVIVORS:
-        raise RuntimeError(f"processes of the force field's scope survived its stop ({LOG}): stop them by hand before anything else runs")
+        raise RuntimeError(f"processes of the force field's scope {unit}.scope survived its stop ({LOG}): `{stop_command(unit)}`, "
+                           "and look, before anything else runs")
     if rc == TIMED_OUT:
-        raise NotApplied(f"{POS.timed_out(s.budget_minutes)} ({LOG})", record)
+        raise NotApplied(f"{POS.timed_out(s.budget_minutes)}; its scope {unit}.scope was stopped at the budget and left no process "
+                         f"(`{stop_command(unit)}` would stop one seen again) ({LOG})", record)
     if rc in P.KILLED_AT_CAP:
         raise NotApplied(f"the GFN2-xTB force field was stopped at the WSL cap of {s.cap_mb} MB ({LOG})", record)
     if rc != 0:
@@ -223,7 +246,7 @@ def dry_run(req: Request) -> int:
         print(f"[anharmonic] dry run: the step would not be applied — {e.reason}", flush=True)
         return 0
     write_reference(req.folder, symbols, coords, H_low)
-    return P._run(field_command(req.name, req.folder, req.settings, dry=True), req.folder / "anharmonic_dry_run.log",
+    return P._run(field_command(req.name, req.folder, req.settings, scope_unit(req.name), dry=True), req.folder / "anharmonic_dry_run.log",
                   "dry run of the GFN2-xTB force field's tools (WSL)")
 
 
@@ -331,6 +354,23 @@ def step(req: Request, dH: np.ndarray, out: dict) -> dict:
     return with_summary(out, summary)
 
 
+def deliver_resumed(rec: dict, d: Path, t0: float) -> None:
+    """The delivery of a step added to a finished result: numbered after the result's earlier deliveries, with the certificate's
+    pair and — where the folder has a progress record — the number the live show reads."""
+    from . import live_certificate as LC  # that module imports the pipeline, as this one does
+    from .catalog import Catalog
+    from .progress import FILE, Progress
+
+    def certify(folder: Path, what: str) -> None:
+        _, md = LC.write(LC.certificate(folder, Catalog()), folder)
+        print(f"[anharmonic] delivery ({what}): {md}", flush=True)
+
+    rec.setdefault("deliveries", [])
+    applied = rec["spectra"]["anharmonic"]["status"] == POS.APPLIED
+    progress = Progress.load(d) if (d / FILE).is_file() else None
+    P._deliver(rec, P.RESUMED_DELIVERY if applied else P.RESUMED_HARMONIC, P.Delivering(d, t0, certify, progress))
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("result", type=Path, help="a finished pipeline result folder")
@@ -354,7 +394,7 @@ def main(argv: list[str] | None = None) -> int:
     t = time.time()
     rec["spectra"] = step(req, dH, rec["spectra"])
     rec["seconds"]["anharmonic"] = round(time.time() - t, 1)
-    P.write_json(d / "pipeline.json", rec)
+    deliver_resumed(rec, d, t)
     s = rec["spectra"]["anharmonic"]
     print(f"[anharmonic] done: {s['status']}{'' if s['reason'] is None else ' — ' + s['reason']}; {rec['seconds']['anharmonic']} s; "
           f"field {s['field']}", flush=True)

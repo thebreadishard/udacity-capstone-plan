@@ -13,7 +13,7 @@ Each step is one function on existing code:
 4. `correction` — the carried ΔH network's seeds through `m05/rungC_infer.py`: their mean ΔH and each seed's;
 5. `spectra` — `m08.spectrum.series` on H_low + ΔH with the B3LYP APT, each seed's positions beside it, and as the baseline only the
    B3LYP spectrum with PAHdb's factor per region (`probes/scale_factor_baseline.py`);
-6. `anharmonic.step` (`m08/anharmonic.py`, TASKS 211; on unless --no-anharmonic) — each band's anharmonic position ν = ω + Δ_anh
+6. `anharmonic.step` (`m08/anharmonic.py`, TASKS 211; asked for with --anharmonic-minutes) — each band's anharmonic position ν = ω + Δ_anh
    beside its harmonic ω: the registered model x2* on the molecule's GFN2-xTB quartic force field (computed in WSL under
    `probes/wsl_capped.sh`), carried from the B3LYP modes to the corrected bands by mode overlap. A band the step cannot serve keeps ω
    and says why; a molecule whose force field cannot be made keeps every ω and says why. No licence is claimed for ν.
@@ -21,10 +21,17 @@ Each step is one function on existing code:
 **Two deliveries.** A GFN2-xTB force field took 19 minutes for a 12-atom molecule and 53 to 98 for 20 atoms on this laptop
 (`probes/results_m1/s2_xtb_2026-10-18`, two processes), where steps 1–5 take minutes. So the pipeline delivers after step 5: the
 complete record and certificate at harmonic positions, saying that step 6 is running and what it will add. Step 6 then runs under
-a time budget (--anharmonic-minutes, default 120; the force field is stopped there, inside WSL), and the record and certificate
+a time budget (--anharmonic-minutes; the force field is stopped there, inside WSL), and the record and certificate
 are written a second time: with each band's ν, its Δ_anh and the step's error bar — or, where the step ran out of time or
 failed, finalised at the harmonic positions with the reason. `pipeline.json` lists both deliveries with their times. A time said
 of 'the pipeline' — the demo's half hour — is the first delivery's; the second adds the anharmonic estimate and nothing else.
+
+**The step's default.** --anharmonic-minutes defaults to 0: off until the first real run has passed its four checks (TASKS 211):
+Δ_anh per band within about 1 cm⁻¹ of the stored-field certificate on benzene, no band lost beyond the stored case (28 of 30
+stepped), degenerate pairs with equal steps, time and peak memory recorded; then the default becomes 120. Until then no run of
+the pipeline starts a GFN2-xTB force field unless its command names a budget (the run is
+`probes/runspecs/pipeline_benzene_anharmonic.json`, the checks `probes/results_m1/anharmonic_step_2026-11-16/first_run_checks.py`),
+and a certificate without the step says in one line that the step exists, was not run, and how it is switched on.
 
 Every refusal — the charge state, a radical, no aromatic ring, an element the carried models never saw, a model that is not carried, an
 output folder in use — comes before step 1, and so does the reading of the anharmonic step's artefact. The record says of every band
@@ -126,8 +133,13 @@ class PipelineConfig(BaseModel):
     reuse_corpus: bool = True                # TASKS 150: steps 2–3 from the corpus where it holds the molecule at these settings
     reuse_only: bool = False                 # TASKS 146: refuse a molecule the corpus cannot give steps 2–3 for, before computing
     corpus: Path = CORPUS_ROOT               # its manifest.csv and molecules/
-    # TASKS 211: step 6, each band's ν = ω + Δ_anh, on by default (decided 14 Nov 2026) under this time budget; 0 switches it off
-    anharmonic_minutes: float = Field(120, ge=0, le=2880)
+    # TASKS 211: step 6's time budget, each band's ν = ω + Δ_anh; 0 is off. The default is 0 for now —
+    # off until the first real run has passed its four checks (TASKS 211): Δ_anh per band within about 1 cm⁻¹ of the stored-field
+    # certificate on benzene, no band lost beyond the stored case (28 of 30 stepped), degenerate pairs with equal steps, time and
+    # peak memory recorded; then the default becomes 120
+    # (decided 14 Nov 2026: on by default; held back on 16 Nov, because the nightly suite and the demo rehearsal run the pipeline
+    # beside a live training and the step has not yet run once on a pipeline geometry)
+    anharmonic_minutes: float = Field(0, ge=0, le=2880)
     anharmonic_shards: int = Field(2, ge=1, le=16)              # dxtb processes of the xtb force field; threads // shards threads each
     anharmonic_cap_mb: int = Field(1536, ge=1024, le=16384)     # its WSL cap: the bound probes/runspecs/routea_xtb.json ran under
 
@@ -499,17 +511,22 @@ SECOND_DELIVERY = "second: with the anharmonic positions"
 FINAL_HARMONIC = "second: harmonic, final — the anharmonic step was not applied"
 
 
+RESUMED_DELIVERY = "resumed: with the anharmonic positions"
+RESUMED_HARMONIC = "resumed: harmonic, final — the anharmonic step was not applied"
 SHOWN = {ONLY_DELIVERY: "final: harmonic, the anharmonic step is switched off", SECOND_DELIVERY: "final: with the anharmonic positions",
-         FINAL_HARMONIC: "final: harmonic, the anharmonic step was not applied"}
+         FINAL_HARMONIC: "final: harmonic, the anharmonic step was not applied",
+         RESUMED_DELIVERY: "final: with the anharmonic positions (the step was taken up again)",
+         RESUMED_HARMONIC: "final: harmonic, the anharmonic step was not applied (taken up again)"}
 
 
 @dataclass(frozen=True)
 class Delivering:
-    """What a run delivers with: its folder, its start, the certificate's writer (None in a test) and its progress record."""
+    """What a run delivers with: its folder, its start, the certificate's writer (None in a test) and its progress record (None
+    for a result folder that has none: a copy, or a result of a pipeline before 0.9)."""
     folder: Path
     t0: float
     deliver: Deliver | None
-    progress: Progress
+    progress: Progress | None
 
 
 def _deliver(rec: dict, what: str, ctx: Delivering) -> None:
@@ -524,8 +541,9 @@ def _deliver(rec: dict, what: str, ctx: Delivering) -> None:
     write_json(ctx.folder / "pipeline.json", rec)
     if ctx.deliver is not None:
         ctx.deliver(ctx.folder, what)
-    shown = SHOWN.get(what, f"harmonic delivered, anharmonic step running, final by {final_by}")
-    ctx.progress.delivered(number, shown, final=what != FIRST_DELIVERY)
+    if ctx.progress is not None:
+        shown = SHOWN.get(what, f"harmonic delivered, anharmonic step running, final by {final_by}")
+        ctx.progress.delivered(number, shown, final=what != FIRST_DELIVERY)
 
 
 def _second_delivery(rec: dict, step6, dH: np.ndarray, ctx: Delivering) -> None:
@@ -540,9 +558,10 @@ def _second_delivery(rec: dict, step6, dH: np.ndarray, ctx: Delivering) -> None:
     try:
         out = AN.step(step6, dH, rec["spectra"])
     except BaseException as e:
-        how = "failed" if isinstance(e, Exception) else "was interrupted"
+        # after an interrupt the force field's scope in WSL is not this process's child any more: the reason names it
+        how, scope = ("failed", "") if isinstance(e, Exception) else ("was interrupted", AN.scope_note(step6.folder))
         said = f": {e}" if str(e) else ""
-        rec["spectra"] = AN.not_applied(rec["spectra"], f"the anharmonic step {how}: {type(e).__name__}{said}")
+        rec["spectra"] = AN.not_applied(rec["spectra"], f"the anharmonic step {how}: {type(e).__name__}{said}{scope}")
         rec["seconds"]["anharmonic"] = round(time.time() - t, 1)
         _deliver(rec, FINAL_HARMONIC, ctx)
         raise
@@ -619,8 +638,8 @@ def parse_args(argv: list[str] | None) -> argparse.Namespace:
     off.add_argument("--no-anharmonic", action="store_true",
                      help="skip step 6: every band at its harmonic position, and the record says the step was switched off (TASKS 211)")
     off.add_argument("--anharmonic-minutes", type=float,
-                     help="step 6's time budget (default 120): the force field is stopped there and the certificate finalised as harmonic; "
-                          "0 switches the step off")
+                     help="switch step 6 on with this time budget (the default is 0, off, until its first real run has passed its "
+                          "checks; 120 is the intended default): the force field is stopped there and the certificate finalised as harmonic")
     ap.add_argument("--anharmonic-shards", type=int, default=2, help="dxtb processes of the GFN2-xTB force field (step 6)")
     ap.add_argument("--anharmonic-cap-mb", type=int, default=1536, help="the WSL memory cap of the GFN2-xTB force field (step 6)")
     ap.add_argument("--check-only", action="store_true", help="the refusal checks alone (a run spec's dry run): nothing is computed or written")

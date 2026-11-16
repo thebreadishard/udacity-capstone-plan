@@ -537,10 +537,12 @@ async function liveTick() {
   liveMoveTo(Math.max(0, ...p.stations.map((s, i) => (s.state === "done" || s.state === "active" ? i : 0))));
   if (p.finished && live.shown !== delivery && !live.asking) {
     live.asking = true;
-    const r = await fetch(`/result?folder=${encodeURIComponent(p.folder)}`, { cache: "no-store" });
-    live.asking = false;
-    if (!r.ok) return;
-    const m = await r.json();
+    let m;
+    try {   /* a fetch that throws (the server restarted) must not leave the page waiting for good: the next tick asks again */
+      const r = await fetch(`/result?folder=${encodeURIComponent(p.folder)}`, { cache: "no-store" });
+      if (!r.ok) return;
+      m = await r.json();
+    } catch (e) { return; } finally { live.asking = false; }
     live.shown = delivery;
     showResult(m); $("#realtime").textContent = m.real_time; state.finished = true;
   }

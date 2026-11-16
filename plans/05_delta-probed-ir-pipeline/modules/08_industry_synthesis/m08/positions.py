@@ -23,7 +23,8 @@ NU_ERROR = ("the bar beside a step is the step's error alone — the rms of Δ_a
             "ν: ν carries ω's error too, the harmonic position's error against the DFT proxy (ωB97X), which is what the licence is "
             "about; neither of the two is an error against experiment")
 BEFORE_THE_STEP = "the result was computed by a pipeline version before the anharmonic step (0.11)"
-SWITCHED_OFF = "switched off (--no-anharmonic)"
+SWITCHED_OFF = ("the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` "
+                "switches it on (TASKS 211)")
 CATALOGUE = ("positions are harmonic (ω): a catalogue record carries no anharmonic step; the pipeline (m08/pipeline.py) prints the "
              "anharmonic estimate ν = ω + Δ_anh for a molecule it computes, and claims no licence for it")
 DRAWN = ("curves are drawn at the harmonic positions ω, so that the network, B3LYP and ωB97X are compared like with like; the "
