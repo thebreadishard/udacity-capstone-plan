@@ -1,0 +1,31 @@
+
+=== a8: 8 molecules; aromir's order equals the corpus order for 7
+  corpus order     ring-ip  CH-stretch      CH-oop       other
+    printed quantity              1.77        1.19        2.17        3.62
+    seed mean, 1st order          1.42        0.96        1.66        3.00
+    per seed, bands (avg)         1.79        1.18        2.12        3.37
+    seed mean, bands              1.43        0.95        1.64        2.78
+  aromir order     ring-ip  CH-stretch      CH-oop       other
+    printed quantity              1.77        1.19        2.17        3.62
+    seed mean, 1st order          1.42        0.96        1.67        3.00
+    per seed, bands (avg)         1.79        1.18        2.12        3.37
+    seed mean, bands              1.43        0.95        1.64        2.78
+    modes                          199          73          46         156
+    seed mean, bands: 95 % interval over molecules   ring-ip 1.13-1.70  CH-stretch 0.39-1.48  CH-oop 1.19-1.97  other 1.68-3.76
+    share of resamples below 3.0   ring-ip 1.00  CH-stretch 1.00  CH-oop 1.00  other 0.70; worst single molecule   ring-ip 2.06  CH-stretch 2.23  CH-oop 2.03  other 5.02
+
+=== b: 39 molecules; aromir's order equals the corpus order for 39
+  corpus order     ring-ip  CH-stretch      CH-oop       other
+    printed quantity              2.12        2.50        2.73        3.89
+    seed mean, 1st order          1.83        2.22        1.82        3.02
+    per seed, bands (avg)         2.19        2.47        2.73        3.43
+    seed mean, bands              1.91        2.19        1.88        2.77
+  aromir order     ring-ip  CH-stretch      CH-oop       other
+    printed quantity              2.12        2.50        2.73        3.89
+    seed mean, 1st order          1.83        2.22        1.82        3.02
+    per seed, bands (avg)         2.19        2.47        2.73        3.43
+    seed mean, bands              1.91        2.19        1.88        2.77
+    modes                         1164         401          84        1225
+    seed mean, bands: 95 % interval over molecules   ring-ip 1.84-2.00  CH-stretch 1.80-2.53  CH-oop 1.56-2.16  other 2.56-2.97
+    share of resamples below 3.0   ring-ip 1.00  CH-stretch 1.00  CH-oop 1.00  other 0.99; worst single molecule   ring-ip 2.56  CH-stretch 4.52  CH-oop 2.50  other 4.33
+dc69b32 Inputs are refused with a reason, no failure is a traceback; the review of ffadac4
