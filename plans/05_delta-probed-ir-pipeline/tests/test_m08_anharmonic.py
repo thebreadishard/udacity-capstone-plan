@@ -8,7 +8,7 @@ from __future__ import annotations
 import json
 import re
 import sys
-from pathlib import Path
+from pathlib import Path, PurePosixPath, PureWindowsPath
 from types import SimpleNamespace
 
 import numpy as np
@@ -82,6 +82,21 @@ def by_mode(sticks: list[dict]) -> dict[int, dict]:
 
 def no_runner(*args: object) -> int:
     raise AssertionError("the WSL runner was started")
+
+
+REAL_FIELD_COMMAND = AN.field_command
+WINDOWS_PLAN = PureWindowsPath(r"C:\plan folder\05")
+WINDOWS_SCRIPTS = (WINDOWS_PLAN / "probes" / "run_in_scope.sh", WINDOWS_PLAN / "probes" / "xtb_field_for_step.sh")
+
+
+@pytest.fixture(autouse=True)
+def any_host(monkeypatch: pytest.MonkeyPatch) -> None:
+    """These tests run on every host (CI is Linux). What they test of the runner — its exits, its markers, its record — does not
+    depend on the command line, so the host counts as one with WSL and the command line is a stand-in; the command line itself
+    is tested as the pure function it is, with literal Windows paths (REAL_FIELD_COMMAND), and the host check has its own tests."""
+    monkeypatch.setattr(AN, "host_has_wsl", lambda: True)
+    monkeypatch.setattr(AN, "field_command", lambda *a, **k: ["wsl.exe", "-e", "bash", "-lc", "a stand-in: the command line has its own test"])
+    monkeypatch.setattr(AN, "SCOPE_SCRIPT", PureWindowsPath(r"C:\plan\probes\run_in_scope.sh"))
 
 
 # ---------------------------------------------------------------- the step
@@ -300,19 +315,52 @@ def test_the_runner_reports_its_peak_memory_and_time(result, monkeypatch):  # no
     assert seen["x"].endswith(str(Path("anharmonic") / "xtb" / "benzene" / "X")) and seen["label"].endswith("benzene.json")
 
 
-def test_the_field_command_is_the_capped_script_under_its_time_budget(tmp_path):
-    d = (tmp_path / "mol").resolve()
-    inner = AN.field_command("mol", d, AN.FieldSettings.of(6, 3, 2048, 90), AN.scope_unit("mol"))[-1]
-    assert AN.field_command("mol", d, SETTINGS, "u")[:4] == ["wsl.exe", "-e", "bash", "-lc"]
-    assert inner.startswith("export SHARDS=3 OMP_NUM_THREADS=2 PYTHONUNBUFFERED=1; bash ")
-    # the scope's own script, with a unit name of this run's, the cap, the budget and the kill-after; no process is found by a pattern
-    assert re.search(r"/probes/run_in_scope\.sh m08-anharmonic-mol-[0-9a-f]{10} 2048 5400 30 -- bash ", inner)
-    folder = P.wsl_path(d / "anharmonic")
-    assert inner.endswith(f"/probes/xtb_field_for_step.sh mol {P.wsl_path(d / 'anharmonic' / 'G')} {folder}")
-    assert "pgrep" not in inner and "pkill" not in inner and "wsl_capped" not in inner
-    assert AN.scope_unit("mol") != AN.scope_unit("mol")                          # two runs never share a unit
-    assert AN.field_command("mol", d, SETTINGS, "u", dry=True)[-1].endswith(f"{folder} --dry-run")
-    assert "/probes/run_in_scope.sh named-by-the-caller 1536 7200 30 -- " in AN.field_command("mol", d, SETTINGS, "named-by-the-caller")[-1]
+def test_the_field_command_is_the_capped_script_under_its_time_budget():
+    """A pure function of the Windows paths it is given: the same command line on every host (literal C:\\ paths, one with a
+    space in it)."""
+    d = PureWindowsPath(r"C:\results\mol")
+    command = REAL_FIELD_COMMAND("mol", d, AN.FieldSettings.of(6, 3, 2048, 90), "m08-anharmonic-mol-0123456789", scripts=WINDOWS_SCRIPTS)
+    assert command[:4] == ["wsl.exe", "-e", "bash", "-lc"]
+    # the scope's own script, with the unit of this run, the cap, the budget and the kill-after; no process is found by a pattern
+    assert command[-1] == ("export SHARDS=3 OMP_NUM_THREADS=2 PYTHONUNBUFFERED=1; "
+                           "bash '/mnt/c/plan folder/05/probes/run_in_scope.sh' m08-anharmonic-mol-0123456789 2048 5400 30 -- "
+                           "bash '/mnt/c/plan folder/05/probes/xtb_field_for_step.sh' mol /mnt/c/results/mol/anharmonic/G "
+                           "/mnt/c/results/mol/anharmonic")
+    assert "pgrep" not in command[-1] and "pkill" not in command[-1] and "wsl_capped" not in command[-1]
+    assert re.fullmatch(r"m08-anharmonic-mol-[0-9a-f]{10}", AN.scope_unit("mol")) and AN.scope_unit("mol") != AN.scope_unit("mol")
+    dry = REAL_FIELD_COMMAND("mol", d, SETTINGS, "u", dry=True, scripts=WINDOWS_SCRIPTS)[-1]
+    assert dry.endswith("/mnt/c/results/mol/anharmonic --dry-run") and " u 1536 7200 30 -- " in dry
+    with pytest.raises(ValueError, match="not an absolute Windows drive path"):          # a path of another system is refused, not guessed
+        REAL_FIELD_COMMAND("mol", PurePosixPath("/home/runner/results/mol"), SETTINGS, "u", scripts=WINDOWS_SCRIPTS)
+
+
+def test_a_host_without_wsl_is_refused_before_step_1_and_asks_nothing(tmp_path, monkeypatch):
+    """CI on Linux, 16 Nov 2026: the step turned the plan folder's path into a WSL path before it knew its host. A host that is
+    not Windows is refused with the reason before step 1 — no path converted, no process started — and a direct call of the
+    runner gives the same reason as a step that is not applied."""
+    calls: list[str] = []
+    stubbed_run(monkeypatch, calls, preflight=False)
+    monkeypatch.setattr(AN, "host_has_wsl", lambda: False)
+    monkeypatch.setattr(AN, "SCOPE_SCRIPT", PurePosixPath("/home/runner/plan/probes/run_in_scope.sh"))
+    monkeypatch.setattr(AN, "load_artefact", lambda: pytest.fail("the artefact was read on a host the step cannot run on"))
+    start_process = AN.subprocess.run
+    monkeypatch.setattr(AN.subprocess, "run", lambda *a, **k: pytest.fail("a process was started on a host without WSL"))
+    monkeypatch.setattr(P, "_run", no_runner)
+    with pytest.raises(P.Refused, match="the anharmonic step cannot run here") as refused:
+        P.run(base_config(tmp_path, reuse_corpus=False))
+    assert "runs in WSL, and this host is not Windows" in refused.value.reasons[0] and calls == [] and not (tmp_path / "mol").exists()
+    with pytest.raises(AN.NotApplied, match="this host is not Windows"):
+        AN.force_field("benzene", tmp_path, SETTINGS)
+    assert not (tmp_path / AN.FOLDER).exists()
+    monkeypatch.setattr(AN.subprocess, "run", start_process)                            # the record reads git's state through it
+    rec = P.run(base_config(tmp_path, reuse_corpus=False, anharmonic_minutes=0))        # the step off: the pipeline runs as before
+    assert [x["delivery"] for x in rec["deliveries"]] == [P.ONLY_DELIVERY]
+
+
+def test_the_host_check_is_the_platform(monkeypatch):
+    monkeypatch.undo()                                                              # the real check, not this file's stand-in
+    assert AN.host_has_wsl() is (sys.platform == "win32")
+    assert [AN.host_has_wsl(p) for p in ("linux", "darwin", "win32")] == [False, False, True]
 
 
 @pytest.mark.parametrize(("args", "match"), [((4, 0, 1536, 120), "at least one"), ((4, 2, 512, 120), "at least one"),
