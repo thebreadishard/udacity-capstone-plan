@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # probes/anharmonic_field_timing.sh [--dry-run] (16 Nov 2026, TASKS 211) — what the pipeline's anharmonic step costs on one small
 # molecule: time and peak memory of step 6 (m08/anharmonic.py) on benzene, with the pipeline's defaults (2 dxtb processes of 2
-# threads under probes/wsl_capped.sh at 1536 MB). The step is run as the pipeline runs it, on a copy of the stored pipeline result
+# threads in a scope of its own, probes/run_in_scope.sh, capped at 1536 MB). The step is run as the pipeline runs it, on a copy of the stored pipeline result
 # probes/results_m1/pipeline_benzene_computed_2026-11-03/benzene (git holds none of its arrays, so the copy is made here, once);
 # the stored result is not touched. Run by probes/runspecs/anharmonic_field_timing.json.
 # Read afterwards: '[anharmonic] done: … s; field {… seconds, peak_memory_mb …}' in the run's log, and the copy's anharmonic.json.

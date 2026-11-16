@@ -230,7 +230,7 @@ def dead_links(data: dict, status: Callable[[str], int] = http_status) -> list[s
 
 def molecule(folder: Path) -> dict:
     r = LC.load_result(folder)
-    cert = json.loads((folder / "certificate.json").read_text(encoding="utf-8"))
+    cert = LC.read_certificate(folder)
     rec, adm = r.record, r.record["admission"]
     seen = cert["molecule"]["seen"]
     truth = cert["molecule"].get("truth")

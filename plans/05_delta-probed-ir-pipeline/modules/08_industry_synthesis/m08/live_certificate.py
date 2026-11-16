@@ -181,7 +181,7 @@ def certificate(folder: Path, catalog: Catalog) -> dict:
         tolerance=dict(per_region=tolerance, rule=FAMILY_SOURCE),
         licence=licence_block(lic) | {"concerns": POS.LICENCE_SCOPE},
         positions=dict(note=POS.note(summary), cautions=POS.cautions(summary), anharmonic=summary, drawn=POS.DRAWN),
-        deliveries=rec.get("deliveries", []),
+        deliveries=rec.get("deliveries", []), delivery=len(rec.get("deliveries", [])) or None,
         cost=dict(steps_s=rec["seconds"], **prices.price_of_run(sum(rec["seconds"].values()), rec["provenance"]["host"])),
         provenance=dict(result=str(folder), run_commit=rec["provenance"]["commit"], run_dirty=rec["provenance"]["dirty"],
                         certificate_commit=commit_hash(), deck_sha16=rec["deck"]["sha16"], low_level_software=rec["low_level"]["b3lyp"].get("software"),
@@ -279,15 +279,40 @@ def _position_paragraphs(c: dict) -> list[str]:
 
 
 def _delivery_lines(c: dict) -> list[str]:
-    """The pipeline's deliveries of this result with their times; a certificate of an older record has none to list."""
-    return [f"- delivery — {x['delivery']}: {x['at']}, {x['seconds_since_start']} s after the start" for x in c.get("deliveries", [])]
+    """The pipeline's deliveries of this result with their times, the first with its deadline; a certificate of an older record
+    has none to list."""
+    return [f"- delivery {x.get('number', i)} — {x['delivery']}: {x['at']}, {x['seconds_since_start']} s after the start"
+            + (f"; final by {x['final_by']}, and if no later delivery stands here by then, this one is final" if x.get("final_by") else "")
+            for i, x in enumerate(c.get("deliveries", []), 1)]
+
+
+DELIVERY_MARK = "<!-- delivery {} -->"          # in certificate.md; certificate.json holds the same number under 'delivery'
+
+
+class MismatchedPair(ValueError):
+    """certificate.json and certificate.md of a folder are not of the same delivery."""
+
+
+def read_certificate(folder: Path) -> dict:
+    """A result folder's certificate record, refused where certificate.md beside it is of another delivery: the two files are
+    replaced one after the other, and a page must not show one delivery's numbers beside a link to the other's text. A record
+    written before the deliveries were numbered has no number to compare."""
+    c = json.loads((folder / "certificate.json").read_text(encoding="utf-8"))
+    number = c.get("delivery")
+    if number is not None:
+        page = folder / "certificate.md"
+        if not page.is_file() or DELIVERY_MARK.format(number) not in page.read_text(encoding="utf-8"):
+            raise MismatchedPair(f"{folder}: certificate.json is delivery {number} and certificate.md is not; a delivery was "
+                                 "interrupted between the two files — write the pair again with python -m m08.live_certificate")
+    return c
 
 
 def to_markdown(c: dict) -> str:
     m, n, k, p = c["molecule"], c["network"], c["cost"], c["provenance"]
     listed = m["listed"]
     model_seen = (c["positions"].get("cautions") or {}).get("seen")
-    L = [f"# Certificate — {m['name']} · pipeline {c['pipeline_version']} · {c['date']}", "", c["statement"], "",
+    mark = [DELIVERY_MARK.format(c["delivery"]), ""] if c.get("delivery") else []
+    L = [f"# Certificate — {m['name']} · pipeline {c['pipeline_version']} · {c['date']}", "", *mark, c["statement"], "",
          *_position_paragraphs(c), "## Molecule", "",
          f"- {m['smiles']}, {m['formula']}, {m['n_atoms']} atoms ({', '.join(m['elements'])}); the network's training set spans "
          f"{m['training_atoms'][0]}–{m['training_atoms'][1]} atoms: {'inside' if m['inside_training_sizes'] else 'OUTSIDE'}",
@@ -308,11 +333,14 @@ def to_markdown(c: dict) -> str:
 
 
 def write(c: dict, folder: Path) -> tuple[Path, Path]:
+    """The certificate's two files as a pair: both written whole to temp files first, then moved over the old ones, the record
+    before the page. Each carries the delivery's number, so a pair cut between the two moves is detectable (`read_certificate`)."""
     pj, pm = folder / "certificate.json", folder / "certificate.md"
-    P.write_json(pj, c)
-    tmp = pm.with_suffix(".md.tmp")
-    tmp.write_text(to_markdown(c), encoding="utf-8", newline="\n")
-    os.replace(tmp, pm)
+    tj, tm = pj.with_suffix(".json.tmp"), pm.with_suffix(".md.tmp")
+    tj.write_text(json.dumps(c, indent=1, ensure_ascii=False, default=str), encoding="utf-8")
+    tm.write_text(to_markdown(c), encoding="utf-8", newline="\n")
+    os.replace(tj, pj)
+    os.replace(tm, pm)
     return pj, pm
 
 

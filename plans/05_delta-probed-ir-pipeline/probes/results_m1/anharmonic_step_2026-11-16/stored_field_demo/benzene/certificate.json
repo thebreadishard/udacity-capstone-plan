@@ -1,6 +1,6 @@
 {
  "kind": "live certificate",
- "date": "2026-11-16 20:17",
+ "date": "2026-11-16 20:32",
  "pipeline_version": "0.11 (step 6 added to a 0.9 result from a stored force field)",
  "molecule": {
   "name": "benzene",
@@ -1317,6 +1317,7 @@
   "drawn": "curves are drawn at the harmonic positions ω, so that the network, B3LYP and ωB97X are compared like with like; the certificate lists each band's anharmonic estimate ν beside its ω"
  },
  "deliveries": [],
+ "delivery": null,
  "cost": {
   "steps_s": {
    "optimise": 15.1,
@@ -1335,7 +1336,7 @@
   "result": "C:\\Users\\thebr\\Documents\\CapstonePlan-wt-anharmonic\\plans\\05_delta-probed-ir-pipeline\\probes\\results_m1\\anharmonic_step_2026-11-16\\stored_field_demo\\benzene",
   "run_commit": "292b3f9ab2dc8dda432097199bf38efa91223c88",
   "run_dirty": "yes",
-  "certificate_commit": "8f1997ac",
+  "certificate_commit": "49c51624",
   "deck_sha16": "9e27bf8e934893f3",
   "low_level_software": {
    "pyscf": "2.14.0",

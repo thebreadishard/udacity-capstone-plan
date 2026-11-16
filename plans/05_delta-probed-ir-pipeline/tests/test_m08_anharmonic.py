@@ -6,6 +6,7 @@ the pages print is in tests/test_m08_positions_pages.py."""
 from __future__ import annotations
 
 import json
+import re
 import sys
 from pathlib import Path
 from types import SimpleNamespace
@@ -225,8 +226,10 @@ def test_modes_the_force_field_cannot_take_keep_the_run_alive(result, artefact, 
      "could not be made: the force field is NOISY (dpir.qff's noise guard), so it is not used (anharmonic_field.log)"),
     (2, "wsl_capped.sh: systemd-run missing - no cap, not run\n", "could not be made: exit 2 (anharmonic_field.log)"),
     (137, "KILLED: over the cap of 1536 MB\n", "was stopped at the WSL cap of 1536 MB (anharmonic_field.log)"),
-    (124, "=== (XTB) benzene: 61 Hessians to compute\n",
-     "the anharmonic step did not finish within 120 minutes: the GFN2-xTB force field was stopped; its finished Hessians stay in anharmonic/xtb"),
+    # round two, finding 4: the reason a certificate prints names what is kept and the command that takes the step up
+    (124, "=== (XTB) benzene: 61 Hessians to compute\n=== (SCOPE) stopped at the budget of 7200 s\n",
+     "the anharmonic step did not finish within 120 minutes; the force field's finished Hessians are kept in the result's anharmonic/xtb, "
+     "and `python -m m08.anharmonic <result folder>` takes the step up from them (anharmonic_field.log)"),
     (0, "=== (ANH) done: benzene in 5 s 2026-11-16 20:00:05\n", "cannot be read: ")])
 def test_a_force_field_that_fails_leaves_harmonic_positions_with_the_reason(result, artefact, monkeypatch, rc, log, expect):  # noqa: F811
     record(result, ZERO, [ZERO])
@@ -244,21 +247,36 @@ def test_a_force_field_that_fails_leaves_harmonic_positions_with_the_reason(resu
     assert (result / AN.FOLDER / "G" / "ref.json").is_file()            # the reference record the runner starts from was written
 
 
-def test_a_kill_after_the_budget_is_the_budgets_not_the_caps(result, artefact, monkeypatch):  # noqa: F811
-    """A process that ignored the budget's SIGTERM is killed, and the exit code is then the same as at the memory cap: the
-    elapsed time tells the two apart."""
-    record(result, ZERO, [ZERO])
-    short = AN.FieldSettings(2, 2, 1536, 60)
-    clock = iter([1000.0, 1061.0])
-    monkeypatch.setattr(AN, "time", SimpleNamespace(time=lambda: next(clock)))
-
+def test_processes_that_survive_the_scopes_stop_are_an_error_not_a_reason(result, monkeypatch):  # noqa: F811
+    """Round two, finding 2: the run is stopped by its scope (probes/run_in_scope.sh, tests/test_run_in_scope.py). If the scope
+    reports survivors, that is nothing a certificate can state as a reason for harmonic positions: it raises."""
     def runner(argv: list[str], log_path: Path, what: str) -> int:
-        log_path.write_text("KILLED: over the cap of 1536 MB, or stopped from outside\n", encoding="utf-8")
-        return 137
+        log_path.write_text("=== (SCOPE) FAILED: 1 process(es) of m08-anharmonic-benzene-0123456789 survive SIGKILL on the unit\n", encoding="utf-8")
+        return AN.SURVIVORS
 
     monkeypatch.setattr(P, "_run", runner)
-    with pytest.raises(AN.NotApplied, match="did not finish within 1 minutes"):
-        AN.force_field("benzene", result, short)
+    with pytest.raises(RuntimeError, match="survived its stop"):
+        AN.force_field("benzene", result, SETTINGS)
+
+
+def test_a_machine_that_cannot_own_the_force_field_is_refused_before_step_1(tmp_path, monkeypatch):
+    """No systemd user scope, no step — said before anything is computed, and never a fallback to killing by pattern."""
+    calls: list[str] = []
+    stubbed_run(monkeypatch, calls, preflight=False)
+    monkeypatch.setattr(AN, "load_artefact", lambda: pytest.fail("the artefact was read on a machine the step cannot run on"))
+    asked = []
+
+    def no_scope(argv: list[str], **kw: object) -> SimpleNamespace:
+        asked.append(argv[-1])
+        return SimpleNamespace(returncode=2, stdout="run_in_scope.sh: no systemd user scope can be made here\n", stderr="")
+
+    monkeypatch.setattr(AN.subprocess, "run", no_scope)
+    with pytest.raises(P.Refused, match="the anharmonic step cannot run here") as refused:
+        P.run(base_config(tmp_path, reuse_corpus=False))
+    assert "no systemd user scope can be made here" in refused.value.reasons[0] and "--no-anharmonic" in refused.value.reasons[0]
+    assert calls == [] and not (tmp_path / "mol").exists() and asked[0].endswith("/probes/run_in_scope.sh --check")
+    monkeypatch.setattr(AN.subprocess, "run", lambda argv, **kw: SimpleNamespace(returncode=0, stdout="", stderr=""))
+    AN.preflight()
 
 
 def test_the_runner_reports_its_peak_memory_and_time(result, monkeypatch):  # noqa: F811
@@ -280,14 +298,13 @@ def test_the_field_command_is_the_capped_script_under_its_time_budget(tmp_path):
     inner = AN.field_command("mol", d, AN.FieldSettings.of(6, 3, 2048, 90))[-1]
     assert AN.field_command("mol", d, SETTINGS)[:4] == ["wsl.exe", "-e", "bash", "-lc"]
     assert inner.startswith("export SHARDS=3 OMP_NUM_THREADS=2 PYTHONUNBUFFERED=1; bash ")
-    assert "/probes/wsl_capped.sh 2048 -- timeout --kill-after=30 5400 bash " in inner
+    # the scope's own script, with a unit name of this run's, the cap, the budget and the kill-after; no process is found by a pattern
+    assert re.search(r"/probes/run_in_scope\.sh m08-anharmonic-mol-[0-9a-f]{10} 2048 5400 30 -- bash ", inner)
     folder = P.wsl_path(d / "anharmonic")
-    assert f"/probes/xtb_field_for_step.sh mol {P.wsl_path(d / 'anharmonic' / 'G')} {folder}; rc=$?; " in inner
-    # after a stop — the budget's 124, or a kill's 137 / 143 — nothing that names the folder is left running, and the exit code stays
-    assert inner.endswith(f"if [ $rc -eq 124 ] || [ $rc -eq 137 ] || [ $rc -eq 143 ]; then pgrep -f -- {folder} | grep -vx $$ | "
-                          "xargs -r kill -KILL; fi; exit $rc")
-    dry = AN.field_command("mol", d, SETTINGS, dry=True)[-1]
-    assert dry.endswith(f"{folder} --dry-run") and "timeout" not in dry and "kill" not in dry
+    assert inner.endswith(f"/probes/xtb_field_for_step.sh mol {P.wsl_path(d / 'anharmonic' / 'G')} {folder}")
+    assert "pgrep" not in inner and "pkill" not in inner and "wsl_capped" not in inner
+    assert AN.scope_unit("mol") != AN.scope_unit("mol")                          # two runs never share a unit
+    assert AN.field_command("mol", d, SETTINGS, dry=True)[-1].endswith(f"{folder} --dry-run")
 
 
 @pytest.mark.parametrize(("args", "match"), [((4, 0, 1536, 120), "at least one"), ((4, 2, 512, 120), "at least one"),
@@ -330,11 +347,17 @@ def test_the_note_is_true_in_each_state_of_a_result():
     assert "not measured" not in POS.note(APPLIED | {"bands": APPLIED["bands"] | {"error_not_measured": 0}})
     off = POS.note({"status": POS.NOT_APPLIED, "reason": "no force field"})
     assert off == "positions are harmonic (ω): the anharmonic step was not applied — no force field" and "licen" not in off
-    running = POS.note({"status": POS.RUNNING, "budget_minutes": 120.0})
-    assert running.startswith("positions are harmonic (ω) in this first delivery: the anharmonic step is running, with a time budget of 120 minutes")
+    running = POS.note({"status": POS.RUNNING, "budget_minutes": 120.0, "final_by": "2026-11-16 22:32"})
+    assert running.startswith("positions are harmonic (ω) in this first delivery: the anharmonic step is running, with a time budget of 120 "
+                              "minutes — final by 2026-11-16 22:32;")
     assert POS.SECOND_DELIVERY in running and "finalised with these harmonic positions and the reason" in running
+    # round two, finding 3: a first certificate nobody replaced is true by its own words
+    assert running.endswith("if this text still stands after 2026-11-16 22:32, the run was stopped from outside and this harmonic "
+                            "certificate is the final one")
     assert POS.summary_of({}) == {"status": POS.NOT_APPLIED, "reason": POS.BEFORE_THE_STEP}
-    assert POS.summary_of({"anharmonic": APPLIED}) is APPLIED and POS.timed_out(90) == "the anharmonic step did not finish within 90 minutes"
+    assert POS.summary_of({"anharmonic": APPLIED}) is APPLIED
+    assert POS.timed_out(90) == ("the anharmonic step did not finish within 90 minutes; the force field's finished Hessians are kept in "
+                                 "the result's anharmonic/xtb, and `python -m m08.anharmonic <result folder>` takes the step up from them")
 
 
 def test_the_bar_is_named_as_the_steps_error_and_nu_carries_omegas_too():
@@ -454,7 +477,9 @@ def test_the_step_is_on_by_default_under_a_time_budget_checked_up_front(tmp_path
     assert "not allowed with argument" in capsys.readouterr().err
 
 
-def stubbed_run(monkeypatch: pytest.MonkeyPatch, calls: list[str]) -> None:
+def stubbed_run(monkeypatch: pytest.MonkeyPatch, calls: list[str], preflight: bool = True) -> None:
+    if preflight:
+        monkeypatch.setattr(AN, "preflight", lambda: None)            # no WSL is asked in these tests
     monkeypatch.setattr(P.MR, "require_carried", lambda p: {"status": "carried", "network": P.NETWORK, "version": "pin"})
     monkeypatch.setattr(P, "training_set", lambda models: (("C", "H"), (8, 30)))
     monkeypatch.setattr(P, "start_geometry", lambda cfg: calls.append("start_geometry") or ([], None))
@@ -467,6 +492,10 @@ def stubbed_run(monkeypatch: pytest.MonkeyPatch, calls: list[str]) -> None:
 
 def stored(tmp_path: Path) -> dict:
     return json.loads((tmp_path / "mol" / "pipeline.json").read_text(encoding="utf-8"))
+
+
+def progress_of(tmp_path: Path) -> dict:
+    return json.loads((tmp_path / "mol" / "progress.json").read_text(encoding="utf-8"))
 
 
 def test_the_artefact_is_read_before_the_first_step_computes(tmp_path, monkeypatch):
@@ -493,7 +522,7 @@ def test_the_harmonic_result_is_delivered_complete_before_step_6_starts(tmp_path
 
     def step(req: AN.Request, dH: np.ndarray, out: dict) -> dict:
         first = stored(tmp_path)
-        seen.update(req=req, first=first, delivered=list(delivered))
+        seen.update(req=req, first=first, delivered=list(delivered), progress=progress_of(tmp_path))
         out["network"]["sticks"][0]["nu_cm"] = 690.0
         return out | {"anharmonic": {"status": POS.APPLIED}, "note": "said"}
 
@@ -502,15 +531,24 @@ def test_the_harmonic_result_is_delivered_complete_before_step_6_starts(tmp_path
                 lambda folder, what: delivered.append((what, stored(tmp_path)["spectra"]["anharmonic"]["status"])))
     first = seen["first"]
     assert seen["delivered"] == [(P.FIRST_DELIVERY, POS.RUNNING)]
+    final_by = first["spectra"]["anharmonic"].pop("final_by")
+    assert re.fullmatch(r"\d{4}-\d{2}-\d{2} \d{2}:\d{2}", final_by)
     assert first["spectra"]["anharmonic"] == {"status": POS.RUNNING, "reason": None, "model": "x2*", "budget_minutes": 90.0, "field": None}
-    assert first["spectra"]["note"] == POS.note(first["spectra"]["anharmonic"]) and first["spectra"]["network"]["sticks"][0]["nu_cm"] is None
-    assert [x["delivery"] for x in first["deliveries"]] == [P.FIRST_DELIVERY] and "anharmonic" not in first["seconds"]
+    assert f"final by {final_by}" in first["spectra"]["note"] and first["spectra"]["network"]["sticks"][0]["nu_cm"] is None
+    assert [(x["number"], x["delivery"], x["final_by"]) for x in first["deliveries"]] == [(1, P.FIRST_DELIVERY, final_by)]
+    assert "anharmonic" not in first["seconds"]
+    # round two, finding 1: the show has the result now — the run counts as finished at its first delivery, and says what is still to come
+    assert seen["progress"]["finished"] is True
+    assert seen["progress"]["delivery"] == {"number": 1, "state": f"harmonic delivered, anharmonic step running, final by {final_by}",
+                                            "final": False}
+    assert progress_of(tmp_path)["delivery"] == {"number": 2, "state": "final: with the anharmonic positions", "final": True}
     assert {"admission", "low_level", "provenance", "commit_at_end", "settings"} <= set(first)
     assert json.loads((tmp_path / "mol" / "progress.json").read_text(encoding="utf-8"))["steps"]["spectrum"]["state"] == "done"
     assert seen["req"] == AN.Request("mol", (tmp_path / "mol").resolve(), BENZENE, "artefact", AN.FieldSettings(3, 2, 2048, 5400))
     assert delivered == [(P.FIRST_DELIVERY, POS.RUNNING), (P.SECOND_DELIVERY, POS.APPLIED)]
     final = stored(tmp_path)
-    assert [x["delivery"] for x in final["deliveries"]] == [P.FIRST_DELIVERY, P.SECOND_DELIVERY] and final["spectra"]["note"] == "said"
+    assert [(x["number"], x["delivery"]) for x in final["deliveries"]] == [(1, P.FIRST_DELIVERY), (2, P.SECOND_DELIVERY)]
+    assert final["deliveries"][1]["final_by"] is None and final["spectra"]["note"] == "said"
     assert final["spectra"]["network"]["sticks"][0]["nu_cm"] == 690.0 and "anharmonic" in final["seconds"] == rec["seconds"]
     assert all(x["seconds_since_start"] >= 0 and x["at"] for x in final["deliveries"]) and rec["pipeline_version"] == "0.11"
 
@@ -523,8 +561,10 @@ def test_a_step_over_its_budget_ends_in_the_harmonic_result_with_the_reason(tmp_
     delivered: list[str] = []
     rec = P.run(base_config(tmp_path, reuse_corpus=False, anharmonic_minutes=30), lambda folder, what: delivered.append(what))
     assert delivered == [P.FIRST_DELIVERY, P.FINAL_HARMONIC] and rec["deliveries"] == stored(tmp_path)["deliveries"]
-    assert rec["spectra"]["anharmonic"]["reason"] == "the anharmonic step did not finish within 30 minutes"
-    assert rec["spectra"]["note"] == "positions are harmonic (ω): the anharmonic step was not applied — the anharmonic step did not finish within 30 minutes"
+    assert rec["spectra"]["anharmonic"]["reason"] == POS.timed_out(30) and "python -m m08.anharmonic <result folder>" in rec["spectra"]["note"]
+    assert rec["spectra"]["note"].startswith("positions are harmonic (ω): the anharmonic step was not applied — the anharmonic step did not "
+                                             "finish within 30 minutes;")
+    assert progress_of(tmp_path)["delivery"] == {"number": 2, "state": "final: harmonic, the anharmonic step was not applied", "final": True}
     assert rec["spectra"]["network"]["sticks"][0]["nu_cm"] is None
 
 
@@ -546,6 +586,30 @@ def test_an_error_in_step_6_cannot_lose_the_record_of_steps_1_to_5(tmp_path, mon
     assert rec["spectra"]["anharmonic"]["status"] == POS.NOT_APPLIED
     assert rec["spectra"]["anharmonic"]["reason"] == "the anharmonic step failed: ImportError: No module named 'sklearn'"
     assert rec["admission"]["smiles"] == BENZENE and "anharmonic" in rec["seconds"]
+    # round two, finding 1: the show is not left waiting — the progress record is finished and names the final, harmonic delivery
+    assert progress_of(tmp_path)["finished"] is True and progress_of(tmp_path)["delivery"]["number"] == 2
+    assert progress_of(tmp_path)["delivery"]["final"] is True
+
+
+@pytest.mark.parametrize(("stop", "reason"), [(KeyboardInterrupt(), "the anharmonic step was interrupted: KeyboardInterrupt"),
+                                              (SystemExit(3), "the anharmonic step was interrupted: SystemExit: 3")])
+def test_an_interrupt_in_step_6_finalises_the_harmonic_result_before_it_is_raised(tmp_path, monkeypatch, stop, reason):
+    """Round two, finding 3: Ctrl-C or an exit during step 6 does not leave a certificate that says 'running' for good."""
+    calls: list[str] = []
+    stubbed_run(monkeypatch, calls)
+    monkeypatch.setattr(AN, "load_artefact", lambda: "artefact")
+
+    def interrupted(req: AN.Request, dH: np.ndarray, out: dict) -> dict:
+        raise stop
+
+    monkeypatch.setattr(AN, "step", interrupted)
+    delivered: list[str] = []
+    with pytest.raises(type(stop)):
+        P.run(base_config(tmp_path, reuse_corpus=False), lambda folder, what: delivered.append(what))
+    rec = stored(tmp_path)
+    assert delivered == [P.FIRST_DELIVERY, P.FINAL_HARMONIC] and rec["spectra"]["anharmonic"] == {
+        "status": POS.NOT_APPLIED, "reason": reason, "model": "x2*", "field": None}
+    assert progress_of(tmp_path)["delivery"]["final"] is True
 
 
 def test_switched_off_there_is_one_delivery_and_no_force_field(tmp_path, monkeypatch):
@@ -560,6 +624,8 @@ def test_switched_off_there_is_one_delivery_and_no_force_field(tmp_path, monkeyp
     assert rec["spectra"]["anharmonic"]["reason"] == POS.SWITCHED_OFF and rec["spectra"]["network"]["sticks"][0]["nu_cm"] is None
     assert rec["spectra"]["note"].startswith("positions are harmonic (ω)") and rec["settings"]["anharmonic_minutes"] == 0
     assert "anharmonic" not in rec["seconds"]
+    assert progress_of(tmp_path)["finished"] is True
+    assert progress_of(tmp_path)["delivery"] == {"number": 1, "state": "final: harmonic, the anharmonic step is switched off", "final": True}
 
 
 def test_the_artefacts_load_predicts_before_any_force_field(monkeypatch):

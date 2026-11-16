@@ -18,15 +18,14 @@ at the memory cap or does not finish within the time budget — keeps its harmon
 not fail. Anything else that goes wrong is an error and raises; the pipeline has delivered the harmonic result before step 6
 starts, so no error here can lose it (`pipeline.run`).
 
-The time budget (`FieldSettings.budget_s`; the pipeline's --anharmonic-minutes, default 120) is kept inside WSL: the force
-field runs under `timeout --kill-after=30` — here uutils coreutils 0.10.0, whose own tests are tests/by-util/test_timeout.rs. What
-it does was checked on this WSL on 16 Nov 2026, also under `probes/wsl_capped.sh`: at the budget it sends SIGTERM to its whole
-process group (two background sleeps were gone) and exits 124; a process that ignores SIGTERM makes it exit 137 after the
-kill-after, and it then kills its own child only — a grandchild that ignored the signal was left running. So after a stop (124,
-137 or 143) the command itself kills every process that still names the result's anharmonic folder (checked the same day: one
-such process before, none after). 137 is also the memory cap's exit; the elapsed time tells the two apart. The stopped run's
-finished Hessians stay in <result>/anharmonic/xtb; this pipeline run does not take them up again, but the command below does,
-because `probes/xtb_anharmonic.sh` skips the Hessians it finds.
+The time budget (`FieldSettings.budget_s`; the pipeline's --anharmonic-minutes, default 120) is kept inside WSL by
+`probes/run_in_scope.sh`: the force field runs in a systemd user scope of this run's own name (the memory properties of
+`probes/wsl_capped.sh`, which is not used here because its scope has no name to ask for), under `timeout`. Whatever the exit,
+the script reads the unit's cgroup, kills what is left in it and fails if anything survives — ownership, not a pattern on
+command lines (tests/test_run_in_scope.py: a grandchild that ignores SIGTERM under a name of its own is gone at the budget).
+Its exit is 124 at the budget. Where WSL cannot make such a scope the pipeline refuses before step 1 (`preflight`). The stopped
+run's finished Hessians stay in <result>/anharmonic/xtb; this pipeline run does not take them up again, but the command below
+does, because `probes/xtb_anharmonic.sh` skips the Hessians it finds — and the reason a certificate prints says so.
 
     python -m m08.anharmonic <pipeline result folder> [--shards 2] [--cap-mb 1536] [--threads 4] [--minutes 120] [--dry-run]
 
@@ -39,8 +38,10 @@ import argparse
 import json
 import re
 import shlex
+import subprocess
 import sys
 import time
+import uuid
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -57,12 +58,15 @@ from anchor_registry import sha16
 from learning_curve_layerA import molecule_features
 
 FIELD_SCRIPT = P.PLAN / "probes" / "xtb_field_for_step.sh"
+SCOPE_SCRIPT = P.PLAN / "probes" / "run_in_scope.sh"
+SURVIVORS = 70                               # run_in_scope.sh: processes of the unit outlived SIGKILL
 FOLDER, RECORD, LOG = "anharmonic", "anharmonic.json", "anharmonic_field.log"
 STICK_TOL_CM = 0.051                         # the record rounds positions to 0.1 cm⁻¹
 MIN_CAP_MB = 1024                            # below this one dxtb process of a 12-atom molecule does not fit beside the label step
 MIN_BUDGET_S = 60                            # a budget under a minute stops every force field: the switch for that is 'off'
 KILL_AFTER_S = 30                            # after the budget's SIGTERM, how long the processes get before SIGKILL
-TIMED_OUT = 124                              # coreutils timeout's exit code when the time ran out
+FINALISE_S = 120                             # the label, the model and the second certificate after the force field: well under this
+TIMED_OUT = 124                              # run_in_scope.sh's exit code when the budget was reached
 RULE_FREQ_TOL_CM = 1.0                       # the two rules' B3LYP modes are the same modes: their ω differ by the mass tables only
 FAILED_LINE = re.compile(r"^=== \(ANH\) FAILED: (.*?) \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$", re.MULTILINE)
 PEAK_LINE = re.compile(r"^=== \(ANH\) peak memory (\d+) MB", re.MULTILINE)
@@ -152,19 +156,29 @@ def write_reference(d: Path, symbols: list[str], coords: np.ndarray, H_low: np.n
     return g
 
 
+def scope_unit(name: str) -> str:
+    """A unit name no other run has: the scope the force field's processes belong to, and are stopped by."""
+    return f"m08-anharmonic-{name}-{uuid.uuid4().hex[:10]}"
+
+
 def field_command(name: str, d: Path, s: FieldSettings, dry: bool = False) -> list[str]:
-    """The WSL command of the force field and its label, under the memory cap and the time budget (`timeout` signals the whole
-    process group at the budget, and kills what is left KILL_AFTER_S later); with `dry`, the script's own check of its tools."""
+    """The WSL command of the force field and its label, in a scope of its own name under the memory cap and the time budget
+    (`probes/run_in_scope.sh`, which leaves no process of the scope behind); with `dry`, the script's own check of its tools."""
     q, w = shlex.quote, P.wsl_path
-    script = f"bash {q(w(FIELD_SCRIPT))} {q(name)} {q(w(d / FOLDER / 'G'))} {q(w(d / FOLDER))}"
-    capped = f"export SHARDS={s.shards} OMP_NUM_THREADS={s.omp_threads} PYTHONUNBUFFERED=1; bash {q(w(P.WSL_CAPPED))} {s.cap_mb} -- "
-    if dry:
-        return ["wsl.exe", "-e", "bash", "-lc", f"{capped}{script} --dry-run"]
-    stops = " || ".join(f"[ $rc -eq {code} ]" for code in (TIMED_OUT, *P.KILLED_AT_CAP))
-    # what a stop may leave: every process that names the folder, but this shell ($$), whose own command line names it too
-    sweep = f"pgrep -f -- {q(w(d / FOLDER))} | grep -vx $$ | xargs -r kill -KILL"
-    inner = f"{capped}timeout --kill-after={KILL_AFTER_S} {s.budget_s} {script}; rc=$?; if {stops}; then {sweep}; fi; exit $rc"
+    inner = (f"export SHARDS={s.shards} OMP_NUM_THREADS={s.omp_threads} PYTHONUNBUFFERED=1; "
+             f"bash {q(w(SCOPE_SCRIPT))} {scope_unit(name)} {s.cap_mb} {s.budget_s} {KILL_AFTER_S} -- "
+             f"bash {q(w(FIELD_SCRIPT))} {q(name)} {q(w(d / FOLDER / 'G'))} {q(w(d / FOLDER))}" + (" --dry-run" if dry else ""))
     return ["wsl.exe", "-e", "bash", "-lc", inner]
+
+
+def preflight() -> None:
+    """Refuse, before anything is computed, a machine on which the force field could not be owned and stopped: WSL without a
+    systemd user manager. There is no fallback to killing by pattern."""
+    r = subprocess.run(["wsl.exe", "-e", "bash", "-lc", f"bash {shlex.quote(P.wsl_path(SCOPE_SCRIPT))} --check"],
+                       capture_output=True, text=True, stdin=subprocess.DEVNULL, timeout=120, check=False)
+    if r.returncode != 0:
+        raise P.Refused([f"the anharmonic step cannot run here: {(r.stdout + r.stderr).strip()[-300:] or f'exit {r.returncode}'} "
+                         "(--no-anharmonic gives the harmonic result)"])
 
 
 def force_field(name: str, d: Path, s: FieldSettings) -> tuple[AS.XtbField, dict]:
@@ -176,10 +190,10 @@ def force_field(name: str, d: Path, s: FieldSettings) -> tuple[AS.XtbField, dict
     peak = PEAK_LINE.search(log)
     record = {"seconds": round(time.time() - t, 1), "peak_memory_mb": int(peak.group(1)) if peak else None, "shards": s.shards,
               "omp_threads": s.omp_threads, "cap_mb": s.cap_mb, "budget_minutes": s.budget_minutes, "software": SOFTWARE, "log": LOG}
-    # a process that outlived the budget's SIGTERM is killed, and the exit is then the kill's, as at the memory cap: the clock tells
-    if rc == TIMED_OUT or (rc in P.KILLED_AT_CAP and record["seconds"] >= s.budget_s):
-        raise NotApplied(f"{POS.timed_out(s.budget_minutes)}: the GFN2-xTB force field was stopped; its finished Hessians stay in "
-                         f"{FOLDER}/xtb ({LOG})", record)
+    if rc == SURVIVORS:
+        raise RuntimeError(f"processes of the force field's scope survived its stop ({LOG}): stop them by hand before anything else runs")
+    if rc == TIMED_OUT:
+        raise NotApplied(f"{POS.timed_out(s.budget_minutes)} ({LOG})", record)
     if rc in P.KILLED_AT_CAP:
         raise NotApplied(f"the GFN2-xTB force field was stopped at the WSL cap of {s.cap_mb} MB ({LOG})", record)
     if rc != 0:
@@ -273,8 +287,9 @@ def first_delivery(req: Request, out: dict) -> dict:
         return not_applied(out, POS.SWITCHED_OFF)
     for stick in out["network"]["sticks"]:
         stick["nu_cm"], stick["anharmonic"] = None, None
+    deadline = time.localtime(time.time() + req.settings.budget_s + KILL_AFTER_S + FINALISE_S)
     return with_summary(out, {"status": POS.RUNNING, "reason": None, "model": AS.MODEL, "budget_minutes": req.settings.budget_minutes,
-                              "field": None})
+                              "final_by": time.strftime("%Y-%m-%d %H:%M", deadline), "field": None})
 
 
 def certificate_families(d: Path, H_low: np.ndarray, omega: np.ndarray) -> list[str]:

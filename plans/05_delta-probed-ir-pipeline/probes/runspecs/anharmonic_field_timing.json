@@ -1,5 +1,5 @@
 {"name": "anharmonic_field_timing",
- "purpose": "TASKS 211, stage 2: what the pipeline's anharmonic step (m08/anharmonic.py, step 6) costs on one small molecule, in time and in peak memory. The step is run as the pipeline runs it - probes/anharmonic_field_timing.sh: python -m m08.anharmonic on a copy of the stored pipeline result of benzene (probes/results_m1/pipeline_benzene_computed_2026-11-03/benzene, 12 atoms, 61 Hessians; the script makes the copy) - with the pipeline's defaults: 2 dxtb processes of 2 threads under probes/wsl_capped.sh at 1536 MB. The demo of 25 November allows the whole pipeline half an hour, so this number decides whether the step fits it. No psi4 or pyscf calculation: GFN2-xTB by xtb and dxtb, dpir.qff, and pyVPT2's polyad solver (numpy) for the label",
+ "purpose": "TASKS 211, stage 2: what the pipeline's anharmonic step (m08/anharmonic.py, step 6) costs on one small molecule, in time and in peak memory. The step is run as the pipeline runs it - probes/anharmonic_field_timing.sh: python -m m08.anharmonic on a copy of the stored pipeline result of benzene (probes/results_m1/pipeline_benzene_computed_2026-11-03/benzene, 12 atoms, 61 Hessians; the script makes the copy) - with the pipeline's defaults: 2 dxtb processes of 2 threads in a scope of the run's own (probes/run_in_scope.sh) capped at 1536 MB, time budget 120 minutes. The demo of 25 November allows the whole pipeline half an hour, so this number decides whether the step fits it. No psi4 or pyscf calculation: GFN2-xTB by xtb and dxtb, dpir.qff, and pyVPT2's polyad solver (numpy) for the label",
  "host": "laptop",
  "workdir": "probes/results_m1",
  "command": "bash ../anharmonic_field_timing.sh",
@@ -7,7 +7,7 @@
              {"local": "modules/08_industry_synthesis/m08/pipeline.py"}, {"local": "probes/anharmonic_step.py"},
              {"local": "probes/xtb_field_for_step.sh"}, {"local": "probes/xtb_anharmonic.sh"}, {"local": "probes/xtb_hessians_for_qff.py"},
              {"local": "probes/dxtb_hessians_for_qff.py"}, {"local": "probes/make_qff_displacements.py"}, {"local": "probes/gvpt2_labels.py"},
-             {"local": "probes/wsl_capped.sh"}],
+             {"local": "probes/run_in_scope.sh"}],
  "progress": {"regex": "^\\[anharmonic\\] |^\\[pipeline\\] ", "max_gap_minutes": 45,
               "heartbeat_glob": "anharmonic_step_2026-11-16/timing/benzene/*.log"},
  "marker_regex": "^\\[anharmonic\\] |^\\[pipeline\\] |Traceback",
@@ -15,5 +15,5 @@
  "dry_run_args": "--dry-run",
  "threads": 4,
  "estimate": {"hours": 0.4, "basis": "B_0603418c5b (20 atoms, 109 Hessians of 120 force calls) took 53 min at 2 x 2 threads on 19 October (probes/results_m1/s2_xtb_2026-10-18/s2_xtb.log); benzene has 61 Hessians of 72 force calls on a smaller molecule, about a tenth to a fifth of that, plus the label and the Windows side"},
- "memory": {"peak_gb": 2.3, "basis": "a bound for the WSL side: probes/wsl_capped.sh stops the force field and its label at 1536 MB, the cap probes/runspecs/routea_xtb.json ran coronene under; beside it the Windows python of m08.anharmonic, which imports module 05's code (torch) and fits kernel ridge on 1,600 rows: under 0.8 GB"},
+ "memory": {"peak_gb": 2.3, "basis": "a bound for the WSL side: probes/run_in_scope.sh runs the force field and its label in a systemd scope with MemoryMax 1536 MB and no swap (the properties of probes/wsl_capped.sh, under which probes/runspecs/routea_xtb.json ran coronene at this cap); beside it the Windows python of m08.anharmonic, which imports module 05's code (torch) and fits kernel ridge on 1,600 rows: under 0.8 GB"},
  "resumable": false}

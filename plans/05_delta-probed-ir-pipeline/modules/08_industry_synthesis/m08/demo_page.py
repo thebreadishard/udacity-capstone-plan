@@ -83,7 +83,7 @@ def load_panel(demo: DemoMolecule) -> Panel:
             sticks["truth"] = _sticks(z["H_projected"], r.masses, r.apt)
     curves = {k: broadened(s, step=PLOT_STEP_CM) for k, s in sticks.items()}
     grid = next(iter(curves.values()))[0]
-    return Panel(demo, r.record, _json(demo.folder / "certificate.json"), vs, grid, {k: c[1] for k, c in curves.items()})
+    return Panel(demo, r.record, LC.read_certificate(demo.folder), vs, grid, {k: c[1] for k, c in curves.items()})
 
 
 def _x(cm: float) -> float:

@@ -51,6 +51,7 @@ def progress_view(folder: Path) -> dict:
     route = "reused" if steps["optimise"]["state"] == "reused" else ("computed" if steps["optimise"]["state"] != "pending" else "unknown")
     mol = rec["molecule"]
     return {"folder": folder.name, "name": rec["name"], "pipeline_version": rec["pipeline_version"], "finished": rec["finished"],
+            "delivery": rec.get("delivery"),          # None for a run of a pipeline before 0.11: finished means final there
             "route": route, "molecule": {**mol, "depiction": depiction(mol["smiles"]) if mol.get("smiles") else ""},
             "stations": [{"state": steps[s]["state"], "time": station_time(s, steps[s])} for s in STEPS]}
 
@@ -86,7 +87,11 @@ def make_handler(page: str, runs: Path) -> type[BaseHTTPRequestHandler]:
                 if not FOLDER_NAME.match(name) or not (runs / name / FILE).exists():
                     self._send(404, json.dumps({"error": f"no run folder {name!r}"}))
                     return
-                view = result_view(runs / name)
+                try:
+                    view = result_view(runs / name)
+                except S.LC.MismatchedPair as e:        # caught between the two files of a delivery: the page asks again
+                    self._send(409, json.dumps({"error": str(e)}))
+                    return
                 self._send(200 if view else 409, json.dumps(view if view else {"error": "the run is not finished"}))
             else:
                 self._send(404, json.dumps({"error": "not found"}))

@@ -499,34 +499,57 @@ SECOND_DELIVERY = "second: with the anharmonic positions"
 FINAL_HARMONIC = "second: harmonic, final — the anharmonic step was not applied"
 
 
-def _deliver(rec: dict, d: Path, what: str, t0: float, deliver: Deliver | None) -> None:
-    """One delivery: the record with this delivery's name and time written to <folder>/pipeline.json, then `deliver` (the
-    certificate's writer) on the folder."""
-    rec["deliveries"].append({"delivery": what, "at": time.strftime("%Y-%m-%d %H:%M:%S"), "seconds_since_start": round(time.time() - t0, 1)})
+SHOWN = {ONLY_DELIVERY: "final: harmonic, the anharmonic step is switched off", SECOND_DELIVERY: "final: with the anharmonic positions",
+         FINAL_HARMONIC: "final: harmonic, the anharmonic step was not applied"}
+
+
+@dataclass(frozen=True)
+class Delivering:
+    """What a run delivers with: its folder, its start, the certificate's writer (None in a test) and its progress record."""
+    folder: Path
+    t0: float
+    deliver: Deliver | None
+    progress: Progress
+
+
+def _deliver(rec: dict, what: str, ctx: Delivering) -> None:
+    """One delivery: the record with this delivery's number, name and time written to <folder>/pipeline.json, then `deliver`
+    (the certificate's writer) on the folder, then the progress record — finished from the first delivery on, so that the live
+    show has the result then and reads it again when the delivery's number changes. The first delivery names its deadline."""
+    final_by = rec["spectra"]["anharmonic"].get("final_by") if what == FIRST_DELIVERY else None
+    number = len(rec["deliveries"]) + 1
+    rec["deliveries"].append({"number": number, "delivery": what, "at": time.strftime("%Y-%m-%d %H:%M:%S"),
+                              "seconds_since_start": round(time.time() - ctx.t0, 1), "final_by": final_by})
     rec["commit_at_end"] = git_state(str(Path(__file__).parent)).get("commit")
-    write_json(d / "pipeline.json", rec)
-    if deliver is not None:
-        deliver(d, what)
+    write_json(ctx.folder / "pipeline.json", rec)
+    if ctx.deliver is not None:
+        ctx.deliver(ctx.folder, what)
+    shown = SHOWN.get(what, f"harmonic delivered, anharmonic step running, final by {final_by}")
+    ctx.progress.delivered(number, shown, final=what != FIRST_DELIVERY)
 
 
-def _second_delivery(rec: dict, step6, dH: np.ndarray, t0: float, deliver: Deliver | None) -> None:
-    """Step 6 on a record that has been delivered once, and the second delivery. An error in the step is not swallowed: the
-    record is first finalised at its harmonic positions with the error as the reason, delivered, and then the error is raised."""
+def _second_delivery(rec: dict, step6, dH: np.ndarray, ctx: Delivering) -> None:
+    """Step 6 on a record that has been delivered once, and the second delivery. Nothing that ends the step is swallowed and
+    nothing leaves the first delivery standing as 'running': on an error, on Ctrl-C and on SystemExit the record is first
+    finalised at its harmonic positions with what happened as the reason, delivered, and then the exception is raised. (A process
+    killed from outside cannot do that; the first delivery's own text says what holds after its deadline.)"""
     from . import anharmonic as AN  # that module imports this one
     from . import positions as POS
 
     t = time.time()
     try:
         out = AN.step(step6, dH, rec["spectra"])
-    except Exception as e:
-        rec["spectra"] = AN.not_applied(rec["spectra"], f"the anharmonic step failed: {type(e).__name__}: {e}")
+    except BaseException as e:
+        how = "failed" if isinstance(e, Exception) else "was interrupted"
+        said = f": {e}" if str(e) else ""
+        rec["spectra"] = AN.not_applied(rec["spectra"], f"the anharmonic step {how}: {type(e).__name__}{said}")
         rec["seconds"]["anharmonic"] = round(time.time() - t, 1)
-        _deliver(rec, step6.folder, FINAL_HARMONIC, t0, deliver)
+        _deliver(rec, FINAL_HARMONIC, ctx)
         raise
     rec["spectra"] = out
     rec["seconds"]["anharmonic"] = round(time.time() - t, 1)
     applied = out["anharmonic"]["status"] == POS.APPLIED
-    _deliver(rec, step6.folder, SECOND_DELIVERY if applied else FINAL_HARMONIC, t0, deliver)
+    _deliver(rec, SECOND_DELIVERY if applied else FINAL_HARMONIC, ctx)
 
 
 def run(cfg: PipelineConfig, deliver: Deliver | None = None) -> dict:
@@ -538,6 +561,8 @@ def run(cfg: PipelineConfig, deliver: Deliver | None = None) -> dict:
 
     t0 = time.time()
     adm = admit(cfg)
+    if cfg.anharmonic:
+        AN.preflight()                # a machine that could not own and stop the force field is refused here, not after an hour
     # the step's artefact is read and checked here — its probe rows predicted — before the first step computes anything
     step6 = AN.Request(cfg.name, cfg.folder, adm.smiles, AN.load_artefact() if cfg.anharmonic else None,
                        AN.FieldSettings.of(cfg.threads, cfg.anharmonic_shards, cfg.anharmonic_cap_mb, cfg.anharmonic_minutes)
@@ -565,11 +590,12 @@ def run(cfg: PipelineConfig, deliver: Deliver | None = None) -> dict:
            "settings": cfg.model_dump(mode="json"), "admission": vars(adm) | {"inside_training_sizes": adm.inside_training_sizes},
            "deck": {"file": str(RC.DECK), "sha16": sha16(RC.DECK)}, "optimisation": {k: psi4.get(k) for k in ("e_opt", "timings_s", "opt_options")},
            "low_level": check, "reuse": reused, "seconds": seconds, "spectra": out, "provenance": launched, "deliveries": []}
+    ctx = Delivering(d, t0, deliver, progress)
     if not cfg.anharmonic:
-        _deliver(rec, d, ONLY_DELIVERY, t0, deliver)
+        _deliver(rec, ONLY_DELIVERY, ctx)
         return rec
-    _deliver(rec, d, FIRST_DELIVERY, t0, deliver)
-    _second_delivery(rec, step6, dH, t0, deliver)
+    _deliver(rec, FIRST_DELIVERY, ctx)
+    _second_delivery(rec, step6, dH, ctx)
     return rec
 
 
@@ -632,7 +658,6 @@ def main(argv: list[str] | None = None) -> int:
         return 2
     n = len(rec["spectra"]["network"]["sticks"])
     print(f"[pipeline] done: {n} bands, {cfg.folder / 'pipeline.json'} ({sum(rec['seconds'].values()):.0f} s)", flush=True)
-    Progress.load(cfg.folder).finish()
     print(f"[pipeline] certificate: {cfg.folder / 'certificate.md'}", flush=True)      # the last line: a run spec's end marker
     return 0
 

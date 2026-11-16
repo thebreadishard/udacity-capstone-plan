@@ -528,16 +528,20 @@ async function liveTick() {
   try { p = await (await fetch("/progress", { cache: "no-store" })).json(); } catch (e) { $("#livestate").textContent = "The live server does not answer."; return; }
   if (!p) { $("#livestate").textContent = "No run yet: start one, and it appears here."; return; }
   if (p.folder !== live.folder) liveStart(p);
-  $("#livestate").textContent = `${p.name} · pipeline ${p.pipeline_version} · ${p.finished ? "finished" : "running"}`;
+  /* a run delivers twice (pipeline 0.11): the harmonic result, then the final one; the page shows each as it comes */
+  const delivery = p.delivery ? p.delivery.number : (p.finished ? 1 : 0);
+  $("#livestate").textContent = `${p.name} · pipeline ${p.pipeline_version} · ${p.delivery ? p.delivery.state : (p.finished ? "finished" : "running")}`;
   live.mol.route = p.route === "reused" ? "reused" : "computed";
   p.stations.forEach((s, i) => setStation(i, s.state === "reused" ? "skipped" : s.state, s.time));
   if (p.route === "reused") setStation("C", "done");
   liveMoveTo(Math.max(0, ...p.stations.map((s, i) => (s.state === "done" || s.state === "active" ? i : 0))));
-  if (p.finished && !live.shown) {
-    live.shown = true;
+  if (p.finished && live.shown !== delivery && !live.asking) {
+    live.asking = true;
     const r = await fetch(`/result?folder=${encodeURIComponent(p.folder)}`, { cache: "no-store" });
-    if (!r.ok) { live.shown = false; return; }
+    live.asking = false;
+    if (!r.ok) return;
     const m = await r.json();
+    live.shown = delivery;
     showResult(m); $("#realtime").textContent = m.real_time; state.finished = true;
   }
 }

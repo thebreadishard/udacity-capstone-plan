@@ -4,8 +4,12 @@ sentences said once, the three kinds of band line, the first delivery and a resu
 show's sentences. On the frozen corpus's benzene, with the stand-in force field of tests/test_m08_anharmonic.py."""
 from __future__ import annotations
 
+import inspect
 import json
 import sys
+from pathlib import Path
+
+import pytest
 
 from pin_tools import PLAN
 from test_m08_anharmonic import APPLIED, artefact, request, spectra_of, stepped  # noqa: F401  artefact is a fixture
@@ -17,6 +21,9 @@ from m08 import demo_page as D
 from m08 import live_certificate as LC
 from m08 import pipeline as P
 from m08 import positions as POS
+from m08 import show as S
+from m08 import show_live as L
+from m08.progress import STEPS, Progress
 
 # isort: split
 import anharmonic_step as AS  # probes/, on the path through m08.pipeline
@@ -101,8 +108,67 @@ def test_the_first_delivery_is_a_complete_harmonic_certificate_that_says_what_wi
     first = LC._position_paragraphs(cert)[0]
     assert "in this first delivery: the anharmonic step is running, with a time budget of 120 minutes" in first
     assert "this certificate is written again and adds per band the anharmonic estimate ν = ω + Δ_anh beside ω" in first
-    lines = LC._delivery_lines({"deliveries": [{"delivery": P.FIRST_DELIVERY, "at": "2026-11-16 20:00:00", "seconds_since_start": 324.0}]})
-    assert lines == [f"- delivery — {P.FIRST_DELIVERY}: 2026-11-16 20:00:00, 324.0 s after the start"] and LC._delivery_lines({}) == []
+    lines = LC._delivery_lines({"deliveries": [{"number": 1, "delivery": P.FIRST_DELIVERY, "at": "2026-11-16 20:00:00",
+                                               "seconds_since_start": 324.0, "final_by": "2026-11-16 22:02"},
+                                              {"number": 2, "delivery": P.SECOND_DELIVERY, "at": "2026-11-16 20:40:00",
+                                               "seconds_since_start": 2724.0, "final_by": None}]})
+    assert lines == [f"- delivery 1 — {P.FIRST_DELIVERY}: 2026-11-16 20:00:00, 324.0 s after the start; final by 2026-11-16 22:02, and if "
+                     "no later delivery stands here by then, this one is final",
+                     f"- delivery 2 — {P.SECOND_DELIVERY}: 2026-11-16 20:40:00, 2724.0 s after the start"]
+    assert LC._delivery_lines({}) == []
+
+
+def test_the_certificates_two_files_are_a_pair_and_a_cut_pair_is_refused(tmp_path, monkeypatch):
+    """Round two, finding 5: both files are written whole before either replaces the old one, each names its delivery, and a
+    folder whose record and page are of different deliveries is refused by the reader the pages use."""
+    monkeypatch.setattr(LC, "to_markdown", lambda c: f"# page\n\n{LC.DELIVERY_MARK.format(c['delivery'])}\n")
+    LC.write({"delivery": 1, "x": "first"}, tmp_path)
+    assert LC.read_certificate(tmp_path)["x"] == "first" and not list(tmp_path.glob("*.tmp"))
+    moved = []
+    real = LC.os.replace
+
+    def cut_after_the_record(src: Path, dst: Path) -> None:
+        if moved:
+            raise OSError("killed between the two files")
+        moved.append(Path(dst).name)
+        real(src, dst)
+
+    monkeypatch.setattr(LC.os, "replace", cut_after_the_record)
+    with pytest.raises(OSError, match="killed between"):
+        LC.write({"delivery": 2, "x": "second"}, tmp_path)
+    assert moved == ["certificate.json"]                                      # the fixed order: the record, then the page
+    assert json.loads((tmp_path / "certificate.json").read_text(encoding="utf-8"))["x"] == "second"
+    with pytest.raises(LC.MismatchedPair, match="is delivery 2 and"):
+        LC.read_certificate(tmp_path)
+    monkeypatch.setattr(LC, "load_result", lambda folder: None)              # the show reads the pair through the same reader
+    with pytest.raises(LC.MismatchedPair):
+        S.molecule(tmp_path)
+    assert "LC.read_certificate(demo.folder)" in inspect.getsource(D.load_panel)       # and so does the demo page
+    monkeypatch.setattr(LC.os, "replace", real)
+    LC.write({"delivery": 2, "x": "second"}, tmp_path)
+    assert LC.read_certificate(tmp_path)["x"] == "second"
+    (tmp_path / "certificate.json").write_text(json.dumps({"x": "old"}), encoding="utf-8")       # a record from before the numbering
+    assert LC.read_certificate(tmp_path) == {"x": "old"}
+
+
+def test_the_live_show_has_the_result_at_the_first_delivery_and_asks_again_at_the_second(tmp_path):
+    """Round two, finding 1: the progress record the show polls is finished at delivery 1 and carries the delivery's number and
+    state; the page fetches the result whenever that number is one it has not shown."""
+    p = Progress(tmp_path, "benzene", "0.11", {"smiles": "c1ccccc1", "formula": "C6H6", "n_atoms": 12})
+    for step in STEPS:
+        p.start(step)
+        p.done(step)
+    assert L.progress_view(tmp_path)["finished"] is False and L.progress_view(tmp_path)["delivery"] is None
+    p.delivered(1, "harmonic delivered, anharmonic step running, final by 2026-11-16 22:02", final=False)
+    view = L.progress_view(tmp_path)
+    assert view["finished"] is True and view["delivery"] == {"number": 1, "final": False,
+                                                             "state": "harmonic delivered, anharmonic step running, final by 2026-11-16 22:02"}
+    p.delivered(2, "final: with the anharmonic positions", final=True)
+    assert L.progress_view(tmp_path)["delivery"] == {"number": 2, "state": "final: with the anharmonic positions", "final": True}
+    template = (PLAN / "modules" / "08_industry_synthesis" / "m08" / "show_template.html").read_text(encoding="utf-8")
+    assert "const delivery = p.delivery ? p.delivery.number : (p.finished ? 1 : 0);" in template
+    assert "if (p.finished && live.shown !== delivery && !live.asking) {" in template and "live.shown = delivery;" in template
+    assert "p.delivery ? p.delivery.state" in template
 
 
 def test_a_result_without_the_step_is_one_sentence_not_a_line_per_band(result, accuracy):  # noqa: F811

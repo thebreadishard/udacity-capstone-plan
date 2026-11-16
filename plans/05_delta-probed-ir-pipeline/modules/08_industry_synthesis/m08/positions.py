@@ -46,9 +46,13 @@ def summary_of(spectra: dict) -> dict:
     return spectra.get("anharmonic") or {"status": NOT_APPLIED, "reason": BEFORE_THE_STEP}
 
 
+RESUME = "python -m m08.anharmonic <result folder>"
+
+
 def timed_out(minutes: float) -> str:
-    """The reason of a step that was stopped at its time budget."""
-    return f"the anharmonic step did not finish within {minutes:g} minutes"
+    """The reason of a step that was stopped at its time budget, with what is kept of it and the command that takes it up."""
+    return (f"the anharmonic step did not finish within {minutes:g} minutes; the force field's finished Hessians are kept in the "
+            f"result's anharmonic/xtb, and `{RESUME}` takes the step up from them")
 
 
 def note(summary: dict) -> str:
@@ -56,8 +60,10 @@ def note(summary: dict) -> str:
     the step runs, the step applied, the step not applied (it replaces HARMONIC_NOTE)."""
     if summary["status"] == RUNNING:
         return (f"positions are harmonic (ω) in this first delivery: the anharmonic step is running, with a time budget of "
-                f"{summary['budget_minutes']:g} minutes; when it finishes, this certificate is written again and adds {SECOND_DELIVERY}; "
-                "if the step fails or runs out of time, the certificate is finalised with these harmonic positions and the reason")
+                f"{summary['budget_minutes']:g} minutes — final by {summary['final_by']}; when the step finishes, this certificate is "
+                f"written again and adds {SECOND_DELIVERY}; if the step fails, runs out of time or is interrupted, the certificate is "
+                f"finalised with these harmonic positions and the reason; and if this text still stands after {summary['final_by']}, "
+                "the run was stopped from outside and this harmonic certificate is the final one")
     if summary["status"] != APPLIED:
         return f"positions are harmonic (ω): the anharmonic step was not applied — {summary['reason']}"
     counts = summary["bands"]

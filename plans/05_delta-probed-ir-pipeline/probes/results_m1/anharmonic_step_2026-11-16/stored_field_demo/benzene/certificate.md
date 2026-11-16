@@ -1,4 +1,4 @@
-# Certificate — benzene · pipeline 0.11 (step 6 added to a 0.9 result from a stored force field) · 2026-11-16 20:17
+# Certificate — benzene · pipeline 0.11 (step 6 added to a 0.9 result from a stored force field) · 2026-11-16 20:32
 
 benzene: the infrared spectrum of ΔH-network v1.3 (3 seeds) — B3LYP/6-31G* corrected toward ωB97X/6-31G* — with the error of the corrected band positions of the seed-mean correction measured on molecules the network never saw; the harmonic positions ω are licensed for ring-ip, CH-stretch, CH-oop, other (decision 65), each band marked; at the coupled-cluster level not measured for this network version: the coupled-cluster reads (T3) were made on chain 34, and tests on the 9–11 existing anchors wait for the anchor decision of November 2026. The scaled B3LYP spectrum is shown as the baseline only. This molecule and the ΔH network: held out, hold-out (a) (A_8448043181): never trained on; the measured error includes it. Licence caveat: other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie under it).
 
@@ -104,6 +104,6 @@ Beside it the evaluation records' read-outs — the first-order diagonal error o
 
 ## Provenance
 
-- result C:\Users\thebr\Documents\CapstonePlan-wt-anharmonic\plans\05_delta-probed-ir-pipeline\probes\results_m1\anharmonic_step_2026-11-16\stored_field_demo\benzene; run at commit 292b3f9a (uncommitted changes: yes); certificate at 8f1997ac
+- result C:\Users\thebr\Documents\CapstonePlan-wt-anharmonic\plans\05_delta-probed-ir-pipeline\probes\results_m1\anharmonic_step_2026-11-16\stored_field_demo\benzene; run at commit 292b3f9a (uncommitted changes: yes); certificate at 49c51624
 - deck 9e27bf8e934893f3; low level {"pyscf": "2.14.0", "pyscf_git": null, "numpy": "2.5.2", "python": "3.12.14", "sha256": {"analytic_hessians.py": "0ea113dae1df", "apt.py": "b22c29d0575f"}}; host Asus18
 - models: E7_rungC_chain35_analytic_model_n750_seed0.pt (carried, sha16 f930db4af9268a00); E7_rungC_chain35_analytic_model_n750_seed1.pt (carried, sha16 87734859e866d6f7); E7_rungC_chain35_analytic_model_n750_seed2.pt (carried, sha16 023b8c142ad5fa52)

@@ -5,7 +5,7 @@
 #   1. probes/xtb_anharmonic.sh on a one-line list (as probes/runspecs/routea_xtb.json runs it): the xtb minimum from <G dir>/ref.json,
 #      the dxtb Hessians at ±0.10 along every mode, dpir.qff with its noise guard -> <out dir>/xtb/<id>/X;
 #   2. probes/gvpt2_labels.py --setting X with the polyad fork on the path (as probes/s3_read_inputs.sh runs it) -> <out dir>/gvpt2_x/<id>.json.
-# Runs in WSL; m08/anharmonic.py starts it under probes/wsl_capped.sh. SHARDS and OMP_NUM_THREADS pass through to step 1.
+# Runs in WSL; m08/anharmonic.py starts it under probes/run_in_scope.sh. SHARDS and OMP_NUM_THREADS pass through to step 1.
 # pyVPT2's vpt2.py imports psi4 at its top, so the env `vpt2` must hold psi4; no psi4 calculation runs (the label calls
 # process_fermi_solver alone, which is numpy).
 # Markers '=== (ANH) start|force field done|label done|peak memory …|done|FAILED: <why>'; exit 0 only after 'done'.
@@ -45,10 +45,11 @@ PYTHONPATH="$FORK" PYTHONUNBUFFERED=1 "$PY" probes/gvpt2_labels.py "$OUT/xtb" --
 [ -f "$OUT/gvpt2_x/$ID.json" ] || fail "no GVPT2 label for $ID"
 say "label done"
 
-# the peak of this run's own cgroup, when it runs in one (wsl_capped.sh's systemd scope); the session's cgroup would say nothing
+# the peak of this run's own cgroup, when it runs in one (a systemd scope: wsl_capped.sh's, or run_in_scope.sh's, which names its
+# unit in SCOPE_UNIT); the session's cgroup would say nothing
 CG=/sys/fs/cgroup$(awk -F: '$1 == 0 { print $3 }' /proc/self/cgroup)
 case "$CG" in
-  */run-*.scope)
+  */run-*.scope|*/"${SCOPE_UNIT:-no unit named}".scope)
     if [ -r "$CG/memory.peak" ]; then
       say "peak memory $(( $(cat "$CG/memory.peak") / 1048576 )) MB (the scope's memory.peak, page cache included)"
     fi ;;
