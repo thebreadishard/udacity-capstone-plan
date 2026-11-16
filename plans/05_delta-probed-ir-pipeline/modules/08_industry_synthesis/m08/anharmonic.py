@@ -44,7 +44,7 @@ import sys
 import time
 import uuid
 from dataclasses import dataclass
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 
 import numpy as np
 
@@ -178,19 +178,34 @@ def scope_note(d: Path) -> str:
     return (f"; the force field's scope {unit}.scope may still run in WSL until its own time limit — `{stop_command(unit)}` stops it")
 
 
-def field_command(name: str, d: Path, s: FieldSettings, unit: str, dry: bool = False) -> list[str]:
+NO_WSL = "its GFN2-xTB force field runs in WSL, and this host is not Windows"
+
+
+def host_has_wsl(platform: str | None = None) -> bool:
+    """Whether this host (or the named platform) can have WSL at all: Windows. Asked before any path is turned into a WSL path —
+    `pipeline.wsl_path` takes Windows drive paths only, and on another system the plan folder is not one (CI on Linux, 16 Nov 2026)."""
+    return (platform or sys.platform) == "win32"
+
+
+def field_command(name: str, d: PureWindowsPath, s: FieldSettings, unit: str, dry: bool = False,
+                  scripts: tuple[PureWindowsPath, PureWindowsPath] = (SCOPE_SCRIPT, FIELD_SCRIPT)) -> list[str]:
     """The WSL command of the force field and its label, in the scope `unit` under the memory cap and the time budget
-    (`probes/run_in_scope.sh`, which leaves no process of the scope behind); with `dry`, the script's own check of its tools."""
+    (`probes/run_in_scope.sh`, which leaves no process of the scope behind); with `dry`, the script's own check of its tools.
+    A pure function of the Windows paths it is given — the result folder `d` and the two scripts — whatever host builds it."""
     q, w = shlex.quote, P.wsl_path
+    scope_script, field_script = scripts
     inner = (f"export SHARDS={s.shards} OMP_NUM_THREADS={s.omp_threads} PYTHONUNBUFFERED=1; "
-             f"bash {q(w(SCOPE_SCRIPT))} {unit} {s.cap_mb} {s.budget_s} {KILL_AFTER_S} -- "
-             f"bash {q(w(FIELD_SCRIPT))} {q(name)} {q(w(d / FOLDER / 'G'))} {q(w(d / FOLDER))}" + (" --dry-run" if dry else ""))
+             f"bash {q(w(scope_script))} {unit} {s.cap_mb} {s.budget_s} {KILL_AFTER_S} -- "
+             f"bash {q(w(field_script))} {q(name)} {q(w(d / FOLDER / 'G'))} {q(w(d / FOLDER))}" + (" --dry-run" if dry else ""))
     return ["wsl.exe", "-e", "bash", "-lc", inner]
 
 
 def preflight() -> None:
-    """Refuse, before anything is computed, a machine on which the force field could not be owned and stopped: WSL without a
-    systemd user manager. There is no fallback to killing by pattern."""
+    """Refuse, before anything is computed, a machine on which the force field could not be run, owned and stopped: a host that
+    is not Windows, or WSL without a systemd user manager. There is no fallback to killing by pattern."""
+    if not host_has_wsl():
+        raise P.Refused([f"the anharmonic step cannot run here: {NO_WSL} (without --anharmonic-minutes the pipeline gives the "
+                         "harmonic result)"])
     r = subprocess.run(["wsl.exe", "-e", "bash", "-lc", f"bash {shlex.quote(P.wsl_path(SCOPE_SCRIPT))} --check"],
                        capture_output=True, text=True, stdin=subprocess.DEVNULL, timeout=120, check=False)
     if r.returncode != 0:
@@ -201,6 +216,8 @@ def preflight() -> None:
 def force_field(name: str, d: Path, s: FieldSettings) -> tuple[AS.XtbField, dict]:
     """The molecule's GFN2-xTB force field with its GVPT2 label, computed in WSL from <result>/anharmonic/G/ref.json; and the
     run's record (seconds, peak memory where the cap's scope reports it). Raises NotApplied where there is no usable field."""
+    if not host_has_wsl():                  # the pipeline refuses this host before step 1 (`preflight`); a direct caller gets the reason
+        raise NotApplied(NO_WSL)
     t = time.time()
     unit = scope_unit(name)
     (d / FOLDER).mkdir(parents=True, exist_ok=True)
@@ -241,6 +258,8 @@ def dry_run(req: Request) -> int:
     symbols, coords, _ = geometry(req.folder)
     H_low = low_hessian(req.folder)
     try:
+        if not host_has_wsl():
+            raise NotApplied(NO_WSL)
         b3lyp_modes(symbols, coords, H_low, req.artefact)
     except NotApplied as e:
         print(f"[anharmonic] dry run: the step would not be applied — {e.reason}", flush=True)
