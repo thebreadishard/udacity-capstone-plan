@@ -1,0 +1,17 @@
+manifest columns: ['id', 'layer', 'priority', 'name', 'smiles', 'qm9_label', 'n_heavy', 'n_atoms', 'status', 'machine', 'deck', 'note']
+hold-out (a)    name                             v1.3 pool           v1.4 pool            v1.4 sel  v1.4 twins dropped
+A_fdc27f1bd1    biphenyl                                19                   0                  19                   0
+A_8448043181    benzene                                 45                  59                   0                   1
+A_e72997e726    fluorene                                 0                   0                   0                   0
+A_541c53d1a5    phenanthrene                            12                   0                  16                   0
+A_428228e5a5    fluoranthene                             0                   0                   3                   0
+A_07cadc7923    2-naphthoic_acid                         0                   0                   0                   0
+A_08dde334d8    benzophenone                             0                   0                   0                   0
+A_3100da3761    benzonitrile                             0                   0                   0                   0
+A_bce5bae234    phenanthridine                          34                  35                   0                   0
+A_72b86c2331    biphenylene                              7                   0                   8                   0
+
+selection set by core: {'pyrene': 36, 'acenaphthylene': 28, 'biphenyl': 19, 'phenanthrene': 16, 'benzofuran': 14, 'acridine': 13, 'biphenylene': 8, 'indole': 7, 'perylene': 5, 'benzo[a]pyrene': 4, 'aza-fluoranthene-3': 4, 'picene': 4, 'thiophene': 3, 'fluoranthene': 3, 'aza-fluoranthene-2': 2, 'phenylacetylene': 1, '1-aminoanthracene': 1, 'diphenyl_ether': 1}
+
+v1.4 pool by layer prefix: {'A2': 148, 'B': 666, 'P3c': 39, 'P3': 33, 'A': 25}
+v1.3 pool by layer prefix: {'A2': 235, 'B': 704, 'A': 33}
