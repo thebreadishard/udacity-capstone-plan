@@ -1,21 +1,30 @@
 """Install the review gate's two git hooks, which git does not version (the user, 16 November 2026: the check moves into git's hooks).
 
-    python tools/install_git_hooks.py install   [--repo <dir>]    write the shims, or say they are current
-    python tools/install_git_hooks.py check     [--repo <dir>]    exit 1 unless both shims are installed and current
-    python tools/install_git_hooks.py uninstall [--repo <dir>]    remove the shims this installer wrote
+    python tools/install_git_hooks.py install      write the shims, or say they are current
+    python tools/install_git_hooks.py check        exit 1 unless both shims are installed and current
+    python tools/install_git_hooks.py uninstall    remove the shims this installer wrote
 
-Each hook is a small `sh` shim that calls `tools/review_gate.py hook ...`, the one implementation of the decision. git runs
-`reference-transaction` for every ref update in the repository, several times each, fetches included, so the shim returns before
-it starts python unless the update is a prepared one that names the trunk. `pre-push` returns at once unless a remote's trunk is
-pushed to.
+It acts on the repository this file is checked out in, and on no other. Each hook is a small `sh` shim that calls
+`tools/review_gate.py hook ...`, the one implementation of the decision.
 
-The shim holds three things fixed at install time: the trunk from `review_gate.json`, the python that ran the installer, and the
-path of `review_gate.py` beside this file. `check` compares the installed text with what `install` would write now, so a changed
-trunk or a moved checkout shows as stale. The hooks directory is shared by every worktree, so the installer refuses to run from
-a linked worktree: the shim would point at a checkout that goes away.
+**What the shim costs.** git runs `reference-transaction` for every ref update in the repository, in several states, fetches
+and stashes included, so each start of `sh` is paid on every commit anywhere. Before its early exit the shim therefore uses
+shell builtins only - no `cat`, `grep` or `$(...)`: it leaves at once unless the state is `prepared`, reads stdin with `read`,
+and leaves unless a line names the trunk. `pre-push` leaves unless a remote's trunk is pushed to.
 
-`install` also writes the first line of the gate's journal when it has none for this trunk, so that a move of the trunk
-past the hooks is told from where the gate started (review_gate.py, "What no hook sees").
+**A broken installation.** The shim holds four things fixed at install time: the trunk, the python that ran the installer, the
+path of `review_gate.py` beside this file, and the configuration's path inside the repository. When that python or that file
+is missing (git run from WSL sees neither under a `C:/` path) or the gate ends with anything but its two exit codes, the shim
+decides alone, on moves of the trunk only (an update that leaves it where it is passes), and by the one switch: it reads
+`log_only` from the trunk's own `review_gate.json` with git and passes the move when it says true; otherwise it refuses with
+one line that names the repair. `check` compares the
+installed text with what `install` would write now, so a moved checkout or another python shows as stale.
+
+The hooks directory is shared by every worktree, so the installer refuses to run from a linked worktree: the shim would point
+at a checkout that goes away. It refuses a trunk that does not hold the gate's configuration: the hook reads the reviewed set
+from the trunk, never from the working tree. `install` also writes the first line of the gate's journal when it has none for
+this trunk, so that a move of the trunk past the hooks is told from where the gate started (review_gate.py, "What no hook
+sees").
 
 It never touches a hook it did not write. The pre-commit framework owns `pre-commit`, a different file, and stays as it is; a
 `reference-transaction` or `pre-push` hook without this installer's marker is foreign, and install refuses rather than overwrite
@@ -33,58 +42,79 @@ from review_gate import GateError
 
 MARKER = "# review-gate shim - written by tools/install_git_hooks.py; reinstall instead of editing"
 GATE = Path(review_gate.__file__).resolve()
-_HEAD = """#!/bin/sh
-{marker}
-{filter}
-gate='{gate}'
-if [ ! -f "$gate" ]; then
-    echo "review gate: $gate is missing, so this move of {trunk} cannot be judged and is refused." >&2
-    echo "  Restore that file, or remove the hook: python tools/install_git_hooks.py uninstall" >&2
-    exit 1
-fi
-printf '%s\\n' "$updates" | '{python}' "$gate" hook {hook} "$@"
-"""
-# git runs reference-transaction for every ref update, in several states; only a prepared update of the trunk costs a python start
+# builtins only up to the last `exit 0` of each filter: this part runs for every ref update of the repository
 _FILTERS = {
     "reference-transaction": """[ "$1" = prepared ] || exit 0
-updates=$(cat)
-case "$updates" in
-*" {trunk}"*) ;;
-*) exit 0 ;;
-esac""",
-    "pre-push": """updates=$(cat)
-case "$updates" in
-*" {trunk} "*) ;;
-*) exit 0 ;;
-esac""",
+updates=
+hit=
+while read -r old new ref; do
+    [ "$ref" = '@TRUNK@' ] && hit=$new
+    updates="$updates$old $new $ref
+"
+done
+[ -n "$hit" ] || exit 0""",
+    "pre-push": """updates=
+hit=
+while read -r local_ref local_oid remote_ref remote_oid; do
+    [ "$remote_ref" = '@TRUNK@' ] && hit=push
+    updates="$updates$local_ref $local_oid $remote_ref $remote_oid
+"
+done
+[ -n "$hit" ] || exit 0""",
 }
+_SHIM = """#!/bin/sh
+@MARKER@
+@FILTER@
+python='@PYTHON@'
+gate='@GATE@'
+if [ -x "$python" ] && [ -f "$gate" ]; then
+    printf '%s' "$updates" | "$python" -I -S "$gate" hook @HOOK@ --trunk '@TRUNK@' "$@"
+    status=$?
+    [ "$status" = 0 ] && exit 0
+    [ "$status" = @REFUSED@ ] && exit 1
+fi
+# The gate could not run. An update that leaves the trunk where it is passes: putting a working tree back must always work.
+[ "$hit" = "$(git rev-parse --quiet --verify '@TRUNK@')" ] && exit 0
+# The one switch is still the trunk's own configuration, read here as the gate reads it.
+if git cat-file blob '@TRUNK@:@CONFIG@' 2>/dev/null | grep -q '"log_only"[[:space:]]*:[[:space:]]*true'; then
+    echo "review gate (log only, nothing is refused): the gate could not run. @REPAIR@" >&2
+    exit 0
+fi
+echo "review gate: this move of @TRUNK@ is refused, because the gate could not run ($python $gate). @REPAIR@" >&2
+exit 1
+"""
+_REPAIR = "Repair: python tools/install_git_hooks.py install - or uninstall, to work without the gate."
 HOOKS = tuple(_FILTERS)
 
 
-def _sh_path(path: Path | str) -> str:
-    """A path for a single-quoted sh word, forward slashes."""
-    text = str(path).replace("\\", "/")
+def _sh_word(value: Path | str) -> str:
+    """A value for a single-quoted sh word; a path with forward slashes."""
+    text = str(value).replace("\\", "/")
     if "'" in text:
-        raise GateError(f"{text}: a path with a single quote cannot be written into the hook")
+        raise GateError(f"{text}: a single quote cannot be written into the hook")
     return text
 
 
-def shim(hook: str, trunk: str) -> str:
+def shim(hook: str, trunk: str, config_path: str) -> str:
     """The text of one hook as it would be installed now."""
-    return _HEAD.format(marker=MARKER, filter=_FILTERS[hook].format(trunk=trunk), gate=_sh_path(GATE), trunk=trunk,
-                        python=_sh_path(sys.executable), hook=hook)
+    values = {"@MARKER@": MARKER, "@FILTER@": _FILTERS[hook], "@PYTHON@": _sh_word(sys.executable), "@GATE@": _sh_word(GATE),
+              "@HOOK@": hook, "@TRUNK@": trunk, "@CONFIG@": _sh_word(config_path), "@REFUSED@": str(review_gate.REFUSED), "@REPAIR@": _REPAIR}
+    text = _SHIM
+    for name, value in values.items():
+        text = text.replace(name, value)
+    return text
 
 
-def _refuse_linked_worktree(config: review_gate.GateConfig) -> None:
+def _refuse_linked_worktree() -> None:
     """The shim points at this checkout's review_gate.py; a linked worktree is removed one day, and the hooks are shared."""
-    found = review_gate.Gate(config, GATE.parent).git("rev-parse", "--path-format=absolute", "--git-dir", "--git-common-dir", ok=(0, 128))
-    dirs = found.stdout.split("\n")
-    if found.returncode == 0 and Path(dirs[0]) != Path(dirs[1]):
+    found = review_gate.run_git(GATE.parent, "rev-parse", "--path-format=absolute", "--git-dir", "--git-common-dir")
+    git_dir, common = found.stdout.split("\n")[:2]
+    if Path(git_dir) != Path(common):
         raise GateError(f"{GATE.parent} is in a linked worktree; install from the main checkout, whose files stay")
 
 
-def hooks_dir(gate: review_gate.Gate) -> Path:
-    return Path(gate.git("rev-parse", "--path-format=absolute", "--git-path", "hooks").stdout.strip())
+def hooks_dir() -> Path:
+    return Path(review_gate.run_git(GATE.parent, "rev-parse", "--path-format=absolute", "--git-path", "hooks").stdout.strip())
 
 
 def state_of(path: Path, wanted: str) -> str:
@@ -99,15 +129,18 @@ def state_of(path: Path, wanted: str) -> str:
 
 def _states(gate: review_gate.Gate) -> dict[Path, tuple[str, str]]:
     """hook file -> (its state, the text install would write)"""
-    directory = hooks_dir(gate)
-    wanted = {directory / hook: shim(hook, gate.config.trunk) for hook in HOOKS}
+    directory, config_path = hooks_dir(), review_gate.tracked_config_path(gate.cwd)
+    wanted = {directory / hook: shim(hook, gate.config.trunk, config_path) for hook in HOOKS}
     return {path: (state_of(path, text), text) for path, text in wanted.items()}
 
 
 def install(gate: review_gate.Gate) -> int:
-    _refuse_linked_worktree(gate.config)
-    if gate.commit_of(gate.config.trunk) is None:
+    trunk = gate.commit_of(gate.config.trunk)
+    if trunk is None:
         raise GateError(f"the trunk {gate.config.trunk} of review_gate.json does not exist in this repository")
+    if review_gate.config_on(gate.cwd, trunk) is None:
+        raise GateError(f"{gate.config.trunk} does not hold {review_gate.tracked_config_path(gate.cwd)}: land the gate on the "
+                        "trunk first, the hook reads its configuration there")
     states = _states(gate)
     foreign = [str(path) for path, (state, _) in states.items() if state == "foreign"]
     if foreign:
@@ -136,9 +169,11 @@ def check(gate: review_gate.Gate) -> int:
     return 1
 
 
-def uninstall(gate: review_gate.Gate) -> int:
-    for path, (state, _) in _states(gate).items():
-        if state in ("current", "stale"):
+def uninstall() -> int:
+    """Remove the shims by their marker alone: this is the way out of a broken gate, so it reads no configuration."""
+    for path in (hooks_dir() / hook for hook in HOOKS):
+        state = state_of(path, wanted="")
+        if state == "stale":
             path.unlink()
             print(f"{path}: removed")
         else:
@@ -149,12 +184,12 @@ def uninstall(gate: review_gate.Gate) -> int:
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("what", choices=("install", "check", "uninstall"))
-    ap.add_argument("--repo", type=Path, default=GATE.parent,
-                    help="a directory inside the repository to act on (default: the checkout this file is in)")
     a = ap.parse_args(argv)
     try:
-        gate = review_gate.Gate(review_gate.load_config(), a.repo)
-        return {"install": install, "check": check, "uninstall": uninstall}[a.what](gate)
+        if a.what == "uninstall":
+            return uninstall()
+        _refuse_linked_worktree()
+        return {"install": install, "check": check}[a.what](review_gate.open_gate(GATE.parent))
     except GateError as e:
         print(f"install_git_hooks: {e}", file=sys.stderr)
         return 1

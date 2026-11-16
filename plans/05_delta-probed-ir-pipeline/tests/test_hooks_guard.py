@@ -52,6 +52,7 @@ def test_inline_code_in_powershell():
     ("git commit -am 'msg'", True), ("git -C repo add -A", True),
     ("git -c core.hooksPath=/dev/null add -A", True), ("git --no-pager add .", True),     # 14 Nov: global options hid the call
     ("git.exe commit -am x", True), ("/usr/bin/git add --all", True),
+    ("GIT.EXE add -A", True), ("git --attr-source HEAD add -A", True),                      # 16 Nov: the second review
     ("git add plans/a.py plans/b.py && git commit -q -m 'add -A is banned; see .'", False),
     ("git add .gitignore", False), ("git commit --amend --no-edit", False), ("git status -s .", False),
 ])
@@ -62,10 +63,25 @@ def test_git_add_all(command, hit):
 @pytest.mark.parametrize("command, hit", [
     ("git commit -q -F msg.txt", True), ("cd x && git -C repo commit -m y", True), ("git add a.py; git commit -m 'z'", True),
     ("git -c user.name=x commit -m y", True), ("git.exe commit -m x", True), ("/usr/bin/git commit -m x", True),
+    ("Git.Exe --attr-source HEAD commit -m x", True),
     ("git status -s", False), ("git log --oneline -1", False), ("echo 'git commit'", False), ("git add a.py", False),
 ])
 def test_commit_over_live_log_only_for_a_commit(command, hit):
     assert (G.commit_over_live_log(bash(command), lambda: ["probes/results_m1/chain42.log"]) is not None) is hit
+
+
+@pytest.mark.parametrize("command, hit", [
+    ("git push --no-verify origin side:master", True), ("git push origin master --no-verify", True),
+    ("git -c x=y push --no-verify", True), ("GIT.EXE push --no-verify", True),
+    ("git push origin master", False), ("git commit --no-verify -m x", False), ("echo 'git push --no-verify'", False),
+])
+def test_a_push_that_skips_the_review_gates_hook_is_refused(command, hit):
+    assert ("push_past_the_hook" in names(bash(command))) is hit
+
+
+@pytest.mark.parametrize("command", ["git -c x=y reset --hard HEAD~1", "GIT.EXE push --force", "git --attr-source HEAD clean -fd"])
+def test_destructive_reads_git_through_the_one_reader(command):
+    assert "destructive" in names(bash(command))
 
 
 def test_commit_over_live_log_passes_when_no_live_log_is_tracked():
@@ -189,9 +205,9 @@ def test_commands_reads_command_words_only():
 
 
 def test_every_rule_names_its_incident_and_a_known_decision():
-    # 27 Oct: clean_code_after_edit merged; 10 Nov: commit_over_live_log. The review gate is not a rule here: its one
-    # implementation is tools/review_gate.py, called by git's own hooks (16 Nov).
-    assert len(G.RULES) == 9 and len({r.name for r in G.RULES}) == 9
+    # 27 Oct: clean_code_after_edit merged; 10 Nov: commit_over_live_log; 16 Nov: push_past_the_hook. The review gate's
+    # decision is not a rule here: its one implementation is tools/review_gate.py, called by git's own hooks.
+    assert len(G.RULES) == 10 and len({r.name for r in G.RULES}) == 10
     assert all(r.incident and r.decision in ("deny", "ask", "post") and r.event in ("pre", "post") for r in G.RULES)
 
 

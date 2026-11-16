@@ -46,7 +46,7 @@ writing before the assertions pass — that emptied a probe script on 14 Septemb
   `check` by hand uses up one-time events the watch must see (anchors3's end, 19 Oct).
 
 ## Hooks
-`tools/hooks/guard.py` (plan 05) runs before every shell, Edit and Write call and after every edit: nine rules from incidents
+`tools/hooks/guard.py` (plan 05) runs before every shell, Edit and Write call and after every edit: ten rules from incidents
 (TASKS 64). A refused call names its rule and reason; fix the call rather than exempting it. `# hook-exempt: <reason>` is for a case the
 user asked for, and is logged.
 
@@ -86,16 +86,28 @@ have — not of every commit on the way there, so work on a branch is free and c
 and where the holes are suspected — not the verdict. `python tools/review_gate.py status [--staged | --merge <branch> |
 --tip <ref>]` says what would land, which reviewed paths change and the key; answer every finding, then `python
 tools/review_gate.py record <the same selector> --key <key> --reviewer <agent id> --findings <n> --verdict <one line>` and
-land it; `review_gate.py check <selector>` beforehand says whether it would pass (a refused fast-forward, pull or reset has
-already changed the working tree; `git reset --hard HEAD` puts it back). The check is git's own `reference-transaction` hook (and `pre-push` for a remote's trunk), so every move of
-`master` passes it whatever command made it; it is installed once per clone with `python tools/install_git_hooks.py install`
-from the main checkout, and `install_git_hooks.py check` says whether it is in place. `tools/review_gate.json` is the one
-place for the trunk, the reviewed set and the `log_only` switch (while true: the gate logs what it would refuse and refuses
-nothing). A landing that changes no reviewed path — the task board, the ledger, notes, run outputs — needs no record; moving
-the trunk back to its own ancestor is allowed and logged. A move git reports to no hook (a branch copied or renamed over
-the trunk, hooks switched off) is judged at the next move the hook sees: `status --unseen`, `record --unseen`. The records are `.git/review-gate/records.jsonl`, shared by the
-worktrees (`review_gate.py repair` sets a malformed line aside, `export` copies them into the tracked `tools/reviews.jsonl`).
-The hook cannot do the reviewing and cannot verify independence — the record asserts it.
+land it. `review_gate.py check <selector>` beforehand says whether it would pass.
+- **Seen at once**: every update of `master` that git reports to its `reference-transaction` hook — commit, amend, merge,
+  pull, rebase, cherry-pick, am, reset, `branch -f`, `update-ref`, a fetch or push into it — and, through `pre-push`, a push
+  to a remote's `master`. The hooks are installed once per clone with `python tools/install_git_hooks.py install` from the
+  main checkout; `install_git_hooks.py check` says whether they are in place.
+- **Seen at the next move**: what git reports to no hook — a branch copied or renamed over the trunk (`git branch -C/-M`), a
+  call with hooks switched off, an edit under `.git`. The gate keeps a journal of where it left the trunk; a trunk found
+  elsewhere is judged first (`status --unseen`, `record --unseen`), and until then only a move back to a commit the journal
+  lists passes.
+- **Accepted limits**: `git push --no-verify` skips `pre-push` (guard.py refuses the flag, the remote enforces nothing); a
+  clone without the shims is not guarded; code-like files under `**/out/**` and `probes/results_m1/**` land unreviewed — a
+  script that a run or a tool executes never lives there. Run specs and chain files are launch records and are not reviewed.
+- `tools/review_gate.json` is the one place for the trunk, the reviewed set and the `log_only` switch (while true: the gate
+  logs what it would refuse and refuses nothing). The hook reads it from the trunk commit, not from the working tree, so
+  changing it is itself a landing. A landing that changes no reviewed path — the task board, the ledger, notes, run outputs —
+  needs no record.
+- A refusal comes after git has built what it would land. After a refused fast-forward or pull, `git read-tree -m -u
+  <refused sha> HEAD` (the message prints it) puts the index and working tree back and keeps uncommitted edits; never `git
+  reset --hard` for this. After a refused commit nothing needs putting back: the change is still staged.
+- The records are `.git/review-gate/records.jsonl`, shared by the worktrees (`review_gate.py repair` sets malformed lines
+  aside, `export` copies the records into the tracked `tools/reviews.jsonl`). The hook cannot do the reviewing and cannot
+  verify independence — the record asserts it.
 
 ## Evidence
 Every number in a document traces to a run log or a source. `probes/check_reading_copy_numbers.py`

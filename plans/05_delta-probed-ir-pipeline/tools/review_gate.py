@@ -7,41 +7,50 @@ shims that call it.
 
 **Where the check sits.** In git's own `reference-transaction` hook, state `prepared` (githooks(5), section "reference-transaction",
 https://git-scm.com/docs/githooks#_reference_transaction: the hook reads `<old-value> SP <new-value> SP <ref-name> LF` lines on
-stdin and a non-zero exit in the prepared state aborts the transaction). Every update of the trunk ref passes there however the
+stdin and a non-zero exit in the prepared state aborts the transaction). An update of the trunk ref passes there however the
 command was written and whoever typed it: commit, amend, merge, pull, fast-forward, rebase, cherry-pick, am, reset, branch -f,
 update-ref, fetch into the trunk, a push into this repository. The old value on stdin is all zeros when the caller named none
 (`git update-ref <ref> <new>`), so the gate reads the trunk's present value itself. `pre-push` is the same decision for a remote's
-trunk, which no local ref transaction sees: what is pushed there must already be on the local trunk, or be a reviewed landing.
+trunk, which no local ref transaction sees: what is pushed there is the local trunk, a commit the trunk has held, or a reviewed
+landing.
 
 **What is reviewed** (the user, 16 Nov 2026: only code and tests). `review_gate.json`, beside this file, is the one place: the
-trunk, the `log_only` switch and the reviewed set, validated when it is read. A path is reviewed when a class under `reviewed`
-matches it and nothing under `never_reviewed` does; everything else lands without a record. The classes and why:
+trunk, the `log_only` switch and the reviewed set, validated when it is read. **The hook reads it from the trunk commit the move
+starts from**, never from the working tree, so a change of the set or of the switch is itself a landing that is judged by the
+configuration before it. A trunk that holds no configuration yet (it does not exist, or the gate has not landed on it) is judged
+by the file beside this module; `install` refuses such a trunk, so that case is a repository in repair. A path is reviewed when a
+class under `reviewed` matches it and nothing under `never_reviewed` does; everything else lands without a record:
   code            what runs: Python (tests included), shell, PowerShell and cmd scripts, C, Lean, the website's source
   notebooks       the modules' notebooks are delivered code; a re-run that only changes outputs asks for a review too - the price
   patches         applied to third-party libraries before a run, so they are code
-  run specs       a spec names the command a multi-day run executes and the lines that prove its progress
-  tooling config  pyproject, pre-commit, CI workflows, the Claude hooks' settings, the guard's mode, requirements, this gate's own
-                  configuration - a line there changes what every other check does
+  test data       `tests/data/**`: a pinned expectation is half of its test
+  tooling config  pyproject, requirements and environment lists, the Lean lakefile, .gitattributes, pre-commit, CI workflows,
+                  the Claude hooks' settings, everything under tools/hooks, this gate's own configuration - a line there
+                  changes what every other check does
   agent rules     the root CLAUDE.md: every session works under it
-`never_reviewed` wins over every class: run outputs (`**/out/**`), fetched results (`probes/results_m1/**`, which holds copies of
-scripts as they ran), the ledger and notes (`GoalGathering/**`), the task board and the tracked review log.
+Not reviewed by the user's decision: run specs and chain files (launch records, validated by the runspec schema at launch).
+`never_reviewed` wins over every class: run outputs (`**/out/**`), fetched results (`probes/results_m1/**`), the ledger and
+notes (`GoalGathering/**`), the task board and the tracked review log. Accepted limit: a code-like file under `out/` or
+`results_m1/` lands unreviewed (those hold copies of scripts as they ran); a script that a run or a tool executes never lives
+there.
 
 **The key.** A review belongs to a pair of code states: the reviewed paths of the trunk it lands on, and the reviewed paths of
 what the trunk would then hold - each a digest over (path, mode, blob) of every reviewed path in that tree. Both are read from
-git objects, so the key is reproducible; a record cannot be replayed onto other code, because the key names the code before as
-well as after; and a task-board row staged beside reviewed code, or a notes-only commit landing in between, does not make a
-review stale. Equal digests mean no reviewed path changes, which is decision (b) itself.
+git objects, with replacement refs switched off (`GIT_NO_REPLACE_OBJECTS`), so the key is reproducible; a record cannot be
+replayed onto other code, because the key names the code before as well as after; and a task-board row staged beside reviewed
+code, or a notes-only commit landing in between, does not make a review stale. The decision reads trees, the journal and the
+records, never ancestry, so grafts and a shallow boundary cannot bend it.
 
 **The records.** `<git common dir>/review-gate/records.jsonl`, one JSON line per review, shared by every worktree and outside any
 tree - a record tracked in the tree could never name the tree that contains it. `tools/reviews.jsonl` is the tracked copy for
-later readers, written by `export` after the fact; nothing reads it back. `decisions.log` beside the records takes one line per
-judged move of the trunk.
+later readers, written by `export` after the fact; nothing reads it back. `decisions.log` beside the records is the journal: one
+line per judged move, with the trunk's commit before and after. Both are appended under a lock file.
 
     python tools/review_gate.py status [--staged | --merge <ref> | --tip <ref> | --unseen]   what lands, its reviewed paths, its key
     python tools/review_gate.py check  [--staged | --merge <ref> | --tip <ref> | --unseen]   exit 1 when it would be refused
     python tools/review_gate.py record [...] --reviewer <id> --findings <n> --verdict <text> [--note <text>] [--key <key>]
-    python tools/review_gate.py hook reference-transaction <state> | hook pre-push    what the shims call, updates on stdin
-    python tools/review_gate.py repair                                              set malformed record lines aside
+    python tools/review_gate.py hook <name> --trunk <ref> [...]                     what the shims call, updates on stdin
+    python tools/review_gate.py repair                                              set malformed record and journal lines aside
     python tools/review_gate.py export                                              copy the records into tools/reviews.jsonl
 
 `--staged` is a commit while HEAD is the trunk, `--merge` a merge or pull of <ref> into it (a fast-forward when it can be one),
@@ -49,30 +58,33 @@ judged move of the trunk.
 
 **What no hook sees.** git's files backend writes a copied or renamed branch without any ref transaction (tested on git 2.56:
 `git branch -C <branch> <trunk>` fires nothing, `-M` only the deletion of the trunk), and a call with `-c core.hooksPath=...` or
-an edit under `.git` runs no hook at all. So every judged move is written to `decisions.log` with the trunk's commit before
-and after, and the next hook compares: a trunk that is not where the last judged move left it was moved unseen, and that move
-is judged first, from the commit the gate last knew - like any landing, with `record --unseen` as its record. Until it has
-one, no further move of the trunk and no push of it passes. `install` writes the first line, so the gate starts from the trunk
-as it is.
+an edit under `.git` runs no hook at all. So the next hook compares: a trunk that is not where the journal's last line left it
+was moved unseen, and that move is judged first, from the commit the gate last knew - like any landing, with `record --unseen`
+as its record. Until it has one, no further move of the trunk and no push of it passes, except a move back to a commit the
+journal lists. `install` writes the first line, so the gate starts from the trunk as it is.
 
 **Decisions a reader should know.**
-* Moving the trunk back to one of its own ancestors is allowed and logged: an undo lands nothing that was not there.
+* The trunk may always move to a commit the journal lists as one it held: an undo lands nothing that was not there. Being an
+  ancestor is not enough - `git merge -s ours <branch>` makes any branch an ancestor without landing a line of it.
 * Deleting the trunk lands nothing and is logged. Refusing it would do harm: `git branch -M <branch> <trunk>` deletes
   <branch> before it asks about the trunk and does not put it back when refused (tested); the renamed trunk is caught as an
   unseen move instead. Creating the trunk is a landing onto no code at all. Making it a symbolic ref is refused: later moves
   would no longer name it.
-* It fails closed. A git that does not answer, an unreadable configuration, a malformed line in the records or in the
-  decisions log, or a crash refuses the move with the reason. Both files live outside every tree, so mending them needs no
-  landing: `repair` moves bad record lines to `records.rejected.jsonl`, and a bad line of `decisions.log` is deleted by hand
-  (the message names it). A landing that changes no reviewed path never opens the records at all.
-* `log_only` in `review_gate.json` is the one switch: while it is true the gate judges, logs and prints what it would refuse, and
-  refuses nothing.
+* It fails closed. A git that does not answer, an unreadable configuration, a malformed line in the records or the journal, or
+  a crash refuses the move with the reason; `repair` sets the bad lines of both files aside, and both live outside every tree,
+  so mending them needs no landing. A landing that changes no reviewed path never opens the records at all.
+* `log_only` in `review_gate.json` is the one switch: while the trunk's configuration says true the gate judges, logs and prints
+  what it would refuse, and refuses nothing - also when the installation is broken (the shim then reads the same line itself).
+* Exit codes of `hook`: 0 lets the move pass, 3 refuses it; anything else is a gate that could not run, which the shim treats
+  as a broken installation.
 
 **Limits, stated rather than hidden.** Independence is asserted, not verified: the record names the reviewer. A hook is local:
-a move made past it is caught at the next move it does see, not when it happens, and not at all in a clone without the
-shims or after `decisions.log` is removed; `install_git_hooks.py check` says whether the shims are in place. A refusal comes
-after git has built what it would land: a refused fast-forward, pull or reset leaves the index and the working tree changed,
-and `check` before the command avoids that. A commit made elsewhere is judged when it arrives on the local trunk.
+a move made past it is caught at the next move it does see, not when it happens, and not at all in a clone without the shims or
+after `decisions.log` is removed; `install_git_hooks.py check` says whether the shims are in place. `git push --no-verify`
+skips `pre-push`, and a remote runs none of this: the remote's trunk is protected only by the guard's rule against that flag
+and by what the remote itself enforces. A refusal comes after git has built what it would land, so a refused fast-forward or
+pull leaves the index and the working tree changed (the message names the command that puts them back); `check` before the
+command avoids that. A commit made elsewhere is judged when it arrives on the local trunk.
 """
 from __future__ import annotations
 
@@ -89,23 +101,32 @@ from collections.abc import Callable
 from dataclasses import dataclass, replace
 from pathlib import Path
 
-CONFIG = Path(__file__).with_suffix(".json")
+CONFIG = Path(__file__).resolve().with_suffix(".json")
 TRACKED_LOG = Path(__file__).with_name("reviews.jsonl")
 STATE_DIR = "review-gate"            # under git's common directory, shared by every worktree
 RECORDS = "records.jsonl"
-REJECTED = "records.rejected.jsonl"
 DECISIONS = "decisions.log"
+REJECTED = {RECORDS: "records.rejected.jsonl", DECISIONS: "decisions.rejected.log"}
 GIT_TIMEOUT_S = 30                   # every git call the gate makes; a git that hangs is a refusal with this reason, not a hung hook
+LOCK_WAIT_S = 10
 ID_LENGTH = 20                       # hex digits kept of each code-state digest
 RECORD_FIELDS = ("key", "reviewer", "findings", "verdict")
 CONFIG_FIELDS = ("trunk", "log_only", "reviewed", "never_reviewed")
 SHOWN_PATHS = 6
+REFUSED = 3                          # the hook's exit code for a refusal, apart from every code a crash can give
+BROKEN = 2
 _TRUNK = re.compile(r"refs/heads/[A-Za-z0-9._/-]+")   # it is written into an sh hook, so nothing a shell would read
 
 
 class GateError(Exception):
     """The gate cannot decide or was asked something it refuses; the message is the reason."""
 
+
+class NothingToJudge(Exception):
+    """The command line asked about a landing that is none; the message says why, and the answer is exit 0."""
+
+
+# ---------------------------------------------------------------- the configuration
 
 def _name_pattern(name: str) -> str:
     return re.escape(name).replace(r"\*", "[^/]*").replace(r"\?", "[^/]")
@@ -158,18 +179,90 @@ class GateConfig:
                      if any(_matcher(p).fullmatch(path) for p in patterns)), None)
 
 
-def load_config(path: Path = CONFIG) -> GateConfig:
+def parse_config(text: str, source: str) -> GateConfig:
     try:
-        raw = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, ValueError) as e:
-        raise GateError(f"{path}: the gate's configuration cannot be read: {e}") from e
+        raw = json.loads(text)
+    except ValueError as e:
+        raise GateError(f"{source}: the gate's configuration cannot be read: {e}") from e
     if not isinstance(raw, dict) or sorted(raw) != sorted(CONFIG_FIELDS):
-        raise GateError(f"{path}: exactly the fields {', '.join(CONFIG_FIELDS)} are expected")
+        raise GateError(f"{source}: exactly the fields {', '.join(CONFIG_FIELDS)} are expected")
     if not isinstance(raw["reviewed"], dict):
-        raise GateError(f"{path}: reviewed is expected as class name -> list of patterns")
+        raise GateError(f"{source}: reviewed is expected as class name -> list of patterns")
     reviewed = {label: _patterns(f"reviewed.{label}", patterns) for label, patterns in raw["reviewed"].items()}
     return GateConfig(raw["trunk"], raw["log_only"], reviewed, _patterns("never_reviewed", raw["never_reviewed"]))
 
+
+def load_config(path: Path = CONFIG) -> GateConfig:
+    """The configuration as a file holds it: the delivered set, and the fallback for a trunk that has none."""
+    try:
+        return parse_config(path.read_text(encoding="utf-8"), str(path))
+    except OSError as e:
+        raise GateError(f"{path}: the gate's configuration cannot be read: {e}") from e
+
+
+# ---------------------------------------------------------------- git, and the configuration the trunk holds
+
+def run_git(cwd: Path | None, *args: str, ok: tuple[int, ...] = (0,)) -> subprocess.CompletedProcess[str]:
+    """One git call of the gate: real objects only (no replacement refs), bounded in time, an unexpected exit is the reason."""
+    try:
+        done = subprocess.run(["git", *args], cwd=cwd, capture_output=True, text=True, encoding="utf-8",
+                              errors="surrogateescape", timeout=GIT_TIMEOUT_S, check=False,
+                              env=os.environ | {"GIT_NO_REPLACE_OBJECTS": "1"})
+    except (OSError, subprocess.TimeoutExpired) as e:
+        raise GateError(f"git {' '.join(args)} did not run: {e}") from e
+    if done.returncode not in ok:
+        raise GateError(f"git {' '.join(args)} failed (exit {done.returncode}): {done.stderr.strip()[-300:]}")
+    return done
+
+
+@functools.cache
+def common_dir(cwd: Path | None) -> Path:
+    return Path(run_git(cwd, "rev-parse", "--path-format=absolute", "--git-common-dir").stdout.strip())
+
+
+def tracked_config_path(cwd: Path | None) -> str:
+    """The configuration's path inside the repository's trees: this module's checkout is the main one, beside `.git`."""
+    top = common_dir(cwd).parent
+    try:
+        return CONFIG.relative_to(top.resolve()).as_posix()
+    except ValueError:
+        raise GateError(f"{CONFIG} is not inside the repository at {top}, so the trunk cannot hold the gate's "
+                        "configuration") from None
+
+
+@functools.cache
+def commit_at(cwd: Path | None, rev: str) -> str | None:
+    """The commit a revision names, None when it names nothing. Asked once per process: no ref moves while the gate runs."""
+    return run_git(cwd, "rev-parse", "--verify", "--quiet", f"{rev}^{{commit}}", ok=(0, 1)).stdout.strip() or None
+
+
+def config_on(cwd: Path | None, commit: str | None) -> GateConfig | None:
+    """The configuration a commit holds, None when it holds none."""
+    if commit is None:
+        return None
+    path = tracked_config_path(cwd)
+    blob = run_git(cwd, "cat-file", "blob", f"{commit}:{path}", ok=(0, 128))
+    if blob.returncode == 0:
+        return parse_config(blob.stdout, f"{commit[:10]}:{path}")
+    if run_git(cwd, "ls-tree", "--full-tree", commit, "--", path).stdout.strip():
+        raise GateError(f"{commit[:10]}:{path} is there and cannot be read: {blob.stderr.strip()[-200:]}")
+    return None
+
+
+def open_gate(cwd: Path | None = None, trunk: str | None = None) -> Gate:
+    """The gate for the repository git finds from `cwd`, under the configuration its trunk holds now - at a hook, the commit
+    the move starts from. `trunk` is the ref a shim was installed for; without it the file beside this module names it."""
+    name = trunk or load_config().trunk
+    if not _TRUNK.fullmatch(name):
+        raise GateError(f"trunk {name!r}: a full branch ref is expected, like refs/heads/master")
+    config = config_on(cwd, commit_at(cwd, name)) or load_config()
+    if config.trunk != name:
+        raise GateError(f"the configuration on {name} names {config.trunk} as the trunk: land that change on {config.trunk} "
+                        "too and run `python tools/install_git_hooks.py install`")
+    return Gate(config, cwd)
+
+
+# ---------------------------------------------------------------- reviews, records, the journal
 
 @dataclass(frozen=True)
 class Review:
@@ -189,14 +282,14 @@ class Review:
 
 @dataclass(frozen=True)
 class Landing:
-    """A change of the trunk's reviewed code: where it comes from, the key of its review, and the reviewed paths that differ."""
+    """A change of the trunk's reviewed code: where it comes from, the reviewed paths that differ, and the key of its review."""
 
     what: str
     selector: str              # the command-line form that names this landing again, for the message that asks for a record
     base: str | None           # the commit the trunk is at, None when there is no trunk yet
     tree: str                  # the commit or tree the trunk would hold
-    key: str
     paths: tuple[str, ...]
+    key: str | None            # None when no reviewed path changes: such a landing has no review to look up
 
 
 @dataclass(frozen=True)
@@ -205,10 +298,6 @@ class Verdict:
     reason: str
     key: str | None = None
     move: tuple[str | None, str | None] | None = None    # the trunk's commit before and after, for a move this hook governs
-
-
-class NothingToJudge(Exception):
-    """The command line asked about a landing that is none; the message says why, and the answer is exit 0."""
 
 
 def code_id(entries: dict[str, str]) -> str:
@@ -237,29 +326,80 @@ def _parse_record(line: str) -> dict:
     return entry
 
 
-def _record_lines(path: Path) -> list[str]:
+def _parse_decision(line: str) -> dict:
+    """One journal line as a dict; ValueError with what is wrong. A line that names a trunk says where it left it."""
+    entry = json.loads(line)
+    if not isinstance(entry, dict):
+        raise ValueError(f"a {type(entry).__name__}, not a decision")
+    if "trunk" in entry and not all(isinstance(entry.get(k), str | None) and k in entry for k in ("trunk_before", "trunk_after")):
+        raise ValueError("a move of the trunk without trunk_before and trunk_after")
+    return entry
+
+
+_PARSERS: dict[str, Callable[[str], dict]] = {RECORDS: _parse_record, DECISIONS: _parse_decision}
+
+
+def _lines(path: Path) -> list[str]:
     return [line for line in path.read_text(encoding="utf-8").splitlines() if line.strip()] if path.is_file() else []
 
 
-def read_records(path: Path) -> list[dict]:
-    """Every review on record. A bad line is named with its number and the way out, and refuses the landing that asked."""
+def read_state(path: Path) -> list[dict]:
+    """Every line of the records or of the journal. A bad line is named with its number and the way out, and refuses the
+    move that asked."""
     out = []
-    for n, line in enumerate(_record_lines(path), start=1):
+    for n, line in enumerate(_lines(path), start=1):
         try:
-            out.append(_parse_record(line))
+            out.append(_PARSERS[path.name](line))
         except ValueError as e:
-            raise GateError(f"{path}: record {n} is not a review ({e}). `python tools/review_gate.py repair` sets such lines "
-                            f"aside in {REJECTED} and keeps the rest; the file is outside every tree, so mending it lands "
-                            "nothing.") from e
+            raise GateError(f"{path}: line {n} is not what this file holds ({e}). `python tools/review_gate.py repair` sets "
+                            f"such lines aside in {REJECTED[path.name]} and keeps the rest; the file is outside every tree, "
+                            "so mending it lands nothing.") from e
     return out
 
 
 def _replace_text(path: Path, text: str) -> None:
     """The whole new text to a temp file, then moved over the target: a reader never sees half a file."""
-    path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_name(path.name + ".tmp")
     tmp.write_text(text, encoding="utf-8", newline="\n")
     os.replace(tmp, path)
+
+
+def _append_line(path: Path, line: str) -> None:
+    """One line at the end of a file that several processes write (eight parallel `record` calls lost two lines to a
+    read-modify-write, 16 Nov 2026): the lock file is created exclusively, and whoever holds it appends."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    lock = path.with_name(path.name + ".lock")
+    deadline = time.monotonic() + LOCK_WAIT_S
+    while True:
+        try:
+            os.close(os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY))
+            break
+        except (FileExistsError, PermissionError) as e:      # Windows answers PermissionError while the holder removes it
+            if time.monotonic() > deadline:
+                raise GateError(f"{lock} has been held for {LOCK_WAIT_S} s: delete it if no review_gate.py is running") from e
+            time.sleep(0.02)
+    try:
+        with path.open("a", encoding="utf-8", newline="\n") as fh:
+            fh.write(line + "\n")
+    finally:
+        os.unlink(lock)
+
+
+def _set_aside(path: Path) -> tuple[int, int]:
+    """Move the lines a state file cannot hold to its rejected file; (kept, set aside)."""
+    good, bad = [], []
+    for line in _lines(path):
+        try:
+            _PARSERS[path.name](line)
+        except ValueError:
+            bad.append(line)
+        else:
+            good.append(line)
+    if bad:                                      # the rejected file first: a crash between the two writes loses nothing
+        rejected = path.with_name(REJECTED[path.name])
+        _replace_text(rejected, "".join(line + "\n" for line in [*_lines(rejected), *bad]))
+        _replace_text(path, "".join(line + "\n" for line in good))
+    return len(good), len(bad)
 
 
 def _unreviewed(landing: Landing) -> str:
@@ -271,11 +411,19 @@ def _unreviewed(landing: Landing) -> str:
             "answer the findings, then:\n"
             f"  python tools/review_gate.py record {landing.selector} --key {landing.key} --reviewer <id> --findings <n> "
             "--verdict <one line>\n"
-            "  and repeat the command. git may already have put the refused content into the index and the working tree (a "
-            "fast-forward, a pull and a reset do): `git status` shows it, and `git reset --hard HEAD` takes it out again, "
-            "with any uncommitted work of your own.\n"
-            "  The user, 14 and 16 Nov 2026: code and tests are reviewed before they join the trunk.")
+            "  and repeat the command. The user, 14 and 16 Nov 2026: code and tests are reviewed before they join the trunk.")
 
+
+def _put_back(new: str) -> str:
+    """What to do about the index and working tree git built before the hook refused; `git reset --hard` would also take
+    uncommitted work of the user's (16 Nov 2026: the real checkout had five such files)."""
+    return ("\n  If this was a fast-forward merge or a pull, git has already put the refused content into the index and the "
+            f"working tree: `git read-tree -m -u {new} HEAD` takes it out again and keeps your uncommitted edits. Not after "
+            "a refused commit (the staged change is your work and is still staged); a merge commit, rebase, cherry-pick or am "
+            "has its own --abort.")
+
+
+# ---------------------------------------------------------------- the gate
 
 @dataclass(frozen=True)
 class Gate:
@@ -287,31 +435,31 @@ class Gate:
     # ------------------------------------------------------------ reading the repository
 
     def git(self, *args: str, ok: tuple[int, ...] = (0,)) -> subprocess.CompletedProcess[str]:
-        try:
-            done = subprocess.run(["git", *args], cwd=self.cwd, capture_output=True, text=True, encoding="utf-8",
-                                  errors="surrogateescape", timeout=GIT_TIMEOUT_S, check=False)
-        except (OSError, subprocess.TimeoutExpired) as e:
-            raise GateError(f"git {' '.join(args)} did not run: {e}") from e
-        if done.returncode not in ok:
-            raise GateError(f"git {' '.join(args)} failed (exit {done.returncode}): {done.stderr.strip()[-300:]}")
-        return done
+        return run_git(self.cwd, *args, ok=ok)
 
-    def state_file(self, name: str) -> Path:
-        common = self.git("rev-parse", "--path-format=absolute", "--git-common-dir").stdout.strip()
-        return Path(common) / STATE_DIR / name
+    @functools.cached_property
+    def state_dir(self) -> Path:
+        return common_dir(self.cwd) / STATE_DIR
+
+    @functools.cached_property
+    def journal(self) -> list[tuple[str | None, str | None]]:
+        """(trunk before, trunk after) of every move a hook judged for this trunk, oldest first; read once per call."""
+        return [(e["trunk_before"], e["trunk_after"]) for e in read_state(self.state_dir / DECISIONS)
+                if e.get("trunk") == self.config.trunk]
+
+    def held(self, commit: str) -> bool:
+        """Has the trunk been at this commit, by the journal?"""
+        return any(commit in pair for pair in self.journal)
 
     def commit_of(self, rev: str) -> str | None:
         """The commit a revision names, None when it names nothing."""
-        return self.git("rev-parse", "--verify", "--quiet", f"{rev}^{{commit}}", ok=(0, 1)).stdout.strip() or None
+        return commit_at(self.cwd, rev)
 
     def named_commit(self, ref: str) -> str:
         commit = self.commit_of(ref)
         if commit is None:
             raise GateError(f"'{ref}' names no commit in this repository")
         return commit
-
-    def is_ancestor(self, older: str, newer: str) -> bool:
-        return self.git("merge-base", "--is-ancestor", older, newer, ok=(0, 1)).returncode == 0
 
     def reviewed_entries(self, treeish: str | None) -> dict[str, str]:
         """path -> 'mode type blob' for every reviewed path of a tree; no tree has none."""
@@ -324,12 +472,19 @@ class Gate:
                 entries[path] = meta
         return entries
 
+    def changed_reviewed_paths(self, base: str | None, tree: str) -> tuple[str, ...]:
+        """The reviewed paths that differ between two trees. One cheap diff: most landings change none, and need no more."""
+        if base is None:
+            return tuple(sorted(self.reviewed_entries(tree)))
+        names = self.git("diff-tree", "-r", "-z", "--no-renames", "--name-only", base, tree).stdout.split("\0")
+        return tuple(sorted(p for p in names if p and self.config.reviewed_class(p)))
+
     # ------------------------------------------------------------ what would land
 
     def landing(self, base: str | None, tree: str, what: str, selector: str) -> Landing:
-        before, after = self.reviewed_entries(base), self.reviewed_entries(tree)
-        paths = tuple(sorted(p for p in before.keys() | after.keys() if before.get(p) != after.get(p)))
-        return Landing(what, selector, base, tree, f"{code_id(before)}..{code_id(after)}", paths)
+        paths = self.changed_reviewed_paths(base, tree)
+        key = f"{code_id(self.reviewed_entries(base))}..{code_id(self.reviewed_entries(tree))}" if paths else None
+        return Landing(what, selector, base, tree, paths, key)
 
     def staged(self) -> Landing | None:
         """A commit of the index while HEAD is the trunk; None when HEAD is elsewhere and a commit lands nothing."""
@@ -340,9 +495,10 @@ class Gate:
                             "--staged")
 
     def merged(self, ref: str) -> Landing:
-        """A merge or a pull of `ref` into the trunk: its tip when the trunk can fast-forward, the merged tree otherwise."""
+        """A merge or a pull of `ref` into the trunk: its tip when the trunk can fast-forward, the merged tree otherwise.
+        Ancestry only chooses which tree to show here; the hook judges the tree that really arrives."""
         trunk, tip = self.commit_of(self.config.trunk), self.named_commit(ref)
-        if trunk is None or self.is_ancestor(trunk, tip):
+        if trunk is None or self.git("merge-base", "--is-ancestor", trunk, tip, ok=(0, 1)).returncode == 0:
             return self.landing(trunk, tip, f"a fast-forward of {self.config.trunk} to {ref}", f"--merge {ref}")
         done = self.git("merge-tree", "--write-tree", trunk, tip, ok=(0, 1))
         if done.returncode == 1:
@@ -359,10 +515,10 @@ class Gate:
 
     def review_of(self, key: str) -> dict | None:
         """The last review recorded for a key."""
-        return next((r for r in reversed(read_records(self.state_file(RECORDS))) if r["key"] == key), None)
+        return next((r for r in reversed(read_state(self.state_dir / RECORDS)) if r["key"] == key), None)
 
     def judge_landing(self, landing: Landing) -> Verdict:
-        if not landing.paths:
+        if landing.key is None:
             return Verdict(True, f"{landing.what}: no reviewed path changes, so no review is asked")
         found = self.review_of(landing.key)
         if found is None:
@@ -380,38 +536,34 @@ class Gate:
         if new.startswith("ref:"):
             return Verdict(False, f"{trunk} would become a symbolic ref ({new}); later moves of the trunk would not name it, so "
                                   "the gate could not see them")
-        if old and self.is_ancestor(new, old):
-            return Verdict(True, f"{trunk} moves back from {_short(old)} to its own ancestor {_short(new)}: an undo lands "
-                                 "nothing that was not there")
+        if self.held(new):
+            return Verdict(True, f"{trunk} moves from {_short(old)} to {_short(new)}, a commit the journal lists as one the "
+                                 "trunk held: nothing lands that was not there")
         return self.judge_landing(self.landing(old, new, f"{trunk} moving {_short(old)} -> {_short(new)}",
                                                selector or f"--tip {new}"))
 
+    def judge_push(self, new: str | None, remote_old: str | None) -> Verdict:
+        """A push to a remote's trunk: free for the local trunk and for what it held, a landing like any other for the rest."""
+        if new is not None and new == self.commit_of(self.config.trunk):
+            return Verdict(True, f"push of {_short(new)} to a remote's {self.config.trunk}: it is the local trunk, where the "
+                                 "gate read it")
+        if remote_old and self.commit_of(remote_old) is None:
+            return Verdict(False, f"push to a remote's {self.config.trunk}: its present commit {_short(remote_old)} is not in "
+                                  "this repository, so what the push would change cannot be read. Fetch first.")
+        return self.judge_move(remote_old, new)
+
     # ------------------------------------------------------------ a move no hook saw
 
-    def last_seen(self) -> tuple[str | None, str | None] | None:
-        """The trunk's commit before and after the last move a hook judged here; None before the first."""
-        path = self.state_file(DECISIONS)
-        lines = path.read_text(encoding="utf-8").splitlines() if path.is_file() else []
-        for n in range(len(lines), 0, -1):
-            try:
-                entry = json.loads(lines[n - 1])
-            except ValueError as e:
-                raise GateError(f"{path}: line {n} is not a decision ({e}), so where the gate last left {self.config.trunk} "
-                                "is not known. Delete that line; the file is outside every tree.") from e
-            if isinstance(entry, dict) and entry.get("trunk") == self.config.trunk:
-                return entry["trunk_before"], entry["trunk_after"]
-        return None
-
-    def unseen_move(self) -> tuple[str | None, str | None] | None:
-        """(the commit the gate last knew, the trunk now) when the trunk is not where the last judged move left it."""
-        seen, now = self.last_seen(), self.commit_of(self.config.trunk)
-        if seen is None or now in seen:
+    def unseen_move(self, now: str | None) -> tuple[str | None, str | None] | None:
+        """(the commit the gate last knew, the trunk now) when the trunk is not where the journal's last line left it."""
+        if not self.journal or now in self.journal[-1]:
             return None
-        return seen[1] or seen[0], now           # after a deletion the last commit the trunk had is the one to compare with
+        before, after = self.journal[-1]
+        return after or before, now              # after a deletion the last commit the trunk had is the one to compare with
 
     def unseen(self) -> Landing | None:
         """The unseen move as a landing, for the command line; None when there is none."""
-        move = self.unseen_move()
+        move = self.unseen_move(self.commit_of(self.config.trunk))
         if move is None:
             return None
         if move[1] is None:
@@ -419,9 +571,9 @@ class Gate:
         return self.landing(move[0], move[1], f"{self.config.trunk} moved {_short(move[0])} -> {_short(move[1])} unseen",
                             "--unseen")
 
-    def judge_unseen(self) -> Verdict | None:
+    def judge_unseen(self, now: str | None) -> Verdict | None:
         """The verdict on a move of the trunk no hook saw; None when the trunk is where the gate left it."""
-        move = self.unseen_move()
+        move = self.unseen_move(now)
         if move is None:
             return None
         inner = self.judge_move(move[0], move[1], "--unseen")
@@ -429,9 +581,9 @@ class Gate:
                 "renamed over it, hooks switched off, an edit under .git), and that move is judged before any other. ")
         return replace(inner, reason=lead + inner.reason)
 
-    def after_unseen(self, judge: Callable[[], list[Verdict]]) -> list[Verdict]:
+    def after_unseen(self, now: str | None, judge: Callable[[], list[Verdict]]) -> list[Verdict]:
         """The verdicts of `judge`, behind the one on an unseen move - alone when the gate refuses that one."""
-        unseen = self.judge_unseen()
+        unseen = self.judge_unseen(now)
         if unseen is None:
             return judge()
         if not unseen.allowed and not self.config.log_only:
@@ -440,22 +592,11 @@ class Gate:
 
     def baseline(self, hook: str) -> bool:
         """Start the journal from the trunk as it is, unless it has a line for this trunk already; whether it was written."""
-        if self.last_seen() is not None:
+        if self.journal:
             return False
         now = self.commit_of(self.config.trunk)
         self.log(hook, Verdict(True, f"the gate starts from {self.config.trunk} at {_short(now)}", move=(now, now)), lands=True)
         return True
-
-    def judge_push(self, new: str | None, remote_old: str | None) -> Verdict:
-        """A push to a remote's trunk: free for what the local trunk already holds, a landing like any other for the rest."""
-        local = self.commit_of(self.config.trunk)
-        if new and local and self.is_ancestor(new, local):
-            return Verdict(True, f"push of {_short(new)} to a remote's {self.config.trunk}: it is on the local trunk, where the "
-                                 "gate read it")
-        if remote_old and self.commit_of(remote_old) is None:
-            return Verdict(False, f"push to a remote's {self.config.trunk}: its present commit {_short(remote_old)} is not in "
-                                  "this repository, so what the push would change cannot be read. Fetch first.")
-        return self.judge_move(remote_old, new)
 
     # ------------------------------------------------------------ the hooks
 
@@ -470,20 +611,31 @@ class Gate:
             return []
         old = self.commit_of(self.config.trunk)
         moves = [new for new in map(_oid, targets) if new != old]
-        if not moves:                            # the trunk stays where it is: `git reset --hard HEAD` must always work
+        if not moves:                            # the trunk stays where it is: putting a working tree back must always work
             return []
-        return self.after_unseen(lambda: [replace(self.judge_move(old, new), move=(old, self._commit_after(new)))
-                                          for new in moves])
 
-    def _commit_after(self, new: str | None) -> str | None:
-        """The commit the trunk holds once an update lands: the journal compares commits, also for a symbolic value."""
-        return self.commit_of(new.removeprefix("ref:")) if new and new.startswith("ref:") else new
+        def judged() -> list[Verdict]:
+            return [self._governed(old, new) for new in moves]
+
+        if all(new is not None and self.held(new) for new in moves):
+            return judged()                      # back to where the gate knew the trunk: also the way out of an unseen move
+        return self.after_unseen(old, judged)
+
+    def _governed(self, old: str | None, new: str | None) -> Verdict:
+        """The verdict on one move of this repository's trunk, with what the journal needs and the way back after a refusal."""
+        verdict = self.judge_move(old, new)
+        after = self.commit_of(new.removeprefix("ref:")) if new and new.startswith("ref:") else new
+        advice = "" if verdict.allowed or new is None or new.startswith("ref:") else _put_back(new)
+        return replace(verdict, reason=verdict.reason + advice, move=(old, after))
 
     def on_pre_push(self, updates: str) -> list[Verdict]:
         """One verdict per pushed ref that lands on a remote's trunk: `<local ref> <local oid> <remote ref> <remote oid>`."""
         pushes = [(_oid(parts[1]), _oid(parts[3])) for line in updates.splitlines()
                   if len(parts := line.split(" ")) == 4 and parts[2] == self.config.trunk]
-        return self.after_unseen(lambda: [self.judge_push(new, remote_old) for new, remote_old in pushes]) if pushes else []
+        if not pushes:
+            return []
+        now = self.commit_of(self.config.trunk)
+        return self.after_unseen(now, lambda: [self.judge_push(new, remote_old) for new, remote_old in pushes])
 
     def log(self, hook: str, verdict: Verdict, *, lands: bool) -> None:
         """One line of the journal. A governed move also says where it leaves the trunk: at the new commit when the
@@ -494,13 +646,10 @@ class Gate:
         if verdict.move:
             entry.update(trunk=self.config.trunk, trunk_before=verdict.move[0],
                          trunk_after=verdict.move[1] if lands else verdict.move[0])
-        path = self.state_file(DECISIONS)
-        path.parent.mkdir(parents=True, exist_ok=True)
-        with path.open("a", encoding="utf-8", newline="\n") as fh:
-            fh.write(json.dumps(entry, sort_keys=True) + "\n")
+        _append_line(self.state_dir / DECISIONS, json.dumps(entry, sort_keys=True))
 
     def settle(self, hook: str, verdicts: list[Verdict]) -> int:
-        """Log every verdict, print the refusals, and give the hook's exit code: non-zero only when the gate acts."""
+        """Log every verdict, print the refusals, and give the hook's exit code: REFUSED only when the gate acts."""
         refused = [v for v in verdicts if not v.allowed]
         acts = bool(refused) and not self.config.log_only
         for verdict in verdicts:
@@ -508,45 +657,32 @@ class Gate:
         prefix = "review gate (log only, nothing is refused): " if self.config.log_only else "review gate: "
         for verdict in refused:
             print(prefix + verdict.reason, file=sys.stderr)
-        return 1 if acts else 0
+        return REFUSED if acts else 0
 
     # ------------------------------------------------------------ the records
 
     def record(self, landing: Landing, review: Review) -> dict:
-        if not landing.paths:
+        if landing.key is None:
             raise GateError(f"{landing.what}: no reviewed path changes, so there is nothing to record a review of")
-        path = self.state_file(RECORDS)
-        read_records(path)                       # a malformed file is mended first, never appended to
+        path = self.state_dir / RECORDS
+        read_state(path)                         # a malformed file is mended first, never appended to
         entry = {"key": landing.key, "date": time.strftime("%Y-%m-%d %H:%M"), "reviewer": review.reviewer,
                  "findings": review.findings, "verdict": review.verdict, "paths": list(landing.paths), "lands": landing.what}
         if review.note:
             entry["note"] = review.note
-        _replace_text(path, "".join(line + "\n" for line in [*_record_lines(path), json.dumps(entry, sort_keys=True)]))
+        _append_line(path, json.dumps(entry, sort_keys=True))
         return entry
 
-    def repair(self) -> tuple[int, int]:
-        """Move the lines that are not reviews to the rejected file; (kept, set aside)."""
-        path = self.state_file(RECORDS)
-        good, bad = [], []
-        for line in _record_lines(path):
-            try:
-                _parse_record(line)
-            except ValueError:
-                bad.append(line)
-            else:
-                good.append(line)
-        if bad:                                  # the rejected file first: a crash between the two writes loses nothing
-            rejected = path.with_name(REJECTED)
-            _replace_text(rejected, "".join(line + "\n" for line in [*_record_lines(rejected), *bad]))
-            _replace_text(path, "".join(line + "\n" for line in good))
-        return len(good), len(bad)
+    def repair(self) -> dict[str, tuple[int, int]]:
+        """Set aside the malformed lines of the records and of the journal; file name -> (kept, set aside)."""
+        return {name: _set_aside(self.state_dir / name) for name in _PARSERS}
 
     def export(self, target: Path) -> int:
         """Add the records the tracked log does not hold yet; the number added."""
-        path = self.state_file(RECORDS)
-        read_records(path)
-        have = _record_lines(target)
-        new = [line for line in _record_lines(path) if line not in have]
+        path = self.state_dir / RECORDS
+        read_state(path)
+        have = _lines(target)
+        new = [line for line in _lines(path) if line not in have]
         if new:
             _replace_text(target, "".join(line + "\n" for line in [*have, *new]))
         return len(new)
@@ -568,7 +704,7 @@ def run_hook(gate: Gate, hook: str, state: str | None, updates: str) -> int:
         acting = not gate.config.log_only
         print(f"review gate{'' if acting else ' (log only, nothing is refused)'}: could not judge this move of "
               f"{gate.config.trunk}, so it is refused: {type(e).__name__}: {e}", file=sys.stderr)
-        return 1 if acting else 0
+        return REFUSED if acting else 0
 
 
 def _selected(gate: Gate, a: argparse.Namespace) -> Landing:
@@ -586,9 +722,9 @@ def _selected(gate: Gate, a: argparse.Namespace) -> Landing:
 
 
 def _judged(gate: Gate, a: argparse.Namespace, landing: Landing) -> Verdict:
-    """The verdict the hook would give: an unseen move first, and a --tip as the bare move of the trunk it is, so an undo
+    """The verdict the hook would give: an unseen move first, and a --tip as the bare move of the trunk it is, so a move back
     passes there as it does at the hook."""
-    unseen = gate.judge_unseen()
+    unseen = gate.judge_unseen(gate.commit_of(gate.config.trunk))
     if unseen is not None and (a.unseen or not unseen.allowed):
         return unseen
     return gate.judge_move(landing.base, landing.tree) if a.tip else gate.judge_landing(landing)
@@ -598,7 +734,7 @@ def _status(gate: Gate, a: argparse.Namespace, landing: Landing) -> int:
     verdict = _judged(gate, a, landing)
     print(f"review gate: {landing.what}")
     print(f"  trunk     {gate.config.trunk} at {_short(landing.base)}")
-    print(f"  key       {landing.key}")
+    print(f"  key       {landing.key or 'none: no reviewed path changes'}")
     print(f"  reviewed paths that change: {len(landing.paths)}")
     for path in landing.paths:
         print(f"    [{gate.config.reviewed_class(path)}] {path}")
@@ -646,8 +782,9 @@ def _parser() -> argparse.ArgumentParser:
     p.add_argument("--key", help="the key the reviewer was given; refused when the code has changed since")
     hook = sub.add_parser("hook", help="what the installed shims call, with the updates on stdin")
     hook.add_argument("hook", choices=("reference-transaction", "pre-push"))
+    hook.add_argument("--trunk", required=True, help="the trunk ref the shim was installed for")
     hook.add_argument("rest", nargs="*", help="reference-transaction: the state; pre-push: the remote's name and URL")
-    sub.add_parser("repair", help=f"move malformed record lines to {REJECTED}")
+    sub.add_parser("repair", help="set the malformed lines of the records and of the journal aside")
     export = sub.add_parser("export", help="add the records to the tracked log, for later readers")
     export.add_argument("--to", type=Path, default=TRACKED_LOG, help="the tracked log (default: %(default)s)")
     return ap
@@ -655,8 +792,8 @@ def _parser() -> argparse.ArgumentParser:
 
 def _dispatch(gate: Gate, a: argparse.Namespace) -> int:
     if a.what == "repair":
-        kept, aside = gate.repair()
-        print(f"review gate: {kept} record(s) kept, {aside} malformed line(s) moved to {gate.state_file(REJECTED)}")
+        for name, (kept, aside) in gate.repair().items():
+            print(f"review gate: {name}: {kept} line(s) kept, {aside} malformed line(s) moved to {REJECTED[name]}")
         return 0
     if a.what == "export":
         print(f"review gate: {gate.export(a.to)} record(s) added to {a.to}")
@@ -673,15 +810,16 @@ def main(argv: list[str] | None = None) -> int:
     a = _parser().parse_args(argv)
     for stream in (sys.stdout, sys.stderr):      # a path git reports may hold what the console cannot encode
         stream.reconfigure(errors="backslashreplace")
+    is_hook = a.what == "hook"
     try:
-        gate = Gate(load_config())
-        if a.what == "hook":
+        gate = open_gate(trunk=a.trunk if is_hook else None)
+        if is_hook:
             state = a.rest[0] if a.hook == "reference-transaction" and a.rest else None
             return run_hook(gate, a.hook, state, sys.stdin.read())
         return _dispatch(gate, a)
     except GateError as e:
         print(f"review gate: {e}", file=sys.stderr)
-        return 1
+        return BROKEN if is_hook else 1
 
 
 if __name__ == "__main__":

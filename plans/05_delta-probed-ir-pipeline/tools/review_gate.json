@@ -20,16 +20,19 @@
     "patches": [
       "**/*.patch"
     ],
-    "run specs": [
-      "plans/05_delta-probed-ir-pipeline/probes/runspecs/*.json"
+    "test data": [
+      "**/tests/data/**"
     ],
     "tooling config": [
       "**/pyproject.toml",
       "**/requirements*.txt",
+      "**/environments/*.txt",
+      "**/lakefile.toml",
+      ".gitattributes",
       ".pre-commit-config.yaml",
-      ".github/workflows/*",
-      ".claude/settings.json",
-      "plans/05_delta-probed-ir-pipeline/tools/hooks/guard_config.json",
+      ".github/workflows/**",
+      ".claude/settings*.json",
+      "plans/05_delta-probed-ir-pipeline/tools/hooks/**",
       "plans/05_delta-probed-ir-pipeline/tools/review_gate.json"
     ],
     "agent rules": [

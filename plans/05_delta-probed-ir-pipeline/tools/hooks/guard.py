@@ -165,7 +165,7 @@ def commands(command: str, depth: int = 0) -> list[list[str]]:
 
 def _name(word: str) -> str:
     """A command word as a program name: no directory, no .exe - `/usr/bin/git` and `git.exe` are git (14 Nov 2026, the review)."""
-    return word.replace("\\", "/").rsplit("/", 1)[-1].removesuffix(".exe").lower()
+    return word.replace("\\", "/").rsplit("/", 1)[-1].lower().removesuffix(".exe")
 
 
 # ---------------------------------------------------------------- 1. code inside a shell command
@@ -187,7 +187,8 @@ def inline_code(c: Call) -> str | None:
 # ---------------------------------------------------------------- 2. git add -A / commit -a
 
 # git's own options before the subcommand that take a value; the others are flags (14 Nov 2026, the independent review)
-_GIT_GLOBAL_WITH_VALUE = ("-C", "-c", "--git-dir", "--work-tree", "--namespace", "--exec-path", "--super-prefix")
+_GIT_GLOBAL_WITH_VALUE = ("-C", "-c", "--git-dir", "--work-tree", "--namespace", "--exec-path", "--super-prefix",
+                          "--attr-source", "--config-env")
 
 
 def _after_options(args: list[str], with_value: tuple[str, ...]) -> list[str]:
@@ -219,6 +220,15 @@ def git_add_all(c: Call) -> str | None:
         if (args[0] == "add" and any(a in ("-A", "--all", ".") for a in args[1:])) or (
                 args[0] == "commit" and any(a == "--all" or re.fullmatch(r"-[A-Za-z]*a[A-Za-z]*", a) for a in args[1:])):
             return "git add -A / . / commit -a: name the paths (run directories are written live; psi4 scratch is 75 MB). CLAUDE.md, Committing."
+    return None
+
+
+def push_past_the_hook(c: Call) -> str | None:
+    for words in commands(c.command):
+        args = _git_args(words)
+        if args[:1] == ["push"] and "--no-verify" in args:
+            return ("git push --no-verify: pre-push is the review gate's only look at a push to a remote's trunk, and this flag "
+                    "skips it (tools/review_gate.py, the stated limits). Push without it.")
     return None
 
 
@@ -305,9 +315,10 @@ def destructive(c: Call) -> str | None:
             return reason
         if words[:3] == ["hcloud", "server", "delete"]:
             return reason
-        if words[0] == "git" and len(words) > 1 and (
-                (words[1] == "push" and any(w in ("--force", "--force-with-lease", "-f") for w in words[2:]))
-                or (words[1] == "reset" and "--hard" in words) or (words[1] == "clean" and any(re.fullmatch(r"-[a-zA-Z]*f[a-zA-Z]*", w) for w in words))):
+        args = _git_args(words)
+        if args and (
+                (args[0] == "push" and any(w in ("--force", "--force-with-lease", "-f") for w in args[1:]))
+                or (args[0] == "reset" and "--hard" in args) or (args[0] == "clean" and any(re.fullmatch(r"-[a-zA-Z]*f[a-zA-Z]*", w) for w in args))):
             return reason
     return None
 
@@ -391,6 +402,8 @@ def edited_lines(c: Call, text: str) -> range:
 RULES = (
     Rule("inline_code", "pre", SHELLS, "deny", "3-4 Oct (3x), 15 Oct (2x): backslashes lost from code inside shell commands", inline_code),
     Rule("git_add_all", "pre", SHELLS, "deny", "CLAUDE.md: live run directories, 75 MB psi4 scratch", git_add_all),
+    Rule("push_past_the_hook", "pre", SHELLS, "deny", "16 Nov: the review gate's pre-push is skipped by git push --no-verify",
+         push_past_the_hook),
     Rule("commit_over_live_log", "pre", SHELLS, "deny", "10 Nov: a commit's pre-commit stash rewrote chain42.log under its runner",
          commit_over_live_log),
     Rule("long_job_past_the_door", "pre", SHELLS, "deny", "15 Oct: #2702 repro 37 h without a progress line", long_job_past_the_door),
