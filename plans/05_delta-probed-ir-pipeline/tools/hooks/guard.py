@@ -164,7 +164,8 @@ def commands(command: str, depth: int = 0) -> list[list[str]]:
 
 
 def _name(word: str) -> str:
-    return Path(word.replace("\\", "/")).name.lower()
+    """A command word as a program name: no directory, no .exe - `/usr/bin/git` and `git.exe` are git (14 Nov 2026, the review)."""
+    return word.replace("\\", "/").rsplit("/", 1)[-1].lower().removesuffix(".exe")
 
 
 # ---------------------------------------------------------------- 1. code inside a shell command
@@ -185,11 +186,30 @@ def inline_code(c: Call) -> str | None:
 
 # ---------------------------------------------------------------- 2. git add -A / commit -a
 
+# git's own options before the subcommand that take a value; the others are flags (14 Nov 2026, the independent review)
+_GIT_GLOBAL_WITH_VALUE = ("-C", "-c", "--git-dir", "--work-tree", "--namespace", "--exec-path", "--super-prefix",
+                          "--attr-source", "--config-env")
+
+
+def _after_options(args: list[str], with_value: tuple[str, ...]) -> list[str]:
+    """What is left after the leading options, the ones that take a value having swallowed it."""
+    rest = list(args)
+    while rest and rest[0].startswith("-"):
+        head = rest.pop(0)
+        if head in with_value and rest:
+            rest.pop(0)
+    return rest
+
+
 def _git_args(words: list[str]) -> list[str]:
-    """A git command's arguments after `git` and `-C <dir>`; empty for another command."""
-    if words[0] != "git":
+    """A git command's arguments after `git` and its own global options; empty for another command.
+
+    Every leading option is skipped, not only `-C <dir>`: `git -c core.hooksPath=/dev/null commit` used to be invisible to every
+    rule that reads git this way (14 Nov 2026, the independent review).
+    """
+    if not words or _name(words[0]) != "git":
         return []
-    return words[3:] if words[1:2] == ["-C"] else words[1:]
+    return _after_options(words[1:], _GIT_GLOBAL_WITH_VALUE)
 
 
 def git_add_all(c: Call) -> str | None:
@@ -200,6 +220,45 @@ def git_add_all(c: Call) -> str | None:
         if (args[0] == "add" and any(a in ("-A", "--all", ".") for a in args[1:])) or (
                 args[0] == "commit" and any(a == "--all" or re.fullmatch(r"-[A-Za-z]*a[A-Za-z]*", a) for a in args[1:])):
             return "git add -A / . / commit -a: name the paths (run directories are written live; psi4 scratch is 75 MB). CLAUDE.md, Committing."
+    return None
+
+
+def push_past_the_hook(c: Call) -> str | None:
+    for words in commands(c.command):
+        args = _git_args(words)
+        if args[:1] == ["push"] and any(a.startswith("--no-veri") and "--no-verify".startswith(a) for a in args[1:]):
+            return ("git push --no-verify (or an abbreviation of it): pre-push is the review gate's only look at a push to a remote's trunk, and this flag "
+                    "skips it (tools/review_gate.py, the stated limits). Push without it.")
+    return None
+
+
+_READS_OR_UNSETS = {"--get", "get", "--get-all", "--get-regexp", "--unset", "unset", "--unset-all"}
+
+
+def _persists_hooks_path(args: list[str]) -> bool:
+    """Does a `git config` call give core.hooksPath a value? Asking for it, and unsetting it (hooks back to the default),
+    are left alone: only a value after the key switches hooks off."""
+    if args[:1] != ["config"] or _READS_OR_UNSETS & set(args):
+        return False
+    keys = [k for k, a in enumerate(args) if a.lower() == "core.hookspath"]
+    return bool(keys) and any(not a.startswith("-") for a in args[keys[0] + 1:])
+
+
+def _sets_hooks_path(word: str) -> bool:
+    return word.removeprefix("--config-env=").lower().startswith("core.hookspath")
+
+
+def hooks_switched_off(c: Call) -> str | None:
+    """`-c core.hooksPath=...` (or --config-env for it) on any git call runs it without a single hook, and `git config
+    core.hooksPath` does so for every call after it. An alias that hides either is not seen here: a stated limit."""
+    for words in commands(c.command):
+        args = _git_args(words)
+        if not words or _name(words[0]) != "git":
+            continue
+        options = words[1:len(words) - len(args)]
+        if _persists_hooks_path(args) or any(_sets_hooks_path(o) for o in options):
+            return ("core.hooksPath set for a git call: it would run without the repository's hooks, the review gate's and "
+                    "pre-commit's among them (tools/review_gate.py, 'What no hook sees'). Run the command as it is.")
     return None
 
 
@@ -286,9 +345,10 @@ def destructive(c: Call) -> str | None:
             return reason
         if words[:3] == ["hcloud", "server", "delete"]:
             return reason
-        if words[0] == "git" and len(words) > 1 and (
-                (words[1] == "push" and any(w in ("--force", "--force-with-lease", "-f") for w in words[2:]))
-                or (words[1] == "reset" and "--hard" in words) or (words[1] == "clean" and any(re.fullmatch(r"-[a-zA-Z]*f[a-zA-Z]*", w) for w in words))):
+        args = _git_args(words)
+        if args and (
+                (args[0] == "push" and any(w in ("--force", "--force-with-lease", "-f") for w in args[1:]))
+                or (args[0] == "reset" and "--hard" in args) or (args[0] == "clean" and any(re.fullmatch(r"-[a-zA-Z]*f[a-zA-Z]*", w) for w in args))):
             return reason
     return None
 
@@ -372,6 +432,10 @@ def edited_lines(c: Call, text: str) -> range:
 RULES = (
     Rule("inline_code", "pre", SHELLS, "deny", "3-4 Oct (3x), 15 Oct (2x): backslashes lost from code inside shell commands", inline_code),
     Rule("git_add_all", "pre", SHELLS, "deny", "CLAUDE.md: live run directories, 75 MB psi4 scratch", git_add_all),
+    Rule("push_past_the_hook", "pre", SHELLS, "deny", "16 Nov: the review gate's pre-push is skipped by git push --no-verify",
+         push_past_the_hook),
+    Rule("hooks_switched_off", "pre", SHELLS, "deny", "16 Nov: git -c core.hooksPath=/dev/null moved the trunk past the review gate",
+         hooks_switched_off),
     Rule("commit_over_live_log", "pre", SHELLS, "deny", "10 Nov: a commit's pre-commit stash rewrote chain42.log under its runner",
          commit_over_live_log),
     Rule("long_job_past_the_door", "pre", SHELLS, "deny", "15 Oct: #2702 repro 37 h without a progress line", long_job_past_the_door),
