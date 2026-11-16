@@ -6,11 +6,14 @@ from __future__ import annotations
 
 import json
 import sys
+import types
 from pathlib import Path
 
+import numpy as np
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "probes"))
+import engine_check as EC
 import engine_check_read as E
 
 MODELS = ["v15_seed0.pt", "v15_seed1.pt", "v15_seed2.pt"]
@@ -78,3 +81,78 @@ def test_a_broken_route_file_is_refused(tmp_path, break_it, message) -> None:
 def test_routes_that_do_not_pair_are_refused(pyscf_extra, psi4_extra, message) -> None:
     with pytest.raises(ValueError, match=message):
         E.read(route("psi4", **psi4_extra), route("pyscf", **pyscf_extra))
+
+
+# The run's own optimisation (`probes/engine_check.py optimise`, TASKS 228) with the solver and the SCF stubbed: a converged optimisation is
+# written with its convergence numbers, an unconverged one raises and writes nothing.
+
+FINAL_GRADIENT = np.array([[3e-6, 4e-6, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 1.2e-5]])   # per-atom norms 5e-6, 0, 1.2e-5
+STEP_ENERGIES = (-76.40, -76.41, -76.4100004)
+
+
+class StubMol:
+    def __init__(self, coords_bohr: list) -> None:
+        self.coords = np.asarray(coords_bohr, float)
+
+    def atom_coords(self) -> np.ndarray:
+        return self.coords
+
+
+class StubScf:
+    def __init__(self, mol: StubMol) -> None:
+        self.mol = mol
+
+    def nuc_grad_method(self) -> types.SimpleNamespace:
+        return types.SimpleNamespace(kernel=lambda: FINAL_GRADIENT)
+
+
+def stub_solver(monkeypatch: pytest.MonkeyPatch, converged: bool) -> list[dict]:
+    """pyscf, its geomeTRIC solver and the labels' SCF replaced by stubs; returns the list the solver's calls are recorded in."""
+    calls: list[dict] = []
+
+    def kernel(mf: StubScf, **kwargs: object) -> tuple[bool, StubMol]:
+        calls.append(kwargs)
+        for energy in STEP_ENERGIES:
+            kwargs["callback"]({"energy": energy})
+        return converged, StubMol(mf.mol.coords + 0.01)
+
+    solver = types.SimpleNamespace(kernel=kernel)
+    labels = types.SimpleNamespace(labels_mol=lambda geometry, log, max_memory: StubMol(geometry["coords_bohr"]),
+                                   labels_scf=lambda mol, functional, grid: (StubScf(mol), -76.41))
+    for name, module in (("pyscf", types.SimpleNamespace(lib=types.SimpleNamespace(num_threads=lambda n: None))),
+                         ("pyscf.geomopt", types.SimpleNamespace(geometric_solver=solver)), ("analytic_hessians", labels)):
+        monkeypatch.setitem(sys.modules, name, module)
+    return calls
+
+
+def start_folder(tmp_path: Path) -> Path:
+    folder = tmp_path / "water"
+    folder.mkdir()
+    (folder / "start.json").write_text(json.dumps({"id": "water", "layer": "smoke", **EC.WATER, "source": "the test"}), encoding="utf-8")
+    return folder
+
+
+def test_optimise_records_a_converged_geometry(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    calls = stub_solver(monkeypatch, converged=True)
+    folder = start_folder(tmp_path)
+    EC.optimise(folder, threads=1, max_memory=500)
+    assert calls[0]["assert_convergence"] is True and {k: calls[0][k] for k in EC.CONVERGENCE} == EC.CONVERGENCE
+    rec = json.loads((folder / "result.json").read_text(encoding="utf-8"))["optimisation"]
+    assert rec["converged"] is True and rec["steps"] == len(STEP_ENERGIES)
+    assert rec["engine"].endswith("geometric_solver.kernel")
+    assert rec["grad_max_au"] == pytest.approx(1.2e-5) and rec["grad_rms_au"] == pytest.approx((169e-12 / 3) ** 0.5)
+    assert rec["max_force_au"] == pytest.approx(1.2e-5)
+    assert rec["last_energy_change_au"] == pytest.approx(STEP_ENERGIES[-1] - STEP_ENERGIES[-2])
+    assert (folder / "geometry.json").is_file()
+
+
+def test_optimise_refuses_an_unconverged_geometry(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    stub_solver(monkeypatch, converged=False)
+    folder = start_folder(tmp_path)
+    with pytest.raises(RuntimeError, match="geomeTRIC did not converge to GAU_TIGHT within 100 steps"):
+        EC.optimise(folder, threads=1, max_memory=500)
+    assert not (folder / "geometry.json").exists() and not (folder / "result.json").exists()
+
+
+def test_convergence_record_after_a_single_gradient_call() -> None:
+    assert EC.convergence_record(FINAL_GRADIENT, [-76.4])["last_energy_change_au"] is None

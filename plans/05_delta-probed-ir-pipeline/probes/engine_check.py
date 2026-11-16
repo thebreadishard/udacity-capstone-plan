@@ -23,6 +23,7 @@ import math
 import shutil
 import sys
 import time
+from collections.abc import Sequence
 from pathlib import Path
 
 PLAN = Path(__file__).resolve().parents[1]
@@ -97,15 +98,27 @@ def prepare(out: Path, smoke: bool) -> None:
     print(f"prepared {len(ids)} molecules in {out}")
 
 
+def convergence_record(gradient: Sequence[Sequence[float]], energies: list[float]) -> dict[str, float | bool | None]:
+    """A converged optimisation's numbers for result.json: geomeTRIC's two gradient measures (rms and max over the per-atom norms, its
+    `Optimizer.calcGradNorm`) on the gradient recomputed at the final geometry, and the energy change between its last two gradient
+    calls (None after a single call)."""
+    import numpy as np
+
+    per_atom = np.linalg.norm(np.asarray(gradient, float).reshape(-1, 3), axis=1)
+    return {"converged": True, "grad_rms_au": float(np.sqrt(np.mean(per_atom**2))), "grad_max_au": float(per_atom.max()),
+            "last_energy_change_au": energies[-1] - energies[-2] if len(energies) > 1 else None}
+
+
 def optimise(folder: Path, threads: int, max_memory: int) -> None:
     """geomeTRIC from start.json at the labels route's level (`analytic_hessians.labels_mol` / `labels_scf`, B3LYP, grid 99/590): writes
-    geometry.json (bohr, the corpus's masses) and result.json (analytic-only, the optimisation's record). pyscf's log goes to pyscf.log."""
+    geometry.json (bohr, the corpus's masses) and result.json (analytic-only, the optimisation's record). pyscf's log goes to pyscf.log.
+    An optimisation geomeTRIC did not converge raises and writes neither file."""
     sys.path[:0] = [str(M05 / "corpus"), str(PLAN / "probes")]
     import analytic_hessians as AH
     import numpy as np
     from library_log import PYSCF_LOG_NAME
     from pyscf import lib
-    from pyscf.geomopt.geometric_solver import optimize
+    from pyscf.geomopt import geometric_solver
 
     if (folder / "geometry.json").exists():
         raise SystemExit(f"{folder}: geometry.json exists; an optimised folder is never redone")
@@ -113,11 +126,23 @@ def optimise(folder: Path, threads: int, max_memory: int) -> None:
     lib.num_threads(threads)
     bohr = 1.0 / 0.529177210903
     geometry = {"symbols": start["symbols"], "coords_bohr": [[x * bohr for x in row[1:]] for row in start["xyz_angstrom"]]}
-    steps = []
+    steps: list[float] = []
+    energies: list[float] = []
     t0 = time.time()
     with open(folder / PYSCF_LOG_NAME, "a", encoding="utf-8") as log:
         mf, _ = AH.labels_scf(AH.labels_mol(geometry, log, max_memory=max_memory), "b3lyp", GRID)
-        mol_eq = optimize(mf, assert_convergence=True, callback=lambda env: steps.append(round(time.time() - t0, 1)), **CONVERGENCE)
+
+        def on_step(env: dict) -> None:
+            steps.append(round(time.time() - t0, 1))
+            energies.append(float(env["energy"]))
+
+        # `kernel` returns (converged, mol); `optimize` is `kernel(...)[1]` and returns the last geometry either way, and
+        # assert_convergence covers the SCF only. The same call upstream: pyscf/geomopt/test/test_geometric_solver.py
+        # (test_optimize_with_hessian), `conv, mol_eq = geometric_solver.kernel(mf, hessian=True)`.
+        converged, mol_eq = geometric_solver.kernel(mf, assert_convergence=True, callback=on_step, **CONVERGENCE)
+        if not converged:
+            raise RuntimeError(f"{folder}: geomeTRIC did not converge to {CONVERGENCE['convergence_set']} within "
+                               f"{CONVERGENCE['maxsteps']} steps ({len(steps)} gradient calls); no geometry is written")
         mf_eq, e_opt = AH.labels_scf(AH.labels_mol({"symbols": start["symbols"], "coords_bohr": mol_eq.atom_coords().tolist()}, log,
                                                    max_memory=max_memory), "b3lyp", GRID)
         g = mf_eq.nuc_grad_method().kernel()
@@ -125,10 +150,11 @@ def optimise(folder: Path, threads: int, max_memory: int) -> None:
     write_json(folder / "geometry.json", {"symbols": start["symbols"], "coords_bohr": mol_eq.atom_coords().tolist(),
                                           "masses_amu": start["masses_amu"]})
     write_json(folder / "result.json", {"id": start["id"], "layer": start["layer"], "labels": ANALYTIC_ONLY,
-                                        "optimisation": {"engine": "geomeTRIC via pyscf.geomopt.geometric_solver.optimize", **CONVERGENCE,
+                                        "optimisation": {"engine": "geomeTRIC via pyscf.geomopt.geometric_solver.kernel", **CONVERGENCE,
                                                          "functional": "b3lyp", "basis": "6-31g* (Cartesian d)", "grid": list(GRID),
                                                          "steps": len(steps), "seconds": seconds, "e_opt": float(e_opt),
-                                                         "max_force_au": float(np.abs(g).max()), "start": start["source"]}})
+                                                         "max_force_au": float(np.abs(g).max()), **convergence_record(g, energies),
+                                                         "start": start["source"]}})
     print(f"[engine check] {start['id']} optimised: {len(steps)} steps, {seconds} s, max |force| {np.abs(g).max():.1e} E_h/bohr", flush=True)
 
 
