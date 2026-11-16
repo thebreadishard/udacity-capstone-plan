@@ -184,7 +184,7 @@ of 200 (`out/E7_rungC_chain35_analytic.json`); and two of the seven ranges were 
 7. **The winner rule's bias is named.** Two of a candidate's three seeds are the ones stage 1 chose it on and the control was not
    chosen, so the two-SE comparison flatters a candidate. read2 prints seed 2 alone beside the mean, and the promotion of §5 on the
    hold-outs, which no selection touched, stays the guard. Three fresh seeds in stage 2 would remove the bias for ten more trainings;
-   that is the user's to ask for.
+   that is the user's to ask for. **The user, 16 Nov 2026: not asked for** — stage 2 adds seed 2 only; the hold-outs are the guard.
 8. **The labels.** The search trains and selects on the corpus as it stands after the low-mode repair's swap of 14 Nov (TASKS 201, 216)
    and with the 222 pool molecules' analytic labels merged (TASKS 171). The hold-out labels are repaired too, so the promotion compares
    like with like only because the final chain reads the carried version's three checkpoints again on the same folders
