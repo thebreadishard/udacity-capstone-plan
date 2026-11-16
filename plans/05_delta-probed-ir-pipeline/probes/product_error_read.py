@@ -19,8 +19,13 @@ script measures, per family, in cm⁻¹:
 With --package the product's error must agree with the package's record to PACKAGE_TOL per family and set, or the script stops. No
 quantum chemistry is run: stored analytic Hessians and three checkpoints.
 
+With --models and --records the read is of named checkpoints instead of the registry's carried ones — a version's licence numbers
+before it is carried (design note of 26 Oct 2026, §14): one `rungC_eval_saved.py` record per checkpoint, in the same order, each
+naming its checkpoint; the hold-outs are the records' (a) and (b). Such a read needs --out and its record says `candidate`.
+
     python probes/product_error_read.py [--m05 <a module-05 folder holding corpus/molecules and the checkpoints under out/>]
                                         [--out <record.json>] [--package <the package's product_error.json>] [--threads 2]
+                                        [--models <checkpoints, relative to --m05> --records <their evaluation records, likewise>]
 """
 from __future__ import annotations
 
@@ -50,6 +55,7 @@ FIRST_ORDER_TOL = 0.005        # cm⁻¹: this read against the evaluation recor
 PACKAGE_TOL = 0.01             # cm⁻¹: this read against the package's record, per family and set
 BOOTSTRAP_SEED = 20261116      # the package's (product_error.py), so the two intervals are the same draws
 BOOTSTRAP_DRAWS = 4000
+CANDIDATE = "candidate (read with --models; not a carried version)"
 DEFINITIONS = {
     "first_order": "rms over the family's B3LYP modes of the first-order diagonal error of a seed's ΔH against the ωB97X − B3LYP "
                    "Hessian difference, per seed; 'seed_mean' is the mean of the seeds' values (the evaluation records' diag_rms, "
@@ -75,10 +81,20 @@ class Config:
     out: Path | None           # None: <this checkout's module-05 out>/<carried stem>_product_error.json
     package: Path | None
     threads: int
+    models: tuple[Path, ...] = ()     # empty: the registry's carried checkpoints
+    records: tuple[Path, ...] = ()    # the evaluation record of each of `models`, in their order
 
     def __post_init__(self) -> None:
         if not (self.m05 / "corpus" / "molecules").is_dir():
             raise SystemExit(f"--m05 {self.m05}: no corpus/molecules under it")
+        if len(self.models) != len(self.records):
+            raise SystemExit(f"--models ({len(self.models)}) and --records ({len(self.records)}) go together: one evaluation record per "
+                             "checkpoint, in the same order")
+        if self.models and self.out is None:
+            raise SystemExit("--models needs --out: a read of checkpoints that are not carried does not take a default record name")
+        missing = [str(p) for p in (*self.models, *self.records) if not p.is_file()]
+        if missing:
+            raise SystemExit(f"--models/--records: no such file: {', '.join(missing)}")
         if self.package is not None and not self.package.is_file():
             raise SystemExit(f"--package {self.package}: no such file")
         if not 1 <= self.threads <= 8:
@@ -168,10 +184,11 @@ def family_summary(reads: list[MoleculeRead], fam: str) -> dict:
             "first_order_certificate_families": first_order_summary(reads, [r.family == fam for r in reads]), "product": product}
 
 
-def holdout_sets(names: tuple[str, ...]) -> tuple[dict[str, tuple[str, list[str]]], dict[str, dict[str, float]], list[str]]:
+def holdout_sets(records: list[Path], clean: list[Path] | None) -> tuple[dict[str, tuple[str, list[str]]], dict[str, dict[str, float]],
+                                                                         list[str]]:
     """(per licence hold-out its key in the records and its molecules; the records' seed-mean first-order error per hold-out and
-    family, unrounded; the records' names) — the sets and records `m08.accuracy.network_accuracy` reads for these models."""
-    records, clean = A.evaluation_records(names), A.clean_a_records(names)
+    family, unrounded; the records' names) — from the models' evaluation records and, where they have them, their clean hold-out (a)
+    reads: the sets and records `m08.accuracy.network_accuracy` reads for the carried models."""
     sources = {h: (records, h) for h in A.HOLDOUTS}
     if clean is not None:
         sources["a"] = (clean, A.CLEAN_SET)
@@ -259,10 +276,41 @@ def carried(m05: Path) -> tuple[tuple[Path, ...], str]:
     missing = [m.name for m in models if not m.is_file()]
     if missing:
         raise SystemExit(f"not under {m05 / 'out'}: {', '.join(missing)} (--m05 names the folder that holds the checkpoints)")
+    return models, common_stem(models)
+
+
+def common_stem(models: tuple[Path, ...]) -> str:
+    """The stem the checkpoints' records share (`<stem>_model_n<N>_seed<S>.pt`); checkpoints of several stems are not one version."""
     stems = {m.name.partition("_model_")[0] for m in models}
     if len(stems) != 1:
-        raise SystemExit(f"the carried checkpoints are of {len(stems)} stems: {sorted(stems)}")
-    return models, stems.pop()
+        raise SystemExit(f"the checkpoints are of {len(stems)} stems: {sorted(stems)}")
+    return stems.pop()
+
+
+@dataclass(frozen=True)
+class Inputs:
+    """What a read is made on: the checkpoints, their stem, their evaluation records, their clean hold-out (a) reads if any, and the
+    version the record states."""
+
+    models: tuple[Path, ...]
+    stem: str
+    records: list[Path]
+    clean: list[Path] | None
+    version: str
+
+
+def inputs(cfg: Config) -> Inputs:
+    """The registry's carried checkpoints with the records `m08.accuracy` finds for them, or --models with --records after each
+    record is seen to name the checkpoint of its place."""
+    if not cfg.models:
+        models, stem = carried(cfg.m05)
+        names = tuple(m.name for m in models)
+        return Inputs(models, stem, A.evaluation_records(names), A.clean_a_records(names), A.carried_version())
+    for model, record in zip(cfg.models, cfg.records, strict=True):
+        evaluated = Path(str(json.loads(record.read_text(encoding="utf-8")).get("model", ""))).name
+        if evaluated != model.name:
+            raise SystemExit(f"--records: {record.name} evaluated {evaluated or 'no named model'}, not {model.name}")
+    return Inputs(cfg.models, common_stem(cfg.models), list(cfg.records), None, CANDIDATE)
 
 
 def write_record(path: Path, record: dict) -> None:
@@ -278,24 +326,28 @@ def parse(argv: list[str] | None) -> Config:
     ap.add_argument("--out", type=Path, default=None, help=f"the record (default: this checkout's module-05 out/<carried stem>{A.PRODUCT_SUFFIX})")
     ap.add_argument("--package", type=Path, default=None, help="the package's product_error.json: this read must agree with it")
     ap.add_argument("--threads", type=int, default=2)
+    ap.add_argument("--models", type=Path, nargs="+", default=[], help="checkpoints to read instead of the registry's carried ones "
+                    "(relative to --m05); with --records and --out")
+    ap.add_argument("--records", type=Path, nargs="+", default=[], help="the rungC_eval_saved.py record of each of --models, in their order")
     a = ap.parse_args(argv)
-    return Config(m05=a.m05.resolve(), out=a.out.resolve() if a.out else None, package=a.package.resolve() if a.package else None,
-                  threads=a.threads)
+    m05 = a.m05.resolve()
+    return Config(m05=m05, out=a.out.resolve() if a.out else None, package=a.package.resolve() if a.package else None,
+                  threads=a.threads, models=tuple((m05 / p).resolve() for p in a.models), records=tuple((m05 / p).resolve() for p in a.records))
 
 
 def main(argv: list[str] | None = None) -> int:
     cfg = parse(argv)
     started = time.time()
     torch.set_num_threads(cfg.threads)
-    models, stem = carried(cfg.m05)
-    names = tuple(m.name for m in models)
-    out = cfg.out or A.M05_OUT / f"{stem}{A.PRODUCT_SUFFIX}"
-    sets, recorded, sources = holdout_sets(names)
+    read = inputs(cfg)
+    models, names = read.models, tuple(m.name for m in read.models)
+    out = cfg.out or A.M05_OUT / f"{read.stem}{A.PRODUCT_SUFFIX}"
+    sets, recorded, sources = holdout_sets(read.records, read.clean)
     holdouts = read_holdouts(cfg, models, sets)
     checks = {"first_order_reproduces_evaluation_records": check_first_order(holdouts, recorded)}
     if cfg.package is not None:
         checks["agrees_with_package"] = check_package(holdouts, cfg.package)
-    record = {"kind": "product error read", "network": P.NETWORK, "network_version": A.carried_version(), "models": list(names),
+    record = {"kind": "product error read", "network": P.NETWORK, "network_version": read.version, "models": list(names),
               "model_sha16": {m.name: P.sha16(m) for m in models}, "labels": {"kind": "analytic", "files": list(LABELS)},
               "sets_from": sources, "line_cm": A.LICENCE_LINE_CM, "definitions": DEFINITIONS,
               "bootstrap": {"seed": BOOTSTRAP_SEED, "draws": BOOTSTRAP_DRAWS, "unit": "molecule"}, "holdouts": holdouts, "checks": checks,
