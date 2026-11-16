@@ -401,3 +401,10 @@ search beats it'. The control is the one configuration that was not chosen on an
 promoted models; what is lost is only that a better recipe, if the remaining nine configurations hold one, arrives later as a
 replacement instead of first. The licence (decision 65 as amended on 16 Nov) is read on the product's quantity for whichever
 version is carried; `probes/product_error_read.py` must be run for the new models before a certificate is made (TASKS 246 (e)).
+
+**Dated addition, 16 November 2026, 21:2x, before the whole-pool training has started.** The promotion reads
+hold-out (a) on its eight clean molecules (`out/holdout_a_clean_2026-10-30.txt`; the evals carry them as the set `a8` beside the ten),
+and prints the ten beside it. The carried version trained on layer-B twins of two of the ten (2-naphthoic acid and benzonitrile,
+TASKS 157), which the trainer has dropped from the pool since; on the ten the comparison would favour the carried version on two
+molecules it has seen, and since 3 November the certificates read (a) on the eight for the same reason. `read3` as registered reads
+the ten; the search's own final read takes the eight too when it comes.
