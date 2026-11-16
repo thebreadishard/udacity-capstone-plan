@@ -56,9 +56,10 @@ X2_GRID = [Config("krr", XTB_FEATURES, a, g) for a in KRR_ALPHA for g in KRR_GAM
 
 def match_modes(q_g: np.ndarray, q_x: np.ndarray, min_overlap: float = MIN_OVERLAP) -> tuple[np.ndarray, np.ndarray]:
     """Per G mode (columns of q_g, mass-weighted 3N × M), the index of its xtb partner among q_x's columns (−1 when the matched squared
-    overlap is below min_overlap) and that overlap."""
-    if q_g.shape != q_x.shape:
-        raise ValueError(f"mode arrays differ in shape: {q_g.shape} against {q_x.shape}")
+    overlap is below min_overlap) and that overlap. q_g may hold fewer modes than q_x (the pipeline's listed bands against all
+    B3LYP modes), never more: every mode of q_g must get a partner of its own."""
+    if q_g.shape[0] != q_x.shape[0] or q_g.shape[1] > q_x.shape[1]:
+        raise ValueError(f"mode arrays do not match: {q_g.shape} against {q_x.shape}")
     ov = (q_g.T @ q_x) ** 2
     rows, cols = linear_sum_assignment(-ov)
     partner = np.full(q_g.shape[1], -1)
