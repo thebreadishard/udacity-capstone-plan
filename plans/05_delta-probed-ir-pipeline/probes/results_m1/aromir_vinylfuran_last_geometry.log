@@ -1,0 +1,9 @@
+=== (LASTGEO) start
+(LASTGEO) 13 atoms; largest distance of an atom from its place at the saddle point: 0.2244 bohr
+WARN: Krylov solver reached subspace convergence but true residual |aop(x)+x-b| = 3.640e-04 exceeds tolerance 1.3e-07. Falling back to per-root solve.
+(LASTGEO) energy -307.4198693996; analytic Hessian, lowest 4: [14.11, 210.37, 248.73, 461.8]
+(LASTGEO) soft modes measured, lowest 4: [14.93, 210.37, 248.73, 461.8]; record Repair(n_directions=1, lowest_before_cm=14.112972164600992, lowest_after_cm=14.93414297782669, largest_change_cm=0.8211708132256987)
+(LASTGEO) imaginary modes with the soft modes measured: 0 -> a minimum
+(LASTGEO) saved
+(LASTGEO) max RSS 1904228 kB, wall 1444.43 s
+=== (LASTGEO) done

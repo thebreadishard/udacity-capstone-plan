@@ -1,0 +1,932 @@
+{
+ "statement": "C=Cc1ccoc1: the harmonic infrared spectrum of ΔH network v1.3 (3 seeds), B3LYP/6-31G* corrected towards ωB97X/6-31G* (the DFT proxy: the network's ΔH is trained on ωB97X − B3LYP Hessians), with the error measured on molecules the network never saw. 33 of 33 bands are licensed: a band is licensed when its family's error is within 3 cm⁻¹ on every hold-out (ring-ip, CH-stretch, CH-oop, other), the molecule lies inside the training sizes, its low-level mode is real, the band is real for the seeds' mean and for every seed, and a band of a C–H family moves carbon-bound hydrogens. 'other' is within the licence line on hold-out (a) at 2.78 cm⁻¹, on 8 molecules: resampling those molecules puts the error between 1.68 and 3.76 cm⁻¹, and 30% of the resamples lie above the line. Not in that error: the same molecule turned, mirrored or listed in another atom order was seen to get positions up to 10.73 cm⁻¹ away, more than the licence line. Coupled cluster: not measured for this network version. The scaled B3LYP positions are a baseline for comparison only.",
+ "molecule": {
+  "smiles": "C=Cc1ccoc1",
+  "formula": "C6H6O",
+  "n_atoms": 13,
+  "unassigned_stereo": [],
+  "training_atoms": [
+   8,
+   30
+  ],
+  "inside_training_sizes": true,
+  "seen": "not in the training set or a hold-out: the network has not seen it",
+  "linear_group": false,
+  "planar": true
+ },
+ "network": {
+  "version": "1.3",
+  "seeds": [
+   0,
+   1,
+   2
+  ],
+  "higher_level": "ωB97X/6-31G* (the DFT proxy: the network's ΔH is trained on ωB97X − B3LYP Hessians)"
+ },
+ "positions": "harmonic positions: the anharmonic shift is not included in this version",
+ "soft_modes": "",
+ "warnings": [],
+ "bands": [
+  {
+   "wavenumber_cm": 63.9,
+   "intensity_km_mol": 0.05,
+   "seed_range_cm": [
+    60.1,
+    67.7
+   ],
+   "b3lyp_cm": 20.3,
+   "scaled_b3lyp_cm": 19.9,
+   "family": "other",
+   "licensed": true,
+   "licence_note": "",
+   "measured_error_cm": {
+    "a": 2.78,
+    "b": 2.77
+   }
+  },
+  {
+   "wavenumber_cm": 216.3,
+   "intensity_km_mol": 0.01,
+   "seed_range_cm": [
+    215.7,
+    217.4
+   ],
+   "b3lyp_cm": 210.1,
+   "scaled_b3lyp_cm": 205.7,
+   "family": "other",
+   "licensed": true,
+   "licence_note": "",
+   "measured_error_cm": {
+    "a": 2.78,
+    "b": 2.77
+   }
+  },
+  {
+   "wavenumber_cm": 257.4,
+   "intensity_km_mol": 1.79,
+   "seed_range_cm": [
+    254.9,
+    261.6
+   ],
+   "b3lyp_cm": 248.7,
+   "scaled_b3lyp_cm": 243.5,
+   "family": "other",
+   "licensed": true,
+   "licence_note": "",
+   "measured_error_cm": {
+    "a": 2.78,
+    "b": 2.77
+   }
+  },
+  {
+   "wavenumber_cm": 465.7,
+   "intensity_km_mol": 1.26,
+   "seed_range_cm": [
+    465.1,
+    466.3
+   ],
+   "b3lyp_cm": 461.7,
+   "scaled_b3lyp_cm": 452.0,
+   "family": "other",
+   "licensed": true,
+   "licence_note": "",
+   "measured_error_cm": {
+    "a": 2.78,
+    "b": 2.77
+   }
+  },
+  {
+   "wavenumber_cm": 585.0,
+   "intensity_km_mol": 8.9,
+   "seed_range_cm": [
+    583.6,
+    587.1
+   ],
+   "b3lyp_cm": 573.5,
+   "scaled_b3lyp_cm": 561.5,
+   "family": "other",
+   "licensed": true,
+   "licence_note": "",
+   "measured_error_cm": {
+    "a": 2.78,
+    "b": 2.77
+   }
+  },
+  {
+   "wavenumber_cm": 634.5,
+   "intensity_km_mol": 9.51,
+   "seed_range_cm": [
+    633.3,
+    635.3
+   ],
+   "b3lyp_cm": 619.3,
+   "scaled_b3lyp_cm": 606.3,
+   "family": "other",
+   "licensed": true,
+   "licence_note": "",
+   "measured_error_cm": {
+    "a": 2.78,
+    "b": 2.77
+   }
+  },
+  {
+   "wavenumber_cm": 655.9,
+   "intensity_km_mol": 12.63,
+   "seed_range_cm": [
+    655.5,
+    656.1
+   ],
+   "b3lyp_cm": 649.7,
+   "scaled_b3lyp_cm": 636.0,
+   "family": "other",
+   "licensed": true,
+   "licence_note": "",
+   "measured_error_cm": {
+    "a": 2.78,
+    "b": 2.77
+   }
+  },
+  {
+   "wavenumber_cm": 733.4,
+   "intensity_km_mol": 1.22,
+   "seed_range_cm": [
+    732.5,
+    734.3
+   ],
+   "b3lyp_cm": 711.5,
+   "scaled_b3lyp_cm": 696.6,
+   "family": "CH-oop",
+   "licensed": true,
+   "licence_note": "",
+   "measured_error_cm": {
+    "a": 1.64,
+    "b": 1.88
+   }
+  },
+  {
+   "wavenumber_cm": 754.5,
+   "intensity_km_mol": 13.96,
+   "seed_range_cm": [
+    749.5,
+    757.2
+   ],
+   "b3lyp_cm": 733.0,
+   "scaled_b3lyp_cm": 717.6,
+   "family": "CH-oop",
+   "licensed": true,
+   "licence_note": "",
+   "measured_error_cm": {
+    "a": 1.64,
+    "b": 1.88
+   }
+  },
+  {
+   "wavenumber_cm": 817.4,
+   "intensity_km_mol": 38.78,
+   "seed_range_cm": [
+    817.0,
+    818.1
+   ],
+   "b3lyp_cm": 791.7,
+   "scaled_b3lyp_cm": 775.1,
+   "family": "CH-oop",
+   "licensed": true,
+   "licence_note": "",
+   "measured_error_cm": {
+    "a": 1.64,
+    "b": 1.88
+   }
+  },
+  {
+   "wavenumber_cm": 879.5,
+   "intensity_km_mol": 4.27,
+   "seed_range_cm": [
+    877.2,
+    882.1
+   ],
+   "b3lyp_cm": 850.1,
+   "scaled_b3lyp_cm": 832.3,
+   "family": "CH-oop",
+   "licensed": true,
+   "licence_note": "",
+   "measured_error_cm": {
+    "a": 1.64,
+    "b": 1.88
+   }
+  },
+  {
+   "wavenumber_cm": 897.2,
+   "intensity_km_mol": 22.87,
+   "seed_range_cm": [
+    896.8,
+    897.5
+   ],
+   "b3lyp_cm": 889.6,
+   "scaled_b3lyp_cm": 871.0,
+   "family": "other",
+   "licensed": true,
+   "licence_note": "",
+   "measured_error_cm": {
+    "a": 2.78,
+    "b": 2.77
+   }
+  },
+  {
+   "wavenumber_cm": 948.1,
+   "intensity_km_mol": 39.42,
+   "seed_range_cm": [
+    946.3,
+    951.5
+   ],
+   "b3lyp_cm": 913.8,
+   "scaled_b3lyp_cm": 894.6,
+   "family": "CH-oop",
+   "licensed": true,
+   "licence_note": "",
+   "measured_error_cm": {
+    "a": 1.64,
+    "b": 1.88
+   }
+  },
+  {
+   "wavenumber_cm": 983.8,
+   "intensity_km_mol": 7.19,
+   "seed_range_cm": [
+    982.9,
+    984.6
+   ],
+   "b3lyp_cm": 976.1,
+   "scaled_b3lyp_cm": 955.6,
+   "family": "ring-ip",
+   "licensed": true,
+   "licence_note": "",
+   "measured_error_cm": {
+    "a": 1.43,
+    "b": 1.91
+   }
+  },
+  {
+   "wavenumber_cm": 1052.6,
+   "intensity_km_mol": 12.27,
+   "seed_range_cm": [
+    1050.7,
+    1055.7
+   ],
+   "b3lyp_cm": 1033.8,
+   "scaled_b3lyp_cm": 1012.1,
+   "family": "CH-oop",
+   "licensed": true,
+   "licence_note": "",
+   "measured_error_cm": {
+    "a": 1.64,
+    "b": 1.88
+   }
+  },
+  {
+   "wavenumber_cm": 1064.4,
+   "intensity_km_mol": 11.88,
+   "seed_range_cm": [
+    1064.1,
+    1064.5
+   ],
+   "b3lyp_cm": 1056.7,
+   "scaled_b3lyp_cm": 1034.5,
+   "family": "ring-ip",
+   "licensed": true,
+   "licence_note": "",
+   "measured_error_cm": {
+    "a": 1.43,
+    "b": 1.91
+   }
+  },
+  {
+   "wavenumber_cm": 1093.3,
+   "intensity_km_mol": 20.44,
+   "seed_range_cm": [
+    1092.3,
+    1094.1
+   ],
+   "b3lyp_cm": 1085.5,
+   "scaled_b3lyp_cm": 1062.7,
+   "family": "ring-ip",
+   "licensed": true,
+   "licence_note": "",
+   "measured_error_cm": {
+    "a": 1.43,
+    "b": 1.91
+   }
+  },
+  {
+   "wavenumber_cm": 1117.0,
+   "intensity_km_mol": 9.77,
+   "seed_range_cm": [
+    1115.6,
+    1118.0
+   ],
+   "b3lyp_cm": 1113.7,
+   "scaled_b3lyp_cm": 1079.2,
+   "family": "ring-ip",
+   "licensed": true,
+   "licence_note": "",
+   "measured_error_cm": {
+    "a": 1.43,
+    "b": 1.91
+   }
+  },
+  {
+   "wavenumber_cm": 1230.0,
+   "intensity_km_mol": 29.25,
+   "seed_range_cm": [
+    1229.8,
+    1230.3
+   ],
+   "b3lyp_cm": 1212.4,
+   "scaled_b3lyp_cm": 1174.8,
+   "family": "ring-ip",
+   "licensed": true,
+   "licence_note": "",
+   "measured_error_cm": {
+    "a": 1.43,
+    "b": 1.91
+   }
+  },
+  {
+   "wavenumber_cm": 1261.3,
+   "intensity_km_mol": 9.91,
+   "seed_range_cm": [
+    1260.8,
+    1261.9
+   ],
+   "b3lyp_cm": 1255.7,
+   "scaled_b3lyp_cm": 1216.8,
+   "family": "ring-ip",
+   "licensed": true,
+   "licence_note": "",
+   "measured_error_cm": {
+    "a": 1.43,
+    "b": 1.91
+   }
+  },
+  {
+   "wavenumber_cm": 1300.3,
+   "intensity_km_mol": 2.96,
+   "seed_range_cm": [
+    1300.1,
+    1300.6
+   ],
+   "b3lyp_cm": 1291.9,
+   "scaled_b3lyp_cm": 1251.8,
+   "family": "ring-ip",
+   "licensed": true,
+   "licence_note": "",
+   "measured_error_cm": {
+    "a": 1.43,
+    "b": 1.91
+   }
+  },
+  {
+   "wavenumber_cm": 1352.1,
+   "intensity_km_mol": 0.93,
+   "seed_range_cm": [
+    1347.4,
+    1354.5
+   ],
+   "b3lyp_cm": 1347.9,
+   "scaled_b3lyp_cm": 1306.1,
+   "family": "ring-ip",
+   "licensed": true,
+   "licence_note": "",
+   "measured_error_cm": {
+    "a": 1.43,
+    "b": 1.91
+   }
+  },
+  {
+   "wavenumber_cm": 1424.7,
+   "intensity_km_mol": 5.48,
+   "seed_range_cm": [
+    1423.1,
+    1427.1
+   ],
+   "b3lyp_cm": 1406.6,
+   "scaled_b3lyp_cm": 1363.0,
+   "family": "ring-ip",
+   "licensed": true,
+   "licence_note": "",
+   "measured_error_cm": {
+    "a": 1.43,
+    "b": 1.91
+   }
+  },
+  {
+   "wavenumber_cm": 1490.4,
+   "intensity_km_mol": 4.58,
+   "seed_range_cm": [
+    1489.2,
+    1491.3
+   ],
+   "b3lyp_cm": 1483.6,
+   "scaled_b3lyp_cm": 1437.7,
+   "family": "ring-ip",
+   "licensed": true,
+   "licence_note": "",
+   "measured_error_cm": {
+    "a": 1.43,
+    "b": 1.91
+   }
+  },
+  {
+   "wavenumber_cm": 1571.5,
+   "intensity_km_mol": 17.35,
+   "seed_range_cm": [
+    1571.3,
+    1572.0
+   ],
+   "b3lyp_cm": 1549.1,
+   "scaled_b3lyp_cm": 1501.1,
+   "family": "ring-ip",
+   "licensed": true,
+   "licence_note": "",
+   "measured_error_cm": {
+    "a": 1.43,
+    "b": 1.91
+   }
+  },
+  {
+   "wavenumber_cm": 1661.8,
+   "intensity_km_mol": 3.87,
+   "seed_range_cm": [
+    1660.6,
+    1662.8
+   ],
+   "b3lyp_cm": 1632.5,
+   "scaled_b3lyp_cm": 1581.9,
+   "family": "ring-ip",
+   "licensed": true,
+   "licence_note": "",
+   "measured_error_cm": {
+    "a": 1.43,
+    "b": 1.91
+   }
+  },
+  {
+   "wavenumber_cm": 1751.0,
+   "intensity_km_mol": 15.76,
+   "seed_range_cm": [
+    1750.1,
+    1752.1
+   ],
+   "b3lyp_cm": 1715.7,
+   "scaled_b3lyp_cm": 1662.5,
+   "family": "ring-ip",
+   "licensed": true,
+   "licence_note": "",
+   "measured_error_cm": {
+    "a": 1.43,
+    "b": 1.91
+   }
+  },
+  {
+   "wavenumber_cm": 3199.7,
+   "intensity_km_mol": 18.53,
+   "seed_range_cm": [
+    3197.2,
+    3201.6
+   ],
+   "b3lyp_cm": 3157.0,
+   "scaled_b3lyp_cm": 3030.7,
+   "family": "CH-stretch",
+   "licensed": true,
+   "licence_note": "",
+   "measured_error_cm": {
+    "a": 0.95,
+    "b": 2.19
+   }
+  },
+  {
+   "wavenumber_cm": 3209.8,
+   "intensity_km_mol": 4.39,
+   "seed_range_cm": [
+    3207.6,
+    3211.6
+   ],
+   "b3lyp_cm": 3167.5,
+   "scaled_b3lyp_cm": 3040.8,
+   "family": "CH-stretch",
+   "licensed": true,
+   "licence_note": "",
+   "measured_error_cm": {
+    "a": 0.95,
+    "b": 2.19
+   }
+  },
+  {
+   "wavenumber_cm": 3293.2,
+   "intensity_km_mol": 15.21,
+   "seed_range_cm": [
+    3290.7,
+    3296.3
+   ],
+   "b3lyp_cm": 3247.4,
+   "scaled_b3lyp_cm": 3117.5,
+   "family": "CH-stretch",
+   "licensed": true,
+   "licence_note": "",
+   "measured_error_cm": {
+    "a": 0.95,
+    "b": 2.19
+   }
+  },
+  {
+   "wavenumber_cm": 3304.7,
+   "intensity_km_mol": 2.01,
+   "seed_range_cm": [
+    3303.7,
+    3306.5
+   ],
+   "b3lyp_cm": 3262.2,
+   "scaled_b3lyp_cm": 3131.7,
+   "family": "CH-stretch",
+   "licensed": true,
+   "licence_note": "",
+   "measured_error_cm": {
+    "a": 0.95,
+    "b": 2.19
+   }
+  },
+  {
+   "wavenumber_cm": 3339.7,
+   "intensity_km_mol": 0.91,
+   "seed_range_cm": [
+    3339.0,
+    3340.2
+   ],
+   "b3lyp_cm": 3297.3,
+   "scaled_b3lyp_cm": 3165.4,
+   "family": "CH-stretch",
+   "licensed": true,
+   "licence_note": "",
+   "measured_error_cm": {
+    "a": 0.95,
+    "b": 2.19
+   }
+  },
+  {
+   "wavenumber_cm": 3344.6,
+   "intensity_km_mol": 1.18,
+   "seed_range_cm": [
+    3343.8,
+    3345.4
+   ],
+   "b3lyp_cm": 3304.8,
+   "scaled_b3lyp_cm": 3172.6,
+   "family": "CH-stretch",
+   "licensed": true,
+   "licence_note": "",
+   "measured_error_cm": {
+    "a": 0.95,
+    "b": 2.19
+   }
+  }
+ ],
+ "not_in_the_error": [
+  "another atom order of the same molecule moved a position by up to 10.73 cm⁻¹, the largest seen on 3 molecule(s) in arbitrary orders; that is more than the licence line of 3 cm⁻¹",
+  "a rigid rotation of the molecule moved a position by up to 0.00 cm⁻¹, the largest seen on 4 molecule(s) without a linear group",
+  "the molecule's mirror image moved a position by up to 2.60 cm⁻¹, the largest seen on 4 molecule(s) without a linear group",
+  "another listing of the same atoms in an xyz file moved a position by up to 3.07 cm⁻¹, the largest seen on 4 molecule(s) without a linear group; that is more than the licence line of 3 cm⁻¹",
+  "the heights are B3LYP's: the dipole derivatives are not corrected",
+  "one conformer was computed, the one the optimisation reached from aromir's start geometry; another conformer has another spectrum",
+  "the start geometry led to a saddle point (a mode at -12 cm⁻¹): the atoms were moved up to 0.3 bohr along that mode and optimised again, so the structure computed is the one that step led to, one of two"
+ ],
+ "accuracy": {
+  "record_version": 2,
+  "network_version": "1.3",
+  "higher_level": "ωB97X/6-31G* (the DFT proxy: the network's ΔH is trained on ωB97X − B3LYP Hessians)",
+  "licence_line_cm": 3.0,
+  "licence_basis": "the band error of the seeds' mean, the error of what the release delivers, as recorded to two decimals; chosen on 16 November 2026, after it and the first-order error per seed had both been measured on both hold-outs",
+  "holdouts": {
+   "a": {
+    "description": "eight molecules set aside on 19 September 2026, before any network was trained, and never trained on in any form (two more molecules of that set, 2-naphthoic acid and benzonitrile, are left out of this read because the network had trained on them under another identifier)",
+    "n_molecules": 8
+   },
+   "b": {
+    "description": "every substituted molecule of two ring scaffolds, set aside on 8 October 2026; the network trained on no molecule of either scaffold",
+    "n_molecules": 39
+   }
+  },
+  "band_error_seed_mean_cm": {
+   "ring-ip": {
+    "a": {
+     "rms_cm": 1.43,
+     "n_modes": 199,
+     "interval_cm": [
+      1.13,
+      1.7
+     ],
+     "share_of_resamples_within_line": 1.0
+    },
+    "b": {
+     "rms_cm": 1.91,
+     "n_modes": 1164,
+     "interval_cm": [
+      1.84,
+      2.0
+     ],
+     "share_of_resamples_within_line": 1.0
+    }
+   },
+   "CH-stretch": {
+    "a": {
+     "rms_cm": 0.95,
+     "n_modes": 73,
+     "interval_cm": [
+      0.39,
+      1.48
+     ],
+     "share_of_resamples_within_line": 1.0
+    },
+    "b": {
+     "rms_cm": 2.19,
+     "n_modes": 401,
+     "interval_cm": [
+      1.8,
+      2.53
+     ],
+     "share_of_resamples_within_line": 1.0
+    }
+   },
+   "CH-oop": {
+    "a": {
+     "rms_cm": 1.64,
+     "n_modes": 46,
+     "interval_cm": [
+      1.19,
+      1.97
+     ],
+     "share_of_resamples_within_line": 1.0
+    },
+    "b": {
+     "rms_cm": 1.88,
+     "n_modes": 84,
+     "interval_cm": [
+      1.56,
+      2.16
+     ],
+     "share_of_resamples_within_line": 1.0
+    }
+   },
+   "other": {
+    "a": {
+     "rms_cm": 2.78,
+     "n_modes": 156,
+     "interval_cm": [
+      1.68,
+      3.76
+     ],
+     "share_of_resamples_within_line": 0.7
+    },
+    "b": {
+     "rms_cm": 2.77,
+     "n_modes": 1225,
+     "interval_cm": [
+      2.56,
+      2.97
+     ],
+     "share_of_resamples_within_line": 0.99
+    }
+   }
+  },
+  "first_order_error_per_seed_cm": {
+   "ring-ip": {
+    "a": [
+     1.95,
+     1.68,
+     1.7
+    ],
+    "b": [
+     2.25,
+     2.02,
+     2.11
+    ]
+   },
+   "CH-stretch": {
+    "a": [
+     0.91,
+     1.74,
+     0.91
+    ],
+    "b": [
+     1.91,
+     3.51,
+     2.08
+    ]
+   },
+   "CH-oop": {
+    "a": [
+     2.46,
+     2.05,
+     1.99
+    ],
+    "b": [
+     2.46,
+     2.93,
+     2.8
+    ]
+   },
+   "other": {
+    "a": [
+     4.09,
+     3.27,
+     3.51
+    ],
+    "b": [
+     3.65,
+     4.51,
+     3.51
+    ]
+   }
+  },
+  "first_order_error_per_seed_mean_cm": {
+   "ring-ip": {
+    "a": 1.77,
+    "b": 2.12
+   },
+   "CH-stretch": {
+    "a": 1.19,
+    "b": 2.5
+   },
+   "CH-oop": {
+    "a": 2.17,
+    "b": 2.73
+   },
+   "other": {
+    "a": 3.62,
+    "b": 3.89
+   }
+  },
+  "coupled_cluster": "not measured for this network version",
+  "sources": [
+   "every error in this record: `aromir evaluate` on the two hold-outs as probes/results_m1/aromir_audit_fixes_2026-11-16/holdouts_for_aromir.py of thebreadishard/udacity-capstone-plan (plan 05) writes them; counterpart for the band errors: probes/results_m1/aromir_product_error_2026-11-16/product_error.json",
+   "the hold-outs' molecules, and the first-order errors the training runs recorded themselves (within 0.08 cm⁻¹): E7_rungC_chain35_analytic_eval_frozenb_seed0.json, E7_rungC_chain35_analytic_eval_frozenb_seed1.json, E7_rungC_chain35_analytic_eval_frozenb_seed2.json, E7_rungC_chain35_analytic_a8read_seed0.json, E7_rungC_chain35_analytic_a8read_seed1.json, E7_rungC_chain35_analytic_a8read_seed2.json"
+  ],
+  "atom_order_spread": {
+   "max_cm": 10.73,
+   "n_molecules": 3,
+   "n_orders": 5,
+   "source": "order_spread_smiles.json"
+  },
+  "licensed_families": [
+   "ring-ip",
+   "CH-stretch",
+   "CH-oop",
+   "other"
+  ],
+  "on_thin_ground": [
+   "other"
+  ],
+  "caveats": [
+   "'other' is within the licence line on hold-out (a) at 2.78 cm⁻¹, on 8 molecules: resampling those molecules puts the error between 1.68 and 3.76 cm⁻¹, and 30% of the resamples lie above the line"
+  ]
+ },
+ "computation": {
+  "level": {
+   "functional": "b3lyp",
+   "basis": "6-31g*",
+   "grid": [
+    99,
+    590
+   ]
+  },
+  "optimisation": {
+   "energy_hartree": -307.4198694010003,
+   "max_force_hartree_per_bohr": 2.371995425853868e-06,
+   "n_steps": 10,
+   "converged_on": "energy, forces and displacement",
+   "last_step": null,
+   "left_saddle_point_at_cm": -12.352910133702036
+  },
+  "checks": {
+   "response_residual_before": 2.6456214732850647e-08,
+   "response_residual_after": 2.6456214732850647e-08,
+   "response_batched_rounds": 0,
+   "response_single_columns": 0,
+   "sum_rule_violation_e": 1.082826067755338e-05
+  },
+  "soft_mode_repair": null,
+  "seconds_low_level": 1360.6,
+  "steps": {
+   "optimisation 1": {
+    "timestamp_utc": "2026-11-16T18:15:11+00:00",
+    "command": "/home/thebreadishard/aromir_dev/bin/aromir spectrum C=Cc1ccoc1 --out probes/results_m1/aromir_flat_2026-11-16/vinylfuran --threads 8 --max-memory-mb 2048",
+    "python": "3.12.14",
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "packages": {
+     "aromir": "0.1.0.dev0",
+     "pyscf": "2.15.0",
+     "geometric": "1.1.1",
+     "rdkit": "2026.9.2",
+     "numpy": "2.5.4",
+     "scipy": "1.18.1",
+     "torch": "2.14.0+cpu",
+     "safetensors": "0.8.0"
+    }
+   },
+   "low level 1": {
+    "timestamp_utc": "2026-11-16T18:40:23+00:00",
+    "command": "/home/thebreadishard/aromir_dev/bin/aromir spectrum C=Cc1ccoc1 --out probes/results_m1/aromir_flat_2026-11-16/vinylfuran --threads 8 --max-memory-mb 2048",
+    "python": "3.12.14",
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "packages": {
+     "aromir": "0.1.0.dev0",
+     "pyscf": "2.15.0",
+     "geometric": "1.1.1",
+     "rdkit": "2026.9.2",
+     "numpy": "2.5.4",
+     "scipy": "1.18.1",
+     "torch": "2.14.0+cpu",
+     "safetensors": "0.8.0"
+    }
+   },
+   "soft modes 1": {
+    "timestamp_utc": "2026-11-16T18:42:17+00:00",
+    "command": "/home/thebreadishard/aromir_dev/bin/aromir spectrum C=Cc1ccoc1 --out probes/results_m1/aromir_flat_2026-11-16/vinylfuran --threads 8 --max-memory-mb 2048",
+    "python": "3.12.14",
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "packages": {
+     "aromir": "0.1.0.dev0",
+     "pyscf": "2.15.0",
+     "geometric": "1.1.1",
+     "rdkit": "2026.9.2",
+     "numpy": "2.5.4",
+     "scipy": "1.18.1",
+     "torch": "2.14.0+cpu",
+     "safetensors": "0.8.0"
+    }
+   },
+   "optimisation 2": {
+    "timestamp_utc": "2026-11-16T18:48:48+00:00",
+    "command": "/home/thebreadishard/aromir_dev/bin/aromir spectrum C=Cc1ccoc1 --out probes/results_m1/aromir_flat_2026-11-16/vinylfuran --threads 8 --max-memory-mb 2048",
+    "python": "3.12.14",
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "packages": {
+     "aromir": "0.1.0.dev0",
+     "pyscf": "2.15.0",
+     "geometric": "1.1.1",
+     "rdkit": "2026.9.2",
+     "numpy": "2.5.4",
+     "scipy": "1.18.1",
+     "torch": "2.14.0+cpu",
+     "safetensors": "0.8.0"
+    }
+   },
+   "low level 2": {
+    "timestamp_utc": "2026-11-16T19:11:29+00:00",
+    "command": "/home/thebreadishard/aromir_dev/bin/aromir spectrum C=Cc1ccoc1 --out probes/results_m1/aromir_flat_2026-11-16/vinylfuran --threads 8 --max-memory-mb 2048",
+    "python": "3.12.14",
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "packages": {
+     "aromir": "0.1.0.dev0",
+     "pyscf": "2.15.0",
+     "geometric": "1.1.1",
+     "rdkit": "2026.9.2",
+     "numpy": "2.5.4",
+     "scipy": "1.18.1",
+     "torch": "2.14.0+cpu",
+     "safetensors": "0.8.0"
+    }
+   },
+   "soft modes 2": {
+    "timestamp_utc": "2026-11-16T19:11:29+00:00",
+    "command": "/home/thebreadishard/aromir_dev/bin/aromir spectrum C=Cc1ccoc1 --out probes/results_m1/aromir_flat_2026-11-16/vinylfuran --threads 8 --max-memory-mb 2048",
+    "python": "3.12.14",
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "packages": {
+     "aromir": "0.1.0.dev0",
+     "pyscf": "2.15.0",
+     "geometric": "1.1.1",
+     "rdkit": "2026.9.2",
+     "numpy": "2.5.4",
+     "scipy": "1.18.1",
+     "torch": "2.14.0+cpu",
+     "safetensors": "0.8.0"
+    }
+   }
+  }
+ },
+ "provenance": {
+  "timestamp_utc": "2026-11-16T18:06:05+00:00",
+  "command": "/home/thebreadishard/aromir_dev/bin/aromir spectrum C=Cc1ccoc1 --out probes/results_m1/aromir_flat_2026-11-16/vinylfuran --threads 8 --max-memory-mb 2048",
+  "python": "3.12.14",
+  "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+  "packages": {
+   "aromir": "0.1.0.dev0",
+   "pyscf": "2.15.0",
+   "geometric": "1.1.1",
+   "rdkit": "2026.9.2",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "torch": "2.14.0+cpu",
+   "safetensors": "0.8.0"
+  }
+ }
+}

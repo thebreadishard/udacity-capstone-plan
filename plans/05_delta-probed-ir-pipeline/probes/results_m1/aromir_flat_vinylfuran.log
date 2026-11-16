@@ -1,0 +1,7 @@
+=== (AROMIR) start
+91d9449 The review of 66a9338 answered: the second stage is geomeTRIC's full test without the displacement criterion
+WARN: Krylov solver reached subspace convergence but true residual |aop(x)+x-b| = 3.565e-04 exceeds tolerance 1.3e-07. Falling back to per-root solve.
+WARN: Krylov solver reached subspace convergence but true residual |aop(x)+x-b| = 3.564e-04 exceeds tolerance 1.3e-07. Falling back to per-root solve.
+done: 33 bands, 33 of them licensed; certificate in probes/results_m1/aromir_flat_2026-11-16/vinylfuran/certificate.md
+(AROMIR) max RSS 2208096 kB, wall 3928.37 s
+=== (AROMIR) done: vinylfuran
