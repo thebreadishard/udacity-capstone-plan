@@ -98,15 +98,17 @@ def prepare(out: Path, smoke: bool) -> None:
     print(f"prepared {len(ids)} molecules in {out}")
 
 
-def convergence_record(gradient: Sequence[Sequence[float]], energies: list[float]) -> dict[str, float | bool | None]:
-    """A converged optimisation's numbers for result.json: geomeTRIC's two gradient measures (rms and max over the per-atom norms, its
-    `Optimizer.calcGradNorm`) on the gradient recomputed at the final geometry, and the energy change between its last two gradient
-    calls (None after a single call)."""
+def convergence_record(converged: bool, gradient: Sequence[Sequence[float]], energies: list[float]) -> dict[str, float | bool | None]:
+    """An optimisation's outcome for result.json: the solver's flag, and three numbers recomputed after the optimisation, not the values
+    geomeTRIC judged. `final_grad_rms_au` and `final_grad_max_au` are geomeTRIC's formula (rms and max over the per-atom norms, its
+    `Optimizer.calcGradNorm`) on the gradient of a fresh SCF at the final geometry; `final_energy_change_au` is the signed difference
+    of the energies of the solver's last two gradient calls (None after a single call)."""
     import numpy as np
 
     per_atom = np.linalg.norm(np.asarray(gradient, float).reshape(-1, 3), axis=1)
-    return {"converged": True, "grad_rms_au": float(np.sqrt(np.mean(per_atom**2))), "grad_max_au": float(per_atom.max()),
-            "last_energy_change_au": energies[-1] - energies[-2] if len(energies) > 1 else None}
+    return {"converged": converged, "final_grad_rms_au": float(np.sqrt(np.mean(per_atom**2))),
+            "final_grad_max_au": float(per_atom.max()),
+            "final_energy_change_au": energies[-1] - energies[-2] if len(energies) > 1 else None}
 
 
 def optimise(folder: Path, threads: int, max_memory: int) -> None:
@@ -137,8 +139,9 @@ def optimise(folder: Path, threads: int, max_memory: int) -> None:
             energies.append(float(env["energy"]))
 
         # `kernel` returns (converged, mol); `optimize` is `kernel(...)[1]` and returns the last geometry either way, and
-        # assert_convergence covers the SCF only. The same call upstream: pyscf/geomopt/test/test_geometric_solver.py
-        # (test_optimize_with_hessian), `conv, mol_eq = geometric_solver.kernel(mf, hessian=True)`.
+        # assert_convergence covers the SCF only. Upstream's use of the returned pair: pyscf/geomopt/test/test_geometric_solver.py
+        # (test_optimize_with_hessian), `conv, mol_eq = geometric_solver.kernel(mf, hessian=True)`. That file is in pyscf's
+        # repository, not in the wheel, and it passes `hessian=True`, not the keyword arguments passed here.
         converged, mol_eq = geometric_solver.kernel(mf, assert_convergence=True, callback=on_step, **CONVERGENCE)
         if not converged:
             raise RuntimeError(f"{folder}: geomeTRIC did not converge to {CONVERGENCE['convergence_set']} within "
@@ -153,7 +156,7 @@ def optimise(folder: Path, threads: int, max_memory: int) -> None:
                                         "optimisation": {"engine": "geomeTRIC via pyscf.geomopt.geometric_solver.kernel", **CONVERGENCE,
                                                          "functional": "b3lyp", "basis": "6-31g* (Cartesian d)", "grid": list(GRID),
                                                          "steps": len(steps), "seconds": seconds, "e_opt": float(e_opt),
-                                                         "max_force_au": float(np.abs(g).max()), **convergence_record(g, energies),
+                                                         "max_force_au": float(np.abs(g).max()), **convergence_record(converged, g, energies),
                                                          "start": start["source"]}})
     print(f"[engine check] {start['id']} optimised: {len(steps)} steps, {seconds} s, max |force| {np.abs(g).max():.1e} E_h/bohr", flush=True)
 

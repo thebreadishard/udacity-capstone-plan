@@ -73,6 +73,14 @@ def table(rows: list[dict[str, object]]) -> str:
     return head + limit + body
 
 
+def plan_relative(path: Path) -> str:
+    """`path` from the plan folder on (the folder above its last `probes` part), so the record names no checkout."""
+    parts = path.resolve().parts
+    if "probes" not in parts:
+        raise SystemExit(f"{path}: not under a plan folder's probes/")
+    return "/".join(parts[len(parts) - 1 - parts[::-1].index("probes"):])
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="Read the engine check's stored geomeTRIC convergence numbers.")
     ap.add_argument("molecules", type=Path, help="<engine check folder>/pyscf/molecules")
@@ -83,7 +91,7 @@ def main() -> None:
         raise SystemExit(f"{a.molecules}: no molecule folder with a result.json")
     rows = [read_molecule(f) for f in folders]
     text = table(rows)
-    for name, content in (("convergence_read.json", json.dumps({"criteria": GAU_TIGHT, "source": str(a.molecules), "rows": rows}, indent=1)),
+    for name, content in (("convergence_read.json", json.dumps({"criteria": GAU_TIGHT, "source": plan_relative(a.molecules), "rows": rows}, indent=1)),
                           ("convergence_read.md", text)):
         tmp = a.out / (name + ".tmp")
         tmp.write_text(content, encoding="utf-8")

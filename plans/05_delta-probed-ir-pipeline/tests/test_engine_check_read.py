@@ -140,9 +140,9 @@ def test_optimise_records_a_converged_geometry(tmp_path: Path, monkeypatch: pyte
     rec = json.loads((folder / "result.json").read_text(encoding="utf-8"))["optimisation"]
     assert rec["converged"] is True and rec["steps"] == len(STEP_ENERGIES)
     assert rec["engine"].endswith("geometric_solver.kernel")
-    assert rec["grad_max_au"] == pytest.approx(1.2e-5) and rec["grad_rms_au"] == pytest.approx((169e-12 / 3) ** 0.5)
+    assert rec["final_grad_max_au"] == pytest.approx(1.2e-5) and rec["final_grad_rms_au"] == pytest.approx((169e-12 / 3) ** 0.5)
     assert rec["max_force_au"] == pytest.approx(1.2e-5)
-    assert rec["last_energy_change_au"] == pytest.approx(STEP_ENERGIES[-1] - STEP_ENERGIES[-2])
+    assert rec["final_energy_change_au"] == pytest.approx(STEP_ENERGIES[-1] - STEP_ENERGIES[-2])
     assert (folder / "geometry.json").is_file()
 
 
@@ -155,4 +155,8 @@ def test_optimise_refuses_an_unconverged_geometry(tmp_path: Path, monkeypatch: p
 
 
 def test_convergence_record_after_a_single_gradient_call() -> None:
-    assert EC.convergence_record(FINAL_GRADIENT, [-76.4])["last_energy_change_au"] is None
+    assert EC.convergence_record(True, FINAL_GRADIENT, [-76.4])["final_energy_change_au"] is None
+
+
+def test_convergence_record_carries_the_flag_it_was_given() -> None:
+    assert EC.convergence_record(False, FINAL_GRADIENT, [-76.4])["converged"] is False

@@ -6,7 +6,7 @@
   "drms": 4e-05,
   "dmax": 6e-05
  },
- "source": "C:\\Users\\thebr\\Documents\\CapstonePlan\\plans\\05_delta-probed-ir-pipeline\\probes\\results_m1\\engine_check_2026-11-01\\pyscf\\molecules",
+ "source": "probes/results_m1/engine_check_2026-11-01/pyscf/molecules",
  "rows": [
   {
    "id": "A_08dde334d8",
