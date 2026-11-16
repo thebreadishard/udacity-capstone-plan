@@ -79,16 +79,23 @@ Never `git add -A`: the run directories are written live and `results_vpt2/benze
 75 MB of psi4 scratch. Name the paths. Compile-check first.
 
 Since 14 November 2026 (the user, after an independent review of that day's reads found six real things, two of them records
-already wrong on disk): **every change is reviewed by an independent reviewer before it joins the trunk.** The review is of
-the whole change, once, at the point where it would become part of what we have — not of every commit on the way there, so
-work on a branch is free and comes home reviewed. Give the diff to a **fresh** agent (not a fork: a fork inherits this
-context and is not independent) with the files, what is already ruled out and where the holes are suspected — not the
-verdict. Answer every finding, then record it with `python tools/review_gate.py record --reviewer <agent id> --findings <n>
---verdict <one line>` (add `--incoming <branch>` for a merge) and land it. `guard.py`'s `unreviewed_landing` rule refuses a
-commit on the trunk, and a merge or a pull into it, when what would land has no record; a commit on another branch passes,
-and a rebase or a cherry-pick onto the trunk is refused because what it brings is not a diff the command line names. Changed
-content is a changed digest and needs its own review. The hook cannot do the reviewing and cannot verify independence —
-the record asserts it.
+already wrong on disk; narrowed on 16 November to code and tests): **code and tests are reviewed by an independent reviewer
+before they join the trunk.** The review is of the whole change, once, at the point where it would become part of what we
+have — not of every commit on the way there, so work on a branch is free and comes home reviewed. Give the change to a
+**fresh** agent (not a fork: a fork inherits this context and is not independent) with the files, what is already ruled out
+and where the holes are suspected — not the verdict. `python tools/review_gate.py status [--staged | --merge <branch> |
+--tip <ref>]` says what would land, which reviewed paths change and the key; answer every finding, then `python
+tools/review_gate.py record <the same selector> --key <key> --reviewer <agent id> --findings <n> --verdict <one line>` and
+land it; `review_gate.py check <selector>` beforehand says whether it would pass (a refused fast-forward, pull or reset has
+already changed the working tree; `git reset --hard HEAD` puts it back). The check is git's own `reference-transaction` hook (and `pre-push` for a remote's trunk), so every move of
+`master` passes it whatever command made it; it is installed once per clone with `python tools/install_git_hooks.py install`
+from the main checkout, and `install_git_hooks.py check` says whether it is in place. `tools/review_gate.json` is the one
+place for the trunk, the reviewed set and the `log_only` switch (while true: the gate logs what it would refuse and refuses
+nothing). A landing that changes no reviewed path — the task board, the ledger, notes, run outputs — needs no record; moving
+the trunk back to its own ancestor is allowed and logged. A move git reports to no hook (a branch copied or renamed over
+the trunk, hooks switched off) is judged at the next move the hook sees: `status --unseen`, `record --unseen`. The records are `.git/review-gate/records.jsonl`, shared by the
+worktrees (`review_gate.py repair` sets a malformed line aside, `export` copies them into the tracked `tools/reviews.jsonl`).
+The hook cannot do the reviewing and cannot verify independence — the record asserts it.
 
 ## Evidence
 Every number in a document traces to a run log or a source. `probes/check_reading_copy_numbers.py`

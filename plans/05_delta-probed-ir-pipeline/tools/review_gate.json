@@ -1,0 +1,47 @@
+{
+  "trunk": "refs/heads/master",
+  "log_only": true,
+  "reviewed": {
+    "code": [
+      "**/*.py",
+      "**/*.sh",
+      "**/*.ps1",
+      "**/*.cmd",
+      "**/*.c",
+      "**/*.lean",
+      "website/**/*.ts",
+      "website/**/*.js",
+      "website/**/*.mjs",
+      "website/**/*.astro"
+    ],
+    "notebooks": [
+      "**/*.ipynb"
+    ],
+    "patches": [
+      "**/*.patch"
+    ],
+    "run specs": [
+      "plans/05_delta-probed-ir-pipeline/probes/runspecs/*.json"
+    ],
+    "tooling config": [
+      "**/pyproject.toml",
+      "**/requirements*.txt",
+      ".pre-commit-config.yaml",
+      ".github/workflows/*",
+      ".claude/settings.json",
+      "plans/05_delta-probed-ir-pipeline/tools/hooks/guard_config.json",
+      "plans/05_delta-probed-ir-pipeline/tools/review_gate.json"
+    ],
+    "agent rules": [
+      "CLAUDE.md"
+    ]
+  },
+  "never_reviewed": [
+    "**/out/**",
+    "**/GoalGathering/**",
+    "plans/05_delta-probed-ir-pipeline/probes/results_m1/**",
+    "**/TASKS.md",
+    "**/TASKS_closed.md",
+    "**/reviews.jsonl"
+  ]
+}
