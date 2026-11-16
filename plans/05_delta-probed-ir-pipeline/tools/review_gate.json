@@ -1,6 +1,6 @@
 {
   "trunk": "refs/heads/master",
-  "log_only": true,
+  "log_only": false,
   "reviewed": {
     "code": [
       "**/*.py",

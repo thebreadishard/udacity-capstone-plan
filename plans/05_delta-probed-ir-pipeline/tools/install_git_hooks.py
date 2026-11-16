@@ -158,7 +158,8 @@ def install(gate: review_gate.Gate) -> int:
             os.replace(tmp, path)
         print(f"{path}: {'already current' if state == 'current' else 'installed'}")
     if gate.baseline("install"):
-        print(f"the gate starts from {gate.config.trunk} as it is; what moves it past the hooks from here on is judged later")
+        print(f"baseline: the gate takes {gate.config.trunk} as it stands; what moves it past the hooks from here on is "
+              "judged later")
     return 0
 
 

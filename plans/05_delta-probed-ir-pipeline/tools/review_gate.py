@@ -63,7 +63,8 @@ an edit under `.git` runs no hook at all. So the next hook compares: a trunk tha
 was moved unseen, and that move is judged first, from the commit the gate last knew - like any landing, with `record --unseen`
 as its record, and under the configuration of that last known commit, not the one the unseen move brought. Until it has
 one, no further move of the trunk and no push of it passes, except a move back to a commit the gate let the trunk onto.
-`install` writes the first line, so the gate starts from the trunk as it is.
+`install` writes a baseline line - the first one, and again when the journal left the trunk on a commit it does not hold
+(what landed under log_only) - so the gate starts from the trunk as it stands.
 
 **Decisions a reader should know.**
 * The trunk may always move to a commit the gate itself let it onto (a journal line marked `held`): an undo lands nothing
@@ -666,12 +667,15 @@ class Gate:
         return [unseen, *judge(now if unseen.allowed else last_known(self.journal))]
 
     def baseline(self, hook: str) -> bool:
-        """Start the journal from the trunk as it is, unless it has a line for this trunk already; whether it was written."""
-        if self.journal:
-            return False
+        """Take the trunk where it stands as a commit it may return to; whether a line was written. That is so for an empty
+        journal, and for a trunk the journal left on a commit it does not hold - one that landed only because of log_only,
+        the commit that switched log_only off among them: without it a reviewed commit on top could not be undone
+        (16 Nov 2026, the final review). A trunk that was moved unseen is not baselined: that move is judged."""
         now = self.commit_of(self.config.trunk)
-        self.log(hook, Verdict(True, f"the gate starts from {self.config.trunk} at {_short(now)}", move=(now, now)),
-                 lands=True, held=True)
+        if self.journal and (self.journal[-1][1] != now or self.journal[-1][2]):
+            return False
+        self.log(hook, Verdict(True, f"baseline: the gate takes {self.config.trunk} as it stands, at {_short(now)}",
+                               move=(now, now)), lands=True, held=True)
         return True
 
     # ------------------------------------------------------------ the hooks

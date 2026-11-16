@@ -232,7 +232,16 @@ def push_past_the_hook(c: Call) -> str | None:
     return None
 
 
-_READS_OR_UNSETS = {"--get", "get", "--unset", "unset"}     # asking for the value, or putting the hooks back
+_READS_OR_UNSETS = {"--get", "get", "--get-all", "--get-regexp", "--unset", "unset", "--unset-all"}
+
+
+def _persists_hooks_path(args: list[str]) -> bool:
+    """Does a `git config` call give core.hooksPath a value? Asking for it, and unsetting it (hooks back to the default),
+    are left alone: only a value after the key switches hooks off."""
+    if args[:1] != ["config"] or _READS_OR_UNSETS & set(args):
+        return False
+    keys = [k for k, a in enumerate(args) if a.lower() == "core.hookspath"]
+    return bool(keys) and any(not a.startswith("-") for a in args[keys[0] + 1:])
 
 
 def _sets_hooks_path(word: str) -> bool:
@@ -247,8 +256,7 @@ def hooks_switched_off(c: Call) -> str | None:
         if not words or _name(words[0]) != "git":
             continue
         options = words[1:len(words) - len(args)]
-        persists = args[:1] == ["config"] and "core.hookspath" in map(str.lower, args) and not _READS_OR_UNSETS & set(args)
-        if persists or any(_sets_hooks_path(o) for o in options):
+        if _persists_hooks_path(args) or any(_sets_hooks_path(o) for o in options):
             return ("core.hooksPath set for a git call: it would run without the repository's hooks, the review gate's and "
                     "pre-commit's among them (tools/review_gate.py, 'What no hook sees'). Run the command as it is.")
     return None

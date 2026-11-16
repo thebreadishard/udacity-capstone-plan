@@ -95,11 +95,18 @@ land it. `review_gate.py check <selector>` beforehand says whether it would pass
   call with hooks switched off, an edit under `.git`. The gate keeps a journal of where it left the trunk; a trunk found
   elsewhere is judged first (`status --unseen`, `record --unseen`), under the configuration from before that move, and
   until then only a move back to a commit the gate itself let the trunk onto passes.
-- **Accepted limits**: `git push --no-verify` skips `pre-push`, and `-c core.hooksPath=…` skips every hook (guard.py refuses
-  both in a session's own calls, not behind a git alias; the remote enforces nothing); `tools/review_gate.py` runs from the
-  main checkout's working tree, so an uncommitted edit of it changes the gate; a
-  clone without the shims is not guarded; code-like files under `**/out/**` and `probes/results_m1/**` land unreviewed — a
-  script that a run or a tool executes never lives there. Run specs and chain files are launch records and are not reviewed.
+- **Accepted limits**: `git push --no-verify` skips `pre-push`, and `-c core.hooksPath=…` skips every hook. guard.py refuses
+  both in a session's own calls, but does not see a git alias that hides either, and it refuses giving `core.hooksPath` a
+  value in any repository, others included; the remote enforces nothing. `tools/review_gate.py` runs from the main
+  checkout's working tree, so an uncommitted edit of it changes the gate. A clone without the shims is not guarded, and
+  removing `.git/review-gate/decisions.log` ends the detection of unseen moves. Code-like files under `**/out/**` and
+  `probes/results_m1/**` land unreviewed — a script that a run or a tool executes never lives there. Run specs and chain
+  files are launch records and are not reviewed.
+- **In practice**: first use is land the gate, then `python tools/install_git_hooks.py install`, then `check`. git run
+  from WSL cannot start the gate (the shim names a Windows python), so a move of the trunk from WSL is refused — move the
+  trunk from Git Bash. `am` or a cherry-pick of several commits directly on the trunk moves it once per commit and needs a
+  record for each (a rebase moves it once, at its end) — do such work on a branch and merge. Run `install` again after a
+  `log_only` period: it takes the trunk as it stands as the baseline.
 - `tools/review_gate.json` is the one place for the trunk, the reviewed set and the `log_only` switch (while true: the gate
   logs what it would refuse and refuses nothing). The hook reads it from the trunk commit, not from the working tree, so
   changing it is itself a landing. A landing that changes no reviewed path — the task board, the ledger, notes, run outputs —

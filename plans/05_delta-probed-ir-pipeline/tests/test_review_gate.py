@@ -598,6 +598,37 @@ def test_a_move_back_to_an_ancestor_the_journal_does_not_list_is_a_landing(tmp_p
     assert done.returncode != 0 and UNREVIEWED in done.stderr
 
 
+def test_install_baselines_what_log_only_let_land_so_that_a_later_commit_can_be_undone(tmp_path: Path) -> None:
+    """The commit that switches log_only off lands under log_only without a record, so the journal does not hold it, and a
+    reviewed commit on top of it could not be undone (16 Nov 2026, the final review). `install` takes the trunk as it stands.
+    What is older than that baseline and not in the journal stays a landing."""
+    sb = Sandbox(tmp_path, log_only=True, install=False)
+    before_the_gate = sb.rev()
+    sb.commit({"a.py": "two\n"}, "before the gate was installed")
+    sb.installer("install", check=True)
+    sb.configure(log_only=False)
+    sb.git("commit", "-q", "-m", "the gate refuses from here on", "tools/review_gate.json")
+    flip = sb.rev()
+    assert sb.decisions()[-1]["held"] is False
+    assert "baseline: the gate takes" in sb.installer("install", check=True).stdout
+    assert (sb.decisions()[-1]["hook"], sb.decisions()[-1]["trunk_after"], sb.decisions()[-1]["held"]) == ("install", flip, True)
+    sb.stage({"a.py": "three\n"})
+    sb.record("--staged")
+    sb.git("commit", "-q", "-m", "reviewed code")
+    sb.git("reset", "-q", "--soft", "HEAD~1")
+    assert sb.rev() == flip and "the journal lists" in sb.decisions()[-1]["reason"]
+    done = sb.try_git("reset", "-q", "--hard", before_the_gate)
+    assert done.returncode != 0 and UNREVIEWED in done.stderr and sb.rev() == flip
+
+
+def test_install_does_not_baseline_a_trunk_that_was_moved_unseen(sb: Sandbox) -> None:
+    sb.git("switch", "-q", "--detach")
+    sb.git("branch", "-C", "side", "master")
+    journal = sb.decisions()
+    assert "baseline: the gate takes" not in sb.installer("install", check=True).stdout and sb.decisions() == journal
+    assert "REFUSED" in sb.tool("status", "--unseen").stdout
+
+
 def test_a_rebase_can_always_be_abandoned(sb: Sandbox) -> None:
     sb.commit({"TASKS.md": "the trunk's own row\n"}, "conflicts with docs")
     before = sb.rev()
@@ -1048,16 +1079,16 @@ def test_what_the_user_excluded_and_what_is_not_code_lands_freely(path: str) -> 
     assert DELIVERED.reviewed_class(path) is None
 
 
-def test_every_class_of_the_delivered_set_has_a_test_and_the_gate_is_delivered_logging() -> None:
+def test_every_class_of_the_delivered_set_has_a_test_and_the_gate_is_delivered_refusing() -> None:
     assert set(DELIVERED.reviewed) == set(REVIEWED_PATHS)
     assert DELIVERED.trunk == MASTER
-    assert DELIVERED.log_only is True, "the user lifts log_only after the independent review, in review_gate.json"
+    assert DELIVERED.log_only is False, "delivered refusing (16 Nov 2026): the branch lands without a commit to flip it"
 
 
 def test_the_shim_finds_the_switch_in_the_delivered_file_as_it_is_written() -> None:
     """The shim reads `log_only` with grep when the gate cannot run; the delivered file must be written so that it can."""
     text = (TOOLS / "review_gate.json").read_text(encoding="utf-8")
-    assert re.search(r'"log_only"\s*:\s*true', text) and '"log_only"[[:space:]]*:[[:space:]]*true' in hooks.shim(
+    assert re.search(r'"log_only"\s*:\s*(true|false)', text) and '"log_only"[[:space:]]*:[[:space:]]*true' in hooks.shim(
         "pre-push", MASTER, "tools/review_gate.json")
 
 

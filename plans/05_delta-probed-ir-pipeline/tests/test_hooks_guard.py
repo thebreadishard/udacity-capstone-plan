@@ -86,6 +86,9 @@ def test_a_push_that_skips_the_review_gates_hook_is_refused(command, hit):
     ("git --config-env=core.hooksPath=NOWHERE push origin side:master", True),
     ("git --config-env core.hooksPath=NOWHERE commit -m x", True), ("GIT.EXE -C repo -c core.hooksPath=x merge side", True),
     ("git config core.hooksPath /dev/null", True), ("git config --local --unset core.hooksPath", False),
+    ("git config set --local core.hooksPath nowhere", True), ("git config --global core.hooksPath /nowhere", True),
+    ("git config core.hooksPath", False), ("git config --get-all core.hooksPath", False),   # reading it switches nothing off
+    ("git config --show-origin core.hooksPath", False), ("git config --unset-all core.hooksPath", False),
     ("git config --get core.hooksPath", False), ("git -c user.name=x commit -m 'never -c core.hooksPath=x'", False),
     ("git commit -m x", False), ("git log --grep core.hooksPath", False),
 ])
