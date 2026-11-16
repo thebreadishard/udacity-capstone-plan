@@ -6,6 +6,7 @@ Re-pinned on 16 Nov 2026 with the amendment of decision 65: the licence is read 
 so 'other' (first order 3.62 / 3.89, product 2.78 / 2.77) is licensed; the first-order values are unchanged and stay pinned."""
 from __future__ import annotations
 
+import json
 import sys
 
 from pin_tools import PLAN
@@ -57,3 +58,17 @@ def test_the_carried_versions_licence():
     assert s["rule"].startswith("decision 65 (29 Oct 2026, amended 16 Nov 2026): a mode family is licensed where the error of what the "
                                 "product delivers — the error of the corrected band positions of the seed-mean correction")
     assert s["rule_source"] == "README.md, decision 65 as amended on 16 Nov 2026"
+
+
+def test_the_carried_record_names_what_it_was_read_on():
+    """The checkpoints by hash, every label file by hash, and the run itself: its start, end, seconds and peak memory."""
+    rec = json.loads((A.M05_OUT / PRODUCT_RECORD).read_text(encoding="utf-8"))
+    assert sorted(rec["model_sha16"]) == sorted(rec["models"]) and all(len(h) == 16 for h in rec["model_sha16"].values())
+    assert rec["labels"] == {"kind": "analytic", "files": ["hessian_b3lyp_analytic.npz", "hessian_wb97x_analytic.npz"]}
+    for h, n in N_MOLECULES.items():
+        hashes = rec["holdouts"][h]["label_sha16"]
+        assert list(hashes) == rec["holdouts"][h]["ids"] and len(hashes) == n
+        assert all(sorted(v) == rec["labels"]["files"] and all(len(x) == 16 for x in v.values()) for v in hashes.values())
+    assert set(rec["run"]) == {"started", "ended", "seconds", "peak_memory_gb", "threads"} and 0 < rec["run"]["peak_memory_gb"] < 3.0
+    assert rec["checks"]["first_order_reproduces_evaluation_records"]["largest_difference_cm"] < 0.005
+    assert rec["checks"]["agrees_with_package"]["largest_difference_cm"] < 0.01
