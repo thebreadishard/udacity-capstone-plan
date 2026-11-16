@@ -261,3 +261,70 @@ def test_a_read_that_misses_the_evaluation_records_or_the_package_stops(tmp_path
     with pytest.raises(SystemExit, match="lists other molecules"):
         PE.check_package(holdouts, package)
     assert "first order, hold-out (a), seed means" in capsys.readouterr().out
+
+
+def eval_record(path: Path, model: str, ids: dict[str, list[str]], shift: float = 0.0) -> Path:
+    """A `rungC_eval_saved.py` record on the frozen hold-out (b) with the given molecules per hold-out."""
+    path.write_text(json.dumps({"model": model, "holdout_b_file": "corpus/holdout_b_frozen_2026-10-08.txt", "substituted_analytic": [],
+                                **{h: {"diag_rms": dict.fromkeys(FAMILIES, 2.0 + shift), "coupling_ratio": 0.2,
+                                       "per_molecule": {k: {} for k in i}} for h, i in ids.items()}}), encoding="utf-8")
+    return path
+
+
+def test_named_checkpoints_are_read_with_their_own_records_before_they_are_carried(tmp_path):
+    (tmp_path / "corpus" / "molecules").mkdir(parents=True)
+    (tmp_path / "out" / "v14").mkdir(parents=True)
+    ids = {"a": [f"A_{k}" for k in range(10)], "a8": [f"A_{k}" for k in range(8)], "b": ["B_1"]}
+    models = [f"out/v14/E7_new_model_n1082_seed{s}.pt" for s in range(3)]
+    records = [f"out/v14/eval_data_seed{s}.json" for s in range(3)]
+    for s, (m, r) in enumerate(zip(models, records, strict=True)):
+        (tmp_path / m).write_bytes(b"x")
+        eval_record(tmp_path / r, m, ids, shift=0.1 * s)
+    argv = ["--m05", str(tmp_path), "--threads", "1", "--models", *models, "--records", *records]
+    with pytest.raises(SystemExit, match="--models needs --out"):                   # never the carried version's record name
+        PE.parse(argv)
+    cfg = PE.parse([*argv, "--out", str(tmp_path / "x_product_error.json")])
+    read = PE.inputs(cfg)
+    assert [m.name for m in read.models] == [Path(m).name for m in models] and read.stem == "E7_new"
+    assert read.version == PE.CANDIDATE and read.clean == read.records and [r.name for r in read.records] == [Path(r).name for r in records]
+    sets, recorded, sources = PE.holdout_sets(read.records, read.clean)
+    assert sets == {"a": ("a8", ids["a8"]), "b": ("b", ids["b"])}                   # the eight, not the ten the records also hold
+    assert len(sets["a"][1]) == 8 and sources == [Path(r).name for r in records]
+    assert recorded["b"] == pytest.approx(dict.fromkeys(FAMILIES, 2.1))             # the records' seed mean, which the read must reproduce
+    with pytest.raises(SystemExit, match="go together"):
+        PE.parse([*argv[:-1], "--out", str(tmp_path / "x.json")])                   # two records for three checkpoints
+    patterns = [f"out/v14/E7_new_model_n*_seed{s}.pt" for s in range(3)]            # the pool size in the name left open, as in a chain
+    by_pattern = PE.parse(["--m05", str(tmp_path), "--out", str(tmp_path / "x.json"), "--models", *patterns, "--records", *records])
+    assert by_pattern.models == cfg.models
+    with pytest.raises(SystemExit, match="matches 3 files, expected 1"):
+        PE.parse(["--m05", str(tmp_path), "--out", str(tmp_path / "x.json"), "--models", "out/v14/E7_new_model_n*.pt", "--records", records[0]])
+    with pytest.raises(SystemExit, match="matches 0 files, expected 1"):
+        PE.parse(["--m05", str(tmp_path), "--out", str(tmp_path / "x.json"), "--models", "out/v14/E7_none_*.pt", "--records", records[0]])
+    with pytest.raises(SystemExit, match="no such file"):
+        PE.parse(["--m05", str(tmp_path), "--out", str(tmp_path / "x.json"), "--models", "out/v14/none.pt", "--records", records[0]])
+    eval_record(tmp_path / records[1], models[2], ids)                              # a record of another checkpoint in the second place
+    with pytest.raises(SystemExit, match=r"eval_data_seed1\.json evaluated E7_new_model_n1082_seed2\.pt, not E7_new_model_n1082_seed1\.pt"):
+        PE.inputs(cfg)
+    eval_record(tmp_path / records[1], models[1], {**ids, "a8": ["A_1"]})           # the seeds' records on different molecules
+    with pytest.raises(SystemExit, match="list different molecules under 'a8'"):
+        PE.holdout_sets(PE.inputs(cfg).records, PE.inputs(cfg).clean)
+    eval_record(tmp_path / records[1], models[1], {"a": ids["a"], "b": ids["b"]})   # an older record: the ten only
+    with pytest.raises(SystemExit, match=r"eval_data_seed1\.json holds no set 'a8'"):
+        PE.inputs(cfg)
+    other = tmp_path / "out" / "v14" / "E7_old_model_n750_seed0.pt"
+    other.write_bytes(b"x")
+    with pytest.raises(SystemExit, match="are of 2 stems"):
+        PE.common_stem((other, *read.models[1:]))
+
+
+def test_the_v14_run_spec_reads_the_candidates_of_chain_v14_data():
+    sys.path.insert(0, str(PLAN / "tools"))
+    import runspec
+    spec = runspec.RunSpec.model_validate_json((PLAN / "probes" / "runspecs" / "product_error_read_v14.json").read_text(encoding="utf-8"))
+    chain = json.loads((PLAN / "probes" / "runs" / "v14_data.json").read_text(encoding="utf-8"))
+    words = spec.command.split()
+    models, records = (words[words.index(flag) + 1:words.index(flag) + 4] for flag in ("--models", "--records"))
+    evals = [s["argv"] for s in chain["steps"] if s["label"].startswith("eval eval_data_seed")]
+    assert records == [f"{a[3]}.json" for a in evals]                               # the chain's own eval records
+    assert models == [a[2] for a in evals]                                          # … of the checkpoints it evaluated, by its patterns
+    assert "--out" in words and "--package" not in words                           # the package's record is version 1.3's
