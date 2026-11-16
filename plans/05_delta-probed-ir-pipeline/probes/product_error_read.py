@@ -21,7 +21,8 @@ quantum chemistry is run: stored analytic Hessians and three checkpoints.
 
 With --models and --records the read is of named checkpoints instead of the registry's carried ones — a version's licence numbers
 before it is carried (design note of 26 Oct 2026, §14): one `rungC_eval_saved.py` record per checkpoint, in the same order, each
-naming its checkpoint; the hold-outs are the records' (a) and (b). Such a read needs --out and its record says `candidate`. A
+naming its checkpoint; hold-out (a) is the records' clean set (`a8`, as for the carried version: the licence is read on the eight)
+and a record without it is refused; hold-out (b) is the records'. Such a read needs --out and its record says `candidate`. A
 checkpoint may be named by a pattern (`…_model_n*_seed0.pt`) that matches exactly one file under --m05, as in a chain's steps.
 
     python probes/product_error_read.py [--m05 <a module-05 folder holding corpus/molecules and the checkpoints under out/>]
@@ -201,7 +202,7 @@ def holdout_sets(records: list[Path], clean: list[Path] | None) -> tuple[dict[st
             raise SystemExit(f"hold-out ({h}): the seeds' records list different molecules under '{key}'")
         arm = load_eval_arm(paths, holdouts=(key,))
         sets[h], recorded[h] = (key, ids[0]), {f: arm.mean(key, f) for f in FAMILIES}
-    return sets, recorded, [p.name for p in records] + [p.name for p in clean or []]
+    return sets, recorded, list(dict.fromkeys(p.name for p in (*records, *(clean or []))))
 
 
 def table(title: str, rows: dict[str, dict[str, float]]) -> list[str]:
@@ -303,7 +304,7 @@ class Inputs:
 
 def inputs(cfg: Config) -> Inputs:
     """The registry's carried checkpoints with the records `m08.accuracy` finds for them, or --models with --records after each
-    record is seen to name the checkpoint of its place."""
+    record is seen to name the checkpoint of its place and to hold the clean hold-out (a), which is then read from those records."""
     if not cfg.models:
         models, stem = carried(cfg.m05)
         names = tuple(m.name for m in models)
@@ -312,7 +313,10 @@ def inputs(cfg: Config) -> Inputs:
         evaluated = Path(str(json.loads(record.read_text(encoding="utf-8")).get("model", ""))).name
         if evaluated != model.name:
             raise SystemExit(f"--records: {record.name} evaluated {evaluated or 'no named model'}, not {model.name}")
-    return Inputs(cfg.models, common_stem(cfg.models), list(cfg.records), None, CANDIDATE)
+        if A.CLEAN_SET not in json.loads(record.read_text(encoding="utf-8")):
+            raise SystemExit(f"--records: {record.name} holds no set '{A.CLEAN_SET}' (hold-out (a) without its two trained twins): the "
+                             f"licence is read on it; evaluate with --eval-ids-file {A.CLEAN_SET}=<the clean list>")
+    return Inputs(cfg.models, common_stem(cfg.models), list(cfg.records), list(cfg.records), CANDIDATE)
 
 
 def write_record(path: Path, record: dict) -> None:

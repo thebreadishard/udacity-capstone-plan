@@ -274,7 +274,7 @@ def eval_record(path: Path, model: str, ids: dict[str, list[str]], shift: float 
 def test_named_checkpoints_are_read_with_their_own_records_before_they_are_carried(tmp_path):
     (tmp_path / "corpus" / "molecules").mkdir(parents=True)
     (tmp_path / "out" / "v14").mkdir(parents=True)
-    ids = {"a": ["A_1", "A_2"], "b": ["B_1"]}
+    ids = {"a": [f"A_{k}" for k in range(10)], "a8": [f"A_{k}" for k in range(8)], "b": ["B_1"]}
     models = [f"out/v14/E7_new_model_n1082_seed{s}.pt" for s in range(3)]
     records = [f"out/v14/eval_data_seed{s}.json" for s in range(3)]
     for s, (m, r) in enumerate(zip(models, records, strict=True)):
@@ -286,9 +286,10 @@ def test_named_checkpoints_are_read_with_their_own_records_before_they_are_carri
     cfg = PE.parse([*argv, "--out", str(tmp_path / "x_product_error.json")])
     read = PE.inputs(cfg)
     assert [m.name for m in read.models] == [Path(m).name for m in models] and read.stem == "E7_new"
-    assert read.version == PE.CANDIDATE and read.clean is None and [r.name for r in read.records] == [Path(r).name for r in records]
+    assert read.version == PE.CANDIDATE and read.clean == read.records and [r.name for r in read.records] == [Path(r).name for r in records]
     sets, recorded, sources = PE.holdout_sets(read.records, read.clean)
-    assert sets == {"a": ("a", ids["a"]), "b": ("b", ids["b"])} and sources == [Path(r).name for r in records]
+    assert sets == {"a": ("a8", ids["a8"]), "b": ("b", ids["b"])}                   # the eight, not the ten the records also hold
+    assert len(sets["a"][1]) == 8 and sources == [Path(r).name for r in records]
     assert recorded["b"] == pytest.approx(dict.fromkeys(FAMILIES, 2.1))             # the records' seed mean, which the read must reproduce
     with pytest.raises(SystemExit, match="go together"):
         PE.parse([*argv[:-1], "--out", str(tmp_path / "x.json")])                   # two records for three checkpoints
@@ -304,9 +305,12 @@ def test_named_checkpoints_are_read_with_their_own_records_before_they_are_carri
     eval_record(tmp_path / records[1], models[2], ids)                              # a record of another checkpoint in the second place
     with pytest.raises(SystemExit, match=r"eval_data_seed1\.json evaluated E7_new_model_n1082_seed2\.pt, not E7_new_model_n1082_seed1\.pt"):
         PE.inputs(cfg)
-    eval_record(tmp_path / records[1], models[1], {**ids, "a": ["A_1"]})            # the seeds' records on different molecules
-    with pytest.raises(SystemExit, match="list different molecules"):
-        PE.holdout_sets(PE.inputs(cfg).records, None)
+    eval_record(tmp_path / records[1], models[1], {**ids, "a8": ["A_1"]})           # the seeds' records on different molecules
+    with pytest.raises(SystemExit, match="list different molecules under 'a8'"):
+        PE.holdout_sets(PE.inputs(cfg).records, PE.inputs(cfg).clean)
+    eval_record(tmp_path / records[1], models[1], {"a": ids["a"], "b": ids["b"]})   # an older record: the ten only
+    with pytest.raises(SystemExit, match=r"eval_data_seed1\.json holds no set 'a8'"):
+        PE.inputs(cfg)
     other = tmp_path / "out" / "v14" / "E7_old_model_n750_seed0.pt"
     other.write_bytes(b"x")
     with pytest.raises(SystemExit, match="are of 2 stems"):
