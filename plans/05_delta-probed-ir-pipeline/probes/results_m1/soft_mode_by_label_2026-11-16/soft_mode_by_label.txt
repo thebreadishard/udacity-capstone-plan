@@ -1,0 +1,74 @@
+molecules 58; window |omega| < 20.0 cm-1; three lowest projected modes per label (cm-1, negative = imaginary)
+largest |lowest before - swap.json lowest_label_cm| = 5.52e-10 cm-1
+b3lyp       54
+wb97x       5
+both        1
+wb97x only  4
+b3lyp only  53
+neither     0
+--- wb97x only
+B_0617e12945     wb97x only  before b3lyp [-76.85, 198.18, 232.77] wb97x [-16.39, 211.67, 244.93] | now b3lyp [-76.21, 198.18, 232.77] wb97x [-13.98, 211.67, 244.93] | swap.json patched b3lyp -76.21 wb97x -13.98
+B_127dd8c4ed     wb97x only  before b3lyp [-56.74, 82.08, 164.23] wb97x [-15.23, 94.34, 172.68] | now b3lyp [-55.97, 82.13, 164.23] wb97x [-17.13, 94.36, 172.68] | swap.json patched b3lyp -55.97 wb97x -17.13
+B_32a4ec61cd     wb97x only  before b3lyp [-41.64, 77.66, 87.09] wb97x [2.04, 86.14, 106.83] | now b3lyp [-41.36, 77.65, 87.1] wb97x [28.57, 86.14, 106.84] | swap.json patched b3lyp -41.36 wb97x 28.57
+P3_2aa4adcc95    wb97x only  before b3lyp [-27.28, 53.5, 81.86] wb97x [13.35, 72.55, 93.19] | now b3lyp [-27.63, 53.47, 81.87] wb97x [15.86, 72.56, 93.2] | swap.json patched b3lyp -27.63 wb97x 15.86
+--- neither
+
+--- all
+A2_04719edc88    b3lyp only  before b3lyp [16.48, 51.49, 96.22] wb97x [61.58, 77.63, 112.42] | now b3lyp [15.87, 51.49, 96.22] wb97x [61.58, 77.92, 112.42] | swap.json patched b3lyp 15.87 wb97x 61.58
+A2_0cfc5b5bdb    b3lyp only  before b3lyp [-5.52, 79.97, 117.98] wb97x [56.93, 94.72, 123.74] | now b3lyp [4.02, 79.97, 117.98] wb97x [57.27, 94.72, 123.74] | swap.json patched b3lyp 4.02 wb97x 57.27
+A2_0e07e41776    b3lyp only  before b3lyp [16.87, 57.01, 128.7] wb97x [59.53, 70.41, 135.81] | now b3lyp [14.29, 57.01, 128.7] wb97x [58.32, 70.55, 135.81] | swap.json patched b3lyp 14.29 wb97x 58.32
+A2_11c681aefb    b3lyp only  before b3lyp [16.74, 69.04, 107.71] wb97x [57.87, 83.14, 121.15] | now b3lyp [16.08, 69.04, 107.71] wb97x [57.41, 83.2, 121.15] | swap.json patched b3lyp 16.08 wb97x 57.41
+A2_187a20beab    b3lyp only  before b3lyp [-12.84, 59.1, 102.24] wb97x [54.78, 76.73, 116.44] | now b3lyp [-8.11, 59.1, 102.24] wb97x [55.7, 76.73, 116.43] | swap.json patched b3lyp -8.11 wb97x 55.70
+A2_29caedd47d    b3lyp only  before b3lyp [14.84, 66.78, 94.31] wb97x [72.59, 84.27, 107.48] | now b3lyp [14.12, 66.78, 94.31] wb97x [71.77, 84.12, 107.46] | swap.json patched b3lyp 14.12 wb97x 71.77
+A2_2cf97d4a75    b3lyp only  before b3lyp [17.03, 70.22, 116.11] wb97x [57.41, 86.85, 125.46] | now b3lyp [18.1, 70.22, 116.11] wb97x [57.85, 86.91, 125.45] | swap.json patched b3lyp 18.10 wb97x 57.85
+A2_3216c45c98    b3lyp only  before b3lyp [13.26, 50.38, 102.82] wb97x [56.69, 64.83, 119.81] | now b3lyp [15.79, 50.38, 102.82] wb97x [57.31, 64.83, 119.79] | swap.json patched b3lyp 15.79 wb97x 57.31
+A_7a57a52879     b3lyp only  before b3lyp [2.95, 59.38, 69.29] wb97x [62.61, 73.51, 74.01] | now b3lyp [3.78, 59.38, 69.29] wb97x [55.89, 73.51, 74.01] | swap.json patched b3lyp 3.78 wb97x 55.89
+B_00098af305     b3lyp only  before b3lyp [19.52, 32.28, 85.75] wb97x [51.03, 83.21, 89.93] | now b3lyp [20.27, 32.28, 85.75] wb97x [55.46, 83.17, 90.3] | swap.json patched b3lyp 20.27 wb97x 55.46
+B_00bee51dac     b3lyp only  before b3lyp [10.36, 15.0, 44.17] wb97x [53.84, 55.22, 60.92] | now b3lyp [10.57, 15.2, 44.19] wb97x [54.68, 54.88, 61.42] | swap.json patched b3lyp 10.57 wb97x 54.68
+B_04f049ae58     b3lyp only  before b3lyp [-10.96, 84.73, 145.1] wb97x [72.69, 104.71, 159.04] | now b3lyp [-7.17, 84.73, 145.1] wb97x [73.11, 104.7, 159.04] | swap.json patched b3lyp -7.17 wb97x 73.11
+B_0614bb3744     b3lyp only  before b3lyp [5.73, 50.85, 85.54] wb97x [56.49, 75.52, 100.4] | now b3lyp [12.65, 50.86, 85.54] wb97x [57.82, 75.54, 100.39] | swap.json patched b3lyp 12.65 wb97x 57.82
+B_0617e12945     wb97x only  before b3lyp [-76.85, 198.18, 232.77] wb97x [-16.39, 211.67, 244.93] | now b3lyp [-76.21, 198.18, 232.77] wb97x [-13.98, 211.67, 244.93] | swap.json patched b3lyp -76.21 wb97x -13.98
+B_071969578d     b3lyp only  before b3lyp [13.52, 114.79, 115.64] wb97x [55.1, 128.84, 132.07] | now b3lyp [14.53, 114.79, 115.64] wb97x [55.25, 128.84, 132.07] | swap.json patched b3lyp 14.53 wb97x 55.25
+B_0998455905     b3lyp only  before b3lyp [9.89, 82.34, 151.42] wb97x [56.2, 98.77, 158.92] | now b3lyp [14.4, 82.34, 151.42] wb97x [56.73, 98.81, 158.92] | swap.json patched b3lyp 14.40 wb97x 56.73
+B_0a82cfae8a     b3lyp only  before b3lyp [17.48, 81.91, 158.2] wb97x [57.89, 100.28, 166.25] | now b3lyp [16.39, 81.91, 158.2] wb97x [57.72, 100.27, 166.25] | swap.json patched b3lyp 16.39 wb97x 57.72
+B_0b97bd910d     b3lyp only  before b3lyp [18.43, 77.17, 87.54] wb97x [78.67, 92.85, 104.31] | now b3lyp [14.77, 77.17, 87.55] wb97x [78.03, 92.74, 104.33] | swap.json patched b3lyp 14.77 wb97x 78.03
+B_0c36df327e     b3lyp only  before b3lyp [16.44, 90.17, 138.71] wb97x [55.7, 119.29, 146.92] | now b3lyp [17.73, 90.17, 138.71] wb97x [55.57, 119.3, 146.93] | swap.json patched b3lyp 17.73 wb97x 55.57
+B_0cf808c510     b3lyp only  before b3lyp [13.43, 88.3, 140.46] wb97x [70.99, 103.83, 148.12] | now b3lyp [14.3, 88.3, 140.46] wb97x [72.23, 103.64, 148.13] | swap.json patched b3lyp 14.30 wb97x 72.23
+B_0d9f38f0e5     b3lyp only  before b3lyp [14.35, 82.84, 149.41] wb97x [73.28, 98.36, 162.55] | now b3lyp [13.84, 82.84, 149.41] wb97x [73.88, 98.22, 162.53] | swap.json patched b3lyp 13.84 wb97x 73.88
+B_0e479d2c02     b3lyp only  before b3lyp [13.0, 16.68, 112.22] wb97x [54.06, 59.03, 125.75] | now b3lyp [10.98, 17.54, 112.22] wb97x [54.59, 58.0, 125.75] | swap.json patched b3lyp 10.98 wb97x 54.59
+B_0f06474656     b3lyp only  before b3lyp [9.51, 125.54, 171.37] wb97x [55.42, 142.39, 179.45] | now b3lyp [15.82, 125.54, 171.37] wb97x [58.02, 142.37, 179.45] | swap.json patched b3lyp 15.82 wb97x 58.02
+B_0f2bb0d3e4     b3lyp only  before b3lyp [-2.94, 48.72, 63.4] wb97x [55.1, 72.69, 119.48] | now b3lyp [10.14, 48.72, 63.4] wb97x [56.7, 72.68, 119.41] | swap.json patched b3lyp 10.14 wb97x 56.70
+B_0f33d4114d     b3lyp only  before b3lyp [11.38, 57.74, 75.17] wb97x [70.88, 82.43, 135.94] | now b3lyp [17.81, 57.74, 75.18] wb97x [72.81, 82.41, 135.92] | swap.json patched b3lyp 17.81 wb97x 72.81
+B_127dd8c4ed     wb97x only  before b3lyp [-56.74, 82.08, 164.23] wb97x [-15.23, 94.34, 172.68] | now b3lyp [-55.97, 82.13, 164.23] wb97x [-17.13, 94.36, 172.68] | swap.json patched b3lyp -55.97 wb97x -17.13
+B_128cc76fc9     b3lyp only  before b3lyp [16.29, 80.95, 153.67] wb97x [56.1, 95.81, 161.31] | now b3lyp [14.47, 80.95, 153.67] wb97x [56.61, 95.78, 161.31] | swap.json patched b3lyp 14.47 wb97x 56.61
+B_128d17d28c     b3lyp only  before b3lyp [19.43, 57.55, 116.41] wb97x [57.65, 92.31, 130.37] | now b3lyp [18.64, 57.55, 116.41] wb97x [57.1, 92.26, 130.37] | swap.json patched b3lyp 18.64 wb97x 57.10
+B_12bea1a68e     b3lyp only  before b3lyp [14.26, 58.31, 122.15] wb97x [55.66, 94.37, 133.44] | now b3lyp [17.68, 58.31, 122.15] wb97x [56.76, 94.44, 133.45] | swap.json patched b3lyp 17.68 wb97x 56.76
+B_134d596518     b3lyp only  before b3lyp [18.38, 49.61, 82.77] wb97x [57.7, 93.37, 112.08] | now b3lyp [15.29, 49.61, 82.77] wb97x [56.73, 93.33, 112.08] | swap.json patched b3lyp 15.29 wb97x 56.73
+B_13a9d80434     b3lyp only  before b3lyp [8.99, 53.28, 64.58] wb97x [42.52, 70.66, 78.76] | now b3lyp [14.66, 53.29, 64.59] wb97x [46.12, 70.57, 78.76] | swap.json patched b3lyp 14.66 wb97x 46.12
+B_14190f0a88     b3lyp only  before b3lyp [13.03, 50.04, 104.78] wb97x [57.87, 66.8, 125.4] | now b3lyp [11.2, 50.04, 104.78] wb97x [56.08, 66.83, 125.4] | swap.json patched b3lyp 11.20 wb97x 56.08
+B_14b7317536     b3lyp only  before b3lyp [-6.75, 47.08, 66.79] wb97x [55.8, 82.1, 116.05] | now b3lyp [8.8, 47.08, 66.79] wb97x [56.99, 82.1, 116.04] | swap.json patched b3lyp 8.80 wb97x 56.99
+B_1519881f69     b3lyp only  before b3lyp [17.6, 92.06, 185.26] wb97x [73.39, 108.74, 202.25] | now b3lyp [19.07, 92.06, 185.26] wb97x [74.27, 108.71, 202.25] | swap.json patched b3lyp 19.07 wb97x 74.27
+B_18324e4e8f     b3lyp only  before b3lyp [6.84, 120.62, 124.51] wb97x [54.84, 136.11, 140.16] | now b3lyp [14.08, 120.62, 124.51] wb97x [56.45, 136.14, 140.17] | swap.json patched b3lyp 14.08 wb97x 56.45
+B_1885110895     b3lyp only  before b3lyp [17.49, 66.92, 70.39] wb97x [60.18, 81.09, 97.53] | now b3lyp [18.17, 66.92, 70.4] wb97x [61.04, 81.05, 97.33] | swap.json patched b3lyp 18.17 wb97x 61.04
+B_1a0c9dbf4c     b3lyp only  before b3lyp [11.51, 22.1, 110.2] wb97x [58.09, 58.47, 121.77] | now b3lyp [14.54, 22.11, 110.2] wb97x [58.42, 59.19, 121.77] | swap.json patched b3lyp 14.54 wb97x 58.42
+B_1e0fa2d7f0     b3lyp only  before b3lyp [-11.67, 211.0, 248.77] wb97x [47.21, 219.53, 250.91] | now b3lyp [-11.95, 211.0, 248.77] wb97x [48.62, 219.53, 250.84] | swap.json patched b3lyp -11.95 wb97x 48.62
+B_1f4e104c2d     b3lyp only  before b3lyp [13.57, 100.74, 105.22] wb97x [88.43, 123.1, 140.57] | now b3lyp [14.49, 100.75, 105.22] wb97x [88.83, 123.1, 140.49] | swap.json patched b3lyp 14.49 wb97x 88.83
+B_21e8cdd90d     b3lyp only  before b3lyp [12.53, 80.89, 140.06] wb97x [56.83, 96.21, 148.46] | now b3lyp [12.54, 80.89, 140.06] wb97x [56.56, 96.21, 148.45] | swap.json patched b3lyp 12.54 wb97x 56.56
+B_2cbb3d95ed     b3lyp only  before b3lyp [10.7, 51.14, 79.26] wb97x [57.09, 92.97, 121.2] | now b3lyp [8.24, 51.14, 79.26] wb97x [56.74, 92.96, 121.2] | swap.json patched b3lyp 8.24 wb97x 56.74
+B_2cfe9ba08f     b3lyp only  before b3lyp [8.72, 80.25, 85.02] wb97x [56.65, 94.21, 102.97] | now b3lyp [7.38, 80.25, 85.02] wb97x [56.86, 94.22, 102.97] | swap.json patched b3lyp 7.38 wb97x 56.86
+B_2fd95052b3     b3lyp only  before b3lyp [12.92, 49.9, 65.5] wb97x [57.65, 68.48, 84.74] | now b3lyp [12.32, 49.9, 65.5] wb97x [57.63, 68.49, 84.75] | swap.json patched b3lyp 12.32 wb97x 57.63
+B_32a4ec61cd     wb97x only  before b3lyp [-41.64, 77.66, 87.09] wb97x [2.04, 86.14, 106.83] | now b3lyp [-41.36, 77.65, 87.1] wb97x [28.57, 86.14, 106.84] | swap.json patched b3lyp -41.36 wb97x 28.57
+B_333dfff155     b3lyp only  before b3lyp [6.78, 68.0, 170.88] wb97x [68.39, 84.75, 185.89] | now b3lyp [10.48, 68.01, 170.88] wb97x [68.61, 85.43, 185.9] | swap.json patched b3lyp 10.48 wb97x 68.61
+B_384acde0d7     b3lyp only  before b3lyp [17.37, 60.62, 74.14] wb97x [78.34, 91.54, 117.28] | now b3lyp [24.85, 60.63, 74.14] wb97x [80.0, 91.52, 117.27] | swap.json patched b3lyp 24.85 wb97x 80.00
+B_47bf043de9     b3lyp only  before b3lyp [15.53, 83.67, 103.17] wb97x [50.35, 98.3, 112.43] | now b3lyp [15.41, 83.67, 103.17] wb97x [54.35, 98.56, 112.53] | swap.json patched b3lyp 15.41 wb97x 54.35
+B_53ecda5a90     b3lyp only  before b3lyp [15.36, 18.92, 75.49] wb97x [55.24, 60.85, 93.35] | now b3lyp [13.84, 15.12, 75.49] wb97x [54.53, 59.6, 93.3] | swap.json patched b3lyp 13.84 wb97x 54.53
+B_5fdd3e3bba     b3lyp only  before b3lyp [10.9, 56.8, 101.36] wb97x [56.66, 73.24, 120.24] | now b3lyp [12.6, 56.8, 101.36] wb97x [57.05, 73.24, 120.24] | swap.json patched b3lyp 12.60 wb97x 57.05
+B_60bb32ab8d     b3lyp only  before b3lyp [6.09, 76.53, 94.93] wb97x [54.98, 91.83, 113.92] | now b3lyp [10.6, 76.53, 94.93] wb97x [55.69, 91.87, 113.9] | swap.json patched b3lyp 10.60 wb97x 55.69
+B_62b726b2a6     b3lyp only  before b3lyp [9.1, 70.95, 86.22] wb97x [56.58, 86.59, 111.24] | now b3lyp [13.53, 70.96, 86.22] wb97x [57.36, 86.6, 111.23] | swap.json patched b3lyp 13.53 wb97x 57.36
+B_63f41681c1     b3lyp only  before b3lyp [19.25, 42.72, 90.74] wb97x [56.99, 83.82, 108.03] | now b3lyp [21.61, 42.76, 90.75] wb97x [57.55, 83.9, 108.06] | swap.json patched b3lyp 21.61 wb97x 57.55
+B_84485091e3     b3lyp only  before b3lyp [4.68, 83.18, 99.5] wb97x [51.41, 85.99, 122.43] | now b3lyp [-3.53, 83.18, 99.5] wb97x [49.66, 85.63, 122.38] | swap.json patched b3lyp -3.53 wb97x 49.66
+D_ac28161d06     both        before b3lyp [-7.48, 59.91, 75.42] wb97x [17.45, 80.07, 90.7] | now b3lyp [7.05, 59.91, 75.42] wb97x [30.3, 80.07, 90.7] | swap.json patched b3lyp 7.05 wb97x 30.30
+P3_082a4af67e    b3lyp only  before b3lyp [-4.57, 37.59, 73.54] wb97x [48.19, 57.66, 87.5] | now b3lyp [13.17, 37.6, 73.54] wb97x [48.66, 59.08, 87.49] | swap.json patched b3lyp 13.17 wb97x 48.66
+P3_2aa4adcc95    wb97x only  before b3lyp [-27.28, 53.5, 81.86] wb97x [13.35, 72.55, 93.19] | now b3lyp [-27.63, 53.47, 81.87] wb97x [15.86, 72.56, 93.2] | swap.json patched b3lyp -27.63 wb97x 15.86
+P3_4d14684fda    b3lyp only  before b3lyp [19.36, 86.03, 99.77] wb97x [46.39, 101.2, 118.41] | now b3lyp [17.5, 86.03, 99.77] wb97x [42.37, 101.2, 118.4] | swap.json patched b3lyp 17.50 wb97x 42.37
+T_76dfc434db     b3lyp only  before b3lyp [1.19, 5.12, 20.27] wb97x [28.9, 33.49, 40.59] | now b3lyp [7.19, 7.36, 20.27] wb97x [31.71, 31.82, 40.59] | swap.json patched b3lyp 7.19 wb97x 31.71
