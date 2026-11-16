@@ -1,0 +1,63 @@
+aromir from /home/thebreadishard/aromir-src, release v1.3
+benzene (A_8448043181, 12 atoms): 30 bands, 25 licensed; not licensed: {"the family's error is above the licence line": 5}
+      3241.6 CH-stretch  licensed True 
+      3241.6 CH-stretch  licensed True 
+      3251.8 CH-stretch  licensed True 
+    not in the error: another atom order of the same molecule moved a position by up to 10.73 cm⁻¹, the largest seen on 3 molecule(s); that is more than the licence line of
+    not in the error: a rigid rotation of the molecule moved a position by up to 0.00 cm⁻¹, the largest seen on 4 molecule(s) without a linear group
+    not in the error: the molecule's mirror image moved a position by up to 2.60 cm⁻¹, the largest seen on 4 molecule(s) without a linear group
+    not in the error: another listing of the same atoms in an xyz file moved a position by up to 3.07 cm⁻¹, the largest seen on 4 molecule(s) without a linear group; that i
+    not in the error: the heights are B3LYP's: the dipole derivatives are not corrected
+    not in the error: one conformer was computed, the one the optimisation reached from aromir's start geometry; another conformer has another spectrum
+biphenyl (A_fdc27f1bd1, 22 atoms): 60 bands, 38 licensed; not licensed: {"the family's error is above the licence line": 22}
+      3247.9 CH-stretch  licensed True 
+      3252.4 CH-stretch  licensed True 
+      3254.1 CH-stretch  licensed True 
+    not in the error: another atom order of the same molecule moved a position by up to 10.73 cm⁻¹, the largest seen on 3 molecule(s); that is more than the licence line of
+    not in the error: a rigid rotation of the molecule moved a position by up to 0.00 cm⁻¹, the largest seen on 4 molecule(s) without a linear group
+    not in the error: the molecule's mirror image moved a position by up to 2.60 cm⁻¹, the largest seen on 4 molecule(s) without a linear group
+    not in the error: another listing of the same atoms in an xyz file moved a position by up to 3.07 cm⁻¹, the largest seen on 4 molecule(s) without a linear group; that i
+    not in the error: the heights are B3LYP's: the dipole derivatives are not corrected
+    not in the error: one conformer was computed, the one the optimisation reached from aromir's start geometry; another conformer has another spectrum
+    not in the error: the molecule is not planar, so no band counts as CH-oop: its C–H wags are printed as other or, between 950 and 1050 cm⁻¹, as ring-ip
+benzonitrile (A_3100da3761, 13 atoms): 33 bands, 23 licensed; not licensed: {"the family's error is above the licence line": 10}
+      3254.7 CH-stretch  licensed True 
+      3264.6 CH-stretch  licensed True 
+      3267.0 CH-stretch  licensed True 
+    not in the error: another atom order of the same molecule moved a position by up to 10.73 cm⁻¹, the largest seen on 3 molecule(s); that is more than the licence line of
+    not in the error: a rigid rotation of the molecule moved a position by up to 5.34 cm⁻¹, the largest seen on 3 molecule(s) with a linear group; that is more than the lic
+    not in the error: the molecule's mirror image moved a position by up to 5.22 cm⁻¹, the largest seen on 3 molecule(s) with a linear group; that is more than the licence 
+    not in the error: another listing of the same atoms in an xyz file moved a position by up to 5.27 cm⁻¹, the largest seen on 3 molecule(s) with a linear group; that is m
+    not in the error: the heights are B3LYP's: the dipole derivatives are not corrected
+    not in the error: one conformer was computed, the one the optimisation reached from aromir's start geometry; another conformer has another spectrum
+2-naphthylamine (A_519351d19c, 20 atoms): 54 bands, 29 licensed; not licensed: {"the family's error is above the licence line": 23, '100% of its hydrogen motion is on N–H, O–H or S–H, which the rule counts as CH-stretch': 2}
+      3248.9 CH-stretch  licensed True 
+      3594.5 CH-stretch  licensed False 100% of its hydrogen motion is on N–H, O–H or S–H, which the rule counts as CH-stretch
+      3695.3 CH-stretch  licensed False 100% of its hydrogen motion is on N–H, O–H or S–H, which the rule counts as CH-stretch
+    not in the error: another atom order of the same molecule moved a position by up to 10.73 cm⁻¹, the largest seen on 3 molecule(s); that is more than the licence line of
+    not in the error: a rigid rotation of the molecule moved a position by up to 0.00 cm⁻¹, the largest seen on 4 molecule(s) without a linear group
+    not in the error: the molecule's mirror image moved a position by up to 2.60 cm⁻¹, the largest seen on 4 molecule(s) without a linear group
+    not in the error: another listing of the same atoms in an xyz file moved a position by up to 3.07 cm⁻¹, the largest seen on 4 molecule(s) without a linear group; that i
+    not in the error: the heights are B3LYP's: the dipole derivatives are not corrected
+    not in the error: one conformer was computed, the one the optimisation reached from aromir's start geometry; another conformer has another spectrum
+    not in the error: the molecule is not planar, so no band counts as CH-oop: its C–H wags are printed as other or, between 950 and 1050 cm⁻¹, as ring-ip
+phenol (B_3db4fe6829, 13 atoms): 33 bands, 24 licensed; not licensed: {"the family's error is above the licence line": 8, '100% of its hydrogen motion is on N–H, O–H or S–H, which the rule counts as CH-stretch': 1}
+      3252.2 CH-stretch  licensed True 
+      3260.4 CH-stretch  licensed True 
+      3789.3 CH-stretch  licensed False 100% of its hydrogen motion is on N–H, O–H or S–H, which the rule counts as CH-stretch
+    not in the error: another atom order of the same molecule moved a position by up to 10.73 cm⁻¹, the largest seen on 3 molecule(s); that is more than the licence line of
+    not in the error: a rigid rotation of the molecule moved a position by up to 0.00 cm⁻¹, the largest seen on 4 molecule(s) without a linear group
+    not in the error: the molecule's mirror image moved a position by up to 2.60 cm⁻¹, the largest seen on 4 molecule(s) without a linear group
+    not in the error: another listing of the same atoms in an xyz file moved a position by up to 3.07 cm⁻¹, the largest seen on 4 molecule(s) without a linear group; that i
+    not in the error: the heights are B3LYP's: the dipole derivatives are not corrected
+    not in the error: one conformer was computed, the one the optimisation reached from aromir's start geometry; another conformer has another spectrum
+c1cc2ccc3cc4ccc5ccc6ccc7cc8ccc1c1c2c3c2c4c5c6c7c2c81 (T_c874e3c6cf, 46 atoms): 132 bands, 0 licensed; not licensed: {"the family's error is above the licence line": 54, 'the molecule is outside the training sizes': 78}
+      3267.3 CH-stretch  licensed False the molecule is outside the training sizes
+      3438.2 CH-stretch  licensed False the molecule is outside the training sizes
+      3438.3 CH-stretch  licensed False the molecule is outside the training sizes
+    not in the error: another atom order of the same molecule moved a position by up to 10.73 cm⁻¹, the largest seen on 3 molecule(s); that is more than the licence line of
+    not in the error: a rigid rotation of the molecule moved a position by up to 0.00 cm⁻¹, the largest seen on 4 molecule(s) without a linear group
+    not in the error: the molecule's mirror image moved a position by up to 2.60 cm⁻¹, the largest seen on 4 molecule(s) without a linear group
+    not in the error: another listing of the same atoms in an xyz file moved a position by up to 3.07 cm⁻¹, the largest seen on 4 molecule(s) without a linear group; that i
+    not in the error: the heights are B3LYP's: the dipole derivatives are not corrected
+    not in the error: one conformer was computed, the one the optimisation reached from aromir's start geometry; another conformer has another spectrum

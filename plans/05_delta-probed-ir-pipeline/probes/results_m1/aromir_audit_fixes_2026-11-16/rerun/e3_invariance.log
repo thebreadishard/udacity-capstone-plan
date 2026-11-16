@@ -1,0 +1,17 @@
+8a0afa7
+c1ccccc1                     n=12 | 12 shuffled xyz -> 8 distinct canonical orders (heavy atoms differ: True), max band difference   0.090 cm-1 | 8 rotations:   0.000 | mirror image:   0.184
+Cc1ccccc1: not in the corpus with an analytic Hessian
+CCc1ccccc1: not in the corpus with an analytic Hessian
+COc1ccccc1: not in the corpus with an analytic Hessian
+N#Cc1ccccc1                  n=13 | 12 shuffled xyz -> 2 distinct canonical orders (heavy atoms differ: True), max band difference   1.386 cm-1 | 8 rotations:   4.301 | mirror image:   0.093
+c1ccc(-c2ccccc2)cc1          n=22 | 12 shuffled xyz -> 7 distinct canonical orders (heavy atoms differ: True), max band difference   3.072 cm-1 | 8 rotations:   0.000 | mirror image:   2.600
+Cc1ccc2ccccc2c1              n=21 | 12 shuffled xyz -> 5 distinct canonical orders (heavy atoms differ: False), max band difference   0.006 cm-1 | 8 rotations:   0.000 | mirror image:   0.228
+C#Cc1ccccc1                  n=14 | 12 shuffled xyz -> 2 distinct canonical orders (heavy atoms differ: True), max band difference   0.387 cm-1 | 8 rotations:   2.161 | mirror image:   0.489
+CC(C)c1ccccc1: not in the corpus with an analytic Hessian
+Cc1ccccc1C: not in the corpus with an analytic Hessian
+FC(F)(F)c1ccccc1: not in the corpus with an analytic Hessian
+C(#Cc1ccccc1)c1ccccc1        n=24 | 12 shuffled xyz -> 6 distinct canonical orders (heavy atoms differ: True), max band difference   5.274 cm-1 | 8 rotations:   5.344 | mirror image:   5.222
+Nc1ccccc1: not in the corpus with an analytic Hessian
+Oc1ccccc1                    n=13 | 12 shuffled xyz -> 2 distinct canonical orders (heavy atoms differ: True), max band difference   0.553 cm-1 | 8 rotations:   0.000 | mirror image:   0.468
+CC(=O)c1ccccc1: not in the corpus with an analytic Hessian
+CSc1ccccc1: not in the corpus with an analytic Hessian

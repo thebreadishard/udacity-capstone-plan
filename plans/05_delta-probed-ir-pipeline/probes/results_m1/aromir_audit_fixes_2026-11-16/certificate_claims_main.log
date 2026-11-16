@@ -1,0 +1,31 @@
+aromir from /home/thebreadishard/aromir-main, release v1.3
+benzene (A_8448043181, 12 atoms): 30 bands, 25 licensed; not licensed: {'family': 5}
+      3241.6 CH-stretch  licensed True 
+      3241.6 CH-stretch  licensed True 
+      3251.8 CH-stretch  licensed True 
+    not in the error: (this aromir's certificate has no such section)
+biphenyl (A_fdc27f1bd1, 22 atoms): 60 bands, 38 licensed; not licensed: {'family': 22}
+      3247.9 CH-stretch  licensed True 
+      3252.4 CH-stretch  licensed True 
+      3254.1 CH-stretch  licensed True 
+    not in the error: (this aromir's certificate has no such section)
+benzonitrile (A_3100da3761, 13 atoms): 33 bands, 23 licensed; not licensed: {'family': 10}
+      3254.7 CH-stretch  licensed True 
+      3264.6 CH-stretch  licensed True 
+      3267.0 CH-stretch  licensed True 
+    not in the error: (this aromir's certificate has no such section)
+2-naphthylamine (A_519351d19c, 20 atoms): 54 bands, 31 licensed; not licensed: {'family': 23}
+      3248.9 CH-stretch  licensed True 
+      3594.5 CH-stretch  licensed True 
+      3695.3 CH-stretch  licensed True 
+    not in the error: (this aromir's certificate has no such section)
+phenol (B_3db4fe6829, 13 atoms): 33 bands, 25 licensed; not licensed: {'family': 8}
+      3252.2 CH-stretch  licensed True 
+      3260.4 CH-stretch  licensed True 
+      3789.3 CH-stretch  licensed True 
+    not in the error: (this aromir's certificate has no such section)
+c1cc2ccc3cc4ccc5ccc6ccc7cc8ccc1c1c2c3c2c4c5c6c7c2c81 (T_c874e3c6cf, 46 atoms): 132 bands, 78 licensed; not licensed: {'family': 54}
+      3267.3 CH-stretch  licensed True 
+      3438.2 CH-stretch  licensed True 
+      3438.3 CH-stretch  licensed True 
+    not in the error: (this aromir's certificate has no such section)

@@ -1,0 +1,142 @@
+"""What `aromir check` (no quantum chemistry) does with awkward inputs: exit code, or the traceback's type."""
+import contextlib
+import io
+import time
+from pathlib import Path
+
+from rdkit import RDLogger
+
+from aromir import cli
+from common import TMP
+
+RDLogger.DisableLog("rdApp.*")
+D = TMP / "inputs dir with spaces"
+D.mkdir(exist_ok=True)
+
+
+def run(label, argv):
+    out, err = io.StringIO(), io.StringIO()
+    started = time.monotonic()
+    try:
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            code = cli.main(argv)
+        result = f"exit {code}"
+    except SystemExit as stop:
+        result = f"SystemExit {stop.code}"
+    except BaseException as error:  # noqa: BLE001
+        result = f"TRACEBACK {type(error).__name__}: {str(error)[:90]}"
+    text = (out.getvalue() + err.getvalue()).strip().replace("\n", " / ")[:150]
+    print(f"{label:34s} -> {result:14s} [{time.monotonic() - started:5.1f}s] {text}")
+
+
+SMILES = {
+    "13C benzene": "[13cH]1ccccc1",
+    "benzene-d1": "[2H]c1ccccc1",
+    "benzene-d6": "[2H]c1c([2H])c([2H])c([2H])c([2H])c1[2H]",
+    "tritium": "[3H]c1ccccc1",
+    "anilinium": "[NH3+]c1ccccc1",
+    "zwitterion (net 0)": "[NH3+]c1ccccc1C(=O)[O-]",
+    "pyridine N-oxide": "[O-][n+]1ccccc1",
+    "benzyl radical": "[CH2]c1ccccc1",
+    "phenyl radical": "[c]1ccccc1",
+    "carbene": "[C]c1ccccc1",
+    "bromobenzene": "Brc1ccccc1",
+    "dummy atom": "*c1ccccc1",
+    "salt": "[Na+].[O-]c1ccccc1",
+    "two benzenes": "c1ccccc1.c1ccccc1",
+    "empty": "",
+    "blank": " ",
+    "smiles + name": "c1ccccc1 benzene",
+    "smiles + newline": "c1ccccc1\n",
+    "H2": "[H][H]",
+    "acetylene": "C#C",
+    "cyclohexane": "C1CCCCC1",
+    "E/Z unspecified stilbene": "C(=Cc1ccccc1)c1ccccc1",
+    "unspecified stereocentre": "CC(N)c1ccccc1",
+    "2-pyridone (tautomer)": "O=c1cccc[nH]1",
+    "2-hydroxypyridine": "Oc1ccccn1",
+    "Cp anion": "[cH-]1cccc1",
+    "tropylium": "c1ccc[cH+]cc1",
+    "azulene": "c1ccc2cccc2cc1",
+    "benzyne": "C1#CC=CC=C1",
+    "benzyne aromatic form": "c1ccc#cc1",
+    "cyclophane (hard embed)": "c1cc2ccc1CCc1ccc(cc1)CC2",
+    "strained": "c1ccc2c(c1)C1=C2C1",
+    "C60": "c12c3c4c5c1c1c6c7c2c2c8c3c3c9c4c4c%10c5c5c1c1c6c6c%11c7c2c2c7c8c3c3c8c9c4c4c9c%10c5c5c1c1c6c6c%11c2c2c7c3c3c8c4c4c9c5c1c1c6c2c3c41",
+    "hexabenzocoronene": "c1cc2c3ccc4c5ccc6c7ccc8c9ccc%10c%11ccc1c1c2c2c3c4c3c5c6c4c7c8c5c9c%10c%11c1c1c2c3c4c51",
+    "SF5 (hypervalent S)": "FS(F)(F)(F)(F)c1ccccc1",
+    "nitrobenzene pentavalent": "O=N(=O)c1ccccc1",
+    "thiophene S-oxide": "O=S1C=CC=C1",
+    "non-ascii": "c1ccccc1é",
+}
+for label, s in SMILES.items():
+    run(label, ["check", s])
+
+A = [("C", 0.0, 1.3970, 0.0), ("C", 1.2098, 0.6985, 0.0), ("C", 1.2098, -0.6985, 0.0), ("C", 0.0, -1.3970, 0.0),
+     ("C", -1.2098, -0.6985, 0.0), ("C", -1.2098, 0.6985, 0.0), ("H", 0.0, 2.4810, 0.0), ("H", 2.1486, 1.2405, 0.0),
+     ("H", 2.1486, -1.2405, 0.0), ("H", 0.0, -2.4810, 0.0), ("H", -2.1486, -1.2405, 0.0), ("H", -2.1486, 1.2405, 0.0)]
+
+
+def body(atoms, scale=1.0, sep=" "):
+    return [f"{s}{sep}{x * scale:.6f}{sep}{y * scale:.6f}{sep}{z * scale:.6f}" for s, x, y, z in atoms]
+
+
+def xyz(name, lines, raw=None):
+    path = D / name
+    if raw is not None:
+        path.write_bytes(raw)
+    else:
+        path.write_text("\n".join(lines) + "\n")
+    return path
+
+
+CASES = {
+    "good benzene (path with spaces)": ["12", "benzene", *body(A)],
+    "count says 11": ["11", "x", *body(A)],
+    "count says 13": ["13", "x", *body(A)],
+    "no count, no comment": body(A),
+    "no comment line": ["12", *body(A)],
+    "coordinates in bohr": ["12", "bohr", *body(A, 1.8897)],
+    "blank line in the middle": ["12", "x", *body(A[:6]), "", *body(A[6:])],
+    "trailing blank lines": ["12", "x", *body(A), "", ""],
+    "duplicate atom": ["13", "x", *body(A), *body(A[:1])],
+    "lowercase symbols": ["12", "x", *[l.lower() for l in body(A)]],
+    "atomic numbers": ["12", "x", *[l.replace("C", "6").replace("H", "1") for l in body(A)]],
+    "extra columns": ["12", "x", *[l + " 0.1 0.2 0.3" for l in body(A)]],
+    "tabs": ["12", "x", *body(A, sep="\t")],
+    "CRLF": None,
+    "one H at 3 A": ["12", "x", *body(A[:11]), "H -4.5 2.6 0.0"],
+    "phenyl radical (11 atoms)": ["11", "x", *body(A[:11])],
+    "benzene + far water": ["15", "x", *body(A), "O 8 0 0", "H 8.96 0 0", "H 7.76 0.93 0"],
+    "NaN coordinate": ["12", "x", *body(A[:11]), "H nan 1.2405 0.0"],
+    "empty file": [],
+    "comma decimals": ["12", "x", *[l.replace(".", ",") for l in body(A)]],
+    "deuterium symbol D": ["12", "x", *body(A[:11]), "D -2.1486 1.2405 0.0"],
+    "bromobenzene-like (Br)": ["12", "x", *body(A[:11]), "Br -2.85 1.645 0.0"],
+}
+for label, lines in CASES.items():
+    name = label.split(" (")[0].replace(" ", "_").replace(",", "") + ".xyz"
+    if label == "CRLF":
+        path = xyz(name, None, raw="\r\n".join(["12", "x", *body(A)]).encode() + b"\r\n")
+    else:
+        path = xyz(name, lines)
+    run("xyz: " + label, ["check", "--xyz", str(path)])
+run("xyz: non-UTF-8 comment", ["check", "--xyz", str(xyz("latin1.xyz", None, raw=("12\nbenz\xe8ne\n" + "\n".join(body(A)) + "\n").encode("latin-1")))])
+run("xyz: UTF-8 BOM", ["check", "--xyz", str(xyz("bom.xyz", None, raw=b"\xef\xbb\xbf" + ("12\nx\n" + "\n".join(body(A)) + "\n").encode()))])
+run("xyz: a directory", ["check", "--xyz", str(D)])
+run("xyz: missing file", ["check", "--xyz", str(D / "nope.xyz")])
+run("both smiles and xyz", ["check", "c1ccccc1", "--xyz", str(D / "good_benzene.xyz")])
+
+# options and result folders, stopped before any quantum chemistry by a refused molecule or by the folder check
+existing = TMP / "afile.txt"
+existing.write_text("x")
+nonempty = TMP / "nonempty"
+nonempty.mkdir(exist_ok=True)
+(nonempty / "keep.txt").write_text("x")
+run("spectrum --threads 0", ["spectrum", "c1ccccc1", "--out", str(TMP / "o1"), "--threads", "0"])
+run("spectrum --max-memory-mb 10", ["spectrum", "c1ccccc1", "--out", str(TMP / "o2"), "--max-memory-mb", "10"])
+run("spectrum --out is a file", ["spectrum", "c1ccccc1", "--out", str(existing)])
+run("spectrum --out not empty", ["spectrum", "c1ccccc1", "--out", str(nonempty)])
+run("baseline --out is a file", ["baseline", "c1ccccc1", "--out", str(existing)])
+run("spectrum --release missing", ["spectrum", "c1ccccc1", "--out", str(TMP / "o3"), "--release", str(TMP / "norelease")])
+print("folders created by refused runs:", [p.name for p in TMP.glob("o[0-9]")])

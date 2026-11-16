@@ -1,0 +1,72 @@
+13C benzene                        -> exit 0         [  0.0s] admitted: c1cc[13cH]cc1 (C6H6, 12 atoms)
+benzene-d1                         -> exit 0         [  0.0s] admitted: [2H]c1ccccc1 (C6H6, 12 atoms)
+benzene-d6                         -> exit 0         [  0.0s] admitted: [2H]c1c([2H])c([2H])c([2H])c([2H])c1[2H] (C6H6, 12 atoms)
+tritium                            -> exit 0         [  0.0s] admitted: [3H]c1ccccc1 (C6H6, 12 atoms)
+anilinium                          -> exit 2         [  0.0s] refused: /   the molecule carries a net charge: only neutral molecules are supported
+zwitterion (net 0)                 -> exit 0         [  0.0s] admitted: [NH3+]c1ccccc1C(=O)[O-] (C7H7NO2, 17 atoms)
+pyridine N-oxide                   -> exit 0         [  0.0s] admitted: [O-][n+]1ccccc1 (C5H5NO, 12 atoms)
+benzyl radical                     -> exit 2         [  0.0s] refused: /   the molecule has unpaired electrons: only closed shells are supported
+phenyl radical                     -> exit 2         [  0.0s] refused: /   the molecule has unpaired electrons: only closed shells are supported
+carbene                            -> exit 2         [  0.0s] refused: /   the molecule has unpaired electrons: only closed shells are supported
+bromobenzene                       -> exit 2         [  0.0s] refused: /   element(s) Br outside the supported set (C, Cl, F, H, N, O, S)
+dummy atom                         -> exit 2         [  0.0s] refused: /   element(s) * outside the supported set (C, Cl, F, H, N, O, S)
+salt                               -> exit 2         [  0.0s] refused: /   2 separate molecules: one molecule at a time /   element(s) Na outside the supported set (C, Cl, F, H, N, O, S)
+two benzenes                       -> exit 2         [  0.0s] refused: /   2 separate molecules: one molecule at a time
+empty                              -> exit 2         [  0.0s] refused: /   no aromatic ring: the network is trained on aromatic molecules only
+blank                              -> exit 2         [  0.0s] refused: /   ' ' does not parse as a SMILES
+smiles + name                      -> exit 0         [  0.0s] admitted: c1ccccc1 (C6H6, 12 atoms)
+smiles + newline                   -> exit 0         [  0.0s] admitted: c1ccccc1 (C6H6, 12 atoms)
+H2                                 -> exit 2         [  0.0s] refused: /   no aromatic ring: the network is trained on aromatic molecules only
+acetylene                          -> exit 2         [  0.0s] refused: /   no aromatic ring: the network is trained on aromatic molecules only
+cyclohexane                        -> exit 2         [  0.0s] refused: /   no aromatic ring: the network is trained on aromatic molecules only
+E/Z unspecified stilbene           -> exit 0         [  0.0s] admitted: C(=Cc1ccccc1)c1ccccc1 (C14H12, 26 atoms)
+unspecified stereocentre           -> exit 0         [  0.0s] admitted: CC(N)c1ccccc1 (C8H11N, 20 atoms)
+2-pyridone (tautomer)              -> exit 0         [  0.0s] admitted: O=c1cccc[nH]1 (C5H5NO, 12 atoms)
+2-hydroxypyridine                  -> exit 0         [  0.0s] admitted: Oc1ccccn1 (C5H5NO, 12 atoms)
+Cp anion                           -> exit 2         [  0.0s] refused: /   the molecule carries a net charge: only neutral molecules are supported
+tropylium                          -> exit 2         [  0.0s] refused: /   the molecule carries a net charge: only neutral molecules are supported
+azulene                            -> exit 0         [  0.0s] admitted: c1ccc2cccc-2cc1 (C10H8, 18 atoms)
+benzyne                            -> TRACEBACK ValueError: no 3D embedding found for c1ccccc#1 [  0.1s] 
+benzyne aromatic form              -> TRACEBACK ValueError: no 3D embedding found for c1ccccc#1 [  0.1s] 
+cyclophane (hard embed)            -> TRACEBACK ValueError: no 3D embedding found for c1cc2ccc1CCc1ccc(cc1)CC2 [  5.1s] 
+strained                           -> exit 0         [  0.0s] admitted: c1ccc2c(c1)C1=C2C1 (C9H6, 15 atoms)
+C60                                -> TRACEBACK ValueError: no 3D embedding found for c12c3c4c5c1c1c6c7c2c2c8c3c3c9c4c4c%10c5c5c1c1c6c6c%11c7c2c2c7c8c [ 23.4s] 
+hexabenzocoronene                  -> TRACEBACK ValueError: no 3D embedding found for c1cc2c3ccc4c5ccc6c7ccc8c9ccc%10c%11ccc1c1c%11c%11c%10c9c9c8c7c7c [ 30.9s] 
+SF5 (hypervalent S)                -> exit 0         [  0.0s] admitted: FS(F)(F)(F)(F)c1ccccc1 (C6H5F5S, 17 atoms)
+nitrobenzene pentavalent           -> exit 0         [  0.0s] admitted: O=[N+]([O-])c1ccccc1 (C6H5NO2, 14 atoms)
+thiophene S-oxide                  -> exit 2         [  0.0s] refused: /   no aromatic ring: the network is trained on aromatic molecules only
+non-ascii                          -> exit 0         [  0.0s] admitted: c1ccccc1 (C6H6, 12 atoms)
+xyz: good benzene (path with spaces) -> exit 0         [  0.0s] admitted: c1ccccc1 (C6H6, 12 atoms)
+xyz: count says 11                 -> exit 2         [  0.0s] refused: /   /home/thebreadishard/audit_tmp/inputs dir with spaces/count_says_11.xyz does not parse as an xyz file
+xyz: count says 13                 -> exit 2         [  0.0s] refused: /   /home/thebreadishard/audit_tmp/inputs dir with spaces/count_says_13.xyz does not parse as an xyz file
+xyz: no count, no comment          -> exit 2         [  0.0s] refused: /   /home/thebreadishard/audit_tmp/inputs dir with spaces/no_count_no_comment.xyz does not parse as an xyz file
+xyz: no comment line               -> exit 2         [  0.0s] refused: /   /home/thebreadishard/audit_tmp/inputs dir with spaces/no_comment_line.xyz does not parse as an xyz file
+xyz: coordinates in bohr           -> exit 2         [  0.0s] refused: /   /home/thebreadishard/audit_tmp/inputs dir with spaces/coordinates_in_bohr.xyz: no neutral bonding pattern fits the geometry
+xyz: blank line in the middle      -> exit 2         [  0.0s] refused: /   /home/thebreadishard/audit_tmp/inputs dir with spaces/blank_line_in_the_middle.xyz does not parse as an xyz file
+xyz: trailing blank lines          -> exit 0         [  0.0s] admitted: c1ccccc1 (C6H6, 12 atoms)
+xyz: duplicate atom                -> exit 2         [  0.0s] refused: /   the molecule has unpaired electrons: only closed shells are supported /   no aromatic ring: the network is trained on aromatic molecules 
+xyz: lowercase symbols             -> exit 2         [  0.0s] refused: /   /home/thebreadishard/audit_tmp/inputs dir with spaces/lowercase_symbols.xyz does not parse as an xyz file
+xyz: atomic numbers                -> exit 2         [  0.0s] refused: /   /home/thebreadishard/audit_tmp/inputs dir with spaces/atomic_numbers.xyz does not parse as an xyz file
+xyz: extra columns                 -> exit 2         [  0.0s] refused: /   /home/thebreadishard/audit_tmp/inputs dir with spaces/extra_columns.xyz does not parse as an xyz file
+xyz: tabs                          -> exit 0         [  0.0s] admitted: c1ccccc1 (C6H6, 12 atoms)
+xyz: CRLF                          -> exit 0         [  0.0s] admitted: c1ccccc1 (C6H6, 12 atoms)
+xyz: one H at 3 A                  -> exit 2         [  0.0s] refused: /   2 separate molecules: one molecule at a time
+xyz: phenyl radical (11 atoms)     -> exit 2         [  0.0s] refused: /   /home/thebreadishard/audit_tmp/inputs dir with spaces/phenyl_radical.xyz: no neutral bonding pattern fits the geometry
+xyz: benzene + far water           -> exit 2         [  0.0s] refused: /   2 separate molecules: one molecule at a time
+xyz: NaN coordinate                -> exit 2         [  0.0s] refused: /   /home/thebreadishard/audit_tmp/inputs dir with spaces/NaN_coordinate.xyz does not parse as an xyz file
+xyz: empty file                    -> exit 2         [  0.0s] refused: /   no aromatic ring: the network is trained on aromatic molecules only
+xyz: comma decimals                -> exit 2         [  0.0s] refused: /   /home/thebreadishard/audit_tmp/inputs dir with spaces/comma_decimals.xyz: no neutral bonding pattern fits the geometry
+xyz: deuterium symbol D            -> exit 2         [  0.0s] refused: /   /home/thebreadishard/audit_tmp/inputs dir with spaces/deuterium_symbol_D.xyz does not parse as an xyz file
+xyz: bromobenzene-like (Br)        -> exit 2         [  0.0s] refused: /   element(s) Br outside the supported set (C, Cl, F, H, N, O, S)
+xyz: non-UTF-8 comment             -> TRACEBACK UnicodeDecodeError: 'utf-8' codec can't decode byte 0xe8 in position 4: invalid continuation byte [  0.0s] 
+xyz: UTF-8 BOM                     -> exit 2         [  0.0s] refused: /   /home/thebreadishard/audit_tmp/inputs dir with spaces/bom.xyz does not parse as an xyz file
+xyz: a directory                   -> exit 2         [  0.0s] refused: /   /home/thebreadishard/audit_tmp/inputs dir with spaces: no such xyz file
+xyz: missing file                  -> exit 2         [  0.0s] refused: /   /home/thebreadishard/audit_tmp/inputs dir with spaces/nope.xyz: no such xyz file
+both smiles and xyz                -> SystemExit 2   [  0.0s] usage: aromir check [-h] [--xyz XYZ] [smiles] / aromir check: error: argument --xyz: not allowed with argument smiles
+spectrum --threads 0               -> exit 2         [  0.0s] refused: /   threads: Input should be greater than or equal to 1
+spectrum --max-memory-mb 10        -> exit 2         [  0.0s] refused: /   max_memory_mb: Input should be greater than or equal to 500
+spectrum --out is a file           -> TRACEBACK NotADirectoryError: [Errno 20] Not a directory: '/home/thebreadishard/audit_tmp/afile.txt' [  0.1s] 
+spectrum --out not empty           -> exit 2         [  0.0s] refused: /   /home/thebreadishard/audit_tmp/nonempty is not empty: a result is never overwritten
+baseline --out is a file           -> TRACEBACK NotADirectoryError: [Errno 20] Not a directory: '/home/thebreadishard/audit_tmp/afile.txt' [  0.0s] 
+spectrum --release missing         -> exit 2         [  0.0s] refused: /   /home/thebreadishard/audit_tmp/norelease: no evaluation.json /   /home/thebreadishard/audit_tmp/norelease: no training.json
+folders created by refused runs: []
