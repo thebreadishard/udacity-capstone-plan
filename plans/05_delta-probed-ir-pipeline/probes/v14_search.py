@@ -75,6 +75,7 @@ SEL_REPRODUCTION_TOL = 1e-3                # score units: a selection eval must 
 TRAINED_WITH_SPLIT, TRAINED_WHOLE = 911, 1080  # molecules a stage training and a whole-pool one train on (two hold-out twins dropped)
 PREDICTION_MOLECULE, PREDICTION_LINE = "A_72b86c2331", 4.7  # §12: biphenylene's corrected ω rms on the whole-pool models, cm⁻¹
 RERUN_CAP = 450                            # the cap §12 names for a whole-pool rerun when the cap, not the data, stopped a seed
+CLEAN_A = "a8"                             # hold-out (a) without its two trained twins, as the evals name it (m08.accuracy.CLEAN_SET)
 DATA_LICENCE_NOTE = ("Apart from this read, and deciding nothing in it: the licence's quantity — the band error of the seed-mean ΔH "
                      "(decision 65 as amended on 16 Nov 2026) — is made by `probes/product_error_read.py` and is not in this read.")
 REGISTRY_STATUS_FILE: Path | None = None   # None: the model registry's own status file for the checkpoint's folder; tests name another
@@ -690,10 +691,11 @@ def mean(values: list[float]) -> float:
     return sum(values) / len(values)
 
 
-def prediction_read(winner_evals: list[Path], carried_evals: list[Path]) -> tuple[str, dict]:
+def prediction_read(winner_evals: list[Path], carried_evals: list[Path], *, a_set: str = "a") -> tuple[str, dict]:
     """§12's prediction as one report line and a record: the prediction molecule's corrected ω rms on hold-out (a), per seed and the
-    mean, for the whole-pool winner and the carried version; PASS when the winner's mean is at most PREDICTION_LINE."""
-    new, old = (holdout_values(paths, "a", PREDICTION_MOLECULE) for paths in (winner_evals, carried_evals))
+    mean, for the whole-pool winner and the carried version; PASS when the winner's mean is at most PREDICTION_LINE. `a_set` names
+    hold-out (a) in the eval records: the ten, or the clean eight."""
+    new, old = (holdout_values(paths, a_set, PREDICTION_MOLECULE) for paths in (winner_evals, carried_evals))
     passed = mean(new) <= PREDICTION_LINE
 
     def shown(values: list[float]) -> str:
@@ -705,11 +707,11 @@ def prediction_read(winner_evals: list[Path], carried_evals: list[Path]) -> tupl
     return line, {"molecule": PREDICTION_MOLECULE, "winner": new, "carried": old, "line": PREDICTION_LINE, "passed": passed}
 
 
-def expectation_read(winner_evals: list[Path], carried_evals: list[Path]) -> tuple[str, dict]:
+def expectation_read(winner_evals: list[Path], carried_evals: list[Path], *, a_set: str = "a") -> tuple[str, dict]:
     """§12's expectation as one report line and a record: the whole-pool winner trained on more molecules than the carried version,
     so its corrected ω rms (mean of the seeds) is expected below the carried one's on hold-out (b) and not above it on hold-out (a).
-    It decides nothing; the no-worsening rule does."""
-    b_new, b_old, a_new, a_old = (mean(holdout_values(paths, hold)) for hold in ("b", "a") for paths in (winner_evals, carried_evals))
+    It decides nothing; the no-worsening rule does. `a_set` names hold-out (a) in the eval records: the ten, or the clean eight."""
+    b_new, b_old, a_new, a_old = (mean(holdout_values(paths, hold)) for hold in ("b", a_set) for paths in (winner_evals, carried_evals))
     b_held, a_held = b_new < b_old, a_new <= a_old
     line = (f"§12's expectation — corrected ω rms in cm⁻¹, mean of the seeds: hold-out (b) winner {b_new:.2f} against carried {b_old:.2f} "
             f"(expected below: {'held' if b_held else '**did not hold**'}); hold-out (a) winner {a_new:.2f} against carried {a_old:.2f} "
@@ -778,14 +780,16 @@ def require_below_cap(w: Config, full: list[SeedRead]) -> None:
 
 
 def stated_lines(expectation: dict, prediction: dict) -> list[str]:
-    """§12's and §14's three statements with PASS or FAIL, from the records `expectation_read` and `prediction_read` give."""
+    """§12's and §14's three statements with PASS or FAIL, from the records `expectation_read` and `prediction_read` give for
+    hold-out (a)'s clean set."""
     def verdict(passed: bool) -> str:
         return "**PASS**" if passed else "**FAIL**"
 
     def shown(values: list[float]) -> str:
         return f"{', '.join(f'{v:.2f}' for v in values)} (mean {mean(values):.2f})"
     b, a = expectation["b"], expectation["a"]
-    return ["Stated before any whole-pool model existed (§12, §14), as corrected ω rms in cm⁻¹. They decide nothing; the promotion does.", "",
+    return ["Stated before any whole-pool model existed (§12, §14), as corrected ω rms in cm⁻¹, hold-out (a) on its eight clean "
+            "molecules. They decide nothing; the promotion does.", "",
             f"- hold-out (b) below the carried version on the mean of three seeds: {b['winner']:.2f} against {b['carried']:.2f} — "
             f"{verdict(b['held'])}",
             f"- hold-out (a) not above the carried version on the mean of three seeds: {a['winner']:.2f} against {a['carried']:.2f} — "
@@ -797,7 +801,7 @@ def stated_lines(expectation: dict, prediction: dict) -> list[str]:
 def data_arms() -> tuple[Config, list[SeedRead], list[Path], list[Path]]:
     """§14's two arms, checked: (the control, its three whole-pool trainings, their hold-out evals, the carried version's evals). The
     new models pass `whole_pool_reads` and the cap rule as read3's winner does; each carried eval must name the frozen list's carried
-    checkpoint of its seed."""
+    checkpoint of its seed; every eval must hold hold-out (a)'s clean set, which the promotion is read on."""
     configs, carried_models = load_list()
     new_evals, old_evals = ([M05 / f"{OUT}/eval_{who}_seed{s}.json" for s in FINAL_SEEDS] for who in ("data", "carried_data"))
     full = whole_pool_reads(configs[0], new_evals)
@@ -805,37 +809,55 @@ def data_arms() -> tuple[Config, list[SeedRead], list[Path], list[Path]]:
     for path, model in zip(old_evals, carried_models, strict=True):
         if evaluated_checkpoint(path).as_posix() != model:
             raise SystemExit(f"{path.name} evaluated {evaluated_checkpoint(path).as_posix()}, not the carried version's {model}")
+    for path in (*new_evals, *old_evals):
+        if CLEAN_A not in json.loads(path.read_text(encoding="utf-8")):
+            raise SystemExit(f"{path.name} holds no set {CLEAN_A} (hold-out (a)'s eight clean molecules): chain v14_data's evals carry "
+                             f"it (--eval-ids-file {CLEAN_A}=…), an older record does not, and the promotion is read on it (§14)")
     return configs[0], full, new_evals, old_evals
 
 
 def cmd_read_data(replace_record: bool) -> int:
     """§14: the carried recipe on the whole pool against the carried version, by the registered promotion — read3's calls on the six
-    evals of chain v14_data. It writes its report and carries nothing: no registry entry changes here."""
+    evals of chain v14_data, with hold-out (a) read on its eight clean molecules (§14's dated addition) and the ten printed beside
+    them. It writes its report and carries nothing: no registry entry changes here."""
     base = M05 / OUT / "read_data"
     on_record = [p.name for p in (base.with_suffix(".md"), base.with_suffix(".json")) if p.is_file()]
     if on_record and not replace_record:
         raise SystemExit(f"{' and '.join(on_record)} exist under {OUT}: the read is on record. --replace reads again and writes over it")
     w, full, new_evals, old_evals = data_arms()
-    new, carried = P.load_eval_arm(new_evals), P.load_eval_arm(old_evals)
+    new, carried = (P.load_eval_arm(paths, holdouts=(CLEAN_A, "b")) for paths in (new_evals, old_evals))
     comps = P.compare(new, carried)
     promo = P.promotion(comps)
-    _, expectation = expectation_read(new_evals, old_evals)
-    _, prediction = prediction_read(new_evals, old_evals)
+    new_ten, carried_ten = P.load_eval_arm(new_evals), P.load_eval_arm(old_evals)
+    comps_ten = P.compare(new_ten, carried_ten)
+    promo_ten = P.promotion(comps_ten)
+    _, expectation = expectation_read(new_evals, old_evals, a_set=CLEAN_A)
+    _, prediction = prediction_read(new_evals, old_evals, a_set=CLEAN_A)
     meaning = ("By §14 these three models are version 1.4." if promo.promoted else
                "By §14 nothing is carried, and the cause is looked at per molecule before anything else is decided.")
     lines = ["# v1.4 on the data — the promotion read (design note §14)", "",
              f"The new models are the carried recipe ({w.name}) trained on the whole pool (seeds {', '.join(str(s) for s in FINAL_SEEDS)}; "
              f"best epochs {', '.join(epoch_note(r, w.schedule) for r in full)} / {full[0].cap}); the carried version is the frozen "
-             "list's three checkpoints, read again on the same hold-outs.",
+             "list's three checkpoints, read again on the same hold-outs.", "",
+             f"## The promotion: hold-out (a) on its eight clean molecules ({CLEAN_A}), and hold-out (b)",
              "", *P.comparison_table(new, carried, comps, "v1.4 candidate", "carried"), "",
              f"**Promotion: {'promoted' if promo.promoted else 'not promoted'}** — worse on {', '.join(promo.worse) or 'none'}, "
              f"better on {len(promo.better)} of {len(comps)} (the registered rule: §5, decision 57). {meaning} This read carries "
-             "nothing itself and changes no registry entry.", "", *stated_lines(expectation, prediction), "", DATA_LICENCE_NOTE]
+             "nothing itself and changes no registry entry.", "",
+             "## Beside it, deciding nothing: hold-out (a) on all ten molecules", "",
+             "The eight decide (§14's addition of 16 Nov): the carried version trained on twins of two of the ten (2-naphthoic acid and "
+             "benzonitrile, TASKS 157), so on the ten the comparison favours it on two molecules it has seen.",
+             "", *P.comparison_table(new_ten, carried_ten, comps_ten, "v1.4 candidate", "carried"), "",
+             f"On the ten the same rule would read: {'promoted' if promo_ten.promoted else 'not promoted'}, worse on "
+             f"{', '.join(promo_ten.worse) or 'none'}, better on {len(promo_ten.better)} of {len(comps_ten)}.",
+             "", "## What was stated beforehand", "", *stated_lines(expectation, prediction), "", DATA_LICENCE_NOTE]
     if on_record:
         print(f"replacing the read on record ({' and '.join(on_record)})", flush=True)
     _write_report("read_data", lines, {"models": w.name, "trained_on": "whole pool", "best_epochs": [r.best_epoch for r in full],
-                                       "promotion": asdict(promo), "meaning": meaning, "expectation": expectation,
-                                       "prediction": prediction, "comparisons": [asdict(c) for c in comps]})
+                                       "decided_on": [CLEAN_A, "b"], "promotion": asdict(promo), "meaning": meaning,
+                                       "expectation": expectation, "prediction": prediction, "comparisons": [asdict(c) for c in comps],
+                                       "on_the_ten_deciding_nothing": {"promotion": asdict(promo_ten),
+                                                                       "comparisons": [asdict(c) for c in comps_ten]}})
     print("\n".join(lines))
     return 0
 
@@ -846,6 +868,7 @@ def cmd_read3() -> int:
     o_reads = [o_by_seed[s] for s in FINAL_SEEDS]
     target_check = P.promotion(P.compare(arm(o_reads, SCORED), arm(w_reads, SCORED)))
     target_registered = P.promotion(P.compare(arm(o_reads, REGISTERED), arm(w_reads, REGISTERED)))
+    # the registered read takes hold-out (a) on its ten; §14's addition of 16 Nov: the search's final read takes the clean eight when it comes
     evals = [M05 / f"{OUT}/eval_{who}_seed{s}.json" for who in ("winner", "carried") for s in FINAL_SEEDS]
     full = whole_pool_reads(w, evals[:3])
     require_below_cap(w, full)

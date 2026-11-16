@@ -21,7 +21,8 @@ quantum chemistry is run: stored analytic Hessians and three checkpoints.
 
 With --models and --records the read is of named checkpoints instead of the registry's carried ones — a version's licence numbers
 before it is carried (design note of 26 Oct 2026, §14): one `rungC_eval_saved.py` record per checkpoint, in the same order, each
-naming its checkpoint; the hold-outs are the records' (a) and (b). Such a read needs --out and its record says `candidate`.
+naming its checkpoint; the hold-outs are the records' (a) and (b). Such a read needs --out and its record says `candidate`. A
+checkpoint may be named by a pattern (`…_model_n*_seed0.pt`) that matches exactly one file under --m05, as in a chain's steps.
 
     python probes/product_error_read.py [--m05 <a module-05 folder holding corpus/molecules and the checkpoints under out/>]
                                         [--out <record.json>] [--package <the package's product_error.json>] [--threads 2]
@@ -46,6 +47,7 @@ from m08 import accuracy as A  # noqa: E402  module 08 puts module 05's code and
 from m08 import pipeline as P  # noqa: E402
 
 # isort: split
+import chain_runner  # noqa: E402
 import rungC_intensities as RINT  # noqa: E402
 from learning_curve_layerA import molecule_features, normal_modes  # noqa: E402
 from promotion_read import FAMILIES, load_eval_arm  # noqa: E402
@@ -331,8 +333,12 @@ def parse(argv: list[str] | None) -> Config:
     ap.add_argument("--records", type=Path, nargs="+", default=[], help="the rungC_eval_saved.py record of each of --models, in their order")
     a = ap.parse_args(argv)
     m05 = a.m05.resolve()
+    try:                                # the chain runner's own expansion of a checkpoint pattern: exactly one file, or refused
+        models = chain_runner._resolve([p.as_posix() for p in a.models], m05)
+    except RuntimeError as e:
+        raise SystemExit(f"--models: {e}") from None
     return Config(m05=m05, out=a.out.resolve() if a.out else None, package=a.package.resolve() if a.package else None,
-                  threads=a.threads, models=tuple((m05 / p).resolve() for p in a.models), records=tuple((m05 / p).resolve() for p in a.records))
+                  threads=a.threads, models=tuple((m05 / p).resolve() for p in models), records=tuple((m05 / p).resolve() for p in a.records))
 
 
 def main(argv: list[str] | None = None) -> int:

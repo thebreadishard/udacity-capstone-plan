@@ -292,6 +292,13 @@ def test_named_checkpoints_are_read_with_their_own_records_before_they_are_carri
     assert recorded["b"] == pytest.approx(dict.fromkeys(FAMILIES, 2.1))             # the records' seed mean, which the read must reproduce
     with pytest.raises(SystemExit, match="go together"):
         PE.parse([*argv[:-1], "--out", str(tmp_path / "x.json")])                   # two records for three checkpoints
+    patterns = [f"out/v14/E7_new_model_n*_seed{s}.pt" for s in range(3)]            # the pool size in the name left open, as in a chain
+    by_pattern = PE.parse(["--m05", str(tmp_path), "--out", str(tmp_path / "x.json"), "--models", *patterns, "--records", *records])
+    assert by_pattern.models == cfg.models
+    with pytest.raises(SystemExit, match="matches 3 files, expected 1"):
+        PE.parse(["--m05", str(tmp_path), "--out", str(tmp_path / "x.json"), "--models", "out/v14/E7_new_model_n*.pt", "--records", records[0]])
+    with pytest.raises(SystemExit, match="matches 0 files, expected 1"):
+        PE.parse(["--m05", str(tmp_path), "--out", str(tmp_path / "x.json"), "--models", "out/v14/E7_none_*.pt", "--records", records[0]])
     with pytest.raises(SystemExit, match="no such file"):
         PE.parse(["--m05", str(tmp_path), "--out", str(tmp_path / "x.json"), "--models", "out/v14/none.pt", "--records", records[0]])
     eval_record(tmp_path / records[1], models[2], ids)                              # a record of another checkpoint in the second place
@@ -315,5 +322,5 @@ def test_the_v14_run_spec_reads_the_candidates_of_chain_v14_data():
     models, records = (words[words.index(flag) + 1:words.index(flag) + 4] for flag in ("--models", "--records"))
     evals = [s["argv"] for s in chain["steps"] if s["label"].startswith("eval eval_data_seed")]
     assert records == [f"{a[3]}.json" for a in evals]                               # the chain's own eval records
-    assert all(Path(m).match(a[2]) for m, a in zip(models, evals, strict=True))     # … of the checkpoints it evaluated
+    assert models == [a[2] for a in evals]                                          # … of the checkpoints it evaluated, by its patterns
     assert "--out" in words and "--package" not in words                           # the package's record is version 1.3's
