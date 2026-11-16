@@ -147,9 +147,11 @@ def test_a_mode_lifted_over_the_line_keeps_its_partner(result, accuracy):
     assert lifted[0]["seed_range_cm"] == [19.0, 37.0]
     assert lifted[0]["family"] == "other" and lifted[0]["error_cm"]["a"] == accuracy["holdouts"]["a"]["product"]["other"]["rms"]
     assert all(b["seed_range_cm"][0] == b["seed_range_cm"][1] == b["network_cm"] for b in rows if b is not lifted[0])
-    lines = LC._band_lines({"bands": rows, "licence": {"quantity_name": A.QUANTITY_NAMES[A.PRODUCT]}})
+    # a record without the anharmonic step (pipeline 0.11, TASKS 211): every band harmonic, and the table says so in its columns
+    lines = LC._band_lines({"bands": rows, "licence": {"quantity_name": A.QUANTITY_NAMES[A.PRODUCT]},
+                            "positions": {"anharmonic": LC.POS.summary_of({})}})
     assert "— (B3LYP under 20 cm⁻¹)" in "\n".join(lines)
-    assert "| licensed | error of the corrected band positions of the seed-mean correction on (a) / (b), cm⁻¹ |" in lines[0]
+    assert "| ω licensed | error of the corrected band positions of the seed-mean correction of ω on (a) / (b), cm⁻¹ |" in lines[0]
 
 
 def test_a_record_that_is_not_its_correction_is_refused(result, accuracy):

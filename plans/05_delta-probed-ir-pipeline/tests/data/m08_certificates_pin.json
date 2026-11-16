@@ -234,6 +234,7 @@
     "u_band_source": "module 03 u_band_by_record_family.csv, benzene, record(s) C71432_0.jdx, C71432_1.jdx, C71432_quantir_res0.125_boxcar.jdx"
    }
   },
+  "positions": "positions are harmonic (ω): a catalogue record carries no anharmonic step; the pipeline (m08/pipeline.py) prints the anharmonic estimate ν = ω + Δ_anh for a molecule it computes, and claims no licence for it",
   "provenance": {
    "deck_hash": "97ed2d67c66b",
    "evidence": [
@@ -1038,6 +1039,7 @@
     "u_band_source": "module 03 u_band_by_record_family.csv, naphthalene, record(s) C91203_0.jdx"
    }
   },
+  "positions": "positions are harmonic (ω): a catalogue record carries no anharmonic step; the pipeline (m08/pipeline.py) prints the anharmonic estimate ν = ω + Δ_anh for a molecule it computes, and claims no licence for it",
   "provenance": {
    "deck_hash": "97ed2d67c66b",
    "evidence": [

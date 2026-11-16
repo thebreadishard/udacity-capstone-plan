@@ -474,6 +474,7 @@ function showResult(m) {
     <div class="cert fade-in"><div class="facts-row">${truth}<span>seeds agree within <b>${m.seed_spread_cm.toFixed(1)} cm⁻¹</b></span></div>
       <table><thead><tr><th>family</th><th class="num">bands</th><th class="num">error (a)</th><th class="num">error (b)</th><th>licence (≤ ${DATA.licence_line_cm} cm⁻¹)</th></tr></thead><tbody>${fam}</tbody></table>
       ${m.licence_caveat ? `<div class="facts-row muted"><span>${esc(m.licence_caveat)}</span></div>` : ""}
+      <div class="facts-row muted"><span>Positions: ${esc(m.positions)}</span></div>
       <div class="facts-row muted"><span>pipeline ${esc(m.pipeline_version)}</span><span>${esc(DATA.network)}</span><span>errors: the ${esc(m.error_quantity)}, on molecules the network never saw (cm⁻¹)</span></div>
       ${m.atlas ? `<div class="facts-row"><a href="${esc(m.atlas)}" target="_blank" rel="noopener">${esc(m.name)} in the Spectrum Atlas ↗</a></div>` : ""}</div>`;
   document.querySelectorAll(".spec polyline.draw").forEach((p) => {
@@ -527,16 +528,22 @@ async function liveTick() {
   try { p = await (await fetch("/progress", { cache: "no-store" })).json(); } catch (e) { $("#livestate").textContent = "The live server does not answer."; return; }
   if (!p) { $("#livestate").textContent = "No run yet: start one, and it appears here."; return; }
   if (p.folder !== live.folder) liveStart(p);
-  $("#livestate").textContent = `${p.name} · pipeline ${p.pipeline_version} · ${p.finished ? "finished" : "running"}`;
+  /* a run delivers twice (pipeline 0.11): the harmonic result, then the final one; the page shows each as it comes */
+  const delivery = p.delivery ? p.delivery.number : (p.finished ? 1 : 0);
+  $("#livestate").textContent = `${p.name} · pipeline ${p.pipeline_version} · ${p.delivery ? p.delivery.state : (p.finished ? "finished" : "running")}`;
   live.mol.route = p.route === "reused" ? "reused" : "computed";
   p.stations.forEach((s, i) => setStation(i, s.state === "reused" ? "skipped" : s.state, s.time));
   if (p.route === "reused") setStation("C", "done");
   liveMoveTo(Math.max(0, ...p.stations.map((s, i) => (s.state === "done" || s.state === "active" ? i : 0))));
-  if (p.finished && !live.shown) {
-    live.shown = true;
-    const r = await fetch(`/result?folder=${encodeURIComponent(p.folder)}`, { cache: "no-store" });
-    if (!r.ok) { live.shown = false; return; }
-    const m = await r.json();
+  if (p.finished && live.shown !== delivery && !live.asking) {
+    live.asking = true;
+    let m;
+    try {   /* a fetch that throws (the server restarted) must not leave the page waiting for good: the next tick asks again */
+      const r = await fetch(`/result?folder=${encodeURIComponent(p.folder)}`, { cache: "no-store" });
+      if (!r.ok) return;
+      m = await r.json();
+    } catch (e) { return; } finally { live.asking = false; }
+    live.shown = delivery;
     showResult(m); $("#realtime").textContent = m.real_time; state.finished = true;
   }
 }

@@ -1,0 +1,191 @@
+{
+ "date": "2026-11-16 20:16",
+ "artefact": "probes/anharmonic_step/x2star_v2.json",
+ "artefact_commit": "8f1997ac0d8c61f4fd926f39f9410544b11c7dbf",
+ "commit": "8f1997ac0d8c61f4fd926f39f9410544b11c7dbf",
+ "commit_dirty": "no",
+ "tolerance_cm": 0.01,
+ "selected_without_a_force_field": [
+  "A_8f6ed7c002",
+  "B_190a33a33e",
+  "B_151c8ce719",
+  "B_16194573ac",
+  "B_17f1611949",
+  "B_0040149ee1"
+ ],
+ "targets": {
+  "CH-oop": {
+   "rows": 22,
+   "rows_registered": 22,
+   "rms_cm": 8.380851401821456,
+   "bar_cm": 8.38,
+   "bar_refit_cm": 8.380851401821456,
+   "harmonic_rms_cm": 12.476763692152412,
+   "per_molecule": {
+    "coronene": 11.909623221840208,
+    "tetracene": 4.546330872687072
+   },
+   "passed": true
+  },
+  "other": {
+   "rows": 23,
+   "rows_registered": 23,
+   "rms_cm": 3.838739720576501,
+   "bar_cm": 3.84,
+   "bar_refit_cm": 3.838739720576501,
+   "harmonic_rms_cm": 8.195380445995744,
+   "per_molecule": {
+    "coronene": 5.686493756252277,
+    "tetracene": 1.0941842192902274
+   },
+   "passed": true
+  },
+  "ring-ip": {
+   "rows": 56,
+   "rows_registered": 56,
+   "rms_cm": 3.3693915119946887,
+   "bar_cm": 3.37,
+   "bar_refit_cm": 3.3693915119946882,
+   "harmonic_rms_cm": 26.2333046222988,
+   "per_molecule": {
+    "coronene": 4.252574924957108,
+    "tetracene": 2.3492021498087463
+   },
+   "passed": true
+  },
+  "CH-stretch": {
+   "rows": 20,
+   "rows_registered": 20,
+   "rms_cm": 6.214339442402264,
+   "bar_cm": 6.21,
+   "bar_refit_cm": 6.214339442402264,
+   "harmonic_rms_cm": 134.24269652968334,
+   "per_molecule": {
+    "coronene": 6.935256815282447,
+    "tetracene": 5.683147582667525
+   },
+   "passed": true
+  }
+ },
+ "flagged": {
+  "coronene mode 24": {
+   "mode": 24,
+   "omega_cm": 642.9393964152787,
+   "family": "other",
+   "h": 0.09258730159699785,
+   "o": 1.0000000000000009,
+   "xtb_overlap": 0.9638411369460432,
+   "delta_anh_cm": -9.085694737474052,
+   "reason": null,
+   "bar_cm": null,
+   "error_not_measured": true,
+   "window": "mid",
+   "label_marked": true,
+   "label_shift_cm": 66.21804782968661,
+   "passed": true
+  },
+  "coronene mode 36": {
+   "mode": 36,
+   "omega_cm": 807.0896514159119,
+   "family": "other",
+   "h": 0.06552858220962897,
+   "o": 1.0000000000000002,
+   "xtb_overlap": 0.9031447423518575,
+   "delta_anh_cm": -11.637974481135917,
+   "reason": null,
+   "bar_cm": null,
+   "error_not_measured": true,
+   "window": "mid",
+   "label_marked": true,
+   "label_shift_cm": 179.0998131415231,
+   "passed": true
+  }
+ },
+ "marks": {
+  "molecules": 39,
+  "modes": 2244,
+  "counts": {
+   "label_marked": 6,
+   "caught": 4,
+   "sound_lost": 0
+  },
+  "expected": {
+   "label_marked": 6,
+   "caught": 4,
+   "sound_lost": 0
+  },
+  "label_marked_modes": [
+   {
+    "id": "B_0603418c5b",
+    "mode": 11,
+    "omega_cm": 564.4936268458513,
+    "family": "other",
+    "o": 0.9999889578868228,
+    "reason": "large-amplitude",
+    "error_not_measured": false,
+    "caught": true
+   },
+   {
+    "id": "B_410ac0fb2f",
+    "mode": 8,
+    "omega_cm": 518.097498275226,
+    "family": "other",
+    "o": 0.9960951728663049,
+    "reason": "large-amplitude",
+    "error_not_measured": false,
+    "caught": true
+   },
+   {
+    "id": "B_410ac0fb2f",
+    "mode": 11,
+    "omega_cm": 593.6609110588377,
+    "family": "other",
+    "o": 0.8399325411134875,
+    "reason": "large-amplitude",
+    "error_not_measured": false,
+    "caught": true
+   },
+   {
+    "id": "B_78f8233b4c",
+    "mode": 10,
+    "omega_cm": 509.352753402354,
+    "family": "other",
+    "o": 0.826990973723178,
+    "reason": "large-amplitude",
+    "error_not_measured": false,
+    "caught": true
+   },
+   {
+    "id": "coronene",
+    "mode": 24,
+    "omega_cm": 642.9393964152787,
+    "family": "other",
+    "o": 1.0000000000000009,
+    "reason": null,
+    "error_not_measured": true,
+    "caught": false
+   },
+   {
+    "id": "coronene",
+    "mode": 36,
+    "omega_cm": 807.0896514159119,
+    "family": "other",
+    "o": 1.0000000000000002,
+    "reason": null,
+    "error_not_measured": true,
+    "caught": false
+   }
+  ],
+  "sound_modes_lost": [],
+  "modes_by_route": {
+   "unmeasured": 384,
+   "step": 1748,
+   "no-xtb-partner": 72,
+   "large-amplitude": 40
+  },
+  "stepped_with_error_not_measured": 120,
+  "uncaught_all_flagged": true,
+  "passed": true
+ },
+ "passed": true
+}

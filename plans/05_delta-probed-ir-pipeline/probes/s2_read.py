@@ -113,6 +113,16 @@ def apply_scope(rec, flag="linear_xh"):
     return {k: (v[keep] if isinstance(v, np.ndarray) and v.shape[:1] == keep.shape else v) for k, v in rec.items()}
 
 
+def mode_description(omega, q, symbols, coords_bohr, masses):
+    """What a read knows of a molecule's modes without any label: each mode's corpus family, its hydrogen share h and out-of-plane
+    share o, whether the molecule is planar, and the two scope flags (amendment 2 §2, amendment 3). `load_molecule` describes a
+    training molecule with it and probes/anharmonic_step.py a molecule that has no label, so both see the same numbers."""
+    h, o, planar = mode_shares(q, symbols, masses, coords_bohr)
+    return {"family": families(omega, q, symbols, masses, coords_bohr), "h": h, "o": o, "planar": bool(planar),
+            "linear_xh": linear_xh_share(q, symbols, coords_bohr) >= LINEAR_XH_SHARE,
+            "large_amplitude": linear_xh_share(q, symbols, coords_bohr, LABILE_PARTNERS) >= LINEAR_XH_SHARE}
+
+
 def load_molecule(setting_dir, gvpt2_file=None, features=False):
     """The per-mode table of one molecule from its setting directory; None (with the reason) if it is excluded. With gvpt2_file the
     label is the GVPT2 fundamental (S2 amendment 2 §1) instead of the stored DVPT2 one; with features, the search's per-mode features
@@ -136,15 +146,12 @@ def load_molecule(setting_dir, gvpt2_file=None, features=False):
     sym = r["molecule"]["symbols"]
     x = np.array(r["molecule"]["geometry"], float).reshape(-1, 3)
     m = np.array([MASS[s] for s in sym])
-    h, o, planar = mode_shares(q, sym, m, x)
     if gvpt2_file:
         delta, marked = gvpt2_delta(gvpt2_file, np.asarray(z["omega_cm"]))
     else:
         delta = np.asarray(z["nu_sym"]) - np.asarray(z["omega_cm"])
         marked = report_marks(z, np.asarray(z["omega_cm"]))
-    return {"omega": omega, "delta": delta, "family": families(omega, q, sym, m, x), "h": h, "o": o, "planar": bool(planar),
-            "linear_xh": linear_xh_share(q, sym, x) >= LINEAR_XH_SHARE,
-            "large_amplitude": linear_xh_share(q, sym, x, LABILE_PARTNERS) >= LINEAR_XH_SHARE,
+    return {"omega": omega, "delta": delta, **mode_description(omega, q, sym, x, m),
             "vpt2_marked": marked_mask(marked, len(omega)), "vpt2_checked": marked is not None,
             **(search_features(q, sym, x, omega) if features else {})}, ""
 

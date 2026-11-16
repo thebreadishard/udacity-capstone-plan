@@ -24,6 +24,7 @@ from . import accuracy as A
 from . import live_certificate as LC
 from . import paths
 from . import pipeline as P
+from . import positions as POS
 from .licence import caveat_sentence
 from .spectrum import GRID, broadened
 
@@ -149,7 +150,8 @@ def stations(rec: dict) -> list[dict]:
                "analytic B3LYP Hessian and the atomic polar tensor (band heights) with pyscf 2.14, grid 99/590"
                + (" — taken from the corpus folder" if from_corpus else ""),
                f"the carried ΔH network v{adm['models'][0]['version']}: three seeds, their mean ΔH added to the B3LYP Hessian",
-               "positions from the corrected Hessian, heights from the B3LYP APT (double harmonic); each band's family and licence"]
+               "harmonic positions ω from the corrected Hessian, heights from the B3LYP APT (double harmonic); each band's family and "
+               "the licence of its ω; the certificate says which position each band is printed at, ν or ω"]
     return [{**s, "time": times[i], "detail": details[i]} for i, s in enumerate(STATIONS)]
 
 
@@ -228,7 +230,7 @@ def dead_links(data: dict, status: Callable[[str], int] = http_status) -> list[s
 
 def molecule(folder: Path) -> dict:
     r = LC.load_result(folder)
-    cert = json.loads((folder / "certificate.json").read_text(encoding="utf-8"))
+    cert = LC.read_certificate(folder)
     rec, adm = r.record, r.record["admission"]
     seen = cert["molecule"]["seen"]
     truth = cert["molecule"].get("truth")
@@ -240,6 +242,7 @@ def molecule(folder: Path) -> dict:
             "route": "reused" if reused(rec) else "computed", "pipeline_version": rec["pipeline_version"],
             "stations": stations(rec), "real_time": real_time(rec), "spectrum": spectrum(r, cert), "families": families(cert["bands"]),
             "error_quantity": A.QUANTITY_NAMES[A.stated_errors(cert["accuracy"])[0]], "licence_caveat": caveat_sentence(cert["licence"]),
+            "positions": f"{POS.DRAWN}; {POS.of_certificate(cert)}",
             "truth": {"rms_cm": truth["rms_by_rank_cm"], "overlap": truth["overlap"]} if truth else None,
             "seed_spread_cm": max(b["seed_range_cm"][1] - b["seed_range_cm"][0] for b in cert["bands"])}
 

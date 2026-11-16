@@ -52,6 +52,16 @@ class Progress:
         self._step(step).update(state="reused", seconds_then=float(seconds_then))
         self._write()
 
+    def delivered(self, number: int, state: str, final: bool) -> None:
+        """A delivery of the result (pipeline 0.11 delivers twice): its number, what a page says of it, and whether it is the last.
+        The run counts as finished from its first delivery — the result is there to show — and a page that has shown delivery 1
+        reads the result again when it sees delivery 2."""
+        self.record["delivery"] = {"number": number, "state": state, "final": final}
+        if self.record["finished"]:
+            self._write()
+        else:
+            self.finish()
+
     def finish(self) -> None:
         unfinished = [s for s, v in self.record["steps"].items() if v["state"] not in ("done", "reused")]
         if unfinished:

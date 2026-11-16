@@ -11,6 +11,7 @@ import time
 from pathlib import Path
 
 from . import paths, prices
+from . import positions as POS
 from . import spectrum as shape_mod
 from .catalog import FAMILY_SOURCE, PLAN, REPO, RUNG_LABELS, Catalog, family
 from .accuracy import APT_OPEN, carried_accuracy
@@ -173,7 +174,7 @@ def certificate(row: dict, catalog: Catalog) -> dict:
                 rung=dict(reached=rung, label=RUNG_LABELS[rung], ladder=ladder), spectrum=freqs, spectral_shape=shape, per_band_budget=budget,
                 anchor=anchor, anchor_coverage=coverage,
                 laboratory=catalog.lab_bands(row["name"]) if rung >= 5 else dict(n_bands=0, note="not validated against a laboratory record (rung < 5)"),
-                cost_record=cost, provenance=prov,
+                cost_record=cost, provenance=prov, positions=POS.CATALOGUE,
                 statement=(f"{row['name']}: rung {rung} ({RUNG_LABELS[rung]}). The cheap-level spectrum is served with the laboratory tolerance per family; no predicted "
                            "correction is shown in this record — the pipeline serves it for the licensed families ("
                            + ", ".join(lic["licensed_families"]) + "; decision 65); the anchor coverage lists what coupled-cluster evidence exists "
@@ -196,6 +197,7 @@ def anchor_markdown(c: dict) -> list[str]:
 def to_markdown(c: dict) -> str:
     m = c["molecule"]; r = c["rung"]
     L = [f"# Certificate — {m['name']} ({m['id']}), rung {r['reached']} · {r['label']} — {c['date']}", "", c["statement"], "",
+         f"**Positions.** {c['positions'][0].upper()}{c['positions'][1:]}.", "",
          "## Ladder", "", "| rung | label | status |", "|---|---|---|"]
     for k, v in r["ladder"].items():
         L.append(f"| {k} | {v['label']} | {'reached' if v['reached'] else v['note']} |")
@@ -229,7 +231,7 @@ def to_markdown(c: dict) -> str:
 
 def _shape_markdown(s: dict) -> list[str]:
     """The spectrum as astronomers read it: the strongest bands, and how well that shape is known (TASKS 39)."""
-    L = ["", "## Spectral shape (cheap rung; positions and heights)", ""]
+    L = ["", "## Spectral shape (cheap rung; harmonic positions and heights)", ""]
     if s.get("kind") != "positions and heights":
         return L + [f"Positions only: {s.get('reason', '—')}."]
     top = sorted(s["sticks"], key=lambda x: -x["km_mol"])[:8]

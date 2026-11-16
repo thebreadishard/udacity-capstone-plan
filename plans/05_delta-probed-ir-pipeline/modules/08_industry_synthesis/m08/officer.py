@@ -10,6 +10,7 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
+from . import positions as POS
 from . import prices
 from .catalog import PLAN, RUNG_LABELS, Catalog, canonical
 from .licence import state as licence_state
@@ -123,7 +124,8 @@ def decide(req: Request, catalog: Catalog) -> Decision:  # noqa: PLR0911  one re
     reached = int(row["rung"])
     if req.target_rung in (2, 3):
         return _refuse(req, [f"a corrected spectrum is computed by the pipeline (m08/pipeline.py, on the laptop), not by the replay worker — "
-                             f"{lic['statement']}"], ["R14"], "the corrected rungs are the pipeline's (licence: decision 65)", [anchor],
+                             f"{lic['statement']}; {POS.PIPELINE}"], ["R14"], "the corrected rungs are the pipeline's (licence: decision 65)",
+                       [anchor],
                        "a pipeline run of the molecule: python -m m08.pipeline --name <name> --smiles <SMILES> --out <folder>", row)
     if reached >= req.target_rung:
         return Decision(kind="certificate", request=req, molecule_id=row["id"], name=row["name"], rung_reached=reached, rung_label=RUNG_LABELS[reached],

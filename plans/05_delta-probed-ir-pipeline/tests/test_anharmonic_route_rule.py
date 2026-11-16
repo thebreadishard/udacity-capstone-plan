@@ -71,7 +71,7 @@ def test_the_reading_says_so_when_no_family_is_licensed():
     res = {"other": {"route": None, "error_bar_cm": None, "reason": "neither carries"}}
     s3_read = {"registration": "r.md", "targets": ["tetracene"], "read": {"families": {}, "rows": {}}}
     text = "\n".join(R.report(res, {}, s3_read))
-    assert "no family. Every band keeps its harmonic position" in text
+    assert "no family: no anharmonic position is licensed. What the pipeline prints is the table below." in text
     assert "| other | 0 | no step | — | — | — | — | neither carries |" in text
 
 
