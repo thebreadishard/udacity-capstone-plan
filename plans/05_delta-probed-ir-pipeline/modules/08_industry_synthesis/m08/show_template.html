@@ -473,7 +473,8 @@ function showResult(m) {
       <div class="legend"><span><i style="border-color:var(--accent)"></i>network (corrected)</span><span><i style="border-color:var(--fg-muted)"></i>B3LYP (input)</span>${m.spectrum.curves.truth ? '<span><i style="border-color:var(--ok);border-top-style:dashed"></i>ωB97X truth</span>' : ""}</div></div>
     <div class="cert fade-in"><div class="facts-row">${truth}<span>seeds agree within <b>${m.seed_spread_cm.toFixed(1)} cm⁻¹</b></span></div>
       <table><thead><tr><th>family</th><th class="num">bands</th><th class="num">error (a)</th><th class="num">error (b)</th><th>licence (≤ ${DATA.licence_line_cm} cm⁻¹)</th></tr></thead><tbody>${fam}</tbody></table>
-      <div class="facts-row muted"><span>pipeline ${esc(m.pipeline_version)}</span><span>${esc(DATA.network)}</span><span>errors: the network's seed means on molecules it never saw (cm⁻¹)</span></div>
+      ${m.licence_caveat ? `<div class="facts-row muted"><span>${esc(m.licence_caveat)}</span></div>` : ""}
+      <div class="facts-row muted"><span>pipeline ${esc(m.pipeline_version)}</span><span>${esc(DATA.network)}</span><span>errors: the ${esc(m.error_quantity)}, on molecules the network never saw (cm⁻¹)</span></div>
       ${m.atlas ? `<div class="facts-row"><a href="${esc(m.atlas)}" target="_blank" rel="noopener">${esc(m.name)} in the Spectrum Atlas ↗</a></div>` : ""}</div>`;
   document.querySelectorAll(".spec polyline.draw").forEach((p) => {
     const len = p.getTotalLength(); p.style.strokeDasharray = len; p.style.strokeDashoffset = len;

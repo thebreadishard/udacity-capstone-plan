@@ -14,6 +14,7 @@ from . import paths, prices
 from . import spectrum as shape_mod
 from .catalog import FAMILY_SOURCE, PLAN, REPO, RUNG_LABELS, Catalog, family
 from .accuracy import APT_OPEN, carried_accuracy
+from .licence import caveat_sentence
 from .licence import state as licence_state
 from .pipeline import NETWORK
 from .replay import replay_run
@@ -160,7 +161,9 @@ def certificate(row: dict, catalog: Catalog) -> dict:
                 evidence=[dict(path=e, exists=paths.resolve(e, must_exist=False).exists()) for e in row.get("evidence", [])],
                 pre_registrations=["GoalGathering/notes/PreRegistration_2026-09-25_Proof_of_Learning_Layer_B.md", "modules/08_industry_synthesis/PRE_REGISTRATION.md"],
                 family_rule=FAMILY_SOURCE, licence=dict(rule_source=lic["rule_source"], licensed_families=lic["licensed_families"],
-                                                        errors=lic["errors"], sources=lic["sources"]))
+                                                        errors=lic["errors"], quantity=lic["quantity"], quantity_name=lic["quantity_name"],
+                                                        first_order_errors=lic["first_order_errors"], caveats=lic["caveats"],
+                                                        sources=lic["sources"]))
     ladder = {r: dict(label=RUNG_LABELS[r], reached=(r <= rung and r not in (2, 3)) or (r in (2, 3) and False),
                       note=("— not in this record: the pipeline (m08/pipeline.py) serves it for the licensed families (decision 65)"
                             + ("; heights only where an APT exists" if r == 3 else "") if r in (2, 3)
@@ -174,7 +177,7 @@ def certificate(row: dict, catalog: Catalog) -> dict:
                 statement=(f"{row['name']}: rung {rung} ({RUNG_LABELS[rung]}). The cheap-level spectrum is served with the laboratory tolerance per family; no predicted "
                            "correction is shown in this record — the pipeline serves it for the licensed families ("
                            + ", ".join(lic["licensed_families"]) + "; decision 65); the anchor coverage lists what coupled-cluster evidence exists "
-                           "and where it is wider than the tolerance."))
+                           "and where it is wider than the tolerance." + (" " + caveat_sentence(lic) if lic["caveats"] else "")))
 
 
 def anchor_markdown(c: dict) -> list[str]:
@@ -219,7 +222,8 @@ def to_markdown(c: dict) -> str:
     p = c["provenance"]
     L += ["", "## Provenance", "", f"- releases: {', '.join(p['release']) or '—'}; deck {p['deck_hash']}; commit {p['commit']}; export built {p['export_built_utc']}",
           "- evidence: " + ("; ".join(f"{e['path']} ({'exists' if e['exists'] else 'MISSING'})" for e in p["evidence"]) or "—"),
-          f"- licence: {len(p['licence']['licensed_families'])} families licensed ({p['licence']['rule_source']})", f"- family rule: {p['family_rule']}", ""]
+          f"- licence: {len(p['licence']['licensed_families'])} families licensed, read on the {p['licence']['quantity_name']} "
+          f"({p['licence']['rule_source']})" + "".join(f"; {n}" for n in p["licence"]["caveats"]), f"- family rule: {p['family_rule']}", ""]
     return "\n".join(L)
 
 

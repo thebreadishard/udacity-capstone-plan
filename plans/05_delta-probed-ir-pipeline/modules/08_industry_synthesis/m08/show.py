@@ -20,9 +20,11 @@ from pathlib import Path, PureWindowsPath
 
 import numpy as np
 
+from . import accuracy as A
 from . import live_certificate as LC
 from . import paths
 from . import pipeline as P
+from .licence import caveat_sentence
 from .spectrum import GRID, broadened
 
 # isort: split
@@ -187,7 +189,8 @@ def spectrum(r: LC.Result, cert: dict) -> dict:
 
 
 def families(bands: list[dict]) -> list[dict]:
-    """Per family the certificate's band count, licence and the network's measured error on hold-outs (a) and (b)."""
+    """Per family the certificate's band count, licence and the network's error on hold-outs (a) and (b), in the quantity the
+    certificate's bands carry (`molecule` names it: `error_quantity`)."""
     rows = []
     for fam in FAMILY_ORDER:
         mine = [b for b in bands if b["family"] == fam]
@@ -236,6 +239,7 @@ def molecule(folder: Path) -> dict:
             "atlas": atlas_link(cert["molecule"]["listed"]),
             "route": "reused" if reused(rec) else "computed", "pipeline_version": rec["pipeline_version"],
             "stations": stations(rec), "real_time": real_time(rec), "spectrum": spectrum(r, cert), "families": families(cert["bands"]),
+            "error_quantity": A.QUANTITY_NAMES[A.stated_errors(cert["accuracy"])[0]], "licence_caveat": caveat_sentence(cert["licence"]),
             "truth": {"rms_cm": truth["rms_by_rank_cm"], "overlap": truth["overlap"]} if truth else None,
             "seed_spread_cm": max(b["seed_range_cm"][1] - b["seed_range_cm"][0] for b in cert["bands"])}
 

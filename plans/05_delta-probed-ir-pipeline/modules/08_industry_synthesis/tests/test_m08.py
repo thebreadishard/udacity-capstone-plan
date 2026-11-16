@@ -36,11 +36,13 @@ def test_family_rule_matches_module_03():
     assert family(673.0).startswith("CH-oop") and family(1600.0).startswith("CC-stretch (6.2") and family(3050.0) == "CH-stretch"
 
 
-def test_the_licence_follows_the_carried_networks_error():
-    """Decision 65 (29 Oct 2026) on v1.3's evaluation records."""
+def test_the_licence_follows_the_carried_networks_product_error():
+    """Decision 65 (29 Oct 2026, amended 16 Nov 2026) on v1.3's product-error record; the first-order read-outs beside it."""
     s = licence_state()
-    assert s["licensed_families"] == ["ring-ip", "CH-stretch", "CH-oop"] and s["rule_source"] == "README.md, decision 65"
-    assert "other (3.62 / 3.89)" in s["statement"] and "no coupled-cluster licence" in s["statement"]   # clean (a), TASKS 157
+    assert s["licensed_families"] == ["ring-ip", "CH-stretch", "CH-oop", "other"]
+    assert s["rule_source"] == "README.md, decision 65 as amended on 16 Nov 2026"
+    assert "other (2.78 / 2.77); not licensed: none — error of the corrected band positions of the seed-mean correction" in s["statement"]
+    assert "other (3.62 / 3.89); no coupled-cluster licence" in s["statement"]                           # first order, clean (a), TASKS 157
 
 
 def rung_one_parent(cat) -> str:
@@ -87,6 +89,9 @@ def test_certificate_sources_and_evidence(cat):
         assert k["source"]
     md = to_markdown(c)
     assert "## Cost record" in md and "## Provenance" in md and "licensed at the DFT proxy" in md
+    assert c["statement"].endswith("where it is wider than the tolerance. Licence caveat: other on hold-out (a) rests on 8 molecules: the 95 % "
+                                   "interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie "
+                                   "under it).")
 
 
 def test_spectral_shape_heights_only_with_an_apt(cat):
@@ -158,8 +163,10 @@ def test_the_live_certificate_agrees_with_benzenes_export_certificate(cat):
     gap = max(abs(a - b) for a, b in zip(listed, ours, strict=True))
     assert abs(gap - m["listed"]["b3lyp_max_abs_diff_cm"]) <= 0.15
     page = LC.to_markdown(live)
-    assert "not measured for this network version" in page and "| other | 3.62 (" in page          # clean (a), TASKS 157
-    assert live["licence"]["licensed_families"] == ["ring-ip", "CH-stretch", "CH-oop"]
+    assert "not measured for this network version" in page and "| other | 3.62 (" in page          # first order, clean (a), TASKS 157
+    assert "| other | 2.78 (95 % interval over molecules 1.68–3.76; 156 bands) | 2.77 (" in page    # the product's error, the licence's
+    assert live["licence"]["licensed_families"] == ["ring-ip", "CH-stretch", "CH-oop", "other"] and live["licence"]["quantity"] == "product"
+    assert all(b["licensed"] and max(b["error_cm"].values()) <= 3.0 for b in live["bands"])
 
 
 CHEAP = {"eur_ex_vat": 0.24}

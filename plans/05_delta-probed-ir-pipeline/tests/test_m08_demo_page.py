@@ -45,20 +45,21 @@ def test_an_all_zero_panel_is_refused():
         D.svg_spectrum(GRID, {"network": np.zeros_like(GRID)}, "empty")
 
 
-READ = {f: {"mean": 1.0} for f in D.FAMILY_ORDER}
+READ = {f: {"a": 1.0, "b": 2.0} for f in D.FAMILY_ORDER}
 
 
 def test_family_rows_count_bands_and_keep_the_order():
     bands = [{"family": "other", "licensed": False}, {"family": "ring-ip", "licensed": True}, {"family": "ring-ip", "licensed": True}]
-    rows = D.family_rows(bands, READ, READ)
+    rows = D.family_rows(bands, READ)
     assert [(r["family"], r["bands"], r["licensed"]) for r in rows] == [("ring-ip", 2, True), ("other", 1, False)]
+    assert {(r["error_a"], r["error_b"]) for r in rows} == {(1.0, 2.0)}
 
 
 def test_family_rows_refuse_a_split_licence_and_an_unknown_family():
     with pytest.raises(ValueError, match="disagree"):
-        D.family_rows([{"family": "CH-oop", "licensed": True}, {"family": "CH-oop", "licensed": False}], READ, READ)
+        D.family_rows([{"family": "CH-oop", "licensed": True}, {"family": "CH-oop", "licensed": False}], READ)
     with pytest.raises(ValueError, match="outside"):
-        D.family_rows([{"family": "CO-stretch", "licensed": True}], READ, READ)
+        D.family_rows([{"family": "CO-stretch", "licensed": True}], READ)
 
 
 def test_the_page_refuses_two_network_versions():

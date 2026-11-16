@@ -52,6 +52,7 @@ def test_the_stations_and_the_certificate_come_from_the_records(folder):
         bands = [b for b in cert["bands"] if b["family"] == row["family"]]
         assert row["bands"] == len(bands)
         assert (row["error_a"], row["error_b"], row["licensed"]) == (bands[0]["error_cm"]["a"], bands[0]["error_cm"]["b"], bands[0]["licensed"])
+    assert m["error_quantity"] == "first-order diagonal error of each seed's correction, averaged over the seeds"   # certificates of 30 Oct
     assert m["status"]["role"] == cert["molecule"]["seen"]["role"] and m["truth"] is None
     assert m["n_c"] == S.carbon_count(rec["admission"]["formula"]) and m["route"] == "computed"
 

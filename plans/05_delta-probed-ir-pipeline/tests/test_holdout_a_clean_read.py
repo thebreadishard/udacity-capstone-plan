@@ -36,7 +36,11 @@ def test_seed_means_and_a_family_the_clean_set_moves_across_the_line(tmp_path):
     rows = {r["family"]: r for r in HC.table(paths)}
     assert rows["CH-oop"]["a8"] == pytest.approx(3.12) and rows["CH-oop"]["licensed_stored"] and not rows["CH-oop"]["licensed_clean"]
     assert rows["ring-ip"]["licensed_clean"] and not rows["other"]["licensed_stored"]
-    assert "Licence changed by the clean (a8): CH-oop." in HC.markdown(list(rows.values()), paths)
+    text = HC.markdown(list(rows.values()), paths)
+    assert "Changed by the clean (a8): CH-oop." in text and "seed-mean error" not in text and "| licensed" not in text
+    assert "First-order diagonal error of each seed's correction, averaged over 3 seeds" in text
+    assert "since then the licence is read on the error of the corrected band positions of the seed-mean correction" in text
+    assert "| first order within the line, (a) as stored | first order within the line, clean (a8) |" in text
 
 
 def test_exactly_on_the_line_is_licensed(tmp_path):

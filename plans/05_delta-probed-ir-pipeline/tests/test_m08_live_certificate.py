@@ -1,10 +1,9 @@
 """The live certificate (`modules/08_industry_synthesis/m08/live_certificate.py`, TASKS 146 build step 4) without the website export: the
-evaluation records of the network that ran, its measured error as chain 35's read reports it (the records are read as JSON; no carried
-model's file is loaded), and the band table on the frozen corpus's benzene with the transfer pin's model. The whole certificate against the
-export's is in module 08's own tests, which read the export."""
+evaluation records of the network that ran, its first-order read-outs as chain 35's read reports them and the product's error its
+licence and bands state (the records are read as JSON; no carried model's file is loaded), and the band table on the frozen corpus's
+benzene with the transfer pin's model. The whole certificate against the export's is in module 08's own tests, which read the export."""
 from __future__ import annotations
 
-import copy
 import json
 import shutil
 import sys
@@ -29,7 +28,7 @@ ZERO = np.zeros((36, 36))
 
 @pytest.fixture(scope="module")
 def accuracy() -> dict:
-    return A.network_accuracy(A.evaluation_records(V13))
+    return A.accuracy_of(V13)
 
 
 def test_each_model_has_its_one_evaluation_record():
@@ -43,23 +42,29 @@ def test_a_model_without_exactly_one_record_is_refused(name, match):
         A.evaluation_records((name,))
 
 
-def test_the_measured_error_is_chain_35s_read(accuracy):
-    """The seed means of `out/E7_rungC_chain35_read.md` (28 Oct 2026), which the model registry's note for v1.3 repeats."""
+def test_the_first_order_read_outs_are_chain_35s_read():
+    """The seed means of `out/E7_rungC_chain35_read.md` (28 Oct 2026), which the model registry's note for v1.3 repeats: the first-order
+    quantity on hold-out (a) as stored (ten molecules), which no licence is read on."""
+    accuracy = A.network_accuracy(A.evaluation_records(V13))
     mean = {h: {q: v["mean"] for q, v in accuracy["holdouts"][h]["readouts"].items()} for h in ("a", "b")}
     assert mean["a"] == {"ring-ip": 1.66, "CH-stretch": 1.15, "CH-oop": 1.99, "other": 3.35, "coupling_ratio": 0.172}
     assert mean["b"] == {"ring-ip": 2.12, "CH-stretch": 2.5, "CH-oop": 2.7, "other": 3.89, "coupling_ratio": 0.263}
     a = accuracy["holdouts"]["a"]["readouts"]
     assert a["other"]["within_target"] is False and a["ring-ip"]["within_target"] is True and a["CH-stretch"]["target"] == 3.0
     assert len(a["other"]["seeds"]) == 3 and accuracy["holdouts"]["a"]["shape"]["n_molecules"] == 10
+    with pytest.raises(A.NoProductError):
+        licence.state(accuracy)
 
 
-def test_the_licence_follows_the_error_of_the_files_that_ran(accuracy):
-    """Decision 65: a family is licensed where its seed-mean error is within 3 cm⁻¹ on both hold-outs."""
+def test_the_licence_follows_the_product_error_of_the_files_that_ran(accuracy):
+    """Decision 65 as amended on 16 Nov 2026: a family is licensed where the error of the corrected band positions of the seed-mean
+    correction is within 3 cm⁻¹ on both hold-outs."""
     s = licence.state(accuracy)
-    assert s["licensed_families"] == ["ring-ip", "CH-stretch", "CH-oop"] and "not licensed: other (3.35 / 3.89)" in s["statement"]
+    assert s["licensed_families"] == ["ring-ip", "CH-stretch", "CH-oop", "other"] and "other (2.78 / 2.77); not licensed: none" in s["statement"]
+    assert "other on hold-out (a) rests on 8 molecules" in s["statement"] and "1.68–3.76 cm⁻¹" in s["statement"]
 
 
-def test_the_clean_hold_out_a_replaces_a_and_keeps_the_licence():
+def test_the_clean_hold_out_a_replaces_a_in_both_quantities(accuracy):
     """TASKS 157 (the user, 30 Oct 2026): hold-out (a) read on the eight molecules never trained on under any id."""
     clean = A.clean_a_records(V13)
     assert [p.name for p in clean] == [f"E7_rungC_chain35_analytic_a8read_seed{s}.json" for s in range(3)]
@@ -68,21 +73,14 @@ def test_the_clean_hold_out_a_replaces_a_and_keeps_the_licence():
     assert mean["a"] == {"ring-ip": 1.77, "CH-stretch": 1.19, "CH-oop": 2.17, "other": 3.62}
     assert mean["b"] == {"ring-ip": 2.12, "CH-stretch": 2.5, "CH-oop": 2.7, "other": 3.89}
     assert acc["holdouts"]["a"]["n_molecules"] == 8 and acc["holdouts"]["a"]["description"] == A.CLEAN_A
-    assert licence.state(acc)["licensed_families"] == ["ring-ip", "CH-stretch", "CH-oop"]
+    assert accuracy["holdouts"]["a"]["readouts"] == acc["holdouts"]["a"]["readouts"] and accuracy["holdouts"]["a"]["description"] == A.CLEAN_A
+    assert {v["n_molecules"] for v in accuracy["holdouts"]["a"]["product"].values()} == {8}
 
 
 def test_clean_reads_for_some_models_only_are_refused():
     assert A.clean_a_records(("E7_rungC_nochain_model_n750_seed0.pt",)) is None
     with pytest.raises(ValueError, match="some models only"):
         A.clean_a_records((V13[0], "E7_rungC_nochain_model_n750_seed1.pt"))
-
-
-def test_a_family_on_the_line_is_licensed_and_one_above_it_is_not(accuracy):
-    acc = copy.deepcopy(accuracy)
-    for h in ("a", "b"):
-        acc["holdouts"][h]["readouts"]["other"]["mean"] = 3.0
-    acc["holdouts"]["b"]["readouts"]["CH-oop"]["mean"] = 3.01
-    assert licence.state(acc)["licensed_families"] == ["ring-ip", "CH-stretch", "other"]
 
 
 @pytest.fixture
@@ -106,7 +104,7 @@ def test_a_zero_correction_pairs_each_band_with_its_own_b3lyp_mode(result, accur
     assert [b["network_cm"] for b in rows] == sorted(b["network_cm"] for b in rows)
     assert all(b["licensed"] == (b["family"] == "ring-ip") for b in rows)
     assert sum(b["family"] == "CH-stretch" for b in rows) == 6 and {b["family"] for b in rows} <= {"ring-ip", "CH-stretch", "CH-oop", "other"}
-    assert all(b["error_cm"]["a"] == accuracy["holdouts"]["a"]["readouts"][b["family"]]["mean"] for b in rows)
+    assert all(b["error_cm"] == {h: accuracy["holdouts"][h]["product"][b["family"]]["rms"] for h in ("a", "b")} for b in rows)
     baseline = json.loads((result / "pipeline.json").read_text(encoding="utf-8"))["spectra"]["baseline"]["sticks"]
     assert [b["baseline_cm"] for b in rows] == [s["omega_cm"] for s in baseline]
 
@@ -147,9 +145,11 @@ def test_a_mode_lifted_over_the_line_keeps_its_partner(result, accuracy):
     assert len(rows) == 30 and len(lifted) == 1
     assert lifted[0]["b3lyp_cm"] == 10.0 and lifted[0]["network_cm"] == round(float(np.sqrt((37.0 ** 2 + 19.0 ** 2) / 2)), 1)
     assert lifted[0]["seed_range_cm"] == [19.0, 37.0]
-    assert lifted[0]["family"] == "other" and lifted[0]["error_cm"]["a"] == accuracy["holdouts"]["a"]["readouts"]["other"]["mean"]
+    assert lifted[0]["family"] == "other" and lifted[0]["error_cm"]["a"] == accuracy["holdouts"]["a"]["product"]["other"]["rms"]
     assert all(b["seed_range_cm"][0] == b["seed_range_cm"][1] == b["network_cm"] for b in rows if b is not lifted[0])
-    assert "— (B3LYP under 20 cm⁻¹)" in "\n".join(LC._band_lines({"bands": rows}))
+    lines = LC._band_lines({"bands": rows, "licence": {"quantity_name": A.QUANTITY_NAMES[A.PRODUCT]}})
+    assert "— (B3LYP under 20 cm⁻¹)" in "\n".join(lines)
+    assert "| licensed | error of the corrected band positions of the seed-mean correction on (a) / (b), cm⁻¹ |" in lines[0]
 
 
 def test_a_record_that_is_not_its_correction_is_refused(result, accuracy):
