@@ -1,19 +1,24 @@
-# Certificate — benzene · pipeline 0.11 (step 6 added to a 0.9 result from a stored force field) · 2026-11-16 19:31
+# Certificate — benzene · pipeline 0.11 (step 6 added to a 0.9 result from a stored force field) · 2026-11-16 20:17
 
-benzene: the infrared spectrum of ΔH-network v1.3 (3 seeds) — B3LYP/6-31G* corrected toward ωB97X/6-31G* — with the error of the corrected band positions of the seed-mean correction measured on molecules the network never saw; the harmonic positions ω are licensed for ring-ip, CH-stretch, CH-oop, other (decision 65), each band marked; at the coupled-cluster level not measured for this network version: the coupled-cluster reads (T3) were made on chain 34, and tests on the 9–11 existing anchors wait for the anchor decision of November 2026. The scaled B3LYP spectrum is shown as the baseline only. This molecule: held out, hold-out (a) (A_8448043181): never trained on; the measured error includes it. Licence caveat: other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie under it).
+benzene: the infrared spectrum of ΔH-network v1.3 (3 seeds) — B3LYP/6-31G* corrected toward ωB97X/6-31G* — with the error of the corrected band positions of the seed-mean correction measured on molecules the network never saw; the harmonic positions ω are licensed for ring-ip, CH-stretch, CH-oop, other (decision 65), each band marked; at the coupled-cluster level not measured for this network version: the coupled-cluster reads (T3) were made on chain 34, and tests on the 9–11 existing anchors wait for the anchor decision of November 2026. The scaled B3LYP spectrum is shown as the baseline only. This molecule and the ΔH network: held out, hold-out (a) (A_8448043181): never trained on; the measured error includes it. Licence caveat: other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie under it).
 
-**Positions.** Each band is printed at its best estimate — the anharmonic position ν = ω + Δ_anh for 28 of 30 bands (Δ_anh from the model x2* on the molecule's GFN2-xTB force field; for 1 of them the step's error is not measured for that kind of mode, and no bar is printed), the harmonic position ω for the other 2, each with its reason; ω stands beside every ν; the licence (decision 65) is on the harmonic position ω against the DFT proxy (ωB97X); it says nothing about the anharmonic position ν; no licence is claimed for ν: its uncertainty is the rms of the band's family measured on coronene and tetracene, stated, not licensed, and not a prediction interval for one band.
+**Positions.** Each band is printed at its best estimate — the anharmonic position ν = ω + Δ_anh for 28 of 30 bands (Δ_anh from the model x2* on the molecule's GFN2-xTB force field; for 1 of them the step's error is not measured for that kind of mode, and no bar is printed), the harmonic position ω for the other 2, each with its reason; ω stands beside every ν; the licence (decision 65) is on the harmonic position ω against the DFT proxy (ωB97X); it says nothing about the anharmonic position ν; no licence is claimed for ν.
+
+**What the bar is, and what ν's error is.** The bar beside a step is the step's error alone — the rms of Δ_anh against its B3LYP VPT2 label — and not the error of ν: ν carries ω's error too, the harmonic position's error against the DFT proxy (ωB97X), which is what the licence is about; neither of the two is an error against experiment.
+
+**What the bars rest on.** The bars rest on 2 target molecules, coronene and tetracene, both hydrocarbons — target modes: CH-oop 22, other 23, ring-ip 56, CH-stretch 20; the step's rms per molecule, coronene / tetracene, in cm⁻¹: CH-oop 11.91 / 4.55; other 5.69 / 1.09; ring-ip 4.25 / 2.35; CH-stretch 6.94 / 5.68; coronene carries the larger error in every family. They are the best numbers there are and they are thin: nothing here says the step helps a molecule unlike the targets, and a bar is a family's rms, not a prediction interval for one band.
 
 ## Molecule
 
 - c1ccccc1, C6H6, 12 atoms (C, H); the network's training set spans 8–30 atoms: inside
 - catalogue: listed as A_8448043181 (benzene, rung 5); its export's B3LYP positions lie within 22.8 cm⁻¹ of this run's (website export catalog.json, molecules/A_8448043181.json)
-- the network: held out, hold-out (a) (A_8448043181): never trained on; the measured error includes it
+- the ΔH network: held out, hold-out (a) (A_8448043181): never trained on; the measured error includes it
+- the anharmonic model x2* has this molecule in its training table (A_8448043181, one of 37): for this molecule the step's bar is not an out-of-sample error
 - the ωB97X truth is in the corpus (corpus/molecules/A_8448043181/hessian_wb97x_analytic.npz, 30 bands): the network against it, spectrum overlap 0.985; positions paired by rank, rms 1.27 cm⁻¹ (both independent of the atom order)
 
 ## Spectrum, band by band (ΔH-network v1.3, 3 seeds)
 
-| best estimate (cm⁻¹) | printed | harmonic ω, network | Δ_anh | ± of ν (measured, not licensed) | height (km/mol) | seeds' range of ω | B3LYP ω | baseline ω | family | ω licensed | error of the corrected band positions of the seed-mean correction of ω on (a) / (b), cm⁻¹ | laboratory region | u_band (cm⁻¹) |
+| best estimate (cm⁻¹) | printed | harmonic ω, network | Δ_anh | ± of Δ_anh, against its VPT2 label (measured, not licensed) | height (km/mol) | seeds' range of ω | B3LYP ω | baseline ω | family | ω licensed | error of the corrected band positions of the seed-mean correction of ω on (a) / (b), cm⁻¹ | laboratory region | u_band (cm⁻¹) |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | 426.2 | harmonic ω | 426.2 | — | — | 0.0 | 424.3–427.4 | 415.4 | 397.1 | other | yes | 2.78 / 2.77 | low / skeletal | 16.05 |
 | 426.2 | harmonic ω | 426.2 | — | — | 0.0 | 424.3–427.5 | 415.4 | 397.1 | other | yes | 2.78 / 2.77 | low / skeletal | 16.05 |
@@ -51,11 +56,11 @@ benzene: the infrared spectrum of ΔH-network v1.3 (3 seeds) — B3LYP/6-31G* co
 Which position each band is printed at (the licence (decision 65) is on the harmonic position ω against the DFT proxy (ωB97X); it says nothing about the anharmonic position ν):
 
 - harmonic position, no anharmonic step: no model was measured for this family in this range — 2 band(s): 426.2, 426.2 cm⁻¹
-- anharmonic estimate ν = ω + Δ_anh, ± 3.84 cm⁻¹ (the measured rms of family other on coronene and tetracene); no licence is claimed for ν — 2 band(s): 618.8, 618.8 cm⁻¹
-- anharmonic estimate ν = ω + Δ_anh, ± 8.38 cm⁻¹ (the measured rms of family CH-oop on coronene and tetracene); no licence is claimed for ν — 6 band(s): 692.4, 874.2, 875.1, 986.8, 987.0, 1021.2 cm⁻¹
+- anharmonic estimate ν = ω + Δ_anh; the step's error is ± 3.84 cm⁻¹ (rms of Δ_anh against its VPT2 label, family other); no licence is claimed for ν — 2 band(s): 618.8, 618.8 cm⁻¹
+- anharmonic estimate ν = ω + Δ_anh; the step's error is ± 8.38 cm⁻¹ (rms of Δ_anh against its VPT2 label, family CH-oop); no licence is claimed for ν — 6 band(s): 692.4, 874.2, 875.1, 986.8, 987.0, 1021.2 cm⁻¹
 - anharmonic estimate ν = ω + Δ_anh, printed without an error bar: the step's error is not measured for this kind of mode (family 'other' with an out-of-plane share of 0.8 or more); no licence is claimed for ν — 1 band(s): 722.4 cm⁻¹
-- anharmonic estimate ν = ω + Δ_anh, ± 3.37 cm⁻¹ (the measured rms of family ring-ip on coronene and tetracene); no licence is claimed for ν — 13 band(s): 1009.4, 1016.7, 1062.8, 1062.8, 1161.7, 1195.5, 1195.5, 1297.8, 1364.9, 1511.0, 1511.0, 1652.4, 1652.4 cm⁻¹
-- anharmonic estimate ν = ω + Δ_anh, ± 6.21 cm⁻¹ (the measured rms of family CH-stretch on coronene and tetracene); no licence is claimed for ν — 6 band(s): 3069.5, 3089.0, 3089.0, 3109.0, 3109.0, 3115.1 cm⁻¹
+- anharmonic estimate ν = ω + Δ_anh; the step's error is ± 3.37 cm⁻¹ (rms of Δ_anh against its VPT2 label, family ring-ip); no licence is claimed for ν — 13 band(s): 1009.4, 1016.7, 1062.8, 1062.8, 1161.7, 1195.5, 1195.5, 1297.8, 1364.9, 1511.0, 1511.0, 1652.4, 1652.4 cm⁻¹
+- anharmonic estimate ν = ω + Δ_anh; the step's error is ± 6.21 cm⁻¹ (rms of Δ_anh against its VPT2 label, family CH-stretch); no licence is claimed for ν — 6 band(s): 3069.5, 3089.0, 3089.0, 3109.0, 3109.0, 3115.1 cm⁻¹
 
 *Laboratory region and u_band:* modules/03_lab_scoreboard/build_lab_tables.py FAMILY_RULE (12 Sep 2026), read at the printed position.
 
@@ -99,6 +104,6 @@ Beside it the evaluation records' read-outs — the first-order diagonal error o
 
 ## Provenance
 
-- result C:\Users\thebr\Documents\CapstonePlan-wt-anharmonic\plans\05_delta-probed-ir-pipeline\probes\results_m1\anharmonic_step_2026-11-16\stored_field_demo\benzene; run at commit 292b3f9a (uncommitted changes: yes); certificate at 583a705a
+- result C:\Users\thebr\Documents\CapstonePlan-wt-anharmonic\plans\05_delta-probed-ir-pipeline\probes\results_m1\anharmonic_step_2026-11-16\stored_field_demo\benzene; run at commit 292b3f9a (uncommitted changes: yes); certificate at 8f1997ac
 - deck 9e27bf8e934893f3; low level {"pyscf": "2.14.0", "pyscf_git": null, "numpy": "2.5.2", "python": "3.12.14", "sha256": {"analytic_hessians.py": "0ea113dae1df", "apt.py": "b22c29d0575f"}}; host Asus18
 - models: E7_rungC_chain35_analytic_model_n750_seed0.pt (carried, sha16 f930db4af9268a00); E7_rungC_chain35_analytic_model_n750_seed1.pt (carried, sha16 87734859e866d6f7); E7_rungC_chain35_analytic_model_n750_seed2.pt (carried, sha16 023b8c142ad5fa52)

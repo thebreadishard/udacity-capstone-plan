@@ -1,6 +1,6 @@
 {
  "kind": "live certificate",
- "date": "2026-11-16 19:31",
+ "date": "2026-11-16 20:17",
  "pipeline_version": "0.11 (step 6 added to a 0.9 result from a stored force field)",
  "molecule": {
   "name": "benzene",
@@ -365,8 +365,8 @@
    "printed": "harmonic ω",
    "nu_cm": null,
    "delta_anh_cm": null,
-   "anharmonic_bar_cm": null,
-   "anharmonic_error_measured": null,
+   "step_bar_cm": null,
+   "step_error_measured": null,
    "step_family": "other",
    "no_step_reason": "unmeasured",
    "position_note": "harmonic position, no anharmonic step: no model was measured for this family in this range"
@@ -392,8 +392,8 @@
    "printed": "harmonic ω",
    "nu_cm": null,
    "delta_anh_cm": null,
-   "anharmonic_bar_cm": null,
-   "anharmonic_error_measured": null,
+   "step_bar_cm": null,
+   "step_error_measured": null,
    "step_family": "other",
    "no_step_reason": "unmeasured",
    "position_note": "harmonic position, no anharmonic step: no model was measured for this family in this range"
@@ -419,11 +419,11 @@
    "printed": "anharmonic ν",
    "nu_cm": 618.8,
    "delta_anh_cm": -6.3,
-   "anharmonic_bar_cm": 3.84,
-   "anharmonic_error_measured": true,
+   "step_bar_cm": 3.84,
+   "step_error_measured": true,
    "step_family": "other",
    "no_step_reason": null,
-   "position_note": "anharmonic estimate ν = ω + Δ_anh, ± 3.84 cm⁻¹ (the measured rms of family other on coronene and tetracene); no licence is claimed for ν"
+   "position_note": "anharmonic estimate ν = ω + Δ_anh; the step's error is ± 3.84 cm⁻¹ (rms of Δ_anh against its VPT2 label, family other); no licence is claimed for ν"
   },
   {
    "network_cm": 625.1,
@@ -446,11 +446,11 @@
    "printed": "anharmonic ν",
    "nu_cm": 618.8,
    "delta_anh_cm": -6.3,
-   "anharmonic_bar_cm": 3.84,
-   "anharmonic_error_measured": true,
+   "step_bar_cm": 3.84,
+   "step_error_measured": true,
    "step_family": "other",
    "no_step_reason": null,
-   "position_note": "anharmonic estimate ν = ω + Δ_anh, ± 3.84 cm⁻¹ (the measured rms of family other on coronene and tetracene); no licence is claimed for ν"
+   "position_note": "anharmonic estimate ν = ω + Δ_anh; the step's error is ± 3.84 cm⁻¹ (rms of Δ_anh against its VPT2 label, family other); no licence is claimed for ν"
   },
   {
    "network_cm": 701.7,
@@ -473,11 +473,11 @@
    "printed": "anharmonic ν",
    "nu_cm": 692.4,
    "delta_anh_cm": -9.3,
-   "anharmonic_bar_cm": 8.38,
-   "anharmonic_error_measured": true,
+   "step_bar_cm": 8.38,
+   "step_error_measured": true,
    "step_family": "CH-oop",
    "no_step_reason": null,
-   "position_note": "anharmonic estimate ν = ω + Δ_anh, ± 8.38 cm⁻¹ (the measured rms of family CH-oop on coronene and tetracene); no licence is claimed for ν"
+   "position_note": "anharmonic estimate ν = ω + Δ_anh; the step's error is ± 8.38 cm⁻¹ (rms of Δ_anh against its VPT2 label, family CH-oop); no licence is claimed for ν"
   },
   {
    "network_cm": 733.7,
@@ -500,8 +500,8 @@
    "printed": "anharmonic ν",
    "nu_cm": 722.4,
    "delta_anh_cm": -11.3,
-   "anharmonic_bar_cm": null,
-   "anharmonic_error_measured": false,
+   "step_bar_cm": null,
+   "step_error_measured": false,
    "step_family": "other",
    "no_step_reason": null,
    "position_note": "anharmonic estimate ν = ω + Δ_anh, printed without an error bar: the step's error is not measured for this kind of mode (family 'other' with an out-of-plane share of 0.8 or more); no licence is claimed for ν"
@@ -527,11 +527,11 @@
    "printed": "anharmonic ν",
    "nu_cm": 874.2,
    "delta_anh_cm": -8.3,
-   "anharmonic_bar_cm": 8.38,
-   "anharmonic_error_measured": true,
+   "step_bar_cm": 8.38,
+   "step_error_measured": true,
    "step_family": "CH-oop",
    "no_step_reason": null,
-   "position_note": "anharmonic estimate ν = ω + Δ_anh, ± 8.38 cm⁻¹ (the measured rms of family CH-oop on coronene and tetracene); no licence is claimed for ν"
+   "position_note": "anharmonic estimate ν = ω + Δ_anh; the step's error is ± 8.38 cm⁻¹ (rms of Δ_anh against its VPT2 label, family CH-oop); no licence is claimed for ν"
   },
   {
    "network_cm": 883.4,
@@ -554,11 +554,11 @@
    "printed": "anharmonic ν",
    "nu_cm": 875.1,
    "delta_anh_cm": -8.3,
-   "anharmonic_bar_cm": 8.38,
-   "anharmonic_error_measured": true,
+   "step_bar_cm": 8.38,
+   "step_error_measured": true,
    "step_family": "CH-oop",
    "no_step_reason": null,
-   "position_note": "anharmonic estimate ν = ω + Δ_anh, ± 8.38 cm⁻¹ (the measured rms of family CH-oop on coronene and tetracene); no licence is claimed for ν"
+   "position_note": "anharmonic estimate ν = ω + Δ_anh; the step's error is ± 8.38 cm⁻¹ (rms of Δ_anh against its VPT2 label, family CH-oop); no licence is claimed for ν"
   },
   {
    "network_cm": 998.4,
@@ -581,11 +581,11 @@
    "printed": "anharmonic ν",
    "nu_cm": 986.8,
    "delta_anh_cm": -11.6,
-   "anharmonic_bar_cm": 8.38,
-   "anharmonic_error_measured": true,
+   "step_bar_cm": 8.38,
+   "step_error_measured": true,
    "step_family": "CH-oop",
    "no_step_reason": null,
-   "position_note": "anharmonic estimate ν = ω + Δ_anh, ± 8.38 cm⁻¹ (the measured rms of family CH-oop on coronene and tetracene); no licence is claimed for ν"
+   "position_note": "anharmonic estimate ν = ω + Δ_anh; the step's error is ± 8.38 cm⁻¹ (rms of Δ_anh against its VPT2 label, family CH-oop); no licence is claimed for ν"
   },
   {
    "network_cm": 998.6,
@@ -608,11 +608,11 @@
    "printed": "anharmonic ν",
    "nu_cm": 987.0,
    "delta_anh_cm": -11.6,
-   "anharmonic_bar_cm": 8.38,
-   "anharmonic_error_measured": true,
+   "step_bar_cm": 8.38,
+   "step_error_measured": true,
    "step_family": "CH-oop",
    "no_step_reason": null,
-   "position_note": "anharmonic estimate ν = ω + Δ_anh, ± 8.38 cm⁻¹ (the measured rms of family CH-oop on coronene and tetracene); no licence is claimed for ν"
+   "position_note": "anharmonic estimate ν = ω + Δ_anh; the step's error is ± 8.38 cm⁻¹ (rms of Δ_anh against its VPT2 label, family CH-oop); no licence is claimed for ν"
   },
   {
    "network_cm": 1023.3,
@@ -635,11 +635,11 @@
    "printed": "anharmonic ν",
    "nu_cm": 1009.4,
    "delta_anh_cm": -13.9,
-   "anharmonic_bar_cm": 3.37,
-   "anharmonic_error_measured": true,
+   "step_bar_cm": 3.37,
+   "step_error_measured": true,
    "step_family": "ring-ip",
    "no_step_reason": null,
-   "position_note": "anharmonic estimate ν = ω + Δ_anh, ± 3.37 cm⁻¹ (the measured rms of family ring-ip on coronene and tetracene); no licence is claimed for ν"
+   "position_note": "anharmonic estimate ν = ω + Δ_anh; the step's error is ± 3.37 cm⁻¹ (rms of Δ_anh against its VPT2 label, family ring-ip); no licence is claimed for ν"
   },
   {
    "network_cm": 1032.4,
@@ -662,11 +662,11 @@
    "printed": "anharmonic ν",
    "nu_cm": 1016.7,
    "delta_anh_cm": -15.7,
-   "anharmonic_bar_cm": 3.37,
-   "anharmonic_error_measured": true,
+   "step_bar_cm": 3.37,
+   "step_error_measured": true,
    "step_family": "ring-ip",
    "no_step_reason": null,
-   "position_note": "anharmonic estimate ν = ω + Δ_anh, ± 3.37 cm⁻¹ (the measured rms of family ring-ip on coronene and tetracene); no licence is claimed for ν"
+   "position_note": "anharmonic estimate ν = ω + Δ_anh; the step's error is ± 3.37 cm⁻¹ (rms of Δ_anh against its VPT2 label, family ring-ip); no licence is claimed for ν"
   },
   {
    "network_cm": 1036.4,
@@ -689,11 +689,11 @@
    "printed": "anharmonic ν",
    "nu_cm": 1021.2,
    "delta_anh_cm": -15.2,
-   "anharmonic_bar_cm": 8.38,
-   "anharmonic_error_measured": true,
+   "step_bar_cm": 8.38,
+   "step_error_measured": true,
    "step_family": "CH-oop",
    "no_step_reason": null,
-   "position_note": "anharmonic estimate ν = ω + Δ_anh, ± 8.38 cm⁻¹ (the measured rms of family CH-oop on coronene and tetracene); no licence is claimed for ν"
+   "position_note": "anharmonic estimate ν = ω + Δ_anh; the step's error is ± 8.38 cm⁻¹ (rms of Δ_anh against its VPT2 label, family CH-oop); no licence is claimed for ν"
   },
   {
    "network_cm": 1078.7,
@@ -716,11 +716,11 @@
    "printed": "anharmonic ν",
    "nu_cm": 1062.8,
    "delta_anh_cm": -15.9,
-   "anharmonic_bar_cm": 3.37,
-   "anharmonic_error_measured": true,
+   "step_bar_cm": 3.37,
+   "step_error_measured": true,
    "step_family": "ring-ip",
    "no_step_reason": null,
-   "position_note": "anharmonic estimate ν = ω + Δ_anh, ± 3.37 cm⁻¹ (the measured rms of family ring-ip on coronene and tetracene); no licence is claimed for ν"
+   "position_note": "anharmonic estimate ν = ω + Δ_anh; the step's error is ± 3.37 cm⁻¹ (rms of Δ_anh against its VPT2 label, family ring-ip); no licence is claimed for ν"
   },
   {
    "network_cm": 1078.7,
@@ -743,11 +743,11 @@
    "printed": "anharmonic ν",
    "nu_cm": 1062.8,
    "delta_anh_cm": -15.9,
-   "anharmonic_bar_cm": 3.37,
-   "anharmonic_error_measured": true,
+   "step_bar_cm": 3.37,
+   "step_error_measured": true,
    "step_family": "ring-ip",
    "no_step_reason": null,
-   "position_note": "anharmonic estimate ν = ω + Δ_anh, ± 3.37 cm⁻¹ (the measured rms of family ring-ip on coronene and tetracene); no licence is claimed for ν"
+   "position_note": "anharmonic estimate ν = ω + Δ_anh; the step's error is ± 3.37 cm⁻¹ (rms of Δ_anh against its VPT2 label, family ring-ip); no licence is claimed for ν"
   },
   {
    "network_cm": 1173.7,
@@ -770,11 +770,11 @@
    "printed": "anharmonic ν",
    "nu_cm": 1161.7,
    "delta_anh_cm": -12.0,
-   "anharmonic_bar_cm": 3.37,
-   "anharmonic_error_measured": true,
+   "step_bar_cm": 3.37,
+   "step_error_measured": true,
    "step_family": "ring-ip",
    "no_step_reason": null,
-   "position_note": "anharmonic estimate ν = ω + Δ_anh, ± 3.37 cm⁻¹ (the measured rms of family ring-ip on coronene and tetracene); no licence is claimed for ν"
+   "position_note": "anharmonic estimate ν = ω + Δ_anh; the step's error is ± 3.37 cm⁻¹ (rms of Δ_anh against its VPT2 label, family ring-ip); no licence is claimed for ν"
   },
   {
    "network_cm": 1209.7,
@@ -797,11 +797,11 @@
    "printed": "anharmonic ν",
    "nu_cm": 1195.5,
    "delta_anh_cm": -14.2,
-   "anharmonic_bar_cm": 3.37,
-   "anharmonic_error_measured": true,
+   "step_bar_cm": 3.37,
+   "step_error_measured": true,
    "step_family": "ring-ip",
    "no_step_reason": null,
-   "position_note": "anharmonic estimate ν = ω + Δ_anh, ± 3.37 cm⁻¹ (the measured rms of family ring-ip on coronene and tetracene); no licence is claimed for ν"
+   "position_note": "anharmonic estimate ν = ω + Δ_anh; the step's error is ± 3.37 cm⁻¹ (rms of Δ_anh against its VPT2 label, family ring-ip); no licence is claimed for ν"
   },
   {
    "network_cm": 1209.7,
@@ -824,11 +824,11 @@
    "printed": "anharmonic ν",
    "nu_cm": 1195.5,
    "delta_anh_cm": -14.2,
-   "anharmonic_bar_cm": 3.37,
-   "anharmonic_error_measured": true,
+   "step_bar_cm": 3.37,
+   "step_error_measured": true,
    "step_family": "ring-ip",
    "no_step_reason": null,
-   "position_note": "anharmonic estimate ν = ω + Δ_anh, ± 3.37 cm⁻¹ (the measured rms of family ring-ip on coronene and tetracene); no licence is claimed for ν"
+   "position_note": "anharmonic estimate ν = ω + Δ_anh; the step's error is ± 3.37 cm⁻¹ (rms of Δ_anh against its VPT2 label, family ring-ip); no licence is claimed for ν"
   },
   {
    "network_cm": 1323.3,
@@ -851,11 +851,11 @@
    "printed": "anharmonic ν",
    "nu_cm": 1297.8,
    "delta_anh_cm": -25.5,
-   "anharmonic_bar_cm": 3.37,
-   "anharmonic_error_measured": true,
+   "step_bar_cm": 3.37,
+   "step_error_measured": true,
    "step_family": "ring-ip",
    "no_step_reason": null,
-   "position_note": "anharmonic estimate ν = ω + Δ_anh, ± 3.37 cm⁻¹ (the measured rms of family ring-ip on coronene and tetracene); no licence is claimed for ν"
+   "position_note": "anharmonic estimate ν = ω + Δ_anh; the step's error is ± 3.37 cm⁻¹ (rms of Δ_anh against its VPT2 label, family ring-ip); no licence is claimed for ν"
   },
   {
    "network_cm": 1388.5,
@@ -878,11 +878,11 @@
    "printed": "anharmonic ν",
    "nu_cm": 1364.9,
    "delta_anh_cm": -23.6,
-   "anharmonic_bar_cm": 3.37,
-   "anharmonic_error_measured": true,
+   "step_bar_cm": 3.37,
+   "step_error_measured": true,
    "step_family": "ring-ip",
    "no_step_reason": null,
-   "position_note": "anharmonic estimate ν = ω + Δ_anh, ± 3.37 cm⁻¹ (the measured rms of family ring-ip on coronene and tetracene); no licence is claimed for ν"
+   "position_note": "anharmonic estimate ν = ω + Δ_anh; the step's error is ± 3.37 cm⁻¹ (rms of Δ_anh against its VPT2 label, family ring-ip); no licence is claimed for ν"
   },
   {
    "network_cm": 1540.7,
@@ -905,11 +905,11 @@
    "printed": "anharmonic ν",
    "nu_cm": 1511.0,
    "delta_anh_cm": -29.7,
-   "anharmonic_bar_cm": 3.37,
-   "anharmonic_error_measured": true,
+   "step_bar_cm": 3.37,
+   "step_error_measured": true,
    "step_family": "ring-ip",
    "no_step_reason": null,
-   "position_note": "anharmonic estimate ν = ω + Δ_anh, ± 3.37 cm⁻¹ (the measured rms of family ring-ip on coronene and tetracene); no licence is claimed for ν"
+   "position_note": "anharmonic estimate ν = ω + Δ_anh; the step's error is ± 3.37 cm⁻¹ (rms of Δ_anh against its VPT2 label, family ring-ip); no licence is claimed for ν"
   },
   {
    "network_cm": 1540.7,
@@ -932,11 +932,11 @@
    "printed": "anharmonic ν",
    "nu_cm": 1511.0,
    "delta_anh_cm": -29.7,
-   "anharmonic_bar_cm": 3.37,
-   "anharmonic_error_measured": true,
+   "step_bar_cm": 3.37,
+   "step_error_measured": true,
    "step_family": "ring-ip",
    "no_step_reason": null,
-   "position_note": "anharmonic estimate ν = ω + Δ_anh, ± 3.37 cm⁻¹ (the measured rms of family ring-ip on coronene and tetracene); no licence is claimed for ν"
+   "position_note": "anharmonic estimate ν = ω + Δ_anh; the step's error is ± 3.37 cm⁻¹ (rms of Δ_anh against its VPT2 label, family ring-ip); no licence is claimed for ν"
   },
   {
    "network_cm": 1691.0,
@@ -959,11 +959,11 @@
    "printed": "anharmonic ν",
    "nu_cm": 1652.4,
    "delta_anh_cm": -38.6,
-   "anharmonic_bar_cm": 3.37,
-   "anharmonic_error_measured": true,
+   "step_bar_cm": 3.37,
+   "step_error_measured": true,
    "step_family": "ring-ip",
    "no_step_reason": null,
-   "position_note": "anharmonic estimate ν = ω + Δ_anh, ± 3.37 cm⁻¹ (the measured rms of family ring-ip on coronene and tetracene); no licence is claimed for ν"
+   "position_note": "anharmonic estimate ν = ω + Δ_anh; the step's error is ± 3.37 cm⁻¹ (rms of Δ_anh against its VPT2 label, family ring-ip); no licence is claimed for ν"
   },
   {
    "network_cm": 1691.0,
@@ -986,11 +986,11 @@
    "printed": "anharmonic ν",
    "nu_cm": 1652.4,
    "delta_anh_cm": -38.6,
-   "anharmonic_bar_cm": 3.37,
-   "anharmonic_error_measured": true,
+   "step_bar_cm": 3.37,
+   "step_error_measured": true,
    "step_family": "ring-ip",
    "no_step_reason": null,
-   "position_note": "anharmonic estimate ν = ω + Δ_anh, ± 3.37 cm⁻¹ (the measured rms of family ring-ip on coronene and tetracene); no licence is claimed for ν"
+   "position_note": "anharmonic estimate ν = ω + Δ_anh; the step's error is ± 3.37 cm⁻¹ (rms of Δ_anh against its VPT2 label, family ring-ip); no licence is claimed for ν"
   },
   {
    "network_cm": 3215.7,
@@ -1013,11 +1013,11 @@
    "printed": "anharmonic ν",
    "nu_cm": 3069.5,
    "delta_anh_cm": -146.2,
-   "anharmonic_bar_cm": 6.21,
-   "anharmonic_error_measured": true,
+   "step_bar_cm": 6.21,
+   "step_error_measured": true,
    "step_family": "CH-stretch",
    "no_step_reason": null,
-   "position_note": "anharmonic estimate ν = ω + Δ_anh, ± 6.21 cm⁻¹ (the measured rms of family CH-stretch on coronene and tetracene); no licence is claimed for ν"
+   "position_note": "anharmonic estimate ν = ω + Δ_anh; the step's error is ± 6.21 cm⁻¹ (rms of Δ_anh against its VPT2 label, family CH-stretch); no licence is claimed for ν"
   },
   {
    "network_cm": 3225.9,
@@ -1040,11 +1040,11 @@
    "printed": "anharmonic ν",
    "nu_cm": 3089.0,
    "delta_anh_cm": -136.9,
-   "anharmonic_bar_cm": 6.21,
-   "anharmonic_error_measured": true,
+   "step_bar_cm": 6.21,
+   "step_error_measured": true,
    "step_family": "CH-stretch",
    "no_step_reason": null,
-   "position_note": "anharmonic estimate ν = ω + Δ_anh, ± 6.21 cm⁻¹ (the measured rms of family CH-stretch on coronene and tetracene); no licence is claimed for ν"
+   "position_note": "anharmonic estimate ν = ω + Δ_anh; the step's error is ± 6.21 cm⁻¹ (rms of Δ_anh against its VPT2 label, family CH-stretch); no licence is claimed for ν"
   },
   {
    "network_cm": 3225.9,
@@ -1067,11 +1067,11 @@
    "printed": "anharmonic ν",
    "nu_cm": 3089.0,
    "delta_anh_cm": -136.9,
-   "anharmonic_bar_cm": 6.21,
-   "anharmonic_error_measured": true,
+   "step_bar_cm": 6.21,
+   "step_error_measured": true,
    "step_family": "CH-stretch",
    "no_step_reason": null,
-   "position_note": "anharmonic estimate ν = ω + Δ_anh, ± 6.21 cm⁻¹ (the measured rms of family CH-stretch on coronene and tetracene); no licence is claimed for ν"
+   "position_note": "anharmonic estimate ν = ω + Δ_anh; the step's error is ± 6.21 cm⁻¹ (rms of Δ_anh against its VPT2 label, family CH-stretch); no licence is claimed for ν"
   },
   {
    "network_cm": 3241.6,
@@ -1094,11 +1094,11 @@
    "printed": "anharmonic ν",
    "nu_cm": 3109.0,
    "delta_anh_cm": -132.6,
-   "anharmonic_bar_cm": 6.21,
-   "anharmonic_error_measured": true,
+   "step_bar_cm": 6.21,
+   "step_error_measured": true,
    "step_family": "CH-stretch",
    "no_step_reason": null,
-   "position_note": "anharmonic estimate ν = ω + Δ_anh, ± 6.21 cm⁻¹ (the measured rms of family CH-stretch on coronene and tetracene); no licence is claimed for ν"
+   "position_note": "anharmonic estimate ν = ω + Δ_anh; the step's error is ± 6.21 cm⁻¹ (rms of Δ_anh against its VPT2 label, family CH-stretch); no licence is claimed for ν"
   },
   {
    "network_cm": 3241.6,
@@ -1121,11 +1121,11 @@
    "printed": "anharmonic ν",
    "nu_cm": 3109.0,
    "delta_anh_cm": -132.6,
-   "anharmonic_bar_cm": 6.21,
-   "anharmonic_error_measured": true,
+   "step_bar_cm": 6.21,
+   "step_error_measured": true,
    "step_family": "CH-stretch",
    "no_step_reason": null,
-   "position_note": "anharmonic estimate ν = ω + Δ_anh, ± 6.21 cm⁻¹ (the measured rms of family CH-stretch on coronene and tetracene); no licence is claimed for ν"
+   "position_note": "anharmonic estimate ν = ω + Δ_anh; the step's error is ± 6.21 cm⁻¹ (rms of Δ_anh against its VPT2 label, family CH-stretch); no licence is claimed for ν"
   },
   {
    "network_cm": 3251.8,
@@ -1148,11 +1148,11 @@
    "printed": "anharmonic ν",
    "nu_cm": 3115.1,
    "delta_anh_cm": -136.7,
-   "anharmonic_bar_cm": 6.21,
-   "anharmonic_error_measured": true,
+   "step_bar_cm": 6.21,
+   "step_error_measured": true,
    "step_family": "CH-stretch",
    "no_step_reason": null,
-   "position_note": "anharmonic estimate ν = ω + Δ_anh, ± 6.21 cm⁻¹ (the measured rms of family CH-stretch on coronene and tetracene); no licence is claimed for ν"
+   "position_note": "anharmonic estimate ν = ω + Δ_anh; the step's error is ± 6.21 cm⁻¹ (rms of Δ_anh against its VPT2 label, family CH-stretch); no licence is claimed for ν"
   }
  ],
  "tolerance": {
@@ -1222,29 +1222,89 @@
   "concerns": "the licence (decision 65) is on the harmonic position ω against the DFT proxy (ωB97X); it says nothing about the anharmonic position ν"
  },
  "positions": {
-  "note": "each band is printed at its best estimate — the anharmonic position ν = ω + Δ_anh for 28 of 30 bands (Δ_anh from the model x2* on the molecule's GFN2-xTB force field; for 1 of them the step's error is not measured for that kind of mode, and no bar is printed), the harmonic position ω for the other 2, each with its reason; ω stands beside every ν; the licence (decision 65) is on the harmonic position ω against the DFT proxy (ωB97X); it says nothing about the anharmonic position ν; no licence is claimed for ν: its uncertainty is the rms of the band's family measured on coronene and tetracene, stated, not licensed, and not a prediction interval for one band",
+  "note": "each band is printed at its best estimate — the anharmonic position ν = ω + Δ_anh for 28 of 30 bands (Δ_anh from the model x2* on the molecule's GFN2-xTB force field; for 1 of them the step's error is not measured for that kind of mode, and no bar is printed), the harmonic position ω for the other 2, each with its reason; ω stands beside every ν; the licence (decision 65) is on the harmonic position ω against the DFT proxy (ωB97X); it says nothing about the anharmonic position ν; no licence is claimed for ν",
+  "cautions": {
+   "nu_error": "the bar beside a step is the step's error alone — the rms of Δ_anh against its B3LYP VPT2 label — and not the error of ν: ν carries ω's error too, the harmonic position's error against the DFT proxy (ωB97X), which is what the licence is about; neither of the two is an error against experiment",
+   "targets": "the bars rest on 2 target molecules, coronene and tetracene, both hydrocarbons — target modes: CH-oop 22, other 23, ring-ip 56, CH-stretch 20; the step's rms per molecule, coronene / tetracene, in cm⁻¹: CH-oop 11.91 / 4.55; other 5.69 / 1.09; ring-ip 4.25 / 2.35; CH-stretch 6.94 / 5.68; coronene carries the larger error in every family. They are the best numbers there are and they are thin: nothing here says the step helps a molecule unlike the targets, and a bar is a family's rms, not a prediction interval for one band",
+   "seen": "the anharmonic model x2* has this molecule in its training table (A_8448043181, one of 37): for this molecule the step's bar is not an out-of-sample error",
+   "composition": null
+  },
   "anharmonic": {
    "status": "applied",
    "reason": null,
    "model": "x2*",
    "artefact": {
-    "file": "probes/anharmonic_step/x2star_v1.json",
-    "sha16": "223b05f7df2447a4",
-    "commit": "39096ee6fcc41b04b87dddfe62155cdef36798b4",
-    "written": "2026-11-16 18:55",
+    "file": "probes/anharmonic_step/x2star_v2.json",
+    "sha16": "386dc8d126d96862",
+    "commit": "8f1997ac0d8c61f4fd926f39f9410544b11c7dbf",
+    "written": "2026-11-16 20:15",
     "bars_cm": {
      "CH-oop": 8.38,
      "other": 3.84,
      "ring-ip": 3.37,
      "CH-stretch": 6.21
     },
-    "training_molecules": 37
+    "training_molecules": 37,
+    "elements": [
+     "C",
+     "H",
+     "N",
+     "O"
+    ],
+    "target_composition": {
+     "coronene": "C,H",
+     "tetracene": "C,H"
+    },
+    "targets": {
+     "CH-oop": {
+      "rows": 22,
+      "per_target_rms_cm": {
+       "tetracene": 4.546330872687072,
+       "coronene": 11.909623221840208
+      }
+     },
+     "other": {
+      "rows": 23,
+      "per_target_rms_cm": {
+       "tetracene": 1.0941842192902274,
+       "coronene": 5.686493756252277
+      }
+     },
+     "ring-ip": {
+      "rows": 56,
+      "per_target_rms_cm": {
+       "tetracene": 2.3492021498087463,
+       "coronene": 4.2525749249571065
+      }
+     },
+     "CH-stretch": {
+      "rows": 20,
+      "per_target_rms_cm": {
+       "tetracene": 5.683147582667525,
+       "coronene": 6.935256815282447
+      }
+     }
+    }
    },
    "bands": {
     "stepped": 28,
     "error_not_measured": 1,
     "no_step": {
      "unmeasured": 2
+    }
+   },
+   "seen": {
+    "role": "training",
+    "id": "A_8448043181"
+   },
+   "composition": {
+    "elements": "C,H",
+    "training_molecules": 14,
+    "of": 37,
+    "few": false,
+    "targets": {
+     "coronene": "C,H",
+     "tetracene": "C,H"
     }
    },
    "field": {
@@ -1256,6 +1316,7 @@
   },
   "drawn": "curves are drawn at the harmonic positions ω, so that the network, B3LYP and ωB97X are compared like with like; the certificate lists each band's anharmonic estimate ν beside its ω"
  },
+ "deliveries": [],
  "cost": {
   "steps_s": {
    "optimise": 15.1,
@@ -1274,7 +1335,7 @@
   "result": "C:\\Users\\thebr\\Documents\\CapstonePlan-wt-anharmonic\\plans\\05_delta-probed-ir-pipeline\\probes\\results_m1\\anharmonic_step_2026-11-16\\stored_field_demo\\benzene",
   "run_commit": "292b3f9ab2dc8dda432097199bf38efa91223c88",
   "run_dirty": "yes",
-  "certificate_commit": "583a705a",
+  "certificate_commit": "8f1997ac",
   "deck_sha16": "9e27bf8e934893f3",
   "low_level_software": {
    "pyscf": "2.14.0",
@@ -1287,8 +1348,8 @@
    }
   },
   "host": "Asus18",
-  "note": "each band is printed at its best estimate — the anharmonic position ν = ω + Δ_anh for 28 of 30 bands (Δ_anh from the model x2* on the molecule's GFN2-xTB force field; for 1 of them the step's error is not measured for that kind of mode, and no bar is printed), the harmonic position ω for the other 2, each with its reason; ω stands beside every ν; the licence (decision 65) is on the harmonic position ω against the DFT proxy (ωB97X); it says nothing about the anharmonic position ν; no licence is claimed for ν: its uncertainty is the rms of the band's family measured on coronene and tetracene, stated, not licensed, and not a prediction interval for one band",
+  "note": "each band is printed at its best estimate — the anharmonic position ν = ω + Δ_anh for 28 of 30 bands (Δ_anh from the model x2* on the molecule's GFN2-xTB force field; for 1 of them the step's error is not measured for that kind of mode, and no bar is printed), the harmonic position ω for the other 2, each with its reason; ω stands beside every ν; the licence (decision 65) is on the harmonic position ω against the DFT proxy (ωB97X); it says nothing about the anharmonic position ν; no licence is claimed for ν",
   "reused_from": null
  },
- "statement": "benzene: the infrared spectrum of ΔH-network v1.3 (3 seeds) — B3LYP/6-31G* corrected toward ωB97X/6-31G* — with the error of the corrected band positions of the seed-mean correction measured on molecules the network never saw; the harmonic positions ω are licensed for ring-ip, CH-stretch, CH-oop, other (decision 65), each band marked; at the coupled-cluster level not measured for this network version: the coupled-cluster reads (T3) were made on chain 34, and tests on the 9–11 existing anchors wait for the anchor decision of November 2026. The scaled B3LYP spectrum is shown as the baseline only. This molecule: held out, hold-out (a) (A_8448043181): never trained on; the measured error includes it. Licence caveat: other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie under it)."
+ "statement": "benzene: the infrared spectrum of ΔH-network v1.3 (3 seeds) — B3LYP/6-31G* corrected toward ωB97X/6-31G* — with the error of the corrected band positions of the seed-mean correction measured on molecules the network never saw; the harmonic positions ω are licensed for ring-ip, CH-stretch, CH-oop, other (decision 65), each band marked; at the coupled-cluster level not measured for this network version: the coupled-cluster reads (T3) were made on chain 34, and tests on the 9–11 existing anchors wait for the anchor decision of November 2026. The scaled B3LYP spectrum is shown as the baseline only. This molecule and the ΔH network: held out, hold-out (a) (A_8448043181): never trained on; the measured error includes it. Licence caveat: other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie under it)."
 }

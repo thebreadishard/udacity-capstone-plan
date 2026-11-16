@@ -4,23 +4,77 @@
   "reason": null,
   "model": "x2*",
   "artefact": {
-   "file": "probes/anharmonic_step/x2star_v1.json",
-   "sha16": "223b05f7df2447a4",
-   "commit": "39096ee6fcc41b04b87dddfe62155cdef36798b4",
-   "written": "2026-11-16 18:55",
+   "file": "probes/anharmonic_step/x2star_v2.json",
+   "sha16": "386dc8d126d96862",
+   "commit": "8f1997ac0d8c61f4fd926f39f9410544b11c7dbf",
+   "written": "2026-11-16 20:15",
    "bars_cm": {
     "CH-oop": 8.38,
     "other": 3.84,
     "ring-ip": 3.37,
     "CH-stretch": 6.21
    },
-   "training_molecules": 37
+   "training_molecules": 37,
+   "elements": [
+    "C",
+    "H",
+    "N",
+    "O"
+   ],
+   "target_composition": {
+    "coronene": "C,H",
+    "tetracene": "C,H"
+   },
+   "targets": {
+    "CH-oop": {
+     "rows": 22,
+     "per_target_rms_cm": {
+      "tetracene": 4.546330872687072,
+      "coronene": 11.909623221840208
+     }
+    },
+    "other": {
+     "rows": 23,
+     "per_target_rms_cm": {
+      "tetracene": 1.0941842192902274,
+      "coronene": 5.686493756252277
+     }
+    },
+    "ring-ip": {
+     "rows": 56,
+     "per_target_rms_cm": {
+      "tetracene": 2.3492021498087463,
+      "coronene": 4.2525749249571065
+     }
+    },
+    "CH-stretch": {
+     "rows": 20,
+     "per_target_rms_cm": {
+      "tetracene": 5.683147582667525,
+      "coronene": 6.935256815282447
+     }
+    }
+   }
   },
   "bands": {
    "stepped": 28,
    "error_not_measured": 1,
    "no_step": {
     "unmeasured": 2
+   }
+  },
+  "seen": {
+   "role": "training",
+   "id": "A_8448043181"
+  },
+  "composition": {
+   "elements": "C,H",
+   "training_molecules": 14,
+   "of": 37,
+   "few": false,
+   "targets": {
+    "coronene": "C,H",
+    "tetracene": "C,H"
    }
   },
   "field": {
@@ -105,7 +159,7 @@
    "xtb_overlap": 0.9929747504837189,
    "delta_anh_cm": -11.32158109668655,
    "reason": null,
-   "bar_cm": 3.84,
+   "bar_cm": null,
    "error_not_measured": true,
    "window": "mid"
   },
@@ -480,7 +534,7 @@
    "overlap": 0.9985422172298282,
    "delta_anh_cm": -11.32158109668655,
    "reason": null,
-   "bar_cm": 3.84,
+   "bar_cm": null,
    "error_not_measured": true
   },
   {

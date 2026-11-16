@@ -1,6 +1,6 @@
-# The anharmonic step, stage 1 — acceptance (2026-11-16 18:56, TASKS 211)
+# The anharmonic step, stage 1 — acceptance (2026-11-16 20:16, TASKS 211)
 
-Artefact `probes/anharmonic_step/x2star_v1.json` (written at commit 39096ee6); every molecule through `anharmonic_step.mode_steps` alone; this record by `probes/anharmonic_step_accept.py` at commit 39096ee6 (uncommitted changes: no).
+Artefact `probes/anharmonic_step/x2star_v2.json` (written at commit 8f1997ac); every molecule through `anharmonic_step.mode_steps` alone; this record by `probes/anharmonic_step_accept.py` at commit 8f1997ac (uncommitted changes: no).
 
 **PASSED**
 
@@ -17,8 +17,8 @@ Artefact `probes/anharmonic_step/x2star_v1.json` (written at commit 39096ee6); e
 
 | mode | ω (cm⁻¹) | family | o | step (cm⁻¹) | bar | error not measured | the label's shift | |
 |---|---|---|---|---|---|---|---|---|
-| coronene mode 24 | 642.9 | other | 1.00 | -9.1 | 3.84 | yes | +66.2 | pass |
-| coronene mode 36 | 807.1 | other | 1.00 | -11.6 | 3.84 | yes | +179.1 | pass |
+| coronene mode 24 | 642.9 | other | 1.00 | -9.1 | None | yes | +66.2 | pass |
+| coronene mode 36 | 807.1 | other | 1.00 | -11.6 | None | yes | +179.1 | pass |
 
 ## 3. The label-free rule over 39 molecules, 2244 modes
 
