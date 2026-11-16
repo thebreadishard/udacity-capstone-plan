@@ -658,7 +658,8 @@ def test_a_refused_fast_forward_is_put_back_without_losing_uncommitted_work(sb: 
     assert (sb.repo / "s.py").exists(), "git no longer builds the fast-forward before the ref moves: the advice can go"
     sb.git(*advised.split()[1:])
     assert not (sb.repo / "s.py").exists()
-    assert sb.git("status", "--porcelain").stdout.split() == ["M", "a.py"]
+    # tracked files only: the gate's own python may leave an untracked __pycache__ in the sandbox (CI, 16 Nov 2026)
+    assert sb.git("status", "--porcelain", "--untracked-files=no").stdout.split() == ["M", "a.py"]
     assert (sb.repo / "a.py").read_text(encoding="utf-8") == "one\nand an edit nobody committed\n"
     sb.record("--merge", "side")
     sb.git("merge", "-q", "side")
