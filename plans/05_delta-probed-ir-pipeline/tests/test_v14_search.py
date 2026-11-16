@@ -639,3 +639,87 @@ def test_read3_says_whether_the_expectation_of_more_data_held(sandbox):
     assert not rec["expectation"]["a"]["held"] and not rec["expectation"]["b"]["held"] and not rec["promotion"]["promoted"]
     assert "(expected below: **did not hold**)" in report and "(a) is looked at per molecule before the promotion is decided" in report
     assert "The expectation decides nothing; the no-worsening rule does." in report
+
+
+def at_read_data(root: Path, carried: list[str], shift: float = 0.5, full_epoch: int = 100) -> V.Config:
+    """Every file read-data reads (chain v14_data's): the control's whole-pool record and the six evals; the new models' read-outs lie
+    `shift` below the lines, the carried version's 0.1."""
+    V.cmd_plan(carried)
+    w = V.load_list()[0][0]
+    write_record(root, V.prefix(w, V.FULL_TAG), dict.fromkeys(range(3), 0.0), best_epoch=full_epoch, split=False)
+    for s in range(3):
+        write_eval(root, "data", shift, s, full_checkpoint(w, s))
+        write_eval(root, "carried_data", 0.1, s, carried[s])
+    return w
+
+
+def read_data_outputs(root: Path) -> tuple[dict, str]:
+    base = root / "m05" / V.OUT / "read_data"
+    return json.loads(base.with_suffix(".json").read_text(encoding="utf-8")), base.with_suffix(".md").read_text(encoding="utf-8")
+
+
+def test_read_data_promotes_by_the_registered_rule_and_carries_nothing(sandbox, registry):
+    root, carried = sandbox
+    w = at_read_data(root, carried)
+    assert w.name == "c00_control" and V.main(["read-data"]) == 0
+    rec, report = read_data_outputs(root)
+    new, old = (P.load_eval_arm([root / "m05" / V.OUT / f"eval_{who}_seed{s}.json" for s in range(3)]) for who in ("data", "carried_data"))
+    registered = json.loads(json.dumps(V.asdict(P.promotion(P.compare(new, old)))))   # read3's calls, no other rule
+    assert rec["promotion"] == registered and rec["promotion"]["promoted"]
+    assert "\n".join(P.comparison_table(new, old, P.compare(new, old), "v1.4 candidate", "carried")) in report
+    assert "**Promotion: promoted** — worse on none" in report and "By §14 these three models are version 1.4." in report
+    assert "carries nothing itself and changes no registry entry" in report and not registry.exists()
+    assert "- hold-out (b) below the carried version on the mean of three seeds: 2.51 against 2.91 — **PASS**" in report
+    assert "- hold-out (a) not above the carried version on the mean of three seeds: 2.51 against 2.91 — **PASS**" in report
+    assert ("- biphenylene (A_72b86c2331) on hold-out (a) at most 4.7 on the mean of three seeds: the new models 2.00, 2.00, 2.00 "
+            "(mean 2.00), the carried version 2.00, 2.00, 2.00 (mean 2.00) — **PASS**") in report
+    assert report.rstrip().endswith("`probes/product_error_read.py` and is not in this read.") and "the licence's quantity" in report
+    with pytest.raises(SystemExit, match="the read is on record"):                  # never overwritten silently
+        V.main(["read-data"])
+    assert V.main(["read-data", "--replace"]) == 0 and read_data_outputs(root) == (rec, report)
+
+
+def test_read_data_does_not_promote_a_model_worse_on_one_read_out(sandbox):
+    root, carried = sandbox
+    w = at_read_data(root, carried)
+    for s in range(3):
+        write_eval(root, "data", 0.5, s, full_checkpoint(w, s), biphenylene=6.0)
+        path = root / "m05" / V.OUT / f"eval_data_seed{s}.json"
+        rec = json.loads(path.read_text(encoding="utf-8"))
+        rec["a"] = {**rec["a"], "diag_rms": {**rec["a"]["diag_rms"], "CH-oop": 4.0}, "corrected_freq_rms": 3.5}
+        path.write_text(json.dumps(rec), encoding="utf-8")
+    V.cmd_read_data(replace_record=False)
+    rec, report = read_data_outputs(root)
+    (worse,) = rec["promotion"]["worse"]
+    assert not rec["promotion"]["promoted"] and "CH-oop" in worse and "(a)" in worse
+    assert f"**Promotion: not promoted** — worse on {worse}" in report
+    assert "By §14 nothing is carried, and the cause is looked at per molecule before anything else is decided." in report
+    assert "against 2.91 — **PASS**" in report                                      # (b) still below
+    assert "three seeds: 3.50 against 2.91 — **FAIL**" in report                    # (a) above the carried version
+    assert "the new models 6.00, 6.00, 6.00 (mean 6.00)" in report and report.count("**FAIL**") == 2
+
+
+def test_read_data_refuses_the_wrong_models_and_missing_evals(sandbox):
+    root, carried = sandbox
+    w = at_read_data(root, carried)
+    write_record(root, V.prefix(w, "s1a"), {0: 0.3})
+    write_eval(root, "data", 0.5, 0, f"{V.prefix(w, 's1a')}_model_n913_seed0.pt")    # a stage checkpoint: trained with the split
+    with pytest.raises(SystemExit, match="trained with --selection-split"):
+        V.cmd_read_data(replace_record=False)
+    write_eval(root, "data", 0.5, 0, full_checkpoint(w, 0))
+    write_eval(root, "carried_data", 0.1, 2, carried[0])                            # not the carried checkpoint of that seed
+    with pytest.raises(SystemExit, match=r"not the carried version's out/carried_seed2\.pt"):
+        V.cmd_read_data(replace_record=False)
+    for name in ("eval_carried_data_seed2.json", "eval_data_seed1.json"):
+        (root / "m05" / V.OUT / name).unlink()
+        with pytest.raises(SystemExit, match=f"{name}: no eval record"):
+            V.cmd_read_data(replace_record=False)
+        write_eval(root, name[5:-11], 0.1, int(name[-6]), carried[2] if "carried" in name else None)
+    assert not (root / "m05" / V.OUT / "read_data.json").exists()                   # no refusal left a report
+
+
+def test_read_data_applies_the_cap_rule(sandbox):
+    root, carried = sandbox
+    at_read_data(root, carried, full_epoch=V.EPOCH_CAP)
+    with pytest.raises(SystemExit, match="within 10% of the cap"):
+        V.cmd_read_data(replace_record=False)
