@@ -1,0 +1,89 @@
+"""Does one molecule get one answer? xyz atom order, rigid rotation, mirror image."""
+import csv
+
+import numpy as np
+import torch
+
+from aromir import admission, geometry as geo
+from aromir.molecule import Geometry
+from common import CORPUS, TMP, load, permuted, rel, wavenumbers, write_xyz
+
+torch.set_num_threads(2)
+rng = np.random.default_rng(7)
+MANIFEST = CORPUS.parent / "manifest.csv"
+by_smiles = {}
+for row in csv.DictReader(MANIFEST.open()):
+    if (CORPUS / row["id"] / "hessian_b3lyp_analytic.npz").is_file():
+        by_smiles.setdefault(row["smiles"], row["id"])
+
+WANT = ["c1ccccc1", "Cc1ccccc1", "CCc1ccccc1", "COc1ccccc1", "N#Cc1ccccc1", "c1ccc(-c2ccccc2)cc1",
+        "Cc1ccc2ccccc2c1", "C#Cc1ccccc1", "CC(C)c1ccccc1", "Cc1ccccc1C", "FC(F)(F)c1ccccc1",
+        "C(#Cc1ccccc1)c1ccccc1", "Nc1ccccc1", "Oc1ccccc1", "CC(=O)c1ccccc1", "CSc1ccccc1"]
+r = rel()
+
+
+def corrected(g, h):
+    return wavenumbers(h + r.corrections(g, h).mean, g)
+
+
+def rotation():
+    q, _ = np.linalg.qr(rng.normal(size=(3, 3)))
+    return q * np.sign(np.linalg.det(q))
+
+
+def transformed(g, h, R):
+    big = np.kron(np.eye(g.n_atoms), R)
+    return Geometry(g.symbols, g.coords_bohr @ R.T), big @ h @ big.T
+
+
+for s in WANT:
+    if s not in by_smiles:
+        print(f"{s}: not in the corpus with an analytic Hessian")
+        continue
+    g, h = load(by_smiles[s])
+    try:
+        base = corrected(g, h)
+    except Exception as error:  # noqa: BLE001
+        print(f"{s}: corrections failed in corpus order: {type(error).__name__}: {str(error)[:100]}")
+        continue
+    # 1. xyz files of the same geometry with the atoms listed in another order
+    orders = {}
+    for trial in range(12):
+        shuffle = rng.permutation(g.n_atoms)
+        path = TMP / "shuffle.xyz"
+        write_xyz(path, g, shuffle)
+        canon = geo.canonical_order(admission.parse_xyz(path))
+        original = tuple(int(shuffle[k]) for k in canon)
+        orders.setdefault(original, None)
+    worst_order = 0.0
+    heavy_differs = False
+    first = next(iter(orders))
+    n_heavy = sum(x != "H" for x in g.symbols)
+    for o in orders:
+        heavy_differs |= o[:n_heavy] != first[:n_heavy]
+        g2, h2 = permuted(g, h, o)
+        try:
+            orders[o] = corrected(g2, h2)
+        except Exception as error:  # noqa: BLE001
+            print(f"   order failed: {type(error).__name__}: {str(error)[:90]}")
+    done = [v for v in orders.values() if v is not None]
+    for v in done:
+        worst_order = max(worst_order, float(np.abs(v - done[0]).max()))
+    # 2. rigid rotations
+    worst_rot = 0.0
+    for trial in range(8):
+        g2, h2 = transformed(g, h, rotation())
+        try:
+            worst_rot = max(worst_rot, float(np.abs(corrected(g2, h2) - base).max()))
+        except Exception as error:  # noqa: BLE001
+            print(f"   rotation failed: {type(error).__name__}: {str(error)[:90]}")
+    # 3. the mirror image
+    g3, h3 = transformed(g, h, np.diag([1.0, 1.0, -1.0]))
+    try:
+        mirror = float(np.abs(corrected(g3, h3) - base).max())
+    except Exception as error:  # noqa: BLE001
+        mirror = float("nan")
+        print(f"   mirror failed: {type(error).__name__}: {str(error)[:90]}")
+    print(f"{s:28s} n={g.n_atoms:2d} | 12 shuffled xyz -> {len(orders)} distinct canonical orders "
+          f"(heavy atoms differ: {heavy_differs}), max band difference {worst_order:7.3f} cm-1 | "
+          f"8 rotations: {worst_rot:7.3f} | mirror image: {mirror:7.3f}")

@@ -1,0 +1,29 @@
+"""Print the shape of the evaluation source records, long lists shortened."""
+import json
+import sys
+from pathlib import Path
+
+OUT = Path(
+    "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/"
+    "modules/05_support_predictor/out"
+)
+
+
+def short(v, depth=0):
+    if isinstance(v, dict):
+        if depth > 3:
+            return f"dict[{len(v)}]"
+        items = list(v.items())
+        d = {k: short(x, depth + 1) for k, x in items[:12]}
+        if len(items) > 12:
+            d["..."] = f"{len(items)} keys"
+        return d
+    if isinstance(v, list):
+        return f"list[{len(v)}] {v[:3]!r}"[:160]
+    return v
+
+
+for name in sys.argv[1:]:
+    d = json.loads((OUT / name).read_text())
+    print("=====", name)
+    print(json.dumps(short(d), indent=1, ensure_ascii=False)[:3500])

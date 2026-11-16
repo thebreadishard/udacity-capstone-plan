@@ -1,0 +1,104 @@
+"""Hold-out errors as aromir itself would produce them: corpus atom order vs aromir's canonical order.
+
+Per family: (i) the first-order diagonal error the evaluation records hold (diag_rms), (ii) the error
+of the corrected band positions after diagonalisation, for each seed and for the seed-mean ΔH.
+"""
+import csv
+import json
+import sys
+from pathlib import Path
+
+import numpy as np
+import torch
+
+from aromir import admission, families, geometry as geo, spectrum, vibrations
+from aromir.constants import WAVENUMBERS_PER_HARTREE
+from common import CORPUS, TMP, load, permuted, rel, write_xyz
+
+torch.set_num_threads(2)
+OUT = CORPUS.parent.parent / "out"
+MANIFEST = CORPUS.parent / "manifest.csv"
+FAMS = families.FAMILIES
+
+
+def aromir_order(geometry, tag):
+    path = TMP / f"{tag}.xyz"
+    write_xyz(path, geometry)
+    return geo.canonical_order(admission.parse_xyz(path))
+
+
+def analyse(geometry, h_low, h_ref, r):
+    low = vibrations.vibrational_modes(h_low, geometry)
+    ref = vibrations.vibrational_modes(h_ref, geometry)
+    fam = np.array(families.classify(geometry, low))
+    corr = r.corrections(geometry, h_low)
+    w = vibrations.mass_weights(geometry.masses_amu)
+    out = {}
+    for name, delta in [("mean", corr.mean), *[(f"s{k}", d) for k, d in enumerate(corr.per_seed)]]:
+        # (i) first-order diagonal, cm-1, against the true dH's diagonal
+        def diag(d):
+            mw = 0.5 * (d + d.T) / np.outer(w, w)
+            lam = np.einsum("ik,ij,jk->k", low.vectors, mw, low.vectors)
+            return lam * WAVENUMBERS_PER_HARTREE**2 / (2 * low.wavenumbers)
+        d1 = diag(delta) - diag(h_ref - h_low)
+        # (ii) corrected positions, paired to the reference by overlap; family of the B3LYP partner
+        cm = vibrations.vibrational_modes(h_low + delta, geometry)
+        to_ref = spectrum.partners(cm, ref)
+        to_low = spectrum.partners(cm, low)
+        d2 = cm.wavenumbers - ref.wavenumbers[to_ref]
+        d2rank = cm.wavenumbers - ref.wavenumbers
+        out[name] = (fam, d1, fam[to_low], d2, d2rank, cm.wavenumbers)
+    return out
+
+
+def main():
+    r = rel()
+    smiles = {row["id"]: row["smiles"] for row in csv.DictReader(MANIFEST.open())}
+    src = json.loads((OUT / "E7_rungC_chain35_analytic_a8read_seed0.json").read_text())
+    sets = {k: list(src[k]["per_molecule"]) for k in ("a8", "b", "b+")}
+    trained = set(r.training.trained_smiles)
+    for k, ids in sets.items():
+        print(k, len(ids), "ids; smiles in trained_smiles:", sum(smiles.get(i) in trained for i in ids),
+              "in held_out record:", sum(any(smiles.get(i) in v for v in r.training.held_out_smiles.values()) for i in ids))
+    limit = int(sys.argv[1]) if len(sys.argv) > 1 else 999
+    for k, ids in sets.items():
+        acc = {o: {} for o in ("corpus", "aromir")}
+        n_same, spread, failed = 0, [], []
+        for i in ids[:limit]:
+            try:
+                g, h = load(i)
+                _, href = load(i, "wb97x")
+                order = aromir_order(g, i)
+                same = order == list(range(g.n_atoms))
+                n_same += same
+                res = {"corpus": analyse(g, h, href, r)}
+                g2, h2 = permuted(g, h, order)
+                _, href2 = permuted(g, href, order)
+                res["aromir"] = analyse(g2, h2, href2, r)
+            except Exception as error:  # noqa: BLE001
+                failed.append((i, type(error).__name__, str(error)[:80]))
+                continue
+            spread.append(float(np.abs(res["corpus"]["mean"][5] - res["aromir"]["mean"][5]).max()))
+            for o in res:
+                for name, (fam, d1, fam2, d2, d2rank, _) in res[o].items():
+                    a = acc[o].setdefault(name, {"d1": {F: [] for F in FAMS}, "d2": {F: [] for F in FAMS}, "rank": []})
+                    for F in FAMS:
+                        a["d1"][F].append(d1[fam == F])
+                        a["d2"][F].append(d2[fam2 == F])
+                    a["rank"].append(d2rank)
+        rms = lambda parts: float(np.sqrt(np.mean(np.concatenate(parts) ** 2))) if parts else float("nan")
+        print(f"\n=== {k}: {len(ids[:limit])} molecules; aromir order == corpus order for {n_same}; failed {failed}")
+        if spread:
+            print(f"    corrected positions, corpus order vs aromir order (seed-mean ΔH): max {max(spread):.2f} cm-1, "
+                  f"median of per-molecule max {np.median(spread):.2f}, molecules > 1 cm-1: {sum(s > 1 for s in spread)}")
+        for o in acc:
+            for name in ("s0", "s1", "s2", "mean"):
+                if name not in acc[o]:
+                    continue
+                a = acc[o][name]
+                print(f"    {o:6s} {name:4s} diag(1st order) " + " ".join(f"{F} {rms(a['d1'][F]):5.2f}" for F in FAMS)
+                      + " | corrected positions " + " ".join(f"{F} {rms(a['d2'][F]):5.2f}" for F in FAMS)
+                      + f" | all, rank-paired {rms(a['rank']):5.2f}")
+
+
+main()

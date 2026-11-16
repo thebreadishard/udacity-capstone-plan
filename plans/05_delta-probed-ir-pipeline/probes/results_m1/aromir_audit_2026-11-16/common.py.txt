@@ -1,0 +1,56 @@
+"""Shared helpers for the audit experiments (read-only on aromir and the corpus)."""
+import json
+from pathlib import Path
+
+import numpy as np
+
+from aromir import release, vibrations
+from aromir.molecule import Geometry
+
+CORPUS = Path(
+    "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/"
+    "modules/05_support_predictor/corpus/molecules"
+)
+TMP = Path.home() / "audit_tmp"
+TMP.mkdir(exist_ok=True)
+
+
+def load(mol_id, level="b3lyp"):
+    folder = CORPUS / mol_id
+    g = json.loads((folder / "geometry.json").read_text())
+    geometry = Geometry(tuple(g["symbols"]), np.array(g["coords_bohr"]))
+    with np.load(folder / f"hessian_{level}_analytic.npz") as z:
+        hessian = np.array(z["H_projected"], dtype=float)
+    return geometry, hessian
+
+
+def permuted(geometry, hessian, order):
+    """Atom order[k] of the input in position k."""
+    order = list(order)
+    idx = (3 * np.array(order)[:, None] + np.arange(3)).ravel()
+    return geometry.reordered(order), hessian[np.ix_(idx, idx)]
+
+
+def wavenumbers(hessian, geometry):
+    return vibrations.vibrational_modes(hessian, geometry).wavenumbers
+
+
+_REL = None
+
+
+def rel():
+    global _REL
+    if _REL is None:
+        _REL = release.load(release.bundled())
+    return _REL
+
+
+def write_xyz(path, geometry, order=None, comment="audit"):
+    from aromir.constants import ANGSTROM_PER_BOHR
+
+    order = range(geometry.n_atoms) if order is None else order
+    lines = [str(geometry.n_atoms), comment]
+    for k in order:
+        x, y, z = geometry.coords_bohr[k] * ANGSTROM_PER_BOHR
+        lines.append(f"{geometry.symbols[k]} {x:.10f} {y:.10f} {z:.10f}")
+    Path(path).write_text("\n".join(lines) + "\n")

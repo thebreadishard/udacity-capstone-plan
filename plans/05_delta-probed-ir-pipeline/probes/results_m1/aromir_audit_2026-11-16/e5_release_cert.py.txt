@@ -1,0 +1,147 @@
+"""The release loader on damaged copies, and the certificate on stored corpus molecules."""
+import contextlib
+import csv
+import io
+import json
+import shutil
+from collections import Counter
+
+import numpy as np
+import torch
+
+from aromir import admission, certificate, cli, geometry as geo, release, response
+from aromir.lowlevel import LowLevel
+from common import CORPUS, TMP, load, rel
+
+torch.set_num_threads(2)
+
+
+def run(label, argv):
+    out, err = io.StringIO(), io.StringIO()
+    try:
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            code = cli.main(argv)
+        result = f"exit {code}"
+    except BaseException as error:  # noqa: BLE001
+        result = f"TRACEBACK {type(error).__name__}: {str(error)[:110]}"
+    text = err.getvalue().strip().replace("\n", " / ")[:170]
+    print(f"{label:40s} -> {result} {text}")
+    return out.getvalue()
+
+
+def copy(name):
+    folder = TMP / "rel" / name
+    if folder.exists():
+        shutil.rmtree(folder)
+    shutil.copytree(release.bundled(), folder)
+    return folder
+
+
+def edit(path, change):
+    record = json.loads(path.read_text())
+    change(record)
+    path.write_text(json.dumps(record))
+
+
+print("--- release loader")
+f = copy("truncated")
+data = (f / "seed-1.safetensors").read_bytes()
+(f / "seed-1.safetensors").write_bytes(data[: len(data) // 2])
+run("truncated weight file", ["card", "--release", str(f)])
+f = copy("missing")
+(f / "seed-2.safetensors").unlink()
+run("missing weight file", ["card", "--release", str(f)])
+f = copy("truncated_rehashed")
+import hashlib
+data = (f / "seed-1.safetensors").read_bytes()[:500000]
+(f / "seed-1.safetensors").write_bytes(data)
+edit(f / "seed-1.json", lambda r: r.update(sha256=hashlib.sha256(data).hexdigest()))
+run("truncated file, hash rewritten", ["card", "--release", str(f)])
+f = copy("line100")
+edit(f / "evaluation.json", lambda r: r.update(licence_line_cm=100.0))
+text = run("licence line edited to 100", ["card", "--release", str(f)])
+print("     card says:", [l for l in text.splitlines() if l.startswith("- **Licensed")])
+f = copy("negative")
+edit(f / "evaluation.json", lambda r: r["errors_cm"]["other"].update(a=-1.0, b=float("nan")))
+text = run("error -1 and NaN in evaluation.json", ["card", "--release", str(f)])
+print("     card says:", [l for l in text.splitlines() if l.startswith("| other")])
+f = copy("seedname")
+edit(f / "seed-0.json", lambda r: r["recipe"].update(seed=7))
+text = run("seed-0.json says seed 7", ["card", "--release", str(f)])
+print("     card files:", [l for l in text.splitlines() if "safetensors |" in l][:1])
+f = copy("holdout_mismatch")
+edit(f / "training.json", lambda r: r["held_out_smiles"].update(zz=["c1ccccc1"]))
+edit(f / "evaluation.json", lambda r: r["holdouts"]["b"].update(n_molecules=3900))
+text = run("hold-outs of the two records differ", ["card", "--release", str(f)])
+print("     card says:", [l for l in text.splitlines() if l.startswith("- Held out") or l.startswith("| family")])
+f = copy("latin1")
+(f / "training.json").write_bytes((f / "training.json").read_bytes() + "é".encode("latin-1"))
+run("training.json not UTF-8", ["card", "--release", str(f)])
+f = copy("badjson")
+(f / "evaluation.json").write_text("{not json")
+run("evaluation.json not JSON", ["card", "--release", str(f)])
+f = copy("elements")
+edit(f / "training.json", lambda r: r.update(elements=["C", "H", "Xx"], min_atoms=40, max_atoms=3))
+run("training.json: element Xx, min>max", ["card", "--release", str(f)])
+target = TMP / "card_out.md"
+target.write_text("precious\n")
+run("card --out existing file", ["card", "--out", str(target)])
+print("     existing file overwritten:", target.read_text()[:3] == "---")
+run("card --out in a missing folder", ["card", "--out", str(TMP / "nodir" / "card.md")])
+
+print("--- orders")
+for s in ("[2H]c1ccccc1", "c1ccccc1", "Cc1ccccc1"):
+    admitted = admission.admit(admission.parse_smiles(s))
+    start = geo.start_from_smiles(admitted.smiles)
+    print(f"  {s:14s} admitted as {admitted.smiles:14s} start symbols {''.join(start.symbols)}  masses of first two {start.masses_amu[:2]}")
+
+print("--- certificate on corpus molecules")
+r = rel()
+rows = list(csv.DictReader((CORPUS.parent / "manifest.csv").open()))
+by_smiles = {}
+for row in rows:
+    if (CORPUS / row["id"] / "hessian_b3lyp_analytic.npz").is_file() and (CORPUS / row["id"] / "dipole_b3lyp_cphf.npz").is_file():
+        by_smiles.setdefault(row["smiles"], row)
+
+
+def cert(row):
+    g, h = load(row["id"])
+    with np.load(CORPUS / row["id"] / "dipole_b3lyp_cphf.npz") as z:
+        apt = np.array(z["apt"], dtype=float)
+    low = LowLevel(0.0, h, apt, response.Refinement(0, 0, 0, 0), 0.0, 0.0)
+    admitted = admission.Admission(row["smiles"], "?", g.n_atoms)
+    return certificate.build(admitted, g, low, r.corrections(g, h), r)
+
+
+for s in ("Oc1ccccc1", "Nc1ccc2ccccc2c1", "O=C(O)c1ccc2ccccc2c1", "Cc1ccc2ccccc2c1", "c1ccc2ccccc2c1", "c1ccc(-c2ccccc2)cc1"):
+    if s not in by_smiles:
+        print("  not available:", s)
+        continue
+    record = cert(by_smiles[s])
+    bands = record["bands"]
+    high = [(b["wavenumber_cm"], b["b3lyp_cm"], b["family"], b["licensed"]) for b in bands if b["b3lyp_cm"] > 3250]
+    print(f"  {s}: families {dict(Counter(b['family'] for b in bands))}; bands above 3250: {high}")
+
+sample = [row for row in by_smiles.values()]
+rng = np.random.default_rng(3)
+picked = [sample[k] for k in rng.choice(len(sample), size=60, replace=False)]
+outside, n_bands, imaginary, failed, worst = 0, 0, 0, Counter(), 0.0
+xh_licensed = 0
+for row in picked:
+    try:
+        record = cert(row)
+    except Exception as error:  # noqa: BLE001
+        failed[type(error).__name__] += 1
+        continue
+    for b in record["bands"]:
+        n_bands += 1
+        low_edge, high_edge = b["seed_range_cm"]
+        miss = max(low_edge - b["wavenumber_cm"], b["wavenumber_cm"] - high_edge)
+        if miss > 0.05:
+            outside += 1
+            worst = max(worst, miss)
+        imaginary += b["wavenumber_cm"] < 0
+        xh_licensed += b["family"] == "CH-stretch" and b["b3lyp_cm"] > 3300
+print(f"  60 random corpus molecules: failed {dict(failed)}; {n_bands} bands; printed position outside its own "
+      f"'seeds' range' for {outside} bands (worst by {worst:.1f} cm-1); imaginary corrected bands {imaginary}; "
+      f"bands above 3300 cm-1 called CH-stretch and licensed: {xh_licensed}")

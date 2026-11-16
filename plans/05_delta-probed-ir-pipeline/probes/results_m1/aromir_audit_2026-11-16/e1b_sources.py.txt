@@ -1,0 +1,27 @@
+"""Top-level family numbers of the six evaluation sources, against evaluation.json."""
+import json
+from pathlib import Path
+
+from common import rel
+
+OUT = Path(
+    "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/"
+    "modules/05_support_predictor/out"
+)
+ev = rel().evaluation
+for name in ev.sources:
+    d = json.loads((OUT / name).read_text())
+    print("=====", name)
+    for key, value in d.items():
+        if isinstance(value, dict) and "diag_rms" in value:
+            print(
+                " ", key, "n_mol", len(value.get("per_molecule", {})),
+                "diag_rms", {k: round(v, 3) for k, v in value["diag_rms"].items()},
+                "corrected_freq_rms", round(value.get("corrected_freq_rms", float("nan")), 3),
+                "other keys", [k for k in value if k not in ("per_molecule", "diag_rms")][:20],
+            )
+        elif not isinstance(value, (list, dict)):
+            print(" ", key, value)
+        else:
+            print(" ", key, type(value).__name__, len(value))
+print("evaluation.json seed errors", ev.seed_errors_cm)

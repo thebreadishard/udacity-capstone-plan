@@ -1,0 +1,46 @@
+"""The corpus's level of theory against aromir's, and small numeric checks."""
+import json
+import zipfile
+from pathlib import Path
+
+import numpy as np
+
+from aromir import dft, optimisation, spectrum, vibrations
+from aromir.network import inputs
+from common import CORPUS, load, rel
+
+for mol in ("A_3100da3761", "A_fdc27f1bd1"):
+    job = json.loads((CORPUS / mol / "job.json").read_text())
+    print(mol, "deck:", json.dumps(job["deck"])[:900])
+    check = json.loads((CORPUS / mol / "analytic_check.json").read_text())
+    print("   analytic_check b3lyp keys:", {k: (v if not isinstance(v, (list, dict)) else type(v).__name__) for k, v in check["b3lyp"].items()})
+print("aromir:", dft.FUNCTIONAL, dft.BASIS, "cart", dft.CARTESIAN_D, "grid", dft.GRID, "conv", dft.ENERGY_TOLERANCE, optimisation.CONVERGENCE_SET)
+
+# is the corpus's stored projected Hessian what aromir's own projection gives from the raw one?
+for mol in ("A_3100da3761", "A_fdc27f1bd1", "A_72b86c2331"):
+    g, hp = load(mol)
+    with np.load(CORPUS / mol / "hessian_b3lyp_analytic.npz") as z:
+        raw = np.array(z["H_raw"], dtype=float)
+        freq = np.array(z["freq_cm"], dtype=float)
+    mine = vibrations.project_rigid_motions(raw, g)
+    w_raw = vibrations.vibrational_modes(raw, g).wavenumbers
+    w_proj = vibrations.vibrational_modes(hp, g).wavenumbers
+    stored = np.sort(freq)[-len(w_raw):]
+    print(f"{mol}: |aromir projection of H_raw - corpus H_projected| max {np.abs(mine - hp).max():.2e}; "
+          f"modes raw vs projected max {np.abs(w_raw - w_proj).max():.3f} cm-1; vs stored freq_cm max {np.abs(w_raw - stored).max():.3f}; "
+          f"asymmetry of raw {np.abs(raw - raw.T).max():.1e}; lowest {w_raw[:3].round(1)}")
+    # does the network's answer change when it is fed the raw Hessian, as the pipeline feeds it?
+    r = rel()
+    a = vibrations.vibrational_modes(raw + r.corrections(g, raw).mean, g).wavenumbers
+    b = vibrations.vibrational_modes(hp + r.corrections(g, hp).mean, g).wavenumbers
+    print(f"     corrected bands, network fed raw vs projected Hessian: max {np.abs(a - b).max():.3f} cm-1")
+
+b = spectrum.Bands(np.array([1110.99, 1111.0, 2500.0, 2500.01, 3200.0]), np.ones(5))
+print("scaled:", spectrum.scaled(b).wavenumbers, "| with 0.9595:", 3200 * 0.9595, "0.9563*1000:", 956.3)
+
+whl = Path.home() / "aromir-src/dist/aromir-0.1.0.dev0-py3-none-any.whl"
+names = zipfile.ZipFile(whl).namelist()
+print("wheel non-py:", [n for n in names if not n.endswith(".py")])
+print("wheel has tests:", any(n.startswith("tests") for n in names), "convert.py:", any(n.endswith("convert.py") for n in names))
+meta = zipfile.ZipFile(whl).read([n for n in names if n.endswith("METADATA")][0]).decode()
+print([l for l in meta.splitlines() if l.startswith(("Requires", "License", "Classifier: Programming", "Classifier: Operating"))])

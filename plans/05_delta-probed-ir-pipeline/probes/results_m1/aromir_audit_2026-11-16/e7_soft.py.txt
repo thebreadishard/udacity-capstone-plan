@@ -1,0 +1,38 @@
+"""How many corpus molecules would `aromir spectrum` refuse as 'not a minimum', or repair in `baseline`?"""
+import csv
+import json
+
+import numpy as np
+
+from aromir import vibrations
+from aromir.molecule import Geometry
+from common import CORPUS, rel
+
+trained = set(rel().training.trained_smiles)
+rows = list(csv.DictReader((CORPUS.parent / "manifest.csv").open()))
+n = imag = soft = imag_trained = 0
+examples = []
+for row in rows:
+    folder = CORPUS / row["id"]
+    path = folder / "hessian_b3lyp_analytic.npz"
+    if not path.is_file():
+        continue
+    g = json.loads((folder / "geometry.json").read_text())
+    symbols = tuple(s.capitalize() for s in g["symbols"])
+    try:
+        geometry = Geometry(symbols, np.array(g["coords_bohr"]))
+    except ValueError:
+        continue
+    with np.load(path) as z:
+        h = np.array(z["H_raw"], dtype=float)
+    w = vibrations.vibrational_modes(h, geometry).wavenumbers
+    n += 1
+    if w[0] < 0:
+        imag += 1
+        imag_trained += row["smiles"] in trained
+        if len(examples) < 6:
+            examples.append((row["smiles"], round(float(w[0]), 1)))
+    soft += bool((np.abs(w) < 20).any())
+print(f"{n} corpus molecules with an analytic B3LYP Hessian: {imag} have an imaginary lowest mode "
+      f"({imag_trained} of them in v1.3's training set), {soft} have a mode below 20 cm-1")
+print("examples:", examples)

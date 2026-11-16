@@ -1,0 +1,67 @@
+"""Look at the corpus record formats and the training record."""
+import json
+from collections import Counter
+
+import numpy as np
+from rdkit import Chem
+
+from common import CORPUS, load, rel
+
+for name in ("geometry.json", "job.json", "result.json", "analytic_check.json"):
+    d = json.loads((CORPUS / "A_3100da3761" / name).read_text())
+    print(name, {k: (v if not isinstance(v, (list, dict)) else type(v).__name__) for k, v in d.items()})
+for name in ("dipole_b3lyp_cphf.npz", "hessian_b3lyp_analytic.npz", "hessian_wb97x_analytic.npz"):
+    with np.load(CORPUS / "A_3100da3761" / name) as z:
+        print(name, {k: z[k].shape for k in z.files})
+
+g = json.loads((CORPUS / "A_3100da3761" / "geometry.json").read_text())
+print("corpus masses", g.get("masses_amu") or g.get("masses"))
+
+r = rel()
+t = r.training
+print("n trained", len(t.trained_smiles), "unique", len(set(t.trained_smiles)))
+print("heldout", {k: (len(v), len(set(v))) for k, v in t.held_out_smiles.items()})
+trained = set(t.trained_smiles)
+for k, v in t.held_out_smiles.items():
+    print(k, "in trained:", sorted(set(v) & trained))
+
+
+def canon(s):
+    m = Chem.MolFromSmiles(s)
+    return None if m is None else Chem.MolToSmiles(m)
+
+
+def flat(s):
+    m = Chem.MolFromSmiles(s)
+    Chem.RemoveStereochemistry(m)
+    return Chem.MolToSmiles(m)
+
+
+bad = [(s, canon(s)) for s in t.trained_smiles if canon(s) != s]
+print("trained not round-tripping under installed rdkit:", len(bad), bad[:5])
+for k, v in t.held_out_smiles.items():
+    b = [(s, canon(s)) for s in v if canon(s) != s]
+    print("heldout", k, "not round-tripping:", len(b), b[:5])
+flat_trained = Counter(flat(s) for s in t.trained_smiles)
+print("trained duplicates ignoring stereo:", [s for s, n in flat_trained.items() if n > 1][:10])
+for k, v in t.held_out_smiles.items():
+    print("heldout", k, "in trained ignoring stereo:", [s for s in v if flat(s) in flat_trained])
+sizes, elements, charged, nonarom = [], set(), [], []
+for s in t.trained_smiles:
+    m = Chem.AddHs(Chem.MolFromSmiles(s))
+    sizes.append(m.GetNumAtoms())
+    elements |= {a.GetSymbol() for a in m.GetAtoms()}
+    if not any(a.GetIsAromatic() for a in m.GetAtoms()):
+        nonarom.append(s)
+print("sizes", min(sizes), max(sizes), "record", t.min_atoms, t.max_atoms)
+print("elements", sorted(elements), "record", t.elements)
+print("trained without aromatic atom under installed rdkit:", nonarom[:10], len(nonarom))
+hs = []
+for k, v in t.held_out_smiles.items():
+    for s in v:
+        m = Chem.AddHs(Chem.MolFromSmiles(s))
+        hs.append(m.GetNumAtoms())
+    print("heldout", k, "sizes", min(hs), max(hs))
+print("eval n_molecules", {k: h.n_molecules for k, h in r.evaluation.holdouts.items()})
+print("size histogram", sorted(Counter(sizes).items()))
+print("element counts", Counter(e for s in t.trained_smiles for e in {a.GetSymbol() for a in Chem.MolFromSmiles(s).GetAtoms()}))
