@@ -1,0 +1,2878 @@
+{
+ "pooled": {
+  "molecules": 38,
+  "modes": 2160,
+  "B_vs_G": {
+   "overlap_abs_median": 0.9999688422163311,
+   "overlap_abs_p10": 0.9993490277695672,
+   "omega_rms_cm": 1.0753639493905252
+  },
+  "B_vs_W": {
+   "overlap_abs_median": 0.9979708986488449,
+   "overlap_abs_p10": 0.9248979360594591,
+   "overlap_abs_p01": 0.726827991701919,
+   "overlap_abs_min": 0.5517404224704271,
+   "modes_below_match_line": 13,
+   "rank_changed": 395,
+   "omega_shift_rms_cm": 24.470150996902362,
+   "family_changed": 19,
+   "h_rms": 0.05305833871751143,
+   "o_rms": 0.020148122394560004,
+   "xtb_partner_changed": 146,
+   "xtb_partner_lost_on_W": 81,
+   "xtb_partner_lost_on_B": 21
+  },
+  "families": {
+   "CH-stretch": {
+    "n": 299,
+    "overlap_abs_median": 0.9995006435851277,
+    "overlap_abs_p10": 0.9873861167573842,
+    "rms_inputs_on_B": 8.940337644164307,
+    "rms_inputs_on_W": 9.489726788158713,
+    "rms_between": 5.11291015562434,
+    "max_between": 23.649159743659283
+   },
+   "CH-oop": {
+    "n": 255,
+    "overlap_abs_median": 0.9985942707195072,
+    "overlap_abs_p10": 0.9865189520005324,
+    "rms_inputs_on_B": 5.846896333140695,
+    "rms_inputs_on_W": 6.649629161968438,
+    "rms_between": 3.0358452554609103,
+    "max_between": 6.736333722486389
+   },
+   "ring-ip": {
+    "n": 737,
+    "overlap_abs_median": 0.9900977295560802,
+    "overlap_abs_p10": 0.8842865355971867,
+    "rms_inputs_on_B": 3.1225005255266343,
+    "rms_inputs_on_W": 3.1873700066828707,
+    "rms_between": 0.8473838938832792,
+    "max_between": 5.516666146509159
+   },
+   "other": {
+    "n": 315,
+    "overlap_abs_median": 0.9994870969644203,
+    "overlap_abs_p10": 0.994918159856791,
+    "rms_inputs_on_B": 3.365852303035534,
+    "rms_inputs_on_W": 3.485945167158502,
+    "rms_between": 0.5507629483136873,
+    "max_between": 4.584906667417416
+   },
+   "all": {
+    "n": 1606,
+    "overlap_abs_median": 0.9975667754765655,
+    "overlap_abs_p10": 0.9414669952566821,
+    "rms_inputs_on_B": 5.196680953841474,
+    "rms_inputs_on_W": 5.552710455636962,
+    "rms_between": 2.5921792981470455,
+    "max_between": 23.649159743659283
+   }
+  },
+  "only_one_predicts": {
+   "B only": 73,
+   "W only": 23
+  }
+ },
+ "skipped": {
+  "tetracene": "[Errno 2] No such file or directory: 'C:\\\\Users\\\\thebr\\\\Documents\\\\CapstonePlan\\\\plans\\\\05_delta-probed-ir-pipeline\\\\modules\\\\05_support_predictor\\\\corpus\\\\molecules\\\\tetracene\\\\geometry.json'"
+ },
+ "per_molecule": {
+  "A_01f3186607": {
+   "molecules": 1,
+   "modes": 48,
+   "B_vs_G": {
+    "overlap_abs_median": 0.9999924955892096,
+    "overlap_abs_p10": 0.999280632652426,
+    "omega_rms_cm": 0.8556028182349231
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.9991657613504994,
+    "overlap_abs_p10": 0.9914138089759189,
+    "overlap_abs_p01": 0.9636829271088921,
+    "overlap_abs_min": 0.9626811589186266,
+    "modes_below_match_line": 0,
+    "rank_changed": 11,
+    "omega_shift_rms_cm": 23.83881927586742,
+    "family_changed": 1,
+    "h_rms": 0.036689907268195605,
+    "o_rms": 0.0004243302078640034,
+    "xtb_partner_changed": 0,
+    "xtb_partner_lost_on_W": 0,
+    "xtb_partner_lost_on_B": 0
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 8,
+     "overlap_abs_median": 0.9999151613495458,
+     "overlap_abs_p10": 0.9991721927837388,
+     "rms_inputs_on_B": 9.658314034669868,
+     "rms_inputs_on_W": 9.672227317796558,
+     "rms_between": 3.8450265082159585,
+     "max_between": 7.105645670660721
+    },
+    "CH-oop": {
+     "n": 8,
+     "overlap_abs_median": 0.9997112275441515,
+     "overlap_abs_p10": 0.9989243915023859,
+     "rms_inputs_on_B": 3.6596912521630722,
+     "rms_inputs_on_W": 5.308480946981805,
+     "rms_between": 3.1176537685360386,
+     "max_between": 5.595124137766124
+    },
+    "ring-ip": {
+     "n": 18,
+     "overlap_abs_median": 0.9984543068368097,
+     "overlap_abs_p10": 0.9786283403732279,
+     "rms_inputs_on_B": 2.5243666621717535,
+     "rms_inputs_on_W": 2.4843082608617864,
+     "rms_between": 0.7153672608091619,
+     "max_between": 2.067651624944004
+    },
+    "other": {
+     "n": 6,
+     "overlap_abs_median": 0.9996400937642129,
+     "overlap_abs_p10": 0.9989728851922036,
+     "rms_inputs_on_B": 1.4869807110876432,
+     "rms_inputs_on_W": 1.6051918224023523,
+     "rms_between": 0.23639289206501532,
+     "max_between": 0.44782336168665715
+    },
+    "all": {
+     "n": 40,
+     "overlap_abs_median": 0.9991657613504994,
+     "overlap_abs_p10": 0.9974490204502726,
+     "rms_inputs_on_B": 4.953234592289351,
+     "rms_inputs_on_W": 5.245015801603427,
+     "rms_between": 2.267039624005241,
+     "max_between": 7.105645670660721
+    }
+   },
+   "only_one_predicts": {
+    "B only": 0,
+    "W only": 0
+   }
+  },
+  "B_a41f4cff9d": {
+   "molecules": 1,
+   "modes": 51,
+   "B_vs_G": {
+    "overlap_abs_median": 0.9999728287430608,
+    "overlap_abs_p10": 0.9995156699468206,
+    "omega_rms_cm": 0.9825512372297384
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.9971998626656823,
+    "overlap_abs_p10": 0.8736857639119906,
+    "overlap_abs_p01": 0.6399504828349765,
+    "overlap_abs_min": 0.5517404224704271,
+    "modes_below_match_line": 1,
+    "rank_changed": 8,
+    "omega_shift_rms_cm": 22.823757078822464,
+    "family_changed": 0,
+    "h_rms": 0.04855556578235875,
+    "o_rms": 7.332152472706544e-06,
+    "xtb_partner_changed": 3,
+    "xtb_partner_lost_on_W": 1,
+    "xtb_partner_lost_on_B": 0
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 7,
+     "overlap_abs_median": 0.9979322519169538,
+     "overlap_abs_p10": 0.9929786388978272,
+     "rms_inputs_on_B": 3.4025191365204903,
+     "rms_inputs_on_W": 6.828814865401703,
+     "rms_between": 4.387737783577278,
+     "max_between": 10.993116404985372
+    },
+    "CH-oop": {
+     "n": 5,
+     "overlap_abs_median": 0.9977663599478234,
+     "overlap_abs_p10": 0.9911795032539399,
+     "rms_inputs_on_B": 1.8512966451013382,
+     "rms_inputs_on_W": 3.74348088085952,
+     "rms_between": 3.5317985600454387,
+     "max_between": 5.570637641692585
+    },
+    "ring-ip": {
+     "n": 16,
+     "overlap_abs_median": 0.9929838588132949,
+     "overlap_abs_p10": 0.7614780525730874,
+     "rms_inputs_on_B": 2.201580196198829,
+     "rms_inputs_on_W": 2.447934659013674,
+     "rms_between": 1.1262136536596479,
+     "max_between": 3.312039024203802
+    },
+    "other": {
+     "n": 8,
+     "overlap_abs_median": 0.9985986413875512,
+     "overlap_abs_p10": 0.996638389388807,
+     "rms_inputs_on_B": 1.681263146289408,
+     "rms_inputs_on_W": 1.7250650993540781,
+     "rms_between": 0.24521138989075764,
+     "max_between": 0.49581493340124005
+    },
+    "all": {
+     "n": 36,
+     "overlap_abs_median": 0.9961714380464659,
+     "overlap_abs_p10": 0.819927065480561,
+     "rms_inputs_on_B": 2.347225925089374,
+     "rms_inputs_on_W": 3.7866071557867857,
+     "rms_between": 2.4602870736438494,
+     "max_between": 10.993116404985372
+    }
+   },
+   "only_one_predicts": {
+    "B only": 1,
+    "W only": 0
+   }
+  },
+  "A_8448043181": {
+   "molecules": 1,
+   "modes": 30,
+   "B_vs_G": {
+    "overlap_abs_median": 0.99724057901395,
+    "overlap_abs_p10": 0.8822273060955914,
+    "omega_rms_cm": 1.1648493552045065
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.9193685316560392,
+    "overlap_abs_p10": 0.7732483809151678,
+    "overlap_abs_p01": 0.7207911302650459,
+    "overlap_abs_min": 0.7207901466213946,
+    "modes_below_match_line": 0,
+    "rank_changed": 9,
+    "omega_shift_rms_cm": 25.144884176764137,
+    "family_changed": 0,
+    "h_rms": 0.026406594739802735,
+    "o_rms": 7.068896026495526e-06,
+    "xtb_partner_changed": 6,
+    "xtb_partner_lost_on_W": 0,
+    "xtb_partner_lost_on_B": 0
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 6,
+     "overlap_abs_median": 0.9193685316560392,
+     "overlap_abs_p10": 0.9102115376854438,
+     "rms_inputs_on_B": 4.966430712052234,
+     "rms_inputs_on_W": 2.640871621311396,
+     "rms_between": 3.8090076799611645,
+     "max_between": 6.486769549878488
+    },
+    "CH-oop": {
+     "n": 6,
+     "overlap_abs_median": 0.7978153572509874,
+     "overlap_abs_p10": 0.7732455724080016,
+     "rms_inputs_on_B": 6.83008005477469,
+     "rms_inputs_on_W": 8.852158423718622,
+     "rms_between": 3.787874914675264,
+     "max_between": 6.659922918162859
+    },
+    "ring-ip": {
+     "n": 13,
+     "overlap_abs_median": 0.9622757170828489,
+     "overlap_abs_p10": 0.736122326090193,
+     "rms_inputs_on_B": 2.165061796801371,
+     "rms_inputs_on_W": 2.212145425490937,
+     "rms_between": 0.3745300833641973,
+     "max_between": 0.7913134082712396
+    },
+    "other": {
+     "n": 3,
+     "overlap_abs_median": 0.912925856984547,
+     "overlap_abs_p10": 0.9129258566872291,
+     "rms_inputs_on_B": 1.215977658001506,
+     "rms_inputs_on_W": 1.4556063562484585,
+     "rms_between": 0.2829076867788425,
+     "max_between": 0.48437935857726444
+    },
+    "all": {
+     "n": 28,
+     "overlap_abs_median": 0.9161471795335298,
+     "overlap_abs_p10": 0.7732469766615847,
+     "rms_inputs_on_B": 4.197217505253377,
+     "rms_inputs_on_W": 4.559066616769512,
+     "rms_between": 2.5014486639358005,
+     "max_between": 6.659922918162859
+    }
+   },
+   "only_one_predicts": {
+    "B only": 0,
+    "W only": 0
+   }
+  },
+  "A_a848c04a21": {
+   "molecules": 1,
+   "modes": 36,
+   "B_vs_G": {
+    "overlap_abs_median": 0.9999864710505171,
+    "overlap_abs_p10": 0.9991225874808758,
+    "omega_rms_cm": 0.9955049518353682
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.9985269479670853,
+    "overlap_abs_p10": 0.9345756499322615,
+    "overlap_abs_p01": 0.7068138747227481,
+    "overlap_abs_min": 0.7054421850432042,
+    "modes_below_match_line": 1,
+    "rank_changed": 8,
+    "omega_shift_rms_cm": 29.389935832798173,
+    "family_changed": 1,
+    "h_rms": 0.10445066022809782,
+    "o_rms": 0.0001645764781567184,
+    "xtb_partner_changed": 2,
+    "xtb_partner_lost_on_W": 0,
+    "xtb_partner_lost_on_B": 0
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 5,
+     "overlap_abs_median": 0.999988141352364,
+     "overlap_abs_p10": 0.9999618742410437,
+     "rms_inputs_on_B": 11.853005967238257,
+     "rms_inputs_on_W": 12.624089141013432,
+     "rms_between": 2.086781992099577,
+     "max_between": 4.16422543302852
+    },
+    "CH-oop": {
+     "n": 6,
+     "overlap_abs_median": 0.9981460643824805,
+     "overlap_abs_p10": 0.9968807420564876,
+     "rms_inputs_on_B": 4.9184685592630775,
+     "rms_inputs_on_W": 6.920183066677251,
+     "rms_between": 3.566215003029772,
+     "max_between": 6.736333722486389
+    },
+    "ring-ip": {
+     "n": 12,
+     "overlap_abs_median": 0.998269512842437,
+     "overlap_abs_p10": 0.9449681107845287,
+     "rms_inputs_on_B": 3.477896758865991,
+     "rms_inputs_on_W": 3.3947588925156613,
+     "rms_between": 0.5064453983933302,
+     "max_between": 0.9739939592413158
+    },
+    "other": {
+     "n": 2,
+     "overlap_abs_median": 0.9712385378768693,
+     "overlap_abs_p10": 0.948303035107916,
+     "rms_inputs_on_B": 3.470738358772079,
+     "rms_inputs_on_W": 3.696285451443073,
+     "rms_between": 0.22612260477756602,
+     "max_between": 0.29015132925164266
+    },
+    "all": {
+     "n": 25,
+     "overlap_abs_median": 0.9985583911941679,
+     "overlap_abs_p10": 0.960198257555024,
+     "rms_inputs_on_B": 6.377642166198275,
+     "rms_inputs_on_W": 7.070472241077239,
+     "rms_between": 2.0125678946380057,
+     "max_between": 6.736333722486389
+    }
+   },
+   "only_one_predicts": {
+    "B only": 0,
+    "W only": 0
+   }
+  },
+  "B_410ac0fb2f": {
+   "molecules": 1,
+   "modes": 42,
+   "B_vs_G": {
+    "overlap_abs_median": 0.9999479541913079,
+    "overlap_abs_p10": 0.996555429730315,
+    "omega_rms_cm": 1.0315924868810515
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.9947212389736189,
+    "overlap_abs_p10": 0.9049133669272157,
+    "overlap_abs_p01": 0.8214600203436175,
+    "overlap_abs_min": 0.8143584799404819,
+    "modes_below_match_line": 0,
+    "rank_changed": 11,
+    "omega_shift_rms_cm": 29.169974737381672,
+    "family_changed": 1,
+    "h_rms": 0.11179854657271399,
+    "o_rms": 0.0538257881319239,
+    "xtb_partner_changed": 9,
+    "xtb_partner_lost_on_W": 3,
+    "xtb_partner_lost_on_B": 2
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 4,
+     "overlap_abs_median": 0.9987962901147829,
+     "overlap_abs_p10": 0.9976308208149334,
+     "rms_inputs_on_B": 4.803423970970298,
+     "rms_inputs_on_W": 4.05522050006528,
+     "rms_between": 1.6819020503951643,
+     "max_between": 2.0523986107490657
+    },
+    "ring-ip": {
+     "n": 11,
+     "overlap_abs_median": 0.9941685122967296,
+     "overlap_abs_p10": 0.9189990877451677,
+     "rms_inputs_on_B": 5.178228448948412,
+     "rms_inputs_on_W": 5.740557825627478,
+     "rms_between": 0.9878504281759765,
+     "max_between": 2.371146061187453
+    },
+    "other": {
+     "n": 7,
+     "overlap_abs_median": 0.9663999084829277,
+     "overlap_abs_p10": 0.9098473111240284,
+     "rms_inputs_on_B": 7.414790910847251,
+     "rms_inputs_on_W": 7.649317229472756,
+     "rms_between": 1.0331000321226154,
+     "max_between": 2.3071971099398407
+    },
+    "all": {
+     "n": 22,
+     "overlap_abs_median": 0.9947212389736189,
+     "overlap_abs_p10": 0.9232951101451868,
+     "rms_inputs_on_B": 5.924141463326659,
+     "rms_inputs_on_W": 6.171259181220128,
+     "rms_between": 1.158380156551265,
+     "max_between": 2.371146061187453
+    }
+   },
+   "only_one_predicts": {
+    "B only": 0,
+    "W only": 0
+   }
+  },
+  "A_d9139359ab": {
+   "molecules": 1,
+   "modes": 48,
+   "B_vs_G": {
+    "overlap_abs_median": 0.9999718710959418,
+    "overlap_abs_p10": 0.9990477573782307,
+    "omega_rms_cm": 0.7935063251077921
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.998635159711299,
+    "overlap_abs_p10": 0.8540698946834601,
+    "overlap_abs_p01": 0.7919623559356429,
+    "overlap_abs_min": 0.7843282167409441,
+    "modes_below_match_line": 0,
+    "rank_changed": 19,
+    "omega_shift_rms_cm": 35.803308354088415,
+    "family_changed": 1,
+    "h_rms": 0.06697898834676279,
+    "o_rms": 0.000137984903803894,
+    "xtb_partner_changed": 2,
+    "xtb_partner_lost_on_W": 2,
+    "xtb_partner_lost_on_B": 0
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 8,
+     "overlap_abs_median": 0.9999386985125782,
+     "overlap_abs_p10": 0.9991629546556142,
+     "rms_inputs_on_B": 19.791731355222918,
+     "rms_inputs_on_W": 21.001094999621102,
+     "rms_between": 4.120283135486034,
+     "max_between": 10.382279652318317
+    },
+    "CH-oop": {
+     "n": 9,
+     "overlap_abs_median": 0.9984903448146492,
+     "overlap_abs_p10": 0.9964037074145006,
+     "rms_inputs_on_B": 7.034943353858183,
+     "rms_inputs_on_W": 5.531417212567274,
+     "rms_between": 2.6837325135035317,
+     "max_between": 5.297021520161984
+    },
+    "ring-ip": {
+     "n": 16,
+     "overlap_abs_median": 0.9898461125240019,
+     "overlap_abs_p10": 0.8273766605628754,
+     "rms_inputs_on_B": 5.558037220436297,
+     "rms_inputs_on_W": 4.725415990005217,
+     "rms_between": 1.7746099042438253,
+     "max_between": 5.516666146509159
+    },
+    "other": {
+     "n": 6,
+     "overlap_abs_median": 0.9993963051853127,
+     "overlap_abs_p10": 0.9013296744401282,
+     "rms_inputs_on_B": 3.762150213920453,
+     "rms_inputs_on_W": 3.1247698624823665,
+     "rms_between": 0.8117698817487825,
+     "max_between": 1.9171844560592586
+    },
+    "all": {
+     "n": 39,
+     "overlap_abs_median": 0.9984903448146492,
+     "overlap_abs_p10": 0.9486385185675319,
+     "rms_inputs_on_B": 10.325852521480382,
+     "rms_inputs_on_W": 10.401670400245846,
+     "rms_between": 2.5569278130771873,
+     "max_between": 10.382279652318317
+    }
+   },
+   "only_one_predicts": {
+    "B only": 2,
+    "W only": 0
+   }
+  },
+  "B_0603418c5b": {
+   "molecules": 1,
+   "modes": 54,
+   "B_vs_G": {
+    "overlap_abs_median": 0.9999918427622022,
+    "overlap_abs_p10": 0.9999482732241479,
+    "omega_rms_cm": 0.8459038094906882
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.9971781190405407,
+    "overlap_abs_p10": 0.9043773548004113,
+    "overlap_abs_p01": 0.7639285504700123,
+    "overlap_abs_min": 0.7278387456605181,
+    "modes_below_match_line": 0,
+    "rank_changed": 18,
+    "omega_shift_rms_cm": 35.97708094582082,
+    "family_changed": 2,
+    "h_rms": 0.051697378291917735,
+    "o_rms": 0.04459593975487021,
+    "xtb_partner_changed": 3,
+    "xtb_partner_lost_on_W": 3,
+    "xtb_partner_lost_on_B": 0
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 7,
+     "overlap_abs_median": 0.9998919836888694,
+     "overlap_abs_p10": 0.9992538246809051,
+     "rms_inputs_on_B": 9.244286594195309,
+     "rms_inputs_on_W": 9.08321138209532,
+     "rms_between": 1.7523686403286465,
+     "max_between": 3.168719671514708
+    },
+    "CH-oop": {
+     "n": 9,
+     "overlap_abs_median": 0.9970109424501223,
+     "overlap_abs_p10": 0.9822510337575449,
+     "rms_inputs_on_B": 9.035863756872077,
+     "rms_inputs_on_W": 8.234873425707192,
+     "rms_between": 3.143859026614442,
+     "max_between": 5.880263720393462
+    },
+    "ring-ip": {
+     "n": 18,
+     "overlap_abs_median": 0.98575878274503,
+     "overlap_abs_p10": 0.8643379544990477,
+     "rms_inputs_on_B": 3.5791437158820094,
+     "rms_inputs_on_W": 2.859340894567945,
+     "rms_between": 1.4701474091682012,
+     "max_between": 4.637140946689922
+    },
+    "other": {
+     "n": 4,
+     "overlap_abs_median": 0.9991861514303269,
+     "overlap_abs_p10": 0.8653642504512,
+     "rms_inputs_on_B": 1.9238035178612491,
+     "rms_inputs_on_W": 1.0658456137215855,
+     "rms_between": 0.9624393077668989,
+     "max_between": 1.8811760587738142
+    },
+    "all": {
+     "n": 38,
+     "overlap_abs_median": 0.9965224093827774,
+     "overlap_abs_p10": 0.9205895472954991,
+     "rms_inputs_on_B": 6.444925139711297,
+     "rms_inputs_on_W": 5.93730494401596,
+     "rms_between": 2.006957478263053,
+     "max_between": 5.880263720393462
+    }
+   },
+   "only_one_predicts": {
+    "B only": 1,
+    "W only": 0
+   }
+  },
+  "B_78f8233b4c": {
+   "molecules": 1,
+   "modes": 54,
+   "B_vs_G": {
+    "overlap_abs_median": 0.9999792735111305,
+    "overlap_abs_p10": 0.9995768302214598,
+    "omega_rms_cm": 0.990503780028665
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.9969952718488584,
+    "overlap_abs_p10": 0.8674599107108006,
+    "overlap_abs_p01": 0.6551827278709274,
+    "overlap_abs_min": 0.6351817147224691,
+    "modes_below_match_line": 2,
+    "rank_changed": 13,
+    "omega_shift_rms_cm": 29.4267722859451,
+    "family_changed": 0,
+    "h_rms": 0.0821928542304416,
+    "o_rms": 0.09466841587251396,
+    "xtb_partner_changed": 8,
+    "xtb_partner_lost_on_W": 3,
+    "xtb_partner_lost_on_B": 2
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 7,
+     "overlap_abs_median": 0.9998991191794026,
+     "overlap_abs_p10": 0.9993515497731609,
+     "rms_inputs_on_B": 17.977058620893445,
+     "rms_inputs_on_W": 18.625308247407677,
+     "rms_between": 4.489416071301403,
+     "max_between": 10.095201743902834
+    },
+    "ring-ip": {
+     "n": 15,
+     "overlap_abs_median": 0.9967171529932976,
+     "overlap_abs_p10": 0.9523818529726308,
+     "rms_inputs_on_B": 4.506958460770637,
+     "rms_inputs_on_W": 4.251855913153188,
+     "rms_between": 0.9499948837900835,
+     "max_between": 2.588194380338745
+    },
+    "other": {
+     "n": 10,
+     "overlap_abs_median": 0.9886550584615732,
+     "overlap_abs_p10": 0.8675089356156243,
+     "rms_inputs_on_B": 6.145697088818433,
+     "rms_inputs_on_W": 6.16551174573201,
+     "rms_between": 0.4854343264403721,
+     "max_between": 1.2236959644110321
+    },
+    "all": {
+     "n": 32,
+     "overlap_abs_median": 0.9970219203987507,
+     "overlap_abs_p10": 0.9000387451052242,
+     "rms_inputs_on_B": 9.592654256961204,
+     "rms_inputs_on_W": 9.810110031616453,
+     "rms_between": 2.214849146034637,
+     "max_between": 10.095201743902834
+    }
+   },
+   "only_one_predicts": {
+    "B only": 2,
+    "W only": 2
+   }
+  },
+  "A_45187bb7c8": {
+   "molecules": 1,
+   "modes": 54,
+   "B_vs_G": {
+    "overlap_abs_median": 0.9999910017416378,
+    "overlap_abs_p10": 0.9999280720311383,
+    "omega_rms_cm": 0.8205118454842248
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.9985853537325398,
+    "overlap_abs_p10": 0.9655062766551845,
+    "overlap_abs_p01": 0.90097286048207,
+    "overlap_abs_min": 0.8993551411743318,
+    "modes_below_match_line": 0,
+    "rank_changed": 4,
+    "omega_shift_rms_cm": 22.94804659912748,
+    "family_changed": 0,
+    "h_rms": 0.03263267405328121,
+    "o_rms": 0.001151744546239242,
+    "xtb_partner_changed": 2,
+    "xtb_partner_lost_on_W": 2,
+    "xtb_partner_lost_on_B": 0
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 8,
+     "overlap_abs_median": 0.9997228639497759,
+     "overlap_abs_p10": 0.9988890770222634,
+     "rms_inputs_on_B": 6.848609810259604,
+     "rms_inputs_on_W": 8.879480545762583,
+     "rms_between": 5.423894359918257,
+     "max_between": 12.98794436875805
+    },
+    "CH-oop": {
+     "n": 8,
+     "overlap_abs_median": 0.9988159757135462,
+     "overlap_abs_p10": 0.9890685524306764,
+     "rms_inputs_on_B": 3.523653344906677,
+     "rms_inputs_on_W": 5.0537689126600105,
+     "rms_between": 2.7922106431458045,
+     "max_between": 5.285798990761634
+    },
+    "ring-ip": {
+     "n": 19,
+     "overlap_abs_median": 0.9922197921457137,
+     "overlap_abs_p10": 0.9520116077793035,
+     "rms_inputs_on_B": 2.594224776399695,
+     "rms_inputs_on_W": 2.614889204245224,
+     "rms_between": 0.633464778411882,
+     "max_between": 1.5567056207371692
+    },
+    "other": {
+     "n": 9,
+     "overlap_abs_median": 0.9993165190261682,
+     "overlap_abs_p10": 0.9987373756822068,
+     "rms_inputs_on_B": 3.499588874666392,
+     "rms_inputs_on_W": 3.4507105809889476,
+     "rms_between": 0.1916455246018898,
+     "max_between": 0.3759234101943125
+    },
+    "all": {
+     "n": 44,
+     "overlap_abs_median": 0.9987446790375041,
+     "overlap_abs_p10": 0.9672149495428521,
+     "rms_inputs_on_B": 4.024501256707251,
+     "rms_inputs_on_W": 4.936340052388803,
+     "rms_between": 2.635748079828992,
+     "max_between": 12.98794436875805
+    }
+   },
+   "only_one_predicts": {
+    "B only": 2,
+    "W only": 0
+   }
+  },
+  "A_72b86c2331": {
+   "molecules": 1,
+   "modes": 54,
+   "B_vs_G": {
+    "overlap_abs_median": 0.9999900349786548,
+    "overlap_abs_p10": 0.9999271830616603,
+    "omega_rms_cm": 0.916717034402453
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.9994485979415187,
+    "overlap_abs_p10": 0.9888716823094702,
+    "overlap_abs_p01": 0.9717760818045023,
+    "overlap_abs_min": 0.9717138333100455,
+    "modes_below_match_line": 0,
+    "rank_changed": 7,
+    "omega_shift_rms_cm": 24.57575366839583,
+    "family_changed": 0,
+    "h_rms": 0.035535200610118674,
+    "o_rms": 2.0442651112983024e-05,
+    "xtb_partner_changed": 0,
+    "xtb_partner_lost_on_W": 0,
+    "xtb_partner_lost_on_B": 0
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 8,
+     "overlap_abs_median": 0.9999887040926856,
+     "overlap_abs_p10": 0.999967761917769,
+     "rms_inputs_on_B": 5.745601704476344,
+     "rms_inputs_on_W": 5.4717941860741135,
+     "rms_between": 1.6946252501687593,
+     "max_between": 3.139753107362054
+    },
+    "CH-oop": {
+     "n": 8,
+     "overlap_abs_median": 0.9997310614194455,
+     "overlap_abs_p10": 0.9986929742044705,
+     "rms_inputs_on_B": 6.698440512651287,
+     "rms_inputs_on_W": 8.306181281807161,
+     "rms_between": 2.7614247449766776,
+     "max_between": 5.110728571469201
+    },
+    "ring-ip": {
+     "n": 22,
+     "overlap_abs_median": 0.9983260883775619,
+     "overlap_abs_p10": 0.9823102695566868,
+     "rms_inputs_on_B": 2.8094361981989247,
+     "rms_inputs_on_W": 2.933177856070904,
+     "rms_between": 0.5972520091767878,
+     "max_between": 1.864148951461038
+    },
+    "other": {
+     "n": 8,
+     "overlap_abs_median": 0.9997811335987357,
+     "overlap_abs_p10": 0.998970058245261,
+     "rms_inputs_on_B": 9.876814482231685,
+     "rms_inputs_on_W": 9.875496655420077,
+     "rms_between": 0.22734811782005956,
+     "max_between": 0.5082323570697707
+    },
+    "all": {
+     "n": 46,
+     "overlap_abs_median": 0.9994350370027678,
+     "overlap_abs_p10": 0.9863705576386201,
+     "rms_inputs_on_B": 5.85532935815547,
+     "rms_inputs_on_W": 6.187200353245529,
+     "rms_between": 1.416048446981097,
+     "max_between": 5.110728571469201
+    }
+   },
+   "only_one_predicts": {
+    "B only": 0,
+    "W only": 0
+   }
+  },
+  "A_90df3e4aa9": {
+   "molecules": 1,
+   "modes": 45,
+   "B_vs_G": {
+    "overlap_abs_median": 0.9999629329810995,
+    "overlap_abs_p10": 0.9991068945259296,
+    "omega_rms_cm": 0.8066566339089328
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.9984570935762487,
+    "overlap_abs_p10": 0.8680497914251617,
+    "overlap_abs_p01": 0.7075694321466778,
+    "overlap_abs_min": 0.6786034864548924,
+    "modes_below_match_line": 1,
+    "rank_changed": 2,
+    "omega_shift_rms_cm": 23.91772475554595,
+    "family_changed": 1,
+    "h_rms": 0.06990862572851413,
+    "o_rms": 0.022774367768297547,
+    "xtb_partner_changed": 5,
+    "xtb_partner_lost_on_W": 3,
+    "xtb_partner_lost_on_B": 1
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 8,
+     "overlap_abs_median": 0.9998392194047834,
+     "overlap_abs_p10": 0.9996348378231488,
+     "rms_inputs_on_B": 5.886859647000985,
+     "rms_inputs_on_W": 7.718689434948338,
+     "rms_between": 3.9293053766086565,
+     "max_between": 7.532154564949749
+    },
+    "ring-ip": {
+     "n": 18,
+     "overlap_abs_median": 0.9884266363015957,
+     "overlap_abs_p10": 0.7959410753500471,
+     "rms_inputs_on_B": 3.095968994696224,
+     "rms_inputs_on_W": 3.0382847489741907,
+     "rms_between": 1.3583150939653548,
+     "max_between": 3.41021260298276
+    },
+    "other": {
+     "n": 8,
+     "overlap_abs_median": 0.9990605988568149,
+     "overlap_abs_p10": 0.9820371240513638,
+     "rms_inputs_on_B": 2.5468637512382903,
+     "rms_inputs_on_W": 3.187356399933882,
+     "rms_between": 0.7771023212807319,
+     "max_between": 2.164072368162527
+    },
+    "all": {
+     "n": 34,
+     "overlap_abs_median": 0.9981177744105267,
+     "overlap_abs_p10": 0.8895312715901104,
+     "rms_inputs_on_B": 3.8411988173770752,
+     "rms_inputs_on_W": 4.614747444470331,
+     "rms_between": 2.1798339668557785,
+     "max_between": 7.532154564949749
+    }
+   },
+   "only_one_predicts": {
+    "B only": 3,
+    "W only": 1
+   }
+  },
+  "A_7aa232d4e9": {
+   "molecules": 1,
+   "modes": 42,
+   "B_vs_G": {
+    "overlap_abs_median": 0.9999856836419984,
+    "overlap_abs_p10": 0.9998947668885556,
+    "omega_rms_cm": 1.4781654538645619
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.9992315105189289,
+    "overlap_abs_p10": 0.966825751778486,
+    "overlap_abs_p01": 0.9115241015023415,
+    "overlap_abs_min": 0.9055045485568332,
+    "modes_below_match_line": 0,
+    "rank_changed": 4,
+    "omega_shift_rms_cm": 23.262976889545044,
+    "family_changed": 1,
+    "h_rms": 0.046300944507235195,
+    "o_rms": 0.0003595421813206293,
+    "xtb_partner_changed": 0,
+    "xtb_partner_lost_on_W": 0,
+    "xtb_partner_lost_on_B": 0
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 6,
+     "overlap_abs_median": 0.9999305669148787,
+     "overlap_abs_p10": 0.9997076215023099,
+     "rms_inputs_on_B": 8.69400356399882,
+     "rms_inputs_on_W": 10.869421723420723,
+     "rms_between": 3.6944851496000735,
+     "max_between": 6.004049057817468
+    },
+    "CH-oop": {
+     "n": 6,
+     "overlap_abs_median": 0.9993293153894491,
+     "overlap_abs_p10": 0.9987587688461559,
+     "rms_inputs_on_B": 4.0855447136376135,
+     "rms_inputs_on_W": 4.355089894084257,
+     "rms_between": 3.1380108822383765,
+     "max_between": 5.420206458151949
+    },
+    "ring-ip": {
+     "n": 17,
+     "overlap_abs_median": 0.994889788214943,
+     "overlap_abs_p10": 0.9333364165046709,
+     "rms_inputs_on_B": 2.834511629560568,
+     "rms_inputs_on_W": 3.2072365926099162,
+     "rms_between": 0.7769372613928056,
+     "max_between": 1.9346096333863478
+    },
+    "other": {
+     "n": 5,
+     "overlap_abs_median": 0.9996565133611919,
+     "overlap_abs_p10": 0.9987247248215406,
+     "rms_inputs_on_B": 1.315646341657386,
+     "rms_inputs_on_W": 2.282969843415364,
+     "rms_between": 1.4719542539472066,
+     "max_between": 3.267599371890796
+    },
+    "all": {
+     "n": 34,
+     "overlap_abs_median": 0.9987742955028045,
+     "overlap_abs_p10": 0.9536706587560323,
+     "rms_inputs_on_B": 4.533874537617975,
+     "rms_inputs_on_W": 5.486868837048364,
+     "rms_between": 2.1833122380034227,
+     "max_between": 6.004049057817468
+    }
+   },
+   "only_one_predicts": {
+    "B only": 0,
+    "W only": 1
+   }
+  },
+  "B_079e66d017": {
+   "molecules": 1,
+   "modes": 54,
+   "B_vs_G": {
+    "overlap_abs_median": 0.9999795477781128,
+    "overlap_abs_p10": 0.9996892817876686,
+    "omega_rms_cm": 0.8835409868693698
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.9982208589726407,
+    "overlap_abs_p10": 0.9706169962520557,
+    "overlap_abs_p01": 0.9320394334683516,
+    "overlap_abs_min": 0.9306555275318533,
+    "modes_below_match_line": 0,
+    "rank_changed": 4,
+    "omega_shift_rms_cm": 22.920450236904887,
+    "family_changed": 0,
+    "h_rms": 0.031946930991211826,
+    "o_rms": 0.011887088967809246,
+    "xtb_partner_changed": 0,
+    "xtb_partner_lost_on_W": 0,
+    "xtb_partner_lost_on_B": 0
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 9,
+     "overlap_abs_median": 0.9995702616179468,
+     "overlap_abs_p10": 0.9982267483839024,
+     "rms_inputs_on_B": 12.347568500987904,
+     "rms_inputs_on_W": 9.338163543865639,
+     "rms_between": 8.632913631163612,
+     "max_between": 23.649159743659283
+    },
+    "ring-ip": {
+     "n": 24,
+     "overlap_abs_median": 0.9871439538095956,
+     "overlap_abs_p10": 0.9556738479149488,
+     "rms_inputs_on_B": 2.909472898235089,
+     "rms_inputs_on_W": 3.017082882916797,
+     "rms_between": 0.5355280652689545,
+     "max_between": 1.2187766323392566
+    },
+    "other": {
+     "n": 10,
+     "overlap_abs_median": 0.9996194574133253,
+     "overlap_abs_p10": 0.9992523831093545,
+     "rms_inputs_on_B": 3.3066144069282077,
+     "rms_inputs_on_W": 3.195565509437791,
+     "rms_between": 0.16408014315691266,
+     "max_between": 0.3200962324559615
+    },
+    "all": {
+     "n": 43,
+     "overlap_abs_median": 0.9980820538004921,
+     "overlap_abs_p10": 0.9693324499539567,
+     "rms_inputs_on_B": 6.259243955447941,
+     "rms_inputs_on_W": 5.070193367112651,
+     "rms_between": 3.9705221090997163,
+     "max_between": 23.649159743659283
+    }
+   },
+   "only_one_predicts": {
+    "B only": 0,
+    "W only": 0
+   }
+  },
+  "A_d295f2fa80": {
+   "molecules": 1,
+   "modes": 42,
+   "B_vs_G": {
+    "overlap_abs_median": 0.9999552292894562,
+    "overlap_abs_p10": 0.9997624196559092,
+    "omega_rms_cm": 1.162314908957044
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.9969159642445646,
+    "overlap_abs_p10": 0.9427349898592038,
+    "overlap_abs_p01": 0.9256124539942274,
+    "overlap_abs_min": 0.9217564462201536,
+    "modes_below_match_line": 0,
+    "rank_changed": 0,
+    "omega_shift_rms_cm": 22.792684575026684,
+    "family_changed": 0,
+    "h_rms": 0.038981979382933435,
+    "o_rms": 0.00011389292370662763,
+    "xtb_partner_changed": 1,
+    "xtb_partner_lost_on_W": 0,
+    "xtb_partner_lost_on_B": 1
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 6,
+     "overlap_abs_median": 0.9997514678473387,
+     "overlap_abs_p10": 0.9990604419059799,
+     "rms_inputs_on_B": 11.172367446914123,
+     "rms_inputs_on_W": 11.273836437561023,
+     "rms_between": 3.7383364612738235,
+     "max_between": 7.717316601840707
+    },
+    "CH-oop": {
+     "n": 7,
+     "overlap_abs_median": 0.9971657419191691,
+     "overlap_abs_p10": 0.9836977457436303,
+     "rms_inputs_on_B": 3.012065980252677,
+     "rms_inputs_on_W": 3.5341580434252746,
+     "rms_between": 3.0150331305509184,
+     "max_between": 4.81311909293307
+    },
+    "ring-ip": {
+     "n": 15,
+     "overlap_abs_median": 0.976742796899896,
+     "overlap_abs_p10": 0.9356690053382071,
+     "rms_inputs_on_B": 3.8248609209042015,
+     "rms_inputs_on_W": 4.139942258972919,
+     "rms_between": 0.8188180538564425,
+     "max_between": 1.9295753451022435
+    },
+    "other": {
+     "n": 4,
+     "overlap_abs_median": 0.9997618340022829,
+     "overlap_abs_p10": 0.9995573178075,
+     "rms_inputs_on_B": 1.4862493075088912,
+     "rms_inputs_on_W": 1.515376344133709,
+     "rms_between": 0.19061072587440006,
+     "max_between": 0.32824789823357925
+    },
+    "all": {
+     "n": 32,
+     "overlap_abs_median": 0.9968681491101068,
+     "overlap_abs_p10": 0.9449876240049351,
+     "rms_inputs_on_B": 5.702843919043682,
+     "rms_inputs_on_W": 5.906301005410747,
+     "rms_between": 2.219840966357906,
+     "max_between": 7.717316601840707
+    }
+   },
+   "only_one_predicts": {
+    "B only": 0,
+    "W only": 1
+   }
+  },
+  "B_052693bd01": {
+   "molecules": 1,
+   "modes": 21,
+   "B_vs_G": {
+    "overlap_abs_median": 0.9999143628731144,
+    "overlap_abs_p10": 0.9997851004770768,
+    "omega_rms_cm": 1.7769165860820757
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.9977125077992317,
+    "overlap_abs_p10": 0.9806150714290695,
+    "overlap_abs_p01": 0.9755330864237688,
+    "overlap_abs_min": 0.975438191042866,
+    "modes_below_match_line": 0,
+    "rank_changed": 0,
+    "omega_shift_rms_cm": 25.422512394390264,
+    "family_changed": 1,
+    "h_rms": 0.03328366434397485,
+    "o_rms": 0.0042498143637001475,
+    "xtb_partner_changed": 0,
+    "xtb_partner_lost_on_W": 0,
+    "xtb_partner_lost_on_B": 0
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 2,
+     "overlap_abs_median": 0.9999836895054608,
+     "overlap_abs_p10": 0.9999827497919483,
+     "rms_inputs_on_B": 4.976305245906303,
+     "rms_inputs_on_W": 10.557633350963355,
+     "rms_between": 5.668283369346416,
+     "max_between": 5.6967100430096735
+    },
+    "CH-oop": {
+     "n": 2,
+     "overlap_abs_median": 0.9994280623052127,
+     "overlap_abs_p10": 0.9993129396617891,
+     "rms_inputs_on_B": 3.360830450523583,
+     "rms_inputs_on_W": 2.732079638055584,
+     "rms_between": 0.6628797055628644,
+     "max_between": 0.8411992296005995
+    },
+    "ring-ip": {
+     "n": 8,
+     "overlap_abs_median": 0.9956097909421748,
+     "overlap_abs_p10": 0.9757703248760258,
+     "rms_inputs_on_B": 6.800601765809696,
+     "rms_inputs_on_W": 6.448618730595957,
+     "rms_between": 0.7114656498056721,
+     "max_between": 1.5281524048753496
+    },
+    "other": {
+     "n": 5,
+     "overlap_abs_median": 0.9992490795951593,
+     "overlap_abs_p10": 0.9809379691506492,
+     "rms_inputs_on_B": 1.7261526782019219,
+     "rms_inputs_on_W": 2.02680236365842,
+     "rms_between": 1.7557658651118628,
+     "max_between": 3.910953545263734
+    },
+    "all": {
+     "n": 17,
+     "overlap_abs_median": 0.9977125077992317,
+     "overlap_abs_p10": 0.9787341100363937,
+     "rms_inputs_on_B": 5.184825601438196,
+     "rms_inputs_on_W": 5.8965237496416885,
+     "rms_between": 2.2308100289673183,
+     "max_between": 5.6967100430096735
+    }
+   },
+   "only_one_predicts": {
+    "B only": 0,
+    "W only": 0
+   }
+  },
+  "A_fead28d796": {
+   "molecules": 1,
+   "modes": 39,
+   "B_vs_G": {
+    "overlap_abs_median": 0.9999752768384701,
+    "overlap_abs_p10": 0.999586378045523,
+    "omega_rms_cm": 1.0029513722711119
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.9987013018288303,
+    "overlap_abs_p10": 0.9212960942644007,
+    "overlap_abs_p01": 0.793899428908878,
+    "overlap_abs_min": 0.7925342390993003,
+    "modes_below_match_line": 0,
+    "rank_changed": 4,
+    "omega_shift_rms_cm": 23.124688077814035,
+    "family_changed": 0,
+    "h_rms": 0.05785373407619312,
+    "o_rms": 1.3566950276095436e-05,
+    "xtb_partner_changed": 4,
+    "xtb_partner_lost_on_W": 2,
+    "xtb_partner_lost_on_B": 0
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 6,
+     "overlap_abs_median": 0.9999113753581719,
+     "overlap_abs_p10": 0.9998846657910809,
+     "rms_inputs_on_B": 6.919803263448956,
+     "rms_inputs_on_W": 7.664345325096835,
+     "rms_between": 1.8532715900438432,
+     "max_between": 3.293147204320661
+    },
+    "CH-oop": {
+     "n": 4,
+     "overlap_abs_median": 0.9898394724572366,
+     "overlap_abs_p10": 0.9108367850370047,
+     "rms_inputs_on_B": 1.7712705186580937,
+     "rms_inputs_on_W": 3.970276311924375,
+     "rms_between": 2.451991053618925,
+     "max_between": 4.139177449232671
+    },
+    "ring-ip": {
+     "n": 15,
+     "overlap_abs_median": 0.9953172766160202,
+     "overlap_abs_p10": 0.8502416637183384,
+     "rms_inputs_on_B": 2.6543108095738375,
+     "rms_inputs_on_W": 3.0673953223265444,
+     "rms_between": 1.1917336810613244,
+     "max_between": 3.3019668303872223
+    },
+    "other": {
+     "n": 6,
+     "overlap_abs_median": 0.999633712163028,
+     "overlap_abs_p10": 0.9991635935232688,
+     "rms_inputs_on_B": 1.5222949903992966,
+     "rms_inputs_on_W": 1.6998014794344043,
+     "rms_between": 0.27656532321411864,
+     "max_between": 0.5016126850095084
+    },
+    "all": {
+     "n": 31,
+     "overlap_abs_median": 0.9982776590686212,
+     "overlap_abs_p10": 0.9314138935038259,
+     "rms_inputs_on_B": 3.678343072653066,
+     "rms_inputs_on_W": 4.30294412681971,
+     "rms_between": 1.4637457671193868,
+     "max_between": 4.139177449232671
+    }
+   },
+   "only_one_predicts": {
+    "B only": 2,
+    "W only": 1
+   }
+  },
+  "A_ff98e1160d": {
+   "molecules": 1,
+   "modes": 45,
+   "B_vs_G": {
+    "overlap_abs_median": 0.9999681671233454,
+    "overlap_abs_p10": 0.9997003880151679,
+    "omega_rms_cm": 1.2394398118976633
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.9957314044636967,
+    "overlap_abs_p10": 0.880157245091422,
+    "overlap_abs_p01": 0.6768921861928022,
+    "overlap_abs_min": 0.6363380900976806,
+    "modes_below_match_line": 1,
+    "rank_changed": 4,
+    "omega_shift_rms_cm": 23.164975062528104,
+    "family_changed": 0,
+    "h_rms": 0.03663154278140928,
+    "o_rms": 3.962516853732199e-05,
+    "xtb_partner_changed": 5,
+    "xtb_partner_lost_on_W": 5,
+    "xtb_partner_lost_on_B": 0
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 7,
+     "overlap_abs_median": 0.99959456646592,
+     "overlap_abs_p10": 0.9891460234144337,
+     "rms_inputs_on_B": 6.641152612022247,
+     "rms_inputs_on_W": 7.262522289711501,
+     "rms_between": 2.9282946400108725,
+     "max_between": 5.966381848586167
+    },
+    "CH-oop": {
+     "n": 7,
+     "overlap_abs_median": 0.99886494095147,
+     "overlap_abs_p10": 0.8894501633533292,
+     "rms_inputs_on_B": 3.9654191370450462,
+     "rms_inputs_on_W": 2.8182061577452195,
+     "rms_between": 2.989766982905303,
+     "max_between": 4.988566488853859
+    },
+    "ring-ip": {
+     "n": 14,
+     "overlap_abs_median": 0.9930892905477469,
+     "overlap_abs_p10": 0.8915249378441046,
+     "rms_inputs_on_B": 3.2739820217421367,
+     "rms_inputs_on_W": 3.424845315318319,
+     "rms_between": 0.6383230088948405,
+     "max_between": 1.4177781116400467
+    },
+    "other": {
+     "n": 4,
+     "overlap_abs_median": 0.9998538211737775,
+     "overlap_abs_p10": 0.999631049379161,
+     "rms_inputs_on_B": 1.142570409910359,
+     "rms_inputs_on_W": 1.0013434441837015,
+     "rms_between": 0.2124076193915853,
+     "max_between": 0.3826528211080209
+    },
+    "all": {
+     "n": 32,
+     "overlap_abs_median": 0.9976533718902116,
+     "overlap_abs_p10": 0.950991160158258,
+     "rms_inputs_on_B": 4.235613455821556,
+     "rms_inputs_on_W": 4.304903753786251,
+     "rms_between": 2.00374780453869,
+     "max_between": 5.966381848586167
+    }
+   },
+   "only_one_predicts": {
+    "B only": 5,
+    "W only": 0
+   }
+  },
+  "A_aa22880426": {
+   "molecules": 1,
+   "modes": 48,
+   "B_vs_G": {
+    "overlap_abs_median": 0.9999443272431849,
+    "overlap_abs_p10": 0.9995732306123168,
+    "omega_rms_cm": 1.0608380143753442
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.9936796696628549,
+    "overlap_abs_p10": 0.926240475489503,
+    "overlap_abs_p01": 0.7726252270661716,
+    "overlap_abs_min": 0.7325658502068141,
+    "modes_below_match_line": 0,
+    "rank_changed": 8,
+    "omega_shift_rms_cm": 22.59538565428188,
+    "family_changed": 0,
+    "h_rms": 0.04645552824187367,
+    "o_rms": 0.026784239688204908,
+    "xtb_partner_changed": 3,
+    "xtb_partner_lost_on_W": 2,
+    "xtb_partner_lost_on_B": 1
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 7,
+     "overlap_abs_median": 0.9992619026706763,
+     "overlap_abs_p10": 0.9979092578961577,
+     "rms_inputs_on_B": 6.423353916402811,
+     "rms_inputs_on_W": 8.725315035374203,
+     "rms_between": 2.90761834849858,
+     "max_between": 5.511820263060656
+    },
+    "CH-oop": {
+     "n": 8,
+     "overlap_abs_median": 0.9896542444210085,
+     "overlap_abs_p10": 0.9684214398189437,
+     "rms_inputs_on_B": 2.933876977922974,
+     "rms_inputs_on_W": 2.213955178453582,
+     "rms_between": 2.751717557227229,
+     "max_between": 5.627091098396107
+    },
+    "ring-ip": {
+     "n": 15,
+     "overlap_abs_median": 0.9893604639461233,
+     "overlap_abs_p10": 0.8568401412774438,
+     "rms_inputs_on_B": 2.4781090684498106,
+     "rms_inputs_on_W": 2.356994090892676,
+     "rms_between": 0.8476756757245965,
+     "max_between": 2.2427236681912817
+    },
+    "other": {
+     "n": 7,
+     "overlap_abs_median": 0.9981603190600252,
+     "overlap_abs_p10": 0.9706898431702111,
+     "rms_inputs_on_B": 1.2434387945799872,
+     "rms_inputs_on_W": 1.1550691592549922,
+     "rms_between": 0.3962884911141967,
+     "max_between": 0.8228565084144766
+    },
+    "all": {
+     "n": 37,
+     "overlap_abs_median": 0.994271436193775,
+     "overlap_abs_p10": 0.9315061140257913,
+     "rms_inputs_on_B": 3.52832457866155,
+     "rms_inputs_on_W": 4.238820743802936,
+     "rms_between": 1.8861725157352331,
+     "max_between": 5.627091098396107
+    }
+   },
+   "only_one_predicts": {
+    "B only": 2,
+    "W only": 1
+   }
+  },
+  "A_20db5837c9": {
+   "molecules": 1,
+   "modes": 57,
+   "B_vs_G": {
+    "overlap_abs_median": 0.999941085161021,
+    "overlap_abs_p10": 0.9991529784866364,
+    "omega_rms_cm": 1.0850549861744607
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.9993884638600158,
+    "overlap_abs_p10": 0.9785048564007323,
+    "overlap_abs_p01": 0.8918868882086384,
+    "overlap_abs_min": 0.8847322011509702,
+    "modes_below_match_line": 0,
+    "rank_changed": 4,
+    "omega_shift_rms_cm": 23.105335440232807,
+    "family_changed": 1,
+    "h_rms": 0.03960068368173962,
+    "o_rms": 3.7780297505552625e-06,
+    "xtb_partner_changed": 2,
+    "xtb_partner_lost_on_W": 1,
+    "xtb_partner_lost_on_B": 0
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 8,
+     "overlap_abs_median": 0.9996945963895951,
+     "overlap_abs_p10": 0.9995794135146543,
+     "rms_inputs_on_B": 4.817691960361828,
+     "rms_inputs_on_W": 5.011363244255423,
+     "rms_between": 3.432677340569529,
+     "max_between": 8.180006508916975
+    },
+    "CH-oop": {
+     "n": 8,
+     "overlap_abs_median": 0.9974584396826376,
+     "overlap_abs_p10": 0.9867254232736337,
+     "rms_inputs_on_B": 4.815808799787394,
+     "rms_inputs_on_W": 6.892221970368942,
+     "rms_between": 2.4307806568254406,
+     "max_between": 4.089075749219441
+    },
+    "ring-ip": {
+     "n": 22,
+     "overlap_abs_median": 0.9955075940378446,
+     "overlap_abs_p10": 0.9758144035392085,
+     "rms_inputs_on_B": 2.26640779954322,
+     "rms_inputs_on_W": 2.220201653368456,
+     "rms_between": 0.6411279664304573,
+     "max_between": 1.8654605001397684
+    },
+    "other": {
+     "n": 9,
+     "overlap_abs_median": 0.9996604012010076,
+     "overlap_abs_p10": 0.9956780761099734,
+     "rms_inputs_on_B": 3.2602408750640657,
+     "rms_inputs_on_W": 3.3995013106772767,
+     "rms_between": 0.2802683188695112,
+     "max_between": 0.5696923073515165
+    },
+    "all": {
+     "n": 47,
+     "overlap_abs_median": 0.9988077508729396,
+     "overlap_abs_p10": 0.9779266218111002,
+     "rms_inputs_on_B": 3.5125464841130167,
+     "rms_inputs_on_W": 4.108594683605187,
+     "rms_between": 1.794113845796924,
+     "max_between": 8.180006508916975
+    }
+   },
+   "only_one_predicts": {
+    "B only": 1,
+    "W only": 0
+   }
+  },
+  "A_593ba8280d": {
+   "molecules": 1,
+   "modes": 57,
+   "B_vs_G": {
+    "overlap_abs_median": 0.9999600822002007,
+    "overlap_abs_p10": 0.9978073972706412,
+    "omega_rms_cm": 1.8347520887626017
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.9977278313988547,
+    "overlap_abs_p10": 0.8802213601172619,
+    "overlap_abs_p01": 0.7586032279770251,
+    "overlap_abs_min": 0.7582325316721349,
+    "modes_below_match_line": 0,
+    "rank_changed": 12,
+    "omega_shift_rms_cm": 21.882860173567554,
+    "family_changed": 1,
+    "h_rms": 0.056771628774076065,
+    "o_rms": 0.0005441491311277547,
+    "xtb_partner_changed": 0,
+    "xtb_partner_lost_on_W": 0,
+    "xtb_partner_lost_on_B": 0
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 6,
+     "overlap_abs_median": 0.999565498173017,
+     "overlap_abs_p10": 0.9460862847114326,
+     "rms_inputs_on_B": 14.00943437594224,
+     "rms_inputs_on_W": 18.984837430484443,
+     "rms_between": 5.473937398616592,
+     "max_between": 10.592209745220487
+    },
+    "CH-oop": {
+     "n": 8,
+     "overlap_abs_median": 0.9979273004482969,
+     "overlap_abs_p10": 0.9969743292408617,
+     "rms_inputs_on_B": 8.95316044602182,
+     "rms_inputs_on_W": 10.063807863743195,
+     "rms_between": 3.5721223087545564,
+     "max_between": 5.6753004836756205
+    },
+    "ring-ip": {
+     "n": 20,
+     "overlap_abs_median": 0.9871272141465086,
+     "overlap_abs_p10": 0.788953314251655,
+     "rms_inputs_on_B": 2.7821248863994326,
+     "rms_inputs_on_W": 2.7569866562424457,
+     "rms_between": 0.9543389973974099,
+     "max_between": 3.359221461705433
+    },
+    "other": {
+     "n": 10,
+     "overlap_abs_median": 0.9995876451440187,
+     "overlap_abs_p10": 0.9990469964571557,
+     "rms_inputs_on_B": 2.4880508414523628,
+     "rms_inputs_on_W": 2.507234408008811,
+     "rms_between": 0.23419852980937333,
+     "max_between": 0.3995873245372099
+    },
+    "all": {
+     "n": 44,
+     "overlap_abs_median": 0.9976470956486713,
+     "overlap_abs_p10": 0.8264548652003727,
+     "rms_inputs_on_B": 6.8016817982888504,
+     "rms_inputs_on_W": 8.511580207334733,
+     "rms_between": 2.6138970997960405,
+     "max_between": 10.592209745220487
+    }
+   },
+   "only_one_predicts": {
+    "B only": 0,
+    "W only": 0
+   }
+  },
+  "A_8d1f3c46b0": {
+   "molecules": 1,
+   "modes": 60,
+   "B_vs_G": {
+    "overlap_abs_median": 0.9999791354108896,
+    "overlap_abs_p10": 0.999554806011423,
+    "omega_rms_cm": 0.7991238291808288
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.9992170798254159,
+    "overlap_abs_p10": 0.9608582104103848,
+    "overlap_abs_p01": 0.8846465000910548,
+    "overlap_abs_min": 0.8762359799562366,
+    "modes_below_match_line": 0,
+    "rank_changed": 13,
+    "omega_shift_rms_cm": 23.924558137760876,
+    "family_changed": 0,
+    "h_rms": 0.036972940124472824,
+    "o_rms": 0.01051547073003362,
+    "xtb_partner_changed": 0,
+    "xtb_partner_lost_on_W": 0,
+    "xtb_partner_lost_on_B": 0
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 10,
+     "overlap_abs_median": 0.9997593897396739,
+     "overlap_abs_p10": 0.9993483819967452,
+     "rms_inputs_on_B": 14.858555073833793,
+     "rms_inputs_on_W": 14.528978970730096,
+     "rms_between": 2.6359947389851603,
+     "max_between": 5.903448949886041
+    },
+    "ring-ip": {
+     "n": 28,
+     "overlap_abs_median": 0.9964396563878248,
+     "overlap_abs_p10": 0.917905570088159,
+     "rms_inputs_on_B": 3.8876371716649825,
+     "rms_inputs_on_W": 3.9018242125925044,
+     "rms_between": 0.6463303587611212,
+     "max_between": 1.8873772774071256
+    },
+    "other": {
+     "n": 13,
+     "overlap_abs_median": 0.9992948344671849,
+     "overlap_abs_p10": 0.9966853430030925,
+     "rms_inputs_on_B": 4.056528126101593,
+     "rms_inputs_on_W": 4.065479773501442,
+     "rms_between": 0.2103482515828179,
+     "max_between": 0.4705719256091925
+    },
+    "all": {
+     "n": 51,
+     "overlap_abs_median": 0.9983700139006009,
+     "overlap_abs_p10": 0.9589839936397303,
+     "rms_inputs_on_B": 7.468720777036181,
+     "rms_inputs_on_W": 7.345875774722184,
+     "rms_between": 1.2661249185979009,
+     "max_between": 5.903448949886041
+    }
+   },
+   "only_one_predicts": {
+    "B only": 0,
+    "W only": 0
+   }
+  },
+  "A_b77821c742": {
+   "molecules": 1,
+   "modes": 60,
+   "B_vs_G": {
+    "overlap_abs_median": 0.9999887800805173,
+    "overlap_abs_p10": 0.9999210541108045,
+    "omega_rms_cm": 1.4155117038714575
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.9991869844823413,
+    "overlap_abs_p10": 0.9879142893498601,
+    "overlap_abs_p01": 0.8643307402772605,
+    "overlap_abs_min": 0.8639872364924307,
+    "modes_below_match_line": 0,
+    "rank_changed": 12,
+    "omega_shift_rms_cm": 24.76377855334081,
+    "family_changed": 0,
+    "h_rms": 0.08524074791519892,
+    "o_rms": 0.00035728816214051373,
+    "xtb_partner_changed": 0,
+    "xtb_partner_lost_on_W": 0,
+    "xtb_partner_lost_on_B": 0
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 8,
+     "overlap_abs_median": 0.9997247681731016,
+     "overlap_abs_p10": 0.9995385625579468,
+     "rms_inputs_on_B": 9.46118464851381,
+     "rms_inputs_on_W": 11.595172053505824,
+     "rms_between": 3.7678414693831375,
+     "max_between": 6.955835226414621
+    },
+    "CH-oop": {
+     "n": 9,
+     "overlap_abs_median": 0.9995720632813311,
+     "overlap_abs_p10": 0.9976323245646136,
+     "rms_inputs_on_B": 3.379368334548174,
+     "rms_inputs_on_W": 1.769816877837924,
+     "rms_between": 3.0058317154662437,
+     "max_between": 5.2611147996642735
+    },
+    "ring-ip": {
+     "n": 22,
+     "overlap_abs_median": 0.995090284759128,
+     "overlap_abs_p10": 0.9701194343072888,
+     "rms_inputs_on_B": 2.876879120517635,
+     "rms_inputs_on_W": 3.6256734915100863,
+     "rms_between": 1.135143782466956,
+     "max_between": 4.545367469260917
+    },
+    "other": {
+     "n": 9,
+     "overlap_abs_median": 0.9997289534442773,
+     "overlap_abs_p10": 0.997490506092719,
+     "rms_inputs_on_B": 1.3460598567986986,
+     "rms_inputs_on_W": 1.4335921394837552,
+     "rms_between": 0.20595099875412234,
+     "max_between": 0.407946962305644
+    },
+    "all": {
+     "n": 48,
+     "overlap_abs_median": 0.9990650464948803,
+     "overlap_abs_p10": 0.9853438453576409,
+     "rms_inputs_on_B": 4.60362566209916,
+     "rms_inputs_on_W": 5.4226996761094135,
+     "rms_between": 2.1584047287037587,
+     "max_between": 6.955835226414621
+    }
+   },
+   "only_one_predicts": {
+    "B only": 0,
+    "W only": 0
+   }
+  },
+  "A_e72997e726": {
+   "molecules": 1,
+   "modes": 63,
+   "B_vs_G": {
+    "overlap_abs_median": 0.9999741803670916,
+    "overlap_abs_p10": 0.9994768271997239,
+    "omega_rms_cm": 0.7370033486757402
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.9986701831663126,
+    "overlap_abs_p10": 0.9221394291076849,
+    "overlap_abs_p01": 0.7597042497259487,
+    "overlap_abs_min": 0.7527190607504524,
+    "modes_below_match_line": 0,
+    "rank_changed": 8,
+    "omega_shift_rms_cm": 23.514850217118962,
+    "family_changed": 2,
+    "h_rms": 0.06208319064374471,
+    "o_rms": 0.013408476363691859,
+    "xtb_partner_changed": 4,
+    "xtb_partner_lost_on_W": 0,
+    "xtb_partner_lost_on_B": 0
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 10,
+     "overlap_abs_median": 0.9991716644718532,
+     "overlap_abs_p10": 0.9988041913910446,
+     "rms_inputs_on_B": 7.732820935850456,
+     "rms_inputs_on_W": 6.7351155676728585,
+     "rms_between": 5.589825390854758,
+     "max_between": 10.424861880448375
+    },
+    "ring-ip": {
+     "n": 27,
+     "overlap_abs_median": 0.9910343812665586,
+     "overlap_abs_p10": 0.869229315831356,
+     "rms_inputs_on_B": 3.583917155677134,
+     "rms_inputs_on_W": 3.7735930054707225,
+     "rms_between": 0.7063874161534023,
+     "max_between": 1.789098195490773
+    },
+    "other": {
+     "n": 15,
+     "overlap_abs_median": 0.9992888728206232,
+     "overlap_abs_p10": 0.9974099418333978,
+     "rms_inputs_on_B": 3.6434860441070285,
+     "rms_inputs_on_W": 4.352412191639505,
+     "rms_between": 0.8848141670486244,
+     "max_between": 3.0197125830709304
+    },
+    "all": {
+     "n": 52,
+     "overlap_abs_median": 0.9980074371421803,
+     "overlap_abs_p10": 0.9125549397741956,
+     "rms_inputs_on_B": 4.690191347149896,
+     "rms_inputs_on_W": 4.645614780884537,
+     "rms_between": 2.5482930431712196,
+     "max_between": 10.424861880448375
+    }
+   },
+   "only_one_predicts": {
+    "B only": 0,
+    "W only": 0
+   }
+  },
+  "A_bce5bae234": {
+   "molecules": 1,
+   "modes": 63,
+   "B_vs_G": {
+    "overlap_abs_median": 0.9999354408840813,
+    "overlap_abs_p10": 0.9987823625368211,
+    "omega_rms_cm": 1.0487027189280917
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.9904334129578323,
+    "overlap_abs_p10": 0.9089474459971212,
+    "overlap_abs_p01": 0.6656006561517906,
+    "overlap_abs_min": 0.6421624313332424,
+    "modes_below_match_line": 3,
+    "rank_changed": 10,
+    "omega_shift_rms_cm": 22.901563277616173,
+    "family_changed": 0,
+    "h_rms": 0.0451710121872464,
+    "o_rms": 0.00013920395750711842,
+    "xtb_partner_changed": 8,
+    "xtb_partner_lost_on_W": 4,
+    "xtb_partner_lost_on_B": 1
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 8,
+     "overlap_abs_median": 0.9933036263293933,
+     "overlap_abs_p10": 0.9782922664637989,
+     "rms_inputs_on_B": 10.830588025131485,
+     "rms_inputs_on_W": 11.923222237352068,
+     "rms_between": 4.799582375768934,
+     "max_between": 7.449605923419483
+    },
+    "CH-oop": {
+     "n": 9,
+     "overlap_abs_median": 0.9886638171024367,
+     "overlap_abs_p10": 0.9443272891353099,
+     "rms_inputs_on_B": 3.898478237152467,
+     "rms_inputs_on_W": 5.2811445328779225,
+     "rms_between": 3.046109188963405,
+     "max_between": 5.547870168069428
+    },
+    "ring-ip": {
+     "n": 18,
+     "overlap_abs_median": 0.9521921152567627,
+     "overlap_abs_p10": 0.7264863351025985,
+     "rms_inputs_on_B": 2.018132086883547,
+     "rms_inputs_on_W": 1.8820907287821096,
+     "rms_between": 0.8509658356040632,
+     "max_between": 2.421747795064274
+    },
+    "other": {
+     "n": 9,
+     "overlap_abs_median": 0.9992074815112383,
+     "overlap_abs_p10": 0.9984468155516081,
+     "rms_inputs_on_B": 0.5235572009563143,
+     "rms_inputs_on_W": 0.5747799356562868,
+     "rms_between": 0.22234440561141602,
+     "max_between": 0.4641254233161849
+    },
+    "all": {
+     "n": 44,
+     "overlap_abs_median": 0.99015130401419,
+     "overlap_abs_p10": 0.9418640390433021,
+     "rms_inputs_on_B": 5.114539716020296,
+     "rms_inputs_on_W": 5.750601437595119,
+     "rms_between": 2.5283684248895653,
+     "max_between": 7.449605923419483
+    }
+   },
+   "only_one_predicts": {
+    "B only": 4,
+    "W only": 1
+   }
+  },
+  "A_a6412e1ae4": {
+   "molecules": 1,
+   "modes": 63,
+   "B_vs_G": {
+    "overlap_abs_median": 0.9999326050361612,
+    "overlap_abs_p10": 0.9993268828690149,
+    "omega_rms_cm": 1.1823797439779486
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.9985593881254619,
+    "overlap_abs_p10": 0.9729289077021185,
+    "overlap_abs_p01": 0.8892974178549035,
+    "overlap_abs_min": 0.8725327970400535,
+    "modes_below_match_line": 0,
+    "rank_changed": 9,
+    "omega_shift_rms_cm": 23.821828091898418,
+    "family_changed": 0,
+    "h_rms": 0.058826656282706266,
+    "o_rms": 0.03381894565288508,
+    "xtb_partner_changed": 0,
+    "xtb_partner_lost_on_W": 0,
+    "xtb_partner_lost_on_B": 0
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 9,
+     "overlap_abs_median": 0.9992888239001961,
+     "overlap_abs_p10": 0.9926455434612479,
+     "rms_inputs_on_B": 3.6411481450926315,
+     "rms_inputs_on_W": 5.414754698606641,
+     "rms_between": 2.9082617015612926,
+     "max_between": 5.557100864102296
+    },
+    "CH-oop": {
+     "n": 10,
+     "overlap_abs_median": 0.9984971538703424,
+     "overlap_abs_p10": 0.9802998004813843,
+     "rms_inputs_on_B": 3.5895827839012524,
+     "rms_inputs_on_W": 2.1955570412009284,
+     "rms_between": 2.8920536828891517,
+     "max_between": 5.036900636484198
+    },
+    "ring-ip": {
+     "n": 23,
+     "overlap_abs_median": 0.9896021492542966,
+     "overlap_abs_p10": 0.9418023816215932,
+     "rms_inputs_on_B": 2.6463392655260627,
+     "rms_inputs_on_W": 2.79985070123002,
+     "rms_between": 0.8688447163583976,
+     "max_between": 2.483640810862429
+    },
+    "other": {
+     "n": 9,
+     "overlap_abs_median": 0.9995799189449199,
+     "overlap_abs_p10": 0.9709480075192246,
+     "rms_inputs_on_B": 1.4209923084456728,
+     "rms_inputs_on_W": 1.1546250857978817,
+     "rms_between": 0.4977219345175034,
+     "max_between": 1.3416515037582464
+    },
+    "all": {
+     "n": 51,
+     "overlap_abs_median": 0.9969036076752603,
+     "overlap_abs_p10": 0.9478087946207083,
+     "rms_inputs_on_B": 2.8949490188591036,
+     "rms_inputs_on_W": 3.144805944498778,
+     "rms_between": 1.875296894315248,
+     "max_between": 5.557100864102296
+    }
+   },
+   "only_one_predicts": {
+    "B only": 0,
+    "W only": 0
+   }
+  },
+  "A_541c53d1a5": {
+   "molecules": 1,
+   "modes": 66,
+   "B_vs_G": {
+    "overlap_abs_median": 0.999964173919688,
+    "overlap_abs_p10": 0.9992248218604066,
+    "omega_rms_cm": 0.9512066572132367
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.995584644717963,
+    "overlap_abs_p10": 0.9357912931587609,
+    "overlap_abs_p01": 0.8178792570040235,
+    "overlap_abs_min": 0.8126817193095188,
+    "modes_below_match_line": 0,
+    "rank_changed": 11,
+    "omega_shift_rms_cm": 23.485597249488006,
+    "family_changed": 1,
+    "h_rms": 0.04390937310394983,
+    "o_rms": 0.00678152624621275,
+    "xtb_partner_changed": 0,
+    "xtb_partner_lost_on_W": 0,
+    "xtb_partner_lost_on_B": 0
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 10,
+     "overlap_abs_median": 0.9966087114048046,
+     "overlap_abs_p10": 0.9917901778897181,
+     "rms_inputs_on_B": 7.820179970667797,
+     "rms_inputs_on_W": 10.393446864775953,
+     "rms_between": 8.839160563024135,
+     "max_between": 15.701482302452192
+    },
+    "CH-oop": {
+     "n": 10,
+     "overlap_abs_median": 0.9935733194203462,
+     "overlap_abs_p10": 0.9505179992028827,
+     "rms_inputs_on_B": 8.873203104245317,
+     "rms_inputs_on_W": 10.564677169796962,
+     "rms_between": 2.8397252220303213,
+     "max_between": 4.888093729043931
+    },
+    "ring-ip": {
+     "n": 25,
+     "overlap_abs_median": 0.9920668578106546,
+     "overlap_abs_p10": 0.8917033183674073,
+     "rms_inputs_on_B": 2.193920497234161,
+     "rms_inputs_on_W": 2.3926134061380213,
+     "rms_between": 0.7593014847590147,
+     "max_between": 2.089708880799364
+    },
+    "other": {
+     "n": 8,
+     "overlap_abs_median": 0.999611503000778,
+     "overlap_abs_p10": 0.9939709295069471,
+     "rms_inputs_on_B": 1.69853737384924,
+     "rms_inputs_on_W": 1.8134710809235148,
+     "rms_between": 0.16954715012071767,
+     "max_between": 0.40475107916918773
+    },
+    "all": {
+     "n": 53,
+     "overlap_abs_median": 0.9952109896973286,
+     "overlap_abs_p10": 0.9446645659655099,
+     "rms_inputs_on_B": 5.3944448949660355,
+     "rms_inputs_on_W": 6.681127751940965,
+     "rms_between": 4.066873599789899,
+     "max_between": 15.701482302452192
+    }
+   },
+   "only_one_predicts": {
+    "B only": 0,
+    "W only": 1
+   }
+  },
+  "A_a1e6ec1862": {
+   "molecules": 1,
+   "modes": 66,
+   "B_vs_G": {
+    "overlap_abs_median": 0.9999916615471249,
+    "overlap_abs_p10": 0.9996693664686516,
+    "omega_rms_cm": 0.8502959731286224
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.9990638995045795,
+    "overlap_abs_p10": 0.9937606620691934,
+    "overlap_abs_p01": 0.9524377368252038,
+    "overlap_abs_min": 0.9332310447455415,
+    "modes_below_match_line": 0,
+    "rank_changed": 12,
+    "omega_shift_rms_cm": 24.377970056971574,
+    "family_changed": 1,
+    "h_rms": 0.04148696608574172,
+    "o_rms": 0.00012863806978697756,
+    "xtb_partner_changed": 1,
+    "xtb_partner_lost_on_W": 0,
+    "xtb_partner_lost_on_B": 1
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 10,
+     "overlap_abs_median": 0.9996479742900722,
+     "overlap_abs_p10": 0.9941856363352755,
+     "rms_inputs_on_B": 6.342960215083783,
+     "rms_inputs_on_W": 5.5982709637874315,
+     "rms_between": 4.510551612220699,
+     "max_between": 8.098513784216095
+    },
+    "CH-oop": {
+     "n": 10,
+     "overlap_abs_median": 0.9996885047059767,
+     "overlap_abs_p10": 0.9989149265955112,
+     "rms_inputs_on_B": 3.86985415288159,
+     "rms_inputs_on_W": 4.628442689271091,
+     "rms_between": 2.9427281965992513,
+     "max_between": 5.381093989122874
+    },
+    "ring-ip": {
+     "n": 23,
+     "overlap_abs_median": 0.9965935978199156,
+     "overlap_abs_p10": 0.9741569130096929,
+     "rms_inputs_on_B": 4.0377148834048615,
+     "rms_inputs_on_W": 3.827984526541437,
+     "rms_between": 0.7030872978151974,
+     "max_between": 2.3970287838913897
+    },
+    "other": {
+     "n": 10,
+     "overlap_abs_median": 0.9996313982926499,
+     "overlap_abs_p10": 0.9989360791915592,
+     "rms_inputs_on_B": 1.5502120643880928,
+     "rms_inputs_on_W": 1.575209474044894,
+     "rms_between": 0.20946315452204245,
+     "max_between": 0.3954118364128263
+    },
+    "all": {
+     "n": 53,
+     "overlap_abs_median": 0.9989168799613781,
+     "overlap_abs_p10": 0.9936186233329862,
+     "rms_inputs_on_B": 4.236171694244432,
+     "rms_inputs_on_W": 4.096647850319308,
+     "rms_between": 2.3865014624266565,
+     "max_between": 8.098513784216095
+    }
+   },
+   "only_one_predicts": {
+    "B only": 0,
+    "W only": 1
+   }
+  },
+  "P3_d2345d9fcf": {
+   "molecules": 1,
+   "modes": 69,
+   "B_vs_G": {
+    "overlap_abs_median": 0.9999320518728666,
+    "overlap_abs_p10": 0.9994827183351092,
+    "omega_rms_cm": 1.0022664661547014
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.9957840211134201,
+    "overlap_abs_p10": 0.8674326005270044,
+    "overlap_abs_p01": 0.7741106702913522,
+    "overlap_abs_min": 0.7673385056067009,
+    "modes_below_match_line": 0,
+    "rank_changed": 6,
+    "omega_shift_rms_cm": 22.715279310852875,
+    "family_changed": 0,
+    "h_rms": 0.03505891032597139,
+    "o_rms": 0.00033723105051565076,
+    "xtb_partner_changed": 11,
+    "xtb_partner_lost_on_W": 7,
+    "xtb_partner_lost_on_B": 1
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 9,
+     "overlap_abs_median": 0.9985105522147311,
+     "overlap_abs_p10": 0.9549335279641336,
+     "rms_inputs_on_B": 5.235585061385028,
+     "rms_inputs_on_W": 7.330208711217984,
+     "rms_between": 5.732828064662888,
+     "max_between": 11.213412681650624
+    },
+    "CH-oop": {
+     "n": 7,
+     "overlap_abs_median": 0.9967103112802553,
+     "overlap_abs_p10": 0.9956404535682501,
+     "rms_inputs_on_B": 3.467450399536509,
+     "rms_inputs_on_W": 5.3559626380693635,
+     "rms_between": 3.521445361114043,
+     "max_between": 5.3512045750921935
+    },
+    "ring-ip": {
+     "n": 18,
+     "overlap_abs_median": 0.9803751195485303,
+     "overlap_abs_p10": 0.8625639051504799,
+     "rms_inputs_on_B": 2.271818529343051,
+     "rms_inputs_on_W": 2.362903463682174,
+     "rms_between": 0.5633941260981149,
+     "max_between": 1.3439973064512927
+    },
+    "other": {
+     "n": 10,
+     "overlap_abs_median": 0.9994807298910982,
+     "overlap_abs_p10": 0.9918802506156665,
+     "rms_inputs_on_B": 1.497255274340308,
+     "rms_inputs_on_W": 1.4597443806082075,
+     "rms_between": 0.20539360976557816,
+     "max_between": 0.41662604806252546
+    },
+    "all": {
+     "n": 44,
+     "overlap_abs_median": 0.9947511544019945,
+     "overlap_abs_p10": 0.9510067954383136,
+     "rms_inputs_on_B": 3.1844196261496034,
+     "rms_inputs_on_W": 4.280505903608355,
+     "rms_between": 2.972323849368836,
+     "max_between": 11.213412681650624
+    }
+   },
+   "only_one_predicts": {
+    "B only": 7,
+    "W only": 1
+   }
+  },
+  "P3_0bb6c41350": {
+   "molecules": 1,
+   "modes": 69,
+   "B_vs_G": {
+    "overlap_abs_median": 0.9999459020604943,
+    "overlap_abs_p10": 0.9976373173130793,
+    "omega_rms_cm": 1.220182838801762
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.9933001420611018,
+    "overlap_abs_p10": 0.8754240948814294,
+    "overlap_abs_p01": 0.7454017832840546,
+    "overlap_abs_min": 0.5829889050637357,
+    "modes_below_match_line": 1,
+    "rank_changed": 15,
+    "omega_shift_rms_cm": 23.49121550215226,
+    "family_changed": 0,
+    "h_rms": 0.050658010415419064,
+    "o_rms": 0.003705823271197242,
+    "xtb_partner_changed": 10,
+    "xtb_partner_lost_on_W": 5,
+    "xtb_partner_lost_on_B": 2
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 9,
+     "overlap_abs_median": 0.990654732231082,
+     "overlap_abs_p10": 0.9639834233466661,
+     "rms_inputs_on_B": 4.816432159971486,
+     "rms_inputs_on_W": 4.8904552907432555,
+     "rms_between": 5.874018601599936,
+     "max_between": 15.555134553800869
+    },
+    "CH-oop": {
+     "n": 9,
+     "overlap_abs_median": 0.9966034372873225,
+     "overlap_abs_p10": 0.9432674355820986,
+     "rms_inputs_on_B": 3.3542395692187417,
+     "rms_inputs_on_W": 2.9300262737083558,
+     "rms_between": 2.9501638994312818,
+     "max_between": 4.563087823174163
+    },
+    "ring-ip": {
+     "n": 16,
+     "overlap_abs_median": 0.9797596172892987,
+     "overlap_abs_p10": 0.873173842286634,
+     "rms_inputs_on_B": 2.832867008044824,
+     "rms_inputs_on_W": 3.3604053166755268,
+     "rms_between": 1.0227808388132804,
+     "max_between": 2.5971134166798535
+    },
+    "other": {
+     "n": 9,
+     "overlap_abs_median": 0.9992262927955736,
+     "overlap_abs_p10": 0.9959758242220049,
+     "rms_inputs_on_B": 0.7697900598150443,
+     "rms_inputs_on_W": 0.9059064976740928,
+     "rms_between": 0.20880296437293042,
+     "max_between": 0.3636704486262161
+    },
+    "all": {
+     "n": 43,
+     "overlap_abs_median": 0.990654732231082,
+     "overlap_abs_p10": 0.9004871385744088,
+     "rms_inputs_on_B": 3.212532996641307,
+     "rms_inputs_on_W": 3.3430860403909057,
+     "rms_between": 3.0727524684749885,
+     "max_between": 15.555134553800869
+    }
+   },
+   "only_one_predicts": {
+    "B only": 5,
+    "W only": 2
+   }
+  },
+  "P3_5592613777": {
+   "molecules": 1,
+   "modes": 69,
+   "B_vs_G": {
+    "overlap_abs_median": 0.9999461184815959,
+    "overlap_abs_p10": 0.9989356355677492,
+    "omega_rms_cm": 0.9884587575706222
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.9970597274774781,
+    "overlap_abs_p10": 0.7692907478271169,
+    "overlap_abs_p01": 0.6969648025462348,
+    "overlap_abs_min": 0.6631208588117564,
+    "modes_below_match_line": 1,
+    "rank_changed": 14,
+    "omega_shift_rms_cm": 22.897670976331842,
+    "family_changed": 1,
+    "h_rms": 0.0492905794915739,
+    "o_rms": 0.000246559188450624,
+    "xtb_partner_changed": 4,
+    "xtb_partner_lost_on_W": 3,
+    "xtb_partner_lost_on_B": 1
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 9,
+     "overlap_abs_median": 0.9966554470180089,
+     "overlap_abs_p10": 0.8488992617268751,
+     "rms_inputs_on_B": 5.087235377190279,
+     "rms_inputs_on_W": 5.706069452445468,
+     "rms_between": 6.887754793818221,
+     "max_between": 13.144878174897272
+    },
+    "CH-oop": {
+     "n": 9,
+     "overlap_abs_median": 0.9983162012920292,
+     "overlap_abs_p10": 0.997088932205868,
+     "rms_inputs_on_B": 4.352579012541069,
+     "rms_inputs_on_W": 5.579427332970541,
+     "rms_between": 3.1001241219793014,
+     "max_between": 5.440835696682445
+    },
+    "ring-ip": {
+     "n": 19,
+     "overlap_abs_median": 0.9641404006986801,
+     "overlap_abs_p10": 0.7505613071594459,
+     "rms_inputs_on_B": 2.8572068859458253,
+     "rms_inputs_on_W": 2.9155873502357625,
+     "rms_between": 0.5877746173042888,
+     "max_between": 1.3749025576064042
+    },
+    "other": {
+     "n": 11,
+     "overlap_abs_median": 0.9994082052987635,
+     "overlap_abs_p10": 0.9951667343010079,
+     "rms_inputs_on_B": 2.519103667068432,
+     "rms_inputs_on_W": 3.694000839097122,
+     "rms_between": 1.3951178951559757,
+     "max_between": 4.584906667417416
+    },
+    "all": {
+     "n": 48,
+     "overlap_abs_median": 0.9968575872477434,
+     "overlap_abs_p10": 0.825575607634124,
+     "rms_inputs_on_B": 3.618061979277218,
+     "rms_inputs_on_W": 4.2934483716769565,
+     "rms_between": 3.358575514672664,
+     "max_between": 13.144878174897272
+    }
+   },
+   "only_one_predicts": {
+    "B only": 3,
+    "W only": 1
+   }
+  },
+  "P3_97c2db1a08": {
+   "molecules": 1,
+   "modes": 69,
+   "B_vs_G": {
+    "overlap_abs_median": 0.999975486417542,
+    "overlap_abs_p10": 0.9997973786410085,
+    "omega_rms_cm": 1.1341062268848778
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.9974139188001742,
+    "overlap_abs_p10": 0.9707758765558004,
+    "overlap_abs_p01": 0.841497836538755,
+    "overlap_abs_min": 0.8402275604246651,
+    "modes_below_match_line": 0,
+    "rank_changed": 8,
+    "omega_shift_rms_cm": 23.85842406020165,
+    "family_changed": 1,
+    "h_rms": 0.04923655205229402,
+    "o_rms": 0.0009757931466316061,
+    "xtb_partner_changed": 3,
+    "xtb_partner_lost_on_W": 2,
+    "xtb_partner_lost_on_B": 1
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 9,
+     "overlap_abs_median": 0.9980656642292409,
+     "overlap_abs_p10": 0.9918639012884924,
+     "rms_inputs_on_B": 7.1897720369881455,
+     "rms_inputs_on_W": 5.689967966862188,
+     "rms_between": 5.79705048780782,
+     "max_between": 12.800082256710667
+    },
+    "CH-oop": {
+     "n": 9,
+     "overlap_abs_median": 0.9969510933426925,
+     "overlap_abs_p10": 0.994314306853934,
+     "rms_inputs_on_B": 3.0024154686843825,
+     "rms_inputs_on_W": 3.5325266571702216,
+     "rms_between": 2.9041899074686333,
+     "max_between": 5.155708177083671
+    },
+    "ring-ip": {
+     "n": 24,
+     "overlap_abs_median": 0.9884642871268159,
+     "overlap_abs_p10": 0.9167075196284138,
+     "rms_inputs_on_B": 2.764514899640206,
+     "rms_inputs_on_W": 3.0655295119372292,
+     "rms_between": 0.6553132842329819,
+     "max_between": 1.8380835177864157
+    },
+    "other": {
+     "n": 8,
+     "overlap_abs_median": 0.9997159438361571,
+     "overlap_abs_p10": 0.9993238392062607,
+     "rms_inputs_on_B": 0.7300321201681562,
+     "rms_inputs_on_W": 0.7906058113975959,
+     "rms_between": 0.19470465756359398,
+     "max_between": 0.3419914945119942
+    },
+    "all": {
+     "n": 50,
+     "overlap_abs_median": 0.9962112856992804,
+     "overlap_abs_p10": 0.9783727651559545,
+     "rms_inputs_on_B": 3.8315805710277573,
+     "rms_inputs_on_W": 3.5615448595949037,
+     "rms_between": 2.789160273748172,
+     "max_between": 12.800082256710667
+    }
+   },
+   "only_one_predicts": {
+    "B only": 2,
+    "W only": 1
+   }
+  },
+  "P3_ff62f88395": {
+   "molecules": 1,
+   "modes": 69,
+   "B_vs_G": {
+    "overlap_abs_median": 0.9999445570915314,
+    "overlap_abs_p10": 0.9975185711419011,
+    "omega_rms_cm": 0.9686521992524331
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.9969374779700207,
+    "overlap_abs_p10": 0.8822578535269344,
+    "overlap_abs_p01": 0.7590715316458936,
+    "overlap_abs_min": 0.6792439270367638,
+    "modes_below_match_line": 1,
+    "rank_changed": 11,
+    "omega_shift_rms_cm": 22.564007734985264,
+    "family_changed": 0,
+    "h_rms": 0.03221662399580226,
+    "o_rms": 0.00011072225654458545,
+    "xtb_partner_changed": 9,
+    "xtb_partner_lost_on_W": 6,
+    "xtb_partner_lost_on_B": 1
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 9,
+     "overlap_abs_median": 0.9967610099931874,
+     "overlap_abs_p10": 0.957428172903687,
+     "rms_inputs_on_B": 4.965084960503701,
+     "rms_inputs_on_W": 5.028301716715592,
+     "rms_between": 6.554576473730262,
+     "max_between": 11.187075630034897
+    },
+    "CH-oop": {
+     "n": 8,
+     "overlap_abs_median": 0.9979502588309161,
+     "overlap_abs_p10": 0.9969009685147086,
+     "rms_inputs_on_B": 4.642755645510376,
+     "rms_inputs_on_W": 6.355006570495662,
+     "rms_between": 3.0951628857784637,
+     "max_between": 5.387596070538418
+    },
+    "ring-ip": {
+     "n": 18,
+     "overlap_abs_median": 0.9762452245064301,
+     "overlap_abs_p10": 0.8038587869268639,
+     "rms_inputs_on_B": 1.954956494944835,
+     "rms_inputs_on_W": 2.2001379317363057,
+     "rms_between": 0.502815964891374,
+     "max_between": 1.3027264588098468
+    },
+    "other": {
+     "n": 10,
+     "overlap_abs_median": 0.9993826109175649,
+     "overlap_abs_p10": 0.9969200011166288,
+     "rms_inputs_on_B": 1.540915337135425,
+     "rms_inputs_on_W": 1.4179498844486542,
+     "rms_between": 0.1950032689640005,
+     "max_between": 0.34827333690088125
+    },
+    "all": {
+     "n": 45,
+     "overlap_abs_median": 0.9967627094361011,
+     "overlap_abs_p10": 0.9002356007470969,
+     "rms_inputs_on_B": 3.289199993132426,
+     "rms_inputs_on_W": 3.8235526666564863,
+     "rms_between": 3.2257078944586133,
+     "max_between": 11.187075630034897
+    }
+   },
+   "only_one_predicts": {
+    "B only": 6,
+    "W only": 1
+   }
+  },
+  "P3_1e34c6eeef": {
+   "molecules": 1,
+   "modes": 69,
+   "B_vs_G": {
+    "overlap_abs_median": 0.9999382816179162,
+    "overlap_abs_p10": 0.9977064530005442,
+    "omega_rms_cm": 1.0666580922330526
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.9942013715885365,
+    "overlap_abs_p10": 0.8711896737253573,
+    "overlap_abs_p01": 0.7096494633461146,
+    "overlap_abs_min": 0.6233121032082278,
+    "modes_below_match_line": 1,
+    "rank_changed": 11,
+    "omega_shift_rms_cm": 22.399187819736348,
+    "family_changed": 0,
+    "h_rms": 0.03451331382500667,
+    "o_rms": 0.00010563429208919487,
+    "xtb_partner_changed": 12,
+    "xtb_partner_lost_on_W": 8,
+    "xtb_partner_lost_on_B": 0
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 6,
+     "overlap_abs_median": 0.998548130447404,
+     "overlap_abs_p10": 0.9932662407289481,
+     "rms_inputs_on_B": 8.049442791224587,
+     "rms_inputs_on_W": 7.378804140079872,
+     "rms_between": 3.85873412986562,
+     "max_between": 6.267159227705292
+    },
+    "CH-oop": {
+     "n": 7,
+     "overlap_abs_median": 0.9993477937066029,
+     "overlap_abs_p10": 0.7698929580697708,
+     "rms_inputs_on_B": 4.836090007082027,
+     "rms_inputs_on_W": 6.0609471902047725,
+     "rms_between": 3.4266836774421208,
+     "max_between": 5.46426880995215
+    },
+    "ring-ip": {
+     "n": 23,
+     "overlap_abs_median": 0.971290704164427,
+     "overlap_abs_p10": 0.9071268093068476,
+     "rms_inputs_on_B": 1.6161462854065631,
+     "rms_inputs_on_W": 1.7986989420579074,
+     "rms_between": 0.6266010395711704,
+     "max_between": 1.3694146721589746
+    },
+    "other": {
+     "n": 10,
+     "overlap_abs_median": 0.9994608673328674,
+     "overlap_abs_p10": 0.9924744471423756,
+     "rms_inputs_on_B": 1.1394635535367028,
+     "rms_inputs_on_W": 1.066901047656423,
+     "rms_between": 0.20254385801278668,
+     "max_between": 0.3950607079918118
+    },
+    "all": {
+     "n": 46,
+     "overlap_abs_median": 0.9924909250794531,
+     "overlap_abs_p10": 0.912497573868938,
+     "rms_inputs_on_B": 3.6876222928989644,
+     "rms_inputs_on_W": 3.815361282436481,
+     "rms_between": 1.9834905863098584,
+     "max_between": 6.267159227705292
+    }
+   },
+   "only_one_predicts": {
+    "B only": 8,
+    "W only": 0
+   }
+  },
+  "P3_b36c153df2": {
+   "molecules": 1,
+   "modes": 69,
+   "B_vs_G": {
+    "overlap_abs_median": 0.9999579416072056,
+    "overlap_abs_p10": 0.9990111737459264,
+    "omega_rms_cm": 1.1895357848894577
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.9952031882509511,
+    "overlap_abs_p10": 0.8487013515407897,
+    "overlap_abs_p01": 0.750968107860732,
+    "overlap_abs_min": 0.72050115608095,
+    "modes_below_match_line": 0,
+    "rank_changed": 10,
+    "omega_shift_rms_cm": 23.360777210653254,
+    "family_changed": 1,
+    "h_rms": 0.05498271546705442,
+    "o_rms": 0.0015825321552059362,
+    "xtb_partner_changed": 13,
+    "xtb_partner_lost_on_W": 9,
+    "xtb_partner_lost_on_B": 4
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 9,
+     "overlap_abs_median": 0.998039570918828,
+     "overlap_abs_p10": 0.9873677642739191,
+     "rms_inputs_on_B": 8.086969958069957,
+     "rms_inputs_on_W": 8.259450280791656,
+     "rms_between": 6.845957185199152,
+     "max_between": 12.22250160014093
+    },
+    "CH-oop": {
+     "n": 8,
+     "overlap_abs_median": 0.9970281132002605,
+     "overlap_abs_p10": 0.9886780473617026,
+     "rms_inputs_on_B": 2.1761934672496364,
+     "rms_inputs_on_W": 2.6831888745783026,
+     "rms_between": 3.093042771101305,
+     "max_between": 5.212444202011939
+    },
+    "ring-ip": {
+     "n": 17,
+     "overlap_abs_median": 0.9646296034936266,
+     "overlap_abs_p10": 0.8782379152653018,
+     "rms_inputs_on_B": 1.9350777342918555,
+     "rms_inputs_on_W": 2.198432765283747,
+     "rms_between": 0.803460042138565,
+     "max_between": 1.8695357302112487
+    },
+    "other": {
+     "n": 8,
+     "overlap_abs_median": 0.9989952741024538,
+     "overlap_abs_p10": 0.9949505986408258,
+     "rms_inputs_on_B": 0.9153738505515807,
+     "rms_inputs_on_W": 0.9456514927752754,
+     "rms_between": 0.19124297601559548,
+     "max_between": 0.3431168654574126
+    },
+    "all": {
+     "n": 42,
+     "overlap_abs_median": 0.9956754586054503,
+     "overlap_abs_p10": 0.9005436096597335,
+     "rms_inputs_on_B": 4.073253366582297,
+     "rms_inputs_on_W": 4.256310601488601,
+     "rms_between": 3.4833152803602956,
+     "max_between": 12.22250160014093
+    }
+   },
+   "only_one_predicts": {
+    "B only": 7,
+    "W only": 5
+   }
+  },
+  "P3_1ba8fe779a": {
+   "molecules": 1,
+   "modes": 69,
+   "B_vs_G": {
+    "overlap_abs_median": 0.999937366264851,
+    "overlap_abs_p10": 0.9987501459460901,
+    "omega_rms_cm": 0.9823582860292678
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.9915309353897158,
+    "overlap_abs_p10": 0.8869601767210166,
+    "overlap_abs_p01": 0.763238915012835,
+    "overlap_abs_min": 0.7412843717291849,
+    "modes_below_match_line": 0,
+    "rank_changed": 13,
+    "omega_shift_rms_cm": 22.506576093009272,
+    "family_changed": 0,
+    "h_rms": 0.03793580451158025,
+    "o_rms": 0.0010977409474302404,
+    "xtb_partner_changed": 12,
+    "xtb_partner_lost_on_W": 6,
+    "xtb_partner_lost_on_B": 2
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 9,
+     "overlap_abs_median": 0.9642776745764854,
+     "overlap_abs_p10": 0.9272609137553838,
+     "rms_inputs_on_B": 8.413239792743115,
+     "rms_inputs_on_W": 6.712455405518066,
+     "rms_between": 6.035675128956917,
+     "max_between": 11.755386983708945
+    },
+    "CH-oop": {
+     "n": 7,
+     "overlap_abs_median": 0.998713856760097,
+     "overlap_abs_p10": 0.9913627768737071,
+     "rms_inputs_on_B": 4.0880708699734765,
+     "rms_inputs_on_W": 5.824009102289037,
+     "rms_between": 3.5616469743043053,
+     "max_between": 5.478600074075221
+    },
+    "ring-ip": {
+     "n": 18,
+     "overlap_abs_median": 0.9786704665608139,
+     "overlap_abs_p10": 0.9010031383044284,
+     "rms_inputs_on_B": 2.0892678362293142,
+     "rms_inputs_on_W": 2.1673455226576777,
+     "rms_between": 0.5593850706687984,
+     "max_between": 1.3365875328641295
+    },
+    "other": {
+     "n": 10,
+     "overlap_abs_median": 0.999400569842049,
+     "overlap_abs_p10": 0.996570514970909,
+     "rms_inputs_on_B": 1.1452151433690836,
+     "rms_inputs_on_W": 1.114719027510048,
+     "rms_between": 0.20798275147295342,
+     "max_between": 0.4323435897149768
+    },
+    "all": {
+     "n": 44,
+     "overlap_abs_median": 0.9912667726682726,
+     "overlap_abs_p10": 0.9227724903470359,
+     "rms_inputs_on_B": 4.384154311656474,
+     "rms_inputs_on_W": 4.100792707375123,
+     "rms_between": 3.099584468587721,
+     "max_between": 11.755386983708945
+    }
+   },
+   "only_one_predicts": {
+    "B only": 6,
+    "W only": 2
+   }
+  },
+  "A_428228e5a5": {
+   "molecules": 1,
+   "modes": 72,
+   "B_vs_G": {
+    "overlap_abs_median": 0.9999739626894469,
+    "overlap_abs_p10": 0.9995651084302544,
+    "omega_rms_cm": 0.8613916427159967
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.9972536614467133,
+    "overlap_abs_p10": 0.9566907214365376,
+    "overlap_abs_p01": 0.8558444844297366,
+    "overlap_abs_min": 0.8501339385030504,
+    "modes_below_match_line": 0,
+    "rank_changed": 12,
+    "omega_shift_rms_cm": 22.79560401663328,
+    "family_changed": 0,
+    "h_rms": 0.031732861768452275,
+    "o_rms": 0.007049569432574227,
+    "xtb_partner_changed": 4,
+    "xtb_partner_lost_on_W": 4,
+    "xtb_partner_lost_on_B": 0
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 10,
+     "overlap_abs_median": 0.99658755485559,
+     "overlap_abs_p10": 0.9620436104334784,
+     "rms_inputs_on_B": 7.272833336881821,
+     "rms_inputs_on_W": 7.189916773941397,
+     "rms_between": 6.412586529062376,
+     "max_between": 10.794334507854956
+    },
+    "CH-oop": {
+     "n": 10,
+     "overlap_abs_median": 0.9988732036345276,
+     "overlap_abs_p10": 0.9983099938447038,
+     "rms_inputs_on_B": 6.49806297549324,
+     "rms_inputs_on_W": 8.48556543822602,
+     "rms_between": 2.905716099954312,
+     "max_between": 5.207966563659012
+    },
+    "ring-ip": {
+     "n": 23,
+     "overlap_abs_median": 0.9817948633307775,
+     "overlap_abs_p10": 0.9042391488883841,
+     "rms_inputs_on_B": 2.578845725750049,
+     "rms_inputs_on_W": 2.7571664272241967,
+     "rms_between": 0.5153880936111054,
+     "max_between": 1.2774384564528773
+    },
+    "other": {
+     "n": 10,
+     "overlap_abs_median": 0.9997472513446155,
+     "overlap_abs_p10": 0.9991225042808205,
+     "rms_inputs_on_B": 1.5851007092469096,
+     "rms_inputs_on_W": 1.6999239345252177,
+     "rms_between": 0.21992167911225619,
+     "max_between": 0.4862959992586937
+    },
+    "all": {
+     "n": 53,
+     "overlap_abs_median": 0.997161122924273,
+     "overlap_abs_p10": 0.9619335677582584,
+     "rms_inputs_on_B": 4.615958690987683,
+     "rms_inputs_on_W": 5.213805853490737,
+     "rms_between": 3.0783404874806717,
+     "max_between": 10.794334507854956
+    }
+   },
+   "only_one_predicts": {
+    "B only": 4,
+    "W only": 0
+   }
+  },
+  "A_cce0ad25a5": {
+   "molecules": 1,
+   "modes": 72,
+   "B_vs_G": {
+    "overlap_abs_median": 0.9999847188849054,
+    "overlap_abs_p10": 0.9998915425909851,
+    "omega_rms_cm": 0.9615110928377183
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.9987935738800783,
+    "overlap_abs_p10": 0.9777037088409157,
+    "overlap_abs_p01": 0.9272723392849662,
+    "overlap_abs_min": 0.9211894118504088,
+    "modes_below_match_line": 0,
+    "rank_changed": 23,
+    "omega_shift_rms_cm": 24.02068152790735,
+    "family_changed": 1,
+    "h_rms": 0.0461890785542549,
+    "o_rms": 0.00013716492620296085,
+    "xtb_partner_changed": 0,
+    "xtb_partner_lost_on_W": 0,
+    "xtb_partner_lost_on_B": 0
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 10,
+     "overlap_abs_median": 0.996586496640373,
+     "overlap_abs_p10": 0.9767867008076521,
+     "rms_inputs_on_B": 7.682990676665749,
+     "rms_inputs_on_W": 8.147795516869197,
+     "rms_between": 5.848293851165538,
+     "max_between": 11.48654472509915
+    },
+    "CH-oop": {
+     "n": 10,
+     "overlap_abs_median": 0.9989412377803589,
+     "overlap_abs_p10": 0.9984752328915429,
+     "rms_inputs_on_B": 3.957779269977884,
+     "rms_inputs_on_W": 5.817509706914124,
+     "rms_between": 2.8527583390972695,
+     "max_between": 4.9314769152622
+    },
+    "ring-ip": {
+     "n": 28,
+     "overlap_abs_median": 0.9962480365530969,
+     "overlap_abs_p10": 0.9600533229762722,
+     "rms_inputs_on_B": 2.8176463316749465,
+     "rms_inputs_on_W": 2.95338416312867,
+     "rms_between": 1.005650254944161,
+     "max_between": 3.656650489341054
+    },
+    "other": {
+     "n": 10,
+     "overlap_abs_median": 0.9998166461715636,
+     "overlap_abs_p10": 0.9986291204101279,
+     "rms_inputs_on_B": 5.401134983163953,
+     "rms_inputs_on_W": 5.5809314194790245,
+     "rms_between": 0.23921972133569328,
+     "max_between": 0.39607555817814166
+    },
+    "all": {
+     "n": 58,
+     "overlap_abs_median": 0.9984483541727569,
+     "overlap_abs_p10": 0.9762469937375007,
+     "rms_inputs_on_B": 4.662657743935626,
+     "rms_inputs_on_W": 5.182858433231606,
+     "rms_between": 2.7925309248650225,
+     "max_between": 11.48654472509915
+    }
+   },
+   "only_one_predicts": {
+    "B only": 0,
+    "W only": 0
+   }
+  },
+  "coronene": {
+   "molecules": 1,
+   "modes": 102,
+   "B_vs_G": {
+    "overlap_abs_median": 0.9999692300488101,
+    "overlap_abs_p10": 0.9995130587069954,
+    "omega_rms_cm": 1.2832794641258851
+   },
+   "B_vs_W": {
+    "overlap_abs_median": 0.9992179893769095,
+    "overlap_abs_p10": 0.9870310483454084,
+    "overlap_abs_p01": 0.8272582456393144,
+    "overlap_abs_min": 0.8191937301673127,
+    "modes_below_match_line": 0,
+    "rank_changed": 47,
+    "omega_shift_rms_cm": 23.050114935945352,
+    "family_changed": 0,
+    "h_rms": 0.06675802055166019,
+    "o_rms": 6.738892551599718e-16,
+    "xtb_partner_changed": 0,
+    "xtb_partner_lost_on_W": 0,
+    "xtb_partner_lost_on_B": 0
+   },
+   "families": {
+    "CH-stretch": {
+     "n": 12,
+     "overlap_abs_median": 0.9989943001552255,
+     "overlap_abs_p10": 0.9944755548863539,
+     "rms_inputs_on_B": 7.322193331674855,
+     "rms_inputs_on_W": 6.429281719905761,
+     "rms_between": 5.723107918808691,
+     "max_between": 12.681773607530161
+    },
+    "CH-oop": {
+     "n": 14,
+     "overlap_abs_median": 0.9993462113093701,
+     "overlap_abs_p10": 0.9898434582075675,
+     "rms_inputs_on_B": 13.396718675527932,
+     "rms_inputs_on_W": 14.025948873509083,
+     "rms_between": 2.89252241337487,
+     "max_between": 5.0558937722197275
+    },
+    "ring-ip": {
+     "n": 39,
+     "overlap_abs_median": 0.9981520881936328,
+     "overlap_abs_p10": 0.9612683202586254,
+     "rms_inputs_on_B": 3.776065306889469,
+     "rms_inputs_on_W": 3.866735453464291,
+     "rms_between": 0.7617171030972911,
+     "max_between": 2.5404208967983415
+    },
+    "other": {
+     "n": 15,
+     "overlap_abs_median": 0.9999036382990626,
+     "overlap_abs_p10": 0.9982854665761426,
+     "rms_inputs_on_B": 5.150094437237397,
+     "rms_inputs_on_W": 5.285713387767993,
+     "rms_between": 0.18860497708834414,
+     "max_between": 0.3465482273525726
+    },
+    "all": {
+     "n": 80,
+     "overlap_abs_median": 0.9989890819620603,
+     "overlap_abs_p10": 0.9810503546275013,
+     "rms_inputs_on_B": 7.1675687732968925,
+     "rms_inputs_on_W": 7.290751775639738,
+     "rms_between": 2.5820124326575584,
+     "max_between": 12.681773607530161
+    }
+   },
+   "only_one_predicts": {
+    "B only": 0,
+    "W only": 0
+   }
+  }
+ }
+}

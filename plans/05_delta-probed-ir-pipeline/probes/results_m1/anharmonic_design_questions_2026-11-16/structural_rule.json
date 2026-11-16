@@ -1,0 +1,72 @@
+{
+ "rule": [
+  {
+   "o_line": 0.5,
+   "family_modes": 332,
+   "g_marked": 2,
+   "caught": 2,
+   "sound_refused": 121,
+   "molecules_touched": 38,
+   "harmonic_rms_of_refused": 11.743649799948296,
+   "step_rms_of_refused": 4.661780901213671
+  },
+  {
+   "o_line": 0.8,
+   "family_modes": 332,
+   "g_marked": 2,
+   "caught": 2,
+   "sound_refused": 118,
+   "molecules_touched": 38,
+   "harmonic_rms_of_refused": 11.727728753157582,
+   "step_rms_of_refused": 4.671000107737837
+  },
+  {
+   "o_line": 0.95,
+   "family_modes": 332,
+   "g_marked": 2,
+   "caught": 2,
+   "sound_refused": 108,
+   "molecules_touched": 38,
+   "harmonic_rms_of_refused": 11.851007294081414,
+   "step_rms_of_refused": 4.816349081887706
+  },
+  {
+   "o_line": 0.99,
+   "family_modes": 332,
+   "g_marked": 2,
+   "caught": 2,
+   "sound_refused": 93,
+   "molecules_touched": 36,
+   "harmonic_rms_of_refused": 11.667536846255166,
+   "step_rms_of_refused": 5.016090862183371
+  }
+ ],
+ "untracked_bytes": {
+  "ref.json": 7811560,
+  "qff_report.npz": 156545680
+ },
+ "g_marked_window_rows": [
+  {
+   "id": "coronene",
+   "mode": 24,
+   "omega": 642.9393964152787,
+   "o": 1.0000000000000009,
+   "delta": 66.21804782968661,
+   "pred": -9.085694737474052,
+   "xtb": -8.637283320132155,
+   "x_strain": 0.013894389314792508,
+   "x_share": 0.0014854079057224057
+  },
+  {
+   "id": "coronene",
+   "mode": 36,
+   "omega": 807.0896514159119,
+   "o": 1.0000000000000002,
+   "delta": 179.0998131415231,
+   "pred": -11.637974481135917,
+   "xtb": -7.461539981579449,
+   "x_strain": 0.00971633076682684,
+   "x_share": 0.0016992184879499883
+  }
+ ]
+}
