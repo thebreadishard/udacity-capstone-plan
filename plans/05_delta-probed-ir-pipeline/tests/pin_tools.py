@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import os
 import sys
 from pathlib import Path
@@ -91,19 +92,23 @@ def stable(record, volatile: frozenset[str]):
     return record
 
 
-def first_difference(a, b, path: str = "$") -> str | None:
-    """The path of the first entry where two JSON trees differ (NaN equals NaN, as in the serialised record)."""
+def first_difference(a, b, path: str = "$", rel_tol: float = 0.0) -> str | None:
+    """The path of the first entry where two JSON trees differ (NaN equals NaN, as in the serialised record).
+
+    `rel_tol` 0 compares to the bit: right for a pin that holds only in the environment it was written in. A pin that must hold on
+    every machine gives the relative tolerance within which two floats count as equal (also their absolute tolerance near zero):
+    linear algebra differs in the last digits between CPUs and BLAS builds."""
     if isinstance(a, dict) and isinstance(b, dict):
         if a.keys() != b.keys():
             return f"{path}: keys {sorted(a.keys() ^ b.keys())}"
-        return next((d for k in a if (d := first_difference(a[k], b[k], f"{path}.{k}"))), None)
+        return next((d for k in a if (d := first_difference(a[k], b[k], f"{path}.{k}", rel_tol))), None)
     if isinstance(a, list) and isinstance(b, list):
         if len(a) != len(b):
             return f"{path}: length {len(a)} vs {len(b)}"
-        return next((d for i, (x, y) in enumerate(zip(a, b, strict=True)) if (d := first_difference(x, y, f"{path}[{i}]"))), None)
-    if json.dumps(a) != json.dumps(b):
-        return f"{path}: {a!r} vs {b!r}"
-    return None
+        return next((d for i, (x, y) in enumerate(zip(a, b, strict=True)) if (d := first_difference(x, y, f"{path}[{i}]", rel_tol))),
+                    None)
+    within = bool(rel_tol) and isinstance(a, float) and isinstance(b, float) and math.isclose(a, b, rel_tol=rel_tol, abs_tol=rel_tol)
+    return None if within or json.dumps(a) == json.dumps(b) else f"{path}: {a!r} vs {b!r}"
 
 
 def digest(array) -> str:

@@ -1,17 +1,20 @@
 """Version 1.4's hyperparameter search (registration GoalGathering/notes/Design_2026-10-26_DeltaH_v1.4_Recipe_and_Search.md, §4–§5).
 
     python probes/v14_search.py plan --carried-models <3 .pt>
-                                       the frozen list (control, its parity and target variants, 24 drawn), the carried version named,
-                                       stage 1's chain
-    python probes/v14_search.py read1  stage 1 scored on the selection set; stage 2's chain (best four + control)
+                                       the frozen list (control, its parity, target and schedule variants, 12 drawn), the carried
+                                       version named, stage 1's chain (two seeds each)
+    python probes/v14_search.py read1  stage 1 scored on the selection set; stage 2's chain (best four + control, the third seed)
     python probes/v14_search.py read2  the winner (no-worsening rule, two SE); the final chain
     python probes/v14_search.py read3  the target check and the promotion against the carried version
 
 Selection uses only the selection set (`rungC_train.py --selection-split`, whole scaffold cores, never trained); the hold-outs are read once,
 for the winner and the carried version, in the final chain. A configuration's score per seed is the mean of the five read-outs on the
 selection set, each divided by its line (the families' diagonal rms by 3 cm⁻¹, the coupling ratio by 0.25). The parity-odd factor and rung B's
-pair features do not combine (`rungC_config`), so the search draws one or the other; the target (projected or ridge) is drawn the same way
-(the user, 8 Nov 2026: a categorical of the search instead of chain 44). Paths are relative to module 05 unless named otherwise.
+pair features do not combine (`rungC_config`), so the search deals one or the other; the target (projected or ridge) is dealt the same way
+(the user, 8 Nov 2026: a categorical of the search instead of chain 44). Since the amendment of 15 Nov 2026 (§11; the user: the learning
+rate is always part of our search) the learning-rate schedule is drawn the same way, the two loss weights stay at the carried values
+(34b/34c measured no response), and stage 1 trains two seeds of every configuration, because one seed's score moves by as much as a
+hyperparameter does. Paths are relative to module 05 unless named otherwise.
 """
 from __future__ import annotations
 
@@ -32,31 +35,40 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(M05 / "m05"))
 import chain_runner  # noqa: E402, RUF100  (pre-commit's pinned ruff flags imports after the path inserts; the newer one calls it unused)
 import promotion_read as P  # noqa: E402, RUF100
-from rungC_config import WEIGHT_DECAY  # noqa: E402, RUF100
+from rungC_config import LR_SCHEDULES, WEIGHT_DECAY  # noqa: E402, RUF100
 from rungC_equivariant import N_BLOCKS, N_S  # noqa: E402, RUF100
 
 SEARCH_SEED = 20261026
-N_DRAWN = 24
+N_DRAWN = 12
+STAGE1_SEEDS = (0, 1)                      # two seeds screen: v1.3's seeds differ by up to 0.8 cm⁻¹ within a family
+STAGE1_TAGS = {0: "s1a", 1: "s1b"}         # a step and a record per seed: a restart loses one training, and seed 0's pass ranks alone
+STAGE2_SEED = 2                            # the third seed, for the best of stage 1 and the control
 STAGE2_BEST = 4
 SELECTION = "26:0.15"
 POOL_LAYERS = "A,A2,B,P3,P3c"
 EPOCH_CAP = 300
 CAP_MARGIN = 0.10                          # decision 51: a best epoch within 10 % of the cap means the cap, not the data, stopped it
 THREADS = "8"
+MAX_GAP_MINUTES = 120                      # the run-spec schema's ceiling; the chain runner prints progress every 30 min
 LINES = {**dict.fromkeys(P.FAMILIES, 3.0), P.RATIO: 0.25}
 OUT = "out/v14"
-SPACE = {"lr": (1e-4, 1e-3), "weight_decay": (1e-5, 1e-3), "kring_weight": (0.1, 1.0), "kdiag_weight": (0.03, 0.3),
+SPACE = {"lr": (1e-4, 1e-3), "weight_decay": (1e-5, 1e-3),
          "body_width": (64, 96, 128), "body_blocks": (3, 4), "hybrid_hidden": (128, 256, 512)}
-LOG_RANGES = ("lr", "weight_decay", "kring_weight", "kdiag_weight")
+LOG_RANGES = ("lr", "weight_decay")
 TARGETS = ("projected", "ls")
 CARRIED_TARGET = "projected"                 # the carried recipe's (RECIPE_V11 has no --aux-target)
-TARGET_SEED = SEARCH_SEED + 1                # the target's own coin: adding it left every other drawn value as it was
+CHOICES_SEED = SEARCH_SEED + 1               # the generator that shuffles the dealt choices: the drawn ranges keep theirs
+SCHEDULES = LR_SCHEDULES                     # the trainer's: constant (carried) or cosine with its warm-up
+CARRIED_SCHEDULE = "constant"
+HOURS = {"constant": 2.0, "cosine": 3.5}     # per training at ≈ 1,200 molecules: chain 41 ran 1.0-1.9 h per seed at 972 and stopped
+                                             # early; a cosine runs all of the cap's epochs
 
 
 @dataclass(frozen=True)
 class Config:
     """One point of the search. `parity` True = the parity-odd factor without rung B's pair features; False = the pair features (carried).
-    `target` is one of TARGETS (projected = the carried one)."""
+    `target` is one of TARGETS (projected = the carried one), `schedule` one of SCHEDULES (constant = the carried one). The two loss
+    weights are the carried values in every configuration since 15 Nov 2026."""
     name: str
     lr: float
     weight_decay: float
@@ -67,6 +79,7 @@ class Config:
     kdiag_weight: float
     parity: bool
     target: str
+    schedule: str
 
 
 def _recipe_value(flag: str) -> str:
@@ -77,30 +90,50 @@ def _recipe_value(flag: str) -> str:
 def control() -> Config:
     """The carried recipe: RECIPE_V11's values, the trainer's weight decay and body size, the carried target."""
     return Config("c00_control", float(_recipe_value("--lr")), WEIGHT_DECAY, N_S, N_BLOCKS, int(_recipe_value("--hybrid-hidden")),
-                  float(_recipe_value("--kring-weight")), float(_recipe_value("--kdiag-weight")), parity=False, target=CARRIED_TARGET)
+                  float(_recipe_value("--kring-weight")), float(_recipe_value("--kdiag-weight")), parity=False, target=CARRIED_TARGET,
+                  schedule=CARRIED_SCHEDULE)
 
 
 def _three_digits(x: float) -> float:
     return float(f"{x:.3g}")
 
 
-def draw(n: int = N_DRAWN, seed: int = SEARCH_SEED, target_seed: int = TARGET_SEED) -> list[Config]:
-    """n configurations drawn once from SPACE (log-uniform on the log ranges, uniform choices), the parity variant by a fair coin and the
-    target by a fair coin of its own generator."""
-    rng, coin = np.random.default_rng(seed), np.random.default_rng(target_seed)
+def dealt_choices(n: int, seed: int) -> list[tuple[bool, str, str]]:
+    """n triples (parity, target, schedule) as one design, in an order shuffled by `seed`: the eight combinations, then the half
+    fraction in which an even number of the three differ from the carried value, and so on round. Twelve fair coins left ten of one
+    target; three separate shuffles would balance each choice and leave the pairs to chance. At n = 12 every value of every choice
+    comes six times and every pair of values of two choices three times."""
+    full = [(p, t, s) for p in (False, True) for t in TARGETS for s in SCHEDULES]
+    half = [c for c in full if (c[0] + (c[1] != CARRIED_TARGET) + (c[2] != CARRIED_SCHEDULE)) % 2 == 0]
+    design = [*full, *half]
+    cycle = [design[k % len(design)] for k in range(n)]
+    return [cycle[k] for k in np.random.default_rng(seed).permutation(n)]
+
+
+def draw(n: int = N_DRAWN, seed: int = SEARCH_SEED, choices_seed: int = CHOICES_SEED) -> list[Config]:
+    """n configurations drawn once from SPACE (log-uniform on the log ranges, uniform choices); the parity variant, the target and the
+    schedule are dealt together as one balanced design (`dealt_choices`); the loss weights are the control's."""
+    rng = np.random.default_rng(seed)
+    choices = dealt_choices(n, choices_seed)
+    carried = control()
     out = []
     for k in range(n):
         v = {name: _three_digits(10 ** rng.uniform(math.log10(SPACE[name][0]), math.log10(SPACE[name][1]))) for name in LOG_RANGES}
         v |= {name: int(rng.choice(SPACE[name])) for name in ("body_width", "body_blocks", "hybrid_hidden")}
-        out.append(Config(f"c{k + 3:02d}", parity=bool(rng.random() < 0.5), target=TARGETS[int(coin.random() < 0.5)], **v))
+        parity, target, schedule = choices[k]
+        out.append(Config(f"c{k + 4:02d}", parity=parity, target=target, schedule=schedule,
+                          kring_weight=carried.kring_weight, kdiag_weight=carried.kdiag_weight, **v))
     return out
 
 
 def frozen_list() -> list[Config]:
-    """The control, its two one-factor ablations (the parity factor; the other target) and the drawn configurations."""
+    """The control, its three one-factor ablations (the parity factor; the other target; the other schedule) and the drawn
+    configurations."""
     c = control()
     other = next(t for t in TARGETS if t != CARRIED_TARGET)
-    return [c, replace(c, name="c01_control_parity", parity=True), replace(c, name="c02_control_target", target=other), *draw()]
+    other_schedule = next(s for s in SCHEDULES if s != CARRIED_SCHEDULE)
+    return [c, replace(c, name="c01_control_parity", parity=True), replace(c, name="c02_control_target", target=other),
+            replace(c, name="c03_control_schedule", schedule=other_schedule), *draw()]
 
 
 def _flags(flags: list[str]) -> dict[str, str | None]:
@@ -124,6 +157,11 @@ def trainer_argv(cfg: Config, prefix: str, seeds: str) -> list[str]:
         flags["--parity-odd-mixed"] = None
     if cfg.target != "projected":
         flags["--aux-target"] = cfg.target
+    if cfg.schedule != CARRIED_SCHEDULE:
+        # the cosine is defined on the cap: stopped at the carried patience of 20 it would end near epoch 120-180 with the rate still at
+        # 0.35-0.67 of its value, and the search would have tested a warm-up, not an anneal. A patience of the cap never stops the run
+        # and still restores the best state on the inner validation term.
+        flags |= {"--lr-schedule": cfg.schedule, "--patience": str(EPOCH_CAP)}
     argv = [x for f, v in flags.items() for x in ((f,) if v is None else (f, v))]
     return ["{python}", "m05/rungC_train.py", "corpus/molecules", prefix, *argv, "--selection-split", SELECTION, "--sizes", "all",
             "--seeds", seeds, "--threads", THREADS, "--save-model"]
@@ -153,7 +191,7 @@ def runspec(name: str, tag: str, purpose: str, hours: float, basis: str) -> dict
             "command": f"python ../chain_runner.py probes/runs/{name}.json",
             "sources": [{"local": "probes/chain_runner.py"}, {"local": "probes/v14_search.py"}, {"local": "probes/promotion_read.py"},
                         {"local": f"{M05_REL}/m05/rungC_train.py"}],
-            "progress": {"regex": f"^=== \\({tag}\\) progress: |^\\({tag}\\) .* done ", "max_gap_minutes": 180,
+            "progress": {"regex": f"^=== \\({tag}\\) progress: |^\\({tag}\\) .* done ", "max_gap_minutes": MAX_GAP_MINUTES,
                          "start_regex": f"^=== \\({tag}\\) starting: "},
             "marker_regex": f"^=== \\({tag}\\) (armed|starting|resuming|RUN FAILED|run done)", "end_regex": f"^=== \\({tag}\\) run done",
             "fail_regex": f"^=== \\({tag}\\) RUN FAILED", "dry_run_args": "--dry-run", "resumable": True,
@@ -206,12 +244,21 @@ def score(sel: dict) -> float:
     return sum(vals) / len(vals)
 
 
-def at_cap(r: SeedRead) -> bool:
-    return r.best_epoch is not None and r.best_epoch >= (1 - CAP_MARGIN) * r.cap
+def at_cap(r: SeedRead, schedule: str) -> bool:
+    """Decision 51's rule, for a constant rate: a best epoch within CAP_MARGIN of the cap means the cap stopped the run. A cosine
+    configuration trains every epoch of the cap and its rate reaches the floor there by construction, so a late best epoch is the
+    schedule working, and a higher cap would be another schedule, not a rerun; the reads mark it LATE and refuse nothing."""
+    return schedule == "constant" and r.best_epoch is not None and r.best_epoch >= (1 - CAP_MARGIN) * r.cap
+
+
+def epoch_note(r: SeedRead, schedule: str) -> str:
+    """A seed's best epoch as the reads print it: AT CAP under the constant rate's rule, LATE for a cosine whose best is that late."""
+    late = r.best_epoch is not None and r.best_epoch >= (1 - CAP_MARGIN) * r.cap
+    return f"{r.best_epoch}{(' AT CAP' if schedule == 'constant' else ' LATE') if late else ''}"
 
 
 def no_worse(new: dict, old: dict) -> tuple[str, ...]:
-    """The read-outs on which one seed's selection read is worse than another's at the reported precision (stage 1: one seed each)."""
+    """The read-outs on which one seed's selection read is worse than another's at the reported precision."""
     return tuple(q for q in P.QUANTITIES if P.reported(_q(new, q), q) > P.reported(_q(old, q), q))
 
 
@@ -237,16 +284,22 @@ def cmd_plan(carried_models: list[str]) -> int:
     configs = frozen_list()
     sha = canonical_sha(configs)
     write_new(M05 / OUT / "configs.json", {"search_seed": SEARCH_SEED, "selection_split": SELECTION, "pool_layers": POOL_LAYERS,
-                                           "epoch_cap": EPOCH_CAP, "space": SPACE, "configs": [asdict(c) for c in configs], "sha256": sha,
+                                           "epoch_cap": EPOCH_CAP, "space": SPACE, "schedules": list(SCHEDULES),
+                                           "stage1_seeds": list(STAGE1_SEEDS), "stage2_seed": STAGE2_SEED,
+                                           "configs": [asdict(c) for c in configs], "sha256": sha,
                                            "carried_models": carried_models})
     steps = [{"kind": "cmd", "label": "design check of the v1.4 pool", "cwd": M05_REL, "log": f"{M05_REL}/{OUT}/design_check.log",
               "argv": ["{python}", "m05/design_check.py", "corpus/molecules", "--aggregation", "sum", "--out", f"{OUT}/design_check"]}]
-    steps += [train_step(c, "s1", "0") for c in configs] + [read_step("read1")]
-    about = f"v1.4 stage 1 (registration of 26 Oct 2026): {len(configs)} configurations, seed 0, scored on the selection set; frozen list sha256 {sha}"
+    seeds = ",".join(str(s) for s in STAGE1_SEEDS)
+    steps += [train_step(c, STAGE1_TAGS[s], str(s)) for s in STAGE1_SEEDS for c in configs] + [read_step("read1")]
+    about = (f"v1.4 stage 1 (registration of 26 Oct 2026, amended 15 Nov): {len(configs)} configurations, seeds {seeds} (every "
+             f"configuration's seed {STAGE1_SEEDS[0]} first), scored on the selection set; frozen list sha256 {sha}")
     write_new(PLAN / "probes" / "runs" / "v14_stage1.json", chain("V14S1", about, steps, [f"{M05_REL}/{OUT}/read1.json"]))
     write_new(PLAN / "probes" / "runspecs" / "v14_stage1.json",
-              runspec("v14_stage1", "V14S1", "v1.4 stage 1: the frozen list, one seed each, then read1 writes stage 2", 2.0 * len(configs),
-                      "≈ 2 h per training at ≈ 1,200 molecules (chain 41: 1.0-1.9 h per seed at 972)"))
+              runspec("v14_stage1", "V14S1", "v1.4 stage 1: the frozen list, two seeds each, then read1 writes stage 2",
+                      len(STAGE1_SEEDS) * sum(HOURS[c.schedule] for c in configs),
+                      "≈ 2 h per constant-rate training at ≈ 1,200 molecules (chain 41: 1.0-1.9 h per seed at 972, stopped early), "
+                      "≈ 3.5 h for a cosine, which runs all 300 epochs"))
     print(f"frozen list of {len(configs)} configurations, sha256 {sha}; stage 1 chain and runspec written")
     return 0
 
@@ -254,24 +307,31 @@ def cmd_plan(carried_models: list[str]) -> int:
 def cmd_read1() -> int:
     configs, _ = load_list()
     ctrl = configs[0]
-    reads = {c.name: seed_reads(prefix(c, "s1"))[0] for c in configs}
-    ranked = sorted(configs, key=lambda c: score(reads[c.name].sel))
-    lines = ["# v1.4 stage 1 — selection-set scores (one seed)", "", "| rank | configuration | score | worse than control on | best epoch / cap |",
-             "|---|---|---|---|---|"]
+    reads = {c.name: stage1_seeds(c) for c in configs}
+    means = {c.name: sum(score(r.sel) for r in reads[c.name]) / len(reads[c.name]) for c in configs}
+    ctrl_arm = P.arm_from_seeds([{"sel": r.sel} for r in reads[ctrl.name]], ("sel",))
+    ranked = sorted(configs, key=lambda c: means[c.name])
+    lines = [f"# v1.4 stage 1 — selection-set scores (seeds {', '.join(str(s) for s in STAGE1_SEEDS)})", "",
+             "| rank | configuration | schedule | score (seed mean) | per seed | worse than control on | best epoch / cap |",
+             "|---|---|---|---|---|---|---|"]
     for k, c in enumerate(ranked, 1):
-        r = reads[c.name]
-        worse = ", ".join(no_worse(r.sel, reads[ctrl.name].sel)) or "—"
-        lines.append(f"| {k} | {c.name} | {score(r.sel):.3f} | {worse} | {r.best_epoch} / {r.cap}{' AT CAP' if at_cap(r) else ''} |")
+        rs = reads[c.name]
+        arm = P.arm_from_seeds([{"sel": r.sel} for r in rs], ("sel",))
+        worse = "—" if c.name == ctrl.name else ", ".join(P.promotion(P.compare(arm, ctrl_arm)).worse) or "—"
+        epochs = ", ".join(epoch_note(r, c.schedule) for r in rs)
+        per_seed = ", ".join(f"{score(r.sel):.3f}" for r in rs)
+        lines.append(f"| {k} | {c.name} | {c.schedule} | {means[c.name]:.3f} | {per_seed} | {worse} | {epochs} / {rs[0].cap} |")
     best = [c for c in ranked if c.name != ctrl.name][:STAGE2_BEST]
-    lines += ["", f"Stage 2: {', '.join(c.name for c in best)} and the control, seeds 1 and 2. One seed: the no-worsening column informs, "
-              "stage 2 decides."]
-    _write_report("read1", lines, {"scores": {c.name: score(reads[c.name].sel) for c in configs}, "stage2": [c.name for c in best]})
-    steps = [train_step(c, "s2", "1,2") for c in [ctrl, *best]] + [read_step("read2")]
-    about = "v1.4 stage 2: the best four of stage 1 and the control, seeds 1 and 2, then read2"
+    lines += ["", f"Stage 2: {', '.join(c.name for c in best)} and the control, seed {STAGE2_SEED}. Two seeds: the no-worsening column "
+              "informs, stage 2 decides on three."]
+    _write_report("read1", lines, {"scores": means, "seed_scores": {n: [score(r.sel) for r in rs] for n, rs in reads.items()},
+                                   "stage2": [c.name for c in best]})
+    steps = [train_step(c, "s2", str(STAGE2_SEED)) for c in [ctrl, *best]] + [read_step("read2")]
+    about = f"v1.4 stage 2: the best four of stage 1 and the control, seed {STAGE2_SEED}, then read2"
     write_new(PLAN / "probes" / "runs" / "v14_stage2.json", chain("V14S2", about, steps, [f"{M05_REL}/{OUT}/read2.json"]))
     write_new(PLAN / "probes" / "runspecs" / "v14_stage2.json",
-              runspec("v14_stage2", "V14S2", "v1.4 stage 2: three seeds for the best four and the control, then read2", 2.0 * 2 * (1 + len(best)),
-                      "≈ 2 h per training, two seeds each"))
+              runspec("v14_stage2", "V14S2", "v1.4 stage 2: the third seed for the best four and the control, then read2",
+                      sum(HOURS[c.schedule] for c in [ctrl, *best]), "≈ 2 h per constant-rate training, ≈ 3.5 h per cosine, one seed each"))
     print("\n".join(lines))
     return 0
 
@@ -293,8 +353,12 @@ class Stage2:
         return math.sqrt(sum((x - m) ** 2 for x in self.scores) / (len(self.scores) - 1)) / math.sqrt(len(self.scores))
 
 
+def stage1_seeds(c: Config) -> list[SeedRead]:
+    return [seed_reads(prefix(c, STAGE1_TAGS[s]))[s] for s in STAGE1_SEEDS]
+
+
 def three_seeds(c: Config) -> list[SeedRead]:
-    return [seed_reads(prefix(c, "s1"))[0], *(seed_reads(prefix(c, "s2"))[s] for s in (1, 2))]
+    return [*stage1_seeds(c), seed_reads(prefix(c, "s2"))[STAGE2_SEED]]
 
 
 def winner(cands: list[Stage2], ctrl: Stage2) -> tuple[str, str]:
@@ -320,13 +384,18 @@ def cmd_read2() -> int:
     for n, rs in arms.items():
         arm = P.arm_from_seeds([{"sel": r.sel} for r in rs], ("sel",))
         rows[n] = Stage2(n, tuple(score(r.sel) for r in rs), P.promotion(P.compare(arm, ctrl_arm)).worse if n != ctrl.name else (),
-                         any(at_cap(r) for r in rs))
+                         any(at_cap(r, by_name[n].schedule) for r in rs))
     name, reason = winner([rows[n] for n in chosen], rows[ctrl.name])
     if rows[name].at_cap:
         raise SystemExit(f"{name}: a best epoch within {CAP_MARGIN:.0%} of the cap — rerun it at a higher cap before it can win (decision 51)")
-    lines = ["# v1.4 stage 2 — three seeds on the selection set", "", "| configuration | score (mean ± SE) | worse than control on |", "|---|---|---|"]
-    lines += [f"| {r.name} | {r.mean:.3f} ± {r.se:.3f} | {', '.join(r.worse) or '—'} |" for r in rows.values()]
-    lines += ["", f"**Winner: {name}** — {reason}.", "", cation_line(arms[name])]
+    lines = ["# v1.4 stage 2 — three seeds on the selection set", "",
+             f"| configuration | score (mean ± SE) | seed {STAGE2_SEED} alone | worse than control on | best epochs |", "|---|---|---|---|---|"]
+    lines += [f"| {r.name} | {r.mean:.3f} ± {r.se:.3f} | {r.scores[-1]:.3f} | {', '.join(r.worse) or '—'} | "
+              f"{', '.join(epoch_note(x, by_name[r.name].schedule) for x in arms[r.name])} |" for r in rows.values()]
+    lines += ["", f"**Winner: {name}** — {reason}.", "",
+              f"Two of a candidate's three seeds are the ones stage 1 chose it on, and the control was not chosen: the mean flatters a "
+              f"candidate. Seed {STAGE2_SEED} alone is the unselected comparison, and the hold-out promotion of read3 is the guard.", "",
+              cation_line(arms[name])]
     _write_report("read2", lines, {"winner": name, "reason": reason, "rows": {n: asdict(r) for n, r in rows.items()}})
     _write_final_chain(by_name[name], carried_models)
     print("\n".join(lines))
@@ -340,7 +409,7 @@ def _eval_step(model: str, out: str) -> dict:
 
 
 def winner_models(w: Config) -> list[str]:
-    return [f"{prefix(w, 's1')}_model_n*_seed0.pt", *(f"{prefix(w, 's2')}_model_n*_seed{s}.pt" for s in (1, 2))]
+    return [*(f"{prefix(w, STAGE1_TAGS[s])}_model_n*_seed{s}.pt" for s in STAGE1_SEEDS), f"{prefix(w, 's2')}_model_n*_seed{STAGE2_SEED}.pt"]
 
 
 def _write_final_chain(w: Config, carried_models: list[str]) -> None:
@@ -352,7 +421,8 @@ def _write_final_chain(w: Config, carried_models: list[str]) -> None:
     about = f"v1.4 final: {w.name} with the other target (three seeds), the winner and the carried version read on the hold-outs, read3"
     write_new(PLAN / "probes" / "runs" / "v14_final.json", chain("V14F", about, steps, [f"{M05_REL}/{OUT}/read3.json"]))
     write_new(PLAN / "probes" / "runspecs" / "v14_final.json",
-              runspec("v14_final", "V14F", "v1.4 final: target check, hold-out reads, promotion", 7.0, "three trainings ≈ 6 h, six evals ≈ 20 min"))
+              runspec("v14_final", "V14F", "v1.4 final: target check, hold-out reads, promotion", 3 * HOURS[w.schedule] + 1.0,
+                      "three trainings at the winner's schedule, six evals ≈ 20 min"))
 
 
 def cmd_read3() -> int:

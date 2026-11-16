@@ -1,6 +1,7 @@
 """The rung-C trainer's settings (TASKS 72, 16 Oct 2026): every option that would do nothing in a combination is refused before any data is
 loaded, the defaults are the registered recipe C1, and every trainer command a chain spec builds still parses — a new refusal must not break
 a queued chain."""
+import itertools
 import json
 import sys
 from pathlib import Path
@@ -12,6 +13,7 @@ PLAN = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PLAN / "modules" / "05_support_predictor" / "m05"))
 sys.path.insert(0, str(PLAN / "probes"))
 import chain_runner  # noqa: E402
+import rungC_config as C  # noqa: E402
 import rungC_train as RT  # noqa: E402
 from rungC_config import AUX_WEIGHT, EPOCHS, SMOKE_EPOCHS, TrainConfig, config_from_argv, parse_config  # noqa: E402
 from rungC_equivariant import N_BLOCKS, N_S  # noqa: E402
@@ -104,6 +106,28 @@ def test_values_are_checked():
         with pytest.raises(ValueError):
             config(**kw)
     assert config(sizes="45,half,all").sizes == "45,half,all"
+
+
+def test_the_learning_rate_of_an_epoch():
+    assert [C.learning_rate(3e-4, "constant", ep, 300) for ep in (0, 150, 299)] == [3e-4, 3e-4, 3e-4]
+    warm = [C.learning_rate(1.0, "cosine", ep, 105) for ep in range(C.LR_WARMUP_EPOCHS)]
+    assert warm == pytest.approx([0.2, 0.4, 0.6, 0.8, 1.0])
+    assert C.learning_rate(1.0, "cosine", C.LR_WARMUP_EPOCHS + 49, 105) == pytest.approx((1 + C.LR_FLOOR) / 2)    # half way down
+    assert C.learning_rate(1.0, "cosine", 104, 105) == pytest.approx(C.LR_FLOOR)                                 # the cap's last epoch
+    rates = [C.learning_rate(1.0, "cosine", ep, 105) for ep in range(C.LR_WARMUP_EPOCHS - 1, 105)]
+    assert all(a > b for a, b in itertools.pairwise(rates))                                                      # down all the way
+    assert C.learning_rate(1.0, "cosine", 1, 2) == pytest.approx(0.4)                    # a smoke run: the warm-up's first steps only
+    with pytest.raises(ValueError, match="one of"):
+        C.learning_rate(1.0, "linear", 0, 10)
+
+
+def test_a_cosine_schedule_needs_more_epochs_than_its_warm_up():
+    with pytest.raises(ValueError, match="--lr-schedule cosine warms up"):
+        config(lr_schedule="cosine", epochs=C.LR_WARMUP_EPOCHS)
+    assert config(lr_schedule="cosine", epochs=C.LR_WARMUP_EPOCHS + 1).lr_schedule == "cosine"
+    assert config().lr_schedule == "constant"
+    with pytest.raises(ValueError):
+        config(lr_schedule="step")
 
 
 def test_config_is_frozen():

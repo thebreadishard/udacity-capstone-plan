@@ -1,0 +1,13 @@
+{"name": "xtb_qff_timing",
+ "purpose": "TASKS 211: what the printed anharmonic step costs per molecule. The registered estimate is the family's S2b verdict model x2*, kernel ridge on FX, and FX carries the matched GFN2-xTB mode's own shift - so for an unseen molecule the pipeline must compute a GFN2-xTB quartic force field before it can print a band. On 19 October that took 53 to 98 minutes per molecule at SHARDS=2 x OMP=2, four cores (probes/results_m1/s2_xtb_2026-10-18/s2_xtb.log). The demo of 25 November allows the whole pipeline half an hour, so the number that decides whether the registered estimate is reachable is how that time scales with cores. The same molecule, B_0603418c5b (53 min on four cores), is recomputed here on eight, into a scratch root; nothing of the S2 record is touched",
+ "host": "laptop",
+ "workdir": "probes/results_m1",
+ "command": "env SHARDS=4 OMP_NUM_THREADS=2 bash ../xtb_qff_timing.sh",
+ "sources": [{"local": "probes/xtb_qff_timing.sh"}, {"local": "probes/xtb_anharmonic.sh"}, {"local": "probes/dxtb_hessians_for_qff.py"},
+             {"local": "probes/make_qff_displacements.py"}],
+ "progress": {"regex": "^=== \\(XTB\\) |^=== \\(XQT\\) |Hessians to compute", "max_gap_minutes": 45},
+ "marker_regex": "^=== \\(XQT\\) (start|done|FAILED)|^=== \\(XTB\\) B_0603418c5b: (done|NOISY|FAILED)",
+ "end_regex": "^=== \\(XQT\\) (done|FAILED)",
+ "threads": 8,
+ "estimate": {"hours": 0.6, "basis": "53 min on four cores for this molecule on 19 October; eight cores should roughly halve it, which is the number this run is for"},
+ "memory": {"peak_gb": 4.0, "basis": "four dxtb processes of a 20-atom molecule; the 19 October run of fourteen molecules stayed inside the laptop's budget beside other work"}}
