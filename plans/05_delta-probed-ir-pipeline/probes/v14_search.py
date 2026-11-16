@@ -16,17 +16,25 @@ rate is always part of our search) the learning-rate schedule is drawn the same 
 (34b/34c measured no response), and stage 1 trains two seeds of every configuration, because one seed's score moves by as much as a
 hyperparameter does. Since the amendment of 16 Nov 2026 (§12) the final chain trains the winner's recipe again on the whole pool,
 selection set included, and the promotion is read on those three models: the split had taken every derivative of one hold-out molecule's
-scaffold core out of the training pool, and the carried version trained on them. Paths are relative to module 05 unless named otherwise.
+scaffold core out of the training pool, and the carried version trained on them. Since the second amendment of that day (§13) the
+score is read on the selection set without EXCLUDED_SELECTION_CORES: each read evaluates the stage checkpoints it needs on that set
+(`rungC_eval_saved.py --eval-ids-file`, one record per checkpoint, reused when it exists) and prints the registered score, on the whole
+selection set, beside it. Paths are relative to module 05 unless named otherwise.
 """
 from __future__ import annotations
 
 import argparse
+import csv
 import hashlib
 import json
 import math
 import re
+import subprocess
 import sys
+import time
+from collections.abc import Callable
 from dataclasses import asdict, dataclass, replace
+from operator import attrgetter
 from pathlib import Path
 
 import numpy as np
@@ -51,12 +59,22 @@ FINAL_SEEDS = (0, 1, 2)                    # the final chain's trainings: the ot
 FULL_TAG = "s3full"                        # the winner's recipe without the selection split (§12)
 CHECKPOINT = re.compile(r"(?P<prefix>.+)_model_n\d+_seed(?P<seed>\d+)\.pt")   # the trainer's `<prefix>_model_n<N>_seed<S>.pt`
 SELECTION = "26:0.15"
+N_SELECTION = 169                          # what the split sets aside in this search's corpus, of 18 scaffold cores
+EXCLUDED_SELECTION_CORES = ("biphenylene",)  # not scored (§13): the corpus's only four-membered ring, and the split took all of its
+N_EXCLUDED = 8                             # derivatives, so no configuration can learn it and its error is not a recipe's
+SEL_ALL, SEL_SCORED = "selall", "selscored"  # the evaluator's names for the whole selection set and the part the score is read on
+SEL_REPRODUCTION_TOL = 1e-3                # score units: a selection eval must give the trainer's own score on the whole set
+TRAINED_WITH_SPLIT, TRAINED_WHOLE = 911, 1080  # molecules a stage training and a whole-pool one train on (two hold-out twins dropped)
+PREDICTION_MOLECULE, PREDICTION_LINE = "A_72b86c2331", 4.7  # §12: biphenylene's corrected ω rms on the whole-pool models, cm⁻¹
+RERUN_CAP = 450                            # the cap §12 names for a whole-pool rerun when the cap, not the data, stopped a seed
 POOL_LAYERS = "A,A2,B,P3,P3c"
 EPOCH_CAP = 300
 CAP_MARGIN = 0.10                          # decision 51: a best epoch within 10 % of the cap means the cap, not the data, stopped it
 THREADS = "8"
 MAX_GAP_MINUTES = 120                      # the run-spec schema's ceiling; the chain runner prints progress every 30 min
 LINES = {**dict.fromkeys(P.FAMILIES, 3.0), P.RATIO: 0.25}
+SCORE_NOTE = (f"The score is read on the selection set without {', '.join(EXCLUDED_SELECTION_CORES)} ({N_SELECTION - N_EXCLUDED} of "
+              f"{N_SELECTION} molecules, §13); the registered score is the same formula on all {N_SELECTION}.")
 OUT = "out/v14"
 SPACE = {"lr": (1e-4, 1e-3), "weight_decay": (1e-5, 1e-3),
          "body_width": (64, 96, 128), "body_blocks": (3, 4), "hybrid_hidden": (128, 256, 512)}
@@ -232,10 +250,17 @@ def load_list() -> tuple[list[Config], list[str]]:
 # ------------------------------------------------------------------------------------------------------------------------------- scores
 @dataclass(frozen=True)
 class SeedRead:
+    """One seed of one training. `sel` is the trainer's read on the whole selection set (the registered score's set); `scored` holds
+    the same read-outs on the selection set without EXCLUDED_SELECTION_CORES, the set the score ranks and decides on since §13. A
+    whole-pool training has neither (it trained on the selection set)."""
     sel: dict
     per_molecule: dict
     best_epoch: int | None
     cap: int
+    scored: dict
+
+
+SCORED, REGISTERED = attrgetter("scored"), attrgetter("sel")   # the two sets a seed's read-outs exist on
 
 
 def trainer_record(pre: str) -> dict:
@@ -246,25 +271,127 @@ def trainer_record(pre: str) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+@dataclass(frozen=True)
+class SelectionSets:
+    """The selection set as a trainer record names it (`holdout_sel`) and the part of it the score is read on."""
+    all_ids: tuple[str, ...]
+    scored_ids: tuple[str, ...]
+
+
+def manifest_names() -> dict[str, str]:
+    """Every corpus id → its manifest name (a scaffold core, or `core+substituent`)."""
+    with (M05 / "corpus" / "manifest.csv").open(newline="", encoding="utf-8") as f:
+        return {r["id"]: r["name"] for r in csv.DictReader(f)}
+
+
+def selection_sets(holdout_sel: list[str], names: dict[str, str]) -> SelectionSets:
+    """The two sets of this search's split; refuses any other count than N_EXCLUDED of N_SELECTION, so that a changed corpus or split
+    cannot change the rule unseen."""
+    unnamed = [i for i in holdout_sel if i not in names]
+    if unnamed:
+        raise SystemExit(f"the selection set holds {len(unnamed)} ids without a manifest row ({', '.join(unnamed[:3])})")
+    excluded = {i for i in holdout_sel if names[i].split("+")[0] in EXCLUDED_SELECTION_CORES}
+    if (len(holdout_sel), len(set(holdout_sel)), len(excluded)) != (N_SELECTION, N_SELECTION, N_EXCLUDED):
+        raise SystemExit(f"the selection set holds {len(excluded)} molecules of {', '.join(EXCLUDED_SELECTION_CORES)} among "
+                         f"{len(holdout_sel)}; the registered rule (§13) is {N_EXCLUDED} of {N_SELECTION}")
+    return SelectionSets(tuple(holdout_sel), tuple(i for i in holdout_sel if i not in excluded))
+
+
+def ids_file(name: str) -> str:
+    return f"{OUT}/selection_{name}.ids"
+
+
+def write_ids_files(sets: SelectionSets) -> None:
+    """The two id lists the evaluator reads, written once; a list that differs from the one on disk is refused (every training of the
+    search shares one split)."""
+    for name, ids in ((SEL_ALL, sets.all_ids), (SEL_SCORED, sets.scored_ids)):
+        path, text = M05 / ids_file(name), "\n".join(ids) + "\n"
+        if not path.is_file():
+            P.write_atomic(path, text)
+        elif path.read_text(encoding="utf-8") != text:
+            raise SystemExit(f"{ids_file(name)} differs from this record's selection set — the trainings do not share one split")
+
+
+def run_evaluator(argv: list[str], log: Path) -> None:
+    """One `rungC_eval_saved.py` process in module 05, its output appended to `log`."""
+    with open(log, "a", encoding="utf-8") as fh:
+        done = subprocess.run(argv, cwd=M05, stdin=subprocess.DEVNULL, stdout=fh, stderr=subprocess.STDOUT, check=False)
+    if done.returncode != 0:
+        raise SystemExit(f"the selection eval ended with exit {done.returncode} (log {log})")
+
+
+def selection_eval_prefix(pre: str, seed: int) -> str:
+    return f"{pre}_seleval_seed{seed}"
+
+
+def make_selection_eval(pre: str, seed: int) -> None:
+    """Read one stage checkpoint on both selection sets with the evaluator the final chain uses (`--eval-ids-file`, which refuses a
+    set the model trained on). The evaluator writes under a temporary prefix; the record is moved into place last, so a record that
+    exists is a finished evaluation and a rerun of the read makes only the missing ones."""
+    out = selection_eval_prefix(pre, seed)
+    step = _eval_step(f"{pre}_model_n*_seed{seed}.pt", f"{out}.tmp", {name: ids_file(name) for name in (SEL_ALL, SEL_SCORED)})
+    command = [sys.executable if a == "{python}" else a for a in step["argv"]]
+    argv = chain_runner._resolve(command, M05)                      # the runner's own expansion of a checkpoint pattern
+    t0 = time.time()
+    run_evaluator(argv, M05 / f"{out}.log")
+    for suffix in (".md", ".json"):
+        (M05 / f"{out}.tmp{suffix}").replace(M05 / f"{out}{suffix}")
+    print(f"selection eval {Path(out).name} done in {time.time() - t0:.0f} s", flush=True)   # the read's log grows: the runner's progress
+
+
+def scored_read(pre: str, seed: int, registered: dict, sets: SelectionSets) -> dict:
+    """One seed's read-outs on the scored set, from its selection eval (made here when missing). Checked before use: the record is of
+    this checkpoint, each of its two sets holds exactly the molecules it should, and its read on the whole selection set reproduces
+    the trainer's own (`registered`) — a second route to the same number."""
+    out = selection_eval_prefix(pre, seed)
+    if not (M05 / f"{out}.json").is_file():
+        make_selection_eval(pre, seed)
+    rec = json.loads((M05 / f"{out}.json").read_text(encoding="utf-8"))
+    m = CHECKPOINT.fullmatch(Path(str(rec.get("model"))).name)
+    if m is None or (m["prefix"], int(m["seed"])) != (Path(pre).name, seed):
+        raise SystemExit(f"{out}.json evaluated {rec.get('model')}, not seed {seed} of {pre}")
+    for name, ids in ((SEL_ALL, sets.all_ids), (SEL_SCORED, sets.scored_ids)):
+        if set(rec.get(name, {}).get("per_molecule", {})) != set(ids):
+            raise SystemExit(f"{out}.json: its set {name} is not the {len(ids)} molecules of {ids_file(name)}")
+    gap = abs(score(rec[SEL_ALL]) - score(registered))
+    if gap > SEL_REPRODUCTION_TOL:
+        raise SystemExit(f"{out}.json does not reproduce the trainer's selection score on all {N_SELECTION}: {score(rec[SEL_ALL]):.4f} "
+                         f"against {score(registered):.4f} (tolerance {SEL_REPRODUCTION_TOL:g})")
+    return rec[SEL_SCORED]
+
+
 def seed_reads(pre: str) -> dict[int, SeedRead]:
-    """The selection-set read-outs of every seed in a trainer record (`<prefix>.json`, one pool size)."""
+    """Every seed of a trainer record (`<prefix>.json`, one pool size): the trainer's selection read and the read on the scored set."""
     rec = trainer_record(pre)
     if rec.get("selection_split") != SELECTION:
         raise SystemExit(f"{pre}.json was not trained with --selection-split {SELECTION}")
     (entry,) = rec["curve"].values()
-    return {s["seed"]: SeedRead(s["sel"], s["sel"].get("per_molecule", {}), s.get("best_epoch"), rec["epochs"]) for s in entry["per_seed"]}
+    sets = selection_sets(rec["holdout_sel"], manifest_names())
+    write_ids_files(sets)
+    return {s["seed"]: SeedRead(s["sel"], s["sel"].get("per_molecule", {}), s.get("best_epoch"), rec["epochs"],
+                                scored_read(pre, s["seed"], s["sel"], sets)) for s in entry["per_seed"]}
+
+
+def evaluated_checkpoint(path: Path) -> Path:
+    """The checkpoint an eval record names (`rungC_eval_saved.py`: "model", relative to module 05)."""
+    if not path.is_file():
+        raise SystemExit(f"{path.name}: no eval record — the final chain's eval step has not written it")
+    model = json.loads(path.read_text(encoding="utf-8")).get("model")
+    if not model:
+        raise SystemExit(f"{path.name} names no model")
+    return Path(model)
 
 
 def whole_pool_reads(w: Config, eval_paths: list[Path]) -> list[SeedRead]:
     """The trainings behind the winner's hold-out evals, one per seed of FINAL_SEEDS, with no selection read (they trained on that set).
-    An eval record names its checkpoint (`rungC_eval_saved.py`: "model", relative to module 05) and the trainer's record beside the
-    checkpoint names a selection split only when one was used. Refused: a checkpoint trained with a selection split — the stage
-    checkpoints never saw the selection set's scaffold cores and the carried version did, so the promotion would compare the split, not
-    the recipe (§12) — and any checkpoint other than the winner's whole-pool one of that seed."""
+    The trainer's record beside the checkpoint an eval names carries a selection split only when one was used. Refused: a checkpoint
+    trained with a selection split — the stage checkpoints never saw the selection set's scaffold cores and the carried version did,
+    so the promotion would compare the split, not the recipe (§12) — and any checkpoint other than the winner's whole-pool one of that
+    seed."""
     expected = Path(prefix(w, FULL_TAG))
     reads = []
     for seed, path in zip(FINAL_SEEDS, eval_paths, strict=True):
-        model = Path(json.loads(path.read_text(encoding="utf-8"))["model"])
+        model = evaluated_checkpoint(path)
         m = CHECKPOINT.fullmatch(model.name)
         if m is None:
             raise SystemExit(f"{path.name} names {model.as_posix()}, not a trainer checkpoint (<prefix>_model_n<N>_seed<S>.pt)")
@@ -278,7 +405,7 @@ def whole_pool_reads(w: Config, eval_paths: list[Path]) -> list[SeedRead]:
         best = {s["seed"]: s.get("best_epoch") for s in entry["per_seed"]}
         if seed not in best:
             raise SystemExit(f"{expected.as_posix()}.json holds no seed {seed}")
-        reads.append(SeedRead({}, {}, best[seed], rec["epochs"]))
+        reads.append(SeedRead({}, {}, best[seed], rec["epochs"], {}))
     return reads
 
 
@@ -348,28 +475,46 @@ def cmd_plan(carried_models: list[str]) -> int:
     return 0
 
 
+def arm(reads: list[SeedRead], read: Callable[[SeedRead], dict]) -> P.Arm:
+    """The seeds' read-outs on one of the two sets (SCORED or REGISTERED) as an arm of the no-worsening comparison."""
+    return P.arm_from_seeds([{"sel": read(r)} for r in reads], ("sel",))
+
+
+def seed_mean(reads: list[SeedRead], read: Callable[[SeedRead], dict]) -> float:
+    return sum(score(read(r)) for r in reads) / len(reads)
+
+
+def leaders(configs: list[Config], scores: dict[str, float]) -> list[Config]:
+    """The STAGE2_BEST configurations with the lowest score, the control (the list's first) aside."""
+    return sorted(configs[1:], key=lambda c: scores[c.name])[:STAGE2_BEST]
+
+
 def cmd_read1() -> int:
     configs, _ = load_list()
     ctrl = configs[0]
     reads = {c.name: stage1_seeds(c) for c in configs}
-    means = {c.name: sum(score(r.sel) for r in reads[c.name]) / len(reads[c.name]) for c in configs}
-    ctrl_arm = P.arm_from_seeds([{"sel": r.sel} for r in reads[ctrl.name]], ("sel",))
-    ranked = sorted(configs, key=lambda c: means[c.name])
+    means = {n: seed_mean(rs, SCORED) for n, rs in reads.items()}
+    registered = {n: seed_mean(rs, REGISTERED) for n, rs in reads.items()}
+    ctrl_arm = arm(reads[ctrl.name], SCORED)
     lines = [f"# v1.4 stage 1 — selection-set scores (seeds {', '.join(str(s) for s in STAGE1_SEEDS)})", "",
-             "| rank | configuration | schedule | score (seed mean) | per seed | worse than control on | best epoch / cap |",
-             "|---|---|---|---|---|---|---|"]
-    for k, c in enumerate(ranked, 1):
+             f"| rank | configuration | schedule | score (seed mean) | per seed | registered score (all {N_SELECTION}) | worse than control on "
+             "| best epoch / cap |", "|---|---|---|---|---|---|---|---|"]
+    for k, c in enumerate(sorted(configs, key=lambda c: means[c.name]), 1):
         rs = reads[c.name]
-        arm = P.arm_from_seeds([{"sel": r.sel} for r in rs], ("sel",))
-        worse = "—" if c.name == ctrl.name else ", ".join(P.promotion(P.compare(arm, ctrl_arm)).worse) or "—"
+        worse = "—" if c.name == ctrl.name else ", ".join(P.promotion(P.compare(arm(rs, SCORED), ctrl_arm)).worse) or "—"
         epochs = ", ".join(epoch_note(r, c.schedule) for r in rs)
-        per_seed = ", ".join(f"{score(r.sel):.3f}" for r in rs)
-        lines.append(f"| {k} | {c.name} | {c.schedule} | {means[c.name]:.3f} | {per_seed} | {worse} | {epochs} / {rs[0].cap} |")
-    best = [c for c in ranked if c.name != ctrl.name][:STAGE2_BEST]
-    lines += ["", f"Stage 2: {', '.join(c.name for c in best)} and the control, seed {STAGE2_SEED}. Two seeds: the no-worsening column "
-              "informs, stage 2 decides on three."]
-    _write_report("read1", lines, {"scores": means, "seed_scores": {n: [score(r.sel) for r in rs] for n, rs in reads.items()},
-                                   "stage2": [c.name for c in best]})
+        per_seed = ", ".join(f"{score(r.scored):.3f}" for r in rs)
+        lines.append(f"| {k} | {c.name} | {c.schedule} | {means[c.name]:.3f} | {per_seed} | {registered[c.name]:.3f} | {worse} | "
+                     f"{epochs} / {rs[0].cap} |")
+    best, best_registered = leaders(configs, means), leaders(configs, registered)
+    names, names_registered = [c.name for c in best], [c.name for c in best_registered]
+    lines += ["", f"Stage 2: {', '.join(names)} and the control, seed {STAGE2_SEED}. Two seeds: the no-worsening column "
+              "informs, stage 2 decides on three.", "",
+              SCORE_NOTE + (" It sends the same configurations to stage 2, in the same order." if names == names_registered
+                            else f" **It would send other configurations to stage 2: {', '.join(names_registered)}.**")]
+    _write_report("read1", lines, {"scores": means, "registered_scores": registered,
+                                   "seed_scores": {n: [score(r.scored) for r in rs] for n, rs in reads.items()},
+                                   "stage2": names, "stage2_registered": names_registered})
     steps = [train_step(c, "s2", str(STAGE2_SEED)) for c in [ctrl, *best]] + [read_step("read2")]
     about = f"v1.4 stage 2: the best four of stage 1 and the control, seed {STAGE2_SEED}, then read2"
     write_new(PLAN / "probes" / "runs" / "v14_stage2.json", chain("V14S2", about, steps, [f"{M05_REL}/{OUT}/read2.json"]))
@@ -417,39 +562,52 @@ def winner(cands: list[Stage2], ctrl: Stage2) -> tuple[str, str]:
     return ctrl.name, f"the best eligible ({w.name}) beats the control by {gap:.3f}, not beyond two combined SE {needed:.3f}; the control stays"
 
 
+def stage2_rows(arms: dict[str, list[SeedRead]], by_name: dict[str, Config], ctrl_name: str,
+                read: Callable[[SeedRead], dict]) -> dict[str, Stage2]:
+    """Every arm's three seeds against the control's, on one of the two sets (SCORED or REGISTERED)."""
+    ctrl_arm = arm(arms[ctrl_name], read)
+    return {n: Stage2(n, tuple(score(read(r)) for r in rs),
+                      P.promotion(P.compare(arm(rs, read), ctrl_arm)).worse if n != ctrl_name else (),
+                      any(at_cap(r, by_name[n].schedule) for r in rs)) for n, rs in arms.items()}
+
+
 def cmd_read2() -> int:
     configs, carried_models = load_list()
     chosen = json.loads((M05 / OUT / "read1.json").read_text(encoding="utf-8"))["stage2"]
     ctrl = configs[0]
     by_name = {c.name: c for c in configs}
     arms = {n: three_seeds(by_name[n]) for n in [ctrl.name, *chosen]}
-    ctrl_arm = P.arm_from_seeds([{"sel": r.sel} for r in arms[ctrl.name]], ("sel",))
-    rows = {}
-    for n, rs in arms.items():
-        arm = P.arm_from_seeds([{"sel": r.sel} for r in rs], ("sel",))
-        rows[n] = Stage2(n, tuple(score(r.sel) for r in rs), P.promotion(P.compare(arm, ctrl_arm)).worse if n != ctrl.name else (),
-                         any(at_cap(r, by_name[n].schedule) for r in rs))
+    rows, rows_registered = stage2_rows(arms, by_name, ctrl.name, SCORED), stage2_rows(arms, by_name, ctrl.name, REGISTERED)
     name, reason = winner([rows[n] for n in chosen], rows[ctrl.name])
+    name_registered, _ = winner([rows_registered[n] for n in chosen], rows_registered[ctrl.name])
     if rows[name].at_cap:
         raise SystemExit(f"{name}: a best epoch within {CAP_MARGIN:.0%} of the cap — rerun it at a higher cap before it can win (decision 51)")
     lines = ["# v1.4 stage 2 — three seeds on the selection set", "",
-             f"| configuration | score (mean ± SE) | seed {STAGE2_SEED} alone | worse than control on | best epochs |", "|---|---|---|---|---|"]
-    lines += [f"| {r.name} | {r.mean:.3f} ± {r.se:.3f} | {r.scores[-1]:.3f} | {', '.join(r.worse) or '—'} | "
+             f"| configuration | score (mean ± SE) | seed {STAGE2_SEED} alone | registered score, all {N_SELECTION} (mean ± SE) "
+             "| worse than control on | best epochs |", "|---|---|---|---|---|---|"]
+    lines += [f"| {r.name} | {r.mean:.3f} ± {r.se:.3f} | {r.scores[-1]:.3f} | {rows_registered[r.name].mean:.3f} ± "
+              f"{rows_registered[r.name].se:.3f} | {', '.join(r.worse) or '—'} | "
               f"{', '.join(epoch_note(x, by_name[r.name].schedule) for x in arms[r.name])} |" for r in rows.values()]
     lines += ["", f"**Winner: {name}** — {reason}.", "",
+              SCORE_NOTE + (" It gives the same winner." if name == name_registered
+                            else f" **It would give another winner: {name_registered}.**"), "",
               f"Two of a candidate's three seeds are the ones stage 1 chose it on, and the control was not chosen: the mean flatters a "
               f"candidate. Seed {STAGE2_SEED} alone is the unselected comparison, and the hold-out promotion of read3 is the guard.", "",
               cation_line(arms[name])]
-    _write_report("read2", lines, {"winner": name, "reason": reason, "rows": {n: asdict(r) for n, r in rows.items()}})
+    _write_report("read2", lines, {"winner": name, "reason": reason, "winner_registered": name_registered,
+                                   "rows": {n: asdict(r) for n, r in rows.items()},
+                                   "rows_registered": {n: asdict(r) for n, r in rows_registered.items()}})
     _write_final_chain(by_name[name], carried_models)
     print("\n".join(lines))
     return 0
 
 
-def _eval_step(model: str, out: str) -> dict:
+def _eval_step(model: str, out: str, sets: dict[str, str] | None = None) -> dict:
+    """One evaluator command; `sets` ({name: id file}) adds explicit test sets beside the two hold-outs."""
+    extra = [x for name, file in (sets or {}).items() for x in ("--eval-ids-file", f"{name}={file}")]
     return {"kind": "cmd", "label": f"eval {Path(out).name}", "cwd": M05_REL, "log": f"{M05_REL}/{out}.log",
             "glob_args": True, "argv": ["{python}", "../../probes/rungC_eval_saved.py", model, out, "--use-analytic", "--threads", THREADS,
-                                        "--allow-any-model", "--holdout-b-file", chain_runner.HOLDOUT_B]}
+                                        "--allow-any-model", "--holdout-b-file", chain_runner.HOLDOUT_B, *extra]}
 
 
 def winner_models(w: Config) -> list[str]:
@@ -471,39 +629,79 @@ def _write_final_chain(w: Config, carried_models: list[str]) -> None:
     write_new(PLAN / "probes" / "runs" / "v14_final.json", chain("V14F", about, steps, [f"{M05_REL}/{OUT}/read3.json"]))
     write_new(PLAN / "probes" / "runspecs" / "v14_final.json",
               runspec("v14_final", "V14F", "v1.4 final: target check, whole-pool retraining, hold-out reads, promotion",
-                      2 * len(FINAL_SEEDS) * HOURS[w.schedule] + 1.0,
-                      "six trainings at the winner's schedule (three with the other target, three on the whole pool), six evals ≈ 20 min"))
+                      len(FINAL_SEEDS) * HOURS[w.schedule] * (1 + TRAINED_WHOLE / TRAINED_WITH_SPLIT) + 1.0,
+                      f"six trainings at the winner's schedule: three with the other target, three on the whole pool at "
+                      f"{TRAINED_WHOLE}/{TRAINED_WITH_SPLIT} of that time; six hold-out evals ≈ 20 min and three selection evals"))
+
+
+def prediction_read(winner_evals: list[Path], carried_evals: list[Path]) -> tuple[str, dict]:
+    """§12's prediction as one report line and a record: the prediction molecule's corrected ω rms on hold-out (a), per seed and the
+    mean, for the whole-pool winner and the carried version; PASS when the winner's mean is at most PREDICTION_LINE."""
+    def per_seed(paths: list[Path]) -> list[float]:
+        out = []
+        for p in paths:
+            molecule = json.loads(p.read_text(encoding="utf-8")).get("a", {}).get("per_molecule", {}).get(PREDICTION_MOLECULE, {})
+            if molecule.get("corrected_freq_rms") is None:
+                raise SystemExit(f"{p.name}: no corrected_freq_rms of {PREDICTION_MOLECULE} on hold-out (a)")
+            out.append(molecule["corrected_freq_rms"])
+        return out
+    new, old = per_seed(winner_evals), per_seed(carried_evals)
+    mean_new, mean_old = sum(new) / len(new), sum(old) / len(old)
+    passed = mean_new <= PREDICTION_LINE
+
+    def shown(values: list[float], mean: float) -> str:
+        return f"{', '.join(f'{v:.2f}' for v in values)} (mean {mean:.2f})"
+    line = (f"§12's prediction — biphenylene ({PREDICTION_MOLECULE}) on hold-out (a), corrected ω rms in cm⁻¹ per seed: winner "
+            f"{shown(new, mean_new)}, carried {shown(old, mean_old)}; the winner's mean at most {PREDICTION_LINE:g}: "
+            + ("**PASS**." if passed else "**FAIL** — the promotion is read as it is; the cause named in §12 is not the whole story and "
+               "is looked at before any further amendment."))
+    return line, {"molecule": PREDICTION_MOLECULE, "winner": new, "carried": old, "line": PREDICTION_LINE, "passed": passed}
+
+
+def target_lines(w: Config, other: Config, check: P.Promotion, registered: P.Promotion) -> list[str]:
+    """The target check on the scored set, which decides, and beside it on the registered set (all of the selection set)."""
+    def sides(c: P.Promotion) -> str:
+        return f"better on {', '.join(c.better) or 'none'}, worse on {', '.join(c.worse) or 'none'}"
+    if not check.better and not check.worse:
+        verdict = "**better on no read-out and worse on none — the target choice stands**"
+    else:
+        verdict = sides(check) + (" — **the other target passes the no-worsening rule: the choice goes to the user**" if check.promoted
+                                  else " — the choice stands")
+    return [f"Winner {w.name} ({w.target}); the other target ({other.target}) on the selection set without "
+            f"{', '.join(EXCLUDED_SELECTION_CORES)} (§13): {verdict}", "",
+            f"On the registered set (all {N_SELECTION}): {sides(registered)} — "
+            + ("the same decision." if check.promoted == registered.promoted else "**the other decision.**")]
 
 
 def cmd_read3() -> int:
     configs = {c.name: c for c in load_list()[0]}
     w = configs[json.loads((M05 / OUT / "read2.json").read_text(encoding="utf-8"))["winner"]]
     other = replace(w, target=next(t for t in TARGETS if t != w.target))
-    w_arm = P.arm_from_seeds([{"sel": r.sel} for r in three_seeds(w)], ("sel",))
-    o_reads = seed_reads(prefix(other, "s3other"))
-    o_arm = P.arm_from_seeds([{"sel": o_reads[s].sel} for s in FINAL_SEEDS], ("sel",))
-    target_check = P.promotion(P.compare(o_arm, w_arm))
+    w_reads, o_by_seed = three_seeds(w), seed_reads(prefix(other, "s3other"))
+    o_reads = [o_by_seed[s] for s in FINAL_SEEDS]
+    target_check = P.promotion(P.compare(arm(o_reads, SCORED), arm(w_reads, SCORED)))
+    target_registered = P.promotion(P.compare(arm(o_reads, REGISTERED), arm(w_reads, REGISTERED)))
     evals = [M05 / f"{OUT}/eval_{who}_seed{s}.json" for who in ("winner", "carried") for s in FINAL_SEEDS]
     full = whole_pool_reads(w, evals[:3])
     if any(at_cap(r, w.schedule) for r in full):
-        raise SystemExit(f"{w.name} on the whole pool: a best epoch within {CAP_MARGIN:.0%} of the cap — rerun it at a higher cap before "
-                         "it can be promoted (decision 51)")
+        raise SystemExit(f"{w.name} on the whole pool: a best epoch within {CAP_MARGIN:.0%} of the cap of {EPOCH_CAP} — no promotion is "
+                         f"read from it (decision 51). The way out (§12): a recorded amendment and a whole-pool rerun of the same recipe "
+                         f"at a higher cap ({RERUN_CAP} epochs), nothing else changed")
     new, carried = P.load_eval_arm(evals[:3]), P.load_eval_arm(evals[3:])
     comps = P.compare(new, carried)
     promo = P.promotion(comps)
-    lines = ["# v1.4 final read", "", f"Winner {w.name} ({w.target}); the other target ({other.target}) on the selection set: "
-             + ("**better on no read-out and worse on none — the target choice stands**" if not target_check.better and not target_check.worse
-                else f"better on {', '.join(target_check.better) or 'none'}, worse on {', '.join(target_check.worse) or 'none'}"
-                + (" — **the other target passes the no-worsening rule: the choice goes to the user**" if target_check.promoted else " — the choice stands")),
+    prediction_line, prediction = prediction_read(evals[:3], evals[3:])
+    lines = ["# v1.4 final read", "", *target_lines(w, other, target_check, target_registered),
              "", f"The winner's models below are {w.name} retrained on the whole pool, selection set included (seeds "
              f"{', '.join(str(s) for s in FINAL_SEEDS)}; best epochs {', '.join(epoch_note(r, w.schedule) for r in full)} / {full[0].cap}): "
              "the selection split had taken every derivative of biphenylene, a hold-out (a) molecule, out of the training pool, and the "
              "carried version trained on seven of them (§12). Their selection-set scores are not shown: they trained on that set.",
              "", *P.comparison_table(new, carried, comps, "v1.4 winner", "carried"), "",
              f"**Promotion: {'carried as version 1.4' if promo.promoted else 'not promoted'}** — worse on {', '.join(promo.worse) or 'none'}, "
-             f"better on {len(promo.better)} of {len(comps)} (decision 57, the user's rule of 26 Oct)."]
+             f"better on {len(promo.better)} of {len(comps)} (decision 57, the user's rule of 26 Oct).", "", prediction_line]
     _write_report("read3", lines, {"winner": w.name, "winner_trained_on": "whole pool", "winner_best_epochs": [r.best_epoch for r in full],
-                                   "target_check": asdict(target_check), "promotion": asdict(promo),
+                                   "target_check": asdict(target_check), "target_check_registered": asdict(target_registered),
+                                   "promotion": asdict(promo), "prediction": prediction,
                                    "comparisons": [asdict(c) for c in comps]})
     print("\n".join(lines))
     return 0

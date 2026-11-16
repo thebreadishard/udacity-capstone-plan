@@ -1,6 +1,7 @@
 """probes/v14_search.py on synthetic records: the frozen list (deterministic, in range, every configuration a valid trainer command), the
 plan's refusals, the score, the winner rule (no-worsening, two SE, the cap), plan → read1 → read2 → read3 end to end, the final chain's
-whole-pool retraining of the winner with read3's refusals, and the frozen stage-1 chain reproduced from the frozen list."""
+whole-pool retraining of the winner with read3's refusals, the score on the selection set without the excluded core (the
+evaluator stubbed), and the frozen stage-1 chain reproduced from the frozen list."""
 import collections
 import json
 import sys
@@ -24,17 +25,65 @@ FROZEN_LIST = PLAN / "modules" / "05_support_predictor" / V.OUT / "configs.json"
 FINAL_SEEDS = "0,1,2"
 
 
-@pytest.fixture
-def sandbox(tmp_path, monkeypatch):
-    """Module 05 and the plan's probes folder inside tmp_path, with the carried checkpoints present."""
-    monkeypatch.setattr(V, "M05", tmp_path / "m05")
-    monkeypatch.setattr(V, "PLAN", tmp_path)
-    (tmp_path / "m05" / V.OUT).mkdir(parents=True)
+BIPHENYLENES = [f"A2_bph{k}" for k in range(8)]
+SEL_IDS = [f"A2_sel{k:03d}" for k in range(161)] + BIPHENYLENES                    # the search's selection set: 169, 8 of the excluded core
+NAMES = {"A_72b86c2331": "biphenylene", **{i: "pyrene+F" for i in SEL_IDS[:158]}, **{i: "fluoranthene+F" for i in SEL_IDS[158:161]},
+         **{i: f"biphenylene+X{k}" for k, i in enumerate(BIPHENYLENES)}}
+
+
+class FakeEvaluator:
+    """Stands in for `V.run_evaluator`: writes the record `rungC_eval_saved.py` would write for the command, with the trainer's own
+    selection read on the whole set. `gain[configuration name]` lowers that configuration's read-outs on the scored set, as if the
+    excluded core had carried that much of its error; `all_shift` makes the whole-set read differ from the trainer's."""
+
+    def __init__(self) -> None:
+        self.calls: list[list[str]] = []
+        self.gain: dict[str, float] = {}
+        self.all_shift = 0.0
+
+    def __call__(self, argv: list[str], log: Path) -> None:
+        self.calls.append(argv)
+        model, out = argv[2], argv[3]
+        files = dict(a.split("=") for k, a in enumerate(argv) if argv[k - 1] == "--eval-ids-file")
+        m = V.CHECKPOINT.fullmatch(Path(model).name)
+        (entry,) = json.loads((V.M05 / Path(model).parent / f"{m['prefix']}.json").read_text(encoding="utf-8"))["curve"].values()
+        sel = next(s["sel"] for s in entry["per_seed"] if s["seed"] == int(m["seed"]))
+        gain = next((g for name, g in self.gain.items() if m["prefix"].endswith(name)), 0.0)
+
+        def read(name: str, shift: float) -> dict:
+            ids = (V.M05 / files[name]).read_text(encoding="utf-8").split()
+            return {"diag_rms": {f: v - shift for f, v in sel["diag_rms"].items()}, P.RATIO: sel[P.RATIO] - shift / 30,
+                    "per_molecule": {i: {"corrected_freq_rms": 2.0} for i in ids}, "dropped": [], "file": files[name]}
+        rec = {"model": model, V.SEL_ALL: read(V.SEL_ALL, self.all_shift), V.SEL_SCORED: read(V.SEL_SCORED, gain)}
+        (V.M05 / f"{out}.json").write_text(json.dumps(rec), encoding="utf-8")
+        (V.M05 / f"{out}.md").write_text("# a saved model read\n", encoding="utf-8")
+
+
+def make_module(root: Path, monkeypatch) -> list[str]:
+    """Module 05 and the plan's probes folder inside `root`: the manifest, the carried checkpoints (returned)."""
+    monkeypatch.setattr(V, "M05", root / "m05")
+    monkeypatch.setattr(V, "PLAN", root)
+    (root / "m05" / V.OUT).mkdir(parents=True)
+    (root / "m05" / "corpus").mkdir()
+    (root / "m05" / "corpus" / "manifest.csv").write_text("id,layer,name\n" + "".join(f"{i},A2,{n}\n" for i, n in NAMES.items()),
+                                                         encoding="utf-8")
     carried = [f"out/carried_seed{s}.pt" for s in range(3)]
     for c in carried:
-        (tmp_path / "m05" / c).parent.mkdir(parents=True, exist_ok=True)
-        (tmp_path / "m05" / c).write_bytes(b"x")
-    return tmp_path, carried
+        (root / "m05" / c).write_bytes(b"x")
+    return carried
+
+
+@pytest.fixture
+def evaluator(monkeypatch):
+    fake = FakeEvaluator()
+    monkeypatch.setattr(V, "run_evaluator", fake)
+    return fake
+
+
+@pytest.fixture
+def sandbox(tmp_path, monkeypatch, evaluator):
+    """Module 05 and the plan's probes folder inside tmp_path, with the carried checkpoints present and the evaluator stubbed."""
+    return tmp_path, make_module(tmp_path, monkeypatch)
 
 
 def test_the_list_is_frozen_in_range_and_holds_both_variants():
@@ -102,8 +151,8 @@ def test_score_is_one_on_the_lines():
 
 
 def test_the_cap_rule_is_the_constant_rates_only():
-    late = V.SeedRead({}, {}, best_epoch=V.EPOCH_CAP - 1, cap=V.EPOCH_CAP)
-    early = V.SeedRead({}, {}, best_epoch=100, cap=V.EPOCH_CAP)
+    late = V.SeedRead({}, {}, best_epoch=V.EPOCH_CAP - 1, cap=V.EPOCH_CAP, scored={})
+    early = V.SeedRead({}, {}, best_epoch=100, cap=V.EPOCH_CAP, scored={})
     assert V.at_cap(late, "constant") and not V.at_cap(early, "constant")
     assert not V.at_cap(late, "cosine")                        # the cosine ends at the cap by construction
     assert V.epoch_note(late, "constant").endswith("AT CAP") and V.epoch_note(late, "cosine").endswith("LATE")
@@ -150,17 +199,23 @@ def sel_read(shift: float) -> dict:
 
 
 def write_record(root: Path, pre: str, seeds: dict[int, float], best_epoch: int = 100, split: bool = True) -> None:
-    """A trainer record as `rungC_train.py` writes it: the selection split and the selection read only when the split was used."""
+    """A trainer record as `rungC_train.py` writes it, with its checkpoints: the selection split, the selection set and the selection
+    read only when the split was used."""
     per_seed = [{"seed": s, "best_epoch": best_epoch, **({"sel": sel_read(sh)} if split else {})} for s, sh in seeds.items()]
-    rec = {**({"selection_split": V.SELECTION} if split else {}), "epochs": V.EPOCH_CAP, "curve": {"1000": {"per_seed": per_seed}}}
+    rec = {**({"selection_split": V.SELECTION, "holdout_sel": SEL_IDS} if split else {}), "epochs": V.EPOCH_CAP,
+           "curve": {"1000": {"per_seed": per_seed}}}
     (root / "m05" / f"{pre}.json").write_text(json.dumps(rec), encoding="utf-8")
+    for s in seeds:
+        (root / "m05" / f"{pre}_model_n{913 if split else 1082}_seed{s}.pt").write_bytes(b"x")
 
 
-def write_eval(root: Path, name: str, shift: float, seed: int, model: str) -> None:
-    """An eval record as `rungC_eval_saved.py` writes it: `model` is the checkpoint it read, relative to module 05."""
+def write_eval(root: Path, name: str, shift: float, seed: int, model: str | None, biphenylene: float = 2.0) -> None:
+    """An eval record as `rungC_eval_saved.py` writes it: `model` is the checkpoint it read, relative to module 05 (None: no such
+    key), and every hold-out read carries its per-molecule read-outs."""
     fam = {f: 3.0 - shift + 0.01 * seed for f in P.FAMILIES}
-    rec = {"model": model, "holdout_b_file": "corpus/" + P.FROZEN_B, "substituted_analytic": ["m1"],
-           **{h: {"diag_rms": fam, P.RATIO: 0.2 - shift / 30 + 0.001 * seed} for h in ("a", "b")}}
+    per_molecule = {V.PREDICTION_MOLECULE: {"corrected_freq_rms": biphenylene}}
+    rec = {**({"model": model} if model else {}), "holdout_b_file": "corpus/" + P.FROZEN_B, "substituted_analytic": ["m1"],
+           **{h: {"diag_rms": fam, P.RATIO: 0.2 - shift / 30 + 0.001 * seed, "per_molecule": per_molecule} for h in ("a", "b")}}
     (root / "m05" / V.OUT / f"eval_{name}_seed{seed}.json").write_text(json.dumps(rec), encoding="utf-8")
 
 
@@ -172,7 +227,7 @@ def assert_final_chain(root: Path, w: V.Config, other: V.Config, carried: list[s
     """The final chain and its run spec as read2 wrote them: the other target with the split, the winner on the whole pool, six evals."""
     spec = RUNSPEC.RunSpec.model_validate_json((root / "probes" / "runspecs" / "v14_final.json").read_text(encoding="utf-8"))
     final = json.loads((root / "probes" / "runs" / "v14_final.json").read_text(encoding="utf-8"))
-    assert spec.estimate.hours == 6 * V.HOURS[w.schedule] + 1.0                     # six trainings and the evals
+    assert spec.estimate.hours == pytest.approx(3 * V.HOURS[w.schedule] * (1 + 1080 / 911) + 1.0)   # the whole pool is 18.6 % larger
     assert spec.progress.max_gap_minutes == V.MAX_GAP_MINUTES and spec.memory.peak_gb == 7.7
     assert [s["label"].split(" (")[0] for s in final["steps"]] == [
         f"train {w.name}", f"train {w.name}", *(f"eval eval_{who}_seed{s}" for who in ("winner", "carried") for s in range(3)), "v1.4 search read3"]
@@ -188,6 +243,16 @@ def assert_final_chain(root: Path, w: V.Config, other: V.Config, carried: list[s
     assert [s["argv"][2:4] for s in final["steps"][2:5]] == [
         [f"{V.OUT}/E7_rungC_v14s3full_{w.name}_model_n*_seed{s}.pt", f"{V.OUT}/eval_winner_seed{s}"] for s in range(3)]
     assert [s["argv"][2] for s in final["steps"][5:8]] == carried
+
+
+def assert_both_scores_agree(root: Path, chosen: list[str]) -> None:
+    """read1 and read2 where the stubbed evaluator gives the scored set the registered read-outs: both scores printed, one decision."""
+    read1, read2 = (json.loads((root / "m05" / V.OUT / f"{name}.json").read_text(encoding="utf-8")) for name in ("read1", "read2"))
+    report1, report2 = ((root / "m05" / V.OUT / f"{name}.md").read_text(encoding="utf-8") for name in ("read1", "read2"))
+    assert read1["stage2_registered"] == chosen and read1["scores"] == pytest.approx(read1["registered_scores"])
+    assert "It sends the same configurations to stage 2, in the same order." in report1
+    assert read2["winner"] == read2["winner_registered"] and read2["rows"] == read2["rows_registered"]
+    assert "all 169 (mean ± SE)" in report2 and "It gives the same winner." in report2
 
 
 def test_plan_to_read3_end_to_end(sandbox):
@@ -220,6 +285,7 @@ def test_plan_to_read3_end_to_end(sandbox):
     V.cmd_read2()
     best = json.loads((root / "m05" / V.OUT / "read2.json").read_text(encoding="utf-8"))["winner"]
     assert best == chosen[0]
+    assert_both_scores_agree(root, chosen)
     w = next(c for c in configs if c.name == best)
     other = V.replace(w, target=next(t for t in V.TARGETS if t != w.target))
     assert_final_chain(root, w, other, carried)
@@ -239,7 +305,8 @@ def test_plan_to_read3_end_to_end(sandbox):
     assert rec["promotion"]["promoted"] and rec["target_check"]["promoted"]          # the other target is better: the choice goes to the user
     assert rec["winner_trained_on"] == "whole pool" and rec["winner_best_epochs"] == [100, 100, 100]
     report = (root / "m05" / V.OUT / "read3.md").read_text(encoding="utf-8")
-    assert "the choice goes to the user" in report
+    assert "the choice goes to the user" in report and "On the registered set (all 169):" in report and "the same decision." in report \
+        and rec["target_check"] == rec["target_check_registered"] and rec["prediction"]["passed"]
     (retrained,) = [line for line in report.splitlines() if "retrained on the whole pool" in line]
     assert "selection-set scores are not shown" in retrained and "biphenylene" in retrained
 
@@ -297,23 +364,139 @@ def test_read3_refuses_winner_evals_of_any_other_checkpoint(sandbox):
     write_eval(root, "winner", 0.5, 1, f"{V.prefix(w, 's1b')}_model_n913_seed1.pt")  # one stage checkpoint among whole-pool ones
     with pytest.raises(SystemExit, match="trained with --selection-split"):
         V.cmd_read3()
+    write_eval(root, "winner", 0.5, 1, None)                                        # a record without its model
+    with pytest.raises(SystemExit, match="names no model"):
+        V.cmd_read3()
+    (root / "m05" / V.OUT / "eval_winner_seed1.json").unlink()                      # the eval step has not run
+    with pytest.raises(SystemExit, match="no eval record"):
+        V.cmd_read3()
 
 
 def test_read3_applies_the_cap_rule_to_the_whole_pool_trainings(sandbox, tmp_path_factory, monkeypatch):
     root, carried = sandbox
     at_read3(root, carried, winner_index=0, full_epoch=V.EPOCH_CAP)                 # the control: a constant rate, stopped by the cap
-    with pytest.raises(SystemExit, match="within 10% of the cap"):
+    with pytest.raises(SystemExit, match="within 10% of the cap") as refusal:
         V.cmd_read3()
+    assert "The way out" in str(refusal.value) and f"{V.RERUN_CAP} epochs" in str(refusal.value)
     other_root = tmp_path_factory.mktemp("cosine")                                  # c03: the cosine ends at the cap by construction
-    monkeypatch.setattr(V, "M05", other_root / "m05")
-    monkeypatch.setattr(V, "PLAN", other_root)
-    for c in carried:
-        (other_root / "m05" / c).parent.mkdir(parents=True, exist_ok=True)
-        (other_root / "m05" / c).write_bytes(b"x")
+    carried = make_module(other_root, monkeypatch)
     w = at_read3(other_root, carried, winner_index=3, full_epoch=V.EPOCH_CAP)
     assert w.schedule == "cosine"
     V.cmd_read3()
     assert f"{V.EPOCH_CAP} LATE" in (other_root / "m05" / V.OUT / "read3.md").read_text(encoding="utf-8")
+
+
+def test_read3_reads_the_prediction_on_biphenylene(sandbox):
+    root, carried = sandbox
+    w = at_read3(root, carried, winner_index=0)
+    V.cmd_read3()
+    rec = json.loads((root / "m05" / V.OUT / "read3.json").read_text(encoding="utf-8"))
+    assert rec["prediction"] == {"molecule": "A_72b86c2331", "winner": [2.0] * 3, "carried": [2.0] * 3, "line": 4.7, "passed": True}
+    assert "**PASS**" in (root / "m05" / V.OUT / "read3.md").read_text(encoding="utf-8")
+    for s in range(3):
+        write_eval(root, "winner", 0.5, s, full_checkpoint(w, s), biphenylene=6.0 + s)
+    V.cmd_read3()
+    rec = json.loads((root / "m05" / V.OUT / "read3.json").read_text(encoding="utf-8"))
+    report = (root / "m05" / V.OUT / "read3.md").read_text(encoding="utf-8")
+    assert not rec["prediction"]["passed"] and rec["promotion"]["promoted"]         # a failed prediction leaves the promotion as read
+    assert "winner 6.00, 7.00, 8.00 (mean 7.00), carried 2.00, 2.00, 2.00 (mean 2.00)" in report and "**FAIL**" in report
+    rec_path = root / "m05" / V.OUT / "eval_carried_seed1.json"
+    stripped = json.loads(rec_path.read_text(encoding="utf-8"))
+    del stripped["a"]["per_molecule"]
+    rec_path.write_text(json.dumps(stripped), encoding="utf-8")
+    with pytest.raises(SystemExit, match="no corrected_freq_rms of A_72b86c2331"):
+        V.cmd_read3()
+
+
+def test_the_excluded_core_is_eight_of_the_selection_set():
+    sets = V.selection_sets(SEL_IDS, NAMES)
+    assert sets.all_ids == tuple(SEL_IDS) and sets.scored_ids == tuple(SEL_IDS[:161])
+    assert len(sets.scored_ids) == V.N_SELECTION - V.N_EXCLUDED == 161
+    assert sum(NAMES[i].startswith("fluoranthene") for i in sets.scored_ids) == 3   # only the named core leaves the score
+    with pytest.raises(SystemExit, match="7 molecules of biphenylene among 168"):
+        V.selection_sets(SEL_IDS[:-1], NAMES)                                       # another split
+    with pytest.raises(SystemExit, match="9 molecules of biphenylene among 169"):
+        V.selection_sets(SEL_IDS, {**NAMES, SEL_IDS[0]: "biphenylene+F"})           # another corpus
+    with pytest.raises(SystemExit, match="8 molecules of biphenylene among 170"):
+        V.selection_sets([*SEL_IDS, SEL_IDS[0]], NAMES)                             # an id twice
+    with pytest.raises(SystemExit, match="without a manifest row"):
+        V.selection_sets(SEL_IDS, {i: n for i, n in NAMES.items() if i != SEL_IDS[5]})
+
+
+def test_a_selection_eval_is_made_once_checked_and_reused(sandbox, evaluator, monkeypatch):
+    root, carried = sandbox
+    V.cmd_plan(carried)
+    pre = V.prefix(V.load_list()[0][0], "s1a")
+    write_record(root, pre, {0: 0.1})
+    first = V.seed_reads(pre)
+    (argv,) = evaluator.calls
+    assert argv[0] == sys.executable and argv[2:4] == [f"{pre}_model_n913_seed0.pt", f"{pre}_seleval_seed0.tmp"]
+    assert [a for k, a in enumerate(argv) if argv[k - 1] == "--eval-ids-file"] == [
+        f"{name}={V.OUT}/selection_{name}.ids" for name in (V.SEL_ALL, V.SEL_SCORED)]
+    assert [len((root / "m05" / V.ids_file(name)).read_text(encoding="utf-8").split()) for name in (V.SEL_ALL, V.SEL_SCORED)] == [169, 161]
+    record = root / "m05" / f"{pre}_seleval_seed0.json"
+    assert record.is_file() and record.with_suffix(".md").is_file() and not list(record.parent.glob("*.tmp.*"))
+    assert first[0].scored == json.loads(record.read_text(encoding="utf-8"))[V.SEL_SCORED] and first[0].sel == sel_read(0.1)
+    assert V.seed_reads(pre) == first and len(evaluator.calls) == 1                 # the record is reused
+    good = json.loads(record.read_text(encoding="utf-8"))
+    off = {**good, V.SEL_ALL: {**good[V.SEL_ALL], P.RATIO: good[V.SEL_ALL][P.RATIO] + 0.01}}
+    for bad, reason in ((off, "does not reproduce the trainer's selection score"),
+                        ({**good, "model": f"{pre}_model_n913_seed1.pt"}, "not seed 0 of"),
+                        ({**good, V.SEL_SCORED: good[V.SEL_ALL]}, f"its set {V.SEL_SCORED} is not the 161 molecules")):
+        record.write_text(json.dumps(bad), encoding="utf-8")
+        with pytest.raises(SystemExit, match=reason):
+            V.seed_reads(pre)
+    record.unlink()
+
+    def failing(argv: list[str], log: Path) -> None:
+        (root / "m05" / f"{argv[3]}.md").write_text("half a report", encoding="utf-8")
+        raise SystemExit("the selection eval ended with exit 1")
+    monkeypatch.setattr(V, "run_evaluator", failing)
+    with pytest.raises(SystemExit, match="exit 1"):
+        V.seed_reads(pre)
+    assert not record.exists()                                                      # a failed evaluation leaves no record to reuse
+    monkeypatch.setattr(V, "run_evaluator", evaluator)
+    assert V.seed_reads(pre) == first and len(evaluator.calls) == 2                 # the next read makes it
+
+
+def test_another_selection_set_in_a_record_is_refused(sandbox):
+    root, carried = sandbox
+    V.cmd_plan(carried)
+    a, b = (V.prefix(c, "s1a") for c in V.load_list()[0][:2])
+    write_record(root, a, {0: 0.1})
+    write_record(root, b, {0: 0.1})
+    V.seed_reads(a)
+    rec = json.loads((root / "m05" / f"{b}.json").read_text(encoding="utf-8"))
+    rec["holdout_sel"] = rec["holdout_sel"][::-1]
+    (root / "m05" / f"{b}.json").write_text(json.dumps(rec), encoding="utf-8")
+    with pytest.raises(SystemExit, match="do not share one split"):
+        V.seed_reads(b)
+
+
+def test_read1_ranks_on_the_scored_set_and_prints_the_registered_score(sandbox, evaluator):
+    root, carried = sandbox
+    V.cmd_plan(carried)
+    configs, _ = V.load_list()
+    shift = {c.name: 0.05 * k for k, c in enumerate(configs)}                       # the registered score: the later, the better
+    lifted = configs[4].name                                                        # far from the registered leaders
+    evaluator.gain = {lifted: 1.5}                                                  # … and the best once the excluded core is out
+    for c in configs:
+        write_record(root, V.prefix(c, "s1a"), {0: shift[c.name]})
+        write_record(root, V.prefix(c, "s1b"), {1: shift[c.name]})
+    V.cmd_read1()
+    rec = json.loads((root / "m05" / V.OUT / "read1.json").read_text(encoding="utf-8"))
+    registered_leaders = [c.name for c in configs[::-1][:V.STAGE2_BEST]]
+    assert rec["stage2_registered"] == registered_leaders and rec["stage2"] == [lifted, *registered_leaders[:-1]]
+    assert rec["scores"][lifted] < rec["registered_scores"][lifted] - 0.4
+    assert all(rec["scores"][n] == pytest.approx(v) for n, v in rec["registered_scores"].items() if n != lifted)
+    assert rec["registered_scores"][lifted] == pytest.approx(V.score(sel_read(shift[lifted])))
+    report = (root / "m05" / V.OUT / "read1.md").read_text(encoding="utf-8")
+    assert "| registered score (all 169) |" in report and "without biphenylene (161 of 169 molecules, §13)" in report
+    assert f"**It would send other configurations to stage 2: {', '.join(registered_leaders)}.**" in report
+    assert report.splitlines()[4].startswith(f"| 1 | {lifted} |")
+    stage2_chain = json.loads((root / "probes" / "runs" / "v14_stage2.json").read_text(encoding="utf-8"))
+    assert [s["argv"][3] for s in stage2_chain["steps"][:-1]] == [f"{V.OUT}/E7_rungC_v14s2_{n}" for n in ["c00_control", *rec["stage2"]]]
+    assert len(evaluator.calls) == 2 * len(configs)                                 # one evaluation per stage checkpoint
 
 
 def test_the_frozen_stage1_chain_comes_out_byte_identical(sandbox):
