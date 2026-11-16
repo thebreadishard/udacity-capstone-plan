@@ -1,0 +1,66 @@
+{
+ "asked": {
+  "command": "spectrum",
+  "smiles": "c1ccccc1",
+  "start_geometry_sha256": "d18e94bdb52a3b506a318bdca1c6dd480f6cd295401a239f7b8dd69ade01feaa",
+  "level": {
+   "functional": "b3lyp",
+   "basis": "6-31g*",
+   "grid": [
+    99,
+    590
+   ]
+  }
+ },
+ "left_saddle_point": null,
+ "steps": {
+  "optimisation 1": {
+   "timestamp_utc": "2026-11-16T15:37:38+00:00",
+   "command": "/home/thebreadishard/aromir_dev/bin/aromir spectrum c1ccccc1 --out probes/results_m1/aromir_benzene_cb01c7c_2026-11-16 --threads 8 --max-memory-mb 2048",
+   "python": "3.12.14",
+   "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+   "packages": {
+    "aromir": "0.1.0.dev0",
+    "pyscf": "2.15.0",
+    "geometric": "1.1.1",
+    "rdkit": "2026.9.2",
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "torch": "2.14.0+cpu",
+    "safetensors": "0.8.0"
+   }
+  },
+  "low level 1": {
+   "timestamp_utc": "2026-11-16T15:44:57+00:00",
+   "command": "/home/thebreadishard/aromir_dev/bin/aromir spectrum c1ccccc1 --out probes/results_m1/aromir_benzene_cb01c7c_2026-11-16 --threads 8 --max-memory-mb 2048",
+   "python": "3.12.14",
+   "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+   "packages": {
+    "aromir": "0.1.0.dev0",
+    "pyscf": "2.15.0",
+    "geometric": "1.1.1",
+    "rdkit": "2026.9.2",
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "torch": "2.14.0+cpu",
+    "safetensors": "0.8.0"
+   }
+  },
+  "soft modes 1": {
+   "timestamp_utc": "2026-11-16T15:44:57+00:00",
+   "command": "/home/thebreadishard/aromir_dev/bin/aromir spectrum c1ccccc1 --out probes/results_m1/aromir_benzene_cb01c7c_2026-11-16 --threads 8 --max-memory-mb 2048",
+   "python": "3.12.14",
+   "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+   "packages": {
+    "aromir": "0.1.0.dev0",
+    "pyscf": "2.15.0",
+    "geometric": "1.1.1",
+    "rdkit": "2026.9.2",
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "torch": "2.14.0+cpu",
+    "safetensors": "0.8.0"
+   }
+  }
+ }
+}

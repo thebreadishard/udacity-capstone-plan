@@ -1,0 +1,5 @@
+=== (AROMIR) start
+WARN: Krylov solver reached subspace convergence but true residual |aop(x)+x-b| = 2.022e-04 exceeds tolerance 1.2e-07. Falling back to per-root solve.
+done: 30 bands, 30 of them licensed; certificate in probes/results_m1/aromir_benzene_cb01c7c_2026-11-16/certificate.md
+(AROMIR) max RSS 1890216 kB, wall 559.16 s
+=== (AROMIR) done: benzene
