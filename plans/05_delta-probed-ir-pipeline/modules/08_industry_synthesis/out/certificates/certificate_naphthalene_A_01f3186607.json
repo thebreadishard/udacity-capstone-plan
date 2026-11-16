@@ -1,6 +1,6 @@
 {
  "kind": "certificate",
- "date": "2026-11-15 02:48",
+ "date": "2026-11-16 02:49",
  "molecule": {
   "id": "A_01f3186607",
   "name": "naphthalene",
@@ -491,7 +491,7 @@
    "layerA_2026-09-22"
   ],
   "deck_hash": "97ed2d67c66b",
-  "commit": "04241d7f",
+  "commit": "37bbe63f",
   "export_built_utc": "2026-11-02T10:01:23Z",
   "export_sources_sha256": {
    "manifest": "95363ef25aa38e09b9b90296787a0ec62f1c63d0f766f9271598796e9dbd6770",
