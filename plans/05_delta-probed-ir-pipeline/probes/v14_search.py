@@ -809,21 +809,58 @@ class DataArm:
     report: str                  # out/v14/<report>.md and .json
     holdout_twins: str | None    # the trainer setting the trainings must have recorded; None: not checked (the data arm, as before)
     title: str                   # what the report's title adds
-    pool: str                    # what the report says of the pool beside 'the whole pool'
+    promoted: str                # the report's meaning line when the promotion holds
+    not_promoted: str            # and when it does not
 
 
-DATA_ARMS = {"data": DataArm(FULL_TAG, "data", "read_data", None, "", ""),
+NOT_PROMOTED = "nothing is carried, and the cause is looked at per molecule before anything else is decided."
+CLEAN_BY = ("By §14's addition of 17 November (the clean arm replaces the data arm, whose hold-out (a) was not clean for benzene)")
+DATA_ARMS = {"data": DataArm(FULL_TAG, "data", "read_data", None, "", "By §14 these three models are version 1.4.", f"By §14 {NOT_PROMOTED}"),
              "clean": DataArm(CLEAN_TAG, "clean", "read_clean", "drop-any-charge", ", clean arm (no hold-out twin of any charge)",
-                              " without any hold-out molecule's twin of any charge (--holdout-twins drop-any-charge: the radical cations "
-                              "of benzene and 2-naphthoic acid leave it, TASKS 253)")}
+                              f"{CLEAN_BY} these three models are version 1.4.", f"{CLEAN_BY} {NOT_PROMOTED}")}
+BENZENE_CATION = "P3c_8448043181"          # hold-out (a)'s benzene as a radical cation: the twin the clean arm exists to drop (TASKS 253)
+# What the clean arm's training may differ in from the data arm's: the twin rule, the pool it changes, and what is no setting
+CLEAN_ARM_FREE = frozenset({"date", "provenance", "seconds", "curve", "zero_rule", "holdout_twins", "holdout_twins_dropped", "pool",
+                            "pool_ids"})
+ABSENT = "<absent>"
 
 
-def require_twins_setting(pre: str, setting: str) -> None:
-    """The trainer record `<pre>.json` says the pool lost its hold-out twins by `setting`."""
-    found = trainer_record(pre).get("holdout_twins")
-    if found != setting:
-        raise SystemExit(f"{pre}.json was trained with holdout_twins {found!r}, not {setting!r}: the clean arm reads the carried recipe "
-                         f"trained without any hold-out molecule's twin of any charge (--holdout-twins {setting}, TASKS 253)")
+def shown_value(v: object) -> str:
+    text = repr(v)
+    return text if len(text) <= 60 else f"{text[:57]}..."
+
+
+def recipe_differences(clean: dict, full: dict) -> list[str]:
+    """Every recorded setting in which the clean arm's training differs from the data arm's, beside CLEAN_ARM_FREE."""
+    return [f"{k}: {shown_value(full.get(k, ABSENT))} -> {shown_value(clean.get(k, ABSENT))}"
+            for k in sorted((set(clean) | set(full)) - CLEAN_ARM_FREE) if clean.get(k, ABSENT) != full.get(k, ABSENT)]
+
+
+def require_clean_training(w: Config, arm: DataArm) -> None:
+    """The clean arm's training is the data arm's with the twin rule `arm.holdout_twins` and nothing else changed, and benzene's
+    radical cation left its pool."""
+    pre, full_pre = prefix(w, arm.tag), prefix(w, FULL_TAG)
+    clean = trainer_record(pre)
+    found = clean.get("holdout_twins")
+    if found != arm.holdout_twins:
+        raise SystemExit(f"{pre}.json was trained with holdout_twins {found!r}, not {arm.holdout_twins!r}: the clean arm reads the carried "
+                         f"recipe trained without any hold-out molecule's twin of any charge (--holdout-twins {arm.holdout_twins}, TASKS 253)")
+    diffs = recipe_differences(clean, trainer_record(full_pre))
+    if diffs:
+        raise SystemExit(f"{pre}.json differs from {full_pre}.json, the data arm's training, in {len(diffs)} setting(s) beside the twin "
+                         f"rule and its pool ({'; '.join(diffs)}): the clean arm reads the carried recipe with the twin rule alone changed")
+    if BENZENE_CATION not in clean.get("holdout_twins_dropped", []):
+        raise SystemExit(f"{pre}.json did not drop {BENZENE_CATION}, benzene's radical cation, from its pool: its hold-out (a) is not "
+                         "clean for benzene (TASKS 253)")
+
+
+def pool_note(w: Config, arm: DataArm) -> str:
+    """What the report says of the pool beside 'the whole pool': nothing for the data arm, the molecules that left it for the clean."""
+    if arm.holdout_twins is None:
+        return ""
+    dropped = trainer_record(prefix(w, arm.tag))["holdout_twins_dropped"]
+    return (f" without any hold-out molecule's twin of any charge (--holdout-twins {arm.holdout_twins}, TASKS 253: {len(dropped)} pool "
+            f"molecules left it, {', '.join(dropped)})")
 
 
 def data_arms(arm: DataArm = DATA_ARMS["data"]) -> tuple[Config, list[SeedRead], list[Path], list[Path]]:
@@ -835,7 +872,7 @@ def data_arms(arm: DataArm = DATA_ARMS["data"]) -> tuple[Config, list[SeedRead],
     new_evals, old_evals = ([M05 / f"{OUT}/eval_{who}_seed{s}.json" for s in FINAL_SEEDS] for who in (arm.evals, "carried_data"))
     full = whole_pool_reads(configs[0], new_evals, arm.tag)
     if arm.holdout_twins is not None:
-        require_twins_setting(prefix(configs[0], arm.tag), arm.holdout_twins)
+        require_clean_training(configs[0], arm)
     require_below_cap(configs[0], full)
     for path, model in zip(old_evals, carried_models, strict=True):
         if evaluated_checkpoint(path).as_posix() != model:
@@ -866,10 +903,9 @@ def cmd_read_data(replace_record: bool, arm_name: str = "data") -> int:
     promo_ten = P.promotion(comps_ten)
     _, expectation = expectation_read(new_evals, old_evals, a_set=CLEAN_A)
     _, prediction = prediction_read(new_evals, old_evals, a_set=CLEAN_A)
-    meaning = ("By §14 these three models are version 1.4." if promo.promoted else
-               "By §14 nothing is carried, and the cause is looked at per molecule before anything else is decided.")
+    meaning = arm.promoted if promo.promoted else arm.not_promoted
     lines = [f"# v1.4 on the data{arm.title} — the promotion read (design note §14)", "",
-             f"The new models are the carried recipe ({w.name}) trained on the whole pool{arm.pool} (seeds "
+             f"The new models are the carried recipe ({w.name}) trained on the whole pool{pool_note(w, arm)} (seeds "
              f"{', '.join(str(s) for s in FINAL_SEEDS)}; "
              f"best epochs {', '.join(epoch_note(r, w.schedule) for r in full)} / {full[0].cap}); the carried version is the frozen "
              "list's three checkpoints, read again on the same hold-outs.", "",

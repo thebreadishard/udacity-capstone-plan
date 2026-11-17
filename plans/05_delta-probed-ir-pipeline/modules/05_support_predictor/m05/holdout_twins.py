@@ -4,8 +4,8 @@ differ by their layer prefix, the molecule is one. A molecule is keyed by its ca
 neutral parent's SMILES, and a cation is not its parent — read from the corpus manifest beside the molecules directory.
 
 `any_charge` keys by the canonical SMILES alone: the network carries a charged twin's correction onto its neutral skeleton, so the
-radical cation of a hold-out molecule (P3c_8448043181 of benzene, P3c_07cadc7923 of 2-naphthoic acid) is no held-out test either
-(TASKS 253: without the P3c layer benzene's read went from 5.37 to 1.47 cm⁻¹). The readers always check with it; the trainer under
+radical cation of a hold-out molecule is no held-out test either (TASKS 253: a probe without the P3c layer took benzene's read from 5.37
+to 1.47 cm⁻¹). rungC_eval_saved's hold-out and --eval-ids-file reads and release_checks' check 3 check with it; the trainer under
 --holdout-twins drop-any-charge."""
 from __future__ import annotations
 

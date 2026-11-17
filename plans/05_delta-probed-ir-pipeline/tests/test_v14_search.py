@@ -740,15 +740,20 @@ def test_read_data_refuses_the_wrong_models_and_missing_evals(sandbox):
     assert not (root / "m05" / V.OUT / "read_data.json").exists()                   # no refusal left a report
 
 
-def at_read_clean(root: Path, carried: list[str], twins: str = "drop-any-charge") -> V.Config:
-    """read-data --arm clean's files: the control's whole-pool record at the clean tag, trained with `twins`, its three evals and the
-    carried version's three."""
+CLEAN_DROPPED = ["B_07cadc7923", "B_3100da3761", "P3c_07cadc7923", "P3c_8448043181", "P3c_311e979a14"]
+
+
+def at_read_clean(root: Path, carried: list[str], twins: str | None = "drop-any-charge", changed: dict | None = None) -> V.Config:
+    """read-data --arm clean's files: the data arm's whole-pool record, the control's at the clean tag — the same but trained with
+    `twins`, CLEAN_DROPPED left out and `changed` — its three evals and the carried version's three."""
     V.cmd_plan(carried)
     w = V.load_list()[0][0]
     pre = V.prefix(w, V.CLEAN_TAG)
+    write_record(root, V.prefix(w, V.FULL_TAG), dict.fromkeys(range(3), 0.0), split=False)
     write_record(root, pre, dict.fromkeys(range(3), 0.0), split=False)
     path = root / "m05" / f"{pre}.json"
-    path.write_text(json.dumps(json.loads(path.read_text(encoding="utf-8")) | {"holdout_twins": twins}), encoding="utf-8")
+    clean = {"holdout_twins": twins, "holdout_twins_dropped": CLEAN_DROPPED} | (changed or {})
+    path.write_text(json.dumps(json.loads(path.read_text(encoding="utf-8")) | clean), encoding="utf-8")
     for s in range(3):
         write_eval(root, "clean", 0.5, s, f"{pre}_model_n1082_seed{s}.pt", clean_shift=0.5)
         write_eval(root, "carried_data", 0.1, s, carried[s], clean_shift=0.1)
@@ -765,7 +770,10 @@ def test_read_data_clean_arm_reads_the_any_charge_trainings_into_its_own_report(
     rec, report = json.loads(base.with_suffix(".json").read_text(encoding="utf-8")), base.with_suffix(".md").read_text(encoding="utf-8")
     assert rec["arm"] == "clean" and rec["holdout_twins"] == "drop-any-charge" and rec["promotion"]["promoted"]
     assert report.startswith("# v1.4 on the data, clean arm (no hold-out twin of any charge) — the promotion read (design note §14)")
-    assert "trained on the whole pool without any hold-out molecule's twin of any charge (--holdout-twins drop-any-charge" in report
+    assert ("trained on the whole pool without any hold-out molecule's twin of any charge (--holdout-twins drop-any-charge, TASKS 253: 5 "
+            f"pool molecules left it, {', '.join(CLEAN_DROPPED)})") in report
+    assert "By §14's addition of 17 November (the clean arm replaces the data arm, whose hold-out (a) was not clean for benzene) these " \
+           "three models are version 1.4." in report and rec["meaning"].startswith("By §14's addition of 17 November")
     assert not (root / "m05" / V.OUT / "read_data.json").exists()
     with pytest.raises(SystemExit, match="the read is on record"):
         V.main(["read-data", "--arm", "clean"])
@@ -783,9 +791,24 @@ def test_read_data_clean_arm_refuses_trainings_without_drop_any_charge(sandbox, 
 def test_read_data_clean_arm_refuses_the_data_arms_evals(sandbox):
     root, carried = sandbox
     w = at_read_clean(root, carried)
-    write_record(root, V.prefix(w, V.FULL_TAG), dict.fromkeys(range(3), 0.0), split=False)
     write_eval(root, "clean", 0.5, 0, full_checkpoint(w, 0), clean_shift=0.5)       # an s3full checkpoint under the clean arm's name
     with pytest.raises(SystemExit, match=r"eval_clean_seed0\.json evaluated .*v14s3full.*, not seed 0 of .*v14s3clean_c00_control"):
+        V.cmd_read_data(replace_record=False, arm_name="clean")
+
+
+def test_read_data_clean_arm_refuses_another_recipe_by_name(sandbox):
+    """The clean arm changes the twin rule and nothing else: every other setting must be the data arm's training's."""
+    root, carried = sandbox
+    at_read_clean(root, carried, changed={"lr": 1e-3, "epochs": 500})
+    with pytest.raises(SystemExit, match=r"in 2 setting\(s\) beside the twin rule and its pool \(epochs: \d+ -> 500; lr: '<absent>' -> 0\.001\)"):
+        V.cmd_read_data(replace_record=False, arm_name="clean")
+    assert not (root / "m05" / V.OUT / "read_clean.json").exists()
+
+
+def test_read_data_clean_arm_refuses_a_pool_that_kept_benzenes_cation(sandbox):
+    root, carried = sandbox
+    at_read_clean(root, carried, changed={"holdout_twins_dropped": ["B_07cadc7923", "P3c_07cadc7923"]})
+    with pytest.raises(SystemExit, match="did not drop P3c_8448043181, benzene's radical cation"):
         V.cmd_read_data(replace_record=False, arm_name="clean")
 
 

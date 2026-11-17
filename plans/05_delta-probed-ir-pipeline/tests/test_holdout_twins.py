@@ -37,7 +37,7 @@ def test_a_twin_leaves_the_pool_and_a_cation_does_not(molecules):
     logged = []
     pool, dropped = RT.drop_twins(cfg, ["B_twin", "B_tol", "P3c_cn", "A_naph"], ["A_cn"], logged.append)
     assert dropped == ["B_twin"] and pool == ["B_tol", "P3c_cn", "A_naph"]
-    assert "B_twin" in logged[0]
+    assert "under another id and leave the pool (B_twin)" in logged[0]
 
 
 def test_keep_reproduces_the_old_pool(molecules):
@@ -67,7 +67,7 @@ def test_drop_any_charge_also_drops_the_cation_of_a_held_molecule(molecules):
     logged = []
     pool, dropped = RT.drop_twins(cfg, ["B_twin", "B_tol", "P3c_cn", "A_naph"], ["A_cn"], logged.append)
     assert dropped == ["B_twin", "P3c_cn"] and pool == ["B_tol", "A_naph"]
-    assert "B_twin, P3c_cn" in logged[0]
+    assert "under another id or charge and leave the pool (B_twin, P3c_cn)" in logged[0]
 
 
 def test_any_charge_keys_by_the_skeleton_alone(molecules):

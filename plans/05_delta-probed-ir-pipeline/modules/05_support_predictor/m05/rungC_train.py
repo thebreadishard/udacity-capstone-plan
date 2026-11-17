@@ -873,9 +873,11 @@ def drop_twins(cfg: TrainConfig, pool: list, held: list, log) -> tuple[list, lis
     pool keeps them (`release_pool` lists them)."""
     if cfg.holdout_twins == "keep" or cfg.network_kind == NK.RELEASE:
         return pool, []
-    found = HT.twins(pool, held, HT.manifest_keys(cfg.molecules), any_charge=cfg.holdout_twins == "drop-any-charge")
+    any_charge = cfg.holdout_twins == "drop-any-charge"
+    found = HT.twins(pool, held, HT.manifest_keys(cfg.molecules), any_charge=any_charge)
     if found:
-        log(f"hold-out twins: {len(found)} pool molecules are hold-out molecules under another id and leave the pool ({', '.join(found)})")
+        log(f"hold-out twins: {len(found)} pool molecules are hold-out molecules under another id{' or charge' if any_charge else ''} and "
+            f"leave the pool ({', '.join(found)})")
     return [i for i in pool if i not in found], found
 
 

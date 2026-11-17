@@ -1,5 +1,6 @@
 """rungC_eval_saved.py --holdout-b-file (8 Oct 2026): the coverage test reads (b) on the frozen pre-merge list; new children of the (b) scaffolds that the
 corpus split adds are read apart as (b+), and frozen ids the loader does not admit drop out as the trainer drops them."""
+import argparse
 import sys
 from pathlib import Path
 
@@ -55,6 +56,19 @@ def test_eval_sets_refuse_a_trained_molecule_under_another_id_or_charge(tmp_path
     with pytest.raises(SystemExit, match=r"under other ids or charges \(P3c_x1\) — not a test \(TASKS 157, 253\)"):
         ES.eval_sets([f"s5={f}"], admitted={"x1": 0, "x2": 0}, train_ids=["P3c_x1"], keys=KEYS)
     assert ES.eval_sets([f"s5={f}"], admitted={"x1": 0, "x2": 0}, train_ids=["p1"], keys=KEYS)["s5"]["ids"] == ["x1", "x2"]
+
+
+def test_the_built_in_hold_outs_refuse_a_trained_molecule_by_id_or_as_a_twin_of_any_charge(monkeypatch):
+    """Hold-outs (a) and (b) pass the same check as an --eval-ids-file set (TASKS 157, 253)."""
+    monkeypatch.setattr(ES.HT, "manifest_keys", lambda molecules: KEYS)
+    a = argparse.Namespace(holdout_b_file=None, eval_ids_file=[], molecules="corpus/molecules")
+    held = {"a": ["x1"], "b": ["x2"]}
+    assert [s[0] for s in ES.measurement_sets(a, {}, held, ["p1"], [])] == ["a", "b"]
+    for trained, why in ((["x2"], r"hold-out \(b\): 1 ids are in the model's training set \(x2\)"),
+                         (["P3c_x1"], r"hold-out \(a\): the training set holds 1 of its molecules under other ids or charges \(P3c_x1\)"),
+                         (["B_twin"], r"hold-out \(a\): .* \(B_twin\) — not a test \(TASKS 157, 253\)")):
+        with pytest.raises(SystemExit, match=why):
+            ES.measurement_sets(a, {}, held, trained, [])
 
 
 def test_eval_sets_refuse_a_taken_name_or_a_malformed_spec(tmp_path):
