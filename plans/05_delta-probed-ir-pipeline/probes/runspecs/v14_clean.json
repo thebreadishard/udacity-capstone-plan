@@ -1,0 +1,42 @@
+{
+ "name": "v14_clean",
+ "purpose": "v1.4 on the corrected pool: the carried recipe on the whole pool without hold-out twins of any charge (TASKS 253)",
+ "host": "laptop",
+ "workdir": "probes/results_m1",
+ "command": "python ../chain_runner.py probes/runs/v14_clean.json",
+ "sources": [
+  {
+   "local": "probes/chain_runner.py"
+  },
+  {
+   "local": "probes/v14_search.py"
+  },
+  {
+   "local": "probes/promotion_read.py"
+  },
+  {
+   "local": "modules/05_support_predictor/m05/rungC_train.py"
+  },
+  {
+   "local": "modules/05_support_predictor/m05/holdout_twins.py"
+  }
+ ],
+ "progress": {
+  "regex": "^=== \\(V14C\\) progress: |^\\(V14C\\) .* done ",
+  "max_gap_minutes": 120,
+  "start_regex": "^=== \\(V14C\\) starting: "
+ },
+ "marker_regex": "^=== \\(V14C\\) (armed|starting|resuming|RUN FAILED|run done)",
+ "end_regex": "^=== \\(V14C\\) run done",
+ "fail_regex": "^=== \\(V14C\\) RUN FAILED",
+ "dry_run_args": "--dry-run",
+ "resumable": true,
+ "memory": {
+  "peak_gb": 7.7,
+  "basis": "chain 41's trainer peak (7.7 GB at n = 972-978, 19 Oct 2026); v1.4's pool ≈ 1,200"
+ },
+ "estimate": {
+  "hours": 7.0,
+  "basis": "chain v14_data's three trainings (≈ 6.5 h at 1,080 molecules) and three evals"
+ }
+}

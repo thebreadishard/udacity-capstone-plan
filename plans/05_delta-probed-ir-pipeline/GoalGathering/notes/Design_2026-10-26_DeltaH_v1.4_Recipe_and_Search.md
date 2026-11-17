@@ -466,3 +466,18 @@ gave neutral benzene the correction of its Jahn–Teller-distorted cation. Earli
 holds the cations; the aza and five-ring molecules are P3. Two conclusions, stated as such: (i) the measurement pool must drop a
 hold-out molecule's twin in every charge state; (ii) the network's charge input does not keep a cation's correction off its neutral
 skeleton — for the product that is a question of its own (a user's neutral molecule whose cation was trained).
+
+**§14's addition of 17 November 2026 (17 Nov, 14:4x), registered before the clean arm trains: the clean arm replaces the data arm.** The
+user's word of 17 Nov ('Advies akkoord'): v1.4 is trained again on the corrected pool before the search resumes. The data arm's
+pool held hold-out molecules in another charge state — the radical cations of benzene and 2-naphthoic acid (hold-out (a)) and three
+cations of hold-out (b) molecules (`P3c_311e979a14`, `P3c_331729cd47`, `P3c_097651503c`) — so its hold-out reads were no held-out reads
+for those molecules, and its 'not promoted' (17 Nov 04:29) is void as a verdict on the recipe. The clean arm is the same recipe
+(c00_control) on the whole pool with `--holdout-twins drop-any-charge` (chain `probes/runs/v14_clean.json`, tag `s3clean`, seeds 0, 1, 2),
+read by `v14_search.py read-data --arm clean` against the carried version's three evals of chain v14_data (chain 35's pool holds no
+cation, so they stand). The rule is §14's unchanged: the registered promotion (§5, decision 57) on hold-out (a)'s clean eight and
+hold-out (b), three-seed means at the reported precision, no margin; the expectation and prediction lines as stated before. One
+arm decides, not two: the data arm's read is not consulted for the verdict, and no third arm follows if this one fails. Stated
+beforehand, deciding nothing: the probe without P3c (one seed) was below the carried version in all ten cells; one seed is not a
+verdict and the clean arm's three seeds may differ. The reader refuses a hold-out read on a model that trained a twin of any charge
+(rungC_eval_saved, release_checks), so the data arm's networks are now refused as measurement networks, and the release chain
+(TASKS 252) needs the clean arm's.
