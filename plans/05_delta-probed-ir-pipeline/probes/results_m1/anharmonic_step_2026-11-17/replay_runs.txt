@@ -4,7 +4,7 @@
 
 bands stepped: 26 of 30 in the run's record -> 28 of 30 now; without a step: {'unmeasured': 2, 'no-xtb-partner': 2} -> {'unmeasured': 2}
 bands that gained a step: [(1691.0, -38.62), (1691.0, -38.62)]; that lost one: []
-largest change of a step both records have: 0.044 cm-1 (format 3 of the artefact against format 2: three more training rows)
+largest change of a step both records have: 0.044 cm-1 (format 3 of the artefact against format 2: one more training row)
 
 modes the one-to-one match refuses:
   mode 22 at 1655.29: one to one 0.498; set [1655.29, 1655.33], overlap with the set's partners 0.985 - refused for its basis: matched as a set
@@ -26,7 +26,7 @@ the pairs TASKS 255 names (B3LYP position; overlap of the match; step now; step 
 
 bands stepped: 27 of 33 in the run's record -> 27 of 33 now; without a step: {'unmeasured': 6} -> {'unmeasured': 6}
 bands that gained a step: []; that lost one: []
-largest change of a step both records have: 0.044 cm-1 (format 3 of the artefact against format 2: three more training rows)
+largest change of a step both records have: 0.044 cm-1 (format 3 of the artefact against format 2: one more training row)
 
 modes the one-to-one match refuses:
 

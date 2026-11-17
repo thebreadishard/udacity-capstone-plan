@@ -81,8 +81,8 @@ def _both(names: list[str]) -> str:
 
 
 FIELD_SCATTER = ("The bars were measured with one stored force field per molecule; between two GFN2-xTB force fields of the same "
-                 "molecule the step itself also varies, by up to about 2 cm⁻¹ on C–H stretches (measured once, on benzene, "
-                 "17 Nov 2026: 1.7 cm⁻¹), and the bars do not contain that")
+                 "molecule the step itself also varies, by 1.7 cm⁻¹ on a C–H stretch pair in the one case measured (benzene, "
+                 "17 Nov 2026), and the bars do not contain that")
 
 
 def targets_sentence(artefact: dict) -> str:

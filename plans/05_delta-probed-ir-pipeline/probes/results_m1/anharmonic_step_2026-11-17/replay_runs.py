@@ -95,7 +95,7 @@ def lines_of(name: str, r: dict[str, Any]) -> list[str]:
            f"bands that gained a step: {[(x['omega_cm'], round(x['delta_anh_cm'], 2)) for x in r['gained']]}; that lost one: "
            f"{[x['omega_cm'] for x in r['lost']]}",
            f"largest change of a step both records have: {r['largest_change_of_a_step_both_have_cm']:.3f} cm-1 (format 3 of the "
-           "artefact against format 2: three more training rows)", "", "modes the one-to-one match refuses:"]
+           "artefact against format 2: one more training row)", "", "modes the one-to-one match refuses:"]
     out += [f"  mode {m['mode']} at {m['omega_cm']:.2f}: one to one {m['one_to_one']:.3f}; set {[round(w, 2) for w in m['set_omega_cm']]}, "
             f"overlap with the set's partners {m['set_overlap']:.3f} - {m['verdict']}" for m in r["modes_refused_one_to_one"]]
     if name == "benzene":

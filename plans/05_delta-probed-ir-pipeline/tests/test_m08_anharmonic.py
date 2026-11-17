@@ -439,8 +439,9 @@ def test_the_certificate_says_what_the_bars_rest_on():
     assert "coronene carries the larger error in every family" in t and "they are thin" in t
     assert "nothing here says the step helps a molecule unlike the targets" in t and "not a prediction interval for one band" in t
     # review of 17 Nov 2026: the scatter between two force fields of one molecule is not in the bars, and the certificate says so
-    assert t.endswith("between two GFN2-xTB force fields of the same molecule the step itself also varies, by up to about 2 cm⁻¹ on "
-                      "C–H stretches (measured once, on benzene, 17 Nov 2026: 1.7 cm⁻¹), and the bars do not contain that")
+    assert t.endswith("between two GFN2-xTB force fields of the same molecule the step itself also varies, by 1.7 cm⁻¹ on a C–H "
+                      "stretch pair in the one case measured (benzene, 17 Nov 2026), and the bars do not contain that")
+    assert "up to" not in POS.FIELD_SCATTER                 # one measurement is not a bound
     mixed = ARTEFACT_RECORD | {"targets": {"ring-ip": {"rows": 5, "per_target_rms_cm": {"a": 1.0, "b": 2.0}},
                                            "other": {"rows": 6, "per_target_rms_cm": {"a": 3.0, "b": 2.0}}},
                                "target_composition": {"a": "C,H", "b": "C,H,N"}}
