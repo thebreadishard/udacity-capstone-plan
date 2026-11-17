@@ -41,7 +41,7 @@ sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, "..", "src"))
 from s1_anharmonic_level import harmonic_modes  # noqa: E402
 from s2_read import FAMILIES, XTB_KEY, in_window, load_molecule, mode_description  # noqa: E402
-from s2_xtb_read import MARK_SHARE, MIN_OVERLAP, X2_GRID, SetMatch, attach_xtb, match_sets  # noqa: E402
+from s2_xtb_read import MIN_OVERLAP, SET_MAX_MODES, SET_MIN_OVERLAP, X2_GRID, SetMatch, attach_xtb, match_sets  # noqa: E402
 from s3_read import predictors  # noqa: E402
 
 from dpir.qff import MASS, harmonic  # noqa: E402
@@ -53,7 +53,7 @@ SUPERSEDED = {2: "its training table was built with the one-to-one match to the 
                  "(TASKS 255: a degenerate pair was refused for its basis); refit with probes/anharmonic_step_fit.py"}
 TABLE_KEYS = ("omega", "delta", "family", "h", "o", XTB_KEY)      # s2_read.concat's columns, in its order
 REQUIRED = ("commit", "registration", "decisions", "scope", "training_molecules", "windows", "molecules", "targets", "elements",
-            "compositions", "probes")
+            "compositions", "probes", "bars")
 PROBE_TOLERANCE_CM = 1e-6         # a probe's shift on this machine against the fit's: BLAS and scikit-learn versions move the kernel
 MIN_PROBES = 10                   # ridge's solve by about 1e-10 cm⁻¹; a wrong feature, configuration or table row moves it by whole cm⁻¹
 FEW_MOLECULES = 5                 # a composition the training table holds fewer molecules of than this is named on the certificate
@@ -65,17 +65,22 @@ NO_XTB_PARTNER = "no-xtb-partner"
 XTB_PARTNER_MARKED = "xtb-partner-marked"
 UNMEASURED = "unmeasured"
 MIXED_BAND = "mixed-band"
+MIXED_SET = "set-of-two-families"
 FAMILY_MISMATCH = "family-mismatch"
+SET_TEXT = f"a near-degenerate set of at most {SET_MAX_MODES} of them that holds {SET_MIN_OVERLAP} of it"
 MODE_REASONS = (LARGE_AMPLITUDE, NO_XTB_PARTNER, XTB_PARTNER_MARKED)     # the label-free rule, in the order it is asked
 REASON_TEXT = {
     LARGE_AMPLITUDE: "a large-amplitude mode (half or more of its hydrogen motion on an sp-carbon, N–H or O–H hydrogen): the model "
                      "was not trained on such modes",
-    NO_XTB_PARTNER: f"no GFN2-xTB mode and no near-degenerate set of them matches this B3LYP mode (overlap below {MIN_OVERLAP}), "
+    NO_XTB_PARTNER: f"no GFN2-xTB mode matches this B3LYP mode (overlap below {MIN_OVERLAP}) and neither does {SET_TEXT}, "
                     "so the model has no input for it",
     XTB_PARTNER_MARKED: "the matched GFN2-xTB mode is outside perturbation theory's domain, so its shift is not a number the "
                         "theory can state",
     UNMEASURED: "no model was measured for this family in this range",
-    MIXED_BAND: f"the corrected band mixes B3LYP modes (its partner overlaps below {MIN_OVERLAP}), so no mode's step is its own",
+    MIXED_BAND: f"the corrected band mixes B3LYP modes (its partner overlaps below {MIN_OVERLAP}, and it has no partner in "
+                f"{SET_TEXT}), so no mode's step is its own",
+    MIXED_SET: "the corrected band lies in a near-degenerate set of B3LYP modes of different families, so no family's step and "
+               "bar are its own",
     FAMILY_MISMATCH: "the step's family rule and the certificate's name different families for this mode, so no family's model is its own",
 }
 NOT_MEASURED_TEXT = (f"the step's error is not measured for this kind of mode (family '{NOT_MEASURED_FAMILY}' with an out-of-plane "
@@ -339,18 +344,20 @@ def mode_steps(modes: Modes, xtb: XtbField, artefact: Artefact) -> list[ModeStep
 
 
 def _set_band(match: SetMatch, k: int, steps: list[ModeStep]) -> BandStep:
-    """The step of a band matched as a set: the overlap-weighted mean of its B3LYP modes' steps. Where the members without a step
-    hold MARK_SHARE of the band or more it gets none, with the heaviest such member's reason; a bar is the largest of the
-    members', and one member whose error was not measured takes the bar's claim from the band."""
+    """The step of a band matched as a set: the overlap-weighted mean of its B3LYP modes' steps. One member without a step, at
+    whatever weight, leaves the band without one (the heaviest such member's reason): what that member would have carried is
+    not known, so no share of it is small. Members of different families leave it without one too (MIXED_SET): the band is
+    printed with one family and one bar. One member whose error was not measured takes the bar's claim from the band."""
     members = [(float(match.weights[k, j]), steps[int(j)]) for j in np.flatnonzero(match.weights[k])]
     without = sorted(((w, s) for w, s in members if s.reason is not None), key=lambda m: -m[0])
     partner, overlap = int(match.partner[k]), float(match.overlap[k])
-    if sum(w for w, _ in without) >= MARK_SHARE:
+    if without:
         return BandStep(partner, overlap, None, without[0][1].reason, None, False, True)
-    stepped = [(w, s) for w, s in members if s.reason is None]
-    delta = sum(w * s.delta_anh_cm for w, s in stepped) / sum(w for w, _ in stepped)
-    flagged = any(s.error_not_measured for _, s in stepped)
-    return BandStep(partner, overlap, float(delta), None, None if flagged else max(s.bar_cm for _, s in stepped), flagged, True)
+    if len({s.family for _, s in members}) != 1:
+        return BandStep(partner, overlap, None, MIXED_SET, None, False, True)
+    delta = sum(w * s.delta_anh_cm for w, s in members) / sum(w for w, _ in members)
+    flagged = any(s.error_not_measured for _, s in members)
+    return BandStep(partner, overlap, float(delta), None, None if flagged else members[0][1].bar_cm, flagged, True)
 
 
 def carry_to_bands(omega_bands: np.ndarray, q_bands: np.ndarray, q_modes: np.ndarray, steps: list[ModeStep],

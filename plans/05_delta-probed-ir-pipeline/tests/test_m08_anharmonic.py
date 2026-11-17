@@ -30,7 +30,7 @@ BARS = {"ring-ip": 3.37, "other": 3.84, "CH-oop": 8.38, "CH-stretch": 6.21}
 BENZENE = "c1ccccc1"
 SWAPPED, SCRAMBLED = (13, 18), (4, 5, 10)      # the scrambled three are modes without a degenerate partner (TASKS 255):
 #                                                 a member of a pair is read against its pair's partners, and two of three
-#                                                 scrambled vectors hold 5/9 of it
+#                                                 scrambled vectors can hold 8/9 of it
 
 
 @pytest.fixture(scope="module")
@@ -438,6 +438,9 @@ def test_the_certificate_says_what_the_bars_rest_on():
     assert "the step's rms per molecule, coronene / tetracene, in cm⁻¹: ring-ip 4.25 / 2.35; CH-oop 11.91 / 4.55" in t
     assert "coronene carries the larger error in every family" in t and "they are thin" in t
     assert "nothing here says the step helps a molecule unlike the targets" in t and "not a prediction interval for one band" in t
+    # review of 17 Nov 2026: the scatter between two force fields of one molecule is not in the bars, and the certificate says so
+    assert t.endswith("between two GFN2-xTB force fields of the same molecule the step itself also varies, by up to about 2 cm⁻¹ on "
+                      "C–H stretches (measured once, on benzene, 17 Nov 2026: 1.7 cm⁻¹), and the bars do not contain that")
     mixed = ARTEFACT_RECORD | {"targets": {"ring-ip": {"rows": 5, "per_target_rms_cm": {"a": 1.0, "b": 2.0}},
                                            "other": {"rows": 6, "per_target_rms_cm": {"a": 3.0, "b": 2.0}}},
                                "target_composition": {"a": "C,H", "b": "C,H,N"}}
@@ -479,7 +482,8 @@ def test_a_band_says_which_position_it_prints_in_each_of_its_cases():
     assert without["printed_cm"] == 987.7 and without["step_bar_cm"] is None and without["step_error_measured"] is False
     assert without["position_note"] == (f"anharmonic estimate ν = ω + Δ_anh, printed without an error bar: {AS.NOT_MEASURED_TEXT}; "
                                         "no licence is claimed for ν")
-    for code in (AS.LARGE_AMPLITUDE, AS.NO_XTB_PARTNER, AS.XTB_PARTNER_MARKED, AS.UNMEASURED, AS.MIXED_BAND, AS.FAMILY_MISMATCH):
+    for code in (AS.LARGE_AMPLITUDE, AS.NO_XTB_PARTNER, AS.XTB_PARTNER_MARKED, AS.UNMEASURED, AS.MIXED_BAND, AS.MIXED_SET,
+                 AS.FAMILY_MISMATCH):
         refused = band(_stick(None, code))
         assert (refused["printed_cm"], refused["printed"], refused["nu_cm"], refused["no_step_reason"]) == (1000.0, POS.HARMONIC, None, code)
         assert refused["position_note"] == f"harmonic position, no anharmonic step: {AS.REASON_TEXT[code]}"

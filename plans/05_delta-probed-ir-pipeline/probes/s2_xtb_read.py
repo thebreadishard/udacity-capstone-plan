@@ -52,7 +52,8 @@ from s2_search import fit_predict as search_fit_predict  # noqa: E402
 
 MIN_OVERLAP = 0.5           # amendment 4: a G mode whose matched xtb mode overlaps less has no partner
 SET_TOLERANCE_CM = 1.0      # modes chained by gaps in ω of at most this form one near-degenerate set (`match_sets` says why this value)
-MARK_SHARE = 0.05           # a set's flagged members holding this share of a mode's overlap or more flag the mode
+SET_MIN_OVERLAP = 0.8       # a mode read as a set must lie this far in the span of the set's partners (`match_sets`, rule 3)
+SET_MAX_MODES = 4           # a chained set of more modes is no degenerate level and is not read as a set (the table's largest: 3)
 MATCH_RULES = {"sets": SET_TOLERANCE_CM, "single": None}    # 'single': the one-to-one match of the registered reads (amendment 4)
 DEFAULT_RULE = "sets"
 READ_SCOPES = ("all", "no-large-amplitude")
@@ -93,6 +94,7 @@ class SetMatch:
     partner: np.ndarray     # the one-to-one partner on the other side; −1 without a match
     overlap: np.ndarray     # the squared overlap the match was read on: with the partner, or with the set's span for a mode read as a set
     set_wise: np.ndarray    # matched as a set after the one-to-one overlap fell below the line
+    oversized: np.ndarray   # under the one-to-one line and not read as a set, because its set holds more than SET_MAX_MODES modes
     weights: np.ndarray     # M × M_other, each matched mode's row summing to 1: 1 at the partner, or the set's squared overlaps
 
     def carry(self, values: np.ndarray) -> np.ndarray:
@@ -108,13 +110,14 @@ class SetMatch:
         return out
 
     def flagged(self, flags: np.ndarray) -> np.ndarray:
-        """Whether a matched mode's partner carries a flag; for a mode matched as a set, whether the flagged members hold
-        MARK_SHARE of its overlap or more (a flagged member's value is not bounded, so a twentieth of it is not either)."""
-        return self.weights @ np.asarray(flags, bool).astype(float) >= MARK_SHARE
+        """Whether a matched mode's partner carries a flag; for a mode matched as a set, whether any member it overlaps at all
+        does. A flagged member's value is not bounded, so no share of it is small: at 4 % of the weight a marked shift of +180
+        moved a mean of −10 to −2.4 (the review of 17 Nov 2026)."""
+        return ((self.weights > 0) & np.asarray(flags, bool)[None, :]).any(axis=1)
 
 
 def match_sets(omega_g: np.ndarray, q_g: np.ndarray, q_x: np.ndarray, min_overlap: float = MIN_OVERLAP,
-               tolerance: float | None = SET_TOLERANCE_CM) -> SetMatch:
+               tolerance: float | None = SET_TOLERANCE_CM, set_overlap: float = SET_MIN_OVERLAP) -> SetMatch:
     """The match of training and step (TASKS 255): `match_modes`, and for a mode it refuses the same question asked of sets.
 
     Why sets. The two eigenvectors of a degenerate pair are an arbitrary basis of a plane. Where both sides have the pair, the
@@ -128,8 +131,13 @@ def match_sets(omega_g: np.ndarray, q_g: np.ndarray, q_x: np.ndarray, min_overla
        (`omega_g`, cm⁻¹); the other side's set is T = p(S), the partners of S and nothing else. No window in ω is laid on the other
        side: it would let unrelated modes in, and T may only hold modes the assignment itself gave to S. The overlap read is the
        squared norm of i's projection on the span of T, Σ_{j∈T} (q_i·q_j)².
-    3. At `min_overlap` or more — the single-mode line, asked of the plane instead of one vector — i is matched as a set and carries
-       the mean over T weighted by squared overlap, Σ_j (q_i·q_j)² v_j / Σ_j (q_i·q_j)²; below it, i has no match.
+    3. At `set_overlap` or more i is matched as a set and carries the mean over T weighted by squared overlap,
+       Σ_j (q_i·q_j)² v_j / Σ_j (q_i·q_j)²; below it, i has no match. The line is 0.8, not the single-mode 0.5: at 0.5 on a span,
+       40 % and more of the mode lies outside everything that carries its input, which is the case the single-mode line was
+       written to refuse; a pair refused for its basis lies almost wholly in its partners' plane (benzene's at 0.985).
+    4. A set of more than SET_MAX_MODES modes is not read as a set at all: a chain that long is a crowded stretch of the
+       spectrum, not a degenerate level (`SetMatch.oversized` names the modes this refused).
+    5. A mode matched as a set is flagged when any member of T it overlaps is (`SetMatch.flagged`).
 
     A mode alone in its set whose partner is alone in its set is read exactly as `match_modes` reads it, to the bit.
 
@@ -142,15 +150,15 @@ def match_sets(omega_g: np.ndarray, q_g: np.ndarray, q_x: np.ndarray, min_overla
     The tolerance. It has to cover the numerical splitting of an exact degeneracy and nothing more, because only an exact
     degeneracy leaves the basis arbitrary. Stored Hessians split benzene's pairs by up to 0.62 cm⁻¹ (621.24 and 621.86 in S1's
     record), so 0.5 misses a real pair; 3 chains unrelated neighbours in the CH stretches of every larger molecule (482 modes in a
-    set of two or more against 253). On the 39 molecules of the training table 1 cm⁻¹ matches 3 refused modes as a set, 0.5 two
-    and 3 six (results_m1/anharmonic_step_2026-11-17/table_diff.txt).
+    set of two or more against 253; results_m1/anharmonic_step_2026-11-17/table_diff.txt has the counts at each).
 
     Accidental neighbours. Within 1 cm⁻¹ a large molecule has unrelated modes, and coronene has symmetry pairs with a third mode
     beside them. They cost nothing where the one-to-one match holds (rule 1 never looks at the set), and a refused mode gains from
     a neighbour's partner only the overlap it really has with it: a mode that does not lie in the span of its neighbours'
-    partners stays refused (73 of the table's 76 refused modes do). The three it matches are of this kind — neighbours in an
-    unsymmetric molecule that the two methods mix, 0.56 to 0.93 of each in its set's partners — not symmetry pairs: on the stored
-    fields no symmetry pair is under the line.
+    partners stays refused. On the 39 molecules of the training table 76 modes are under the one-to-one line and one of them is
+    matched as a set: a C–H stretch at 3183.24 cm⁻¹ that the two methods mix with its neighbour, 0.934 of it in the two partners.
+    It is not a symmetry pair — on the stored fields no symmetry pair is under the line — and two more neighbours of this kind,
+    at 0.561 and 0.617, stay refused under rule 3.
 
     `tolerance` None is the one-to-one match of the registered reads. q_g may hold fewer modes than q_x, never more.
     """
@@ -162,15 +170,20 @@ def match_sets(omega_g: np.ndarray, q_g: np.ndarray, q_x: np.ndarray, min_overla
     set_g = mode_sets(omega_g, tolerance)
     overlap, weights = best.copy(), np.zeros_like(ov)
     single = best >= min_overlap
+    set_wise, oversized = np.zeros(len(omega_g), bool), np.zeros(len(omega_g), bool)
     weights[single, partner[single]] = 1.0
     for i in np.flatnonzero(~single):
         partners = partner[set_g == set_g[i]]
-        if len(partners) > 1:
-            overlap[i] = ov[i, partners].sum()
-        if overlap[i] >= min_overlap:
+        if len(partners) == 1:
+            continue
+        if len(partners) > SET_MAX_MODES:
+            oversized[i] = True
+            continue
+        overlap[i] = ov[i, partners].sum()
+        if overlap[i] >= set_overlap:
             weights[i, partners] = ov[i, partners] / overlap[i]
-    matched = overlap >= min_overlap
-    return SetMatch(np.where(matched, partner, -1), overlap, matched & ~single, weights)
+            set_wise[i] = True
+    return SetMatch(np.where(single | set_wise, partner, -1), overlap, set_wise, oversized, weights)
 
 
 def check_rule(rule: str) -> float | None:
@@ -187,7 +200,8 @@ def attach_xtb(rec_g: dict, rec_x: dict, q_g: np.ndarray, q_x: np.ndarray, rule:
     tolerance = check_rule(rule)
     match = match_sets(rec_g["omega"], q_g, q_x, tolerance=tolerance)
     return {**rec_g, XTB_KEY: match.carry(rec_x["delta"]), "no_xtb": match.partner < 0, "xtb_overlap": match.overlap,
-            "xtb_set_wise": match.set_wise, "vpt2_marked": rec_g["vpt2_marked"] | match.flagged(rec_x["vpt2_marked"]),
+            "xtb_set_wise": match.set_wise, "xtb_set_oversized": match.oversized,
+            "vpt2_marked": rec_g["vpt2_marked"] | match.flagged(rec_x["vpt2_marked"]),
             "vpt2_checked": bool(rec_g["vpt2_checked"] and rec_x["vpt2_checked"])}
 
 

@@ -16,6 +16,10 @@ label-free rule is compared with. Three checks, each of which must pass or the s
 3. the label-free rule over all molecules of both sets: of the modes a B3LYP label marks, how many get no step (REPORT.md of
    16 Nov: 4 of 6), and how many modes no label marks lose their step to an xtb partner's mark (0).
 
+Reported beside the checks, not a check: the largest difference between the two GFN2-xTB labels of a symmetry pair over all
+molecules. The set-wise match gives a pair one shift in every basis when the pair's two labels are one number; where they
+differ, the carried shift lies between them, so this difference bounds how far a basis can move it.
+
 Writes acceptance.json and acceptance.md into --out.
 """
 from __future__ import annotations
@@ -149,6 +153,22 @@ def check_marks(results: list[dict[str, Any]]) -> dict[str, Any]:
             "passed": counts == EXPECTED_MARKS and all(m["error_not_measured"] for m in uncaught)}
 
 
+def pair_label_spread(mols: list[dict[str, str]]) -> dict[str, Any]:
+    """Over the symmetry pairs the xtb labels name: how many, and the largest difference between a pair's two shifts."""
+    pairs, worst = 0, {"difference_cm": 0.0}
+    for mol in mols:
+        with open(mol["x_label"], encoding="utf-8") as fh:
+            label = json.load(fh)
+        shift = np.asarray(label["nu_gvpt2"], float) - np.asarray(label["omega"], float)
+        for i, j in label["degenerate_pairs"]:
+            pairs += 1
+            if abs(shift[i] - shift[j]) > worst["difference_cm"]:
+                worst = {"difference_cm": float(abs(shift[i] - shift[j])), "id": mol["id"], "omega_cm": float(label["omega"][i]),
+                         "shifts_cm": [float(shift[i]), float(shift[j])]}
+    return {"pairs": pairs, "molecules_with_pairs": sum(bool(json.load(open(m["x_label"], encoding="utf-8"))["degenerate_pairs"]) for m in mols),
+            "largest": worst}
+
+
 def report(rec: dict[str, Any]) -> list[str]:
     """The record as the page beside it."""
     L = [f"# The anharmonic step, stage 1 — acceptance ({rec['date']}, TASKS 211)", "",
@@ -186,7 +206,14 @@ def report(rec: dict[str, Any]) -> list[str]:
           "| molecule | mode | ω | family | o | under the rule |", "|---|---|---|---|---|---|"]
     L += [f"| {x['id']} | {x['mode']} | {x['omega_cm']:.1f} | {x['family']} | {x['o']:.2f} | "
           f"{x['reason'] or ('step, error not measured' if x['error_not_measured'] else 'step')} |" for x in m["label_marked_modes"]]
-    return [*L, f"- **{'pass' if m['passed'] else 'FAIL'}**", ""]
+    s, b = rec["xtb_pair_labels"], rec["bars"]
+    L += [f"- **{'pass' if m['passed'] else 'FAIL'}**", "", "## 4. Stated, not checked", "",
+          f"- **The printed bars.** {b['note']} Printed: {b['printed_cm']}; this table's own: {b['own_cm']}.",
+          f"- **A degenerate pair in another basis.** The match gives the pair one shift in every basis when its two GFN2-xTB labels "
+          f"are one number; where they differ the carried shift lies between them. Over {s['pairs']} symmetry pairs of "
+          f"{s['molecules_with_pairs']} molecules the two labels differ by {s['largest']['difference_cm']:.3f} cm⁻¹ at most"
+          + (f" ({s['largest']['id']} at {s['largest']['omega_cm']:.1f} cm⁻¹)." if s["pairs"] else "."), ""]
+    return L
 
 
 def main() -> int:
@@ -209,7 +236,8 @@ def main() -> int:
            "artefact_commit": artefact.header["commit"], "commit": state.get("commit", ""), "commit_dirty": state.get("dirty"),
            "tolerance_cm": TOLERANCE_CM, "change_limit_cm": CHANGE_LIMIT_CM, "selected_without_a_force_field": absent_training,
            "targets": check_targets(targets, artefact), "flagged": check_flagged(targets),
-           "marks": check_marks([*training, *targets])}
+           "marks": check_marks([*training, *targets]), "bars": artefact.header["bars"],
+           "xtb_pair_labels": pair_label_spread([*training_mols, *target_mols])}
     rec["passed"] = bool(all(t["passed"] for t in rec["targets"].values()) and all(f["passed"] for f in rec["flagged"].values())
                          and rec["marks"]["passed"])
     os.makedirs(out, exist_ok=True)

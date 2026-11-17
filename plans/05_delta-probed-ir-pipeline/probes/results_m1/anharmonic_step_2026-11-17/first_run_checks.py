@@ -16,6 +16,11 @@ in ascending position:
 3. the bands of a degenerate pair (harmonic positions within PAIR_TOL_CM) carry steps within PAIR_STEP_TOL_CM of each other;
 4. the force field's seconds and peak memory are in the record.
 
+The tolerance of check 1 was set on 17 Nov 2026, after the first run had failed the first version's line by 1.7 cm⁻¹ on a
+C–H stretch pair: it was chosen knowing that number, not registered before the run, and the first run passing check 1 here
+proves nothing about the run. What the 1.7 is: scatter between two GFN2-xTB force fields of the same molecule, an error the
+family's bar does not contain. A later run is a test of the line; the first is where it comes from.
+
 What changed against the first version, and why. Its check 1 had one line for every band, 1.0 cm⁻¹, and the first run's CH
 stretches at 3241.6 differed by 1.7 on a step of −131 whose own error bar is 6.21. Two force fields of one molecule — the
 stored one and the run's — give the model slightly different inputs, and the step moves with them; that scatter is not in the

@@ -66,6 +66,7 @@ def _record() -> dict:
             "scope": "no-large-amplitude", "training_molecules": ["m1", "m2", "m3"],
             "molecules": {"m1": "c1ccccc1", "m2": "c1ccncc1", "m3": "c1ccc2ccccc2c1"}, "targets": {"t1": "c1ccc2cc3ccccc3cc2c1"},
             "elements": ["C", "H", "N"], "compositions": {"C,H": 2, "C,H,N": 1}, "target_composition": {"t1": "C,H"},
+            "bars": {"printed_cm": {"ring-ip": 3.37}, "own_cm": {"ring-ip": 3.37}, "note": "printed as registered"},
             "probes": [row for name, w in windows.items() for row in _probes(name, w)], "windows": windows}
 
 
@@ -277,16 +278,21 @@ def test_match_modes_keeps_its_answer_on_square_input_and_takes_fewer_bands():
 
 def test_the_committed_artefact_holds_the_registered_bars():
     """The artefact in git: the four registered bars, each reproduced under the registered match to the registration's
-    0.01 cm⁻¹; the table it holds is matched set-wise (TASKS 255), three rows larger, its own bars within 0.05 of the registered."""
+    0.01 cm⁻¹; the table it holds is matched set-wise (TASKS 255), one row larger, its own bars within 0.05 of the registered
+    and named as not printed."""
     art = A.load_artefact()
     models = {fa: m for w in art.windows for fa, m in w.families.items()}
     assert A.bars(art) == {"CH-oop": 8.38, "other": 3.84, "ring-ip": 3.37, "CH-stretch": 6.21}
     assert all(abs(m.bar_one_to_one_cm - m.bar_cm) <= 0.01 and abs(m.bar_refit_cm - m.bar_cm) <= 0.05 for m in models.values())
-    assert {fa: round(m.bar_refit_cm, 3) for fa, m in models.items()} == {"CH-oop": 8.381, "other": 3.838, "ring-ip": 3.371, "CH-stretch": 6.199}
-    assert {fa: m.n_training_modes - m.n_training_modes_one_to_one for fa, m in models.items()} == {"CH-oop": 0, "other": 1, "ring-ip": 1,
+    assert {fa: round(m.bar_refit_cm, 3) for fa, m in models.items()} == {"CH-oop": 8.381, "other": 3.839, "ring-ip": 3.369, "CH-stretch": 6.199}
+    assert all(models[fa].bar_refit_cm == models[fa].bar_one_to_one_cm for fa in ("CH-oop", "other", "ring-ip"))    # the same table
+    assert {fa: m.n_training_modes - m.n_training_modes_one_to_one for fa, m in models.items()} == {"CH-oop": 0, "other": 0, "ring-ip": 0,
                                                                                                    "CH-stretch": 1}
-    assert art.header["match"] == {"rule": "sets", "set_tolerance_cm": 1.0, "mark_share": 0.05, "registered_rule": "single",
-                                   "change_limit_cm": 0.05}
+    assert art.header["match"] == {"rule": "sets", "set_tolerance_cm": 1.0, "set_min_overlap": 0.8, "set_max_modes": 4,
+                                   "registered_rule": "single", "change_limit_cm": 0.05}
+    bars = art.header["bars"]
+    assert bars["printed_cm"] == A.bars(art) and bars["own_cm"] == {fa: round(m.bar_refit_cm, 4) for fa, m in models.items()}
+    assert "prints the registered bars" in bars["note"] and "not printed until a dated amendment of the registration" in bars["note"]
     assert len(art.header["training_molecules"]) == 37 and art.header["commit"]
     assert sorted(A.elements(art)) == ["C", "H", "N", "O"]
     assert art.header["compositions"] == {"C,H": 14, "C,H,N": 18, "C,H,N,O": 2, "C,H,O": 3}
@@ -319,9 +325,9 @@ def test_the_superseded_artefact_is_refused_with_its_reason():
     assert A.FORMAT == 3 and A.ARTEFACT.endswith("x2star_v3.json")
 
 
-def test_the_table_holds_every_row_of_the_one_to_one_table_unchanged_and_three_more():
+def test_the_table_holds_every_row_of_the_one_to_one_table_unchanged_and_one_more():
     """Against master's output on the stored molecules: format 2 in git is the table master's one-to-one match built. Every
-    one of its rows is in the new table in the same order with the same six numbers, to the bit; the new table has three rows
+    one of its rows is in the new table in the same order with the same six numbers, to the bit; the new table has one row
     between them and no other difference."""
     old = json.loads((PLAN / "probes" / "anharmonic_step" / "x2star_v2.json").read_text(encoding="utf-8"))["windows"]
     new = json.loads(Path(A.ARTEFACT).read_text(encoding="utf-8"))["windows"]
@@ -335,7 +341,7 @@ def test_the_table_holds_every_row_of_the_one_to_one_table_unchanged_and_three_m
         for row in before:
             extra.remove(row)
         added[name] = [(row[2], round(row[0], 2)) for row in extra]
-    assert added == {"mid": [("ring-ip", 1276.74), ("other", 580.28)], "ch": [("CH-stretch", 3183.24)]}
+    assert added == {"mid": [], "ch": [("CH-stretch", 3183.24)]}
 
 
 def _symmetric_benzene() -> A.Modes:
@@ -407,7 +413,7 @@ def test_the_models_inputs_of_a_degenerate_pair_do_not_depend_on_either_basis(ar
     the model's inputs — and the refusals are those of the unturned case to 1e-9; so are the steps, read on five of the draws."""
     modes = _symmetric_benzene()
     pair = _ring_pair(modes)
-    field = _leaning_field(modes, pair, share=0.7)          # a quarter of the bases fall under the one-to-one line
+    field = _leaning_field(modes, pair, share=0.82)         # a seventh of the bases fall under the one-to-one line
     reference, steps = A.describe(modes, field), A.mode_steps(modes, field, artefact)
     rng, as_a_set = np.random.default_rng(21), 0
     for draw in range(100):
@@ -422,7 +428,7 @@ def test_the_models_inputs_of_a_degenerate_pair_do_not_depend_on_either_basis(ar
             got = A.mode_steps(turned, turned_field, artefact)
             assert [s.reason for s in got] == [s.reason for s in steps]
             assert all(abs(s.delta_anh_cm - t.delta_anh_cm) <= 1e-9 for s, t in zip(got, steps, strict=True) if s.reason is None)
-    assert 10 < as_a_set < 50
+    assert 3 < as_a_set < 35
 
 
 def test_a_band_that_lies_in_a_degenerate_pairs_plane_takes_the_pairs_step():
@@ -573,3 +579,47 @@ def test_the_fit_holds_the_registered_read_to_its_bar_and_the_set_wise_table_to_
     with pytest.raises(SystemExit, match="printed with 'x1'"):
         F.family_record("ch/CH-stretch", {**printed, "model": "x1"}, "cfg", _read(6.2143, 20, 288), _read(6.1994, 20, 289))
     assert (F.TOLERANCE_CM, F.CHANGE_LIMIT_CM, F.REGISTERED_RULE) == (0.01, 0.05, "single")
+
+
+def _band_of_three(steps: list[A.ModeStep]) -> A.BandStep:
+    """Corrected band 0 of a chain of three, with 0.48 / 0.48 / 0.04 of its square on B3LYP modes 0, 1 and 2."""
+    q = np.eye(8)[:, :4]
+    v = np.sqrt([0.48, 0.48, 0.04]) - np.eye(3)[0]
+    bands_q = q.copy()
+    bands_q[:, :3] = q[:, :3] @ (np.eye(3) - 2.0 * np.outer(v, v) / (v @ v))
+    band = A.carry_to_bands(np.array([1500.0, 1500.3, 1500.6, 1700.0]), bands_q, q, steps)[0]
+    assert band.set_wise and band.overlap == pytest.approx(1.0) and band.mode in (0, 1)
+    return band
+
+
+def test_one_member_without_a_step_leaves_a_set_band_without_one_at_any_weight():
+    """Review of 17 Nov 2026: the member that holds 4 % of the band has no step. What it would carry is not known, so the band
+    gets none, with that member's reason; with all three stepped it takes their weighted mean."""
+    whole = _band_of_three([_step(0, -10.0), _step(1, -10.0), _step(2, -35.0), _step(3, -40.0)])
+    assert whole.delta_anh_cm == pytest.approx(-11.0, abs=1e-12) and whole.reason is None and whole.bar_cm == 3.37
+    lost = _band_of_three([_step(0, -10.0), _step(1, -10.0), _step(2, None, A.XTB_PARTNER_MARKED), _step(3, -40.0)])
+    assert (lost.delta_anh_cm, lost.reason, lost.bar_cm, lost.error_not_measured) == (None, A.XTB_PARTNER_MARKED, None, False)
+
+
+def test_a_set_band_over_two_families_gets_no_step():
+    """Review of 17 Nov 2026: the band is printed with its partner's family; a set that also holds a mode of another family
+    would put that family's bar or step beside it."""
+    from dataclasses import replace
+
+    other = replace(_step(2, -35.0), family="other", bar_cm=3.84)
+    band = _band_of_three([_step(0, -10.0), _step(1, -10.0), other, _step(3, -40.0)])
+    assert (band.delta_anh_cm, band.reason, band.bar_cm, band.error_not_measured) == (None, A.MIXED_SET, None, False)
+    assert "different families" in A.REASON_TEXT[A.MIXED_SET] and "0.8" in A.REASON_TEXT[A.NO_XTB_PARTNER]
+    assert "at most 4" in A.REASON_TEXT[A.MIXED_BAND]
+
+
+def test_a_marked_xtb_member_of_any_weight_refuses_the_modes_step(artefact: A.Artefact):
+    """The same through the step: a symmetric benzene's ring pair against a field whose pair is turned 45°; with one of the
+    field's two modes marked, both B3LYP modes lose their step to the mark."""
+    modes = _symmetric_benzene()
+    pair = _ring_pair(modes)
+    field = _leaning_field(modes, pair)
+    marked = np.zeros(len(modes.omega), bool)
+    marked[pair[0]] = True
+    steps = A.mode_steps(modes, A.XtbField(field.delta, marked, _turned(field.q, pair, np.pi / 4)), artefact)
+    assert [steps[k].reason for k in pair] == [A.XTB_PARTNER_MARKED] * 2 and all(steps[k].delta_anh_cm is None for k in pair)

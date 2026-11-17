@@ -50,7 +50,7 @@ from anharmonic_step import (  # noqa: E402
     load_artefact,
 )
 from s2_read import WINDOWS, concat, window_record, window_size, write_atomic  # noqa: E402
-from s2_xtb_read import DEFAULT_RULE, MARK_SHARE, MATCH_RULES, MIN_OVERLAP  # noqa: E402
+from s2_xtb_read import DEFAULT_RULE, MATCH_RULES, MIN_OVERLAP, SET_MAX_MODES, SET_MIN_OVERLAP  # noqa: E402
 from s2b_read import read_sets  # noqa: E402
 from s3_read import MAIN_SCOPE, label_notes, load_scope, predictors, read_targets  # noqa: E402
 
@@ -129,6 +129,16 @@ def fit_window(name: str) -> dict[str, Any]:
             "table": {k: table[k].tolist() for k in TABLE_KEYS}}
 
 
+def bars_record(windows: dict[str, dict[str, Any]]) -> dict[str, Any]:
+    """Which bars a certificate prints and which this table measures: the two differ since the set-wise match (TASKS 255)."""
+    families = {fa: m for w in windows.values() for fa, m in w["families"].items()}
+    return {"printed_cm": {fa: m["bar_cm"] for fa, m in families.items()},
+            "own_cm": {fa: round(m["bar_refit_cm"], 4) for fa, m in families.items()},
+            "note": "A certificate prints the registered bars (printed_cm), read with the one-to-one match. This table is matched "
+                    "set-wise and its own bars (own_cm) are not printed until a dated amendment of the registration "
+                    f"({REGISTRATION}) names them."}
+
+
 def probe_rows(name: str, window: dict[str, Any]) -> list[dict[str, Any]]:
     """PROBES_PER_FAMILY training rows of every modelled family of a window, each with the shift the fit gives it."""
     table = {k: np.asarray(window["table"][k], str if k == "family" else float) for k in TABLE_KEYS}
@@ -182,8 +192,9 @@ def main() -> int:
               "commit_dirty": state.get("dirty"), "registration": REGISTRATION, "decisions": DECISIONS, "scope": MAIN_SCOPE,
               "features": "FX: family one-hot, ω/1000, h, o, Δ_anh of the matched GFN2-xTB mode (s2_search.inputs)",
               "min_overlap": MIN_OVERLAP, "not_measured": {"family": NOT_MEASURED_FAMILY, "o_at_least": NOT_MEASURED_O},
-              "match": {"rule": DEFAULT_RULE, "set_tolerance_cm": MATCH_RULES[DEFAULT_RULE], "mark_share": MARK_SHARE,
-                        "registered_rule": REGISTERED_RULE, "change_limit_cm": CHANGE_LIMIT_CM},
+              "match": {"rule": DEFAULT_RULE, "set_tolerance_cm": MATCH_RULES[DEFAULT_RULE], "set_min_overlap": SET_MIN_OVERLAP,
+                        "set_max_modes": SET_MAX_MODES, "registered_rule": REGISTERED_RULE, "change_limit_cm": CHANGE_LIMIT_CM},
+              "bars": bars_record(windows),
               "sets_file": SETS, "targets_file": TARGETS, "tolerance_cm": TOLERANCE_CM,
               "training_molecules": training, "molecules": {i: smiles[i] for i in training},
               "targets": {t: smiles[t] for t in targets}, **element_record(folders, training, targets),

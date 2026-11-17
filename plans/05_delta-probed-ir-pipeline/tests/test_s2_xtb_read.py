@@ -134,10 +134,10 @@ def test_modes_alone_in_their_sets_are_matched_as_match_modes_matches_them_to_th
 
 
 def test_a_degenerate_pair_is_matched_the_same_in_every_basis_of_either_side():
-    """100 draws: both pairs turned by random angles, the two planes sharing 0.7. The best one-to-one overlap runs from 0.35 to
-    0.7 with the angle, under the line in about a quarter of the bases; the shift, the refusal and the mark each mode gets do
+    """100 draws: both pairs turned by random angles, the two planes sharing 0.82. The best one-to-one overlap runs from 0.41 to
+    0.82 with the angle, under the line in about a seventh of the bases; the shift, the refusal and the mark each mode gets do
     not move."""
-    q, qx = _pair(share=0.7)
+    q, qx = _pair(share=0.82)
     g, x = _side(np.zeros(6), omega=OMEGA_PAIR), _side([10.0, 20.0, -40.0, -40.0, 50.0, 60.0], marked=[1])
     reference = X.attach_xtb(g, x, q, qx)
     assert reference["xtb"].tolist() == [10.0, 20.0, -40.0, -40.0, 50.0, 60.0] and not reference["xtb_set_wise"].any()
@@ -148,10 +148,10 @@ def test_a_degenerate_pair_is_matched_the_same_in_every_basis_of_either_side():
         assert np.abs(rec["xtb"] - reference["xtb"]).max() <= 1e-9
         assert np.array_equal(rec["no_xtb"], reference["no_xtb"]) and np.array_equal(rec["vpt2_marked"], reference["vpt2_marked"])
         assert (rec["xtb_overlap"][list(PAIR)] >= 0.5).all()
-        assert np.allclose(rec["xtb_overlap"][rec["xtb_set_wise"]], 0.7, atol=1e-12)
+        assert np.allclose(rec["xtb_overlap"][rec["xtb_set_wise"]], 0.82, atol=1e-12)
         as_a_set += int(rec["xtb_set_wise"][list(PAIR)].all())
         lost_one_to_one += int(X.attach_xtb(g, x, _turned(q, a), _turned(qx, b), rule="single")["no_xtb"][list(PAIR)].all())
-    assert 10 < as_a_set < 50 and lost_one_to_one == as_a_set          # the one-to-one rule lost the pair in exactly those bases
+    assert 3 < as_a_set < 35 and lost_one_to_one == as_a_set           # the one-to-one rule lost the pair in exactly those bases
 
 
 def test_the_basis_a_pair_was_refused_for_is_45_degrees():
@@ -197,8 +197,8 @@ def test_neighbours_by_accident_keep_their_own_partners_and_a_set_never_reaches_
 
 
 def test_a_set_takes_its_shift_by_overlap_and_its_mark_by_share():
-    """A refused mode that lies in the span of two partners: the shift is their mean weighted by squared overlap; a marked
-    member marks the mode from a twentieth of the overlap on."""
+    """A refused mode that lies in the span of two partners: the shift is their mean weighted by squared overlap, and a marked
+    member marks the mode."""
     basis = orthonormal(9, 9, 7)
     q, qx = basis[:, :6], basis[:, :6].copy()
     qx[:, 2], qx[:, 3] = _turned(q, np.arcsin(np.sqrt(0.48)))[:, [2, 3]].T       # each G mode: 0.52 on one xtb mode, 0.48 on the other
@@ -210,11 +210,6 @@ def test_a_set_takes_its_shift_by_overlap_and_its_mark_by_share():
     assert m.set_wise.tolist() == [0, 0, 1, 0, 0, 0] and m.partner[2] == 2 and ov[2, 2] == pytest.approx(0.468)
     assert rec["xtb"][2] == pytest.approx((ov[2, 2] * -30.0 + ov[2, 3] * -70.0) / (ov[2, 2] + ov[2, 3]), abs=1e-12)
     assert rec["xtb"][3] == -70.0 and rec["vpt2_marked"].tolist() == [0, 0, 1, 1, 0, 0]
-    weights = np.zeros((1, 3))
-    weights[0] = [0.96, 0.04, 0.0]
-    below = X.SetMatch(np.array([0]), np.array([0.9]), np.array([True]), weights)
-    assert below.flagged([False, True, False]).tolist() == [False] and below.flagged([True, False, False]).tolist() == [True]
-    assert X.MARK_SHARE == 0.05
 
 
 def test_the_tolerance_decides_what_a_set_is_and_none_means_no_sets():
@@ -234,3 +229,56 @@ def test_an_unknown_match_rule_is_refused_before_anything_is_read():
     with pytest.raises(ValueError, match="match rule 'pairs'"):
         X.attach_xtb({}, {}, np.eye(2), np.eye(2), rule="pairs")
     assert X.MATCH_RULES == {"sets": 1.0, "single": None} and X.DEFAULT_RULE == "sets"
+
+
+# ---- the review of 17 Nov 2026 ----
+
+def _turned_three(first_row, seed=9):
+    """Six G modes, modes 1 to 3 chained 0.4 cm⁻¹ apart, and an xtb side whose modes 1 to 3 are a reflection of them: G mode 1
+    has the squared overlaps `first_row` with the three."""
+    r = np.sqrt(np.asarray(first_row, float))
+    v = r - np.eye(3)[0]
+    q = orthonormal(9, 6, seed)
+    qx = q.copy()
+    qx[:, 1:4] = q[:, 1:4] @ (np.eye(3) - 2.0 * np.outer(v, v) / (v @ v))
+    return q, qx, np.array([600.0, 1000.0, 1000.4, 1000.8, 1200.0, 1300.0])
+
+
+def test_a_marked_member_of_any_weight_marks_the_mode():
+    """The reviewer's set: weights 0.48 / 0.48 / 0.04, the 4 % partner marked with a shift of +180. The mean is −2.4 where the
+    sound partners say −10, so the mode is marked and no read or step uses that number."""
+    q, qx, omega = _turned_three([0.48, 0.48, 0.04])
+    x = _side([10.0, -10.0, -10.0, 180.0, 50.0, 60.0], marked=[3])
+    rec = X.attach_xtb(_side(np.zeros(6), omega=omega), x, q, qx)
+    assert rec["xtb_set_wise"][1] and rec["xtb_overlap"][1] == pytest.approx(1.0) and rec["xtb"][1] == pytest.approx(-2.4, abs=1e-9)
+    assert rec["vpt2_marked"][1] and not rec["vpt2_marked"][[0, 4, 5]].any()
+    sound = X.attach_xtb(_side(np.zeros(6), omega=omega), _side([10.0, -10.0, -10.0, 180.0, 50.0, 60.0]), q, qx)
+    assert not sound["vpt2_marked"].any() and not hasattr(X, "MARK_SHARE")
+
+
+def test_a_set_is_accepted_from_four_fifths_of_the_mode_not_from_half():
+    """At 45° the one-to-one overlap is half the planes' share. Planes sharing 0.75: under the set's line, refused, and the
+    record keeps the 0.75; sharing 0.85: matched."""
+    g, x = _side(np.zeros(6), omega=OMEGA_PAIR), _side(np.arange(6.0))
+    for share, matched in ((0.561, False), (0.617, False), (0.75, False), (0.85, True), (0.934, True), (0.985, True)):
+        q, qx = _pair(share=share)
+        rec = X.attach_xtb(g, x, q, _turned(qx, np.pi / 4))
+        assert rec["no_xtb"][list(PAIR)].tolist() == [not matched] * 2 and rec["xtb_set_wise"][list(PAIR)].tolist() == [matched] * 2
+        assert np.allclose(rec["xtb_overlap"][list(PAIR)], share)
+    assert X.SET_MIN_OVERLAP == 0.8 and X.MIN_OVERLAP == 0.5
+    q, qx = _pair(share=0.75)
+    assert X.match_sets(OMEGA_PAIR, q, _turned(qx, np.pi / 4), set_overlap=0.7).set_wise[list(PAIR)].all()
+
+
+def test_a_chain_of_more_than_four_modes_is_not_read_as_a_set():
+    """The 45° pair again, once with only its two modes chained and once inside a chain of five: there it is refused, and named."""
+    q, qx = _pair()
+    turned = _turned(qx, np.pi / 4)
+    four = X.match_sets(np.array([999.0, 999.5, 1000.0, 1000.3, 1200.0, 1300.0]), q, turned)
+    assert four.set_wise.tolist() == [0, 0, 1, 1, 0, 0] and not four.oversized.any()
+    five = X.match_sets(np.array([999.0, 999.5, 1000.0, 1000.3, 1001.0, 1300.0]), q, turned)
+    assert five.partner.tolist()[:2] == [0, 1] and five.partner[list(PAIR)].tolist() == [-1, -1] and not five.set_wise.any()
+    assert five.oversized.tolist() == [0, 0, 1, 1, 0, 0] and np.allclose(five.overlap[list(PAIR)], 0.4925)
+    rec = X.attach_xtb(_side(np.zeros(6), omega=[999.0, 999.5, 1000.0, 1000.3, 1001.0, 1300.0]), _side(np.arange(6.0)), q, turned)
+    assert rec["xtb_set_oversized"].tolist() == [0, 0, 1, 1, 0, 0] and rec["no_xtb"].tolist() == [0, 0, 1, 1, 0, 0]
+    assert X.SET_MAX_MODES == 4
