@@ -110,3 +110,32 @@ def test_load_reads_the_cation_rows_of_the_manifest(tmp_path, monkeypatch):
     monkeypatch.setattr(P, "train_ids", lambda models: {"B_tol", "P3c_gone"})
     with pytest.raises(KeyError, match="P3c_gone"):
         S.load((tmp_path / "m.pt",))
+
+
+BOTH = S.build({"A_naph", "B_twin", "P3c_naph", "P3c_cn"}, {"a": {"A_benz", "A_cn"}, "b": set()}, SMILES,
+               CATIONS | {"P3c_cn": "N#Cc1ccccc1"})
+
+
+@pytest.mark.parametrize(("smiles", "role", "ids", "cation"), [
+    ("c1ccc2ccccc2c1", "trained", ["A_naph"], "P3c_naph"),                   # trained itself, and its cation too
+    ("N#Cc1ccccc1", "trained_and_held_out", ["B_twin"], "P3c_cn"),           # a hold-out twin trained, and its cation too
+])
+def test_a_trained_cation_beside_a_trained_parent_adds_its_clause(smiles, role, ids, cation):
+    got = S.status(smiles, BOTH, None)
+    assert (got["role"], got["ids"], got["cation_trained"]) == (role, ids, [cation])
+    assert got["text"] == f"{S.status(smiles, SEEN, None)['text']}; " + S.TEXT["cation_trained"].format(ids=cation)
+
+
+def test_the_cations_of_measurement_and_release_networks_are_one_list():
+    release = S.build({"A_naph", "P3c_benz", "P3c_benz2"}, {}, SMILES, CATIONS | {"P3c_benz2": "C1=CC=CC=C1"})
+    got = S.status("c1ccccc1", WITH_CATIONS, "A_benz", release)
+    assert (got["role"], got["cation_trained"]) == ("a", ["P3c_benz", "P3c_benz2"])
+    assert got["text"].count("radical cation (P3c_benz, P3c_benz2)") == 1
+
+
+def test_an_unseen_molecule_with_a_trained_cation_is_unseen_as_a_neutral_one():
+    seen = S.build({"P3c_pyr"}, {}, SMILES, {"P3c_pyr": "c1ccc2cc3ccccc3cc2c1"})
+    got = S.status("c1ccc2cc3ccccc3cc2c1", seen, None)
+    assert (got["role"], got["ids"], got["cation_trained"]) == ("unseen", [], ["P3c_pyr"])
+    assert got["text"] == S.TEXT["unseen_neutral"] + "; " + S.TEXT["cation_trained"].format(ids="P3c_pyr")
+    assert not got["text"].startswith(S.TEXT["unseen"])

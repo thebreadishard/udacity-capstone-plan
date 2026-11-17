@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import csv
 import json
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
@@ -28,12 +28,14 @@ TEXT = {
     "b": "held out, hold-out (b) ({ids}): never trained on; the measured error includes it",
     "catalogue": "in the catalogue ({ids}) but not among the molecules the network trained on",
     "unseen": "not in the catalogue: the network has not seen it",
+    "unseen_neutral": "not in the catalogue as a neutral molecule: the network has not seen it as one",
     # decision 66 (design note of 17 Nov 2026, §3): the line for a molecule the release networks trained on
     "release_trained": "in the release networks' training data: the error bars are not an out-of-sample error for this molecule; "
                        "expect it to be smaller",
-    # the clause for a neutral molecule whose radical cation the networks trained on (TASKS 264)
-    "cation_trained": "its radical cation ({ids}) is in the networks' training data; with the carried version a cation's correction was "
-                      "seen to carry over onto its neutral skeleton (TASKS 253, 257), so this molecule's error may differ from the measured one",
+    # the clause for a neutral molecule whose radical cation the networks trained on (TASKS 253, 257, 264): seed 0 of v1.4's recipe,
+    # benzene's corrected-frequency rms 1.47 cm-1 without the P3c layer, 5.37 with it (probes/results_m1/v14_data_read_2026-11-17/probe_nop3c.txt)
+    "cation_trained": "its radical cation ({ids}) is in the networks' training data; in a test, training on benzene's cation raised neutral "
+                      "benzene's error from 1.5 to 5.4 cm⁻¹ for one network, so this molecule's error may be larger than the measured one",
 }
 
 
@@ -43,7 +45,7 @@ class Seen:
     neutral molecule's radical cations the network trained on (a cation is not its parent: it never makes the parent 'trained')."""
     trained: dict[str, list[str]]
     holdout: dict[str, tuple[str, list[str]]]
-    cations: dict[str, list[str]] = field(default_factory=dict)
+    cations: dict[str, list[str]]
 
 
 def by_smiles(ids: set[str], smiles_of: dict[str, str]) -> dict[str, list[str]]:
@@ -70,7 +72,8 @@ def build(trained_ids: set[str], holdout_ids: dict[str, set[str]], smiles_of: di
 
 def leaks(seen: Seen) -> dict[str, tuple[str, list[str], list[str]]]:
     """Canonical SMILES → (hold-out, its ids there, its ids in the training set) for every hold-out molecule the network also trained on.
-    A hold-out molecule whose cation was trained is not listed: the molecule itself was not trained on (`status` names its cation)."""
+    A hold-out molecule's cation twin is not listed here: the training (`--holdout-twins drop-any-charge`) and the readers (rungC_eval_saved,
+    release_checks) refuse it upstream (TASKS 253, m05/holdout_twins.py); `status` still names it."""
     return {c: (seen.holdout[c][0], seen.holdout[c][1], seen.trained[c]) for c in sorted(set(seen.trained) & set(seen.holdout))}
 
 
@@ -112,7 +115,8 @@ def status(smiles: str, seen: Seen, listed_id: str | None, release: Seen | None 
     cations = sorted(set(seen.cations.get(c, [])) | set(release.cations.get(c, []) if release is not None else []))
     if not cations:
         return got
-    return got | {"cation_trained": cations, "text": f"{got['text']}; {TEXT['cation_trained'].format(ids=', '.join(cations))}"}
+    head = TEXT["unseen_neutral"] if got["role"] == "unseen" else got["text"]        # its parent row is the corpus's, the catalogue lacks it
+    return got | {"cation_trained": cations, "text": f"{head}; {TEXT['cation_trained'].format(ids=', '.join(cations))}"}
 
 
 def role_of(c: str | None, seen: Seen, listed_id: str | None, release: Seen | None) -> dict:
