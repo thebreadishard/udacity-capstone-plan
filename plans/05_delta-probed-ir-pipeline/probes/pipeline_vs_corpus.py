@@ -88,11 +88,12 @@ def against_truth(result: Path, corpus: Path) -> dict:
     return {"truth": f"{corpus.name}/{TRUTH}", "all_modes": {k: _rms(e) for k, e in errors.items()}, "per_family": per_family,
             "spectrum_overlap": {"network": round(read["spectrum_overlap"], 4), "B3LYP": round(read["spectrum_overlap_zero_rule"], 4)},
             "height_error": {"network": round(read[MATCHED], 3), "B3LYP": round(read["intensity_rel_rms_zero_rule_matched"], 3)},
-            "evaluation": evaluation_value(r.models, corpus.name)}
+            "evaluation": evaluation_value(tuple(A.model_key(m["path"]) for m in r.record["admission"]["models"]), corpus.name)}
 
 
 def evaluation_value(models: tuple[str, ...], mol_id: str) -> dict | None:
-    """The network's evaluation of the same molecule (seed means of its per-molecule read-outs), when the molecule is in a hold-out."""
+    """The network's evaluation of the same molecule (seed means of its per-molecule read-outs), when the molecule is in a hold-out;
+    `models` are the checkpoints' keys under module 05's out/ (`A.model_key`)."""
     for h in A.HOLDOUTS:
         rows = []
         for p in A.evaluation_records(models):

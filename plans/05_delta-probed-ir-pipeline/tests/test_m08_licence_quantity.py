@@ -7,6 +7,7 @@ perfect and by a zero correction. Evaluation records are read as JSON; no model 
 from __future__ import annotations
 
 import json
+import re
 import shutil
 import sys
 from pathlib import Path
@@ -96,10 +97,14 @@ def test_an_interval_that_crosses_the_line_is_stated_for_a_licensed_family_only(
 def test_a_version_without_a_product_error_record_is_refused_with_the_command(tmp_path, monkeypatch):
     with pytest.raises(A.NoProductError, match=r"python tools/runspec\.py launch probes/runspecs/product_error_read\.json"):
         A.product_error_record(("E7_rungC_nochain_model_n750_seed0.pt",))
-    for p in [*A.evaluation_records(V13), *A.clean_a_records(V13)]:
-        shutil.copy(p, tmp_path / p.name)
+    carried = tuple(A.model_key(m) for m in A.P.carried_models(A.NK.MEASUREMENT))   # the registry's carried version, its records but that one
+    for p in [*A.evaluation_records(carried), *(A.clean_a_records(carried) or [])]:
+        copy = tmp_path / p.relative_to(A.M05_OUT)                                     # each in its folder under out/, as the key says
+        copy.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy(p, copy)
+    record = A.product_error_path(carried).name
     monkeypatch.setattr(A, "M05_OUT", tmp_path)
-    with pytest.raises(A.NoProductError, match=r"no product-error record E7_rungC_chain35_analytic_product_error\.json"):
+    with pytest.raises(A.NoProductError, match=rf"no product-error record {re.escape(record)}"):
         A.carried_accuracy()
 
 

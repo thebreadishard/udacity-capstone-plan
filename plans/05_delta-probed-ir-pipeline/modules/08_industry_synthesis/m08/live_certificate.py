@@ -209,7 +209,7 @@ def certificate(folder: Path, catalog: Catalog) -> dict:
     released = bool(adm.get("measurement_models"))
     ran = tuple(Path(m["path"]) for m in adm["models"])
     sha16 = {PureWindowsPath(m["path"]).name: m["sha16"] for m in measured}
-    accuracy = A.accuracy_of(tuple(sha16), sha16)
+    accuracy = A.accuracy_of(tuple(A.model_key(m["path"]) for m in measured), sha16)
     w_low = RINT.mode_intensities(r.H_low, r.masses, r.apt)[0]
     listed = listing(adm["smiles"], [float(w) for w in w_low], catalog)
     tolerance = catalog.u_band(listed["name"] if listed else rec["name"])

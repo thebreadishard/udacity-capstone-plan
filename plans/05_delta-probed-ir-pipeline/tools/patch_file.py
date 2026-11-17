@@ -13,6 +13,7 @@ Library:  from patch_file import patch, append, insert_after_line
     append(path, text)                        # text after the file's last non-empty line
     insert_after_line(path, needle, text)     # after the single line that contains needle
     patch_many({path: [(old, new), ...], ...})  # every anchor in every file checked before any file is written
+    Edits apply in order; each anchor is counted on the text as the edits before it left it.
 CLI:      python patch_file.py <target> <edits.json>     with [{"old": "...", "new": "..."}, ...]   (exit 1 and no write if any anchor fails)
 """
 import json
@@ -83,10 +84,12 @@ def _patched(path, edits, count=1, controls=False):
         for old, new in edits:
             _check_controls(path, new, old)
     text = _read_text(path)
-    problems =[(old[:60], text.count(old)) for old, _ in edits if text.count(old) != count]
-    if problems:
-        raise AssertionError(f"{path}: anchors not matching exactly {count} time(s): {problems}")
-    for old, new in edits:
+    for index, (old, new) in enumerate(edits):
+        # Counted on the text as it stands when this edit applies: an anchor an earlier edit rewrote must refuse, not replace nothing.
+        found = text.count(old)
+        if found != count:
+            raise AssertionError(f"{path}: edit {index} anchor {old[:60]!r} occurs {found} time(s) after the edits before it, "
+                                 f"need exactly {count}")
         text = text.replace(old, new)
     return text
 

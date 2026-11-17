@@ -67,6 +67,35 @@ def test_patch_many_writes_no_file_when_one_anchor_fails(tmp_path):
     assert a.read_text(encoding="utf-8") == "ALPHA\n" and b.read_text(encoding="utf-8") == "BETA\n"
 
 
+def test_an_anchor_an_earlier_edit_rewrote_is_refused(tmp_path):
+    """TASKS 265: the second anchor was counted on the original text, the first edit removed it, and the replace did nothing."""
+    p = tmp_path / "a.md"
+    p.write_text("row 263 text\nrow 262\n", encoding="utf-8", newline="\n")
+    before = p.read_bytes()
+    with pytest.raises(AssertionError, match=r"edit 1 anchor 'row 263 text'"):
+        pf.patch(str(p), [("row 263 text", "row 263 changed"), ("row 263 text", "row 263 text\nrow 264")])
+    with pytest.raises(AssertionError, match=r"edit 1"):
+        pf.patch_many({str(p): [("263 text", "263 changed"), ("row 263 text\n", "x\n")]})
+    assert p.read_bytes() == before and not (tmp_path / "a.md.tmp").exists()
+
+
+def test_an_anchor_an_earlier_edit_duplicated_is_refused(tmp_path):
+    p = tmp_path / "a.md"
+    p.write_text("alpha\nbeta\n", encoding="utf-8", newline="\n")
+    before = p.read_bytes()
+    with pytest.raises(AssertionError, match=r"edit 1 anchor 'beta' occurs 2"):
+        pf.patch(str(p), [("alpha", "beta-like alpha"), ("beta", "BETA")])
+    assert p.read_bytes() == before
+
+
+def test_independent_edits_and_a_chained_edit_still_apply(tmp_path):
+    p = tmp_path / "a.md"
+    p.write_text("alpha\nbeta\ngamma\n", encoding="utf-8", newline="\n")
+    assert pf.patch(str(p), [("alpha", "ALPHA"), ("gamma", "GAMMA")]) == 2
+    assert pf.patch(str(p), [("beta", "BETA"), ("BETA\nGAMMA", "BETA\nDELTA")]) == 2   # an anchor on text the first edit wrote
+    assert p.read_bytes() == b"ALPHA\nBETA\nDELTA\n"
+
+
 def _refuse_replace(monkeypatch) -> list:
     """os.replace refused as Windows refuses it while another process holds the target; returns the list of attempts."""
     tries = []

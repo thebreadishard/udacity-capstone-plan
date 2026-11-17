@@ -102,7 +102,7 @@ def _frequencies(H: np.ndarray, masses: np.ndarray) -> tuple[np.ndarray, np.ndar
 
 def holdout_a_with_truth() -> list[str]:
     """Hold-out (a) molecules of the carried models' evaluation records that hold a ωB97X analytic truth."""
-    models = tuple(m.name for m in N.P.carried_models(N.P.NK.MEASUREMENT))
+    models = tuple(V.A.model_key(m) for m in N.P.carried_models(N.P.NK.MEASUREMENT))
     ids = {k for p in V.A.evaluation_records(models) for k in json.loads(p.read_text(encoding="utf-8"))["a"]["per_molecule"]}
     return sorted(i for i in ids if (N.P.CORPUS / i / V.TRUTH).exists())
 

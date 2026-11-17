@@ -58,10 +58,11 @@ def test_the_truth_against_itself_is_exact():
     assert S.truth_beside("A_8448043181", own[1:])["rms_by_rank_cm"] is None          # unequal counts are not paired by rank
 
 
-def test_the_carried_models_index_names_the_two_hold_out_twins():
+def test_chain_35s_v13_index_names_the_two_hold_out_twins():
+    """Pinned on chain 35 (version 1.3, carried until 17 Nov 2026), whose seeds trained on two layer-B twins of hold-out (a)."""
     models = tuple(sorted((P.M05 / "out").glob("E7_rungC_chain35_analytic_model_n750_seed*.pt")))
     if len(models) != 3 or not S.MANIFEST.exists():
-        pytest.skip("the carried models or the manifest are not on this machine")
+        pytest.skip("chain 35's models or the manifest are not on this machine")
     held = {v[1][0] for v in S.leaks(S.load(models)).values()}
     assert held == {"A_07cadc7923", "A_3100da3761"}                                  # 2-naphthoic acid and benzonitrile (30 Oct 2026)
 
@@ -103,13 +104,14 @@ def test_load_reads_the_cation_rows_of_the_manifest(tmp_path, monkeypatch):
     record.write_text(json.dumps({"a": {"per_molecule": {"A_benz": {}}}, "b": {"per_molecule": {}}}), encoding="utf-8")
     monkeypatch.setattr(S, "MANIFEST", manifest)
     monkeypatch.setattr(P, "train_ids", lambda models: {"B_tol", "P3c_benz"})
-    monkeypatch.setattr(S.A, "evaluation_records", lambda names: [record])
-    seen = S.load((tmp_path / "m.pt",))
+    monkeypatch.setattr(S.A, "evaluation_records", lambda keys: [record] if keys == ("v14/m.pt",) else pytest.fail(f"keys {keys}"))
+    model = S.A.M05_OUT / "v14" / "m.pt"             # the records are found by the model's key under module 05's out/ (TASKS 264)
+    seen = S.load((model,))
     assert (seen.trained, seen.holdout, seen.cations) == ({"Cc1ccccc1": ["B_tol"]}, {"c1ccccc1": ("a", ["A_benz"])}, {"c1ccccc1": ["P3c_benz"]})
     assert S.status("c1ccccc1", seen, "A_benz")["cation_trained"] == ["P3c_benz"]
     monkeypatch.setattr(P, "train_ids", lambda models: {"B_tol", "P3c_gone"})
     with pytest.raises(KeyError, match="P3c_gone"):
-        S.load((tmp_path / "m.pt",))
+        S.load((model,))
 
 
 BOTH = S.build({"A_naph", "B_twin", "P3c_naph", "P3c_cn"}, {"a": {"A_benz", "A_cn"}, "b": set()}, SMILES,

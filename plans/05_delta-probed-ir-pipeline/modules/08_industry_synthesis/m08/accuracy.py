@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import json
 import math
-from pathlib import Path
+from pathlib import Path, PurePath, PurePosixPath, PureWindowsPath
 
 from . import pipeline as P
 from .spectrum import shape_accuracy
@@ -18,7 +18,8 @@ import network_kind as NK
 from chain35_read import T1_FAMILY_LINE, T1_RATIO_LINE
 from promotion_read import FAMILIES, QUANTITIES, RATIO, Arm, load_eval_arm, reported
 
-M05_OUT = P.M05 / "out"
+OUT_DIR = "out"                        # module 05's checkpoint folder; a model's key is its path under it (the registry's keys)
+M05_OUT = P.M05 / OUT_DIR
 LICENCE_LINE_CM = T1_FAMILY_LINE        # decision 53's 3 cm⁻¹, every family's line under decision 65
 TARGETS = {**dict.fromkeys(FAMILIES, LICENCE_LINE_CM), RATIO: T1_RATIO_LINE}
 TARGET_SOURCE = ("3 cm⁻¹ per family — decision 53's line for ring-ip, CH-oop and 'other', every family's under decision 65 (the licence) — "
@@ -64,15 +65,37 @@ def _stem_seed(name: str) -> tuple[str, str]:
     return stem, tail.removesuffix(".pt").rsplit("_", 1)[-1]
 
 
+def model_key(path: str | PurePath) -> str:
+    """A checkpoint's key under module 05's out/ — the registry's (`v14/…_model_n1082_seed0.pt`; the file name for one directly in out/)
+    — from its path as any machine wrote it: what follows the last `05_support_predictor/out` in the path, or the leading `out/` of a
+    path relative to module 05. Any other path is refused: its records could not be found."""
+    parts = PureWindowsPath(str(path)).parts    # splits on both separators: an admission written on Windows reads alike on Linux
+    anchor = (P.M05.name, OUT_DIR)
+    starts = [i + 2 for i in range(len(parts) - 1) if parts[i:i + 2] == anchor] or ([1] if parts[:1] == (OUT_DIR,) else [])
+    if not starts or starts[-1] >= len(parts):
+        raise ValueError(f"{path}: not a checkpoint under module 05's {OUT_DIR}/ ({M05_OUT}), so its records cannot be found")
+    return "/".join(parts[starts[-1]:])
+
+
+def _folder(key: str) -> Path:
+    """The folder of the model with this key, where its records lie beside it."""
+    return M05_OUT / PurePosixPath(key).parent
+
+
+def _name(key: str) -> str:
+    return PurePosixPath(key).name
+
+
 def evaluation_records(models: tuple[str, ...]) -> list[Path]:
     """Each model's evaluation record: the `rungC_eval_saved.py` JSON beside it that names it (…_model_n750_seed0.pt → …_eval_*seed0.json).
-    None or several is refused: the error stated is that of the files that ran."""
+    `models` are keys under module 05's out/ (`model_key`). None or several is refused: the error stated is that of the files that ran."""
     out = []
-    for name in models:
+    for key in models:
+        name, folder = _name(key), _folder(key)
         stem, seed = _stem_seed(name)
-        hits = [p for p in sorted(M05_OUT.glob(f"{stem}_eval_*{seed}.json")) if _model_of(p) == name]
+        hits = [p for p in sorted(folder.glob(f"{stem}_eval_*{seed}.json")) if _model_of(p) == name]
         if len(hits) != 1:
-            raise ValueError(f"{name}: {len(hits)} evaluation records in {M05_OUT} name it; exactly one is needed")
+            raise ValueError(f"{key}: {len(hits)} evaluation records in {folder} name it; exactly one is needed")
         out.append(hits[0])
     return out
 
@@ -81,9 +104,10 @@ def clean_a_records(models: tuple[str, ...]) -> list[Path] | None:
     """Each model's clean hold-out (a) read (`probes/holdout_a_clean.sh`: `<stem>_a8read_<seed>.json`), or None where no model has one;
     some models with one and some without is refused, since the error stated would mix two hold-outs."""
     hits = []
-    for name in models:
+    for key in models:
+        name = _name(key)
         stem, seed = _stem_seed(name)
-        hits.append([p for p in sorted(M05_OUT.glob(f"{stem}_a8read_{seed}.json")) if _model_of(p) == name])
+        hits.append([p for p in sorted(_folder(key).glob(f"{stem}_a8read_{seed}.json")) if _model_of(p) == name])
     if not any(hits):
         return None
     if any(len(h) != 1 for h in hits):
@@ -106,28 +130,39 @@ def _records(paths: list[Path]) -> list[dict]:
     return out
 
 
+def product_error_path(models: tuple[str, ...]) -> Path:
+    """Where the models' product-error record lies: `<stem>_product_error.json` in their folder, beside their evaluation records.
+    Models of several stems or folders are refused: a product-error record is one version's."""
+    stems = {_stem_seed(_name(key))[0] for key in models}
+    if len(stems) != 1:
+        raise ValueError(f"the models are of {len(stems)} stems ({sorted(stems)}); a product-error record is one version's")
+    folders = {_folder(key) for key in models}
+    if len(folders) != 1:
+        raise ValueError(f"the models lie in {len(folders)} folders ({sorted(map(str, folders))}); a product-error record is one version's")
+    return folders.pop() / f"{stems.pop()}{PRODUCT_SUFFIX}"
+
+
 def product_error_record(models: tuple[str, ...], sha16: dict[str, str] | None = None) -> Path:
     """The models' product-error record, `<stem>_product_error.json` beside their evaluation records. A version without one is refused
     with the command that makes it: its licence is not read on the first-order quantity instead. The record names the checkpoints it
     was read on by file name and by hash; a record read on other files of the same names is refused. `sha16` gives the hashes of the
     files that ran, per file name (a pipeline record's admission); without it the checkpoints beside the records are hashed where this
-    machine has them, and where it has none (the model files are not in git) the names alone are compared."""
-    stems = {_stem_seed(name)[0] for name in models}
-    if len(stems) != 1:
-        raise ValueError(f"the models are of {len(stems)} stems ({sorted(stems)}); a product-error record is one version's")
-    path = M05_OUT / f"{stems.pop()}{PRODUCT_SUFFIX}"
+    machine has them, and where it has none (the model files are not in git) the names alone are compared. `models` are keys under
+    module 05's out/ (`model_key`); the record names the files by file name."""
+    path = product_error_path(models)
+    names = tuple(_name(key) for key in models)
     if not path.is_file():
-        raise NoProductError(f"no product-error record {path.name} in {M05_OUT}: the licence is read on the {QUANTITY_NAMES[PRODUCT]} "
-                             f"(README decision 65, amendment of {AMENDED}), which is not measured for {', '.join(models)}; make the "
+        raise NoProductError(f"no product-error record {path.name} in {path.parent}: the licence is read on the {QUANTITY_NAMES[PRODUCT]} "
+                             f"(README decision 65, amendment of {AMENDED}), which is not measured for {', '.join(names)}; make the "
                              f"record with `{PRODUCT_COMMAND}` (it reads the registry's carried models)")
     with open(path, encoding="utf-8") as f:
         rec = json.load(f)
     NK.refuse_release(NK.stated_kind(rec, path.name), path.name, "its product error on the hold-outs")
-    if sorted(rec["models"]) != sorted(models):
-        raise ValueError(f"{path.name} was read on {rec['models']}, not on {list(models)}; make it again with `{PRODUCT_COMMAND}`")
-    ran = {n: P.sha16(M05_OUT / n) for n in models if (M05_OUT / n).is_file()} if sha16 is None else sha16
-    if not set(ran) <= set(models):
-        raise ValueError(f"hashes given for {sorted(set(ran) - set(models))}, which are not among the models {list(models)}")
+    if sorted(rec["models"]) != sorted(names):
+        raise ValueError(f"{path.name} was read on {rec['models']}, not on {list(names)}; make it again with `{PRODUCT_COMMAND}`")
+    ran = {_name(k): P.sha16(M05_OUT / k) for k in models if (M05_OUT / k).is_file()} if sha16 is None else sha16
+    if not set(ran) <= set(names):
+        raise ValueError(f"hashes given for {sorted(set(ran) - set(names))}, which are not among the models {list(names)}")
     differ = [f"{n} (record {rec['model_sha16'][n]}, file {h})" for n, h in sorted(ran.items()) if rec["model_sha16"][n] != h]
     if differ:
         raise ValueError(f"{path.name} was read on other files than these models, whose names it shares: sha16 differs for "
@@ -200,9 +235,9 @@ def network_accuracy(records: list[Path], clean: list[Path] | None = None, produ
 
 
 def accuracy_of(models: tuple[str, ...], sha16: dict[str, str] | None = None) -> dict:
-    """Both quantities for the named model files: their evaluation records, the clean hold-out (a) where they carry it, and their
+    """Both quantities for the model files of these keys (`model_key`): their evaluation records, the clean hold-out (a) where they carry it, and their
     product-error record — without which the version is refused (`NoProductError`), never read on the first-order quantity alone.
-    `sha16`: the hashes of the files that ran, which the record must have been read on (`product_error_record`)."""
+    `sha16`: the hashes of the files that ran by file name, which the record must have been read on (`product_error_record`)."""
     return network_accuracy(evaluation_records(models), clean_a_records(models), product_error_record(models, sha16))
 
 
@@ -223,7 +258,7 @@ def stated_errors(accuracy: dict) -> tuple[str, dict[str, dict[str, float]]]:
 
 def carried_version() -> str:
     status = P.MR.read_status(P.MR.STATUS_FILE)
-    versions = {status[m.name]["version"] for m in P.carried_models(NK.MEASUREMENT)}
+    versions = {status[P.MR.checkpoint_key(m, P.MR.OUT)]["version"] for m in P.carried_models(NK.MEASUREMENT)}
     if len(versions) != 1:
         raise RuntimeError(f"the carried ΔH-network files are of {len(versions)} versions: {sorted(versions)}")
     return versions.pop()
@@ -233,5 +268,5 @@ def carried_accuracy() -> dict:
     """The error of the carried version, both quantities: the evaluation records and the product-error record of the registry's carried
     measurement networks (decision 66: an error is never read on the release networks). A carried version without a product-error
     record raises `NoProductError` with the command that makes it."""
-    names = tuple(m.name for m in P.carried_models(NK.MEASUREMENT))
-    return accuracy_of(names) | {"version": carried_version()}
+    keys = tuple(P.MR.checkpoint_key(m, P.MR.OUT) for m in P.carried_models(NK.MEASUREMENT))
+    return accuracy_of(keys) | {"version": carried_version()}
