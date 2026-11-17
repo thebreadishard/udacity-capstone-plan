@@ -19,8 +19,8 @@ The event log (`EventLog`) holds the same numbers and nothing else: every scalar
 `SCALAR_TAGS`, at the step of its epoch, written once that entry is final. The record stays the source; a log can be made again from a
 record (`probes/figures/history_to_tensorboard.py`). TensorBoard stores a scalar as a 32-bit float.
 
-The log is a view and never stops a training: when the folder, a write or the close fails (an `OSError` — a full disk, a file another
-process holds), `EventLog` says so in one line, writes no more for that run and keeps the reason in `incomplete`, which the trainer
+The log is a view and never stops a training: when the folder, a write or the close fails (any exception — a full disk, a file another
+process holds, an error inside tensorboard), `EventLog` says so in one line, writes no more for that run and keeps the reason in `incomplete`, which the trainer
 puts in the record as `event_log_incomplete`. On Windows a TensorBoard that reads the folder does not make a write fail (measured
 17 Nov 2026, tensorboard 2.21.0: an append while the event file is held open for reading succeeds); only removing an earlier
 run's file fails while a reader has it open, and that ends the log of the new run, not the training."""
@@ -137,8 +137,8 @@ class EventLog:
     It only writes what it is handed: nothing is read from the model and no random number is drawn. Event files an earlier run left in
     `run_dir` are removed first, as the record of the same prefix is overwritten, so that the folder shows one training.
 
-    An `OSError` at any point ends the log, never the training: one line to `log`, no further write, the reason in `incomplete`
-    (None while the log is whole). A missing tensorboard package is a configuration fault and is raised."""
+    An exception at any point ends the log, never the training: one line to `log`, no further write, the reason in `incomplete`
+    (None while the log is whole). A missing tensorboard package is a configuration fault and is raised, before anything is written."""
 
     def __init__(self, run_dir: Path | None, log: Callable[[str], None] = print) -> None:
         self.run_dir = run_dir
@@ -151,19 +151,22 @@ class EventLog:
     def _open(self, writer_class: type) -> None:
         self.run_dir.mkdir(parents=True, exist_ok=True)
         for earlier in self.run_dir.glob(EVENT_FILES):
-            earlier.unlink()
+            try:
+                earlier.unlink()
+            except OSError as e:
+                raise OSError(f"an earlier run's events remain in the folder and are not this training's ({type(e).__name__}: {e})") from e
         self._writer = writer_class(log_dir=str(self.run_dir))
 
     def _guarded(self, write: Callable[..., None], *args: object) -> None:
-        """Run one step of the log; an OSError ends the log with its line and is not passed on."""
+        """Run one step of the log; whatever it raises ends the log with its line and is not passed on."""
         try:
             write(*args)
-        except OSError as e:
+        except Exception as e:  # noqa: BLE001  a view must not stop a training whose record is written only after every seed
             self.incomplete = f"{type(e).__name__}: {e}"
             writer, self._writer = self._writer, None
             self._log(incomplete_line(self.run_dir, self.incomplete))
             if writer is not None:
-                with contextlib.suppress(OSError):               # the writer that just failed may fail again while it closes
+                with contextlib.suppress(Exception):             # the writer that just failed may fail again while it closes
                     writer.close()
 
     def __enter__(self) -> EventLog:

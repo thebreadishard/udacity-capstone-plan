@@ -110,8 +110,13 @@ def _same_training(a: RT.Trained, b: RT.Trained) -> bool:
             and (a.history, a.best_epoch) == (b.history, b.best_epoch))
 
 
-def test_a_write_that_fails_ends_the_log_and_not_the_training(tmp_path, monkeypatch):
-    """A full disk at epoch 3: the training finishes with the same weights, one line names the reason and the converter, the log stops."""
+@pytest.mark.parametrize(("error", "reason"), [
+    (OSError(28, "No space left on device"), "OSError: [Errno 28] No space left on device"),
+    (ValueError("a field the writer cannot encode"), "ValueError: a field the writer cannot encode"),      # an error inside tensorboard
+])
+def test_a_write_that_fails_ends_the_log_and_not_the_training(tmp_path, monkeypatch, error, reason):
+    """A failed write at epoch 3, whatever it raises: the training finishes with the same weights, one line names the reason and the
+    converter, the log stops and keeps the reason the trainer puts in the record (`event_log_incomplete`)."""
     cfg = TrainConfig(**COSINE)
     lines = []
     with RH.EventLog(tmp_path / "log", lines.append) as events:
@@ -119,14 +124,14 @@ def test_a_write_that_fails_ends_the_log_and_not_the_training(tmp_path, monkeypa
 
         def full_disk(tag, value, step):
             if step == 3:
-                raise OSError(28, "No space left on device")
+                raise error
             add_scalar(tag, value, step)
 
         monkeypatch.setattr(events._writer, "add_scalar", full_disk)
         logged = _train(cfg, events.epoch)
         events.finish(logged.best_epoch, {"n": 2}, {"inner_val_aux": 1.0})
     assert _same_training(logged, _train(cfg)) and len(logged.history) == 6
-    assert events.incomplete == "OSError: [Errno 28] No space left on device"
+    assert events.incomplete == reason
     assert len(lines) == 1 and lines[0].startswith("EVENT LOG INCOMPLETE") and events.incomplete in lines[0] and RH.CONVERTER in lines[0]
     scalars = event_scalars(tmp_path / "log")
     assert [step for step, _ in scalars["loss/train_main"]] == [1, 2] and not [tag for tag in scalars if tag.startswith("hparam/")]
@@ -144,7 +149,8 @@ def test_an_earlier_event_file_held_open_ends_the_log_and_not_the_training(tmp_p
             logged = _train(cfg, events.epoch)
             events.finish(logged.best_epoch, {"n": 2}, {})
     assert _same_training(logged, _train(cfg))
-    assert events.incomplete.startswith("PermissionError") and len(lines) == 1 and "EVENT LOG INCOMPLETE" in lines[0]
+    assert events.incomplete.startswith("OSError: an earlier run's events remain in the folder") and "PermissionError" in events.incomplete
+    assert len(lines) == 1 and lines[0].startswith("EVENT LOG INCOMPLETE") and events.incomplete in lines[0]
     assert event_scalars(tmp_path)["loss/train_main"] == [(1, 2.0)]                 # the earlier run's log, untouched
 
 
