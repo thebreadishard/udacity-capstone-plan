@@ -27,6 +27,10 @@ FROZEN_LIST = PLAN / "modules" / "05_support_predictor" / V.OUT / "configs.json"
 FINAL_SEEDS = "0,1,2"
 
 
+A8_IDS = ["A_08dde334d8", "A_428228e5a5", "A_541c53d1a5", "A_72b86c2331", "A_8448043181", "A_bce5bae234", "A_e72997e726",
+          "A_fdc27f1bd1"]                                                            # out/holdout_a_clean_2026-10-30.txt's eight
+V14_PREFIX = "out/v14/E7_rungC_v14s3clean_c00_control"                              # version 1.4, chain v14_clean
+V14_MODELS = [f"{V14_PREFIX}_model_n1082_seed{s}.pt" for s in range(3)]
 BIPHENYLENES = [f"A2_bph{k}" for k in range(8)]
 SEL_IDS = [f"A2_sel{k:03d}" for k in range(161)] + BIPHENYLENES                    # the search's selection set: 169, 8 of the excluded core
 NAMES = {"A_72b86c2331": "biphenylene", **{i: "pyrene+F" for i in SEL_IDS[:158]}, **{i: "fluoranthene+F" for i in SEL_IDS[158:161]},
@@ -85,6 +89,8 @@ def make_module(root: Path, monkeypatch) -> list[str]:
     carried = [f"out/carried_seed{s}.pt" for s in range(3)]
     for c in carried:
         (root / "m05" / c).write_bytes(b"x")
+    (root / "m05" / V.chain_runner.HOLDOUT_A_CLEAN).write_text("# the clean eight\n# dropped A_07cadc7923, A_3100da3761\n"
+                                                              + "".join(f"{i}\n" for i in A8_IDS), encoding="utf-8")
     return carried
 
 
@@ -204,7 +210,7 @@ def test_the_final_chain_is_not_written_over_a_record_on_disk(sandbox):
     assert V.prefix(w, V.FINAL_TAG) != V.prefix(w, V.FULL_TAG)                      # never the data arm's s3full
     write_record(root, V.prefix(w, V.FINAL_TAG), {0: 0.0}, split=False)
     with pytest.raises(SystemExit, match=r"v14s3win_c00_control\.json exists: the final chain would train over a record on disk"):
-        V._write_final_chain(w, carried)
+        V._write_final_chain(w)
     assert not (root / "probes" / "runs" / "v14_final.json").exists()
 
 
@@ -248,7 +254,8 @@ def write_eval(root: Path, name: str, shift: float, seed: int, model: str | None
                   "per_molecule": per_molecule} for h in ("a", "b")}}
     if clean_shift is not None:
         rec[V.CLEAN_A] = {"diag_rms": {f: 3.0 - clean_shift + 0.01 * seed for f in P.FAMILIES}, P.RATIO: 0.2 - clean_shift / 30 + 0.001 * seed,
-                          "corrected_freq_rms": 3.0 - clean_shift + 0.01 * seed, "per_molecule": per_molecule}
+                          "corrected_freq_rms": 3.0 - clean_shift + 0.01 * seed, "dropped": [],
+                          "per_molecule": {i: {"corrected_freq_rms": 2.0} for i in A8_IDS} | per_molecule}
     (root / "m05" / V.OUT / f"eval_{name}_seed{seed}.json").write_text(json.dumps(rec), encoding="utf-8")
 
 
@@ -259,6 +266,17 @@ CLEAN_RULE = {"holdout_twins": V.CLEAN_TWINS, "holdout_twins_dropped": CLEAN_DRO
 def write_final_eval(root: Path, name: str, shift: float, seed: int, model: str | None, biphenylene: float = 2.0) -> None:
     """A final-chain eval record: the hold-outs and the clean set, both `shift` below the lines."""
     write_eval(root, name, shift, seed, model, biphenylene=biphenylene, clean_shift=shift)
+
+
+def carry_v14(root: Path, shift: float = 0.1) -> None:
+    """Version 1.4 carried in the test's registry as on 17 Nov 2026: chain v14_clean's three checkpoints, their training under the
+    twin rule drop-any-charge, and their evals (`eval_clean_seed<S>.json`), `shift` below the lines."""
+    write_record(root, V14_PREFIX, dict.fromkeys(range(3), 0.0), split=False)
+    with_fields(root, V14_PREFIX, CLEAN_RULE)
+    entry = {"status": "carried", "network": MR.NETWORK_NAMES[0], "version": "1.4", "chain": "v14_clean", "note": "the test's v1.4"}
+    V.REGISTRY_STATUS_FILE.write_text(json.dumps({m.removeprefix("out/"): entry for m in V14_MODELS}), encoding="utf-8")
+    for s in range(3):
+        write_final_eval(root, "clean", shift, s, V14_MODELS[s])
 
 
 def with_fields(root: Path, pre: str, fields: dict) -> None:
@@ -286,7 +304,8 @@ def patterns_the_runner_expands(root: Path, name: str) -> int:
 
 
 def assert_final_chain(root: Path, w: V.Config, other: V.Config, carried: list[str]) -> None:
-    """The final chain and its run spec as read2 wrote them: the other target with the split, the winner on the whole pool, six evals."""
+    """The final chain and its run spec as read2 wrote them: the other target with the split, the winner on the whole pool, its three
+    evals — and none of the frozen list's carried models (read3 reads the carried version in its own chain's evals)."""
     spec = RUNSPEC.RunSpec.model_validate_json((root / "probes" / "runspecs" / "v14_final.json").read_text(encoding="utf-8"))
     final = json.loads((root / "probes" / "runs" / "v14_final.json").read_text(encoding="utf-8"))
     assert patterns_the_runner_expands(root, "v14_stage2") == 0 and patterns_the_runner_expands(root, "v14_final") == 3   # eval_winner_seed*
@@ -294,7 +313,7 @@ def assert_final_chain(root: Path, w: V.Config, other: V.Config, carried: list[s
     assert spec.progress.max_gap_minutes == V.MAX_GAP_MINUTES and spec.memory.peak_gb == 7.7
     assert [s["label"].split(" (")[0] for s in final["steps"]] == [
         f"train {w.name}", f"train {w.name}", "v1.4 search register",
-        *(f"eval eval_{who}_seed{s}" for who in ("winner", "carried") for s in range(3)), "v1.4 search read3"]
+        *(f"eval eval_winner_seed{s}" for s in range(3)), "v1.4 search read3"]
     assert final["steps"][2]["argv"] == ["{python}", "probes/v14_search.py", "register"]   # the registry entry before the evals
     other_step, full_step = final["steps"][:2]
     assert other_step == V.train_step(other, "s3other", FINAL_SEEDS)                # the target check's arm keeps the selection split
@@ -306,10 +325,10 @@ def assert_final_chain(root: Path, w: V.Config, other: V.Config, carried: list[s
     whole = config_from_argv(full_step["argv"][2:])
     assert whole.selection_split is None and whole.seeds == FINAL_SEEDS and whole.inner_val > 0   # early stopping keeps its inner split
     assert whole.holdout_twins == "drop-any-charge" and config_from_argv(other_step["argv"][2:]).holdout_twins == "drop"
-    assert all(s["argv"][-2:] == ["--eval-ids-file", "a8=out/holdout_a_clean_2026-10-30.txt"] for s in final["steps"][3:9])
+    assert all(s["argv"][-2:] == ["--eval-ids-file", "a8=out/holdout_a_clean_2026-10-30.txt"] for s in final["steps"][3:6])
     assert [s["argv"][2:4] for s in final["steps"][3:6]] == [
         [f"{V.OUT}/E7_rungC_v14s3win_{w.name}_model_n*_seed{s}.pt", f"{V.OUT}/eval_winner_seed{s}"] for s in range(3)]
-    assert [s["argv"][2] for s in final["steps"][6:9]] == carried
+    assert not any(c in s["argv"] for s in final["steps"] for c in carried)
 
 
 def assert_both_scores_agree(root: Path, chosen: list[str]) -> None:
@@ -371,9 +390,9 @@ def test_plan_to_read3_end_to_end(sandbox):
     assert_final_chain(root, w, other, carried)
     write_record(root, V.prefix(other, "s3other"), {0: stage1[best] + 0.2, 1: stage1[best] + 0.21, 2: stage1[best] + 0.19})  # larger shift = better
     stage_checkpoints = [f"{V.prefix(w, tag)}_model_n913_seed{s}.pt" for s, tag in enumerate(("s1a", "s1b", "s2"))]
+    carry_v14(root)
     for s in range(3):
         write_final_eval(root, "winner", 0.5, s, stage_checkpoints[s])                    # what the final chain evaluated before 16 Nov
-        write_final_eval(root, "carried", 0.1, s, carried[s])
     with pytest.raises(SystemExit, match="trained with --selection-split"):
         V.cmd_read3()
     assert not (root / "m05" / V.OUT / "read3.json").exists()
@@ -426,7 +445,7 @@ def at_read3(root: Path, carried: list[str], winner_index: int, full_epoch: int 
     with_fields(root, V.prefix(w, V.FINAL_TAG), CLEAN_RULE)
     for s in range(3):
         write_final_eval(root, "winner", 0.5, s, winner_checkpoint(w, s))
-        write_final_eval(root, "carried", 0.1, s, carried[s])
+    carry_v14(root)
     return w
 
 
@@ -482,9 +501,9 @@ def test_read3_reads_the_prediction_on_biphenylene(sandbox):
     report = (root / "m05" / V.OUT / "read3.md").read_text(encoding="utf-8")
     assert not rec["prediction"]["passed"] and rec["promotion"]["promoted"]         # a failed prediction leaves the promotion as read
     assert "winner 6.00, 7.00, 8.00 (mean 7.00), carried 2.00, 2.00, 2.00 (mean 2.00)" in report and "**FAIL**" in report
-    rec_path = root / "m05" / V.OUT / "eval_carried_seed1.json"
+    rec_path = root / "m05" / V.OUT / "eval_clean_seed1.json"
     stripped = json.loads(rec_path.read_text(encoding="utf-8"))
-    del stripped[V.CLEAN_A]["per_molecule"]
+    del stripped[V.CLEAN_A]["per_molecule"][V.PREDICTION_MOLECULE]["corrected_freq_rms"]
     rec_path.write_text(json.dumps(stripped), encoding="utf-8")
     with pytest.raises(SystemExit, match="no corrected_freq_rms of A_72b86c2331"):
         V.cmd_read3()
@@ -503,7 +522,7 @@ def test_read3_decides_on_the_clean_eight_and_prints_the_ten(sandbox):
     rec = json.loads((root / "m05" / V.OUT / "read3.json").read_text(encoding="utf-8"))
     report = (root / "m05" / V.OUT / "read3.md").read_text(encoding="utf-8")
     assert rec["promotion"]["promoted"] and not rec["on_the_ten_deciding_nothing"]["promotion"]["promoted"]
-    assert "## The promotion: hold-out (a) on its eight clean molecules (a8), and hold-out (b)" in report and V.TEN_NOTE in report
+    assert "## The promotion: hold-out (a) on its eight clean molecules (a8), and hold-out (b)" in report and V.V14_TEN_NOTE in report
     assert "| (a8) | ring-ip |" in report and "| (a) | ring-ip |" in report
 
 
@@ -520,9 +539,81 @@ def test_read3_refuses_a_winner_trained_with_a_charged_twin(sandbox, fields):
 def test_read3_refuses_evals_without_the_clean_eight(sandbox):
     root, carried = sandbox
     at_read3(root, carried, winner_index=0)
-    write_eval(root, "carried", 0.1, 0, carried[0])                                 # an eval made before the chain carried a8
-    with pytest.raises(SystemExit, match=r"eval_carried_seed0\.json holds no set a8"):
+    write_eval(root, "clean", 0.1, 0, V14_MODELS[0])                                # an eval made without a8
+    with pytest.raises(SystemExit, match=r"eval_clean_seed0\.json holds no set a8"):
         V.cmd_read3()
+
+
+def test_read3_reads_the_winner_against_the_registrys_carried_version(sandbox):
+    """TASKS 250 (b), §14: the winner against version 1.4 as the registry carries it, read in chain v14_clean's evals; the frozen
+    list's carried models (v1.3) are named as what it stands in place of, and the list itself is not rewritten."""
+    root, carried = sandbox
+    at_read3(root, carried, winner_index=0)
+    frozen = (root / "m05" / V.OUT / "configs.json").read_bytes()
+    V.cmd_read3()
+    rec = json.loads((root / "m05" / V.OUT / "read3.json").read_text(encoding="utf-8"))
+    report = (root / "m05" / V.OUT / "read3.md").read_text(encoding="utf-8")
+    assert rec["carried"] == {"version": "1.4", "chain": "v14_clean", "models": V14_MODELS,
+                              "evals": [f"eval_clean_seed{s}.json" for s in range(3)], "in_place_of": carried}
+    assert "The carried side is version 1.4 (chain v14_clean; out/v14/E7_rungC_v14s3clean_c00_control_model_n1082_seed0.pt" in report
+    assert f"in place of the frozen list's carried models ({', '.join(carried)})" in report and V.V14_TEN_NOTE in report
+    assert V.TEN_NOTE not in report and (root / "m05" / V.OUT / "configs.json").read_bytes() == frozen
+    assert "**Promotion: promoted over version 1.4**" in report and "carried as version 1.4" not in report
+    assert rec["expectation"]["b"]["carried"] == pytest.approx(2.91)                 # the clean evals' (b), 0.1 below the lines
+
+
+def test_read3_refuses_a_carried_side_other_than_the_registrys(sandbox):
+    root, carried = sandbox
+    at_read3(root, carried, winner_index=0)
+    write_final_eval(root, "clean", 0.1, 1, carried[1])                             # v1.3's checkpoint under v1.4's eval name
+    with pytest.raises(SystemExit, match=r"eval_clean_seed1\.json evaluated out/carried_seed1\.pt, not the carried version's "
+                                         r"out/v14/E7_rungC_v14s3clean_c00_control_model_n1082_seed1\.pt"):
+        V.cmd_read3()
+    write_final_eval(root, "clean", 0.1, 1, V14_MODELS[1])
+    status = json.loads(V.REGISTRY_STATUS_FILE.read_text(encoding="utf-8"))
+    status[V14_MODELS[2].removeprefix("out/")]["status"] = "superseded"
+    V.REGISTRY_STATUS_FILE.write_text(json.dumps(status), encoding="utf-8")
+    with pytest.raises(SystemExit, match="read3 reads the winner against one per seed 0, 1, 2"):
+        V.cmd_read3()
+    carry_v14(root)
+    with_fields(root, V14_PREFIX, {"holdout_twins": "drop"})
+    with pytest.raises(SystemExit, match=r"v14s3clean_c00_control\.json was trained with holdout_twins 'drop'"):
+        V.cmd_read3()
+    assert not (root / "m05" / V.OUT / "read3.json").exists()
+
+
+def damaged(rec: dict, how: str) -> dict:
+    """An eval record whose clean set or hold-out (b) is not the frozen one, in one way."""
+    clean = rec[V.CLEAN_A]
+    if how == "missing":
+        clean["per_molecule"].pop(A8_IDS[0])
+    elif how == "extra":
+        clean["per_molecule"]["A_07cadc7923"] = {"corrected_freq_rms": 2.0}
+    elif how == "dropped":
+        clean["dropped"] = [A8_IDS[0]]
+    else:
+        rec["holdout_b_file"] = "corpus/holdout_b_other.txt"
+    return rec
+
+
+@pytest.mark.parametrize(("how", "named"), [("missing", r"holds 7 molecules, not the 8 .*missing \['A_08dde334d8'\]"),
+                                            ("extra", r"holds 9 molecules, not the 8 .*extra \['A_07cadc7923'\]"),
+                                            ("dropped", r"holds 8 molecules, not the 8 .*dropped \['A_08dde334d8'\]"),
+                                            ("b", r"read hold-out \(b\) on 'corpus/holdout_b_other\.txt', not the frozen list")])
+@pytest.mark.parametrize("read", ["read3", "read-data"])
+def test_the_reads_require_the_clean_eight_exactly_and_the_frozen_b(sandbox, how, named, read):
+    """TASKS 250: a8 present is not enough — its eight ids, none dropped, none added — and (b) on the frozen list."""
+    root, carried = sandbox
+    if read == "read3":
+        at_read3(root, carried, winner_index=0)
+        path = root / "m05" / V.OUT / "eval_clean_seed2.json"
+    else:
+        at_read_data(root, carried)
+        path = root / "m05" / V.OUT / "eval_carried_data_seed2.json"
+    path.write_text(json.dumps(damaged(json.loads(path.read_text(encoding="utf-8")), how)), encoding="utf-8")
+    with pytest.raises(SystemExit, match=rf"{path.name.replace('.', '[.]')}: its set a8 {named}" if how != "b" else
+                       rf"{path.name.replace('.', '[.]')} {named}"):
+        V.cmd_read3() if read == "read3" else V.cmd_read_data(replace_record=False)
 
 
 def test_the_excluded_core_is_eight_of_the_selection_set():
@@ -680,7 +771,8 @@ def test_register_enters_the_final_chains_six_checkpoints(sandbox, registry):
         (root / "m05" / f"{V.prefix(other, 's3other')}_model_n913_seed{s}.pt").write_bytes(b"x")
     assert V.main(["register"]) == 0
     names = [Path(winner_checkpoint(w, s)).name for s in range(3)] + [f"E7_rungC_v14s3other_{w.name}_model_n913_seed{s}.pt" for s in range(3)]
-    assert sorted(json.loads(registry.read_text(encoding="utf-8"))) == sorted(names)
+    carried_v14 = [m.removeprefix("out/") for m in V14_MODELS]                      # at_read3's v1.4, carried in the test registry
+    assert sorted(json.loads(registry.read_text(encoding="utf-8"))) == sorted(names + carried_v14)
     assert MR.require_carried(root / "m05" / winner_checkpoint(w, 1), allow=True, status_file=registry)["status"] == "candidate"
     assert V.main(["register"]) == 0                                                # a second run enters nothing and refuses nothing
     (root / "m05" / winner_checkpoint(w, 2)).unlink()
