@@ -739,5 +739,13 @@
   "version": "1.4",
   "chain": "v14_clean",
   "note": "carried since 17 Nov 23:3x (decision 57 as amended on 17 Nov 2026: the composite 0.690 against 0.844 beyond the Student-t line -0.100, no read-out worse beyond two SE; out/v14/read_clean.md; the rule of 26 Oct refused it, read_clean_rule-of-26oct.md): the carried recipe on the whole pool without hold-out twins of any charge (--holdout-twins drop-any-charge, 1,075 molecules), chain v14_clean, TASKS 253, 263"
+ },
+ "v14/smoke_release_v14_model_n1132_seed0.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "release_v14 smoke",
+  "note": "smoke of the release chain (TASKS 252): 2 epochs, seed 0; never a product",
+  "network_kind": "release"
  }
 }
