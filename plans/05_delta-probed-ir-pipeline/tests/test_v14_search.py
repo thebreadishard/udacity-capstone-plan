@@ -243,10 +243,21 @@ def full_checkpoint(w: V.Config, seed: int) -> str:
     return f"{V.prefix(w, V.FULL_TAG)}_model_n1082_seed{seed}.pt"
 
 
+def patterns_the_runner_expands(root: Path, name: str) -> int:
+    """A written chain walked through the runner's own `expand`: every argument with a '*' must be in a step the runner expands
+    (17 Nov 2026: `expand` dropped glob_args and the patterns reached their programs as written). Returns the number of patterns."""
+    spec = json.loads((root / "probes" / "runs" / f"{name}.json").read_text(encoding="utf-8"))
+    steps = V.chain_runner.expand(spec, "py")
+    literal = [(s["label"], a) for s in steps for a in s["argv"] if "*" in a and not s.get("glob_args")]
+    assert not literal, f"{name}: patterns the runner would pass as written: {literal}"
+    return sum("*" in a for s in steps for a in s["argv"])
+
+
 def assert_final_chain(root: Path, w: V.Config, other: V.Config, carried: list[str]) -> None:
     """The final chain and its run spec as read2 wrote them: the other target with the split, the winner on the whole pool, six evals."""
     spec = RUNSPEC.RunSpec.model_validate_json((root / "probes" / "runspecs" / "v14_final.json").read_text(encoding="utf-8"))
     final = json.loads((root / "probes" / "runs" / "v14_final.json").read_text(encoding="utf-8"))
+    assert patterns_the_runner_expands(root, "v14_stage2") == 0 and patterns_the_runner_expands(root, "v14_final") == 3   # eval_winner_seed*
     assert spec.estimate.hours == pytest.approx(3 * V.HOURS[w.schedule] * (1 + 1080 / 911) + 1.0)   # the whole pool is 18.6 % larger
     assert spec.progress.max_gap_minutes == V.MAX_GAP_MINUTES and spec.memory.peak_gb == 7.7
     assert [s["label"].split(" (")[0] for s in final["steps"]] == [

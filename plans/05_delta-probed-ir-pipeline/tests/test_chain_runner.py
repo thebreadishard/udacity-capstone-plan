@@ -203,3 +203,64 @@ def test_a_failure_outside_a_step_still_writes_run_failed(tmp_path, capsys):
     with pytest.raises(ValueError, match="unknown wait kind"):
         CR.main([str(p)])
     assert "=== (T) RUN FAILED: ValueError: unknown wait kind 'bogus'" in capsys.readouterr().out
+
+
+def _lists_its_arguments(tmp: Path, pattern: str, glob_args: bool | None, name: str = "list") -> dict:
+    """A 'cmd' step that writes the arguments it was given to `<name>.out`, one of them a pattern."""
+    code = f"import sys, pathlib; pathlib.Path(r'{tmp / (name + '.out')}').write_text('|'.join(sys.argv[1:]))"
+    step = {**_cmd(tmp, code, name), "argv": [sys.executable, "-c", code, pattern, "--plain"]}
+    return step if glob_args is None else {**step, "glob_args": glob_args}
+
+
+def test_a_cmd_steps_pattern_is_expanded_by_the_run(tmp_path, capsys):
+    """17 Nov 2026: `expand` dropped a 'cmd' step's glob_args, so chain v14_data's registration got `…_model_n*_seed0.pt` as written.
+    The step is run for real here: expand, then run_step, through main."""
+    (tmp_path / "x_model_n10_seed0.pt").write_text("", encoding="utf-8")
+    (step,) = CR.expand({"steps": [_lists_its_arguments(tmp_path, "x_model_n*_seed0.pt", True)]}, sys.executable)
+    assert step["glob_args"] is True
+    CR.run_step(step, dict(os.environ))
+    assert (tmp_path / "list.out").read_text() == "x_model_n10_seed0.pt|--plain"
+    assert CR.main([str(_spec(tmp_path, [_lists_its_arguments(tmp_path, "x_model_n*_seed0.pt", True, "again")], []))]) == 0
+    assert (tmp_path / "again.out").read_text() == "x_model_n10_seed0.pt|--plain"
+    for glob_args in (None, False):                                             # without the switch a '*' is the program's own business
+        (plain,) = CR.expand({"steps": [_lists_its_arguments(tmp_path, "x_model_n*_seed0.pt", glob_args, "plain")]}, sys.executable)
+        assert "glob_args" not in plain
+        CR.run_step(plain, dict(os.environ))
+        assert (tmp_path / "plain.out").read_text() == "x_model_n*_seed0.pt|--plain"
+    capsys.readouterr()
+    assert CR.main([str(_spec(tmp_path, [_lists_its_arguments(tmp_path, "x_model_n*_seed1.pt", True, "none")], []))]) == 1
+    assert "RUN FAILED at none: 'x_model_n*_seed1.pt' matches 0 files, expected 1" in capsys.readouterr().out
+    (tmp_path / "x_model_n20_seed0.pt").write_text("", encoding="utf-8")
+    assert CR.main([str(_spec(tmp_path, [_lists_its_arguments(tmp_path, "x_model_n*_seed0.pt", True, "two")], []))]) == 1
+    assert "RUN FAILED at two: 'x_model_n*_seed0.pt' matches 2 files, expected 1" in capsys.readouterr().out
+    assert not (tmp_path / "none.out").exists() and not (tmp_path / "two.out").exists()
+
+
+def test_the_resume_record_does_not_depend_on_glob_args(tmp_path):
+    with_switch, without = (CR.expand({"steps": [_lists_its_arguments(tmp_path, "x*.pt", g)]}, "py") for g in (True, None))
+    assert CR.steps_hash(with_switch) == CR.steps_hash(without)                   # a chain stopped before the fix resumes after it
+
+
+def test_the_dry_run_says_what_each_pattern_matches(tmp_path, capsys):
+    (tmp_path / "x_model_n10_seed0.pt").write_text("", encoding="utf-8")
+    (tmp_path / "y_model_n10_seed0.pt").write_text("", encoding="utf-8")
+    (tmp_path / "y_model_n20_seed0.pt").write_text("", encoding="utf-8")
+    steps = [_lists_its_arguments(tmp_path, "x_model_n*_seed0.pt", True, "one"), _lists_its_arguments(tmp_path, "z_model_n*_seed0.pt", True, "later"),
+             _lists_its_arguments(tmp_path, "y_model_n*_seed0.pt", True, "two"), _lists_its_arguments(tmp_path, "x_model_n*_seed0.pt", None, "as-is")]
+    assert CR.main([str(_spec(tmp_path, steps, [])), "--dry-run"]) == 0             # a dry run before the training does not fail
+    out = capsys.readouterr().out
+    assert "    pattern x_model_n*_seed0.pt: x_model_n10_seed0.pt\n" in out
+    assert "    pattern z_model_n*_seed0.pt: no match yet\n" in out
+    assert "    pattern y_model_n*_seed0.pt: 2 matches — the step refuses anything but one\n" in out
+    assert "    '*' in x_model_n*_seed0.pt: passed as written (the step has no glob_args)\n" in out
+    assert not list(tmp_path.glob("*.out"))                                         # nothing ran
+
+
+def test_every_chain_file_with_a_pattern_has_it_in_a_step_the_runner_expands():
+    """Every chain in the repository: an argument with a '*' in a 'cmd' step is either expanded by the runner or is a regular
+    expression the step's program takes (none today)."""
+    for path in sorted((Path(__file__).resolve().parents[1] / "probes" / "runs").glob("*.json")):
+        spec = json.loads(path.read_text(encoding="utf-8"))
+        cmd_steps = {"steps": [s for s in spec.get("steps", []) if s.get("kind") == "cmd" and "argv" in s and "log" in s]}
+        literal = [(s["label"], a) for s in CR.expand(cmd_steps, "py") for a in s["argv"] if "*" in a and not s.get("glob_args")]
+        assert not literal, f"{path.name}: patterns passed as written: {literal}"
