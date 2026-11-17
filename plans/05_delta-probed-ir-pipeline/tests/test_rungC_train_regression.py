@@ -16,7 +16,9 @@ every state tensor. Shared tools: `tests/pin_tools.py`.
 
 Rewritten on 17 Nov 2026, when the trainer began to record the main term on the inner-validation molecules: against the pin before it
 the record gained `val_main` in every history entry and `inner_val_main` per seed, and nothing else moved (every earlier number and every
-state tensor's digest the same).
+state tensor's digest the same). Once more the same day for `lr` in every history entry, again nothing else. The TensorBoard event log
+(`--event-log`, on by default) is no part of the record or the checkpoint: 'carried' is pinned with it and without it against one golden,
+and with it the log must hold the record's history.
 
     python tests/test_rungC_train_regression.py --write-golden [TRAINER]   # with the old trainer before a refactor, or after a deliberate change
 """
@@ -36,6 +38,7 @@ from pin_tools import (
     corpus_changes,
     digest,
     environment,
+    event_scalars,
     first_difference,
     pin_record,
     require_frozen_corpus,
@@ -50,8 +53,10 @@ VOLATILE = frozenset({"date", "provenance", "seconds", "exclude_ids_file"})
 RUN_PATHS = frozenset({"molecules", "out_prefix", "exclude_ids_file"})    # the run's own temporary paths, in the checkpoint's args
 CASES = {"carried": ["--epochs", "3"],
          "chainlike": ["--epochs", "2", "--size-test-min-atoms", "{size_min_atoms}", "--aux-target", "kfit", "--exclude-ids-file", "{excluded}"]}
+PINNED = [("carried", True), ("carried", False), ("chainlike", True)]          # (case, with the event log)
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "probes"))
+sys.path.insert(0, str(M05))
 
 
 def checkpoint_summary(path: Path) -> dict:
@@ -78,9 +83,10 @@ def trainer_argv(case: str, workdir: Path) -> list[str]:
             "--seeds", "0", "--save-model", *extra]
 
 
-def run_pin(case: str, workdir: Path, trainer: Path = TRAINER) -> dict:
+def run_pin(case: str, workdir: Path, trainer: Path = TRAINER, extra: tuple[str, ...] = ()) -> dict:
     """Run one case in a fresh single-threaded process; the stable record and the checkpoint."""
-    subprocess.run([sys.executable, str(trainer), *trainer_argv(case, workdir)], env=single_thread_env(), stdin=subprocess.DEVNULL, check=True)
+    subprocess.run([sys.executable, str(trainer), *trainer_argv(case, workdir), *extra], env=single_thread_env(), stdin=subprocess.DEVNULL,
+                   check=True)
     out = stable(json.loads((workdir / f"{case}.json").read_text(encoding="utf-8")), VOLATILE)
     return {"record": out, "checkpoint": checkpoint_summary(workdir / f"{case}_model_n5_seed0.pt")}
 
@@ -89,16 +95,34 @@ def test_the_frozen_corpus_is_as_recorded():
     assert (changes := corpus_changes(PIN_CORPUS, pin_record())) == [], changes
 
 
-@pytest.mark.parametrize("case", sorted(CASES))
-def test_the_pinned_run_is_unchanged(case, tmp_path):
+def logged_history_differs(case: str, workdir: Path, record: dict) -> str | None:
+    """The event log of the pinned training against the record's history: None when every series is the history's, as stored (32 bit)."""
+    import numpy as np
+    import rungC_history as RH
+
+    history = record["curve"]["5"]["per_seed"][0]["train_history"]
+    scalars = event_scalars(RH.event_log_dir(workdir / case, 5, 0))
+    for key, tag in RH.SCALAR_TAGS.items():
+        if scalars.get(tag) != [(h["epoch"], float(np.float32(h[key]))) for h in history]:
+            return f"{tag}: {scalars.get(tag)} is not the record's {key}"
+    return None
+
+
+@pytest.mark.parametrize(("case", "event_log"), PINNED)
+def test_the_pinned_run_is_unchanged(case, event_log, tmp_path):
     pytest.importorskip("torch")
     pytest.importorskip("geometric")
+    pytest.importorskip("tensorboard")
     if not GOLDEN.exists():
         pytest.fail(f"no pin at {GOLDEN}: write it with --write-golden before changing the trainer")
     require_frozen_corpus()
     golden = json.loads(GOLDEN.read_text(encoding="utf-8"))
     require_pinning_environment(golden)
-    assert (diff := first_difference(golden[case], run_pin(case, tmp_path))) is None, diff
+    assert (diff := first_difference(golden[case], run_pin(case, tmp_path, extra=() if event_log else ("--no-event-log",)))) is None, diff
+    if event_log:
+        assert (diff := logged_history_differs(case, tmp_path, golden[case]["record"])) is None, diff
+    else:
+        assert not (tmp_path / f"{case}_tb").exists()
 
 
 def test_the_chainlike_case_exercises_its_switches():

@@ -107,6 +107,7 @@ class TrainConfig(BaseModel):
     pretrained_elements: list[int] | None = None
     family_scale: str | None = None
     distortion_file: str | None = None
+    event_log: bool = True          # a TensorBoard log of every training beside the record (`rungC_history.EventLog`); not a model setting
 
     @field_validator("family_scale")
     @classmethod
@@ -336,6 +337,14 @@ CONFLICTS: tuple[tuple[Callable[[TrainConfig], object], str], ...] = (   # (trut
 )
 
 
+def _output_arguments(ap: argparse.ArgumentParser) -> None:
+    """What a run writes beside its record."""
+    ap.add_argument("--save-model", action="store_true", help="hybrid head: save the trained model per size and seed next to the record")
+    ap.add_argument("--event-log", action=argparse.BooleanOptionalAction, default=True,
+                    help="write each training's curves as a TensorBoard event log in <out_prefix>_tb/n<n>_seed<seed>/ (default on; "
+                         "--no-event-log switches it off; the training is the same to the bit either way)")
+
+
 def build_parser(description: str) -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(description=description)
     ap.add_argument("molecules")
@@ -372,7 +381,7 @@ def build_parser(description: str) -> argparse.ArgumentParser:
                          "relative mse, so that CH-oop and other weigh as much as the C–H stretches; 'family-low' = as 'family' with the 'other' "
                          "modes below 700 cm⁻¹ as their own family")
     ap.add_argument("--kdiag-weight", type=float, default=0.0, help="weight of a term on the diagonal of K over all modes inside --aux both (0 = off)")
-    ap.add_argument("--save-model", action="store_true", help="hybrid head: save the trained model per size and seed next to the record")
+    _output_arguments(ap)
     ap.add_argument("--size-test-min-atoms", type=int, default=0, help="pool molecules with at least this many atoms become hold-out (s) and never train")
     ap.add_argument("--pool-max-atoms", type=int, default=0, help="train only on pool molecules with at most this many atoms")
     ap.add_argument("--exclude-ids-file", default=None, help="coverage ablation: ids (one per line) dropped from the training pool; hold-outs untouched")

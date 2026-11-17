@@ -5,7 +5,8 @@ of `rungC_config.TrainConfig`, and the carried recipe is `probes/chain_runner.RE
 stopping on an inner validation set). Same pool, sizes, seeds and hold-outs as `e7_rungB_pairs.py` (E6 splits, or `--split layerB`), same
 analytic-Hessian substitution and read-out functions: the model's Cartesian ΔH is projected to the pair model's internal coordinates with the
 pseudo-inverse of the Wilson B. Output: a JSON record (zero rule, per size and seed the read-outs on each hold-out, wall time) and a
-markdown table beside it; with `--save-model` the trained hybrid model per size and seed.
+markdown table beside it; with `--save-model` the trained hybrid model per size and seed; per training a TensorBoard event log of
+its history in `<out_prefix>_tb/n<n>_seed<seed>/` (`rungC_history.EventLog`; `--no-event-log` leaves it out).
 
     python m05/rungC_train.py corpus/molecules out/E7_rungC_<date> --use-analytic [--sizes 45,100,all] [--seeds 0,1,2] [--threads 8] …
     python m05/rungC_train.py corpus/molecules out/_smoke --smoke          # 5 molecules, 2 epochs, seed 0: mechanics only"""
@@ -15,6 +16,7 @@ import json
 import os
 import sys
 import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
@@ -29,6 +31,7 @@ import e7_t2_posthoc as PH
 import e7_t2_sqm as T2
 import holdout_twins as HT
 import internal_coords as IC
+import rungC_history as RH
 import rungC_intensities as RI
 from e7_rungB_pairs import molecule_pairs, readouts
 from rungC_config import KRING_WEIGHT, SMOKE_HOLDOUT, SMOKE_POOL, TrainConfig, learning_rate, parse_config
@@ -397,21 +400,36 @@ class Fold:
     val_ids: list
 
 
-def _fit(model, loss: LossSettings, cfg: TrainConfig, fold: Fold, seed: int, log) -> tuple[list, int]:
+def _no_report(entry: dict) -> None:
+    """The `on_epoch` of a training nobody follows per epoch."""
+
+
+@dataclass(frozen=True)
+class Progress:
+    """Where a training reports: `log` takes its lines; `on_epoch` is handed every history entry once the epoch's numbers are final
+    (the event log). Neither may touch the model or draw a random number."""
+
+    log: Callable[[str], None] = print
+    on_epoch: Callable[[dict], None] = _no_report
+
+
+def _fit(model, loss: LossSettings, cfg: TrainConfig, fold: Fold, seed: int, progress: Progress) -> tuple[list, int]:
     """AdamW at the epoch's learning rate (`rungC_config.learning_rate`), one molecule per step, gradient norm clipped at 5; with
     validation ids the best state on their auxiliary term is kept and, with patience, restored. Returns (history, best epoch).
 
     One history entry per epoch (`rungC_history` has the full description): `main` and `aux` are the mean over the fit molecules of each
     molecule's term as its own step saw it, so a running mean over weights that change within the epoch; `val_main` and `val_aux` (only
-    with validation ids) are the same mean over the validation molecules at the weights the epoch ends with. Stopping reads `val_aux`."""
-    tensors, train_ids, val_ids = fold.tensors, fold.fit_ids, fold.val_ids
+    with validation ids) are the same mean over the validation molecules at the weights the epoch ends with. Stopping reads `val_aux`.
+    `lr` is the rate of the epoch's steps."""
+    tensors, train_ids, val_ids, log = fold.tensors, fold.fit_ids, fold.val_ids, progress.log
     opt = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)
     rng = np.random.default_rng(seed)
     hist, t0 = [], time.time()
     best, best_state, best_ep, since = float("inf"), None, 0, 0
     for ep in range(cfg.epochs):
+        lr = learning_rate(cfg.lr, cfg.lr_schedule, ep, cfg.epochs)
         for group in opt.param_groups:
-            group["lr"] = learning_rate(cfg.lr, cfg.lr_schedule, ep, cfg.epochs)
+            group["lr"] = lr
         model.train()
         tot_main = tot_aux = 0.0
         for k in rng.permutation(len(train_ids)):
@@ -427,7 +445,7 @@ def _fit(model, loss: LossSettings, cfg: TrainConfig, fold: Fold, seed: int, log
             opt.step()
             tot_main += float(main.detach())
             tot_aux += float(aux.detach())
-        rec = dict(epoch=ep + 1, main=tot_main / len(train_ids), aux=tot_aux / len(train_ids))
+        rec = dict(epoch=ep + 1, lr=lr, main=tot_main / len(train_ids), aux=tot_aux / len(train_ids))
         if val_ids:
             rec["val_main"], rec["val_aux"] = inner_val_terms(model, tensors, val_ids, loss)
             if rec["val_aux"] < best - 1e-9:
@@ -436,6 +454,7 @@ def _fit(model, loss: LossSettings, cfg: TrainConfig, fold: Fold, seed: int, log
             else:
                 since += 1
         hist.append(rec)
+        progress.on_epoch(rec)
         if (ep + 1) % 10 == 0 or ep == 0 or ep + 1 == cfg.epochs:
             # `val <auxiliary term> ` stays as it was: probes/epoch_repeat_check.py reads it from the logs of old and new runs
             val_txt = f" val {rec['val_aux']:.4g} val_main {rec['val_main']:.4g}" if val_ids else ""
@@ -451,8 +470,14 @@ def _fit(model, loss: LossSettings, cfg: TrainConfig, fold: Fold, seed: int, log
 def train_one(train_ids: list, tensors: dict, seed: int, cfg: TrainConfig, val_ids: list | None = None, log=print) -> Trained:
     """Train one model on `train_ids` with the settings of `cfg`, which must be resolved (its epochs set); `val_ids` = inner validation
     molecules held out of the training ids."""
+    return train_fold(Fold(tensors, train_ids, val_ids or []), seed, cfg, Progress(log))
+
+
+def train_fold(fold: Fold, seed: int, cfg: TrainConfig, progress: Progress) -> Trained:
+    """Train one model on a fold with the settings of `cfg`, which must be resolved (its epochs set), reporting to `progress`."""
     if cfg.epochs is None:
         raise ValueError("train_one needs a resolved config (TrainConfig.resolved()): epochs is not set")
+    tensors, train_ids, val_ids, log = fold.tensors, fold.fit_ids, fold.val_ids, progress.log
     torch.manual_seed(seed)
     pattern_scales = pattern_class_scales(tensors, train_ids) if cfg.head == "hybrid" or cfg.aux in ("pattern", "both") else None
     if cfg.head == "hybrid":
@@ -469,7 +494,7 @@ def train_one(train_ids: list, tensors: dict, seed: int, cfg: TrainConfig, val_i
     if cfg.aux == "pattern":
         log("  internal term on the pair model's pattern; class scales "
             + ", ".join(f"{n} {s:.3g}" for n, s in zip(PAIR_CLASS_NAMES, loss.class_scale.tolist(), strict=True)))
-    hist, best_ep = _fit(model, loss, cfg, Fold(tensors, train_ids, val_ids or []), seed, log)
+    hist, best_ep = _fit(model, loss, cfg, fold, seed, progress)
     return Trained(model=model, history=hist, loss=loss, best_epoch=best_ep if val_ids else None, output_scale=output_scale,
                    class_scale=None if class_scale is None else [float(x) for x in class_scale])
 
@@ -939,19 +964,23 @@ def train_and_read(cfg: TrainConfig, corpus: Corpus, tensors: dict, n: int, seed
     t1 = time.time()
     tr = corpus.pool[:n]
     val_ids, fit_ids = inner_split(tr, seed, cfg.inner_val)
-    trained = train_one(fit_ids, tensors, seed, cfg, val_ids, log)
-    model = trained.model
+    with RH.EventLog(RH.event_log_dir(cfg.out_prefix, n, seed) if cfg.event_log else None) as events:
+        trained = train_fold(Fold(tensors, fit_ids, val_ids), seed, cfg, Progress(log, events.epoch))
+        model = trained.model
+        # both on the weights the model ends with: the best epoch's when patience restored them, else the last epoch's
+        val_main, val_aux = inner_val_terms(model, tensors, val_ids, trained.loss) if val_ids else (None, None)
+        events.finish(trained.best_epoch, RH.hparams({**cfg.model_dump(), "aux_mode": cfg.aux}, n, seed),
+                      {"inner_val_aux": val_aux, "inner_val_main": val_main, "epochs_run": len(trained.history)})
     dF_of = predictor(model, tensors, corpus.mols)
     if cfg.save_model:
         path = Path(f"{cfg.out_prefix}_model_n{n}_seed{seed}.pt")
         # an optional key only when used, so checkpoints without it keep their settings
         unused = {k for k, v in (("family_scale", cfg.family_scale), ("distortion_file", cfg.distortion_file),
                                  ("selection_split", cfg.selection_split)) if v is None}
+        unused.add("event_log")                                          # where the curves go says nothing about the model
         unused |= set(PRIMITIVE_KEYS) if cfg.primitives == IC.CARRIED else set()
         save_hybrid_model(model, trained.loss, path, cfg.model_dump(exclude=unused), n, seed, train_ids=tr)
         log(f"  model saved: {path}")
-    # both on the weights the model ends with: the best epoch's when patience restored them, else the last epoch's
-    val_main, val_aux = inner_val_terms(model, tensors, val_ids, trained.loss) if val_ids else (None, None)
     out = {"seed": seed, "train_history": trained.history, "output_scale": trained.output_scale, "class_scale": trained.class_scale,
            "aux_class_scale": None if trained.loss.class_scale is None else trained.loss.class_scale.tolist(),
            "seconds": round(time.time() - t1, 1), "inner_val_ids": val_ids,
@@ -993,6 +1022,8 @@ def log_line(s: str) -> None:
 def main(argv: list[str] | None = None) -> int:
     console_utf8_safe()
     cfg = parse_config(argv, __doc__.splitlines()[0]).resolved()
+    if cfg.event_log:
+        RH.summary_writer_class()                                        # refused here, before the corpus is loaded, when there is no writer
     torch.set_num_threads(cfg.threads)
     t_start = time.time()
     corpus = select_corpus(cfg, log_line)

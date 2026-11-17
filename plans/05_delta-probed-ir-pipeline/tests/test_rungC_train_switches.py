@@ -165,8 +165,9 @@ def test_a_history_reader_names_why_a_series_is_missing():
     no_validation = [dict(epoch=1, main=2.0, aux=1.0)]
     assert RH.history_series(now, "val_main") == [3.0] and RH.history_series(before, "val_aux") == [1.5]
     assert RH.history_series(no_validation, "main") == [2.0]
-    with pytest.raises(ValueError, match="not recorded before 17 Nov 2026"):
-        RH.history_series(before, "val_main")
+    for key in ("val_main", "lr"):
+        with pytest.raises(ValueError, match=f"{key}: not recorded before 17 Nov 2026"):
+            RH.history_series(before, key)
     for key in ("val_main", "val_aux"):
         with pytest.raises(ValueError, match="no inner-validation set"):
             RH.history_series(no_validation, key)

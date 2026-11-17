@@ -118,3 +118,12 @@ def digest(array) -> str:
     if hasattr(array, "detach"):
         array = array.detach().cpu().contiguous().numpy()
     return hashlib.sha256(np.ascontiguousarray(array).tobytes()).hexdigest()
+
+
+def event_scalars(run_dir: Path) -> dict[str, list[tuple[int, float]]]:
+    """Every scalar series of a TensorBoard run folder as (step, value) pairs, read back with TensorBoard's own reader."""
+    from tensorboard.backend.event_processing.event_accumulator import EventAccumulator
+
+    events = EventAccumulator(str(run_dir), size_guidance={"scalars": 0})        # 0 = keep every point
+    events.Reload()
+    return {tag: [(e.step, e.value) for e in events.Scalars(tag)] for tag in events.Tags()["scalars"]}
