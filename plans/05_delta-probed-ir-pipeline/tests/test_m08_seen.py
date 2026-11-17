@@ -58,10 +58,11 @@ def test_the_truth_against_itself_is_exact():
     assert S.truth_beside("A_8448043181", own[1:])["rms_by_rank_cm"] is None          # unequal counts are not paired by rank
 
 
-def test_the_carried_models_index_names_the_two_hold_out_twins():
+def test_chain_35s_v13_index_names_the_two_hold_out_twins():
+    """Pinned on chain 35 (version 1.3, carried until 17 Nov 2026), whose seeds trained on two layer-B twins of hold-out (a)."""
     models = tuple(sorted((P.M05 / "out").glob("E7_rungC_chain35_analytic_model_n750_seed*.pt")))
     if len(models) != 3 or not S.MANIFEST.exists():
-        pytest.skip("the carried models or the manifest are not on this machine")
+        pytest.skip("chain 35's models or the manifest are not on this machine")
     held = {v[1][0] for v in S.leaks(S.load(models)).values()}
     assert held == {"A_07cadc7923", "A_3100da3761"}                                  # 2-naphthoic acid and benzonitrile (30 Oct 2026)
 

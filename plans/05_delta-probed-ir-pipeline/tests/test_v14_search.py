@@ -206,10 +206,10 @@ def test_the_final_chain_is_not_written_over_a_record_on_disk(sandbox):
     """read2 writes the final chain; a whole-pool record already at its prefix would be trained over, so it refuses."""
     root, carried = sandbox
     V.cmd_plan(carried)
-    w = V.load_list()[0][0]
+    w = V.load_list()[0][1]                                                         # a winner other than the control
     assert V.prefix(w, V.FINAL_TAG) != V.prefix(w, V.FULL_TAG)                      # never the data arm's s3full
     write_record(root, V.prefix(w, V.FINAL_TAG), {0: 0.0}, split=False)
-    with pytest.raises(SystemExit, match=r"v14s3win_c00_control\.json exists: the final chain would train over a record on disk"):
+    with pytest.raises(SystemExit, match=r"v14s3win_c01_control_parity\.json exists: the final chain would train over a record on disk"):
         V._write_final_chain(w)
     assert not (root / "probes" / "runs" / "v14_final.json").exists()
 
@@ -331,6 +331,12 @@ def assert_final_chain(root: Path, w: V.Config, other: V.Config, carried: list[s
     assert not any(c in s["argv"] for s in final["steps"] for c in carried)
 
 
+def assert_a_final_chain_recorded(root: Path) -> None:
+    """read2 of a winner other than the control: its record says the control did not win and names the final chain."""
+    read2 = json.loads((root / "m05" / V.OUT / "read2.json").read_text(encoding="utf-8"))
+    assert not read2["control_won"] and read2["final_chain"] == V.FINAL_CHAIN
+
+
 def assert_both_scores_agree(root: Path, chosen: list[str]) -> None:
     """read1 and read2 where the stubbed evaluator gives the scored set the registered read-outs: both scores printed, one decision."""
     read1, read2 = (json.loads((root / "m05" / V.OUT / f"{name}.json").read_text(encoding="utf-8")) for name in ("read1", "read2"))
@@ -384,6 +390,7 @@ def test_plan_to_read3_end_to_end(sandbox):
     V.cmd_read2()
     best = json.loads((root / "m05" / V.OUT / "read2.json").read_text(encoding="utf-8"))["winner"]
     assert best == chosen[0]
+    assert_a_final_chain_recorded(root)
     assert_both_scores_agree(root, chosen)
     w = next(c for c in configs if c.name == best)
     other = V.replace(w, target=next(t for t in V.TARGETS if t != w.target))
@@ -432,6 +439,33 @@ def test_read2_refuses_a_winner_at_the_cap(sandbox):
         V.cmd_read2()
 
 
+def test_read2_when_the_control_wins_writes_no_final_chain_and_says_the_carried_version_stands(sandbox):
+    """§14 item 3: when the control wins, its whole-pool models — the carried version 1.4 — are already the final models: read2 writes
+    no final chain (it would train 1.4's recipe again and read3 would compare 1.4 with a copy of itself), and read3 and register refuse."""
+    root, carried = sandbox
+    V.cmd_plan(carried)
+    configs, _ = V.load_list()
+    for k, c in enumerate(configs):
+        write_record(root, V.prefix(c, "s1a"), {0: 0.05 * k})
+        write_record(root, V.prefix(c, "s1b"), {1: 0.05 * k + 0.01})
+    V.cmd_read1()
+    chosen = json.loads((root / "m05" / V.OUT / "read1.json").read_text(encoding="utf-8"))["stage2"]
+    for c in configs:
+        if c.name in [*chosen, "c00_control"]:
+            write_record(root, V.prefix(c, "s2"), {V.STAGE2_SEED: 3.0 if c.name == "c00_control" else 0.0})   # the control far best
+    carry_v14(root)
+    V.cmd_read2()
+    rec = json.loads((root / "m05" / V.OUT / "read2.json").read_text(encoding="utf-8"))
+    report = (root / "m05" / V.OUT / "read2.md").read_text(encoding="utf-8")
+    assert rec["winner"] == "c00_control" and rec["control_won"] and rec["final_chain"] is None
+    assert not (root / V.FINAL_CHAIN).exists() and not (root / "probes" / "runspecs" / "v14_final.json").exists()
+    assert "**The control stands: version 1.4 stays carried.**" in report and "(chain v14_clean; out/v14/E7_rungC_v14s3clean_c00_control" \
+        in report and "No final chain is written, and read3 has nothing to read." in report
+    for cmd in (V.cmd_read3, V.cmd_register):
+        with pytest.raises(SystemExit, match=r"read2's winner is the control \(c00_control\)"):
+            cmd()
+
+
 def at_read3(root: Path, carried: list[str], winner_index: int, full_epoch: int = 100) -> V.Config:
     """Every file read3 reads, written directly: the winner is the frozen list's configuration at `winner_index`."""
     V.cmd_plan(carried)
@@ -451,7 +485,7 @@ def at_read3(root: Path, carried: list[str], winner_index: int, full_epoch: int 
 
 def test_read3_refuses_winner_evals_of_any_other_checkpoint(sandbox):
     root, carried = sandbox
-    w = at_read3(root, carried, winner_index=0)
+    w = at_read3(root, carried, winner_index=1)
     V.cmd_read3()                                                                   # the whole-pool checkpoints: read
     write_final_eval(root, "winner", 0.5, 1, winner_checkpoint(w, 2))                       # a whole-pool model, the wrong seed
     with pytest.raises(SystemExit, match="not seed 1 of"):
@@ -475,7 +509,7 @@ def test_read3_refuses_winner_evals_of_any_other_checkpoint(sandbox):
 
 def test_read3_applies_the_cap_rule_to_the_whole_pool_trainings(sandbox, tmp_path_factory, monkeypatch):
     root, carried = sandbox
-    at_read3(root, carried, winner_index=0, full_epoch=V.EPOCH_CAP)                 # the control: a constant rate, stopped by the cap
+    at_read3(root, carried, winner_index=1, full_epoch=V.EPOCH_CAP)                 # c01: a constant rate, stopped by the cap
     with pytest.raises(SystemExit, match="within 10% of the cap") as refusal:
         V.cmd_read3()
     assert "The way out" in str(refusal.value) and f"{V.RERUN_CAP} epochs" in str(refusal.value)
@@ -489,7 +523,7 @@ def test_read3_applies_the_cap_rule_to_the_whole_pool_trainings(sandbox, tmp_pat
 
 def test_read3_reads_the_prediction_on_biphenylene(sandbox):
     root, carried = sandbox
-    w = at_read3(root, carried, winner_index=0)
+    w = at_read3(root, carried, winner_index=1)
     V.cmd_read3()
     rec = json.loads((root / "m05" / V.OUT / "read3.json").read_text(encoding="utf-8"))
     assert rec["prediction"] == {"molecule": "A_72b86c2331", "winner": [2.0] * 3, "carried": [2.0] * 3, "line": 4.7, "passed": True}
@@ -512,7 +546,7 @@ def test_read3_reads_the_prediction_on_biphenylene(sandbox):
 def test_read3_decides_on_the_clean_eight_and_prints_the_ten(sandbox):
     """§14's addition of 16 Nov: hold-out (a) decides on its clean eight; the ten are printed beside them, deciding nothing."""
     root, carried = sandbox
-    at_read3(root, carried, winner_index=0)
+    at_read3(root, carried, winner_index=1)
     for s in range(3):                                                              # worse than the carried version on the ten
         path = root / "m05" / V.OUT / f"eval_winner_seed{s}.json"
         rec = json.loads(path.read_text(encoding="utf-8"))
@@ -529,7 +563,7 @@ def test_read3_decides_on_the_clean_eight_and_prints_the_ten(sandbox):
 @pytest.mark.parametrize("fields", [{"holdout_twins": "drop"}, {"holdout_twins_dropped": ["B_07cadc7923"]}])
 def test_read3_refuses_a_winner_trained_with_a_charged_twin(sandbox, fields):
     root, carried = sandbox
-    w = at_read3(root, carried, winner_index=0)
+    w = at_read3(root, carried, winner_index=1)
     with_fields(root, V.prefix(w, V.FINAL_TAG), fields)
     with pytest.raises(SystemExit, match=r"holdout_twins 'drop', not 'drop-any-charge'|did not drop P3c_8448043181"):
         V.cmd_read3()
@@ -538,7 +572,7 @@ def test_read3_refuses_a_winner_trained_with_a_charged_twin(sandbox, fields):
 
 def test_read3_refuses_evals_without_the_clean_eight(sandbox):
     root, carried = sandbox
-    at_read3(root, carried, winner_index=0)
+    at_read3(root, carried, winner_index=1)
     write_eval(root, "clean", 0.1, 0, V14_MODELS[0])                                # an eval made without a8
     with pytest.raises(SystemExit, match=r"eval_clean_seed0\.json holds no set a8"):
         V.cmd_read3()
@@ -548,7 +582,7 @@ def test_read3_reads_the_winner_against_the_registrys_carried_version(sandbox):
     """TASKS 250 (b), §14: the winner against version 1.4 as the registry carries it, read in chain v14_clean's evals; the frozen
     list's carried models (v1.3) are named as what it stands in place of, and the list itself is not rewritten."""
     root, carried = sandbox
-    at_read3(root, carried, winner_index=0)
+    at_read3(root, carried, winner_index=1)
     frozen = (root / "m05" / V.OUT / "configs.json").read_bytes()
     V.cmd_read3()
     rec = json.loads((root / "m05" / V.OUT / "read3.json").read_text(encoding="utf-8"))
@@ -564,7 +598,7 @@ def test_read3_reads_the_winner_against_the_registrys_carried_version(sandbox):
 
 def test_read3_refuses_a_carried_side_other_than_the_registrys(sandbox):
     root, carried = sandbox
-    at_read3(root, carried, winner_index=0)
+    at_read3(root, carried, winner_index=1)
     write_final_eval(root, "clean", 0.1, 1, carried[1])                             # v1.3's checkpoint under v1.4's eval name
     with pytest.raises(SystemExit, match=r"eval_clean_seed1\.json evaluated out/carried_seed1\.pt, not the carried version's "
                                          r"out/v14/E7_rungC_v14s3clean_c00_control_model_n1082_seed1\.pt"):
@@ -605,7 +639,7 @@ def test_the_reads_require_the_clean_eight_exactly_and_the_frozen_b(sandbox, how
     """TASKS 250: a8 present is not enough — its eight ids, none dropped, none added — and (b) on the frozen list."""
     root, carried = sandbox
     if read == "read3":
-        at_read3(root, carried, winner_index=0)
+        at_read3(root, carried, winner_index=1)
         path = root / "m05" / V.OUT / "eval_clean_seed2.json"
     else:
         at_read_data(root, carried)
@@ -765,7 +799,7 @@ def test_a_checkpoint_enters_the_registry_before_its_eval(sandbox, registry):
 
 def test_register_enters_the_final_chains_six_checkpoints(sandbox, registry):
     root, carried = sandbox
-    w = at_read3(root, carried, winner_index=0)
+    w = at_read3(root, carried, winner_index=1)
     other = V.replace(w, target="ls")
     for s in range(3):
         (root / "m05" / f"{V.prefix(other, 's3other')}_model_n913_seed{s}.pt").write_bytes(b"x")
@@ -815,7 +849,7 @@ def test_the_registered_score_note_says_what_differs():
 
 def test_read3_says_whether_the_expectation_of_more_data_held(sandbox):
     root, carried = sandbox
-    w = at_read3(root, carried, winner_index=0)                                     # the winner's evals 0.4 below the carried ones'
+    w = at_read3(root, carried, winner_index=1)                                     # the winner's evals 0.4 below the carried ones'
     V.cmd_read3()
     rec = json.loads((root / "m05" / V.OUT / "read3.json").read_text(encoding="utf-8"))
     assert rec["expectation"]["a"]["held"] and rec["expectation"]["b"]["held"]

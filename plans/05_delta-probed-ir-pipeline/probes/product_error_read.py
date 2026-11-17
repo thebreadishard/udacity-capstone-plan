@@ -335,7 +335,8 @@ def write_record(path: Path, record: dict) -> None:
 def parse(argv: list[str] | None) -> Config:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--m05", type=Path, default=P.M05, help="the module-05 folder whose corpus/molecules and out/<checkpoints> are read")
-    ap.add_argument("--out", type=Path, default=None, help=f"the record (default: this checkout's module-05 out/<carried stem>{A.PRODUCT_SUFFIX})")
+    ap.add_argument("--out", type=Path, default=None, help=f"the record (default: <carried stem>{A.PRODUCT_SUFFIX} in the carried checkpoints' own folder "
+                    "under this checkout's module-05 out/, beside their evaluation records)")
     ap.add_argument("--package", type=Path, default=None, help="the package's product_error.json: this read must agree with it")
     ap.add_argument("--threads", type=int, default=2)
     ap.add_argument("--models", type=Path, nargs="+", default=[], help="checkpoints to read instead of the registry's carried ones "
