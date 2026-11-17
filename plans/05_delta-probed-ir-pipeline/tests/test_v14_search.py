@@ -1,5 +1,6 @@
 """probes/v14_search.py on synthetic records: the frozen list (deterministic, in range, every configuration a valid trainer command), the
-plan's refusals, the score, the winner rule (no-worsening, two SE, the cap), plan → read1 → read2 → read3 end to end, the final chain's
+plan's refusals, the score, the winner rule (no-worsening, two SE, the cap), plan → read1 → read2 → read3 end to end, read3 and
+read-data deciding by decision 57 as amended on 17 Nov (the composite and its guard), the final chain's
 whole-pool retraining of the winner with read3's refusals, the score on the selection set without the excluded core (the
 evaluator stubbed), and the frozen stage-1 chain reproduced from the frozen list."""
 import collections
@@ -733,7 +734,7 @@ def test_read3_says_whether_the_expectation_of_more_data_held(sandbox):
     report = (root / "m05" / V.OUT / "read3.md").read_text(encoding="utf-8")
     assert not rec["expectation"]["a"]["held"] and not rec["expectation"]["b"]["held"] and not rec["promotion"]["promoted"]
     assert "(expected below: **did not hold**)" in report and "(a) is looked at per molecule before the promotion is decided" in report
-    assert "The expectation decides nothing; the no-worsening rule does." in report
+    assert "The expectation decides nothing; the promotion rule does." in report
 
 
 def at_read_data(root: Path, carried: list[str], shift: float = 0.5, full_epoch: int = 100) -> V.Config:
@@ -761,10 +762,12 @@ def test_read_data_promotes_by_the_registered_rule_and_carries_nothing(sandbox, 
     new, old = (P.load_eval_arm([root / "m05" / V.OUT / f"eval_{who}_seed{s}.json" for s in range(3)], holdouts=("a8", "b"))
                 for who in ("data", "carried_data"))
     assert rec["decided_on"] == ["a8", "b"] and "| (a8) | ring-ip |" in report and "| (a) | ring-ip |" in report
-    registered = json.loads(json.dumps(V.asdict(P.promotion(P.compare(new, old)))))   # read3's calls, no other rule
-    assert rec["promotion"] == registered and rec["promotion"]["promoted"]
+    amended = json.loads(json.dumps(V.asdict(P.amended_promotion(new, old))))       # read3's calls, no other rule
+    assert rec["promotion"] == amended and rec["promotion"]["promoted"] and rec["rule"] == V.RULE_NOTE
+    assert rec["promotion"]["old_rule"]["promoted"]                                 # the rule of 26 Oct beside it
     assert "\n".join(P.comparison_table(new, old, P.compare(new, old), "v1.4 candidate", "carried")) in report
-    assert "**Promotion: promoted** — worse on none" in report and "By §14 these three models are version 1.4." in report
+    assert f"**Promotion: promoted** ({V.RULE_NOTE})." in report and "\n".join(P.amended_lines(P.amended_promotion(new, old))) in report
+    assert "By §14, by decision 57 as amended on 17 November, these three models are version 1.4." in report
     assert "carries nothing itself and changes no registry entry" in report and not registry.exists()
     assert "- hold-out (b) below the carried version on the mean of three seeds: 2.51 against 2.91 — **PASS**" in report
     assert "- hold-out (a) not above the carried version on the mean of three seeds: 2.51 against 2.91 — **PASS**" in report
@@ -787,11 +790,14 @@ def test_read_data_does_not_promote_a_model_worse_on_one_read_out(sandbox):
         path.write_text(json.dumps(rec), encoding="utf-8")
     V.cmd_read_data(replace_record=False)
     rec, report = read_data_outputs(root)
-    (worse,) = rec["promotion"]["worse"]
-    assert not rec["promotion"]["promoted"] and "CH-oop" in worse and "(a8)" in worse
+    promo = rec["promotion"]
+    assert not promo["promoted"] and promo["worse_beyond_two_se"] == ["(a8) CH-oop"]  # the guard refuses
+    assert promo["composite_difference"] < -promo["threshold"]                      # though the composite alone would promote
     assert rec["on_the_ten_deciding_nothing"]["promotion"]["promoted"]              # the ten would have promoted: they do not decide
-    assert f"**Promotion: not promoted** — worse on {worse}" in report
-    assert "By §14 nothing is carried, and the cause is looked at per molecule before anything else is decided." in report
+    assert "**Promotion: not promoted**" in report and "- Guard (no read-out worse beyond two SE): **worse beyond two SE on (a8) CH-oop**." \
+        in report and "below it." in report
+    assert ("By §14, by decision 57 as amended on 17 November, nothing is carried, and the cause is looked at per molecule before anything "
+            "else is decided.") in report
     assert "against 2.91 — **PASS**" in report                                      # (b) still below
     assert "three seeds: 3.50 against 2.91 — **FAIL**" in report                    # (a) above the carried version
     assert "the new models 6.00, 6.00, 6.00 (mean 6.00)" in report and report.count("**FAIL**") == 2
@@ -868,8 +874,9 @@ def test_read_data_clean_arm_reads_the_any_charge_trainings_into_its_own_report(
     assert report.startswith("# v1.4 on the data, clean arm (no hold-out twin of any charge) — the promotion read (design note §14)")
     assert ("trained on the whole pool without any hold-out molecule's twin of any charge (--holdout-twins drop-any-charge, TASKS 253: 5 "
             f"pool molecules left it, {', '.join(CLEAN_DROPPED)})") in report
-    assert "By §14's addition of 17 November (the clean arm replaces the data arm, whose hold-out (a) was not clean for benzene) these " \
-           "three models are version 1.4." in report and rec["meaning"].startswith("By §14's addition of 17 November")
+    assert "By §14's addition of 17 November (the clean arm replaces the data arm, whose hold-out (a) was not clean for benzene), by " \
+           "decision 57 as amended on 17 November, these three models are version 1.4." in report
+    assert rec["meaning"].startswith("By §14's addition of 17 November")
     assert not (root / "m05" / V.OUT / "read_data.json").exists()
     with pytest.raises(SystemExit, match="the read is on record"):
         V.main(["read-data", "--arm", "clean"])
@@ -930,12 +937,12 @@ def test_read_data_decides_on_the_eight_clean_molecules_and_prints_the_ten(sandb
     rec, report = read_data_outputs(root)
     assert rec["promotion"]["promoted"] and rec["decided_on"] == [V.CLEAN_A, "b"]
     ten = rec["on_the_ten_deciding_nothing"]["promotion"]
-    assert not ten["promoted"] and ten["worse"] == ["(a) other"]
+    assert not ten["promoted"] and ten["worse_beyond_two_se"] == ["(a) other"] and ten["old_rule"]["worse"] == ["(a) other"]
     decides, beside = report.index("## The promotion: hold-out (a) on its eight clean molecules (a8)"), report.index("## Beside it, deciding nothing")
     assert decides < report.index("**Promotion: promoted**") < beside < report.index("| (a) | other | 4.00")
     assert "The eight decide (§14's addition of 16 Nov): the carried version trained on twins of two of the ten" in report
-    assert "On the ten the same rule would read: not promoted, worse on (a) other" in report
-    assert "By §14 these three models are version 1.4." in report
+    assert "On the ten the same rule would read: not promoted." in report and "**worse beyond two SE on (a) other**" in report
+    assert "By §14, by decision 57 as amended on 17 November, these three models are version 1.4." in report
     assert "three seeds: 2.51 against 2.91 — **PASS**" in report and "3.50 against" not in report   # the expectation reads the eight
     assert w.name in report
 
