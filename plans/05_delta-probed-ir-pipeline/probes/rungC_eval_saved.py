@@ -14,10 +14,17 @@ as the trainer drops them — and the derived (b) ids outside it are read separa
 refused (a read on trained molecules is not a test); NAME may not be a, b or b+. Repeatable. With --use-analytic each set records how many of its
 molecules carry analytic labels.
 
+--insample-read (decision 66, 17 Nov 2026): the checkpoint's own saved arguments say whether it is a measurement or a release network
+(`m05/network_kind.py`). A release network trained on the hold-outs, so a read of it on (a) or (b) is refused; its one read here is this
+flag — the in-sample read of the design note's check 3 — which reads hold-outs (a), (b) and every --eval-ids-file set as
+`insample_<set>` (`insample_a8`, never `a8`), refuses a set with a molecule the network did not train on, reads no (b+), and is
+itself refused for a measurement network. The record states `network_kind`.
+
 The inputs are built by the trainer's own `load_corpus` and `molecule_tensors`; the prediction by its `predictor`; nothing is recomputed differently.
 """
 import argparse
 import json
+import os
 import sys
 import time
 from datetime import datetime
@@ -29,6 +36,7 @@ PLAN = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PLAN / "modules" / "05_support_predictor" / "m05"))
 import holdout_twins as HT  # noqa: E402
 import model_registry as MR  # noqa: E402
+import network_kind as NK  # noqa: E402
 import rungC_intensities as RI  # noqa: E402
 from rungC_equivariant import load_molecule  # noqa: E402
 from rungC_train import (  # noqa: E402
@@ -59,18 +67,31 @@ def split_holdout_b(test_b: list, frozen: list, admitted) -> tuple[list, list]:
     return sorted(i for i in keep if i in admitted), [i for i in test_b if i not in keep]
 
 
-def eval_sets(specs: list, admitted, train_ids, keys: dict, substituted=()) -> dict:
-    """{NAME: {"ids", "dropped", "file", "n_analytic"}} from NAME=FILE specs (one id per line, '#' comments); see --eval-ids-file.
-    `keys` (`holdout_twins.manifest_keys`) finds a listed molecule the model trained on under another id."""
-    out = {}
-    trained, analytic = set(train_ids), set(substituted)
+def read_ids(path: str) -> list[str]:
+    """The ids of a list file: one per line, '#' comments."""
+    with open(path, encoding="utf-8") as f:
+        return [s.strip() for s in f if s.strip() and not s.startswith("#")]
+
+
+def listed_sets(specs: list) -> dict[str, tuple[str, list[str]]]:
+    """{NAME: (FILE, its ids)} from --eval-ids-file's NAME=FILE specs; a malformed spec and a name that is taken are refused."""
+    out: dict[str, tuple[str, list[str]]] = {}
     for spec in specs:
         name, sep, path = spec.partition("=")
         if not sep or not name or not path:
             raise SystemExit(f"--eval-ids-file {spec!r}: expected NAME=FILE")
         if name in ("a", "b", "b+") or name in out:
             raise SystemExit(f"--eval-ids-file: the name {name!r} is taken")
-        listed = [s.strip() for s in open(path, encoding="utf-8") if s.strip() and not s.startswith("#")]
+        out[name] = (path, read_ids(path))
+    return out
+
+
+def eval_sets(specs: list, admitted, train_ids, keys: dict, substituted=()) -> dict:
+    """{NAME: {"ids", "dropped", "file", "n_analytic"}} from NAME=FILE specs (one id per line, '#' comments); see --eval-ids-file.
+    `keys` (`holdout_twins.manifest_keys`) finds a listed molecule the model trained on under another id."""
+    out = {}
+    trained, analytic = set(train_ids), set(substituted)
+    for name, (path, listed) in listed_sets(specs).items():
         overlap = sorted(set(listed) & trained)
         if overlap:
             raise SystemExit(f"--eval-ids-file {name}: {len(overlap)} ids are in the model's training set ({', '.join(overlap[:5])}) — not a test")
@@ -85,7 +106,83 @@ def eval_sets(specs: list, admitted, train_ids, keys: dict, substituted=()) -> d
     return out
 
 
-def main() -> int:
+def release_sets(a: argparse.Namespace, mols: dict, held: dict[str, list], tr: list, substituted: list) -> list[tuple[str, list, dict]]:
+    """--insample-read: hold-outs (a) and (b) — (b) on the frozen list when given — and every --eval-ids-file set, each under its in-sample
+    name. A set with a molecule the network did not train on is refused: its number would mix an in-sample error with a held-out one."""
+    test_b = split_holdout_b(held["b"], read_ids(a.holdout_b_file), mols)[0] if a.holdout_b_file else held["b"]
+    named = {"a": (held["a"], {}), "b": (test_b, {})}
+    analytic = set(substituted)
+    for name, (file, listed) in listed_sets(a.eval_ids_file).items():
+        ids = [i for i in listed if i in mols]
+        named[name] = (ids, {"file": file, "dropped": [i for i in listed if i not in mols], "n_analytic": sum(i in analytic for i in ids)})
+    trained = set(tr)
+    for name, (ids, _) in named.items():
+        outside = [i for i in ids if i not in trained]
+        if not ids:
+            raise SystemExit(f"--insample-read ({name}): the set has no admitted molecule")
+        if outside:
+            raise SystemExit(f"--insample-read ({name}): {len(outside)} of its {len(ids)} molecules are not in the network's training data "
+                             f"({', '.join(outside[:5])}) — not an in-sample read; name the sets the release pool took in "
+                             "(--holdout-b-file for the frozen hold-out (b))")
+    return [(NK.insample_name(name), ids, meta) for name, (ids, meta) in named.items()]
+
+
+def measurement_sets(a: argparse.Namespace, mols: dict, held: dict[str, list], tr: list, substituted: list) -> list[tuple[str, list, dict]]:
+    """Hold-outs (a) and (b) — (b) on the frozen list when given, the derived ids outside it apart as (b+) — and every --eval-ids-file
+    set (`eval_sets`: none shares a molecule with the training set). Each as (name, ids, what the record says about the set)."""
+    test_b, b_plus = held["b"], []
+    if a.holdout_b_file:
+        test_b, b_plus = split_holdout_b(test_b, read_ids(a.holdout_b_file), mols)
+    extra = eval_sets(a.eval_ids_file, mols, tr, HT.manifest_keys(a.molecules), substituted)
+    return ([("a", held["a"], {}), ("b", test_b, {})] + ([("b+", b_plus, {})] if b_plus else [])
+            + [(name, s["ids"], {k: s[k] for k in ("file", "dropped", "n_analytic")}) for name, s in extra.items()])
+
+
+def read_kind(ck: dict, model: str, insample: bool) -> str:
+    """The checkpoint's kind, from its own saved arguments, with the two refusals: a release network read as a hold-out read, and
+    --insample-read on a measurement network (its read on a hold-out is a hold-out read)."""
+    kind = NK.kind_of_checkpoint(ck, model)
+    if insample and kind != NK.RELEASE:
+        raise SystemExit(f"--insample-read is the release networks' read (design note of 17 Nov 2026, §4, check 3); {model} is a "
+                         "measurement network, whose read on a hold-out is a hold-out read: drop the flag")
+    if not insample:
+        try:
+            NK.refuse_release(kind, model, "its error on hold-outs (a) and (b)")
+        except NK.ReleaseNetworkError as e:
+            raise SystemExit(f"{e}; the one read it has here is --insample-read, written under '{NK.INSAMPLE_PREFIX}<set>'") from None
+    return kind
+
+
+def read_sets(sets: list[tuple[str, list, dict]], mols: dict, tr: list, dF_of) -> tuple[dict, list[str]]:
+    """({set name: its read-outs}, the table's rows): the registered read-outs, the per-molecule field and the intensity read-outs."""
+    res, lines = {}, []
+    for h, ids, meta in sets:
+        r = readouts(mols, ids, tr, dF_of)
+        r["per_molecule"] = per_molecule_readouts(mols, ids, tr, dF_of)
+        r.update(RI.aggregate(r["per_molecule"]))
+        r.update(meta)
+        res[h] = r
+        so = f"{r['spectrum_overlap']:.3f} ({r['spectrum_overlap_zero_rule']:.3f})" if r.get("intensity_n") else "—"
+        ir = f"{r['intensity_rel_rms']:.2f} ({r['intensity_rel_rms_zero_rule']:.2f})" if r.get("intensity_n") else "—"
+        lines.append(f"| ({h}) | {len(ids)} | {r['coupling_ratio']:.3f} | {r['corrected_freq_rms']:.2f} | {r['dH_residual_ratio']:.3f} | {so} | {ir} | "
+                     f"{r.get('intensity_n', 0)} |")
+    return res, lines
+
+
+def apt_lines(res: dict, names: list[str]) -> list[str]:
+    """One row per molecule with an atomic polar tensor."""
+    lines = ["", "Per molecule with an APT:", "", "| molecule | ratio | ω rms | overlap | overlap zero rule | rel. rms | rel. rms zero rule | modes |",
+             "|---|---|---|---|---|---|---|---|"]
+    for h in names:
+        for i, v in res[h]["per_molecule"].items():
+            if v.get("spectrum_overlap") is not None:
+                lines.append(f"| {i} ({h}) | {v['coupling_ratio'] if v['coupling_ratio'] is None else round(v['coupling_ratio'], 3)} | "
+                             f"{v['corrected_freq_rms']:.2f} | {v['spectrum_overlap']:.3f} | {v['spectrum_overlap_zero_rule']:.3f} | "
+                             f"{v['intensity_rel_rms']:.2f} | {v['intensity_rel_rms_zero_rule']:.2f} | {v['n_modes']} |")
+    return lines
+
+
+def build_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("model")
     ap.add_argument("out_prefix")
@@ -94,54 +191,54 @@ def main() -> int:
     ap.add_argument("--threads", type=int, default=4)
     ap.add_argument("--holdout-b-file", default=None, help="frozen hold-out (b) ids; derived (b) ids outside it are read as (b+)")
     ap.add_argument("--eval-ids-file", action="append", default=[], metavar="NAME=FILE", help="an explicit test set read as hold-out (NAME); repeatable")
-    ap.add_argument("--allow-any-model", action="store_true", help="decision 55 (3 Oct 2026): use a model whose registry status is not 'carried' — name it in the record")
-    a = ap.parse_args()
+    ap.add_argument("--allow-any-model", action="store_true",
+                    help="decision 55 (3 Oct 2026): use a model whose registry status is not 'carried' — name it in the record")
+    ap.add_argument("--insample-read", action="store_true",
+                    help=f"decision 66: a release network's read on molecules it trained on, each set written as '{NK.INSAMPLE_PREFIX}<set>' "
+                         "(never a hold-out's name); refused for a measurement network, and without it a release network is refused")
+    return ap
+
+
+def write_record(out_prefix: str, res: dict, lines: list[str]) -> None:
+    """The JSON record and its markdown table, each written to a temporary file and moved over the target."""
+    for path, content in zip(record_paths(out_prefix), (json.dumps(res, indent=1), "\n".join(lines) + "\n"), strict=True):
+        tmp = path.with_name(path.name + ".tmp")
+        tmp.write_text(content, encoding="utf-8")
+        os.replace(tmp, path)
+
+
+def main() -> int:
+    a = build_parser().parse_args()
     torch.set_num_threads(a.threads)
     t0 = time.time()
     MR.require_carried(Path(a.model), allow=a.allow_any_model)                     # decision 55: reads run on carried models
     model, ck = load_hybrid_model(Path(a.model))
+    kind = read_kind(ck, Path(a.model).name, a.insample_read)                      # decision 66: before the corpus is loaded
     cfg = tensor_config(ck)
     mols, test_a, test_b, _, pool, substituted = load_corpus(a.molecules, a.use_analytic, settings=cfg.primitives)   # B as the model built it
     layers = ck["args"].get("pool_layers")
     if layers:                                                              # the trainer's --pool-layers filter, so `tr` is the training pool of the record
         pool = [i for i in pool if mols[i]["layer"] in set(layers.split(","))]
     tr, tr_source = training_ids(ck, pool, mols)
-    b_plus = []
-    if a.holdout_b_file:
-        frozen = [s.strip() for s in open(a.holdout_b_file, encoding="utf-8") if s.strip() and not s.startswith("#")]
-        test_b, b_plus = split_holdout_b(test_b, frozen, mols)
-    extra = eval_sets(a.eval_ids_file, mols, tr, HT.manifest_keys(a.molecules), substituted)
-    extra_ids = [i for s in extra.values() for i in s["ids"]]
+    sets = (release_sets if kind == NK.RELEASE else measurement_sets)(a, mols, {"a": test_a, "b": test_b}, tr, substituted)
     tensors = {i: molecule_tensors(i, load_molecule(Path(a.molecules) / i, use_analytic=a.use_analytic), mols[i], Path(a.molecules) / i, cfg,
-                                   Path(a.out_prefix).parent / "ls_targets") for i in dict.fromkeys(test_a + test_b + b_plus + extra_ids)}
+                                   Path(a.out_prefix).parent / "ls_targets") for i in dict.fromkeys(i for _, ids, _ in sets for i in ids)}
     model.eval()
-    dF_of = predictor(model, tensors, mols)
-    res = {"date": datetime.now().strftime("%Y-%m-%d %H:%M"), "model": a.model, "model_record": {k: ck[k] for k in ("pattern", "aux_mode", "aux_target", "n", "seed")},
-           "holdout_b_file": a.holdout_b_file, "use_analytic": a.use_analytic, "substituted_analytic": substituted, "n_train_ids": len(tr), "train_ids_source": tr_source, "apt_molecules": sorted(i for i in mols if "apt" in mols[i])}
-    lines = [f"# Saved model read on the hold-outs ({res['date']})", "", f"Model `{Path(a.model).name}` ({res['model_record']}); APTs on {len(res['apt_molecules'])} molecules.", "",
-             "| hold-out | n | ring-coupling ratio | ω rms (cm⁻¹) | ΔH residual | spectrum overlap (zero rule) | intensity rel. rms (zero rule) | with APT |", "|---|---|---|---|---|---|---|---|"]
-    holdouts = [("a", test_a), ("b", test_b)] + ([("b+", b_plus)] if b_plus else []) + [(n, s["ids"]) for n, s in extra.items()]
-    for h, ids in holdouts:
-        r = readouts(mols, ids, tr, dF_of)
-        r["per_molecule"] = per_molecule_readouts(mols, ids, tr, dF_of)
-        r.update(RI.aggregate(r["per_molecule"]))
-        if h in extra:
-            r.update({k: extra[h][k] for k in ("file", "dropped", "n_analytic")})
-        res[h] = r
-        so = f"{r['spectrum_overlap']:.3f} ({r['spectrum_overlap_zero_rule']:.3f})" if r.get("intensity_n") else "—"
-        ir = f"{r['intensity_rel_rms']:.2f} ({r['intensity_rel_rms_zero_rule']:.2f})" if r.get("intensity_n") else "—"
-        lines.append(f"| ({h}) | {len(ids)} | {r['coupling_ratio']:.3f} | {r['corrected_freq_rms']:.2f} | {r['dH_residual_ratio']:.3f} | {so} | {ir} | {r.get('intensity_n', 0)} |")
-    lines += ["", "Per molecule with an APT:", "", "| molecule | ratio | ω rms | overlap | overlap zero rule | rel. rms | rel. rms zero rule | modes |", "|---|---|---|---|---|---|---|---|"]
-    for h, _ in holdouts:
-        for i, v in res[h]["per_molecule"].items():
-            if v.get("spectrum_overlap") is not None:
-                lines.append(f"| {i} ({h}) | {v['coupling_ratio'] if v['coupling_ratio'] is None else round(v['coupling_ratio'], 3)} | {v['corrected_freq_rms']:.2f} | "
-                             f"{v['spectrum_overlap']:.3f} | {v['spectrum_overlap_zero_rule']:.3f} | {v['intensity_rel_rms']:.2f} | {v['intensity_rel_rms_zero_rule']:.2f} | {v['n_modes']} |")
+    res = {"date": datetime.now().strftime("%Y-%m-%d %H:%M"), "model": a.model, NK.FIELD: kind,
+           "model_record": {k: ck[k] for k in ("pattern", "aux_mode", "aux_target", "n", "seed")},
+           "holdout_b_file": a.holdout_b_file, "use_analytic": a.use_analytic, "substituted_analytic": substituted, "n_train_ids": len(tr),
+           "train_ids_source": tr_source, "apt_molecules": sorted(i for i in mols if "apt" in mols[i])}
+    title = (f"# Release network read on molecules it trained on ({res['date']}) — in-sample, not a hold-out error (decision 66)"
+             if kind == NK.RELEASE else f"# Saved model read on the hold-outs ({res['date']})")
+    lines = [title, "", f"Model `{Path(a.model).name}` ({res['model_record']}); APTs on {len(res['apt_molecules'])} molecules.", "",
+             "| hold-out | n | ring-coupling ratio | ω rms (cm⁻¹) | ΔH residual | spectrum overlap (zero rule) | intensity rel. rms (zero rule) | with APT |",
+             "|---|---|---|---|---|---|---|---|"]
+    read, rows = read_sets(sets, mols, tr, predictor(model, tensors, mols))
+    res |= read
+    lines += rows + apt_lines(res, [name for name, _, _ in sets])
     res["seconds"] = round(time.time() - t0)
     lines += ["", f"{res['seconds']} s."]
-    out_json, out_md = record_paths(a.out_prefix)
-    json.dump(res, open(out_json, "w"), indent=1)
-    out_md.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    write_record(a.out_prefix, res, lines)
     print("\n".join(lines))
     return 0
 

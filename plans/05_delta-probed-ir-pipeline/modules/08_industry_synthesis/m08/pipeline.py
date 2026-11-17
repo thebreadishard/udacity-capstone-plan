@@ -57,14 +57,15 @@ import numpy as np
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from . import reuse as R
-from .progress import Progress
 from .catalog import PLAN, Catalog
+from .progress import Progress
 from .spectrum import cheap_apt, series
 
 M05 = PLAN / "modules" / "05_support_predictor"
 for _p in (M05 / "m05", M05 / "corpus", PLAN / "probes", PLAN / "src"):
     sys.path.insert(0, str(_p))
 import model_registry as MR  # noqa: E402  (module 05's code is not a package)
+import network_kind as NK  # noqa: E402
 import run_corpus as RC  # noqa: E402
 import rungC_infer as RI  # noqa: E402
 import rungC_train as RT  # noqa: E402
@@ -228,6 +229,13 @@ def train_ids(models: tuple[Path, ...]) -> set[str]:
     for p in models:
         ids |= set(torch.load(p, map_location="cpu", weights_only=False)["train_ids"])
     return ids
+
+
+def network_kinds(models: tuple[Path, ...]) -> dict[str, str]:
+    """Each model file's kind (decision 66: measurement or release), from its checkpoint's own saved arguments."""
+    import torch
+
+    return {p.name: NK.kind_of_checkpoint(torch.load(p, map_location="cpu", weights_only=False), p.name) for p in models}
 
 
 def training_set(models: tuple[Path, ...]) -> tuple[tuple[str, ...], tuple[int, int]]:

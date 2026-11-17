@@ -49,6 +49,7 @@ from m08 import pipeline as P  # noqa: E402
 
 # isort: split
 import chain_runner  # noqa: E402
+import network_kind as NK  # noqa: E402
 import rungC_intensities as RINT  # noqa: E402
 from learning_curve_layerA import molecule_features, normal_modes  # noqa: E402
 from promotion_read import FAMILIES, load_eval_arm  # noqa: E402
@@ -319,6 +320,16 @@ def inputs(cfg: Config) -> Inputs:
     return Inputs(cfg.models, common_stem(cfg.models), list(cfg.records), list(cfg.records), CANDIDATE)
 
 
+def require_measurement(models: tuple[Path, ...]) -> None:
+    """Decision 66: the product error is a hold-out error and is read on measurement networks; each checkpoint's own saved
+    arguments say which kind it is. A release network stops the read before any molecule is read."""
+    for name, kind in P.network_kinds(models).items():
+        try:
+            NK.refuse_release(kind, name, "its product error on the hold-outs")
+        except NK.ReleaseNetworkError as e:
+            raise SystemExit(str(e)) from None
+
+
 def write_record(path: Path, record: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(path.suffix + ".tmp")
@@ -351,13 +362,15 @@ def main(argv: list[str] | None = None) -> int:
     torch.set_num_threads(cfg.threads)
     read = inputs(cfg)
     models, names = read.models, tuple(m.name for m in read.models)
+    require_measurement(models)
     out = cfg.out or A.M05_OUT / f"{read.stem}{A.PRODUCT_SUFFIX}"
     sets, recorded, sources = holdout_sets(read.records, read.clean)
     holdouts = read_holdouts(cfg, models, sets)
     checks = {"first_order_reproduces_evaluation_records": check_first_order(holdouts, recorded)}
     if cfg.package is not None:
         checks["agrees_with_package"] = check_package(holdouts, cfg.package)
-    record = {"kind": "product error read", "network": P.NETWORK, "network_version": read.version, "models": list(names),
+    record = {"kind": "product error read", "network": P.NETWORK, "network_version": read.version, NK.FIELD: NK.MEASUREMENT,
+              "models": list(names),
               "model_sha16": {m.name: P.sha16(m) for m in models}, "labels": {"kind": "analytic", "files": list(LABELS)},
               "sets_from": sources, "line_cm": A.LICENCE_LINE_CM, "definitions": DEFINITIONS,
               "bootstrap": {"seed": BOOTSTRAP_SEED, "draws": BOOTSTRAP_DRAWS, "unit": "molecule"}, "holdouts": holdouts, "checks": checks,

@@ -10,8 +10,12 @@ from __future__ import annotations
 
 import json
 import math
+import sys
 from dataclasses import dataclass
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "modules" / "05_support_predictor" / "m05"))
+import network_kind as NK  # module 05's code is not a package
 
 FAMILIES = ("ring-ip", "CH-stretch", "CH-oop", "other")
 RATIO = "coupling_ratio"
@@ -77,11 +81,13 @@ def arm_from_seeds(seeds: list[dict], holdouts: tuple[str, ...], substituted: fr
 
 
 def load_eval_arm(paths: list[Path], holdouts: tuple[str, ...] = ("a", "b")) -> Arm:
-    """One `rungC_eval_saved.py` JSON per seed; every one read on the frozen hold-out (b) and on the same analytic targets."""
+    """One `rungC_eval_saved.py` JSON per seed; every one read on the frozen hold-out (b) and on the same analytic targets. A record
+    of a release network (decision 66) is refused: it trained on the hold-outs, and an arm is a hold-out error."""
     recs = []
     for p in paths:
         with open(p, encoding="utf-8") as f:
             rec = json.load(f)
+        NK.refuse_release(NK.stated_kind(rec, Path(p).name), Path(p).name, "an arm of its read-outs")
         if not str(rec.get("holdout_b_file", "")).endswith(FROZEN_B):
             raise ValueError(f"{p} is not read on the frozen hold-out (b) of 8 Oct")
         recs.append(rec)

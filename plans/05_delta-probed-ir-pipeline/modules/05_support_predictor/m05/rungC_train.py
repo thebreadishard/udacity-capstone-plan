@@ -965,7 +965,7 @@ def split_fields(cfg: TrainConfig, corpus: Corpus) -> dict:
 def corpus_line(cfg: TrainConfig, corpus: Corpus) -> str:
     """The start line's account of the split."""
     if cfg.network_kind == NK.RELEASE:
-        return f"{len(corpus.mols)} molecules; pool {len(corpus.pool)} (release networks: every hold-out trains, none is read)"
+        return f"{len(corpus.mols)} molecules; pool {len(corpus.pool)} (release networks: the hold-outs are in the pool, none is read)"
     t = corpus.tests
     return f"{len(corpus.mols)} molecules; pool {len(corpus.pool)}; hold-out (a) {len(t['a'])}, (b) {len(t['b'])} ({corpus.cores})"
 
