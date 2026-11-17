@@ -32,7 +32,8 @@ def net(name: str, kind: str, seed: int, **kw) -> RC.Net:
     args = ARGS | {"out_prefix": f"out/{name}"} | ({NK.FIELD: kind} if kind == NK.RELEASE else {}) | kw.get("args", {})
     n = kw.get("n", 21 if kind == NK.RELEASE else 19)
     record = {"epochs": args["epochs"], "lr_schedule": kw.get("schedule", "constant"), "pool": kw.get("pool", n),
-              "curve": {str(n): {"per_seed": [{"seed": seed, "best_epoch": kw.get("best_epoch", 120)}]}}} | kw.get("record", {NK.FIELD: kind})
+              "curve": {str(n): {"per_seed": [{"seed": seed, "best_epoch": kw.get("best_epoch", 120), "inner_val_ids": kw.get("stopped_on", [])}]}}}
+    record |= kw.get("record", {NK.FIELD: kind})
     return RC.Net(path=Path(f"{name}_model_n{n}_seed{seed}.pt"), kind=kind, seed=seed, n=n, args=args,
                   train_ids=frozenset(kw.get("train_ids", POOL_ANALYTIC)), record=record)
 
@@ -167,6 +168,22 @@ def test_benzene_is_reported_by_name_and_refused_when_the_release_did_not_train_
     assert all(b["measurement"] == b["b3lyp"] and b["release"] > b["b3lyp"] for b in bands)      # ΔH = 0 gives B3LYP; a stiffer H, higher bands
     assert {b["family"] for b in bands} == set(RC.FAMILIES) and set(check.numbers["family_error"]) == set(NK.KINDS)
     assert check.numbers["in_training_data_of"] == {"release": [n.path.name for n in release], "measurement": []}
+    assert check.numbers["previous_release"] == "none" and "previous_release" not in bands[0]      # a first release
+    assert check.numbers["fitted_by_release_networks"] == [n.path.name for n in release]
+    stopped = (release[0], net("V_rel", NK.RELEASE, 1, train_ids=[*POOL_ANALYTIC, BENZENE], stopped_on=[BENZENE]))   # seed 1 drew it for stopping
+    assert RC.benzene(config(stopped, measurement, tmp_path)).numbers["fitted_by_release_networks"] == [release[0].path.name]
+    previous = tuple(net("V_prev", NK.RELEASE, s) for s in (0, 1))
+    scaled_corrections(monkeypatch, {"V_meas0": 0.0, "V_meas1": 0.0, "V_rel0": 0.01, "V_rel1": 0.01, "V_prev0": 0.02, "V_prev1": 0.02})
+    beside = RC.benzene(config(release, measurement, tmp_path, previous=previous))
+    assert beside.passed and beside.numbers["previous_release"] == [n.path.name for n in previous]
+    assert all(b["previous_release"] > b["release"] > b["measurement"] for b in beside.numbers["bands"])
+    assert set(beside.numbers["family_error"]) == {"measurement", "release", "previous_release"}
+    record = {"date": "-", "passed": True, NK.RELEASE: [n.path.name for n in release], NK.MEASUREMENT: [], "checks": {
+        name: {"passed": True, "refusal": None, "numbers": {"sample": [], "drawn_from": 0, "families": {}, "sets": {}}} for name in RC.CHECKS}}
+    record["checks"]["benzene"]["numbers"] = beside.numbers
+    assert "| B3LYP | family | ωB97X | measurement | release | previous release |" in RC.markdown(record)
+    with pytest.raises(SystemExit, match=r"V_meas_model_n19_seed0\.pt is a measurement network, named as a release one"):
+        config(release, measurement, tmp_path, previous=measurement)
     half = (release[0], net("V_rel", NK.RELEASE, 1))
     assert RC.benzene(config(half, measurement, tmp_path)).refusal == f"1 release network(s) did not train on {BENZENE}"
     empty = config(release, measurement, tmp_path, molecules=tmp_path)
@@ -217,6 +234,10 @@ def test_the_script_records_every_number_and_refuses_networks_stopped_by_the_cap
     assert checks["holdouts_learnt"]["passed"] is all(v["release"] < v["measurement"] for v in a8["families"].values())
     benzene = checks["benzene"]["numbers"]
     assert len(benzene["bands"]) == 30 and benzene["in_training_data_of"] == {"release": [p.name for p in release], "measurement": []}
+    assert benzene["previous_release"] == "none" and set(benzene["fitted_by_release_networks"]) <= {p.name for p in release}
+    stopped_on = {s["seed"]: BENZENE in s["inner_val_ids"] for row in json.loads((work / "V_rel.json").read_text(encoding="utf-8"))["curve"].values()
+                  for s in row["per_seed"]}
+    assert len(benzene["fitted_by_release_networks"]) == sum(not v for v in stopped_on.values())       # the training record's own split
     assert sorted(record["model_sha16"]) == sorted(p.name for p in (*release, *measurement)) and record["run"]["peak_memory_gb"] > 0
     md = (work / "V_rel_release_checks.md").read_text(encoding="utf-8")
     assert "REFUSED: the release networks are not shipped" in md and "| 4 early_stopping | NO |" in md and f"## 5 Benzene ({BENZENE})" in md

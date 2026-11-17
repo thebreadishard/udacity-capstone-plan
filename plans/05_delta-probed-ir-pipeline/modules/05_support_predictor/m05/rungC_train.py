@@ -857,7 +857,9 @@ def release_pool(cfg: TrainConfig, pool: list, held: dict[str, list], substitute
     out = sorted({*pool, *(i for ids in added.values() for i in ids)}, key=E6.sha)
     log(f"release networks (decision 66): pool {len(out)} = {len(pool)} pool molecules ({len(twins)} of them hold-out twins, kept) + "
         + " + ".join(f"hold-out ({h}) {len(ids)}" for h, ids in added.items())
-        + (f"; {len(left_out)} hold-out molecules without analytic labels are not trained on" if left_out else "") + "; no hold-out is read")
+        + (f"; {len(left_out)} hold-out molecules without analytic labels are not trained on" if left_out else "") + "; no hold-out is read"
+        + (f"; each seed fits on a random {100 * (1 - cfg.inner_val):g} % of the pool and is stopped on the other {100 * cfg.inner_val:g} %, a "
+           "different part per seed, so a molecule is fitted by most seeds and not by every one" if cfg.inner_val else ""))
     return out, {**added, "twins": twins, "left_out": left_out}
 
 

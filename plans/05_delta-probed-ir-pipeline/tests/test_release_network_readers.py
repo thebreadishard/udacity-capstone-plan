@@ -97,6 +97,10 @@ def test_the_kind_is_read_from_the_checkpoint_itself(tmp_path):
     assert P.network_kinds(models) == {"old.pt": NK.MEASUREMENT, "m.pt": NK.MEASUREMENT, "r.pt": NK.RELEASE}
 
 
+def test_the_kinds_module_says_that_trained_on_is_not_fitted_on():
+    assert "'Trained on' is not 'fitted on'" in NK.__doc__ and "stopped on the rest, a different part per seed" in NK.__doc__
+
+
 def test_a_release_checkpoint_is_refused_as_a_measurement_whatever_the_registry_says(tmp_path):
     """`model_registry.require_measurement`: the one gate on the files themselves, for every script that reads an error."""
     import model_registry as MR

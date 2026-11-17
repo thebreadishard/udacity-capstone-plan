@@ -285,6 +285,17 @@ def train_ids(models: tuple[Path, ...]) -> set[str]:
     return ids
 
 
+def inner_validation_share(models: tuple[Path, ...]) -> float:
+    """The share of its training molecules each model was stopped on and not fitted on (its checkpoint's --inner-val); models of
+    different shares are not one recipe and are refused."""
+    import torch
+
+    shares = {float(torch.load(p, map_location="cpu", weights_only=False)["args"]["inner_val"]) for p in models}
+    if len(shares) != 1:
+        raise ValueError(f"the models were trained with {len(shares)} inner-validation shares ({sorted(shares)}); one recipe has one")
+    return shares.pop()
+
+
 def network_kinds(models: tuple[Path, ...]) -> dict[str, str]:
     """Each model file's kind (decision 66: measurement or release), from its checkpoint's own saved arguments."""
     import torch

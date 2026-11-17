@@ -5,6 +5,7 @@ Networks.md, §4): five checks, each with its numbers, in one record. A failed c
     python probes/release_checks.py <release checkpoints> --measurement <measurement checkpoints>
                                     [--m05 <a module-05 folder holding corpus/molecules>] [--out <record prefix>]
                                     [--holdout NAME=FILE ...] [--sample 40] [--threads 2]
+                                    [--previous-release <the previous version's release checkpoints>]
 
   1 same recipe      the release training's saved arguments differ from the measurement training's, seed by seed, in the kind only
                      (and in RUN_ONLY: where the run wrote, its threads, how the seeds were grouped into runs). `sizes` may differ
@@ -20,7 +21,9 @@ Networks.md, §4): five checks, each with its numbers, in one record. A failed c
                      ωB97X). A set's molecule in a measurement network's training data, under any id, refuses the check.
   4 early stopping   no release seed's best epoch is at the cap: decision 51's rule as `v14_search.at_cap` has it.
   5 benzene by name  A_8448043181: every band's position under both kinds beside B3LYP and ωB97X, and its error per family; it
-                     must be in the release networks' training data. Nothing is compared: the numbers are for the reader.
+                     must be in the release networks' training data, and the record says how many of them fitted it (the others
+                     stopped on it: inner validation). With --previous-release the previous version's release networks stand
+                     beside them; a first release records 'none'. Nothing is compared: the numbers are for the reader.
 
 What is loaded: the named checkpoints and the training record beside each (`<prefix>.json`); the corpus manifest (for check 3's
 twins); and, molecule by molecule, the folders of the sampled pool molecules, the hold-out sets and benzene — geometry, the analytic
@@ -60,6 +63,7 @@ SAMPLE_SEED = 20261117
 SAMPLE_SIZE = 40
 RUN_ONLY = ("out_prefix", "threads", "seeds")     # the run's own: where it wrote, its threads, how the seeds were grouped into runs
 SUFFIX = "_release_checks"
+PREVIOUS = "previous_release"
 HOLDOUT_FILES = {"a8": "out/holdout_a_clean_2026-10-30.txt", "b": "corpus/holdout_b_frozen_2026-10-08.txt"}   # relative to --m05
 CHECKS = ("same_recipe", "pool_agreement", "holdouts_learnt", "early_stopping", "benzene")
 DEFINITIONS = {
@@ -113,10 +117,11 @@ class Config:
     out: Path
     sample: int
     threads: int
+    previous: tuple[Net, ...] = ()       # the previous version's release networks, for check 5; none for a first release
 
     def __post_init__(self) -> None:
         problems = [f"{n.path.name} is a {n.kind} network, named as a {want} one" for want, nets in
-                    ((NK.RELEASE, self.release), (NK.MEASUREMENT, self.measurement)) for n in nets if n.kind != want]
+                    ((NK.RELEASE, self.release), (NK.MEASUREMENT, self.measurement), (NK.RELEASE, self.previous)) for n in nets if n.kind != want]
         seeds = [sorted(n.seed for n in nets) for nets in (self.release, self.measurement)]
         if seeds[0] != seeds[1] or len(set(seeds[0])) != len(seeds[0]):
             problems.append(f"the two kinds must hold the same seeds, one checkpoint each: release {seeds[0]}, measurement {seeds[1]}")
@@ -134,6 +139,11 @@ class Config:
 
     def models(self, kind: str) -> tuple[Path, ...]:
         return tuple(n.path for n in (self.release if kind == NK.RELEASE else self.measurement))
+
+    def compared(self) -> dict[str, tuple[Path, ...]]:
+        """Check 5's columns: both kinds and, when given, the previous version's release networks."""
+        both = {kind: self.models(kind) for kind in NK.KINDS}
+        return both | ({PREVIOUS: tuple(n.path for n in self.previous)} if self.previous else {})
 
 
 def load_net(path: Path) -> Net:
@@ -175,11 +185,16 @@ def same_recipe(release: tuple[Net, ...], measurement: tuple[Net, ...]) -> Check
                                                   "absent_settings_read_as": read_as}, refusal)
 
 
+def seed_entry(net: Net) -> dict:
+    """The checkpoint's own seed in the training record beside it."""
+    return next(s for s in net.record["curve"][str(net.n)]["per_seed"] if s["seed"] == net.seed)
+
+
 def early_stopping(release: tuple[Net, ...]) -> Check:
     """Check 4: decision 51 on every release seed, by `v14_search.at_cap`."""
     rows = {}
     for r in release:
-        entry = next(s for s in r.record["curve"][str(r.n)]["per_seed"] if s["seed"] == r.seed)
+        entry = seed_entry(r)
         read = V14.SeedRead({}, {}, entry.get("best_epoch"), int(r.record["epochs"]), {})
         schedule = r.record.get("lr_schedule", "constant")           # records before the schedule existed trained at a constant rate
         rows[r.path.name] = {"best_epoch": read.best_epoch, "cap": read.cap, "lr_schedule": schedule, "at_cap": V14.at_cap(read, schedule),
@@ -293,15 +308,18 @@ def benzene(cfg: Config) -> Check:
     _, w_low, V_low, _ = normal_modes(lo, masses)
     _, w_ref, V_ref, _ = normal_modes(hi, masses)
     family = molecule_features(folder, lo=lo, hi=hi)["family"]
-    position = {kind: band_positions(lo, masses, P.correction(cfg.models(kind), folder)[0]) for kind in NK.KINDS}
+    compared = cfg.compared()
+    position = {name: band_positions(lo, masses, P.correction(models, folder)[0]) for name, models in compared.items()}
     truth = w_ref[RINT.match_modes(V_low, V_ref)]
     bands = [{"b3lyp": round(float(w_low[k]), 2), "family": family[k], "wb97x": round(float(truth[k]), 2),
-              NK.MEASUREMENT: round(float(position[NK.MEASUREMENT][k]), 2), NK.RELEASE: round(float(position[NK.RELEASE][k]), 2)}
-             for k in range(len(w_low))]
-    errors = {kind: {f: v["rms"] for f, v in family_errors([BENZENE], cfg.molecules, cfg.models(kind)).items()} for kind in NK.KINDS}
+              **{name: round(float(position[name][k]), 2) for name in compared}} for k in range(len(w_low))]
+    errors = {name: {f: v["rms"] for f, v in family_errors([BENZENE], cfg.molecules, models).items()} for name, models in compared.items()}
+    fitted = sorted(r.path.name for r in cfg.release if BENZENE in r.train_ids and BENZENE not in seed_entry(r)["inner_val_ids"])
     missing = len(cfg.release) - len(in_training[NK.RELEASE])
     refusal = f"{missing} release network(s) did not train on {BENZENE}" if missing else None
-    return Check("benzene", refusal is None, {"molecule": BENZENE, "in_training_data_of": in_training, "bands": bands, "family_error": errors}, refusal)
+    return Check("benzene", refusal is None, {"molecule": BENZENE, "in_training_data_of": in_training, "fitted_by_release_networks": fitted,
+                                             PREVIOUS: [n.path.name for n in cfg.previous] or "none", "bands": bands, "family_error": errors},
+                 refusal)
 
 
 def read_ids(path: Path) -> list[str]:
@@ -323,9 +341,14 @@ def markdown(record: dict) -> str:
         lines += ["", f"## 3 Hold-out ({name}): {s['n_read']} of {s['n_listed']} listed molecules (cm⁻¹)", "",
                   "| family | release, in-sample | measurement, held out | bands |", "|---|---|---|---|"]
         lines += [f"| {f} | {_cell(v[NK.RELEASE])} | {_cell(v[NK.MEASUREMENT])} | {v['n_bands']} |" for f, v in s.get("families", {}).items()]
-    lines += ["", f"## 5 Benzene ({BENZENE}), cm⁻¹", "", "| B3LYP | family | ωB97X | measurement | release |", "|---|---|---|---|---|"]
-    lines += [f"| {b['b3lyp']:.2f} | {b['family']} | {b['wb97x']:.2f} | {b[NK.MEASUREMENT]:.2f} | {b[NK.RELEASE]:.2f} |"
-              for b in c["benzene"]["numbers"].get("bands", [])]
+    benzene_numbers = c["benzene"]["numbers"]
+    columns = [NK.MEASUREMENT, NK.RELEASE, *([PREVIOUS] if benzene_numbers.get(PREVIOUS, "none") != "none" else [])]
+    lines += ["", f"## 5 Benzene ({BENZENE}), cm⁻¹", "",
+              f"Fitted by {len(benzene_numbers.get('fitted_by_release_networks', []))} of {len(record[NK.RELEASE])} release networks (the others "
+              f"stopped on it); previous version's release networks: {benzene_numbers.get(PREVIOUS, 'none') if PREVIOUS not in columns else 'beside'}.",
+              "", "| B3LYP | family | ωB97X | " + " | ".join(c.replace("_", " ") for c in columns) + " |", "|---|---|---|" + "---|" * len(columns)]
+    lines += [f"| {b['b3lyp']:.2f} | {b['family']} | {b['wb97x']:.2f} | " + " | ".join(f"{b[c]:.2f}" for c in columns) + " |"
+              for b in benzene_numbers.get("bands", [])]
     return "\n".join(lines) + "\n"
 
 
@@ -351,6 +374,8 @@ def parse(argv: list[str] | None) -> Config:
     ap.add_argument("--holdout", action="append", default=[], metavar="NAME=FILE",
                     help="a hold-out set for check 3, repeatable (default: " + ", ".join(f"{k}=<m05>/{v}" for k, v in HOLDOUT_FILES.items()) + ")")
     ap.add_argument("--sample", type=int, default=SAMPLE_SIZE, help="check 2's number of pool molecules")
+    ap.add_argument("--previous-release", type=Path, nargs="+", default=[],
+                    help="check 5: the previous version's release checkpoints, set beside this one's on benzene (none for a first release)")
     ap.add_argument("--threads", type=int, default=2)
     a = ap.parse_args(argv)
     m05 = a.m05.resolve()
@@ -362,7 +387,7 @@ def parse(argv: list[str] | None) -> Config:
     release = tuple(load_net(p.resolve()) for p in a.release)
     out = a.out.resolve() if a.out else release[0].path.parent / f"{PE.common_stem(tuple(n.path for n in release))}{SUFFIX}"
     return Config(release=release, measurement=tuple(load_net(p.resolve()) for p in a.measurement), molecules=m05 / "corpus" / "molecules",
-                  holdouts=holdouts, out=out, sample=a.sample, threads=a.threads)
+                  holdouts=holdouts, out=out, sample=a.sample, threads=a.threads, previous=tuple(load_net(p.resolve()) for p in a.previous_release))
 
 
 def main(argv: list[str] | None = None) -> int:

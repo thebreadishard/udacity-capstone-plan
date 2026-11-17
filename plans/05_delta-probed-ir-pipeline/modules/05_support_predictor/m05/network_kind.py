@@ -4,6 +4,11 @@ A version is a pair with one recipe. Its **measurement networks** train without 
 read on them. Its **release networks** train on every molecule with labels of the carried kind, the hold-outs and their twins included:
 they are what the pipeline and the public package ship, and they have no held-out error of their own.
 
+'Trained on' is not 'fitted on': under the recipe's inner validation each seed's network takes gradient steps on a random part of its
+pool (85 % under the carried recipe's --inner-val 0.15) and is stopped on the rest, a different part per seed. A release network's
+pool holds every molecule, so every molecule is fitted or stopped on by every release network, is fitted by most of them and not by
+every one, and — where every seed happens to draw it for stopping (0.15³ of the molecules for three seeds) — by none.
+
 The kind is a setting of the training (`rungC_train.py --network-kind`) and is stored in the checkpoint's own arguments; every other
 place — the training record, an evaluation record, the model registry — repeats what the checkpoint says. A checkpoint, record or
 registry entry written before decision 66 states no kind: every network trained until then left the hold-outs out, so it is a

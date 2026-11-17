@@ -139,7 +139,12 @@ def test_the_statement_under_release_networks_carries_the_design_notes_sentence(
                 "measured on the measurement networks of the same version — the same recipe trained without the hold-out molecules — on "
                 "molecules those networks never saw; the release networks themselves have seen every molecule we hold labels for, so they have "
                 "no held-out error of their own.")
-    s = LC.statement("benzene", "1.4", 3, LIC, S.TEXT["release_trained"], LC.MadeBy(release_trained_on=1132))
+    s = LC.statement("benzene", "1.4", 3, LIC, S.TEXT["release_trained"], LC.MadeBy(release_trained_on=1132))     # no inner validation
+    fitted = LC.statement("benzene", "1.4", 3, LIC, S.TEXT["release_trained"], LC.MadeBy(release_trained_on=1132, inner_validation=0.15))
+    assert ("trained on all 1132 molecules with labels: each of the 3 networks is fitted on a random 85 % of them and stopped on the other "
+            "15 %, a different 15 % per seed, so a molecule is fitted by most of the networks and not by every one (rarely by none). Its "
+            "error bars were measured on the measurement networks of the same version") in fitted
+    assert fitted.replace(LC.RELEASE_FITTED.format(k=3, fitted="85", stopped="15"), "") == s           # and nothing else moves
     assert sentence in s and "measured on molecules the network never saw" not in s
     assert f"The error stated is the measurement networks' {LIC['quantity_name']}; the harmonic positions ω are licensed for ring-ip" in s
     assert s.endswith("This molecule and the ΔH network: in the release networks' training data: the error bars are not an out-of-sample "
@@ -170,6 +175,16 @@ def test_the_release_index_leaves_the_cation_rows_out(tmp_path, monkeypatch):
     monkeypatch.setattr(S, "MANIFEST", manifest)
     monkeypatch.setattr(P, "train_ids", lambda models: {"A_benz", "B_tol", "P3c_benz"})
     assert S.release_index(()) == {"c1ccccc1": ["A_benz"], "Cc1ccccc1": ["B_tol"]}
+
+
+def test_the_share_a_network_is_stopped_on_is_its_checkpoints_own(tmp_path):
+    models = []
+    for name, share in (("a.pt", 0.15), ("b.pt", 0.15), ("c.pt", 0.0)):
+        torch.save({"args": {"inner_val": share}}, tmp_path / name)
+        models.append(tmp_path / name)
+    assert P.inner_validation_share(tuple(models[:2])) == 0.15
+    with pytest.raises(ValueError, match="2 inner-validation shares"):
+        P.inner_validation_share(tuple(models))
 
 
 class NoCatalog:
@@ -204,6 +219,7 @@ def v13(monkeypatch):
     with open(A.M05_OUT / f"E7_rungC_chain35_analytic{A.PRODUCT_SUFFIX}", encoding="utf-8") as f:
         hashes = json.load(f)["model_sha16"]
     monkeypatch.setattr(P, "train_ids", lambda models: {"A_8448043181"} if "V_rel" in models[0].name else set())
+    monkeypatch.setattr(P, "inner_validation_share", lambda models: 0.15)
     return [{"path": f"out/{name}", "sha16": hashes[name], "network": P.NETWORK, "version": "1.3", "status": "carried"} for name in V13]
 
 
@@ -224,9 +240,11 @@ def test_a_certificate_of_release_networks_takes_its_error_bars_from_the_measure
     assert c["accuracy"] == A.accuracy_of(V13) and c["licence"]["licensed_families"]            # the measurement networks' records, unchanged
     assert c["molecule"]["seen"] == {"role": "release_trained", "ids": [BENZENE], "text": S.TEXT["release_trained"]}
     assert c["network"]["kind"] == NK.RELEASE and c["network"]["trained_on_molecules"] == 1 and c["network"]["measurement_models"] == v13
-    assert LC.RELEASE_SENTENCE.format(version="1.3", n=1) in c["statement"] and "the network never saw" not in c["statement"]
+    assert LC.release_sentence("1.3", 3, LC.MadeBy(1, None, 0.15)) in c["statement"] and "the network never saw" not in c["statement"]
+    assert "each of the 3 networks is fitted on a random 85 % of them" in c["statement"] and c["network"]["inner_validation"] == 0.15
     md = LC.to_markdown(c)
     assert "- the ΔH network: in the release networks' training data: the error bars are not an out-of-sample error for this molecule" in md
-    assert "- the models above are release networks, trained on 1 molecules; the error bars are those of the measurement networks: " + V13[0] in md
+    assert ("- the models above are release networks, trained on 1 molecules (each fitted on 85 % of them and stopped on the rest); the "
+            "error bars are those of the measurement networks: " + V13[0]) in md
     with pytest.raises(ValueError, match="evaluation records"):                 # and never from records under the release networks' names
         A.accuracy_of(ran)

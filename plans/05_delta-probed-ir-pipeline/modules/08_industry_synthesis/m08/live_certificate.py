@@ -146,10 +146,13 @@ def licence_block(lic: dict) -> dict:
     return {k: lic[k] for k in ("statement", "rule_source", "licensed_families", "quantity", "quantity_name", "caveats")}
 
 
-RELEASE_SENTENCE = ("The spectrum is made by the release networks of version {version}, trained on all {n} molecules with labels. Its error "
-                    "bars were measured on the measurement networks of the same version — the same recipe trained without the hold-out "
-                    "molecules — on molecules those networks never saw; the release networks themselves have seen every molecule we hold "
-                    "labels for, so they have no held-out error of their own.")      # design note of 17 Nov 2026, §3, word for word
+# design note of 17 Nov 2026, §3, word for word: what made the spectrum, how each network used the molecules, whose error is stated
+RELEASE_MADE = "The spectrum is made by the release networks of version {version}, trained on all {n} molecules with labels"
+RELEASE_FITTED = (": each of the {k} networks is fitted on a random {fitted} % of them and stopped on the other {stopped} %, a different "
+                  "{stopped} % per seed, so a molecule is fitted by most of the networks and not by every one (rarely by none)")
+RELEASE_MEASURED = (". Its error bars were measured on the measurement networks of the same version — the same recipe trained without the "
+                    "hold-out molecules — on molecules those networks never saw; the release networks themselves have seen every molecule "
+                    "we hold labels for, so they have no held-out error of their own.")
 HELD_BACK_SENTENCE = ("Version {version} has release networks, and they did not make this spectrum: {reason}. It is made by the "
                       "measurement networks, whose error was measured on molecules they never saw.")
 
@@ -161,9 +164,19 @@ class MadeBy:
 
     release_trained_on: int | None = None
     held_back: str | None = None
+    inner_validation: float = 0.0          # the share of the molecules each release network was stopped on, not fitted on
 
 
 NO_RELEASE = MadeBy()
+
+
+def release_sentence(version: str, n_seeds: int, made_by: MadeBy) -> str:
+    """Design note §3's sentence for a spectrum the release networks made. 'Trained on all N' is said with what each network did
+    with the N: under inner validation it is fitted on a part and stopped on the rest."""
+    fitted = ""
+    if made_by.inner_validation:
+        fitted = RELEASE_FITTED.format(k=n_seeds, fitted=f"{100 * (1 - made_by.inner_validation):g}", stopped=f"{100 * made_by.inner_validation:g}")
+    return RELEASE_MADE.format(version=version, n=made_by.release_trained_on) + fitted + RELEASE_MEASURED
 
 
 def statement(name: str, version: str, n_seeds: int, lic: dict, seen_text: str, made_by: MadeBy = NO_RELEASE) -> str:
@@ -175,7 +188,7 @@ def statement(name: str, version: str, n_seeds: int, lic: dict, seen_text: str, 
     if made_by.release_trained_on is None:
         measured = f" — with the {lic['quantity_name']} measured on molecules the network never saw; the "
     else:
-        measured = (f". {RELEASE_SENTENCE.format(version=version, n=made_by.release_trained_on)} The error stated is the measurement networks' "
+        measured = (f". {release_sentence(version, n_seeds, made_by)} The error stated is the measurement networks' "
                     f"{lic['quantity_name']}; the ")
     return " ".join(filter(None, [
         f"{opening}{measured}"
@@ -207,7 +220,8 @@ def certificate(folder: Path, catalog: Catalog) -> dict:
     lic = licence_state(accuracy)
     seen = S.status(adm["smiles"], S.load(tuple(Path(m["path"]) for m in measured)), listed["id"] if listed else None,
                     S.release_index(ran) if released else None)
-    made_by = MadeBy(len(P.train_ids(ran)) if released else None, adm.get("release_held_back"))
+    made_by = MadeBy(len(P.train_ids(ran)) if released else None, adm.get("release_held_back"),
+                     P.inner_validation_share(ran) if released else 0.0)
     truth = S.truth_beside(listed["id"], rec["spectra"]["network"]["sticks"]) if listed else None
     summary = POS.summary_of(rec["spectra"])
     return dict(
@@ -216,7 +230,8 @@ def certificate(folder: Path, catalog: Catalog) -> dict:
                       training_atoms=adm["training_atoms"], inside_training_sizes=adm["inside_training_sizes"], listed=listed,
                       seen=seen, truth=truth),
         network=dict(name=P.NETWORK, version=version, models=adm["models"], predicts=A.HIGHER_LEVEL)
-        | ({"kind": P.NK.RELEASE, "trained_on_molecules": made_by.release_trained_on, "measurement_models": measured} if released else {})
+        | ({"kind": P.NK.RELEASE, "trained_on_molecules": made_by.release_trained_on, "inner_validation": made_by.inner_validation,
+            "measurement_models": measured} if released else {})
         | ({"release_held_back": made_by.held_back} if made_by.held_back else {}),
         accuracy=accuracy, bands=bands(r, accuracy, tolerance, lic["licensed_families"]),
         tolerance=dict(per_region=tolerance, rule=FAMILY_SOURCE),
@@ -378,7 +393,8 @@ def _measurement_lines(network: dict) -> list[str]:
     """Under release networks: the measurement networks whose records give the error bars; nothing otherwise."""
     if "measurement_models" not in network:
         return []
-    return [f"- the models above are release networks, trained on {network['trained_on_molecules']} molecules; the error bars are those of the "
+    return [f"- the models above are release networks, trained on {network['trained_on_molecules']} molecules (each fitted on "
+            f"{100 * (1 - network['inner_validation']):g} % of them and stopped on the rest); the error bars are those of the "
             "measurement networks: " + "; ".join(f"{Path(x['path']).name} (sha16 {x['sha16']})" for x in network["measurement_models"])]
 
 

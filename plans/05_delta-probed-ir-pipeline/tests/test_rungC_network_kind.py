@@ -95,6 +95,10 @@ def test_a_release_pool_takes_the_hold_outs_in_and_keeps_the_twins(corpus):
     assert (a, b) == ([], []) and pool == sorted(["B_tol", "B_xyl", "A_tol", "A2_naph"], key=E6.sha)
     assert release == {"a": ["A_tol"], "b": ["A2_naph"], "twins": ["B_tol"], "left_out": ["A2_fd"]}     # no analytic labels: not trained on
     assert "pool 4" in lines[0] and "1 hold-out molecules without analytic labels" in lines[0] and "no hold-out is read" in lines[0]
+    assert "fits on" not in lines[0]                                           # no inner validation: every seed fits on the whole pool
+    RT.kind_split(cfg.model_copy(update={"inner_val": 0.15}), ["B_tol", "B_xyl"], held, ["A_tol", "A2_naph", "B_tol", "B_xyl"], lines.append)
+    assert lines[-1].endswith("each seed fits on a random 85 % of the pool and is stopped on the other 15 %, a different part per seed, so a "
+                              "molecule is fitted by most seeds and not by every one")
     assert RT.drop_twins(cfg, pool, [], lines.append) == (pool, [])
     without_analytic = cfg.model_copy(update={"use_analytic": False})
     assert RT.kind_split(without_analytic, ["B_tol", "B_xyl"], held, [], lines.append)[3]["left_out"] == []   # one kind of label: all enter
