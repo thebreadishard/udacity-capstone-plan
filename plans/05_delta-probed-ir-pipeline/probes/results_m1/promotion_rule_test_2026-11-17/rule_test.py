@@ -18,6 +18,8 @@ import random
 import sys
 from pathlib import Path
 
+from scipy.stats import t as student_t
+
 PLAN = Path(sys.argv[1]).resolve()
 sys.path.insert(0, str(PLAN / "probes"))
 import promotion_read as P  # noqa: E402  the probes folder is not a package
@@ -39,16 +41,19 @@ def mean_se(v: list[float]) -> tuple[float, float]:
     return m, math.sqrt(sum((x - m) ** 2 for x in v) / (len(v) - 1)) / math.sqrt(len(v))
 
 
-def rules(new: P.Arm, carried: P.Arm) -> tuple[bool, bool, str]:
+def rules(new: P.Arm, carried: P.Arm) -> tuple[bool, bool, str, bool]:
     comps = P.compare(new, carried)
     old = P.promotion(comps)
     (mn, sn), (mc, sc) = mean_se(composite(new)), mean_se(composite(carried))
     d, se = mn - mc, math.sqrt(sn**2 + sc**2)
     worse_beyond = [f"({c.hold}) {c.quantity}" for c in comps if c.new > c.carried and c.beyond_two_se]
     new_ok = d < 0 and abs(d) > 2 * se and not worse_beyond
+    nn, nc = len(composite(new)), len(composite(carried))
+    df = (sn**2 + sc**2) ** 2 / (sn**4 / (nn - 1) + sc**4 / (nc - 1))
+    t_ok = d < 0 and abs(d) > student_t.ppf(0.975, df) * se and not worse_beyond
     note = (f"composite {mn:.3f} against {mc:.3f} (d {d:+.3f}, 2 SE {2 * se:.3f}); old rule worse on {', '.join(old.worse) or 'none'}; "
             f"worse beyond 2 SE: {', '.join(worse_beyond) or 'none'}")
-    return old.promoted, new_ok, note
+    return old.promoted, new_ok, note + f"; t line {student_t.ppf(0.975, df) * se:.3f} (df {df:.1f})", t_ok
 
 
 def arm(paths: list[Path], holdouts: tuple[str, ...]) -> P.Arm:
@@ -84,28 +89,29 @@ def drawn(template: P.Arm, spread: P.Arm, rng: random.Random, n: int = 3) -> P.A
     return P.Arm(values=values, substituted=template.substituted)
 
 
-def simulate(true_new: P.Arm, carried: P.Arm, rng: random.Random) -> tuple[float, float]:
-    old = new = 0
+def simulate(true_new: P.Arm, carried: P.Arm, rng: random.Random) -> tuple[float, float, float]:
+    old = new = tee = 0
     for _ in range(DRAWS):
-        a, b = rules(drawn(true_new, true_new, rng), drawn(carried, carried, rng))[:2]
+        a, b, _, c = rules(drawn(true_new, true_new, rng), drawn(carried, carried, rng))
         old += a
         new += b
-    return old / DRAWS, new / DRAWS
+        tee += c
+    return old / DRAWS, new / DRAWS, tee / DRAWS
 
 
-print("=== real comparisons: old rule | new rule")
+print("=== real comparisons: old rule | composite at 2 SE | composite at Student t (chosen)")
 for label, (new_paths, old_paths, holdouts) in CASES.items():
-    o, n, note = rules(arm(new_paths, holdouts), arm(old_paths, holdouts))
-    print(f"{label:<48} old {'PROMOTE' if o else 'refuse':<8} new {'PROMOTE' if n else 'refuse':<8} {note}")
+    o, n, note, t_ok = rules(arm(new_paths, holdouts), arm(old_paths, holdouts))
+    print(f"{label:<48} old {'PROMOTE' if o else 'refuse':<8} 2SE {'PROMOTE' if n else 'refuse':<8} t {'PROMOTE' if t_ok else 'refuse':<8} {note}")
 
 rng = random.Random(20261117)
 carried = arm(CASES["v1.4 clean arm vs v1.3, (a8, b)"][1], ("a8", "b"))
 clean = arm(CASES["v1.4 clean arm vs v1.3, (a8, b)"][0], ("a8", "b"))
 v13_new, v13_old = (arm(p, ("a", "b")) for p in CASES["v1.3 promoted (chain 35 vs chain 34), (a, b)"][:2])
-print(f"\n=== simulated, {DRAWS} draws each, three seeds per arm: P(promote) old rule | new rule")
+print(f"\n=== simulated, {DRAWS} draws each, three seeds per arm: P(promote) old rule | 2 SE | Student t")
 for label, true_new, base in (("null: a model equal to v1.3", carried, carried),
                               ("a model as good as the clean arm", clean, carried),
                               ("null: a model equal to chain 34", v13_old, v13_old),
                               ("a model as good as chain 35 (v1.3)", v13_new, v13_old)):
-    po, pn = simulate(true_new, base, rng)
-    print(f"{label:<40} old {po:6.1%}   new {pn:6.1%}")
+    po, pn, pt = simulate(true_new, base, rng)
+    print(f"{label:<40} old {po:6.1%}   2SE {pn:6.1%}   t {pt:6.1%}")

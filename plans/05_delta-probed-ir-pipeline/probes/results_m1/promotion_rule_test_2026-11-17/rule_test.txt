@@ -1,12 +1,12 @@
-=== real comparisons: old rule | new rule
-v1.3 promoted (chain 35 vs chain 34), (a, b)     old PROMOTE  new PROMOTE  composite 0.820 against 0.915 (d -0.095, 2 SE 0.074); old rule worse on none; worse beyond 2 SE: none
-v1.4 data arm vs v1.3, (a8, b)                   old refuse   new PROMOTE  composite 0.679 against 0.844 (d -0.165, 2 SE 0.075); old rule worse on (a8) CH-stretch, (a8) CH-oop; worse beyond 2 SE: none
-v1.4 clean arm vs v1.3, (a8, b)                  old refuse   new PROMOTE  composite 0.690 against 0.844 (d -0.155, 2 SE 0.064); old rule worse on (a8) CH-oop; worse beyond 2 SE: none
-null: data seeds 0-2 vs 3-4, (a8, b)             old refuse   new refuse   composite 0.679 against 0.740 (d -0.061, 2 SE 0.063); old rule worse on (a8) CH-stretch, (a8) CH-oop, (b) ring-ip, (b) CH-stretch, (b) CH-oop; worse beyond 2 SE: none
-null: data seeds 3-4 vs 0-2, (a8, b)             old refuse   new refuse   composite 0.740 against 0.679 (d +0.061, 2 SE 0.063); old rule worse on (a8) ring-ip, (a8) other, (a8) coupling_ratio, (b) other, (b) coupling_ratio; worse beyond 2 SE: (a8) other, (a8) coupling_ratio, (b) other, (b) coupling_ratio
+=== real comparisons: old rule | composite at 2 SE | composite at Student t (chosen)
+v1.3 promoted (chain 35 vs chain 34), (a, b)     old PROMOTE  2SE PROMOTE  t refuse   composite 0.820 against 0.915 (d -0.095, 2 SE 0.074); old rule worse on none; worse beyond 2 SE: none; t line 0.103 (df 4.0)
+v1.4 data arm vs v1.3, (a8, b)                   old refuse   2SE PROMOTE  t PROMOTE  composite 0.679 against 0.844 (d -0.165, 2 SE 0.075); old rule worse on (a8) CH-stretch, (a8) CH-oop; worse beyond 2 SE: none; t line 0.105 (df 3.9)
+v1.4 clean arm vs v1.3, (a8, b)                  old refuse   2SE PROMOTE  t PROMOTE  composite 0.690 against 0.844 (d -0.155, 2 SE 0.064); old rule worse on (a8) CH-oop; worse beyond 2 SE: none; t line 0.100 (df 3.1)
+null: data seeds 0-2 vs 3-4, (a8, b)             old refuse   2SE refuse   t refuse   composite 0.679 against 0.740 (d -0.061, 2 SE 0.063); old rule worse on (a8) CH-stretch, (a8) CH-oop, (b) ring-ip, (b) CH-stretch, (b) CH-oop; worse beyond 2 SE: none; t line 0.100 (df 3.0)
+null: data seeds 3-4 vs 0-2, (a8, b)             old refuse   2SE refuse   t refuse   composite 0.740 against 0.679 (d +0.061, 2 SE 0.063); old rule worse on (a8) ring-ip, (a8) other, (a8) coupling_ratio, (b) other, (b) coupling_ratio; worse beyond 2 SE: (a8) other, (a8) coupling_ratio, (b) other, (b) coupling_ratio; t line 0.100 (df 3.0)
 
-=== simulated, 4000 draws each, three seeds per arm: P(promote) old rule | new rule
-null: a model equal to v1.3              old   0.2%   new   4.1%
-a model as good as the clean arm         old  12.0%   new  80.9%
-null: a model equal to chain 34          old   0.1%   new   4.3%
-a model as good as chain 35 (v1.3)       old  12.2%   new  66.5%
+=== simulated, 4000 draws each, three seeds per arm: P(promote) old rule | 2 SE | Student t
+null: a model equal to v1.3              old   0.2%   2SE   4.1%   t   1.5%
+a model as good as the clean arm         old  12.0%   2SE  80.9%   t  72.8%
+null: a model equal to chain 34          old   0.1%   2SE   4.3%   t   1.3%
+a model as good as chain 35 (v1.3)       old  12.2%   2SE  66.5%   t  40.7%
