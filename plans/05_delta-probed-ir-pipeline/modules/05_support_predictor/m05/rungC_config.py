@@ -473,6 +473,24 @@ def _fields(ns: argparse.Namespace) -> dict:
     return fields
 
 
+def argv_of(cfg: TrainConfig) -> list[str]:
+    """The command line that parses back into `cfg`: the two positionals, then every option whose value is not the parser's default
+    (a flag is its field's name with dashes). Refuses a config it cannot write back to the same settings."""
+    defaults = _fields(build_parser("").parse_args([cfg.molecules, cfg.out_prefix]))
+    argv = [cfg.molecules, cfg.out_prefix]
+    for field, value in cfg.model_dump().items():
+        flag = "--" + field.replace("_", "-")
+        if field in ("molecules", "out_prefix") or value == defaults[field]:
+            continue
+        if isinstance(value, bool):
+            argv.append(flag if value else "--no-" + flag[2:])
+        else:
+            argv += [flag, ",".join(str(v) for v in value) if isinstance(value, list) else str(value)]
+    if config_from_argv(argv) != cfg:
+        raise ValueError(f"no command line gives these settings back: {argv}")
+    return argv
+
+
 def config_from_argv(argv: Sequence[str], description: str = "rung C trainer") -> TrainConfig:
     """The command line as a validated config, combinations only: input files are checked where the run starts (`parse_config`), because a
     chain's relative paths resolve in its step's folder and an earlier step may write them."""
