@@ -1,9 +1,9 @@
 {
- "date": "2026-11-17 09:31",
+ "date": "2026-11-17 09:44",
  "artefact": "probes/anharmonic_step/x2star_v3.json",
- "artefact_commit": "d909bf44e029449328868054f68e350bd0f79f64",
- "commit": "d909bf44e029449328868054f68e350bd0f79f64",
- "commit_dirty": "no",
+ "artefact_commit": "46c7ba6d5c895d56d41e1eac57da81adcc01d470",
+ "commit": "46c7ba6d5c895d56d41e1eac57da81adcc01d470",
+ "commit_dirty": "yes",
  "tolerance_cm": 0.01,
  "change_limit_cm": 0.05,
  "selected_without_a_force_field": [
@@ -18,48 +18,48 @@
   "CH-oop": {
    "rows": 22,
    "rows_registered": 22,
-   "rms_cm": 8.380771183458231,
+   "rms_cm": 8.380851401822913,
    "bar_cm": 8.38,
-   "bar_refit_cm": 8.380771183458231,
+   "bar_refit_cm": 8.380851401822913,
    "bar_one_to_one_cm": 8.380851401822913,
-   "from_registered_cm": 0.0007711834582302401,
+   "from_registered_cm": 0.0008514018229117681,
    "training_rows_added_by_the_set_wise_match": 0,
    "harmonic_rms_cm": 12.476763692152412,
    "per_molecule": {
-    "coronene": 11.909508955737312,
-    "tetracene": 4.546287849592321
+    "coronene": 11.909623221842617,
+    "tetracene": 4.546330872687248
    },
    "passed": true
   },
   "other": {
    "rows": 23,
    "rows_registered": 23,
-   "rms_cm": 3.837793263499564,
+   "rms_cm": 3.8387397205766454,
    "bar_cm": 3.84,
-   "bar_refit_cm": 3.837793263499564,
+   "bar_refit_cm": 3.8387397205766454,
    "bar_one_to_one_cm": 3.8387397205766454,
-   "from_registered_cm": -0.002206736500435902,
-   "training_rows_added_by_the_set_wise_match": 1,
+   "from_registered_cm": -0.0012602794233544934,
+   "training_rows_added_by_the_set_wise_match": 0,
    "harmonic_rms_cm": 8.195380445995744,
    "per_molecule": {
-    "coronene": 5.684928432241823,
-    "tetracene": 1.0945670471865165
+    "coronene": 5.68649375625257,
+    "tetracene": 1.0941842192899551
    },
    "passed": true
   },
   "ring-ip": {
    "rows": 56,
    "rows_registered": 56,
-   "rms_cm": 3.370854005681741,
+   "rms_cm": 3.3693915119946753,
    "bar_cm": 3.37,
-   "bar_refit_cm": 3.3708540056817298,
+   "bar_refit_cm": 3.3693915119946727,
    "bar_one_to_one_cm": 3.3693915119946727,
-   "from_registered_cm": 0.000854005681740766,
-   "training_rows_added_by_the_set_wise_match": 1,
+   "from_registered_cm": -0.0006084880053247588,
+   "training_rows_added_by_the_set_wise_match": 0,
    "harmonic_rms_cm": 26.2333046222988,
    "per_molecule": {
-    "coronene": 4.253068232695271,
-    "tetracene": 2.3523424676674387
+    "coronene": 4.252574924957109,
+    "tetracene": 2.3492021498087086
    },
    "passed": true
   },
@@ -88,7 +88,7 @@
    "h": 0.09258730159699789,
    "o": 1.0,
    "xtb_overlap": 0.9638411369460416,
-   "delta_anh_cm": -9.083461282076343,
+   "delta_anh_cm": -9.085694737474064,
    "reason": null,
    "bar_cm": null,
    "error_not_measured": true,
@@ -104,7 +104,7 @@
    "h": 0.06552858220962969,
    "o": 1.0000000000000016,
    "xtb_overlap": 0.903144742351859,
-   "delta_anh_cm": -11.639260836229504,
+   "delta_anh_cm": -11.637974481134522,
    "reason": null,
    "bar_cm": null,
    "error_not_measured": true,
@@ -192,13 +192,41 @@
   "sound_modes_lost": [],
   "modes_by_route": {
    "unmeasured": 384,
-   "step": 1751,
-   "no-xtb-partner": 69,
+   "step": 1749,
+   "no-xtb-partner": 71,
    "large-amplitude": 40
   },
   "stepped_with_error_not_measured": 120,
   "uncaught_all_flagged": true,
   "passed": true
+ },
+ "bars": {
+  "printed_cm": {
+   "CH-oop": 8.38,
+   "other": 3.84,
+   "ring-ip": 3.37,
+   "CH-stretch": 6.21
+  },
+  "own_cm": {
+   "CH-oop": 8.3809,
+   "other": 3.8387,
+   "ring-ip": 3.3694,
+   "CH-stretch": 6.1994
+  },
+  "note": "A certificate prints the registered bars (printed_cm), read with the one-to-one match. This table is matched set-wise and its own bars (own_cm) are not printed until a dated amendment of the registration (GoalGathering/notes/PreRegistration_2026-11-14_Printed_Band_Position.md) names them."
+ },
+ "xtb_pair_labels": {
+  "pairs": 44,
+  "molecules_with_pairs": 2,
+  "largest": {
+   "difference_cm": 0.02515054775687986,
+   "id": "coronene",
+   "omega_cm": 1007.0433973855999,
+   "shifts_cm": [
+    -13.232528564179574,
+    -13.257679111936454
+   ]
+  }
  },
  "passed": true
 }

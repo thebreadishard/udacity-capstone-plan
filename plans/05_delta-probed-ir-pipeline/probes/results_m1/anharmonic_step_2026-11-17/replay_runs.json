@@ -3,7 +3,8 @@
  "match": {
   "rule": "sets",
   "set_tolerance_cm": 1.0,
-  "mark_share": 0.05,
+  "set_min_overlap": 0.8,
+  "set_max_modes": 4,
   "registered_rule": "single",
   "change_limit_cm": 0.05
  },
@@ -28,7 +29,7 @@
      "xtb_overlap": 0.9853502512547396,
      "band_overlap": 0.9993004834014875,
      "band_set_wise": false,
-     "delta_anh_cm": -38.61911741187049,
+     "delta_anh_cm": -38.61892426729453,
      "reason": null,
      "saved_delta_anh_cm": null,
      "saved_reason": "no-xtb-partner"
@@ -40,7 +41,7 @@
      "xtb_overlap": 0.9853562880533528,
      "band_overlap": 0.9993007460587005,
      "band_set_wise": false,
-     "delta_anh_cm": -38.61970810556267,
+     "delta_anh_cm": -38.61951410805182,
      "reason": null,
      "saved_delta_anh_cm": null,
      "saved_reason": "no-xtb-partner"
@@ -104,7 +105,7 @@
      "xtb_overlap": 0.6113809342158812,
      "band_overlap": 0.9999865793753746,
      "band_set_wise": false,
-     "delta_anh_cm": -6.303225569263322,
+     "delta_anh_cm": -6.312597729784406,
      "reason": null,
      "saved_delta_anh_cm": -6.312597729783436,
      "saved_reason": null
@@ -116,7 +117,7 @@
      "xtb_overlap": 0.6113804599444956,
      "band_overlap": 0.9999865788465386,
      "band_set_wise": false,
-     "delta_anh_cm": -6.303564353901779,
+     "delta_anh_cm": -6.3129339615201445,
      "reason": null,
      "saved_delta_anh_cm": -6.312933961519471,
      "saved_reason": null
@@ -128,7 +129,7 @@
      "xtb_overlap": 0.9999999983092298,
      "band_overlap": 0.9999985483710662,
      "band_set_wise": false,
-     "delta_anh_cm": -9.249935498790169,
+     "delta_anh_cm": -9.249764698307711,
      "reason": null,
      "saved_delta_anh_cm": -9.249764698308006,
      "saved_reason": null
@@ -140,7 +141,7 @@
      "xtb_overlap": 0.9929746639066102,
      "band_overlap": 0.9985422172207875,
      "band_set_wise": false,
-     "delta_anh_cm": -11.321972947619255,
+     "delta_anh_cm": -11.321185020374152,
      "reason": null,
      "saved_delta_anh_cm": -11.3211850203724,
      "saved_reason": null
@@ -152,7 +153,7 @@
      "xtb_overlap": 0.9988049178348897,
      "band_overlap": 0.9837724225521561,
      "band_set_wise": false,
-     "delta_anh_cm": -8.34628757180722,
+     "delta_anh_cm": -8.346446101043568,
      "reason": null,
      "saved_delta_anh_cm": -8.346446101041424,
      "saved_reason": null
@@ -164,7 +165,7 @@
      "xtb_overlap": 0.9988049289462249,
      "band_overlap": 0.9837685198998516,
      "band_set_wise": false,
-     "delta_anh_cm": -8.348448502032893,
+     "delta_anh_cm": -8.34860617092825,
      "reason": null,
      "saved_delta_anh_cm": -8.348606170927141,
      "saved_reason": null
@@ -176,7 +177,7 @@
      "xtb_overlap": 0.9981546130635401,
      "band_overlap": 0.810114689854298,
      "band_set_wise": false,
-     "delta_anh_cm": -11.582159022708726,
+     "delta_anh_cm": -11.582046547183005,
      "reason": null,
      "saved_delta_anh_cm": -11.582046547183857,
      "saved_reason": null
@@ -188,7 +189,7 @@
      "xtb_overlap": 0.9981541116359608,
      "band_overlap": 0.81011133985188,
      "band_set_wise": false,
-     "delta_anh_cm": -11.58008906991853,
+     "delta_anh_cm": -11.579978154415544,
      "reason": null,
      "saved_delta_anh_cm": -11.579978154412014,
      "saved_reason": null
@@ -200,7 +201,7 @@
      "xtb_overlap": 0.9995227852232751,
      "band_overlap": 0.9999719610263713,
      "band_set_wise": false,
-     "delta_anh_cm": -13.885705938103627,
+     "delta_anh_cm": -13.887319662211066,
      "reason": null,
      "saved_delta_anh_cm": -13.887319662212043,
      "saved_reason": null
@@ -212,7 +213,7 @@
      "xtb_overlap": 0.9998655272919703,
      "band_overlap": 0.9999700464375275,
      "band_set_wise": false,
-     "delta_anh_cm": -15.704214669704053,
+     "delta_anh_cm": -15.70601285136435,
      "reason": null,
      "saved_delta_anh_cm": -15.706012851364545,
      "saved_reason": null
@@ -224,7 +225,7 @@
      "xtb_overlap": 0.992974671944387,
      "band_overlap": 0.9985338249031362,
      "band_set_wise": false,
-     "delta_anh_cm": -15.215885143356697,
+     "delta_anh_cm": -15.215744141385773,
      "reason": null,
      "saved_delta_anh_cm": -15.215744141386551,
      "saved_reason": null
@@ -236,7 +237,7 @@
      "xtb_overlap": 0.7252605874578393,
      "band_overlap": 0.9993746771539309,
      "band_set_wise": false,
-     "delta_anh_cm": -15.875987723491672,
+     "delta_anh_cm": -15.876923789360271,
      "reason": null,
      "saved_delta_anh_cm": -15.876923789358843,
      "saved_reason": null
@@ -248,7 +249,7 @@
      "xtb_overlap": 0.7252667671865103,
      "band_overlap": 0.9993745403456452,
      "band_set_wise": false,
-     "delta_anh_cm": -15.876997646160522,
+     "delta_anh_cm": -15.87792662484214,
      "reason": null,
      "saved_delta_anh_cm": -15.877926624841923,
      "saved_reason": null
@@ -260,7 +261,7 @@
      "xtb_overlap": 0.9142039859022442,
      "band_overlap": 0.9801632439851637,
      "band_set_wise": false,
-     "delta_anh_cm": -12.021206603121314,
+     "delta_anh_cm": -12.022160727586922,
      "reason": null,
      "saved_delta_anh_cm": -12.022160727586733,
      "saved_reason": null
@@ -272,7 +273,7 @@
      "xtb_overlap": 0.7097609371955667,
      "band_overlap": 0.9988432282236569,
      "band_set_wise": false,
-     "delta_anh_cm": -14.163752739701028,
+     "delta_anh_cm": -14.166147351534123,
      "reason": null,
      "saved_delta_anh_cm": -14.166147351533908,
      "saved_reason": null
@@ -284,7 +285,7 @@
      "xtb_overlap": 0.7097648736605343,
      "band_overlap": 0.9988432205006681,
      "band_set_wise": false,
-     "delta_anh_cm": -14.164112682338681,
+     "delta_anh_cm": -14.166506798798672,
      "reason": null,
      "saved_delta_anh_cm": -14.166506798798382,
      "saved_reason": null
@@ -296,7 +297,7 @@
      "xtb_overlap": 0.9142039417977251,
      "band_overlap": 0.9801649829789462,
      "band_set_wise": false,
-     "delta_anh_cm": -25.488264420564363,
+     "delta_anh_cm": -25.498609717322843,
      "reason": null,
      "saved_delta_anh_cm": -25.49860971732251,
      "saved_reason": null
@@ -308,7 +309,7 @@
      "xtb_overlap": 0.9999997563872849,
      "band_overlap": 0.9999999991063919,
      "band_set_wise": false,
-     "delta_anh_cm": -23.024920395589955,
+     "delta_anh_cm": -23.028355588541494,
      "reason": null,
      "saved_delta_anh_cm": -23.02835558854127,
      "saved_reason": null
@@ -320,7 +321,7 @@
      "xtb_overlap": 0.7377598397035532,
      "band_overlap": 0.9986708367387677,
      "band_set_wise": false,
-     "delta_anh_cm": -29.72209198898706,
+     "delta_anh_cm": -29.723038465967136,
      "reason": null,
      "saved_delta_anh_cm": -29.723038465968237,
      "saved_reason": null
@@ -332,7 +333,7 @@
      "xtb_overlap": 0.7377617620392403,
      "band_overlap": 0.998670808834734,
      "band_set_wise": false,
-     "delta_anh_cm": -29.723006548343676,
+     "delta_anh_cm": -29.723955871660706,
      "reason": null,
      "saved_delta_anh_cm": -29.72395587166103,
      "saved_reason": null
@@ -344,7 +345,7 @@
      "xtb_overlap": 0.9853502512547396,
      "band_overlap": 0.9993004834014875,
      "band_set_wise": false,
-     "delta_anh_cm": -38.61911741187049,
+     "delta_anh_cm": -38.61892426729453,
      "reason": null,
      "saved_delta_anh_cm": null,
      "saved_reason": "no-xtb-partner"
@@ -356,7 +357,7 @@
      "xtb_overlap": 0.9853562880533528,
      "band_overlap": 0.9993007460587005,
      "band_set_wise": false,
-     "delta_anh_cm": -38.61970810556267,
+     "delta_anh_cm": -38.61951410805182,
      "reason": null,
      "saved_delta_anh_cm": null,
      "saved_reason": "no-xtb-partner"
@@ -518,7 +519,7 @@
      "xtb_overlap": 0.9827350384535404,
      "band_overlap": 0.9909052728235964,
      "band_set_wise": false,
-     "delta_anh_cm": -4.994560140048199,
+     "delta_anh_cm": -5.0056164279285085,
      "reason": null,
      "saved_delta_anh_cm": -5.005616427927665,
      "saved_reason": null
@@ -530,7 +531,7 @@
      "xtb_overlap": 0.9958418758467407,
      "band_overlap": 0.9953319017961835,
      "band_set_wise": false,
-     "delta_anh_cm": -8.271041438216555,
+     "delta_anh_cm": -8.275485829250835,
      "reason": null,
      "saved_delta_anh_cm": -8.275485829250583,
      "saved_reason": null
@@ -542,7 +543,7 @@
      "xtb_overlap": 0.9829242576645645,
      "band_overlap": 0.9948275697916695,
      "band_set_wise": false,
-     "delta_anh_cm": -6.350960842166463,
+     "delta_anh_cm": -6.358672580580741,
      "reason": null,
      "saved_delta_anh_cm": -6.358672580580981,
      "saved_reason": null
@@ -554,7 +555,7 @@
      "xtb_overlap": 0.923416332482022,
      "band_overlap": 0.9970740931723036,
      "band_set_wise": false,
-     "delta_anh_cm": -10.722423404891897,
+     "delta_anh_cm": -10.722808960082416,
      "reason": null,
      "saved_delta_anh_cm": -10.722808960081085,
      "saved_reason": null
@@ -566,7 +567,7 @@
      "xtb_overlap": 0.9738996913082936,
      "band_overlap": 0.999819910212221,
      "band_set_wise": false,
-     "delta_anh_cm": -8.635987134705294,
+     "delta_anh_cm": -8.637047932319447,
      "reason": null,
      "saved_delta_anh_cm": -8.637047932318893,
      "saved_reason": null
@@ -578,7 +579,7 @@
      "xtb_overlap": 0.8977473537643885,
      "band_overlap": 0.9977558797128189,
      "band_set_wise": false,
-     "delta_anh_cm": -12.51758305587305,
+     "delta_anh_cm": -12.517394927208304,
      "reason": null,
      "saved_delta_anh_cm": -12.517394927211408,
      "saved_reason": null
@@ -590,7 +591,7 @@
      "xtb_overlap": 0.9909506413708385,
      "band_overlap": 0.9999740873388104,
      "band_set_wise": false,
-     "delta_anh_cm": -8.831889382961556,
+     "delta_anh_cm": -8.831981168764706,
      "reason": null,
      "saved_delta_anh_cm": -8.83198116876866,
      "saved_reason": null
@@ -602,7 +603,7 @@
      "xtb_overlap": 0.9406865030173797,
      "band_overlap": 0.9990438079228491,
      "band_set_wise": false,
-     "delta_anh_cm": -10.251048511611765,
+     "delta_anh_cm": -10.250729833287924,
      "reason": null,
      "saved_delta_anh_cm": -10.250729833292766,
      "saved_reason": null
@@ -614,7 +615,7 @@
      "xtb_overlap": 0.9907970136232318,
      "band_overlap": 0.9998603003735914,
      "band_set_wise": false,
-     "delta_anh_cm": -11.946471096936015,
+     "delta_anh_cm": -11.94673135863257,
      "reason": null,
      "saved_delta_anh_cm": -11.946731358637212,
      "saved_reason": null
@@ -626,7 +627,7 @@
      "xtb_overlap": 0.878395213692275,
      "band_overlap": 0.9960952906238452,
      "band_set_wise": false,
-     "delta_anh_cm": -14.889074731450016,
+     "delta_anh_cm": -14.890758771665073,
      "reason": null,
      "saved_delta_anh_cm": -14.890758771665645,
      "saved_reason": null
@@ -638,7 +639,7 @@
      "xtb_overlap": 0.9605653729293316,
      "band_overlap": 0.9982458605787065,
      "band_set_wise": false,
-     "delta_anh_cm": -13.718438101333884,
+     "delta_anh_cm": -13.719507273223584,
      "reason": null,
      "saved_delta_anh_cm": -13.719507273224261,
      "saved_reason": null
@@ -650,7 +651,7 @@
      "xtb_overlap": 0.8951729884595396,
      "band_overlap": 0.9958153341555134,
      "band_set_wise": false,
-     "delta_anh_cm": -17.150251828564176,
+     "delta_anh_cm": -17.14614916914852,
      "reason": null,
      "saved_delta_anh_cm": -17.146149169149336,
      "saved_reason": null
@@ -662,7 +663,7 @@
      "xtb_overlap": 0.9725948187112248,
      "band_overlap": 0.9960777880030734,
      "band_set_wise": false,
-     "delta_anh_cm": -16.0286369805167,
+     "delta_anh_cm": -16.028044278966018,
      "reason": null,
      "saved_delta_anh_cm": -16.028044278967194,
      "saved_reason": null
@@ -674,7 +675,7 @@
      "xtb_overlap": 0.9341922878071357,
      "band_overlap": 0.9756399255855238,
      "band_set_wise": false,
-     "delta_anh_cm": -12.696515796439575,
+     "delta_anh_cm": -12.698214820016336,
      "reason": null,
      "saved_delta_anh_cm": -12.698214820016789,
      "saved_reason": null
@@ -686,7 +687,7 @@
      "xtb_overlap": 0.9742270931736232,
      "band_overlap": 0.9481778541242346,
      "band_set_wise": false,
-     "delta_anh_cm": -16.117132853106515,
+     "delta_anh_cm": -16.117326608702754,
      "reason": null,
      "saved_delta_anh_cm": -16.11732660870246,
      "saved_reason": null
@@ -698,7 +699,7 @@
      "xtb_overlap": 0.9550326129525477,
      "band_overlap": 0.9471376254849669,
      "band_set_wise": false,
-     "delta_anh_cm": -20.262148789172993,
+     "delta_anh_cm": -20.26276308079433,
      "reason": null,
      "saved_delta_anh_cm": -20.262763080793135,
      "saved_reason": null
@@ -710,7 +711,7 @@
      "xtb_overlap": 0.5605559371151148,
      "band_overlap": 0.864252639814347,
      "band_set_wise": false,
-     "delta_anh_cm": -25.68681200193331,
+     "delta_anh_cm": -25.679193538141668,
      "reason": null,
      "saved_delta_anh_cm": -25.679193538142805,
      "saved_reason": null
@@ -722,7 +723,7 @@
      "xtb_overlap": 0.5826044259843272,
      "band_overlap": 0.8829965524113367,
      "band_set_wise": false,
-     "delta_anh_cm": -25.09427324302021,
+     "delta_anh_cm": -25.08420828493963,
      "reason": null,
      "saved_delta_anh_cm": -25.084208284940278,
      "saved_reason": null
@@ -734,7 +735,7 @@
      "xtb_overlap": 0.9711376218432495,
      "band_overlap": 0.9970349868222447,
      "band_set_wise": false,
-     "delta_anh_cm": -28.698967118957658,
+     "delta_anh_cm": -28.694784471534366,
      "reason": null,
      "saved_delta_anh_cm": -28.694784471534355,
      "saved_reason": null
@@ -746,7 +747,7 @@
      "xtb_overlap": 0.9697130877793614,
      "band_overlap": 0.9975056758703261,
      "band_set_wise": false,
-     "delta_anh_cm": -31.02299456529198,
+     "delta_anh_cm": -31.025909292632882,
      "reason": null,
      "saved_delta_anh_cm": -31.025909292632864,
      "saved_reason": null
@@ -758,7 +759,7 @@
      "xtb_overlap": 0.9822575425493277,
      "band_overlap": 0.9983389799855227,
      "band_set_wise": false,
-     "delta_anh_cm": -38.27573546611562,
+     "delta_anh_cm": -38.27565568470446,
      "reason": null,
      "saved_delta_anh_cm": -38.27565568470527,
      "saved_reason": null
@@ -770,7 +771,7 @@
      "xtb_overlap": 0.9835096943331781,
      "band_overlap": 0.9987952981687237,
      "band_set_wise": false,
-     "delta_anh_cm": -38.43298761534356,
+     "delta_anh_cm": -38.43286873563101,
      "reason": null,
      "saved_delta_anh_cm": -38.43286873562908,
      "saved_reason": null

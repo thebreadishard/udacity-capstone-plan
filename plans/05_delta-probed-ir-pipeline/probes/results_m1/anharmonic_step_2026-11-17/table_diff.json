@@ -9,30 +9,6 @@
  },
  "added": [
   {
-   "id": "P3_0bb6c41350",
-   "mode": 43,
-   "omega_cm": 1276.737321937553,
-   "family": "ring-ip",
-   "window": "mid",
-   "large_amplitude": false,
-   "marked": false,
-   "one_to_one": 0.44748783697765904,
-   "set_overlap": 0.5614143588733788,
-   "xtb_shift_cm": -19.162693716769287,
-   "partners": [
-    {
-     "xtb_omega_cm": 1232.1996373261286,
-     "weight": 0.20292769519529644,
-     "xtb_shift_cm": -17.687337122549252
-    },
-    {
-     "xtb_omega_cm": 1237.1677251896567,
-     "weight": 0.7970723048047037,
-     "xtb_shift_cm": -19.5383067087796
-    }
-   ]
-  },
-  {
    "id": "P3_ff62f88395",
    "mode": 61,
    "omega_cm": 3183.237509912094,
@@ -55,70 +31,29 @@
      "xtb_shift_cm": -149.87785153029063
     }
    ]
-  },
-  {
-   "id": "P3_1e34c6eeef",
-   "mode": 13,
-   "omega_cm": 580.2765396522756,
-   "family": "other",
-   "window": "mid",
-   "large_amplitude": false,
-   "marked": false,
-   "one_to_one": 0.48543021105374645,
-   "set_overlap": 0.6165251903751868,
-   "xtb_shift_cm": -6.010808882425357,
-   "partners": [
-    {
-     "xtb_omega_cm": 539.1306963737094,
-     "weight": 0.2126352359449619,
-     "xtb_shift_cm": -9.01583526818456
-    },
-    {
-     "xtb_omega_cm": 553.9793802655487,
-     "weight": 0.7873647640550382,
-     "xtb_shift_cm": -5.19927333533542
-    }
-   ]
   }
  ],
  "by_tolerance": {
   "0.5": {
    "modes_in_a_set": 161,
-   "matched_as_a_set": 2
+   "matched_as_a_set": 0
   },
   "1.0": {
    "modes_in_a_set": 253,
-   "matched_as_a_set": 3
+   "matched_as_a_set": 1
   },
   "3.0": {
    "modes_in_a_set": 482,
-   "matched_as_a_set": 6
+   "matched_as_a_set": 3
   }
  },
  "tables": {
   "mid": {
    "rows_before": 1310,
-   "rows_after": 1312,
+   "rows_after": 1310,
    "old_rows_missing_or_changed": [],
    "old_rows_in_their_order": true,
-   "rows_added": [
-    {
-     "omega": 1276.737321937553,
-     "delta": -23.909622791984248,
-     "family": "ring-ip",
-     "h": 0.45486970374462665,
-     "o": 1.2640929002438136e-07,
-     "xtb": -19.162693716769287
-    },
-    {
-     "omega": 580.2765396522756,
-     "delta": -5.051640762363604,
-     "family": "other",
-     "h": 0.10329583954797142,
-     "o": 0.1313706483495086,
-     "xtb": -6.010808882425357
-    }
-   ]
+   "rows_added": []
   },
   "ch": {
    "rows_before": 288,
@@ -368,7 +303,7 @@
    "held_and_differ": 0,
    "refused_one_to_one": 6,
    "refused_both_same_overlap": 5,
-   "added": 1
+   "added": 0
   },
   "P3_5592613777": {
    "modes": 69,
@@ -400,7 +335,7 @@
    "held_and_differ": 0,
    "refused_one_to_one": 4,
    "refused_both_same_overlap": 3,
-   "added": 1
+   "added": 0
   },
   "P3_b36c153df2": {
    "modes": 69,
