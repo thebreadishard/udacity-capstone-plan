@@ -21,6 +21,7 @@
     "lr": 0.0003,
     "lr_schedule": "constant",
     "ls_lam": 0.001,
+    "network_kind": "measurement",
     "overfit_one": null,
     "pair_features": true,
     "parity_odd_mixed": false,
@@ -798,6 +799,7 @@
    "ls_lam": 0.001,
    "model": "rungC_equivariant C1 (from scratch; output scaled by the training set's RMS \u0394H, or per entry class)",
    "n_molecules": 27,
+   "network_kind": "measurement",
    "overfit_one": null,
    "pair_class_names": [
     "diag_bond",
@@ -926,6 +928,7 @@
     "lr": 0.0003,
     "lr_schedule": "constant",
     "ls_lam": 0.001,
+    "network_kind": "measurement",
     "overfit_one": null,
     "pair_features": true,
     "parity_odd_mixed": false,
@@ -1771,6 +1774,7 @@
    "ls_lam": 0.001,
    "model": "rungC_equivariant C1 (from scratch; output scaled by the training set's RMS \u0394H, or per entry class)",
    "n_molecules": 27,
+   "network_kind": "measurement",
    "overfit_one": null,
    "pair_class_names": [
     "diag_bond",
