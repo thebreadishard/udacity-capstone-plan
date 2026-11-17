@@ -37,7 +37,7 @@ from s2_read import (  # noqa: E402
     window_size,
     write_atomic,
 )
-from s2_xtb_read import X2_GRID, build, config_predictor, load_modes, predict_x1  # noqa: E402
+from s2_xtb_read import DEFAULT_RULE, X2_GRID, build, check_rule, config_predictor, load_modes, predict_x1  # noqa: E402
 from s2b_read import READ_SCOPES, load_set, merge, read_sets  # noqa: E402
 
 from dpir.vpt2_domain import MARKED_POLICIES  # noqa: E402
@@ -208,13 +208,15 @@ def drop_marked(by_scaf: dict, policy: str) -> tuple[dict, dict[str, int]]:
     return out, dropped
 
 
-def load_scope(sets_path: str, policy: str, window: tuple[float, float]) -> tuple[dict, dict, dict, dict[str, int]]:
-    """A sets file's molecules in the main scope with their xtb partners, the build counts, the exclusions, and the modes each
-    molecule lost to `policy` (TASKS 207)."""
+def load_scope(sets_path: str, policy: str, window: tuple[float, float],
+               rule: str = DEFAULT_RULE) -> tuple[dict, dict, dict, dict[str, int]]:
+    """A sets file's molecules in the main scope with their xtb partners (matched under `rule`, `s2_xtb_read.match_sets`), the
+    build counts, the exclusions, and the modes each molecule lost to `policy` (TASKS 207)."""
+    check_rule(rule)
     parts = {s.name: load_set(s, window) for s in read_sets(sets_path)}
     g_by_scaf, x_by_id = merge(parts)
     dirs = {m["id"]: (m["dir"], x_by_id[m["id"]]["dir"]) for ms in g_by_scaf.values() for m in ms if m["id"] in x_by_id}
-    by_scaf, counts = build(g_by_scaf, x_by_id, load_modes(dirs), MAIN_SCOPE, window)
+    by_scaf, counts = build(g_by_scaf, x_by_id, load_modes(dirs), MAIN_SCOPE, window, rule)
     excluded = {i: f"{name}: {w}" for name, p in parts.items() for i, w in {**p["excluded_g"], **p["excluded_x"]}.items()}
     by_scaf, dropped = drop_marked(by_scaf, policy)
     return by_scaf, counts, excluded, dropped

@@ -269,13 +269,14 @@ def dry_run(req: Request) -> int:
                   "dry run of the GFN2-xTB force field's tools (WSL)")
 
 
-def corrected_modes(H: np.ndarray, masses: np.ndarray, sticks: list[dict]) -> np.ndarray:
-    """The mass-weighted modes of the corrected Hessian in the sticks' order (ascending position), checked against the sticks."""
+def corrected_modes(H: np.ndarray, masses: np.ndarray, sticks: list[dict]) -> tuple[np.ndarray, np.ndarray]:
+    """The harmonic positions and the mass-weighted modes of the corrected Hessian in the sticks' order (ascending position),
+    checked against the sticks. The positions are unrounded: the match forms its near-degenerate sets from them."""
     w, _, L = RINT.mode_intensities(H, masses, np.zeros((3, H.shape[0])), return_modes=True)
     order = np.argsort(w)
     if len(sticks) != len(w) or max(abs(s["omega_cm"] - x) for s, x in zip(sticks, w[order], strict=True)) > STICK_TOL_CM:
         raise RuntimeError("the recorded network spectrum is not the one H_low + ΔH gives")
-    return L[:, order]
+    return np.asarray(w, float)[order], L[:, order]
 
 
 def stick_entry(omega_cm: float, band: AS.BandStep, steps: list[AS.ModeStep]) -> tuple[float | None, dict]:
@@ -361,7 +362,7 @@ def step(req: Request, dH: np.ndarray, out: dict) -> dict:
         return not_applied(out, e.reason, e.field)
     steps = AS.agree_on_family(AS.mode_steps(modes, xtb, artefact), certificate_families(d, H_low, modes.omega))
     sticks = out["network"]["sticks"]
-    bands = AS.carry_to_bands(corrected_modes(H_low + dH, masses, sticks), modes.q, steps)
+    bands = AS.carry_to_bands(*corrected_modes(H_low + dH, masses, sticks), modes.q, steps)
     for stick, band in zip(sticks, bands, strict=True):
         stick["nu_cm"], stick["anharmonic"] = stick_entry(stick["omega_cm"], band, steps)
     summary = {"status": POS.APPLIED, "reason": None, "model": AS.MODEL, "artefact": artefact_record(artefact), "bands": counts(bands),

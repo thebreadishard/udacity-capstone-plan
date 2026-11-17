@@ -1,0 +1,32 @@
+# The two real runs replayed offline with the set-wise match (x2star_v3.json, {'rule': 'sets', 'set_tolerance_cm': 1.0, 'set_min_overlap': 0.8, 'set_max_modes': 4, 'registered_rule': 'single', 'change_limit_cm': 0.05})
+
+## benzene (probes/results_m1/pipeline_benzene_anharmonic_first_run/benzene)
+
+bands stepped: 26 of 30 in the run's record -> 28 of 30 now; without a step: {'unmeasured': 2, 'no-xtb-partner': 2} -> {'unmeasured': 2}
+bands that gained a step: [(1691.0, -38.62), (1691.0, -38.62)]; that lost one: []
+largest change of a step both records have: 0.044 cm-1 (format 3 of the artefact against format 2: one more training row)
+
+modes the one-to-one match refuses:
+  mode 22 at 1655.29: one to one 0.498; set [1655.29, 1655.33], overlap with the set's partners 0.985 - refused for its basis: matched as a set
+  mode 23 at 1655.33: one to one 0.498; set [1655.29, 1655.33], overlap with the set's partners 0.985 - refused for its basis: matched as a set
+
+the pairs TASKS 255 names (B3LYP position; overlap of the match; step now; step in the run's record):
+  band 625.1 <- mode at 621.86: 0.611; -6.31; -6.31 (stepped)
+  band 625.1 <- mode at 621.88: 0.611; -6.31; -6.31 (stepped)
+  band 1078.7 <- mode at 1068.79: 0.725; -15.88; -15.88 (stepped)
+  band 1078.7 <- mode at 1068.84: 0.725; -15.88; -15.88 (stepped)
+  band 1209.7 <- mode at 1207.69: 0.710; -14.17; -14.17 (stepped)
+  band 1209.7 <- mode at 1207.72: 0.710; -14.17; -14.17 (stepped)
+  band 1540.7 <- mode at 1531.04: 0.738; -29.72; -29.72 (stepped)
+  band 1540.7 <- mode at 1531.08: 0.738; -29.72; -29.72 (stepped)
+  band 1691.0 <- mode at 1655.29: 0.985; -38.62; none (no-xtb-partner)
+  band 1691.0 <- mode at 1655.33: 0.985; -38.62; none (no-xtb-partner)
+
+## benzonitrile (probes/results_m1/pipeline_benzonitrile_anharmonic_second_run/benzonitrile)
+
+bands stepped: 27 of 33 in the run's record -> 27 of 33 now; without a step: {'unmeasured': 6} -> {'unmeasured': 6}
+bands that gained a step: []; that lost one: []
+largest change of a step both records have: 0.044 cm-1 (format 3 of the artefact against format 2: one more training row)
+
+modes the one-to-one match refuses:
+

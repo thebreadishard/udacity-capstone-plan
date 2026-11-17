@@ -7,11 +7,18 @@ field's GVPT2 label, and the artefact; the molecule's own B3LYP label is read af
 label-free rule is compared with. Three checks, each of which must pass or the script exits 1:
 
 1. the route-A targets: per family the rms of step minus label over the registered rows (the modes the registered read scored:
-   those the B3LYP label marks left out, a symmetry pair counted once) equals the registered bar to TOLERANCE_CM, on the
-   registered number of rows;
+   those the B3LYP label marks left out, a symmetry pair counted once) equals the artefact's own bar — the rms its fit measured
+   with the table it holds — to TOLERANCE_CM, on the registered number of rows. The registered bar is printed beside it and is
+   not the pass line: since TASKS 255 the table is matched to the xtb field set-wise and holds rows the registered read did
+   not, so the model that runs is measured against itself, and its distance from the registered number is reported and bounded
+   by CHANGE_LIMIT_CM (`anharmonic_step_fit.py` says why; the fit also reproduces the registered bar with the registered match);
 2. coronene's modes 24 and 36 (marked by the B3LYP label only) come out with a step and the 'error not measured' flag;
 3. the label-free rule over all molecules of both sets: of the modes a B3LYP label marks, how many get no step (REPORT.md of
    16 Nov: 4 of 6), and how many modes no label marks lose their step to an xtb partner's mark (0).
+
+Reported beside the checks, not a check: the largest difference between the two GFN2-xTB labels of a symmetry pair over all
+molecules. The set-wise match gives a pair one shift in every basis when the pair's two labels are one number; where they
+differ, the carried shift lies between them, so this difference bounds how far a basis can move it.
 
 Writes acceptance.json and acceptance.md into --out.
 """
@@ -32,7 +39,7 @@ PLAN = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(PLAN, "src"))
 from anharmonic_step import ARTEFACT, MODE_REASONS, XTB_PARTNER_MARKED, Artefact, Modes, ModeStep, XtbField, load_artefact, mode_steps  # noqa: E402
-from anharmonic_step_fit import SETS, TARGETS, TOLERANCE_CM  # noqa: E402
+from anharmonic_step_fit import CHANGE_LIMIT_CM, SETS, TARGETS, TOLERANCE_CM  # noqa: E402
 from s2_read import gvpt2_delta, marked_mask, rms, write_atomic  # noqa: E402
 from s2b_read import read_sets  # noqa: E402
 from s3_read import label_notes, pair_groups  # noqa: E402
@@ -91,7 +98,8 @@ def registered_rows(res: dict[str, Any], pair_omega: list[list[float]]) -> list[
 
 
 def check_targets(results: list[dict[str, Any]], artefact: Artefact) -> dict[str, Any]:
-    """Check 1: per family the rms over the targets' registered rows against the registered bar and row count."""
+    """Check 1: per family the rms over the targets' registered rows against the artefact's own bar and the registered row
+    count; the registered bar, its reproduction under the registered match and the rows the set-wise match added beside it."""
     notes = label_notes(TARGETS)
     rows = [r for res in results for r in registered_rows(res, notes[res["id"]]["pair_omega"])]
     out = {}
@@ -100,10 +108,13 @@ def check_targets(results: list[dict[str, Any]], artefact: Artefact) -> dict[str
             mine = [r for r in rows if r["family"] == fa]
             got = rms(np.array([r["step"] - r["truth"] for r in mine]))
             out[fa] = {"rows": len(mine), "rows_registered": model.n_target_rows, "rms_cm": got, "bar_cm": model.bar_cm,
-                       "bar_refit_cm": model.bar_refit_cm, "harmonic_rms_cm": rms(np.array([r["truth"] for r in mine])),
+                       "bar_refit_cm": model.bar_refit_cm, "bar_one_to_one_cm": model.bar_one_to_one_cm,
+                       "from_registered_cm": got - model.bar_cm,
+                       "training_rows_added_by_the_set_wise_match": model.n_training_modes - model.n_training_modes_one_to_one,
+                       "harmonic_rms_cm": rms(np.array([r["truth"] for r in mine])),
                        "per_molecule": {i: rms(np.array([r["step"] - r["truth"] for r in mine if r["id"] == i]))
                                         for i in sorted({r["id"] for r in mine})},
-                       "passed": bool(abs(got - model.bar_cm) <= TOLERANCE_CM and abs(got - model.bar_refit_cm) <= TOLERANCE_CM
+                       "passed": bool(abs(got - model.bar_refit_cm) <= TOLERANCE_CM and abs(got - model.bar_cm) <= CHANGE_LIMIT_CM
                                       and len(mine) == model.n_target_rows)}
     return out
 
@@ -142,6 +153,22 @@ def check_marks(results: list[dict[str, Any]]) -> dict[str, Any]:
             "passed": counts == EXPECTED_MARKS and all(m["error_not_measured"] for m in uncaught)}
 
 
+def pair_label_spread(mols: list[dict[str, str]]) -> dict[str, Any]:
+    """Over the symmetry pairs the xtb labels name: how many, and the largest difference between a pair's two shifts."""
+    pairs, worst = 0, {"difference_cm": 0.0}
+    for mol in mols:
+        with open(mol["x_label"], encoding="utf-8") as fh:
+            label = json.load(fh)
+        shift = np.asarray(label["nu_gvpt2"], float) - np.asarray(label["omega"], float)
+        for i, j in label["degenerate_pairs"]:
+            pairs += 1
+            if abs(shift[i] - shift[j]) > worst["difference_cm"]:
+                worst = {"difference_cm": float(abs(shift[i] - shift[j])), "id": mol["id"], "omega_cm": float(label["omega"][i]),
+                         "shifts_cm": [float(shift[i]), float(shift[j])]}
+    return {"pairs": pairs, "molecules_with_pairs": sum(bool(json.load(open(m["x_label"], encoding="utf-8"))["degenerate_pairs"]) for m in mols),
+            "largest": worst}
+
+
 def report(rec: dict[str, Any]) -> list[str]:
     """The record as the page beside it."""
     L = [f"# The anharmonic step, stage 1 — acceptance ({rec['date']}, TASKS 211)", "",
@@ -149,12 +176,18 @@ def report(rec: dict[str, Any]) -> list[str]:
          "`anharmonic_step.mode_steps` alone; this record by `probes/anharmonic_step_accept.py` at commit "
          f"{rec['commit'][:8]} (uncommitted changes: {rec['commit_dirty']}).", "",
          f"**{'PASSED' if rec['passed'] else 'FAILED'}**", "",
-         "## 1. The route-A targets against the registered bars (cm⁻¹)", "",
-         "| family | rows | registered rows | rms of step − label | registered bar | the artefact's refit | harmonic position | per molecule | |",
-         "|---|---|---|---|---|---|---|---|---|"]
+         "## 1. The route-A targets against the artefact's bars (cm⁻¹)", "",
+         f"Pass: the step's rms within {rec['tolerance_cm']} of the artefact's own bar, within {rec['change_limit_cm']} of the "
+         "registered bar, on the registered rows. The registered bar was read with one xtb mode per mode; the artefact's table "
+         "is matched set-wise (TASKS 255).", "",
+         "| family | rows | registered rows | rms of step − label | the artefact's bar | registered bar | registered match "
+         "reproduced | from the registered | changed by the set-wise match | harmonic position | per molecule | |",
+         "|---|---|---|---|---|---|---|---|---|---|---|---|"]
     for fa, t in rec["targets"].items():
         per = ", ".join(f"{i} {v:.2f}" for i, v in t["per_molecule"].items())
-        L.append(f"| {fa} | {t['rows']} | {t['rows_registered']} | {t['rms_cm']:.4f} | {t['bar_cm']} | {t['bar_refit_cm']:.4f} | "
+        L.append(f"| {fa} | {t['rows']} | {t['rows_registered']} | {t['rms_cm']:.4f} | {t['bar_refit_cm']:.4f} | {t['bar_cm']} | "
+                 f"{t['bar_one_to_one_cm']:.4f} | {t['from_registered_cm']:+.4f} | "
+                 f"{t['training_rows_added_by_the_set_wise_match']:+d} rows | "
                  f"{t['harmonic_rms_cm']:.2f} | {per} | {'pass' if t['passed'] else 'FAIL'} |")
     L += ["", "## 2. The modes only the B3LYP label marks", "",
           "| mode | ω (cm⁻¹) | family | o | step (cm⁻¹) | bar | error not measured | the label's shift | |", "|---|---|---|---|---|---|---|---|---|"]
@@ -173,7 +206,14 @@ def report(rec: dict[str, Any]) -> list[str]:
           "| molecule | mode | ω | family | o | under the rule |", "|---|---|---|---|---|---|"]
     L += [f"| {x['id']} | {x['mode']} | {x['omega_cm']:.1f} | {x['family']} | {x['o']:.2f} | "
           f"{x['reason'] or ('step, error not measured' if x['error_not_measured'] else 'step')} |" for x in m["label_marked_modes"]]
-    return [*L, f"- **{'pass' if m['passed'] else 'FAIL'}**", ""]
+    s, b = rec["xtb_pair_labels"], rec["bars"]
+    L += [f"- **{'pass' if m['passed'] else 'FAIL'}**", "", "## 4. Stated, not checked", "",
+          f"- **The printed bars.** {b['note']} Printed: {b['printed_cm']}; this table's own: {b['own_cm']}.",
+          f"- **A degenerate pair in another basis.** The match gives the pair one shift in every basis when its two GFN2-xTB labels "
+          f"are one number; where they differ the carried shift lies between them. Over {s['pairs']} symmetry pairs of "
+          f"{s['molecules_with_pairs']} molecules the two labels differ by {s['largest']['difference_cm']:.3f} cm⁻¹ at most"
+          + (f" ({s['largest']['id']} at {s['largest']['omega_cm']:.1f} cm⁻¹)." if s["pairs"] else "."), ""]
+    return L
 
 
 def main() -> int:
@@ -194,9 +234,10 @@ def main() -> int:
     state = git_state(HERE)
     rec = {"date": time.strftime("%Y-%m-%d %H:%M"), "artefact": os.path.relpath(artefact_path, PLAN).replace(os.sep, "/"),
            "artefact_commit": artefact.header["commit"], "commit": state.get("commit", ""), "commit_dirty": state.get("dirty"),
-           "tolerance_cm": TOLERANCE_CM, "selected_without_a_force_field": absent_training,
+           "tolerance_cm": TOLERANCE_CM, "change_limit_cm": CHANGE_LIMIT_CM, "selected_without_a_force_field": absent_training,
            "targets": check_targets(targets, artefact), "flagged": check_flagged(targets),
-           "marks": check_marks([*training, *targets])}
+           "marks": check_marks([*training, *targets]), "bars": artefact.header["bars"],
+           "xtb_pair_labels": pair_label_spread([*training_mols, *target_mols])}
     rec["passed"] = bool(all(t["passed"] for t in rec["targets"].values()) and all(f["passed"] for f in rec["flagged"].values())
                          and rec["marks"]["passed"])
     os.makedirs(out, exist_ok=True)
