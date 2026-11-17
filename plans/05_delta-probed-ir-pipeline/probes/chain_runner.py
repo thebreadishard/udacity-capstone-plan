@@ -188,8 +188,10 @@ def expand(spec: dict, python: str) -> list[dict]:
             steps += rungc_steps(st, python)
         elif st["kind"] == "cmd":
             argv = [python if a == "{python}" else a for a in st["argv"]]
+            # glob_args was dropped here until 17 Nov 2026: a 'cmd' step's pattern reached its program as written (chain v14_data's
+            # registration entered three keys with '*' in them). The steps' hash does not hold it, so resume records stay valid.
             steps.append(dict(label=st.get("label", " ".join(argv)[:60]), argv=argv, cwd=str(_p(st.get("cwd", PLAN))),
-                              log=str(_p(st["log"]))))
+                              log=str(_p(st["log"])), **({"glob_args": True} if st.get("glob_args") else {})))
         else:
             raise ValueError(f"unknown step kind {st['kind']!r}")
     return steps
@@ -216,12 +218,32 @@ def main(argv: list[str] | None = None) -> int:
         raise
 
 
+def pattern_notes(st: dict) -> list[str]:
+    """A line per argument of a step that holds a '*': what the run will do with it. A step with glob_args has it expanded to the one
+    file it matches when the step starts (none yet is no failure of a dry run: an earlier step may write the file); without
+    glob_args the argument reaches the program as written."""
+    notes = []
+    for a in st["argv"]:
+        if "*" not in a:
+            continue
+        if not st.get("glob_args"):
+            notes.append(f"    '*' in {a}: passed as written (the step has no glob_args)")
+            continue
+        hits = sorted(Path(st["cwd"]).glob(a))
+        found = ("no match yet" if not hits else f"{len(hits)} matches — the step refuses anything but one" if len(hits) > 1
+                 else str(hits[0].relative_to(st["cwd"])).replace("\\", "/"))
+        notes.append(f"    pattern {a}: {found}")
+    return notes
+
+
 def dry_run(spec: dict, steps: list[dict]) -> int:
-    """The expanded steps and the wait conditions' state; nothing runs."""
+    """The expanded steps, what each pattern in them matches now, and the wait conditions' state; nothing runs."""
     for c in spec.get("wait", []):
         print(f"wait {c['kind']}: {'holds' if condition_holds(c) else 'not yet'}")
     for st in steps:
         print(f"{st['label']}: (cwd {Path(st['cwd']).name}) {' '.join(st['argv'])}")
+        for note in pattern_notes(st):
+            print(note)
     print("outputs:", ", ".join(spec.get("outputs", [])) or "—")
     return 0
 
