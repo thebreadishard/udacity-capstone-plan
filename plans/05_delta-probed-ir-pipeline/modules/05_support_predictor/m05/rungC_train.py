@@ -313,10 +313,16 @@ def check_pretrained_transfer(body: torch.nn.Module, tensors: dict, ids: list, l
     return worst
 
 
-def inner_val_aux(model, tensors: dict, ids: list, loss: LossSettings) -> float:
+def inner_val_terms(model, tensors: dict, ids: list, loss: LossSettings) -> tuple[float, float]:
+    """(main, aux) on the molecules `ids` at the model's present weights, in eval mode, from one forward pass per molecule: each is the
+    mean over the molecules of the molecule's own term (a mean over its entries, `_terms`), every molecule counting once — the average the
+    training side of the history takes (`rungC_history`). (nan, nan) without ids."""
     model.eval()
+    if not ids:
+        return float("nan"), float("nan")
     with torch.no_grad():
-        return float(np.mean([float(_terms(model, tensors[i], loss)[1]) for i in ids])) if ids else float("nan")
+        terms = [_terms(model, tensors[i], loss)[:2] for i in ids]
+    return float(np.mean([float(main) for main, _aux in terms])), float(np.mean([float(aux) for _main, aux in terms]))
 
 
 @dataclass
@@ -393,7 +399,11 @@ class Fold:
 
 def _fit(model, loss: LossSettings, cfg: TrainConfig, fold: Fold, seed: int, log) -> tuple[list, int]:
     """AdamW at the epoch's learning rate (`rungC_config.learning_rate`), one molecule per step, gradient norm clipped at 5; with
-    validation ids the best state on their auxiliary term is kept and, with patience, restored. Returns (history, best epoch)."""
+    validation ids the best state on their auxiliary term is kept and, with patience, restored. Returns (history, best epoch).
+
+    One history entry per epoch (`rungC_history` has the full description): `main` and `aux` are the mean over the fit molecules of each
+    molecule's term as its own step saw it, so a running mean over weights that change within the epoch; `val_main` and `val_aux` (only
+    with validation ids) are the same mean over the validation molecules at the weights the epoch ends with. Stopping reads `val_aux`."""
     tensors, train_ids, val_ids = fold.tensors, fold.fit_ids, fold.val_ids
     opt = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)
     rng = np.random.default_rng(seed)
@@ -419,7 +429,7 @@ def _fit(model, loss: LossSettings, cfg: TrainConfig, fold: Fold, seed: int, log
             tot_aux += float(aux.detach())
         rec = dict(epoch=ep + 1, main=tot_main / len(train_ids), aux=tot_aux / len(train_ids))
         if val_ids:
-            rec["val_aux"] = inner_val_aux(model, tensors, val_ids, loss)
+            rec["val_main"], rec["val_aux"] = inner_val_terms(model, tensors, val_ids, loss)
             if rec["val_aux"] < best - 1e-9:
                 best, best_ep, since = rec["val_aux"], ep + 1, 0
                 best_state = {k: v.detach().clone() for k, v in model.state_dict().items()}
@@ -427,7 +437,8 @@ def _fit(model, loss: LossSettings, cfg: TrainConfig, fold: Fold, seed: int, log
                 since += 1
         hist.append(rec)
         if (ep + 1) % 10 == 0 or ep == 0 or ep + 1 == cfg.epochs:
-            val_txt = f" val {rec['val_aux']:.4g}" if val_ids else ""
+            # `val <auxiliary term> ` stays as it was: probes/epoch_repeat_check.py reads it from the logs of old and new runs
+            val_txt = f" val {rec['val_aux']:.4g} val_main {rec['val_main']:.4g}" if val_ids else ""
             log(f"    seed {seed} epoch {ep + 1}/{cfg.epochs}: loss main {rec['main']:.4g} aux {rec['aux']:.4g}{val_txt} ({time.time() - t0:.0f} s)")
         if cfg.patience and val_ids and since >= cfg.patience:
             log(f"    seed {seed}: early stop at epoch {ep + 1}, best inner val {best:.4g} at epoch {best_ep}")
@@ -939,12 +950,15 @@ def train_and_read(cfg: TrainConfig, corpus: Corpus, tensors: dict, n: int, seed
         unused |= set(PRIMITIVE_KEYS) if cfg.primitives == IC.CARRIED else set()
         save_hybrid_model(model, trained.loss, path, cfg.model_dump(exclude=unused), n, seed, train_ids=tr)
         log(f"  model saved: {path}")
+    # both on the weights the model ends with: the best epoch's when patience restored them, else the last epoch's
+    val_main, val_aux = inner_val_terms(model, tensors, val_ids, trained.loss) if val_ids else (None, None)
     out = {"seed": seed, "train_history": trained.history, "output_scale": trained.output_scale, "class_scale": trained.class_scale,
            "aux_class_scale": None if trained.loss.class_scale is None else trained.loss.class_scale.tolist(),
            "seconds": round(time.time() - t1, 1), "inner_val_ids": val_ids,
-           "inner_val_aux": inner_val_aux(model, tensors, val_ids, trained.loss) if val_ids else None, "best_epoch": trained.best_epoch}
+           "inner_val_aux": val_aux, "inner_val_main": val_main, "best_epoch": trained.best_epoch}
     if val_ids:
-        log(f"  n={n} seed {seed}: inner validation internal term {out['inner_val_aux']:.4g} on {len(val_ids)} molecules (fit on {len(fit_ids)})")
+        log(f"  n={n} seed {seed}: inner validation internal term {val_aux:.4g}, main term {val_main:.4g} on {len(val_ids)} molecules "
+            f"(fit on {len(fit_ids)})")
     rows = []
     for h, ids in corpus.tests.items():
         if not ids:

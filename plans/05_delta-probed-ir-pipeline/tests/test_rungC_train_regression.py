@@ -14,6 +14,10 @@ add — an excluded-ids file (chains 41, 43), a size hold-out (chain 42; at the 
 everything else must match to the last bit — the record including its training history, and the checkpoint's settings and a sha256 of
 every state tensor. Shared tools: `tests/pin_tools.py`.
 
+Rewritten on 17 Nov 2026, when the trainer began to record the main term on the inner-validation molecules: against the pin before it
+the record gained `val_main` in every history entry and `inner_val_main` per seed, and nothing else moved (every earlier number and every
+state tensor's digest the same).
+
     python tests/test_rungC_train_regression.py --write-golden [TRAINER]   # with the old trainer before a refactor, or after a deliberate change
 """
 from __future__ import annotations
@@ -104,6 +108,19 @@ def test_the_chainlike_case_exercises_its_switches():
     rec = json.loads(GOLDEN.read_text(encoding="utf-8"))["chainlike"]["record"]
     assert rec["excluded_ids"] == pin_record()["excluded"] and rec["holdout_s"] and rec["aux_target"] == "kfit"
     assert rec["target_residuals"] and all("readout_target" in v for v in rec["target_residuals"].values())
+
+
+def test_the_pin_records_the_validation_main_term():
+    """Both cases train with an inner-validation set, so both show the main term on it: per epoch and on the final weights."""
+    import math
+
+    if not GOLDEN.exists():
+        pytest.skip("no pin yet")
+    golden = json.loads(GOLDEN.read_text(encoding="utf-8"))
+    for case in sorted(CASES):
+        seeds = [s for row in golden[case]["record"]["curve"].values() for s in row["per_seed"]]
+        assert seeds and all(s["inner_val_ids"] and math.isfinite(s["inner_val_main"]) for s in seeds)
+        assert all(math.isfinite(h["val_main"]) and math.isfinite(h["val_aux"]) for s in seeds for h in s["train_history"])
 
 
 if __name__ == "__main__":
