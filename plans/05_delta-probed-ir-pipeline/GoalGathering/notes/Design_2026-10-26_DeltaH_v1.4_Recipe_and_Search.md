@@ -429,3 +429,13 @@ stands as read. They are reported as (i) benzene's error per seed over five seed
 beside the three-seed read. What is done with a recipe that is better on eight cells and worse on two through one molecule in one
 seed is the user's decision: the registered rule has no margin, and whether a version is promoted on five seeds, on a rule with a
 margin, or not at all is not decided here.
+
+**Per family and molecule, 17 November 2026, 07:0x (`probes/results_m1/v14_data_read_2026-11-17/per_family_a8.txt`; the licence read's own `molecule_read`): benzene carries
+both worse cells, and not in seed 0 alone — a correction of the paragraph above.** With benzene left out of the eight, every cell of
+the promotion passes: CH-oop 1.53 against 2.16 (with it 2.43 against 2.17), CH-stretch 1.19 against 1.20 (with it 1.21 against 1.19),
+ring-ip 1.36 against 1.76, 'other' 2.81 against 3.68; leaving out any other molecule changes no verdict. Benzene's CH-oop modes
+(6 of the set's 46) read 8.70 / 4.10 / 2.94 cm⁻¹ over the new seeds against 3.00 / 2.19 / 1.48 for the carried version — worse in all
+three, most in seed 0; its CH stretches 1.93 / 0.59 / 1.61 against 0.67 / 1.42 / 0.76; its ring-ip 4.84 / 0.88 / 1.90 against 0.96 /
+2.81 / 1.35. For the seed mean the product delivers, benzene's CH-oop bands are 4.16 against 1.98 cm⁻¹. So 'the seed' is half of it:
+seed 0 is the extreme, but the recipe on the new pool is weaker on benzene's out-of-plane modes in every seed so far. Benzene is the
+smallest and most symmetric molecule of the set and the one every reader tries first; why the larger pool costs it is not known.
