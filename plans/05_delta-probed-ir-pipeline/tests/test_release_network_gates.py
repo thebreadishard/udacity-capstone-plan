@@ -19,7 +19,7 @@ sys.path.insert(0, str(PLAN / "modules" / "08_industry_synthesis"))
 sys.path.insert(0, str(PLAN / "probes"))
 sys.path.insert(0, str(PLAN / "modules" / "05_support_predictor" / "m05"))
 import network_kind as NK  # noqa: E402
-from rungC_settings_added import SETTINGS_ADDED, with_absent_settings  # noqa: E402
+from rungC_settings_added import RUN_ONLY, SETTINGS_ADDED, setting_differences, with_absent_settings  # noqa: E402
 
 REFUSAL = r"r\.pt is a release network \(decision 66\)"
 
@@ -69,9 +69,16 @@ def test_a_fine_tune_asks_its_bases_kind_before_it_loads_the_base(module):
 
 def test_the_table_of_settings_added_is_one_and_names_what_it_fills():
     import epoch_repeat_check as ER
+    import release_chain as RCH
     import release_checks as RC
+    import v14_search as V14
 
-    assert ER.with_absent_settings is with_absent_settings and RC.with_absent_settings is with_absent_settings
+    assert ER.with_absent_settings is with_absent_settings and RCH.with_absent_settings is with_absent_settings
+    assert RC.setting_differences is setting_differences and V14.setting_differences is setting_differences
+    assert RC.RUN_ONLY is RUN_ONLY and RCH.RUN_ONLY is RUN_ONLY and V14.RUN_ONLY is RUN_ONLY
+    assert setting_differences({"lr": 1.0, "threads": 8}, {"lr": 2.0, "network_kind": "measurement", "threads": 1}) == (
+        {"lr": (1.0, 2.0)}, {"weight_decay": 1e-4, "holdout_twins": "keep", "lr_schedule": "constant", "network_kind": "measurement"},
+        {"weight_decay": 1e-4, "holdout_twins": "keep", "lr_schedule": "constant"})
     assert SETTINGS_ADDED == {"weight_decay": 1e-4, "holdout_twins": "keep", "lr_schedule": "constant", "network_kind": "measurement"}
     assert with_absent_settings({"lr": 1.0, "weight_decay": 3e-5}) == (
         {"lr": 1.0, "weight_decay": 3e-5, "holdout_twins": "keep", "lr_schedule": "constant", "network_kind": "measurement"},

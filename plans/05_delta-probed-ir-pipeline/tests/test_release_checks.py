@@ -11,6 +11,7 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
+from types import SimpleNamespace
 
 import numpy as np
 import pytest
@@ -156,6 +157,20 @@ def test_the_hold_outs_must_be_learnt_and_never_leaked(tmp_path, monkeypatch):
     assert not check.passed and f"(a8) 1 molecule(s) are in a measurement network's training data ({BENZENE})" in check.refusal
     untrained = tuple(net("V_rel", NK.RELEASE, s) for s in (0, 1))
     assert "(a8) no listed molecule is in the release networks' training data" in RC.holdouts_learnt(config(untrained, measurement, tmp_path)).refusal
+
+
+def test_a_measurement_network_that_trained_a_hold_out_molecules_cation_leaks_it(tmp_path):
+    """TASKS 253: the cation carries the manifest's neutral SMILES; a measurement network that trained it has no held-out error there."""
+    cation = tuple(net("V_meas", NK.MEASUREMENT, s, train_ids=[*POOL_ANALYTIC, "P3c_8448043181"]) for s in (0, 1))
+    release = tuple(net("V_rel", NK.RELEASE, s, train_ids=[*POOL_ANALYTIC, *HELD_ANALYTIC]) for s in (0, 1))
+    cfg = SimpleNamespace(release=release, measurement=cation)
+    path = tmp_path / "a8.txt"
+    path.write_text("\n".join(HELD_ANALYTIC) + "\n", encoding="utf-8")
+    keys = {i: ("x" + i, 0) for i in [*POOL_ANALYTIC, *HELD_ANALYTIC]} | {"P3c_8448043181": ("x" + BENZENE, 1)}
+    numbers, reasons = RC.holdout_set("a8", path, cfg, keys)
+    assert numbers["in_a_measurement_networks_training_data"] == ["P3c_8448043181 (a twin)"]
+    assert reasons == ["(a8) 1 molecule(s) are in a measurement network's training data (P3c_8448043181 (a twin)): its error there is not "
+                       "a held-out one (TASKS 157, 253)"]
 
 
 def test_benzene_is_reported_by_name_and_refused_when_the_release_did_not_train_on_it(tmp_path, monkeypatch):

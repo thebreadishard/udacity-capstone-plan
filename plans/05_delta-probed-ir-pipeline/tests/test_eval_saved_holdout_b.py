@@ -1,5 +1,6 @@
 """rungC_eval_saved.py --holdout-b-file (8 Oct 2026): the coverage test reads (b) on the frozen pre-merge list; new children of the (b) scaffolds that the
 corpus split adds are read apart as (b+), and frozen ids the loader does not admit drop out as the trainer drops them."""
+import argparse
 import sys
 from pathlib import Path
 
@@ -45,13 +46,44 @@ def test_eval_sets_read_an_explicit_list_and_refuse_trained_ids(tmp_path):
         ES.eval_sets([f"s5={f}"], admitted={"x1": 0, "x2": 0}, train_ids=["x1"], keys=KEYS)
 
 
-def test_eval_sets_refuse_a_trained_molecule_under_another_id_but_not_its_cation(tmp_path):
-    """TASKS 157 (30 Oct 2026): v1.3 trained on two hold-out (a) molecules as their layer-B twins; a cation shares its parent's SMILES."""
+def test_eval_sets_refuse_a_trained_molecule_under_another_id_or_charge(tmp_path):
+    """TASKS 157 (30 Oct 2026): v1.3 trained on two hold-out (a) molecules as their layer-B twins. TASKS 253: a model that trained a
+    listed molecule's radical cation carries its correction onto the neutral, so that is no test either."""
     f = tmp_path / "s5.txt"
     f.write_text("x1\nx2\n", encoding="utf-8")
-    with pytest.raises(SystemExit, match="under other ids"):
+    with pytest.raises(SystemExit, match=r"under other ids or charges \(B_twin\)"):
         ES.eval_sets([f"s5={f}"], admitted={"x1": 0, "x2": 0}, train_ids=["B_twin"], keys=KEYS)
-    assert ES.eval_sets([f"s5={f}"], admitted={"x1": 0, "x2": 0}, train_ids=["P3c_x1"], keys=KEYS)["s5"]["ids"] == ["x1", "x2"]
+    with pytest.raises(SystemExit, match=r"under other ids or charges \(P3c_x1\) — not a test \(TASKS 157, 253\)"):
+        ES.eval_sets([f"s5={f}"], admitted={"x1": 0, "x2": 0}, train_ids=["P3c_x1"], keys=KEYS)
+    assert ES.eval_sets([f"s5={f}"], admitted={"x1": 0, "x2": 0}, train_ids=["p1"], keys=KEYS)["s5"]["ids"] == ["x1", "x2"]
+
+
+def test_the_built_in_hold_out_b_refuses_a_trained_molecule_by_id_or_as_a_twin_of_any_charge(monkeypatch):
+    """Hold-out (b) decides: it passes the same check as an --eval-ids-file set (TASKS 157, 253); so does an id overlap with (a)."""
+    monkeypatch.setattr(ES.HT, "manifest_keys", lambda molecules: KEYS)
+    a = argparse.Namespace(holdout_b_file=None, eval_ids_file=[], molecules="corpus/molecules")
+    held = {"a": ["x2"], "b": ["x1"]}
+    assert [s[0] for s in ES.measurement_sets(a, {}, held, ["p1"], [])] == ["a", "b"]
+    for trained, why in ((["x1"], r"hold-out \(b\): 1 ids are in the model's training set \(x1\)"),
+                         (["x2"], r"hold-out \(a\): 1 ids are in the model's training set \(x2\)"),
+                         (["P3c_x1"], r"hold-out \(b\): the training set holds 1 of its molecules under other ids or charges \(P3c_x1\)"),
+                         (["B_twin"], r"hold-out \(b\): .* \(B_twin\) — not a test \(TASKS 157, 253\)")):
+        with pytest.raises(SystemExit, match=why):
+            ES.measurement_sets(a, {}, held, trained, [])
+
+
+def test_the_built_in_hold_out_a_names_its_trained_twins_and_reads_on(monkeypatch, capsys):
+    """Hold-out (a)'s ten decide nothing since 16 Nov (the clean eight do), and the carried version trained two of its molecules'
+    neutral twins: a twin of any charge is named in the log and the record, not refused."""
+    monkeypatch.setattr(ES.HT, "manifest_keys", lambda molecules: KEYS)
+    a = argparse.Namespace(holdout_b_file=None, eval_ids_file=[], molecules="corpus/molecules")
+    held = {"a": ["x1"], "b": ["x2"]}
+    sets = ES.measurement_sets(a, {}, held, ["B_twin", "P3c_x1", "p1"], [])
+    assert sets[0] == ("a", ["x1"], {"trained_twins": [{"id": "B_twin", "charge": 0}, {"id": "P3c_x1", "charge": 1}]})
+    assert sets[1] == ("b", ["x2"], {})
+    assert ("hold-out (a): the model trained twins of 2 of its molecules (B_twin (charge +0), P3c_x1 (charge +1)) — not a held-out read for "
+            "those molecules; the clean eight decide") in capsys.readouterr().out
+    assert ES.measurement_sets(a, {}, held, ["p1"], [])[0][2] == {"trained_twins": []}
 
 
 def test_eval_sets_refuse_a_taken_name_or_a_malformed_spec(tmp_path):

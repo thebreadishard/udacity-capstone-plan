@@ -56,12 +56,11 @@ import rungC_intensities as RINT  # noqa: E402
 import v14_search as V14  # noqa: E402
 from learning_curve_layerA import molecule_features, normal_modes  # noqa: E402
 from promotion_read import FAMILIES  # noqa: E402
-from rungC_settings_added import with_absent_settings  # noqa: E402
+from rungC_settings_added import RUN_ONLY, setting_differences  # noqa: E402
 
 BENZENE = "A_8448043181"
 SAMPLE_SEED = 20261117
 SAMPLE_SIZE = 40
-RUN_ONLY = ("out_prefix", "threads", "seeds")     # the run's own: where it wrote, its threads, how the seeds were grouped into runs
 SUFFIX = "_release_checks"
 PREVIOUS = "previous_release"
 HOLDOUT_FILES = {"a8": "out/holdout_a_clean_2026-10-30.txt", "b": "corpus/holdout_b_frozen_2026-10-08.txt"}   # relative to --m05
@@ -164,9 +163,8 @@ def same_recipe(release: tuple[Net, ...], measurement: tuple[Net, ...]) -> Check
     differences, whole_pool, read_as = {}, {}, {}
     for r in release:
         m = by_seed[r.seed]
-        (m_args, read_as[m.path.name]), (r_args, read_as[r.path.name]) = with_absent_settings(m.args), with_absent_settings(r.args)
-        keys = sorted((set(r_args) | set(m_args)) - {*RUN_ONLY, NK.FIELD})
-        diff = {k: {NK.MEASUREMENT: m_args.get(k), NK.RELEASE: r_args.get(k)} for k in keys if m_args.get(k) != r_args.get(k)}
+        pairs, read_as[m.path.name], read_as[r.path.name] = setting_differences(m.args, r.args, {*RUN_ONLY, NK.FIELD})
+        diff = {k: {NK.MEASUREMENT: mv, NK.RELEASE: rv} for k, (mv, rv) in pairs.items()}
         whole_pool[m.path.name] = NK.trained_on_whole_pool(m.record, m.n)
         if whole_pool[m.path.name] and r.args.get("sizes") == "all":
             diff.pop("sizes", None)                      # the measurement network trained on its whole pool, which is what 'all' says
@@ -264,18 +262,19 @@ def family_errors(ids: list[str], molecules: Path, models: tuple[Path, ...]) -> 
 
 def holdout_set(name: str, path: Path, cfg: Config, keys: dict) -> tuple[dict, list[str]]:
     """(one hold-out set's numbers, the reasons to refuse it). Read on the listed molecules every release network trained on; the
-    others are named as dropped. A molecule a measurement network trained on, by id or as a twin, makes its error no held-out one."""
+    others are named as dropped. A molecule a measurement network trained on, by id or as a twin of any charge (TASKS 157, 253), makes
+    its error no held-out one."""
     listed = read_ids(path)
     ids = [i for i in listed if all(i in r.train_ids for r in cfg.release)]
     trained = sorted(frozenset.union(*(m.train_ids for m in cfg.measurement)))
-    leaked = sorted(set(ids) & set(trained)) + [f"{t} (a twin)" for t in HT.twins(trained, ids, keys)]
+    leaked = sorted(set(ids) & set(trained)) + [f"{t} (a twin)" for t in HT.twins(trained, ids, keys, any_charge=True)]
     numbers = {"file": path.name, "n_listed": len(listed), "n_read": len(ids), "dropped_not_in_the_release_training_data": sorted(set(listed) - set(ids)),
                "in_a_measurement_networks_training_data": leaked}
     if not ids:
         return numbers, [f"({name}) no listed molecule is in the release networks' training data"]
     if leaked:
         return numbers, [f"({name}) {len(leaked)} molecule(s) are in a measurement network's training data ({', '.join(leaked[:5])}): its "
-                         "error there is not a held-out one"]
+                         "error there is not a held-out one (TASKS 157, 253)"]
     errors = {kind: family_errors(ids, cfg.molecules, cfg.models(kind)) for kind in NK.KINDS}
     numbers["families"] = {f: {NK.RELEASE: errors[NK.RELEASE][f]["rms"], NK.MEASUREMENT: errors[NK.MEASUREMENT][f]["rms"],
                                "n_bands": errors[NK.RELEASE][f]["n_bands"]} for f in FAMILIES}

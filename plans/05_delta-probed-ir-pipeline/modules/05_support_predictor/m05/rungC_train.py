@@ -868,13 +868,16 @@ def release_pool(cfg: TrainConfig, pool: list, held: dict[str, list], substitute
 
 
 def drop_twins(cfg: TrainConfig, pool: list, held: list, log) -> tuple[list, list]:
-    """Without --holdout-twins keep, the pool loses every molecule that is a hold-out (a, b, s) molecule under another id. A release
-    network has no hold-out, so nothing is a twin of one and its pool keeps them (`release_pool` lists them)."""
+    """Without --holdout-twins keep, the pool loses every molecule that is a hold-out (a, b, s) molecule under another id, and under
+    drop-any-charge also one under another charge (TASKS 253). A release network has no hold-out, so nothing is a twin of one and its
+    pool keeps them (`release_pool` lists them)."""
     if cfg.holdout_twins == "keep" or cfg.network_kind == NK.RELEASE:
         return pool, []
-    found = HT.twins(pool, held, HT.manifest_keys(cfg.molecules))
+    any_charge = cfg.holdout_twins == "drop-any-charge"
+    found = HT.twins(pool, held, HT.manifest_keys(cfg.molecules), any_charge=any_charge)
     if found:
-        log(f"hold-out twins: {len(found)} pool molecules are hold-out molecules under another id and leave the pool ({', '.join(found)})")
+        log(f"hold-out twins: {len(found)} pool molecules are hold-out molecules under another id{' or charge' if any_charge else ''} and "
+            f"leave the pool ({', '.join(found)})")
     return [i for i in pool if i not in found], found
 
 
