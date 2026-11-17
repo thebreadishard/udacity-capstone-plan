@@ -488,3 +488,5 @@ clean eight and hold-out (b), with the ten printed beside them deciding nothing,
 commands: their scores are read on the selection set, whose pool holds no cation twin of a selection molecule (checked 17 Nov), so the
 ranking is unaffected. The evaluator now refuses hold-out (b) on a model that trained a twin of any charge, and records — without
 refusing — the twins of hold-out (a)'s ten, with their charge.
+
+(The winner's whole-pool retraining writes under its own tag `s3win`, never over the data arm's `s3full`.)
