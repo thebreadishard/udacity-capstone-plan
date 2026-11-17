@@ -1,0 +1,389 @@
+{
+ "molecules": 39,
+ "totals": {
+  "modes": 2244,
+  "held_one_to_one": 2168,
+  "held_and_differ": 0,
+  "refused_one_to_one": 76,
+  "refused_both_same_overlap": 72
+ },
+ "added": [
+  {
+   "id": "P3_ff62f88395",
+   "mode": 61,
+   "omega_cm": 3183.237509912094,
+   "family": "CH-stretch",
+   "window": "ch",
+   "large_amplitude": false,
+   "marked": false,
+   "one_to_one": 0.46598622934204187,
+   "set_overlap": 0.9338321332243664,
+   "xtb_shift_cm": -152.24620302478817,
+   "partners": [
+    {
+     "xtb_omega_cm": 3058.543796532933,
+     "weight": 0.5009957220757982,
+     "xtb_shift_cm": -154.60514038753809
+    },
+    {
+     "xtb_omega_cm": 3074.2903940417427,
+     "weight": 0.49900427792420166,
+     "xtb_shift_cm": -149.87785153029063
+    }
+   ]
+  }
+ ],
+ "by_tolerance": {
+  "0.5": {
+   "modes_in_a_set": 161,
+   "matched_as_a_set": 0
+  },
+  "1.0": {
+   "modes_in_a_set": 253,
+   "matched_as_a_set": 1
+  },
+  "3.0": {
+   "modes_in_a_set": 482,
+   "matched_as_a_set": 3
+  }
+ },
+ "tables": {
+  "mid": {
+   "rows_before": 1310,
+   "rows_after": 1310,
+   "old_rows_missing_or_changed": [],
+   "old_rows_in_their_order": true,
+   "rows_added": []
+  },
+  "ch": {
+   "rows_before": 288,
+   "rows_after": 289,
+   "old_rows_missing_or_changed": [],
+   "old_rows_in_their_order": true,
+   "rows_added": [
+    {
+     "omega": 3183.237509912094,
+     "delta": -132.42550974026653,
+     "family": "CH-stretch",
+     "h": 0.9195167684655706,
+     "o": 3.4328180713985385e-08,
+     "xtb": -152.24620302478817
+    }
+   ]
+  }
+ },
+ "per_molecule": {
+  "A_01f3186607": {
+   "modes": 48,
+   "held_one_to_one": 48,
+   "held_and_differ": 0,
+   "refused_one_to_one": 0,
+   "refused_both_same_overlap": 0,
+   "added": 0
+  },
+  "B_a41f4cff9d": {
+   "modes": 51,
+   "held_one_to_one": 48,
+   "held_and_differ": 0,
+   "refused_one_to_one": 3,
+   "refused_both_same_overlap": 3,
+   "added": 0
+  },
+  "A_8448043181": {
+   "modes": 30,
+   "held_one_to_one": 30,
+   "held_and_differ": 0,
+   "refused_one_to_one": 0,
+   "refused_both_same_overlap": 0,
+   "added": 0
+  },
+  "A_a848c04a21": {
+   "modes": 36,
+   "held_one_to_one": 36,
+   "held_and_differ": 0,
+   "refused_one_to_one": 0,
+   "refused_both_same_overlap": 0,
+   "added": 0
+  },
+  "B_410ac0fb2f": {
+   "modes": 42,
+   "held_one_to_one": 37,
+   "held_and_differ": 0,
+   "refused_one_to_one": 5,
+   "refused_both_same_overlap": 5,
+   "added": 0
+  },
+  "A_d9139359ab": {
+   "modes": 48,
+   "held_one_to_one": 48,
+   "held_and_differ": 0,
+   "refused_one_to_one": 0,
+   "refused_both_same_overlap": 0,
+   "added": 0
+  },
+  "B_0603418c5b": {
+   "modes": 54,
+   "held_one_to_one": 54,
+   "held_and_differ": 0,
+   "refused_one_to_one": 0,
+   "refused_both_same_overlap": 0,
+   "added": 0
+  },
+  "B_78f8233b4c": {
+   "modes": 54,
+   "held_one_to_one": 50,
+   "held_and_differ": 0,
+   "refused_one_to_one": 4,
+   "refused_both_same_overlap": 4,
+   "added": 0
+  },
+  "A_45187bb7c8": {
+   "modes": 54,
+   "held_one_to_one": 54,
+   "held_and_differ": 0,
+   "refused_one_to_one": 0,
+   "refused_both_same_overlap": 0,
+   "added": 0
+  },
+  "A_72b86c2331": {
+   "modes": 54,
+   "held_one_to_one": 54,
+   "held_and_differ": 0,
+   "refused_one_to_one": 0,
+   "refused_both_same_overlap": 0,
+   "added": 0
+  },
+  "A_90df3e4aa9": {
+   "modes": 45,
+   "held_one_to_one": 43,
+   "held_and_differ": 0,
+   "refused_one_to_one": 2,
+   "refused_both_same_overlap": 2,
+   "added": 0
+  },
+  "A_7aa232d4e9": {
+   "modes": 42,
+   "held_one_to_one": 42,
+   "held_and_differ": 0,
+   "refused_one_to_one": 0,
+   "refused_both_same_overlap": 0,
+   "added": 0
+  },
+  "B_079e66d017": {
+   "modes": 54,
+   "held_one_to_one": 53,
+   "held_and_differ": 0,
+   "refused_one_to_one": 1,
+   "refused_both_same_overlap": 1,
+   "added": 0
+  },
+  "A_d295f2fa80": {
+   "modes": 42,
+   "held_one_to_one": 40,
+   "held_and_differ": 0,
+   "refused_one_to_one": 2,
+   "refused_both_same_overlap": 2,
+   "added": 0
+  },
+  "B_052693bd01": {
+   "modes": 21,
+   "held_one_to_one": 21,
+   "held_and_differ": 0,
+   "refused_one_to_one": 0,
+   "refused_both_same_overlap": 0,
+   "added": 0
+  },
+  "A_fead28d796": {
+   "modes": 39,
+   "held_one_to_one": 38,
+   "held_and_differ": 0,
+   "refused_one_to_one": 1,
+   "refused_both_same_overlap": 0,
+   "added": 0
+  },
+  "A_ff98e1160d": {
+   "modes": 45,
+   "held_one_to_one": 45,
+   "held_and_differ": 0,
+   "refused_one_to_one": 0,
+   "refused_both_same_overlap": 0,
+   "added": 0
+  },
+  "A_aa22880426": {
+   "modes": 48,
+   "held_one_to_one": 47,
+   "held_and_differ": 0,
+   "refused_one_to_one": 1,
+   "refused_both_same_overlap": 1,
+   "added": 0
+  },
+  "A_20db5837c9": {
+   "modes": 57,
+   "held_one_to_one": 57,
+   "held_and_differ": 0,
+   "refused_one_to_one": 0,
+   "refused_both_same_overlap": 0,
+   "added": 0
+  },
+  "A_593ba8280d": {
+   "modes": 57,
+   "held_one_to_one": 57,
+   "held_and_differ": 0,
+   "refused_one_to_one": 0,
+   "refused_both_same_overlap": 0,
+   "added": 0
+  },
+  "A_8d1f3c46b0": {
+   "modes": 60,
+   "held_one_to_one": 60,
+   "held_and_differ": 0,
+   "refused_one_to_one": 0,
+   "refused_both_same_overlap": 0,
+   "added": 0
+  },
+  "A_b77821c742": {
+   "modes": 60,
+   "held_one_to_one": 60,
+   "held_and_differ": 0,
+   "refused_one_to_one": 0,
+   "refused_both_same_overlap": 0,
+   "added": 0
+  },
+  "A_e72997e726": {
+   "modes": 63,
+   "held_one_to_one": 62,
+   "held_and_differ": 0,
+   "refused_one_to_one": 1,
+   "refused_both_same_overlap": 1,
+   "added": 0
+  },
+  "A_bce5bae234": {
+   "modes": 63,
+   "held_one_to_one": 58,
+   "held_and_differ": 0,
+   "refused_one_to_one": 5,
+   "refused_both_same_overlap": 5,
+   "added": 0
+  },
+  "A_a6412e1ae4": {
+   "modes": 63,
+   "held_one_to_one": 63,
+   "held_and_differ": 0,
+   "refused_one_to_one": 0,
+   "refused_both_same_overlap": 0,
+   "added": 0
+  },
+  "A_541c53d1a5": {
+   "modes": 66,
+   "held_one_to_one": 65,
+   "held_and_differ": 0,
+   "refused_one_to_one": 1,
+   "refused_both_same_overlap": 1,
+   "added": 0
+  },
+  "A_a1e6ec1862": {
+   "modes": 66,
+   "held_one_to_one": 65,
+   "held_and_differ": 0,
+   "refused_one_to_one": 1,
+   "refused_both_same_overlap": 1,
+   "added": 0
+  },
+  "P3_d2345d9fcf": {
+   "modes": 69,
+   "held_one_to_one": 63,
+   "held_and_differ": 0,
+   "refused_one_to_one": 6,
+   "refused_both_same_overlap": 6,
+   "added": 0
+  },
+  "P3_0bb6c41350": {
+   "modes": 69,
+   "held_one_to_one": 63,
+   "held_and_differ": 0,
+   "refused_one_to_one": 6,
+   "refused_both_same_overlap": 5,
+   "added": 0
+  },
+  "P3_5592613777": {
+   "modes": 69,
+   "held_one_to_one": 63,
+   "held_and_differ": 0,
+   "refused_one_to_one": 6,
+   "refused_both_same_overlap": 6,
+   "added": 0
+  },
+  "P3_97c2db1a08": {
+   "modes": 69,
+   "held_one_to_one": 66,
+   "held_and_differ": 0,
+   "refused_one_to_one": 3,
+   "refused_both_same_overlap": 3,
+   "added": 0
+  },
+  "P3_ff62f88395": {
+   "modes": 69,
+   "held_one_to_one": 61,
+   "held_and_differ": 0,
+   "refused_one_to_one": 8,
+   "refused_both_same_overlap": 7,
+   "added": 1
+  },
+  "P3_1e34c6eeef": {
+   "modes": 69,
+   "held_one_to_one": 65,
+   "held_and_differ": 0,
+   "refused_one_to_one": 4,
+   "refused_both_same_overlap": 3,
+   "added": 0
+  },
+  "P3_b36c153df2": {
+   "modes": 69,
+   "held_one_to_one": 64,
+   "held_and_differ": 0,
+   "refused_one_to_one": 5,
+   "refused_both_same_overlap": 5,
+   "added": 0
+  },
+  "P3_1ba8fe779a": {
+   "modes": 69,
+   "held_one_to_one": 61,
+   "held_and_differ": 0,
+   "refused_one_to_one": 8,
+   "refused_both_same_overlap": 8,
+   "added": 0
+  },
+  "A_428228e5a5": {
+   "modes": 72,
+   "held_one_to_one": 69,
+   "held_and_differ": 0,
+   "refused_one_to_one": 3,
+   "refused_both_same_overlap": 3,
+   "added": 0
+  },
+  "A_cce0ad25a5": {
+   "modes": 72,
+   "held_one_to_one": 72,
+   "held_and_differ": 0,
+   "refused_one_to_one": 0,
+   "refused_both_same_overlap": 0,
+   "added": 0
+  },
+  "tetracene": {
+   "modes": 84,
+   "held_one_to_one": 84,
+   "held_and_differ": 0,
+   "refused_one_to_one": 0,
+   "refused_both_same_overlap": 0,
+   "added": 0
+  },
+  "coronene": {
+   "modes": 102,
+   "held_one_to_one": 102,
+   "held_and_differ": 0,
+   "refused_one_to_one": 0,
+   "refused_both_same_overlap": 0,
+   "added": 0
+  }
+ }
+}

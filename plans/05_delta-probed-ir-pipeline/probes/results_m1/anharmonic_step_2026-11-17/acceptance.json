@@ -1,0 +1,232 @@
+{
+ "date": "2026-11-17 09:44",
+ "artefact": "probes/anharmonic_step/x2star_v3.json",
+ "artefact_commit": "46c7ba6d5c895d56d41e1eac57da81adcc01d470",
+ "commit": "46c7ba6d5c895d56d41e1eac57da81adcc01d470",
+ "commit_dirty": "yes",
+ "tolerance_cm": 0.01,
+ "change_limit_cm": 0.05,
+ "selected_without_a_force_field": [
+  "A_8f6ed7c002",
+  "B_190a33a33e",
+  "B_151c8ce719",
+  "B_16194573ac",
+  "B_17f1611949",
+  "B_0040149ee1"
+ ],
+ "targets": {
+  "CH-oop": {
+   "rows": 22,
+   "rows_registered": 22,
+   "rms_cm": 8.380851401822913,
+   "bar_cm": 8.38,
+   "bar_refit_cm": 8.380851401822913,
+   "bar_one_to_one_cm": 8.380851401822913,
+   "from_registered_cm": 0.0008514018229117681,
+   "training_rows_added_by_the_set_wise_match": 0,
+   "harmonic_rms_cm": 12.476763692152412,
+   "per_molecule": {
+    "coronene": 11.909623221842617,
+    "tetracene": 4.546330872687248
+   },
+   "passed": true
+  },
+  "other": {
+   "rows": 23,
+   "rows_registered": 23,
+   "rms_cm": 3.8387397205766454,
+   "bar_cm": 3.84,
+   "bar_refit_cm": 3.8387397205766454,
+   "bar_one_to_one_cm": 3.8387397205766454,
+   "from_registered_cm": -0.0012602794233544934,
+   "training_rows_added_by_the_set_wise_match": 0,
+   "harmonic_rms_cm": 8.195380445995744,
+   "per_molecule": {
+    "coronene": 5.68649375625257,
+    "tetracene": 1.0941842192899551
+   },
+   "passed": true
+  },
+  "ring-ip": {
+   "rows": 56,
+   "rows_registered": 56,
+   "rms_cm": 3.3693915119946753,
+   "bar_cm": 3.37,
+   "bar_refit_cm": 3.3693915119946727,
+   "bar_one_to_one_cm": 3.3693915119946727,
+   "from_registered_cm": -0.0006084880053247588,
+   "training_rows_added_by_the_set_wise_match": 0,
+   "harmonic_rms_cm": 26.2333046222988,
+   "per_molecule": {
+    "coronene": 4.252574924957109,
+    "tetracene": 2.3492021498087086
+   },
+   "passed": true
+  },
+  "CH-stretch": {
+   "rows": 20,
+   "rows_registered": 20,
+   "rms_cm": 6.199406377208773,
+   "bar_cm": 6.21,
+   "bar_refit_cm": 6.199406377208773,
+   "bar_one_to_one_cm": 6.21433944240496,
+   "from_registered_cm": -0.010593622791226665,
+   "training_rows_added_by_the_set_wise_match": 1,
+   "harmonic_rms_cm": 134.24269652968334,
+   "per_molecule": {
+    "coronene": 6.923199117512889,
+    "tetracene": 5.665739878351328
+   },
+   "passed": true
+  }
+ },
+ "flagged": {
+  "coronene mode 24": {
+   "mode": 24,
+   "omega_cm": 642.9393964152791,
+   "family": "other",
+   "h": 0.09258730159699789,
+   "o": 1.0,
+   "xtb_overlap": 0.9638411369460416,
+   "delta_anh_cm": -9.085694737474064,
+   "reason": null,
+   "bar_cm": null,
+   "error_not_measured": true,
+   "window": "mid",
+   "label_marked": true,
+   "label_shift_cm": 66.21804782968661,
+   "passed": true
+  },
+  "coronene mode 36": {
+   "mode": 36,
+   "omega_cm": 807.0896514159125,
+   "family": "other",
+   "h": 0.06552858220962969,
+   "o": 1.0000000000000016,
+   "xtb_overlap": 0.903144742351859,
+   "delta_anh_cm": -11.637974481134522,
+   "reason": null,
+   "bar_cm": null,
+   "error_not_measured": true,
+   "window": "mid",
+   "label_marked": true,
+   "label_shift_cm": 179.0998131415231,
+   "passed": true
+  }
+ },
+ "marks": {
+  "molecules": 39,
+  "modes": 2244,
+  "counts": {
+   "label_marked": 6,
+   "caught": 4,
+   "sound_lost": 0
+  },
+  "expected": {
+   "label_marked": 6,
+   "caught": 4,
+   "sound_lost": 0
+  },
+  "label_marked_modes": [
+   {
+    "id": "B_0603418c5b",
+    "mode": 11,
+    "omega_cm": 564.4936268458513,
+    "family": "other",
+    "o": 0.9999889578868228,
+    "reason": "large-amplitude",
+    "error_not_measured": false,
+    "caught": true
+   },
+   {
+    "id": "B_410ac0fb2f",
+    "mode": 8,
+    "omega_cm": 518.097498275226,
+    "family": "other",
+    "o": 0.9960951728663049,
+    "reason": "large-amplitude",
+    "error_not_measured": false,
+    "caught": true
+   },
+   {
+    "id": "B_410ac0fb2f",
+    "mode": 11,
+    "omega_cm": 593.6609110588377,
+    "family": "other",
+    "o": 0.8399325411134875,
+    "reason": "large-amplitude",
+    "error_not_measured": false,
+    "caught": true
+   },
+   {
+    "id": "B_78f8233b4c",
+    "mode": 10,
+    "omega_cm": 509.352753402354,
+    "family": "other",
+    "o": 0.826990973723178,
+    "reason": "large-amplitude",
+    "error_not_measured": false,
+    "caught": true
+   },
+   {
+    "id": "coronene",
+    "mode": 24,
+    "omega_cm": 642.9393964152791,
+    "family": "other",
+    "o": 1.0,
+    "reason": null,
+    "error_not_measured": true,
+    "caught": false
+   },
+   {
+    "id": "coronene",
+    "mode": 36,
+    "omega_cm": 807.0896514159125,
+    "family": "other",
+    "o": 1.0000000000000016,
+    "reason": null,
+    "error_not_measured": true,
+    "caught": false
+   }
+  ],
+  "sound_modes_lost": [],
+  "modes_by_route": {
+   "unmeasured": 384,
+   "step": 1749,
+   "no-xtb-partner": 71,
+   "large-amplitude": 40
+  },
+  "stepped_with_error_not_measured": 120,
+  "uncaught_all_flagged": true,
+  "passed": true
+ },
+ "bars": {
+  "printed_cm": {
+   "CH-oop": 8.38,
+   "other": 3.84,
+   "ring-ip": 3.37,
+   "CH-stretch": 6.21
+  },
+  "own_cm": {
+   "CH-oop": 8.3809,
+   "other": 3.8387,
+   "ring-ip": 3.3694,
+   "CH-stretch": 6.1994
+  },
+  "note": "A certificate prints the registered bars (printed_cm), read with the one-to-one match. This table is matched set-wise and its own bars (own_cm) are not printed until a dated amendment of the registration (GoalGathering/notes/PreRegistration_2026-11-14_Printed_Band_Position.md) names them."
+ },
+ "xtb_pair_labels": {
+  "pairs": 44,
+  "molecules_with_pairs": 2,
+  "largest": {
+   "difference_cm": 0.02515054775687986,
+   "id": "coronene",
+   "omega_cm": 1007.0433973855999,
+   "shifts_cm": [
+    -13.232528564179574,
+    -13.257679111936454
+   ]
+  }
+ },
+ "passed": true
+}

@@ -38,8 +38,9 @@ def _table(families: list[str], n: int, lo: float, hi: float, seed: int) -> dict
 
 
 def _family(config: str, table: dict, family: str, bar: float) -> dict:
-    return {"config": config, "bar_cm": bar, "bar_refit_cm": bar, "n_training_modes": table["family"].count(family), "n_target_rows": 9,
-            "per_target_rms_cm": {"t1": bar - 1.0, "t2": bar + 1.0}}
+    return {"config": config, "bar_cm": bar, "bar_one_to_one_cm": bar, "bar_refit_cm": bar,
+            "n_training_modes": table["family"].count(family), "n_training_modes_one_to_one": table["family"].count(family),
+            "n_target_rows": 9, "per_target_rms_cm": {"t1": bar - 1.0, "t2": bar + 1.0}}
 
 
 def _probes(name: str, window: dict, per_family: int = 4) -> list[dict]:
@@ -65,6 +66,7 @@ def _record() -> dict:
             "scope": "no-large-amplitude", "training_molecules": ["m1", "m2", "m3"],
             "molecules": {"m1": "c1ccccc1", "m2": "c1ccncc1", "m3": "c1ccc2ccccc2c1"}, "targets": {"t1": "c1ccc2cc3ccccc3cc2c1"},
             "elements": ["C", "H", "N"], "compositions": {"C,H": 2, "C,H,N": 1}, "target_composition": {"t1": "C,H"},
+            "bars": {"printed_cm": {"ring-ip": 3.37}, "own_cm": {"ring-ip": 3.37}, "note": "printed as registered"},
             "probes": [row for name, w in windows.items() for row in _probes(name, w)], "windows": windows}
 
 
@@ -216,6 +218,9 @@ def _step(i: int, delta: float | None, reason: str | None = None, flag: bool = F
     return A.ModeStep(i, 1000.0 + i, "ring-ip", 0.1, 0.0, 0.9, delta, reason, None if delta is None or flag else 3.37, flag, "mid")
 
 
+APART = 1500.0 + 10.0 * np.arange(8)          # band positions 10 cm⁻¹ apart: no band has a near-degenerate neighbour
+
+
 def test_a_step_is_withheld_where_a_second_family_rule_disagrees():
     """Review finding 8: two implementations of the family rule; a mode they name differently gets no step, with the reason."""
     steps = [_step(0, -10.0), _step(1, -20.0, flag=True), _step(2, None, A.NO_XTB_PARTNER)]
@@ -242,21 +247,24 @@ def test_steps_are_carried_by_overlap_not_by_rank():
     q = np.eye(6)[:, :4]
     steps = [_step(0, -10.0), _step(1, -20.0, flag=True), _step(2, None, A.NO_XTB_PARTNER), _step(3, -40.0)]
     mixed = (q[:, 2] + q[:, 3] + np.eye(6)[:, 4]) / np.sqrt(3.0)              # a third of each: under the line
-    bands = A.carry_to_bands(np.stack([q[:, 1], q[:, 0], mixed], axis=1), q, steps)
+    bands = A.carry_to_bands(APART[:3], np.stack([q[:, 1], q[:, 0], mixed], axis=1), q, steps)
     assert [b.mode for b in bands] == [1, 0, None]                             # rank would have given 0, 1, 2
     assert [b.delta_anh_cm for b in bands] == [-20.0, -10.0, None]
     assert bands[0].error_not_measured and bands[0].bar_cm is None and bands[1].bar_cm == 3.37 and not bands[1].error_not_measured
     assert bands[2].reason == A.MIXED_BAND and bands[2].overlap == pytest.approx(1 / 3) and bands[2].bar_cm is None
-    refused = A.carry_to_bands(q[:, [2]], q, steps)[0]                        # the partner's own refusal comes along
+    assert not any(b.set_wise for b in bands)
+    refused = A.carry_to_bands(APART[:1], q[:, [2]], q, steps)[0]             # the partner's own refusal comes along
     assert (refused.mode, refused.reason, refused.delta_anh_cm) == (2, A.NO_XTB_PARTNER, None)
 
 
 def test_the_carry_refuses_inputs_that_do_not_belong_together():
     q = np.eye(6)[:, :4]
     with pytest.raises(ValueError, match="3 steps for 4"):
-        A.carry_to_bands(q, q, [_step(i, -1.0) for i in range(3)])
+        A.carry_to_bands(APART[:4], q, q, [_step(i, -1.0) for i in range(3)])
     with pytest.raises(ValueError, match="do not match"):                     # more bands than B3LYP modes
-        A.carry_to_bands(np.eye(6)[:, :5], q, [_step(i, -1.0) for i in range(4)])
+        A.carry_to_bands(APART[:5], np.eye(6)[:, :5], q, [_step(i, -1.0) for i in range(4)])
+    with pytest.raises(ValueError, match="frequencies for modes"):            # positions that are not the bands'
+        A.carry_to_bands(APART[:3], q, q, [_step(i, -1.0) for i in range(4)])
 
 
 def test_match_modes_keeps_its_answer_on_square_input_and_takes_fewer_bands():
@@ -269,10 +277,22 @@ def test_match_modes_keeps_its_answer_on_square_input_and_takes_fewer_bands():
 
 
 def test_the_committed_artefact_holds_the_registered_bars():
-    """The artefact in git: the four registered bars, each reproduced by its own refit to the registration's 0.01 cm⁻¹."""
+    """The artefact in git: the four registered bars, each reproduced under the registered match to the registration's
+    0.01 cm⁻¹; the table it holds is matched set-wise (TASKS 255), one row larger, its own bars within 0.05 of the registered
+    and named as not printed."""
     art = A.load_artefact()
+    models = {fa: m for w in art.windows for fa, m in w.families.items()}
     assert A.bars(art) == {"CH-oop": 8.38, "other": 3.84, "ring-ip": 3.37, "CH-stretch": 6.21}
-    assert all(abs(m.bar_refit_cm - m.bar_cm) <= 0.01 for w in art.windows for m in w.families.values())
+    assert all(abs(m.bar_one_to_one_cm - m.bar_cm) <= 0.01 and abs(m.bar_refit_cm - m.bar_cm) <= 0.05 for m in models.values())
+    assert {fa: round(m.bar_refit_cm, 3) for fa, m in models.items()} == {"CH-oop": 8.381, "other": 3.839, "ring-ip": 3.369, "CH-stretch": 6.199}
+    assert all(models[fa].bar_refit_cm == models[fa].bar_one_to_one_cm for fa in ("CH-oop", "other", "ring-ip"))    # the same table
+    assert {fa: m.n_training_modes - m.n_training_modes_one_to_one for fa, m in models.items()} == {"CH-oop": 0, "other": 0, "ring-ip": 0,
+                                                                                                   "CH-stretch": 1}
+    assert art.header["match"] == {"rule": "sets", "set_tolerance_cm": 1.0, "set_min_overlap": 0.8, "set_max_modes": 4,
+                                   "registered_rule": "single", "change_limit_cm": 0.05}
+    bars = art.header["bars"]
+    assert bars["printed_cm"] == A.bars(art) and bars["own_cm"] == {fa: round(m.bar_refit_cm, 4) for fa, m in models.items()}
+    assert "prints the registered bars" in bars["note"] and "not printed until a dated amendment of the registration" in bars["note"]
     assert len(art.header["training_molecules"]) == 37 and art.header["commit"]
     assert sorted(A.elements(art)) == ["C", "H", "N", "O"]
     assert art.header["compositions"] == {"C,H": 14, "C,H,N": 18, "C,H,N,O": 2, "C,H,O": 3}
@@ -298,11 +318,160 @@ def test_the_pipelines_modes_are_the_training_paths_modes():
     assert A.mode_steps(a, field, art) == A.mode_steps(b, field, art)
 
 
+def test_the_superseded_artefact_is_refused_with_its_reason():
+    """Format 2 in git (the table of the one-to-one match) names why it is not read any more; an unknown format is refused too."""
+    with pytest.raises(ValueError, match=r"format 2 is superseded .* one-to-one match .* refit with probes/anharmonic_step_fit\.py"):
+        A.load_artefact(str(PLAN / "probes" / "anharmonic_step" / "x2star_v2.json"))
+    assert A.FORMAT == 3 and A.ARTEFACT.endswith("x2star_v3.json")
+
+
+def test_the_table_holds_every_row_of_the_one_to_one_table_unchanged_and_one_more():
+    """Against master's output on the stored molecules: format 2 in git is the table master's one-to-one match built. Every
+    one of its rows is in the new table in the same order with the same six numbers, to the bit; the new table has one row
+    between them and no other difference."""
+    old = json.loads((PLAN / "probes" / "anharmonic_step" / "x2star_v2.json").read_text(encoding="utf-8"))["windows"]
+    new = json.loads(Path(A.ARTEFACT).read_text(encoding="utf-8"))["windows"]
+    added = {}
+    for name, w in old.items():
+        before = list(zip(*(w["table"][k] for k in A.TABLE_KEYS), strict=True))
+        after = list(zip(*(new[name]["table"][k] for k in A.TABLE_KEYS), strict=True))
+        rest = iter(after)
+        assert all(row in rest for row in before)                             # every old row, in order, exactly
+        extra = list(after)
+        for row in before:
+            extra.remove(row)
+        added[name] = [(row[2], round(row[0], 2)) for row in extra]
+    assert added == {"mid": [], "ch": [("CH-stretch", 3183.24)]}
+
+
+def _symmetric_benzene() -> A.Modes:
+    """Route A's gate benzene (in git) with its geometry and Hessian averaged over the sixfold axis, so that its degenerate
+    pairs are degenerate to round-off and every vector of a pair's plane has the same hydrogen and out-of-plane share."""
+    stored = json.loads((PLAN / "probes" / "results_m1" / "routea_2026-11-02" / "gate" / "benzene" / "G" / "ref.json").read_text(encoding="utf-8"))
+    symbols = stored["molecule"]["symbols"]
+    n = len(symbols)
+    x = np.array(stored["molecule"]["geometry"], float).reshape(n, 3)
+    x = x - x.mean(axis=0)
+    axis = np.linalg.svd(x)[2][2]
+    k = np.array([[0.0, -axis[2], axis[1]], [axis[2], 0.0, -axis[0]], [-axis[1], axis[0], 0.0]])
+    turn = np.eye(3) + np.sin(np.pi / 3) * k + (1.0 - np.cos(np.pi / 3)) * (k @ k)
+    op = np.zeros((3 * n, 3 * n))
+    for i in range(n):
+        j = int(np.argmin(np.linalg.norm(x - turn @ x[i], axis=1)))
+        assert symbols[j] == symbols[i] and np.linalg.norm(x[j] - turn @ x[i]) < 0.05
+        op[3 * j:3 * j + 3, 3 * i:3 * i + 3] = turn
+    powers = [np.linalg.matrix_power(op, p) for p in range(6)]
+    hessian = np.array(stored["return_result"], float).reshape(3 * n, 3 * n)
+    hessian = 0.5 * (hessian + hessian.T)                  # the solver reads one triangle: the average must be symmetric itself
+    return A.Modes.from_hessian(sum(p @ hessian @ p.T for p in powers) / 6.0, symbols,
+                                (sum(p @ x.reshape(-1) for p in powers) / 6.0).reshape(n, 3))
+
+
+def _leaning_field(modes: A.Modes, pair: tuple[int, int], share: float = 0.985) -> A.XtbField:
+    """A force field with the molecule's own modes, one shift per degenerate level, the plane of one pair leaning out of the
+    B3LYP pair's plane into the rotations and translations (every other overlap 1 or 0)."""
+    spare = np.linalg.svd(modes.q)[0][:, modes.q.shape[1]:]
+    q = modes.q.copy()
+    for k, s in zip(pair, (0, 1), strict=True):
+        q[:, k] = np.sqrt(share) * modes.q[:, k] + np.sqrt(1.0 - share) * spare[:, s]
+    return A.XtbField(-0.01 * np.round(modes.omega), np.zeros(len(modes.omega), bool), q)
+
+
+def _turned(q: np.ndarray, pair: tuple[int, int], angle: float) -> np.ndarray:
+    out, (a, b) = q.copy(), pair
+    out[:, a], out[:, b] = np.cos(angle) * q[:, a] + np.sin(angle) * q[:, b], -np.sin(angle) * q[:, a] + np.cos(angle) * q[:, b]
+    return out
+
+
+def _ring_pair(modes: A.Modes) -> tuple[int, int]:
+    """Benzene's degenerate ring stretch near 1650 cm⁻¹: the pair the first real run lost."""
+    a = int(np.argmin(np.abs(modes.omega - 1655.0)))
+    b = a + 1 if a + 1 < len(modes.omega) and abs(modes.omega[a + 1] - modes.omega[a]) < 1e-6 else a - 1
+    assert abs(modes.omega[a] - modes.omega[b]) < 1e-6
+    return (min(a, b), max(a, b))
+
+
+def test_a_pair_in_a_basis_45_degrees_from_the_fields_gets_its_step(artefact: A.Artefact):
+    """The first real run's case (17 Nov 2026) on a symmetric benzene: the field's pair turned by 45°, one-to-one 0.4925 and
+    0.4925. Both modes are stepped, with the step they get in the basis where the one-to-one match holds."""
+    modes = _symmetric_benzene()
+    pair = _ring_pair(modes)
+    field = _leaning_field(modes, pair)
+    aligned = A.mode_steps(modes, field, artefact)
+    turned = A.mode_steps(modes, A.XtbField(field.delta, field.marked, _turned(field.q, pair, np.pi / 4)), artefact)
+    assert X.match_modes(modes.q, _turned(field.q, pair, np.pi / 4))[1][list(pair)] == pytest.approx([0.4925, 0.4925], abs=1e-9)
+    for k in pair:
+        assert aligned[k].reason is None and turned[k].reason is None and turned[k].family == "ring-ip" and turned[k].bar_cm == 3.37
+        assert turned[k].delta_anh_cm == pytest.approx(aligned[k].delta_anh_cm, abs=1e-9)
+        assert turned[k].xtb_overlap == pytest.approx(0.985, abs=1e-9) and aligned[k].xtb_overlap == pytest.approx(0.985, abs=1e-9)
+    assert [s.reason for s in turned] == [s.reason for s in aligned]
+    assert all(abs(s.delta_anh_cm - t.delta_anh_cm) <= 1e-9 for s, t in zip(turned, aligned, strict=True) if s.reason is None)
+
+
+def test_the_models_inputs_of_a_degenerate_pair_do_not_depend_on_either_basis(artefact: A.Artefact):
+    """100 draws: the B3LYP pair and the field's pair turned by random angles. Family, ω, h, o and the xtb shift of every mode —
+    the model's inputs — and the refusals are those of the unturned case to 1e-9; so are the steps, read on five of the draws."""
+    modes = _symmetric_benzene()
+    pair = _ring_pair(modes)
+    field = _leaning_field(modes, pair, share=0.82)         # a seventh of the bases fall under the one-to-one line
+    reference, steps = A.describe(modes, field), A.mode_steps(modes, field, artefact)
+    rng, as_a_set = np.random.default_rng(21), 0
+    for draw in range(100):
+        a, b = rng.uniform(0.0, 2.0 * np.pi, 2)
+        turned = A.Modes(modes.symbols, modes.coords_bohr, modes.omega, _turned(modes.q, pair, a))
+        turned_field = A.XtbField(field.delta, field.marked, _turned(field.q, pair, b))
+        rec = A.describe(turned, turned_field)
+        assert all(np.abs(rec[k] - reference[k]).max() <= 1e-9 for k in ("omega", "h", "o", "xtb"))
+        assert all(np.array_equal(rec[k], reference[k]) for k in ("family", "no_xtb", "large_amplitude", "vpt2_marked"))
+        as_a_set += int(rec["xtb_set_wise"][list(pair)].all())
+        if draw < 5:
+            got = A.mode_steps(turned, turned_field, artefact)
+            assert [s.reason for s in got] == [s.reason for s in steps]
+            assert all(abs(s.delta_anh_cm - t.delta_anh_cm) <= 1e-9 for s, t in zip(got, steps, strict=True) if s.reason is None)
+    assert 3 < as_a_set < 35
+
+
+def test_a_band_that_lies_in_a_degenerate_pairs_plane_takes_the_pairs_step():
+    """Corrected bands 0 and 1 are a degenerate pair turned 45° against B3LYP modes 0 and 1 and leaning a little out of their
+    plane: one-to-one 0.49 each. As a set each band takes the pair's step; with a member that has no step, neither has one."""
+    q = np.eye(8)[:, :4]
+    lean = np.sqrt(0.98) * q[:, :2] + np.sqrt(0.02) * np.eye(8)[:, 4:6]
+    bands_q = np.stack([(lean[:, 0] + lean[:, 1]) / np.sqrt(2.0), (lean[:, 0] - lean[:, 1]) / np.sqrt(2.0), q[:, 2], q[:, 3]], axis=1)
+    omega = np.array([1500.0, 1500.02, 1600.0, 1700.0])
+    steps = [_step(0, -10.0), _step(1, -10.0), _step(2, -30.0), _step(3, -40.0)]
+    bands = A.carry_to_bands(omega, bands_q, q, steps)
+    assert [b.set_wise for b in bands] == [True, True, False, False] and [b.delta_anh_cm for b in bands[2:]] == [-30.0, -40.0]
+    assert all(b.delta_anh_cm == pytest.approx(-10.0, abs=1e-12) and b.overlap == pytest.approx(0.98) and b.bar_cm == 3.37 for b in bands[:2])
+    assert sorted(b.mode for b in bands[:2]) == [0, 1] and all(b.reason is None and not b.error_not_measured for b in bands[:2])
+    apart = A.carry_to_bands(np.array([1500.0, 1510.0, 1600.0, 1700.0]), bands_q, q, steps)      # not a set: 10 cm⁻¹ apart
+    assert [b.reason for b in apart[:2]] == [A.MIXED_BAND, A.MIXED_BAND] and apart[0].overlap == pytest.approx(0.49)
+    steps[1] = _step(1, None, A.NO_XTB_PARTNER)
+    lost = A.carry_to_bands(omega, bands_q, q, steps)
+    assert all(b.delta_anh_cm is None and b.reason == A.NO_XTB_PARTNER and b.bar_cm is None and b.set_wise for b in lost[:2])
+    steps[1] = _step(1, -12.0, flag=True)
+    flagged = A.carry_to_bands(omega, bands_q, q, steps)
+    assert all(b.delta_anh_cm == pytest.approx(-11.0, abs=1e-12) and b.bar_cm is None and b.error_not_measured for b in flagged[:2])
+
+
 def _data(*parts: str) -> Path:
     path = DATA.joinpath(*parts)
     if not path.exists():
         pytest.skip(f"force fields not on this machine: {path}")
     return path
+
+
+def _cut_sets(tmp_path: Path, ids: tuple[str, ...]) -> tuple[list[dict], Path]:
+    """The registered sets file cut down to a few molecules (run from DATA): the sets, and the file that holds them."""
+    sets = json.loads(Path(SETS).read_text(encoding="utf-8"))
+    for s in sets:
+        selected = json.loads(Path(s["selection"]).read_text(encoding="utf-8"))["selected"]
+        cut = tmp_path / f"{s['name']}_selection.json"
+        cut.write_text(json.dumps({"selected": [m for m in selected if m["id"] in ids]}), encoding="utf-8")
+        s["selection"] = str(cut)
+        s["extra"] = {i: d for i, d in s["extra"].items() if i in ids}
+    path = tmp_path / "sets.json"
+    path.write_text(json.dumps(sets), encoding="utf-8")
+    return sets, path
 
 
 @pytest.mark.data
@@ -312,15 +481,7 @@ def test_a_training_molecule_gets_exactly_the_training_paths_shift(tmp_path: Pat
     scores, and the read scores no mode the step refuses."""
     _data("probes", "results_m1", "s2_xtb_2026-10-18", "xtb", TRAINING_PAIR[0], "X", "qff_report.npz")
     monkeypatch.chdir(DATA)
-    sets = json.loads(Path(SETS).read_text(encoding="utf-8"))
-    for s in sets:
-        selected = json.loads(Path(s["selection"]).read_text(encoding="utf-8"))["selected"]
-        cut = tmp_path / f"{s['name']}_selection.json"
-        cut.write_text(json.dumps({"selected": [m for m in selected if m["id"] in TRAINING_PAIR]}), encoding="utf-8")
-        s["selection"] = str(cut)
-        s["extra"] = {i: d for i, d in s["extra"].items() if i in TRAINING_PAIR}
-    cut_sets = tmp_path / "sets.json"
-    cut_sets.write_text(json.dumps(sets), encoding="utf-8")
+    sets, cut_sets = _cut_sets(tmp_path, TRAINING_PAIR)
     art, compared = A.load_artefact(), 0
     for w in art.windows:
         by_scaf, *_ = S3.load_scope(str(cut_sets), art.header["window_sources"][w.name]["marked_policy"], w.bounds)
@@ -361,7 +522,7 @@ def test_on_a_stored_molecule_rank_and_overlap_disagree_and_the_carry_follows_ov
             modes[key] = A.Modes.from_hessian(z["H_projected"], geometry["symbols"], np.asarray(geometry["coords_bohr"], float))
     n = len(modes["B"].omega)
     steps = [_step(i, -float(i)) for i in range(n)]                            # each mode's step names the mode
-    bands = A.carry_to_bands(modes["W"].q, modes["B"].q, steps)
+    bands = A.carry_to_bands(modes["W"].omega, modes["W"].q, modes["B"].q, steps)
     moved = [j for j, b in enumerate(bands) if b.mode is not None and b.mode != j]
     assert len(moved) >= 5
     assert all(b.delta_anh_cm == -float(b.mode) for b in bands if b.mode is not None)
@@ -369,3 +530,96 @@ def test_on_a_stored_molecule_rank_and_overlap_disagree_and_the_carry_follows_ov
     lost = [b for b in bands if b.mode is None]
     assert lost and all(b.reason == A.MIXED_BAND and b.overlap < X.MIN_OVERLAP for b in lost)
     assert len({b.mode for b in bands if b.mode is not None}) == n - len(lost)   # one B3LYP mode per band
+
+
+SET_MOLECULES = ("P3_ff62f88395", "A_8448043181")          # one whose CH stretch at 3183.24 is matched as a set, and benzene
+
+
+@pytest.mark.data
+def test_the_match_rule_reaches_the_reads_loader_and_adds_one_row_there(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    """`s3_read.load_scope` under both rules on two stored molecules: 'single' is the registered read's table; 'sets' holds the
+    same rows with the same numbers and one more, the CH stretch the one-to-one match refused at 0.466 (0.934 as a set)."""
+    _data("probes", "results_m1", "s2b_xtb_2026-11-02", "xtb", SET_MOLECULES[0], "X", "qff_report.npz")
+    monkeypatch.chdir(DATA)
+    _, cut_sets = _cut_sets(tmp_path, SET_MOLECULES)
+    window = (2800.0, np.inf)
+    tables = {}
+    for rule in X.MATCH_RULES:
+        by_scaf, counts, *_ = S3.load_scope(str(cut_sets), "exclude", window, rule)
+        assert counts["match_rule"] == rule and counts["window_modes_matched_as_a_set"] == (1 if rule == "sets" else 0)
+        table = concat([m for ms in by_scaf.values() for m in ms], window)
+        tables[rule] = sorted(zip(*(table[k].tolist() for k in A.TABLE_KEYS), strict=True))
+    extra = [row for row in tables["sets"] if row not in tables["single"]]
+    assert all(row in tables["sets"] for row in tables["single"]) and len(tables["sets"]) == len(tables["single"]) + 1
+    assert [(round(row[0], 2), row[2], round(row[5], 2)) for row in extra] == [(3183.24, "CH-stretch", -152.25)]
+    with pytest.raises(ValueError, match="match rule 'pairs'"):
+        S3.load_scope(str(cut_sets), "exclude", window, "pairs")
+
+
+def _read(rms: float, n: int, modes: int) -> dict:
+    return {"read": {"families": {"CH-stretch": {"rms": {"x2*": rms}, "n": n, "per_molecule": {"t1": {"x2*": rms}}}}},
+            "size": {"per_family": {"CH-stretch": modes}}}
+
+
+def test_the_fit_holds_the_registered_read_to_its_bar_and_the_set_wise_table_to_a_limit():
+    """`anharmonic_step_fit.family_record`: the registered match must reproduce the registered bar to 0.01; the table that is
+    saved may move the bar by 0.05 at most and must score the same target rows; the record keeps all three numbers."""
+    import anharmonic_step_fit as F
+
+    printed = {"model": "x2*", "bar_cm": 6.2143}
+    rec = F.family_record("ch/CH-stretch", printed, "cfg", _read(6.2143, 20, 288), _read(6.1994, 20, 289))
+    assert rec == {"config": "cfg", "bar_cm": 6.21, "bar_one_to_one_cm": 6.2143, "bar_refit_cm": 6.1994, "n_training_modes": 289,
+                   "n_training_modes_one_to_one": 288, "n_target_rows": 20, "per_target_rms_cm": {"t1": 6.1994}}
+    with pytest.raises(SystemExit, match=r"registered read's match gives 6\.2300"):
+        F.family_record("ch/CH-stretch", printed, "cfg", _read(6.23, 20, 288), _read(6.1994, 20, 289))
+    with pytest.raises(SystemExit, match="a new model, which needs its own registration"):
+        F.family_record("ch/CH-stretch", printed, "cfg", _read(6.2143, 20, 288), _read(6.15, 20, 289))
+    with pytest.raises(SystemExit, match=r"on 21 target rows against the registered 6\.2143 on 20"):
+        F.family_record("ch/CH-stretch", printed, "cfg", _read(6.2143, 20, 288), _read(6.2143, 21, 289))
+    with pytest.raises(SystemExit, match="printed with 'x1'"):
+        F.family_record("ch/CH-stretch", {**printed, "model": "x1"}, "cfg", _read(6.2143, 20, 288), _read(6.1994, 20, 289))
+    assert (F.TOLERANCE_CM, F.CHANGE_LIMIT_CM, F.REGISTERED_RULE) == (0.01, 0.05, "single")
+
+
+def _band_of_three(steps: list[A.ModeStep]) -> A.BandStep:
+    """Corrected band 0 of a chain of three, with 0.48 / 0.48 / 0.04 of its square on B3LYP modes 0, 1 and 2."""
+    q = np.eye(8)[:, :4]
+    v = np.sqrt([0.48, 0.48, 0.04]) - np.eye(3)[0]
+    bands_q = q.copy()
+    bands_q[:, :3] = q[:, :3] @ (np.eye(3) - 2.0 * np.outer(v, v) / (v @ v))
+    band = A.carry_to_bands(np.array([1500.0, 1500.3, 1500.6, 1700.0]), bands_q, q, steps)[0]
+    assert band.set_wise and band.overlap == pytest.approx(1.0) and band.mode in (0, 1)
+    return band
+
+
+def test_one_member_without_a_step_leaves_a_set_band_without_one_at_any_weight():
+    """Review of 17 Nov 2026: the member that holds 4 % of the band has no step. What it would carry is not known, so the band
+    gets none, with that member's reason; with all three stepped it takes their weighted mean."""
+    whole = _band_of_three([_step(0, -10.0), _step(1, -10.0), _step(2, -35.0), _step(3, -40.0)])
+    assert whole.delta_anh_cm == pytest.approx(-11.0, abs=1e-12) and whole.reason is None and whole.bar_cm == 3.37
+    lost = _band_of_three([_step(0, -10.0), _step(1, -10.0), _step(2, None, A.XTB_PARTNER_MARKED), _step(3, -40.0)])
+    assert (lost.delta_anh_cm, lost.reason, lost.bar_cm, lost.error_not_measured) == (None, A.XTB_PARTNER_MARKED, None, False)
+
+
+def test_a_set_band_over_two_families_gets_no_step():
+    """Review of 17 Nov 2026: the band is printed with its partner's family; a set that also holds a mode of another family
+    would put that family's bar or step beside it."""
+    from dataclasses import replace
+
+    other = replace(_step(2, -35.0), family="other", bar_cm=3.84)
+    band = _band_of_three([_step(0, -10.0), _step(1, -10.0), other, _step(3, -40.0)])
+    assert (band.delta_anh_cm, band.reason, band.bar_cm, band.error_not_measured) == (None, A.MIXED_SET, None, False)
+    assert "different families" in A.REASON_TEXT[A.MIXED_SET] and "0.8" in A.REASON_TEXT[A.NO_XTB_PARTNER]
+    assert "at most 4" in A.REASON_TEXT[A.MIXED_BAND]
+
+
+def test_a_marked_xtb_member_of_any_weight_refuses_the_modes_step(artefact: A.Artefact):
+    """The same through the step: a symmetric benzene's ring pair against a field whose pair is turned 45°; with one of the
+    field's two modes marked, both B3LYP modes lose their step to the mark."""
+    modes = _symmetric_benzene()
+    pair = _ring_pair(modes)
+    field = _leaning_field(modes, pair)
+    marked = np.zeros(len(modes.omega), bool)
+    marked[pair[0]] = True
+    steps = A.mode_steps(modes, A.XtbField(field.delta, marked, _turned(field.q, pair, np.pi / 4)), artefact)
+    assert [steps[k].reason for k in pair] == [A.XTB_PARTNER_MARKED] * 2 and all(steps[k].delta_anh_cm is None for k in pair)

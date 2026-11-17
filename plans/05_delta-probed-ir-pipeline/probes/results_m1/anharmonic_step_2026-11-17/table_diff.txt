@@ -1,0 +1,16 @@
+# The set-wise match on the stored molecules (39 molecules, 2244 modes)
+
+partner held one to one: 2168; of those with another shift, mark or overlap under the set-wise match (to the bit): 0
+refused one to one: 76; matched as a set: 1; still refused: 75, of which with the same overlap to the bit: 72 (the others are read against their set's partners and stay under the line)
+
+modes matched as a set (id, mode, omega, family, window; one to one -> set overlap; shift; partners as omega/weight/shift):
+  P3_ff62f88395 61 3183.24 CH-stretch ch: 0.466 -> 0.934; -152.25; 3058.54/0.501/-154.61, 3074.29/0.499/-149.88
+
+by tolerance (cm-1): modes in a set of two or more; refused modes matched as a set
+  0.5: 161; 0
+  1.0: 253; 1
+  3.0: 482; 3
+
+the artefact's table, format 2 (x2star_v2.json) against format 3 (x2star_v3.json):
+  mid: 1310 -> 1310 rows; old rows missing or changed: 0; old rows in their order: True; added: 
+  ch: 288 -> 289 rows; old rows missing or changed: 0; old rows in their order: True; added: CH-stretch at 3183.24 (label -132.43, xtb -152.25)

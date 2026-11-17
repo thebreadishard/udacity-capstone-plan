@@ -80,6 +80,11 @@ def _both(names: list[str]) -> str:
     return " and ".join(names) if len(names) <= 2 else ", ".join(names[:-1]) + " and " + names[-1]
 
 
+FIELD_SCATTER = ("The bars were measured with one stored force field per molecule; between two GFN2-xTB force fields of the same "
+                 "molecule the step itself also varies, by 1.7 cm⁻¹ on a C–H stretch pair in the one case measured (benzene, "
+                 "17 Nov 2026), and the bars do not contain that")
+
+
 def targets_sentence(artefact: dict) -> str:
     """What the bars rest on, from the artefact's own record in the step's summary: the target molecules and what they are made
     of, each family's number of target modes, each target's rms, and the registration's two cautions (section 3: the bars are
@@ -95,7 +100,8 @@ def targets_sentence(artefact: dict) -> str:
     return (f"the bars rest on {len(names)} target molecules, {_both(names)}, {'both' if len(names) == 2 else 'all'} {kind} — "
             f"target modes: {rows}; the step's rms per "
             f"molecule, {' / '.join(names)}, in cm⁻¹: {per}{carries}. They are the best numbers there are and they are thin: nothing "
-            "here says the step helps a molecule unlike the targets, and a bar is a family's rms, not a prediction interval for one band")
+            "here says the step helps a molecule unlike the targets, and a bar is a family's rms, not a prediction interval for one band. "
+            + FIELD_SCATTER)
 
 
 def seen_sentence(summary: dict) -> str:

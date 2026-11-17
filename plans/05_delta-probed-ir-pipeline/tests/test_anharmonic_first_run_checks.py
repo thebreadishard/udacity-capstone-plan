@@ -71,10 +71,14 @@ def test_another_molecule_is_not_compared(tmp_path):
         C.checks(d)
 
 
+REAL_RUN_SPECS = ["pipeline_benzene_anharmonic.json", "pipeline_benzonitrile_anharmonic.json"]     # the step's real runs, by file name
+
+
 def test_no_committed_launcher_starts_the_force_field_unasked():
-    """The pipeline's default is off (TASKS 211) until the first real run has passed these checks; with it, a launcher starts a
-    GFN2-xTB force field only by naming a budget. One run spec does — the first real run's — and nothing else that starts the
-    pipeline: not the demo rerun, not the show batch, not another spec."""
+    """The pipeline's default is off (TASKS 211) until a real run has passed these checks; with it, a launcher starts a
+    GFN2-xTB force field only by naming a budget. Two run specs do, each named here — the first real run's (benzene) and the
+    second's (benzonitrile, 17 Nov 2026: the same run on a molecule without symmetry) — and nothing else that starts the
+    pipeline: not the demo rerun, not the show batch, not another spec. A further real run is a further name in REAL_RUN_SPECS."""
     asking = []
     for path in [*sorted((PLAN / "probes").glob("*.sh")), *sorted((PLAN / "probes").glob("*.py")), *sorted((PLAN / "tools").glob("*")),
                  *sorted((PLAN / "probes" / "runspecs").glob("*.json"))]:
@@ -82,4 +86,4 @@ def test_no_committed_launcher_starts_the_force_field_unasked():
             text = path.read_text(encoding="utf-8", errors="replace")
             if "m08.pipeline" in text and "--anharmonic-minutes" in text:
                 asking.append(path.name)
-    assert asking == ["pipeline_benzene_anharmonic.json"]
+    assert asking == REAL_RUN_SPECS
