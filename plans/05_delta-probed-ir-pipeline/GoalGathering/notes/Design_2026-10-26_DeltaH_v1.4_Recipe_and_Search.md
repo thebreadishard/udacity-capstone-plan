@@ -490,3 +490,5 @@ ranking is unaffected. The evaluator now refuses hold-out (b) on a model that tr
 refusing — the twins of hold-out (a)'s ten, with their charge.
 
 (The winner's whole-pool retraining writes under its own tag `s3win`, never over the data arm's `s3full`.)
+
+**§5's amendment of 17 November 2026 22:2x: decision 57 as amended (README).** read-data and read3 decide by the composite with a Student-t threshold and a two-SE guard; the rule of 26 Oct is printed beside it. The clean arm is read again under it; its first read (not promoted, 22:1x) stays on record. Stages 1 and 2 of the search are unchanged.
