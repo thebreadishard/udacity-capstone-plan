@@ -66,9 +66,17 @@ def test_the_carried_versions_licence():
     assert s["rule_source"] == "README.md, decision 65 as amended on 16 Nov 2026"
 
 
+def carried_record() -> dict:
+    """The carried version's product-error record, found where accuracy finds it: beside the registry's carried checkpoints."""
+    path = A.product_error_path(tuple(A.model_key(m) for m in A.P.carried_models(A.NK.MEASUREMENT)))
+    if path.name != PRODUCT_RECORD:
+        raise AssertionError(f"the carried version's record is {path.name}, the pin's {PRODUCT_RECORD}")
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
 def test_the_carried_record_names_what_it_was_read_on():
     """The checkpoints by hash, every label file by hash, and the run itself: its start, end, seconds and peak memory."""
-    rec = json.loads((A.M05_OUT / PRODUCT_RECORD).read_text(encoding="utf-8"))
+    rec = carried_record()
     assert sorted(rec["model_sha16"]) == sorted(rec["models"]) and all(len(h) == 16 for h in rec["model_sha16"].values())
     assert rec["labels"] == {"kind": "analytic", "files": ["hessian_b3lyp_analytic.npz", "hessian_wb97x_analytic.npz"]}
     for h, n in N_MOLECULES.items():
@@ -82,5 +90,5 @@ def test_the_carried_record_names_what_it_was_read_on():
 @pytest.mark.xfail(strict=True, raises=KeyError, reason="v1.4's product-error record was read without --package: aromir ships v1.3, so "
                    "the second route (the package's own product_error.json) does not exist for v1.4 yet")
 def test_the_carried_record_agrees_with_the_package():
-    rec = json.loads((A.M05_OUT / PRODUCT_RECORD).read_text(encoding="utf-8"))
+    rec = carried_record()
     assert rec["checks"]["agrees_with_package"]["largest_difference_cm"] < 0.01
