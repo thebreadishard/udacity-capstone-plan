@@ -6,9 +6,11 @@
     python probes/v14_search.py read1  stage 1 scored on the selection set; stage 2's chain (best four + control, the third seed)
     python probes/v14_search.py read2  the winner (no-worsening rule, two SE); the final chain
     python probes/v14_search.py read3  the target check and the promotion against the carried version
-    python probes/v14_search.py read-data [--replace]
+    python probes/v14_search.py read-data [--arm {data,clean}] [--replace]
                                        §14: the carried recipe on the whole pool (chain v14_data's six evals) against the carried
-                                       version, by read3's promotion; out/v14/read_data.md and .json
+                                       version, by read3's promotion; out/v14/read_data.md and .json. --arm clean reads the same recipe
+                                       trained with --holdout-twins drop-any-charge (tag s3clean, evals eval_clean_seed*.json; TASKS
+                                       253) into out/v14/read_clean.md and .json
     python probes/v14_search.py seleval [--only CONFIG]
                                        the selection evals of every finished stage training, made where missing and checked: the reads
                                        then find them (and one of them is the smoke run of that path)
@@ -65,6 +67,7 @@ STAGE2_SEED = 2                            # the third seed, for the best of sta
 STAGE2_BEST = 4
 FINAL_SEEDS = (0, 1, 2)                    # the final chain's trainings: the other target, and the winner on the whole pool
 FULL_TAG = "s3full"                        # the winner's recipe without the selection split (§12)
+CLEAN_TAG = "s3clean"                      # the carried recipe on the whole pool without any hold-out twin of any charge (TASKS 253)
 CHECKPOINT = re.compile(r"(?P<prefix>.+)_model_n\d+_seed(?P<seed>\d+)\.pt")   # the trainer's `<prefix>_model_n<N>_seed<S>.pt`
 SELECTION = "26:0.15"
 N_SELECTION = 169                          # what the split sets aside in this search's corpus, of 18 scaffold cores
@@ -414,13 +417,13 @@ def evaluated_checkpoint(path: Path) -> Path:
     return Path(model)
 
 
-def whole_pool_reads(w: Config, eval_paths: list[Path]) -> list[SeedRead]:
+def whole_pool_reads(w: Config, eval_paths: list[Path], tag: str = FULL_TAG) -> list[SeedRead]:
     """The trainings behind the winner's hold-out evals, one per seed of FINAL_SEEDS, with no selection read (they trained on that set).
     The trainer's record beside the checkpoint an eval names carries a selection split only when one was used. Refused: a checkpoint
     trained with a selection split — the stage checkpoints never saw the selection set's scaffold cores and the carried version did,
     so the promotion would compare the split, not the recipe (§12) — and any checkpoint other than the winner's whole-pool one of that
-    seed."""
-    expected = Path(prefix(w, FULL_TAG))
+    seed (at stage `tag`)."""
+    expected = Path(prefix(w, tag))
     reads = []
     for seed, path in zip(FINAL_SEEDS, eval_paths, strict=True):
         model = evaluated_checkpoint(path)
@@ -798,13 +801,41 @@ def stated_lines(expectation: dict, prediction: dict) -> list[str]:
             f"models {shown(prediction['winner'])}, the carried version {shown(prediction['carried'])} — {verdict(prediction['passed'])}"]
 
 
-def data_arms() -> tuple[Config, list[SeedRead], list[Path], list[Path]]:
-    """§14's two arms, checked: (the control, its three whole-pool trainings, their hold-out evals, the carried version's evals). The
-    new models pass `whole_pool_reads` and the cap rule as read3's winner does; each carried eval must name the frozen list's carried
-    checkpoint of its seed; every eval must hold hold-out (a)'s clean set, which the promotion is read on."""
+@dataclass(frozen=True)
+class DataArm:
+    """One reading of read-data (§14): which whole-pool trainings are read against the carried version, and where the read goes."""
+    tag: str                     # the trainings' stage tag
+    evals: str                   # the new models' eval records: out/v14/eval_<evals>_seed<S>.json
+    report: str                  # out/v14/<report>.md and .json
+    holdout_twins: str | None    # the trainer setting the trainings must have recorded; None: not checked (the data arm, as before)
+    title: str                   # what the report's title adds
+    pool: str                    # what the report says of the pool beside 'the whole pool'
+
+
+DATA_ARMS = {"data": DataArm(FULL_TAG, "data", "read_data", None, "", ""),
+             "clean": DataArm(CLEAN_TAG, "clean", "read_clean", "drop-any-charge", ", clean arm (no hold-out twin of any charge)",
+                              " without any hold-out molecule's twin of any charge (--holdout-twins drop-any-charge: the radical cations "
+                              "of benzene and 2-naphthoic acid leave it, TASKS 253)")}
+
+
+def require_twins_setting(pre: str, setting: str) -> None:
+    """The trainer record `<pre>.json` says the pool lost its hold-out twins by `setting`."""
+    found = trainer_record(pre).get("holdout_twins")
+    if found != setting:
+        raise SystemExit(f"{pre}.json was trained with holdout_twins {found!r}, not {setting!r}: the clean arm reads the carried recipe "
+                         f"trained without any hold-out molecule's twin of any charge (--holdout-twins {setting}, TASKS 253)")
+
+
+def data_arms(arm: DataArm = DATA_ARMS["data"]) -> tuple[Config, list[SeedRead], list[Path], list[Path]]:
+    """§14's two sides, checked: (the control, its three whole-pool trainings of `arm`, their hold-out evals, the carried version's
+    evals). The new models pass `whole_pool_reads` and the cap rule as read3's winner does, and the arm's twin setting when it names
+    one; each carried eval must name the frozen list's carried checkpoint of its seed; every eval must hold hold-out (a)'s clean set,
+    which the promotion is read on."""
     configs, carried_models = load_list()
-    new_evals, old_evals = ([M05 / f"{OUT}/eval_{who}_seed{s}.json" for s in FINAL_SEEDS] for who in ("data", "carried_data"))
-    full = whole_pool_reads(configs[0], new_evals)
+    new_evals, old_evals = ([M05 / f"{OUT}/eval_{who}_seed{s}.json" for s in FINAL_SEEDS] for who in (arm.evals, "carried_data"))
+    full = whole_pool_reads(configs[0], new_evals, arm.tag)
+    if arm.holdout_twins is not None:
+        require_twins_setting(prefix(configs[0], arm.tag), arm.holdout_twins)
     require_below_cap(configs[0], full)
     for path, model in zip(old_evals, carried_models, strict=True):
         if evaluated_checkpoint(path).as_posix() != model:
@@ -816,15 +847,17 @@ def data_arms() -> tuple[Config, list[SeedRead], list[Path], list[Path]]:
     return configs[0], full, new_evals, old_evals
 
 
-def cmd_read_data(replace_record: bool) -> int:
+def cmd_read_data(replace_record: bool, arm_name: str = "data") -> int:
     """§14: the carried recipe on the whole pool against the carried version, by the registered promotion — read3's calls on the six
     evals of chain v14_data, with hold-out (a) read on its eight clean molecules (§14's dated addition) and the ten printed beside
-    them. It writes its report and carries nothing: no registry entry changes here."""
-    base = M05 / OUT / "read_data"
+    them; the clean arm reads the same recipe trained without any hold-out twin of any charge (TASKS 253). It writes its report and
+    carries nothing: no registry entry changes here."""
+    arm = DATA_ARMS[arm_name]
+    base = M05 / OUT / arm.report
     on_record = [p.name for p in (base.with_suffix(".md"), base.with_suffix(".json")) if p.is_file()]
     if on_record and not replace_record:
         raise SystemExit(f"{' and '.join(on_record)} exist under {OUT}: the read is on record. --replace reads again and writes over it")
-    w, full, new_evals, old_evals = data_arms()
+    w, full, new_evals, old_evals = data_arms(arm)
     new, carried = (P.load_eval_arm(paths, holdouts=(CLEAN_A, "b")) for paths in (new_evals, old_evals))
     comps = P.compare(new, carried)
     promo = P.promotion(comps)
@@ -835,8 +868,9 @@ def cmd_read_data(replace_record: bool) -> int:
     _, prediction = prediction_read(new_evals, old_evals, a_set=CLEAN_A)
     meaning = ("By §14 these three models are version 1.4." if promo.promoted else
                "By §14 nothing is carried, and the cause is looked at per molecule before anything else is decided.")
-    lines = ["# v1.4 on the data — the promotion read (design note §14)", "",
-             f"The new models are the carried recipe ({w.name}) trained on the whole pool (seeds {', '.join(str(s) for s in FINAL_SEEDS)}; "
+    lines = [f"# v1.4 on the data{arm.title} — the promotion read (design note §14)", "",
+             f"The new models are the carried recipe ({w.name}) trained on the whole pool{arm.pool} (seeds "
+             f"{', '.join(str(s) for s in FINAL_SEEDS)}; "
              f"best epochs {', '.join(epoch_note(r, w.schedule) for r in full)} / {full[0].cap}); the carried version is the frozen "
              "list's three checkpoints, read again on the same hold-outs.", "",
              f"## The promotion: hold-out (a) on its eight clean molecules ({CLEAN_A}), and hold-out (b)",
@@ -853,11 +887,12 @@ def cmd_read_data(replace_record: bool) -> int:
              "", "## What was stated beforehand", "", *stated_lines(expectation, prediction), "", DATA_LICENCE_NOTE]
     if on_record:
         print(f"replacing the read on record ({' and '.join(on_record)})", flush=True)
-    _write_report("read_data", lines, {"models": w.name, "trained_on": "whole pool", "best_epochs": [r.best_epoch for r in full],
-                                       "decided_on": [CLEAN_A, "b"], "promotion": asdict(promo), "meaning": meaning,
-                                       "expectation": expectation, "prediction": prediction, "comparisons": [asdict(c) for c in comps],
-                                       "on_the_ten_deciding_nothing": {"promotion": asdict(promo_ten),
-                                                                       "comparisons": [asdict(c) for c in comps_ten]}})
+    _write_report(arm.report, lines, {"models": w.name, "trained_on": "whole pool", "best_epochs": [r.best_epoch for r in full],
+                                      **({"arm": arm_name, "holdout_twins": arm.holdout_twins} if arm.holdout_twins else {}),
+                                      "decided_on": [CLEAN_A, "b"], "promotion": asdict(promo), "meaning": meaning,
+                                      "expectation": expectation, "prediction": prediction, "comparisons": [asdict(c) for c in comps],
+                                      "on_the_ten_deciding_nothing": {"promotion": asdict(promo_ten),
+                                                                      "comparisons": [asdict(c) for c in comps_ten]}})
     print("\n".join(lines))
     return 0
 
@@ -909,6 +944,9 @@ def main(argv: list[str] | None = None) -> int:
         sub.add_parser(name)
     read_data = sub.add_parser("read-data")
     read_data.add_argument("--replace", action="store_true", help="read again over a read that is on record, and say so")
+    read_data.add_argument("--arm", default="data", choices=sorted(DATA_ARMS),
+                           help="data (default): chain v14_data's whole-pool trainings; clean: the same recipe trained with "
+                                "--holdout-twins drop-any-charge (TASKS 253), read into read_clean.md and .json")
     seleval = sub.add_parser("seleval")
     seleval.add_argument("--only", default=None, metavar="CONFIG", help="one configuration of the frozen list, by name")
     a = ap.parse_args(argv)
@@ -917,7 +955,7 @@ def main(argv: list[str] | None = None) -> int:
     if a.cmd == "seleval":
         return cmd_seleval(a.only)
     if a.cmd == "read-data":
-        return cmd_read_data(a.replace)
+        return cmd_read_data(a.replace, a.arm)
     return {"read1": cmd_read1, "read2": cmd_read2, "read3": cmd_read3, "register": cmd_register}[a.cmd]()
 
 

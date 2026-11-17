@@ -87,7 +87,8 @@ class TrainConfig(BaseModel):
     size_test_min_atoms: int = Field(0, ge=0)
     pool_max_atoms: int = Field(0, ge=0)
     exclude_ids_file: str | None = None
-    holdout_twins: Literal["drop", "keep"] = "drop"       # TASKS 157: a hold-out molecule's twin leaves the pool; keep = v1.3's pool
+    # TASKS 157: a hold-out molecule's twin leaves the pool; drop-any-charge: its twin of any charge too (TASKS 253); keep = v1.3's pool
+    holdout_twins: Literal["drop", "drop-any-charge", "keep"] = "drop"
     network_kind: Literal["measurement", "release"] = MEASUREMENT   # decision 66: release trains on the hold-outs too and reads none
     aux: Literal["all", "pattern", "kring", "both"] = "all"
     zero_hlow: bool = False
@@ -373,8 +374,9 @@ def _output_arguments(ap: argparse.ArgumentParser) -> None:
 
 def _holdout_arguments(ap: argparse.ArgumentParser) -> None:
     """Which molecules a training may see beside its pool."""
-    ap.add_argument("--holdout-twins", default="drop", choices=["drop", "keep"],
-                    help="TASKS 157 (30 Oct 2026): drop pool molecules that are a hold-out molecule under another id (default); keep = v1.3's pool")
+    ap.add_argument("--holdout-twins", default="drop", choices=["drop", "drop-any-charge", "keep"],
+                    help="TASKS 157 (30 Oct 2026): drop pool molecules that are a hold-out molecule under another id (default); "
+                         "drop-any-charge: also under another charge, the radical cation of a hold-out molecule (TASKS 253); keep = v1.3's pool")
     ap.add_argument("--network-kind", default=MEASUREMENT, choices=[MEASUREMENT, RELEASE],
                     help="decision 66 (17 Nov 2026): 'measurement' (default) trains without the hold-outs, and every error, licence and "
                          "promotion is read on it; 'release' trains on the pool, hold-outs (a) and (b) and their twins — with "

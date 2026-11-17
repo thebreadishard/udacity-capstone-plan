@@ -45,13 +45,16 @@ def test_eval_sets_read_an_explicit_list_and_refuse_trained_ids(tmp_path):
         ES.eval_sets([f"s5={f}"], admitted={"x1": 0, "x2": 0}, train_ids=["x1"], keys=KEYS)
 
 
-def test_eval_sets_refuse_a_trained_molecule_under_another_id_but_not_its_cation(tmp_path):
-    """TASKS 157 (30 Oct 2026): v1.3 trained on two hold-out (a) molecules as their layer-B twins; a cation shares its parent's SMILES."""
+def test_eval_sets_refuse_a_trained_molecule_under_another_id_or_charge(tmp_path):
+    """TASKS 157 (30 Oct 2026): v1.3 trained on two hold-out (a) molecules as their layer-B twins. TASKS 253: a model that trained a
+    listed molecule's radical cation carries its correction onto the neutral, so that is no test either."""
     f = tmp_path / "s5.txt"
     f.write_text("x1\nx2\n", encoding="utf-8")
-    with pytest.raises(SystemExit, match="under other ids"):
+    with pytest.raises(SystemExit, match=r"under other ids or charges \(B_twin\)"):
         ES.eval_sets([f"s5={f}"], admitted={"x1": 0, "x2": 0}, train_ids=["B_twin"], keys=KEYS)
-    assert ES.eval_sets([f"s5={f}"], admitted={"x1": 0, "x2": 0}, train_ids=["P3c_x1"], keys=KEYS)["s5"]["ids"] == ["x1", "x2"]
+    with pytest.raises(SystemExit, match=r"under other ids or charges \(P3c_x1\) — not a test \(TASKS 157, 253\)"):
+        ES.eval_sets([f"s5={f}"], admitted={"x1": 0, "x2": 0}, train_ids=["P3c_x1"], keys=KEYS)
+    assert ES.eval_sets([f"s5={f}"], admitted={"x1": 0, "x2": 0}, train_ids=["p1"], keys=KEYS)["s5"]["ids"] == ["x1", "x2"]
 
 
 def test_eval_sets_refuse_a_taken_name_or_a_malformed_spec(tmp_path):

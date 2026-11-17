@@ -264,18 +264,19 @@ def family_errors(ids: list[str], molecules: Path, models: tuple[Path, ...]) -> 
 
 def holdout_set(name: str, path: Path, cfg: Config, keys: dict) -> tuple[dict, list[str]]:
     """(one hold-out set's numbers, the reasons to refuse it). Read on the listed molecules every release network trained on; the
-    others are named as dropped. A molecule a measurement network trained on, by id or as a twin, makes its error no held-out one."""
+    others are named as dropped. A molecule a measurement network trained on, by id or as a twin of any charge (TASKS 157, 253), makes
+    its error no held-out one."""
     listed = read_ids(path)
     ids = [i for i in listed if all(i in r.train_ids for r in cfg.release)]
     trained = sorted(frozenset.union(*(m.train_ids for m in cfg.measurement)))
-    leaked = sorted(set(ids) & set(trained)) + [f"{t} (a twin)" for t in HT.twins(trained, ids, keys)]
+    leaked = sorted(set(ids) & set(trained)) + [f"{t} (a twin)" for t in HT.twins(trained, ids, keys, any_charge=True)]
     numbers = {"file": path.name, "n_listed": len(listed), "n_read": len(ids), "dropped_not_in_the_release_training_data": sorted(set(listed) - set(ids)),
                "in_a_measurement_networks_training_data": leaked}
     if not ids:
         return numbers, [f"({name}) no listed molecule is in the release networks' training data"]
     if leaked:
         return numbers, [f"({name}) {len(leaked)} molecule(s) are in a measurement network's training data ({', '.join(leaked[:5])}): its "
-                         "error there is not a held-out one"]
+                         "error there is not a held-out one (TASKS 157, 253)"]
     errors = {kind: family_errors(ids, cfg.molecules, cfg.models(kind)) for kind in NK.KINDS}
     numbers["families"] = {f: {NK.RELEASE: errors[NK.RELEASE][f]["rms"], NK.MEASUREMENT: errors[NK.MEASUREMENT][f]["rms"],
                                "n_bands": errors[NK.RELEASE][f]["n_bands"]} for f in FAMILIES}

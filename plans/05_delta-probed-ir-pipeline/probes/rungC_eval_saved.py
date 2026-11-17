@@ -88,17 +88,17 @@ def listed_sets(specs: list) -> dict[str, tuple[str, list[str]]]:
 
 def eval_sets(specs: list, admitted, train_ids, keys: dict, substituted=()) -> dict:
     """{NAME: {"ids", "dropped", "file", "n_analytic"}} from NAME=FILE specs (one id per line, '#' comments); see --eval-ids-file.
-    `keys` (`holdout_twins.manifest_keys`) finds a listed molecule the model trained on under another id."""
+    `keys` (`holdout_twins.manifest_keys`) finds a listed molecule the model trained on under another id or charge."""
     out = {}
     trained, analytic = set(train_ids), set(substituted)
     for name, (path, listed) in listed_sets(specs).items():
         overlap = sorted(set(listed) & trained)
         if overlap:
             raise SystemExit(f"--eval-ids-file {name}: {len(overlap)} ids are in the model's training set ({', '.join(overlap[:5])}) — not a test")
-        twins = HT.twins(sorted(trained), listed, keys)
+        twins = HT.twins(sorted(trained), listed, keys, any_charge=True)
         if twins:
-            raise SystemExit(f"--eval-ids-file {name}: the training set holds {len(twins)} of its molecules under other ids "
-                             f"({', '.join(twins[:5])}) — not a test (TASKS 157)")
+            raise SystemExit(f"--eval-ids-file {name}: the training set holds {len(twins)} of its molecules under other ids or charges "
+                             f"({', '.join(twins[:5])}) — not a test (TASKS 157, 253)")
         ids = [i for i in listed if i in admitted]
         if not ids:
             raise SystemExit(f"--eval-ids-file {name}: none of its {len(listed)} ids is an admitted molecule")
