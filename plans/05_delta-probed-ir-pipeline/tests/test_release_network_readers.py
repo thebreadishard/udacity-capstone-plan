@@ -97,13 +97,14 @@ def test_the_kind_is_read_from_the_checkpoint_itself(tmp_path):
     assert P.network_kinds(models) == {"old.pt": NK.MEASUREMENT, "m.pt": NK.MEASUREMENT, "r.pt": NK.RELEASE}
 
 
-def test_the_product_error_read_refuses_a_release_checkpoint(tmp_path):
-    import product_error_read as PE
+def test_a_release_checkpoint_is_refused_as_a_measurement_whatever_the_registry_says(tmp_path):
+    """`model_registry.require_measurement`: the one gate on the files themselves, for every script that reads an error."""
+    import model_registry as MR
 
     measurement = checkpoint(tmp_path / "m.pt", NK.MEASUREMENT)
-    PE.require_measurement((measurement, checkpoint(tmp_path / "old.pt", None)))
+    MR.require_measurement((measurement, checkpoint(tmp_path / "old.pt", None)), "its product error on the hold-outs")
     with pytest.raises(SystemExit, match=rf"r\.pt {REFUSAL}.*its product error on the hold-outs"):
-        PE.require_measurement((measurement, checkpoint(tmp_path / "r.pt", NK.RELEASE)))
+        MR.require_measurement((measurement, checkpoint(tmp_path / "r.pt", NK.RELEASE)), "its product error on the hold-outs")
 
 
 def test_the_evaluator_refuses_a_release_network_without_its_flag_and_the_flag_on_a_measurement_network():

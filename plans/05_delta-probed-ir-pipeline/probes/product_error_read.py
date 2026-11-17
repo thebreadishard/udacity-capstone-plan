@@ -320,16 +320,6 @@ def inputs(cfg: Config) -> Inputs:
     return Inputs(cfg.models, common_stem(cfg.models), list(cfg.records), list(cfg.records), CANDIDATE)
 
 
-def require_measurement(models: tuple[Path, ...]) -> None:
-    """Decision 66: the product error is a hold-out error and is read on measurement networks; each checkpoint's own saved
-    arguments say which kind it is. A release network stops the read before any molecule is read."""
-    for name, kind in P.network_kinds(models).items():
-        try:
-            NK.refuse_release(kind, name, "its product error on the hold-outs")
-        except NK.ReleaseNetworkError as e:
-            raise SystemExit(str(e)) from None
-
-
 def write_record(path: Path, record: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(path.suffix + ".tmp")
@@ -362,7 +352,7 @@ def main(argv: list[str] | None = None) -> int:
     torch.set_num_threads(cfg.threads)
     read = inputs(cfg)
     models, names = read.models, tuple(m.name for m in read.models)
-    require_measurement(models)
+    P.MR.require_measurement(models, "its product error on the hold-outs")   # decision 66, before any molecule is read
     out = cfg.out or A.M05_OUT / f"{read.stem}{A.PRODUCT_SUFFIX}"
     sets, recorded, sources = holdout_sets(read.records, read.clean)
     holdouts = read_holdouts(cfg, models, sets)

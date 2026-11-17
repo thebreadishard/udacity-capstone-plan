@@ -45,7 +45,7 @@ def version(tmp_path, monkeypatch):
     entered = {p.name: {"status": "carried", "network": P.NETWORK, "version": "1.4"} | ({NK.FIELD: NK.RELEASE} if p in release else {})
                for p in (*measurement, *release)}
     monkeypatch.setattr(P, "carried_models", lambda kind: listed[kind])
-    monkeypatch.setattr(P.MR, "require_carried", lambda p: entered[Path(p).name])
+    monkeypatch.setattr(P.MR, "require_carried", lambda p, kind=None: entered[Path(p).name])
 
     def checks(passed: bool = True, **changed) -> None:
         record = {"passed": passed, "refusals": [] if passed else ["check 4 (early_stopping): 1 release seed(s) stopped by the cap"],

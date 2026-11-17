@@ -312,7 +312,7 @@ def model_entries(models: tuple[Path, ...]) -> tuple[list[dict], list[str]]:
     entries, reasons = [], []
     for p in models:
         try:
-            s = MR.require_carried(p)
+            s = MR.require_carried(p, kind=None)                # either kind: `admitted_models` sorts them
         except SystemExit as e:
             reasons.append(str(e))
             continue

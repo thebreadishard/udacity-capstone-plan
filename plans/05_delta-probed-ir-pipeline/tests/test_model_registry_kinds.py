@@ -74,7 +74,21 @@ def test_carried_names_the_pair(pair):
     assert MR.carried_keys(status, DH, NK.RELEASE) == [files["r0"].name, files["r1"].name]
     with pytest.raises(ValueError, match="network kind 'both'"):
         MR.carried_keys(status, DH, "both")
-    assert MR.require_carried(files["r0"], status_file=out / "status.json")[NK.FIELD] == NK.RELEASE
+
+
+def test_a_carried_release_network_is_no_base_for_a_read(pair):
+    """`require_carried` means a measurement network unless told otherwise; --allow-any-model lifts the status, not the kind."""
+    out, files, entries = pair
+    st = write(out / "status.json", entries)
+    assert MR.require_carried(files["m0"], status_file=st)["status"] == "carried"
+    for allow in (False, True):
+        with pytest.raises(SystemExit, match=r"entered in the model registry as a release network and a measurement network is meant here"):
+            MR.require_carried(files["r0"], allow=allow, status_file=st)
+    assert MR.require_carried(files["r0"], status_file=st, kind=NK.RELEASE)[NK.FIELD] == NK.RELEASE
+    assert MR.require_carried(files["r0"], status_file=st, kind=None)[NK.FIELD] == NK.RELEASE
+    assert MR.require_carried(files["m1"], status_file=st, kind=None)["status"] == "carried"
+    with pytest.raises(SystemExit, match="as a measurement network and a release network is meant here"):
+        MR.require_carried(files["m0"], status_file=st, kind=NK.RELEASE)
 
 
 def test_the_rows_and_the_table_show_the_kind_beside_the_version(pair):

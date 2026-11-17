@@ -17,12 +17,12 @@ import re
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "modules" / "05_support_predictor" / "m05"))
+from rungC_settings_added import SETTINGS_ADDED  # the one table of settings recorded since a change
+
 EPOCH_LINE = re.compile(r"seed (\d+) epoch (\d+)/(\d+): .* val ([0-9.eE+-]+) ")
 SAME_LISTS = ("pool_ids", "holdout_a", "holdout_b", "holdout_s", "excluded_ids", "scaffold_cores", "substituted_analytic",
               "pair_class_names", "sizes")
-# Settings the trainer records since a change, with the value it used before then, unrecorded: weight decay was AdamW's literal 1e-4 at
-# chain 35's commit 4cb6140ad1 (m05/rungC_train.py) before it became a setting.
-SETTINGS_ADDED = {"weight_decay": 1e-4}
 ABSENT = "<absent>"
 NOT_SETTINGS = {"date", "provenance", "seconds", "curve", "zero_rule", "epochs", "seeds", "holdout_twins", "holdout_twins_dropped",
                 *SAME_LISTS}
@@ -63,7 +63,7 @@ def seed_entry(rec: dict, seed: int) -> dict:
 def input_differences(old: dict, new: dict, seed: int) -> list[str]:
     """Every way the new record's inputs differ from the old one's; empty when the re-run trained on the same inputs."""
     diffs = [f"{k} differs" for k in SAME_LISTS if old.get(k) != new.get(k)]
-    old = SETTINGS_ADDED | old
+    old, new = SETTINGS_ADDED | old, SETTINGS_ADDED | new       # either record may predate a setting of the table
     for k in sorted((set(old) | set(new)) - NOT_SETTINGS):
         if old.get(k, ABSENT) != new.get(k, ABSENT):
             diffs.append(f"setting {k}: {old.get(k, ABSENT)!r} -> {new.get(k, ABSENT)!r}")

@@ -673,6 +673,7 @@ def main() -> int:
     tier = AR.require_one_tier(found, allow=a.allow_mixed_tiers)
     mdir = Path(a.molecules)
     MR.require_carried(Path(a.model), allow=a.allow_any_model)                    # decision 55: reads run on carried models
+    MR.require_measurement([Path(a.model)], "a fine-tune that is then measured on anchors and hold-outs")   # decision 66
     model0, ck = load_hybrid_model(Path(a.model))
     loss_cfg = loss_settings(ck)
     cfg = tensor_config(ck)

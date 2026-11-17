@@ -32,7 +32,7 @@ def config(tmp_path: Path, **kw) -> P.PipelineConfig:
 @pytest.fixture
 def pin_registry(monkeypatch):
     """The pin model counts as carried and the training set is fixed, so the refusals are tested without the registry's files."""
-    monkeypatch.setattr(P.MR, "require_carried", lambda p: {"status": "carried", "network": P.NETWORK, "version": "pin"})
+    monkeypatch.setattr(P.MR, "require_carried", lambda p, kind=None: {"status": "carried", "network": P.NETWORK, "version": "pin"})
     monkeypatch.setattr(P, "training_set", lambda models: TRAINING)
 
 

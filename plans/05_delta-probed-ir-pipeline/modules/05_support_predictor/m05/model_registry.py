@@ -32,6 +32,7 @@ import json
 import re
 import sys
 import time
+from collections.abc import Iterable
 from fnmatch import fnmatch
 from pathlib import Path
 
@@ -332,15 +333,33 @@ def status_of(path: Path, status_file: Path | None = None) -> dict | None:
     return s.get(Path(path).name)
 
 
-def require_carried(path: Path, allow: bool = False, status_file: Path | None = None) -> dict:
-    """Decision 55: a read runs on a `carried` model. Stops with the reason otherwise; `allow` lets a named exception through (the record must say so)."""
+def require_carried(path: Path, allow: bool = False, status_file: Path | None = None, kind: str | None = NK.MEASUREMENT) -> dict:
+    """Decision 55: a read runs on a `carried` model. Stops with the reason otherwise; `allow` lets a named exception through (the record must say so).
+    Decision 66: the entry must be of `kind` — a measurement network unless the caller says otherwise, since a read is an error on molecules
+    the network never saw and a release network saw them all; `allow` does not lift this. `kind=None` takes either kind, for a caller that
+    handles both itself (the pipeline's admission, the evaluator)."""
     s = status_of(path, status_file)
     if s is None:
         raise SystemExit(f"{Path(path).name} is not in the model registry: give it a reviewed status first (decision 55)")
     if s["status"] != "carried" and not allow:
         raise SystemExit(f"{Path(path).name} has status {s['status']!r} in the model registry — not a base for a read (decision 55); "
                          "pass --allow-any-model to use it anyway and name that in the record")
+    stated = NK.stated_kind(s, Path(path).name)
+    if kind is not None and stated != kind:
+        raise SystemExit(f"{Path(path).name} is entered in the model registry as a {stated} network and a {kind} network is meant here "
+                         "(decision 66): a release network trained on the hold-outs and is no base for a read or a fine-tune measured on them")
     return s
+
+
+def require_measurement(models: Iterable[Path], reading: str) -> None:
+    """Decision 66, on the checkpoints themselves: each file's own saved arguments must say it is a measurement network. `reading`
+    names what was about to be read on it. For every script that reads an error on a hold-out or on corpus labels, or fine-tunes a
+    network that is then measured there — whatever the registry says, and for files outside the registry."""
+    for p in models:
+        try:
+            NK.refuse_release(NK.kind_of_checkpoint(load_checkpoint(Path(p)), Path(p).name), Path(p).name, reading)
+        except NK.ReleaseNetworkError as e:
+            raise SystemExit(str(e)) from None
 
 
 def add_candidates(paths: list, chain: str, note: str, network: str, status_file: Path | None = None,

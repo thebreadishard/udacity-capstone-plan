@@ -85,20 +85,23 @@ def main() -> int:
     import torch
     torch.set_num_threads(a.threads)
     molecules = Path(a.molecules)
+    MR.require_measurement([Path(mp) for mp in a.models], "its error on hold-out (a)")    # decision 66, before the corpus is loaded
     mols, test_a, _, _, _, substituted = load_corpus(a.molecules, True, log=lambda *_: None)
     rows = [baseline_row(i, mols[i], molecules / i, a.low) for i in test_a]
     for mp in a.models:
         MR.require_carried(Path(mp), allow=True)
         model, ck = load_hybrid_model(Path(mp))
         cfg = tensor_config(ck)
-        tensors = {i: molecule_tensors(i, load_molecule(molecules / i, use_analytic=True), mols[i], molecules / i, cfg, Path(a.out_prefix).parent / "ls_targets") for i in test_a}
+        tensors = {i: molecule_tensors(i, load_molecule(molecules / i, use_analytic=True), mols[i], molecules / i, cfg,
+                                       Path(a.out_prefix).parent / "ls_targets") for i in test_a}
         dF_of = predictor(model, tensors, mols)
         for row in rows:
             m = mols[row["id"]]
             err, grp = mode_errors(m, PH.k_of(m, dF_of(row["id"])), a.low)
             row["pred_models"].append(rms_by_group(err, grp))
     for row in rows:
-        row["pred"] = {g: float(np.sqrt(np.mean([pm[g] ** 2 for pm in row["pred_models"] if g in pm]))) for g in GROUPS if any(g in pm for pm in row["pred_models"])}
+        row["pred"] = {g: float(np.sqrt(np.mean([pm[g] ** 2 for pm in row["pred_models"] if g in pm]))) for g in GROUPS
+                       if any(g in pm for pm in row["pred_models"])}
     pooled_pred, pooled_zero = pooled(rows, "pred"), pooled(rows, "zero")
     floor_rows = [r for r in rows if "floor" in r]
     pooled_floor = pooled(floor_rows, "floor") if floor_rows else None
@@ -108,12 +111,16 @@ def main() -> int:
     share_low = sq_low / (sq_low + sq_mid) if (sq_low + sq_mid) > 0 else float("nan")
     n_low, n_mid = sum(r["n"]["other-low"] for r in rows), sum(r["n"]["other-mid"] for r in rows)
     md = [f"# 'other' split into low (< {a.low:.0f} cm⁻¹) and mid — hold-out (a), {datetime.now():%Y-%m-%d %H:%M}", "",
-          f"Models: {', '.join(Path(p).name for p in a.models)} (rms over models per molecule); corpus with analytic Hessians substituted for {len(substituted)} molecules.", "",
-          "## Pooled over the hold-out (rms, cm⁻¹; n modes)", "", "| group | n | models | zero rule | FD floor (molecules with both routes) |", "|---|---|---|---|---|"]
+          f"Models: {', '.join(Path(p).name for p in a.models)} (rms over models per molecule); corpus with analytic Hessians substituted for "
+          f"{len(substituted)} molecules.", "",
+          "## Pooled over the hold-out (rms, cm⁻¹; n modes)", "", "| group | n | models | zero rule | FD floor (molecules with both routes) |",
+          "|---|---|---|---|---|"]
     for g in GROUPS:
         md.append(f"| {g} | {sum(r['n'][g] for r in rows)} | {fmt(pooled_pred[g])} | {fmt(pooled_zero[g])} | {fmt(pooled_floor[g]) if pooled_floor else '—'} |")
-    md += ["", f"Share of the pooled squared 'other' error in the low modes: **{100 * share_low:.0f} %** ({n_low} low modes, {n_mid} mid modes).", "",
-           "## Per molecule (rms, cm⁻¹): models / zero rule / floor", "", "| molecule | atoms | " + " | ".join(GROUPS) + " |", "|---|---|" + "---|" * len(GROUPS)]
+    md += ["", f"Share of the pooled squared 'other' error in the low modes: **{100 * share_low:.0f} %** ({n_low} low modes, {n_mid} mid modes).",
+           "",
+           "## Per molecule (rms, cm⁻¹): models / zero rule / floor", "", "| molecule | atoms | " + " | ".join(GROUPS) + " |",
+           "|---|---|" + "---|" * len(GROUPS)]
     for r in rows:
         cells = []
         for g in GROUPS:

@@ -211,7 +211,7 @@ def main() -> int:
     a = build_parser().parse_args()
     torch.set_num_threads(a.threads)
     t0 = time.time()
-    MR.require_carried(Path(a.model), allow=a.allow_any_model)                     # decision 55: reads run on carried models
+    MR.require_carried(Path(a.model), allow=a.allow_any_model, kind=None)          # decision 55; the kind is read_kind's, from the checkpoint
     model, ck = load_hybrid_model(Path(a.model))
     kind = read_kind(ck, Path(a.model).name, a.insample_read)                      # decision 66: before the corpus is loaded
     cfg = tensor_config(ck)

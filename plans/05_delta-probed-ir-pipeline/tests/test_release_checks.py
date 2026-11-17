@@ -233,7 +233,7 @@ def evaluate(monkeypatch, argv: list[str]) -> None:
     """The evaluator's own `main` on a checkpoint outside the registered folders: the registry gate is replaced, nothing else."""
     import rungC_eval_saved as ES
 
-    monkeypatch.setattr(ES.MR, "require_carried", lambda path, allow=False, status_file=None: {"status": "fixture"})
+    monkeypatch.setattr(ES.MR, "require_carried", lambda path, allow=False, status_file=None, kind=None: {"status": "fixture"})
     monkeypatch.setattr(sys, "argv", ["rungC_eval_saved.py", *argv])
     assert ES.main() == 0
 

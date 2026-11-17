@@ -164,11 +164,13 @@ def optimise(folder: Path, threads: int, max_memory: int) -> None:
 def family_errors(molecules: Path, ids: list[str], models: list[Path]) -> dict[str, list[float]]:
     """The network's per-family error on `ids` for each model (seed), by the licence's read-out (`readouts(...)['diag_rms']`)."""
     sys.path[:0] = [str(M05 / "m05"), str(PLAN / "probes")]
+    import model_registry as MR
     import rungC_train as RT
     from promotion_read import FAMILIES
     from rungC_equivariant import load_molecule
 
     out: dict[str, list[float]] = {f: [] for f in FAMILIES}
+    MR.require_measurement(models, "its error on the check's hold-out molecules")   # decision 66
     for path in models:
         model, ck = RT.load_hybrid_model(path)
         cfg = RT.tensor_config(ck)

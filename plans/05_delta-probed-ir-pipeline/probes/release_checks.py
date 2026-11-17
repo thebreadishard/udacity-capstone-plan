@@ -8,7 +8,9 @@ Networks.md, §4): five checks, each with its numbers, in one record. A failed c
 
   1 same recipe      the release training's saved arguments differ from the measurement training's, seed by seed, in the kind only
                      (and in RUN_ONLY: where the run wrote, its threads, how the seeds were grouped into runs). `sizes` may differ
-                     only where the measurement network trained on its whole pool, which is what the release's `all` says.
+                     only where the measurement network trained on its whole pool, which is what the release's `all` says. A
+                     setting a checkpoint does not hold because it was saved before the setting existed is read as the value of
+                     `m05/rungC_settings_added.py` and named in the record; any other absent setting is a difference.
   2 no surprise      on a seeded sample of pool molecules that every network of both kinds trained on: per family, the rms
                      difference between the two kinds' corrected band positions (each kind's seed-mean ΔH, what the pipeline
                      prints) is at most the rms difference among the measurement networks' own seeds (single seeds, every pair).
@@ -51,6 +53,7 @@ import rungC_intensities as RINT  # noqa: E402
 import v14_search as V14  # noqa: E402
 from learning_curve_layerA import molecule_features, normal_modes  # noqa: E402
 from promotion_read import FAMILIES  # noqa: E402
+from rungC_settings_added import with_absent_settings  # noqa: E402
 
 BENZENE = "A_8448043181"
 SAMPLE_SEED = 20261117
@@ -148,11 +151,12 @@ def load_net(path: Path) -> Net:
 def same_recipe(release: tuple[Net, ...], measurement: tuple[Net, ...]) -> Check:
     """Check 1: seed by seed, the two trainings' saved arguments differ in the kind only."""
     by_seed = {m.seed: m for m in measurement}
-    differences, whole_pool = {}, {}
+    differences, whole_pool, read_as = {}, {}, {}
     for r in release:
         m = by_seed[r.seed]
-        keys = sorted((set(r.args) | set(m.args)) - {*RUN_ONLY, NK.FIELD})
-        diff = {k: {NK.MEASUREMENT: m.args.get(k), NK.RELEASE: r.args.get(k)} for k in keys if m.args.get(k) != r.args.get(k)}
+        (m_args, read_as[m.path.name]), (r_args, read_as[r.path.name]) = with_absent_settings(m.args), with_absent_settings(r.args)
+        keys = sorted((set(r_args) | set(m_args)) - {*RUN_ONLY, NK.FIELD})
+        diff = {k: {NK.MEASUREMENT: m_args.get(k), NK.RELEASE: r_args.get(k)} for k in keys if m_args.get(k) != r_args.get(k)}
         whole_pool[m.path.name] = m.record.get("pool") == m.n
         if whole_pool[m.path.name] and r.args.get("sizes") == "all":
             diff.pop("sizes", None)                      # the measurement network trained on its whole pool, which is what 'all' says
@@ -167,7 +171,8 @@ def same_recipe(release: tuple[Net, ...], measurement: tuple[Net, ...]) -> Check
     elif contradicted:
         refusal = f"{len(contradicted)} training record(s) state another kind than their checkpoint: {', '.join(contradicted)}"
     return Check("same_recipe", refusal is None, {"differences": differences, "measurement_trained_on_its_whole_pool": whole_pool,
-                                                  "record_kinds": records, "ignored": [*RUN_ONLY, NK.FIELD]}, refusal)
+                                                  "record_kinds": records, "ignored": [*RUN_ONLY, NK.FIELD],
+                                                  "absent_settings_read_as": read_as}, refusal)
 
 
 def early_stopping(release: tuple[Net, ...]) -> Check:
