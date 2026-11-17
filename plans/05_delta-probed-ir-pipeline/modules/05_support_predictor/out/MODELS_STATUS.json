@@ -718,5 +718,26 @@
   "version": "",
   "chain": "v14 search",
   "note": "v1.4 search (Design_2026-10-26_DeltaH_v1.4_Recipe_and_Search.md): a model of the search, not a version"
+ },
+ "v14/E7_rungC_v14s3clean_c00_control_model_n1082_seed0.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "v14 search",
+  "note": "v1.4 on the corrected pool (TASKS 253): promoted by decision 57 as amended on 17 Nov (read_clean.md); carried once m08/seen.py reads cation rows (TASKS 264)"
+ },
+ "v14/E7_rungC_v14s3clean_c00_control_model_n1082_seed1.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "v14 search",
+  "note": "v1.4 on the corrected pool (TASKS 253): promoted by decision 57 as amended on 17 Nov (read_clean.md); carried once m08/seen.py reads cation rows (TASKS 264)"
+ },
+ "v14/E7_rungC_v14s3clean_c00_control_model_n1082_seed2.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "v14 search",
+  "note": "v1.4 on the corrected pool (TASKS 253): promoted by decision 57 as amended on 17 Nov (read_clean.md); carried once m08/seen.py reads cation rows (TASKS 264)"
  }
 }

@@ -12,24 +12,36 @@
   "a8",
   "b"
  ],
+ "rule": "decision 57 as amended on 17 November: the composite below the carried version's beyond the Student-t line, and no read-out worse beyond two SE",
  "promotion": {
-  "promoted": false,
-  "worse": [
-   "(a8) CH-oop"
-  ],
-  "better": [
-   "(a8) ring-ip",
-   "(a8) CH-stretch",
-   "(a8) other",
-   "(a8) coupling_ratio",
-   "(b) ring-ip",
-   "(b) CH-stretch",
-   "(b) CH-oop",
-   "(b) other",
-   "(b) coupling_ratio"
-  ]
+  "promoted": true,
+  "composite_new": 0.6897877176399468,
+  "composite_carried": 0.8443604736453746,
+  "composite_difference": -0.15457275600542775,
+  "combined_se": 0.03193541394679073,
+  "df": 3.062860210141204,
+  "t_critical": 3.145813684680064,
+  "threshold": 0.10046286221973687,
+  "worse_beyond_two_se": [],
+  "old_rule": {
+   "promoted": false,
+   "worse": [
+    "(a8) CH-oop"
+   ],
+   "better": [
+    "(a8) ring-ip",
+    "(a8) CH-stretch",
+    "(a8) other",
+    "(a8) coupling_ratio",
+    "(b) ring-ip",
+    "(b) CH-stretch",
+    "(b) CH-oop",
+    "(b) other",
+    "(b) coupling_ratio"
+   ]
+  }
  },
- "meaning": "By \u00a714's addition of 17 November (the clean arm replaces the data arm, whose hold-out (a) was not clean for benzene) nothing is carried, and the cause is looked at per molecule before anything else is decided.",
+ "meaning": "By \u00a714's addition of 17 November (the clean arm replaces the data arm, whose hold-out (a) was not clean for benzene), by decision 57 as amended on 17 November, these three models are version 1.4.",
  "expectation": {
   "b": {
    "winner": 2.0460210470629363,
@@ -141,21 +153,32 @@
  ],
  "on_the_ten_deciding_nothing": {
   "promotion": {
-   "promoted": false,
-   "worse": [
-    "(a) CH-oop"
-   ],
-   "better": [
-    "(a) ring-ip",
-    "(a) CH-stretch",
-    "(a) other",
-    "(a) coupling_ratio",
-    "(b) ring-ip",
-    "(b) CH-stretch",
-    "(b) CH-oop",
-    "(b) other",
-    "(b) coupling_ratio"
-   ]
+   "promoted": true,
+   "composite_new": 0.6726543529969217,
+   "composite_carried": 0.8195022745167045,
+   "composite_difference": -0.14684792151978288,
+   "combined_se": 0.030685066193095172,
+   "df": 3.1872219940143593,
+   "t_critical": 3.079259506100134,
+   "threshold": 0.09448728177040017,
+   "worse_beyond_two_se": [],
+   "old_rule": {
+    "promoted": false,
+    "worse": [
+     "(a) CH-oop"
+    ],
+    "better": [
+     "(a) ring-ip",
+     "(a) CH-stretch",
+     "(a) other",
+     "(a) coupling_ratio",
+     "(b) ring-ip",
+     "(b) CH-stretch",
+     "(b) CH-oop",
+     "(b) other",
+     "(b) coupling_ratio"
+    ]
+   }
   },
   "comparisons": [
    {

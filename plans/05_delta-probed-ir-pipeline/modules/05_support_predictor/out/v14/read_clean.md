@@ -17,7 +17,11 @@ The new models are the carried recipe (c00_control) trained on the whole pool wi
 | (b) | other | 3.68 (3.20–4.15) | 3.88 (3.52–4.52) | -0.20 | no |
 | (b) | coupling_ratio | 0.170 (0.164–0.177) | 0.263 (0.243–0.281) | -0.093 | yes |
 
-**Promotion: not promoted** — worse on (a8) CH-oop, better on 9 of 10 (the registered rule: §5, decision 57). By §14's addition of 17 November (the clean arm replaces the data arm, whose hold-out (a) was not clean for benzene) nothing is carried, and the cause is looked at per molecule before anything else is decided. This read carries nothing itself and changes no registry entry.
+**Promotion: promoted** (decision 57 as amended on 17 November: the composite below the carried version's beyond the Student-t line, and no read-out worse beyond two SE). By §14's addition of 17 November (the clean arm replaces the data arm, whose hold-out (a) was not clean for benzene), by decision 57 as amended on 17 November, these three models are version 1.4. This read carries nothing itself and changes no registry entry.
+
+- Composite (each read-out over its line, mean over hold-outs × read-outs, per seed): 0.690 against 0.844, difference -0.155; the line is −0.100 (t 3.146 at 3.1 degrees of freedom × combined SE 0.0319): below it.
+- Guard (no read-out worse beyond two SE): none.
+- Beside them, deciding nothing — the rule of 26 Oct (none worse at the reported precision, one better): not promoted, worse on (a8) CH-oop, better on 9.
 
 ## Beside it, deciding nothing: hold-out (a) on all ten molecules
 
@@ -36,7 +40,11 @@ The eight decide (§14's addition of 16 Nov): the carried version trained on twi
 | (b) | other | 3.68 (3.20–4.15) | 3.88 (3.52–4.52) | -0.20 | no |
 | (b) | coupling_ratio | 0.170 (0.164–0.177) | 0.263 (0.243–0.281) | -0.093 | yes |
 
-On the ten the same rule would read: not promoted, worse on (a) CH-oop, better on 9 of 10.
+On the ten the same rule would read: promoted.
+
+- Composite (each read-out over its line, mean over hold-outs × read-outs, per seed): 0.673 against 0.820, difference -0.147; the line is −0.094 (t 3.079 at 3.2 degrees of freedom × combined SE 0.0307): below it.
+- Guard (no read-out worse beyond two SE): none.
+- Beside them, deciding nothing — the rule of 26 Oct (none worse at the reported precision, one better): not promoted, worse on (a) CH-oop, better on 9.
 
 ## What was stated beforehand
 

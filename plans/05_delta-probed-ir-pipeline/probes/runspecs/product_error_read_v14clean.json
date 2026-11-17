@@ -1,0 +1,34 @@
+{
+ "name": "product_error_read_v14clean",
+ "purpose": "The licence's quantity (README decision 65 as amended 16 Nov 2026) for v1.4's clean arm (chain v14_clean, --holdout-twins drop-any-charge), promoted by decision 57 as amended on 17 Nov: the error of the corrected band positions of the seeds' mean dH on hold-out (a)'s eight clean molecules and hold-out (b), read with --models and --records before the registry carries it. Otherwise as product_error_read_v14.",
+ "host": "laptop",
+ "workdir": "probes/results_m1/product_error_read_v14clean",
+ "command": "PYTHONUTF8=1 python ../../product_error_read.py --threads 2 --out ../../../modules/05_support_predictor/out/v14/E7_rungC_v14s3clean_c00_control_product_error.json --models out/v14/E7_rungC_v14s3clean_c00_control_model_n*_seed0.pt out/v14/E7_rungC_v14s3clean_c00_control_model_n*_seed1.pt out/v14/E7_rungC_v14s3clean_c00_control_model_n*_seed2.pt --records out/v14/eval_clean_seed0.json out/v14/eval_clean_seed1.json out/v14/eval_clean_seed2.json",
+ "sources": [
+  {
+   "local": "probes/product_error_read.py"
+  },
+  {
+   "local": "modules/08_industry_synthesis/m08/accuracy.py"
+  },
+  {
+   "local": "modules/08_industry_synthesis/m08/pipeline.py"
+  }
+ ],
+ "progress": {
+  "regex": "^product-error [0-9]+/[0-9]+ ",
+  "max_gap_minutes": 20
+ },
+ "marker_regex": "^STOP: ",
+ "end_regex": "^product error read: [0-9]+ molecules, record ",
+ "threads": 2,
+ "resumable": false,
+ "estimate": {
+  "hours": 0.1,
+  "basis": "the carried version's read took 102 s on 16 Nov 2026 (product_error_read: 47 stored molecules, three checkpoints loaded per molecule); this one reads the same 47 (a8 and b)"
+ },
+ "memory": {
+  "peak_gb": 3.0,
+  "basis": "max RSS 1.94 GB of a 249-molecule evaluation on 16 Nov 2026 (v14_seleval_smoke); this read holds one molecule at a time"
+ }
+}
