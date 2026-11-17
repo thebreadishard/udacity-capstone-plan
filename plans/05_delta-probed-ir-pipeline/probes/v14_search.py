@@ -28,7 +28,9 @@ selection set included, and the promotion is read on those three models: the spl
 scaffold core out of the training pool, and the carried version trained on them. Since the second amendment of that day (§13) the
 score is read on the selection set without EXCLUDED_SELECTION_CORES: each read evaluates the stage checkpoints it needs on that set
 (`rungC_eval_saved.py --eval-ids-file`, one record per checkpoint, reused when it exists) and prints the registered score, on the whole
-selection set, beside it. Paths are relative to module 05 unless named otherwise.
+selection set, beside it. Since 17 Nov 2026 (the user) read3 and read-data decide by decision 57 as amended that day
+(`promotion_read.amended_promotion`: the composite below the carried version's beyond the Student-t line, no read-out worse beyond two
+SE) and print the rule of 26 Oct beside it, deciding nothing. Paths are relative to module 05 unless named otherwise.
 """
 from __future__ import annotations
 
@@ -93,7 +95,7 @@ EPOCH_CAP = 300
 CAP_MARGIN = 0.10                          # decision 51: a best epoch within 10 % of the cap means the cap, not the data, stopped it
 THREADS = "8"
 MAX_GAP_MINUTES = 120                      # the run-spec schema's ceiling; the chain runner prints progress every 30 min
-LINES = {**dict.fromkeys(P.FAMILIES, 3.0), P.RATIO: 0.25}
+LINES = P.LINES                            # the lines live with the rule that reads them; the rule test of 17 Nov imports them here
 SCORE_NOTE = (f"The score is read on the selection set without {', '.join(EXCLUDED_SELECTION_CORES)} ({N_SELECTION - N_EXCLUDED} of "
               f"{N_SELECTION} molecules, §13); the registered score is the same formula on all {N_SELECTION}.")
 OUT = "out/v14"
@@ -451,8 +453,7 @@ def whole_pool_reads(w: Config, eval_paths: list[Path], tag: str) -> list[SeedRe
 
 def score(sel: dict) -> float:
     """The mean of the five read-outs, each over its line: 1.0 = on the lines on average."""
-    vals = [sel["diag_rms"][f] / LINES[f] for f in P.FAMILIES] + [sel[P.RATIO] / LINES[P.RATIO]]
-    return sum(vals) / len(vals)
+    return P.on_lines({q: _q(sel, q) for q in P.QUANTITIES})
 
 
 def at_cap(r: SeedRead, schedule: str) -> bool:
@@ -723,18 +724,20 @@ def prediction_read(winner_evals: list[Path], carried_evals: list[Path], *, a_se
 def expectation_read(winner_evals: list[Path], carried_evals: list[Path], *, a_set: str = "a") -> tuple[str, dict]:
     """§12's expectation as one report line and a record: the whole-pool winner trained on more molecules than the carried version,
     so its corrected ω rms (mean of the seeds) is expected below the carried one's on hold-out (b) and not above it on hold-out (a).
-    It decides nothing; the no-worsening rule does. `a_set` names hold-out (a) in the eval records: the ten, or the clean eight."""
+    It decides nothing; the promotion rule does. `a_set` names hold-out (a) in the eval records: the ten, or the clean eight."""
     b_new, b_old, a_new, a_old = (mean(holdout_values(paths, hold)) for hold in ("b", a_set) for paths in (winner_evals, carried_evals))
     b_held, a_held = b_new < b_old, a_new <= a_old
     line = (f"§12's expectation — corrected ω rms in cm⁻¹, mean of the seeds: hold-out (b) winner {b_new:.2f} against carried {b_old:.2f} "
             f"(expected below: {'held' if b_held else '**did not hold**'}); hold-out (a) winner {a_new:.2f} against carried {a_old:.2f} "
             f"(expected not above: {'held' if a_held else '**did not hold** — (a) is looked at per molecule before the promotion is decided'})."
-            " The expectation decides nothing; the no-worsening rule does.")
+            " The expectation decides nothing; the promotion rule does.")
     return line, {"b": {"winner": b_new, "carried": b_old, "held": b_held}, "a": {"winner": a_new, "carried": a_old, "held": a_held}}
 
 
 def target_lines(w: Config, other: Config, check: P.Promotion, registered: P.Promotion) -> list[str]:
-    """The target check on the scored set, which decides, and beside it on the registered set (all of the selection set)."""
+    """The target check on the scored set, which decides, and beside it on the registered set (all of the selection set). It is a
+    selection screen, not a promotion, so it keeps the rule of 26 Oct (decision 57 as amended on 17 Nov: the screens keep their
+    registered score); a choice it does not hand to the user is still printed with both sides."""
     def sides(c: P.Promotion) -> str:
         return f"better on {', '.join(c.better) or 'none'}, worse on {', '.join(c.worse) or 'none'}"
     if not check.better and not check.worse:
@@ -824,10 +827,14 @@ class DataArm:
 
 
 NOT_PROMOTED = "nothing is carried, and the cause is looked at per molecule before anything else is decided."
+RULE_BY = "by decision 57 as amended on 17 November"
+RULE_NOTE = ("decision 57 as amended on 17 November: the composite below the carried version's beyond the Student-t line, and no "
+             "read-out worse beyond two SE")
 CLEAN_BY = ("By §14's addition of 17 November (the clean arm replaces the data arm, whose hold-out (a) was not clean for benzene)")
-DATA_ARMS = {"data": DataArm(FULL_TAG, "data", "read_data", None, "", "By §14 these three models are version 1.4.", f"By §14 {NOT_PROMOTED}"),
+DATA_ARMS = {"data": DataArm(FULL_TAG, "data", "read_data", None, "", f"By §14, {RULE_BY}, these three models are version 1.4.",
+                             f"By §14, {RULE_BY}, {NOT_PROMOTED}"),
              "clean": DataArm(CLEAN_TAG, "clean", "read_clean", CLEAN_TWINS, ", clean arm (no hold-out twin of any charge)",
-                              f"{CLEAN_BY} these three models are version 1.4.", f"{CLEAN_BY} {NOT_PROMOTED}")}
+                              f"{CLEAN_BY}, {RULE_BY}, these three models are version 1.4.", f"{CLEAN_BY}, {RULE_BY}, {NOT_PROMOTED}")}
 BENZENE_CATION = "P3c_8448043181"          # hold-out (a)'s benzene as a radical cation: the twin the clean training exists to drop (TASKS 253)
 TEN_NOTE = ("The eight decide (§14's addition of 16 Nov): the carried version trained on twins of two of the ten (2-naphthoic acid and "
             "benzonitrile, TASKS 157), so on the ten the comparison favours it on two molecules it has seen.")
@@ -894,12 +901,16 @@ def ten_section(new_evals: list[Path], old_evals: list[Path], label: str) -> tup
     """(the report's lines, the record) of hold-out (a) on all ten molecules, printed beside the promotion and deciding nothing."""
     new_ten, carried_ten = P.load_eval_arm(new_evals), P.load_eval_arm(old_evals)
     comps_ten = P.compare(new_ten, carried_ten)
-    promo_ten = P.promotion(comps_ten)
+    promo_ten = P.amended_promotion(new_ten, carried_ten)
     lines = ["## Beside it, deciding nothing: hold-out (a) on all ten molecules", "", TEN_NOTE,
              "", *P.comparison_table(new_ten, carried_ten, comps_ten, label, "carried"), "",
-             f"On the ten the same rule would read: {'promoted' if promo_ten.promoted else 'not promoted'}, worse on "
-             f"{', '.join(promo_ten.worse) or 'none'}, better on {len(promo_ten.better)} of {len(comps_ten)}."]
+             f"On the ten the same rule would read: {'promoted' if promo_ten.promoted else 'not promoted'}.", "", *P.amended_lines(promo_ten)]
     return lines, {"promotion": asdict(promo_ten), "comparisons": [asdict(c) for c in comps_ten]}
+
+
+def promotion_lines(promo: P.AmendedPromotion, verdict: str, tail: str) -> list[str]:
+    """The decision line (`tail` follows it), then the amended rule's two conditions and the rule of 26 Oct beside them."""
+    return [f"**Promotion: {verdict}** ({RULE_NOTE}).{tail}", "", *P.amended_lines(promo)]
 
 
 def pool_note(w: Config, arm: DataArm) -> str:
@@ -942,7 +953,7 @@ def cmd_read_data(replace_record: bool, arm_name: str = "data") -> int:
     w, full, new_evals, old_evals = data_arms(arm)
     new, carried = (P.load_eval_arm(paths, holdouts=(CLEAN_A, "b")) for paths in (new_evals, old_evals))
     comps = P.compare(new, carried)
-    promo = P.promotion(comps)
+    promo = P.amended_promotion(new, carried)
     ten_lines, ten = ten_section(new_evals, old_evals, "v1.4 candidate")
     _, expectation = expectation_read(new_evals, old_evals, a_set=CLEAN_A)
     _, prediction = prediction_read(new_evals, old_evals, a_set=CLEAN_A)
@@ -954,15 +965,14 @@ def cmd_read_data(replace_record: bool, arm_name: str = "data") -> int:
              "list's three checkpoints, read again on the same hold-outs.", "",
              f"## The promotion: hold-out (a) on its eight clean molecules ({CLEAN_A}), and hold-out (b)",
              "", *P.comparison_table(new, carried, comps, "v1.4 candidate", "carried"), "",
-             f"**Promotion: {'promoted' if promo.promoted else 'not promoted'}** — worse on {', '.join(promo.worse) or 'none'}, "
-             f"better on {len(promo.better)} of {len(comps)} (the registered rule: §5, decision 57). {meaning} This read carries "
-             "nothing itself and changes no registry entry.", "", *ten_lines,
+             *promotion_lines(promo, "promoted" if promo.promoted else "not promoted",
+                              f" {meaning} This read carries nothing itself and changes no registry entry."), "", *ten_lines,
              "", "## What was stated beforehand", "", *stated_lines(expectation, prediction), "", DATA_LICENCE_NOTE]
     if on_record:
         print(f"replacing the read on record ({' and '.join(on_record)})", flush=True)
     _write_report(arm.report, lines, {"models": w.name, "trained_on": "whole pool", "best_epochs": [r.best_epoch for r in full],
                                       **({"arm": arm_name, "holdout_twins": arm.holdout_twins} if arm.holdout_twins else {}),
-                                      "decided_on": [CLEAN_A, "b"], "promotion": asdict(promo), "meaning": meaning,
+                                      "decided_on": [CLEAN_A, "b"], "rule": RULE_NOTE, "promotion": asdict(promo), "meaning": meaning,
                                       "expectation": expectation, "prediction": prediction, "comparisons": [asdict(c) for c in comps],
                                       "on_the_ten_deciding_nothing": ten})
     print("\n".join(lines))
@@ -990,7 +1000,7 @@ def cmd_read3() -> int:
     full, new_evals, old_evals = final_evals(w)
     new, carried = (P.load_eval_arm(paths, holdouts=(CLEAN_A, "b")) for paths in (new_evals, old_evals))
     comps = P.compare(new, carried)
-    promo = P.promotion(comps)
+    promo = P.amended_promotion(new, carried)
     ten_lines, ten = ten_section(new_evals, old_evals, "v1.4 winner")
     expectation_line, expectation = expectation_read(new_evals, old_evals, a_set=CLEAN_A)
     prediction_line, prediction = prediction_read(new_evals, old_evals, a_set=CLEAN_A)
@@ -1002,11 +1012,10 @@ def cmd_read3() -> int:
              "carried version trained on seven of them (§12). Their selection-set scores are not shown: they trained on that set.",
              "", f"## The promotion: hold-out (a) on its eight clean molecules ({CLEAN_A}), and hold-out (b)", "",
              *P.comparison_table(new, carried, comps, "v1.4 winner", "carried"), "",
-             f"**Promotion: {'carried as version 1.4' if promo.promoted else 'not promoted'}** — worse on {', '.join(promo.worse) or 'none'}, "
-             f"better on {len(promo.better)} of {len(comps)} (decision 57, the user's rule of 26 Oct).", "", *ten_lines, "",
+             *promotion_lines(promo, "carried as version 1.4" if promo.promoted else "not promoted", ""), "", *ten_lines, "",
              expectation_line, "", prediction_line]
     _write_report("read3", lines, {"winner": w.name, "winner_trained_on": "whole pool", "winner_best_epochs": [r.best_epoch for r in full],
-                                   "winner_holdout_twins": CLEAN_TWINS, "decided_on": [CLEAN_A, "b"],
+                                   "winner_holdout_twins": CLEAN_TWINS, "decided_on": [CLEAN_A, "b"], "rule": RULE_NOTE,
                                    "target_check": asdict(target_check), "target_check_registered": asdict(target_registered),
                                    "promotion": asdict(promo), "expectation": expectation, "prediction": prediction,
                                    "comparisons": [asdict(c) for c in comps], "on_the_ten_deciding_nothing": ten})
