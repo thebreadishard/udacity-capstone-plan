@@ -297,6 +297,9 @@ def add_candidates(paths: list, chain: str, note: str, network: str, status_file
     reviewed entry is never overwritten. Returns the keys added."""
     if not paths:
         raise SystemExit("--add-candidates: no checkpoint matches")
+    absent = [str(p) for p in paths if "*" in str(p) or not Path(p).is_file()]
+    if absent:                                                              # 17 Nov 2026: three unexpanded patterns were entered as keys
+        raise SystemExit(f"--add-candidates: not a checkpoint file (a pattern nobody expanded, or a path that does not exist): {', '.join(absent)}")
     sf = Path(status_file) if status_file else status_file_for(paths[0])[0]
     s = read_status(sf)
     keys = [Path(p).name if status_file else status_file_for(p)[1] for p in paths]
@@ -306,8 +309,9 @@ def add_candidates(paths: list, chain: str, note: str, network: str, status_file
     for k in keys:
         s[k] = {"status": "candidate", "network": network, "version": "", "chain": chain, "note": note}
         check_entry(k, s[k], sf)
-    with open(sf, "w", encoding="utf-8") as f:
-        json.dump(s, f, indent=1, ensure_ascii=False)
+    tmp = sf.with_name(sf.name + ".tmp")                                    # a reader never meets a half-written status file
+    tmp.write_text(json.dumps(s, indent=1, ensure_ascii=False), encoding="utf-8")
+    tmp.replace(sf)
     return keys
 
 

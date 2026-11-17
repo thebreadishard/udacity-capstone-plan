@@ -235,3 +235,31 @@ def test_a_chain_without_a_run_spec_has_its_log_in_the_chain_folder(tmp_path):
     (tmp_path / MR.CHAIN_WORKDIR / "chain99.log").write_text(ARMED, encoding="utf-8")
     assert _running(tmp_path) == {"E7_rungC_chain99_arm_model_n*_seed*.pt": "C99"}
 
+
+def test_add_candidates_refuses_a_pattern_or_a_missing_file(tmp_path):
+    """17 Nov 2026: a chain step passed three patterns nobody had expanded and they were entered as keys with '*' in them."""
+    p = _fake(tmp_path)
+    st = _status(tmp_path / "status.json", {})
+    before = st.read_text(encoding="utf-8")
+    for bad in (tmp_path / "X_2026-10-03_model_n*_seed0.pt", tmp_path / "absent_model_n30_seed0.pt"):
+        with pytest.raises(SystemExit, match="not a checkpoint file"):
+            MR.add_candidates([p, bad], "99", "note", DH, status_file=st)
+        with pytest.raises(SystemExit, match="not a checkpoint file"):
+            MR.main(["--out-dir", str(tmp_path), "--status-file", str(st), "--registry", str(tmp_path / "MODELS.md"),
+                     "--add-candidates", str(bad), "--chain", "99"])
+    assert st.read_text(encoding="utf-8") == before                             # nothing was entered, the good path of the call included
+
+
+def test_the_status_file_is_written_whole_or_not_at_all(tmp_path, monkeypatch):
+    p0, p1 = _fake(tmp_path, seed=0), _fake(tmp_path, seed=1)
+    st = _status(tmp_path / "status.json", {})
+    assert MR.add_candidates([p0], "99", "note", DH, status_file=st) == [p0.name]
+    assert not list(tmp_path.glob("*.tmp")) and list(json.loads(st.read_text(encoding="utf-8"))) == [p0.name]
+    before = st.read_text(encoding="utf-8")
+
+    def interrupted(self, target):
+        raise OSError("the move did not happen")
+    monkeypatch.setattr(Path, "replace", interrupted)
+    with pytest.raises(OSError, match="the move did not happen"):
+        MR.add_candidates([p1], "99", "note", DH, status_file=st)
+    assert st.read_text(encoding="utf-8") == before                             # the file a reader sees is the old one, whole
