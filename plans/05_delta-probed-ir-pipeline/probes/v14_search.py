@@ -735,7 +735,9 @@ def expectation_read(winner_evals: list[Path], carried_evals: list[Path], *, a_s
 
 
 def target_lines(w: Config, other: Config, check: P.Promotion, registered: P.Promotion) -> list[str]:
-    """The target check on the scored set, which decides, and beside it on the registered set (all of the selection set)."""
+    """The target check on the scored set, which decides, and beside it on the registered set (all of the selection set). It is a
+    selection screen, not a promotion, so it keeps the rule of 26 Oct (decision 57 as amended on 17 Nov: the screens keep their
+    registered score); a choice it does not hand to the user is still printed with both sides."""
     def sides(c: P.Promotion) -> str:
         return f"better on {', '.join(c.better) or 'none'}, worse on {', '.join(c.worse) or 'none'}"
     if not check.better and not check.worse:
