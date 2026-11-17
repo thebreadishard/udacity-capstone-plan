@@ -1,0 +1,66 @@
+{
+ "name": "pipeline_benzonitrile_anharmonic",
+ "purpose": "TASKS 211: the anharmonic step's second real run - a substituted molecule (benzonitrile, 13 atoms, a linear group) through the pipeline with the step asked for, after benzene's first run of 17 Nov 2026 (458 s for the force field and its label at a 1042 MB peak; 26 of 30 bands stepped, a degenerate pair lost to the one-to-one mode matching). Steps 2-3 come from the corpus (--reuse-only). Read: bands stepped and lost with their reasons, the time and the peak.",
+ "host": "laptop",
+ "workdir": "modules/08_industry_synthesis",
+ "command": "env CORPUS_QC_PYTHON=C:/Users/thebr/.conda/envs/qc/python.exe PYTHONUTF8=1 python -m m08.pipeline --name benzonitrile --smiles N#Cc1ccccc1 --out ../../probes/results_m1/pipeline_benzonitrile_anharmonic_second_run --threads 4 --reuse-only --anharmonic-minutes 120",
+ "sources": [
+  {
+   "local": "modules/08_industry_synthesis/m08/pipeline.py"
+  },
+  {
+   "local": "modules/08_industry_synthesis/m08/anharmonic.py"
+  },
+  {
+   "local": "modules/08_industry_synthesis/m08/positions.py"
+  },
+  {
+   "local": "modules/08_industry_synthesis/m08/live_certificate.py"
+  },
+  {
+   "local": "probes/anharmonic_step.py"
+  },
+  {
+   "local": "probes/run_in_scope.sh"
+  },
+  {
+   "local": "probes/xtb_field_for_step.sh"
+  },
+  {
+   "local": "probes/xtb_anharmonic.sh"
+  },
+  {
+   "local": "probes/xtb_hessians_for_qff.py"
+  },
+  {
+   "local": "probes/dxtb_hessians_for_qff.py"
+  },
+  {
+   "local": "probes/make_qff_displacements.py"
+  },
+  {
+   "local": "probes/gvpt2_labels.py"
+  },
+  {
+   "local": "probes/results_m1/anharmonic_step_2026-11-16/first_run_checks.py"
+  }
+ ],
+ "progress": {
+  "regex": "^\\[pipeline\\] ",
+  "max_gap_minutes": 45,
+  "heartbeat_glob": "../../probes/results_m1/pipeline_benzonitrile_anharmonic_second_run/benzonitrile/*.log"
+ },
+ "marker_regex": "^\\[pipeline\\] |^REFUSED|Traceback",
+ "end_regex": "^\\[pipeline\\] certificate: ",
+ "dry_run_args": "--check-only",
+ "threads": 4,
+ "estimate": {
+  "hours": 0.4,
+  "basis": "benzene's force field and label took 458 s on 17 Nov 2026 (pipeline_benzene_anharmonic); 13 atoms need 67 Hessians against 61"
+ },
+ "memory": {
+  "peak_gb": 2.3,
+  "basis": "a bound for the WSL side: probes/run_in_scope.sh runs the force field and its label in a systemd scope with MemoryMax 1536 MB and no swap; beside it the Windows python of the pipeline with the network's three checkpoints and kernel ridge on 1,600 rows: under 0.8 GB. --reuse-only: neither psi4 nor pyscf runs"
+ },
+ "resumable": false
+}

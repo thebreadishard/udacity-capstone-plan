@@ -1,0 +1,39 @@
+{
+ "name": "benzene_probe_nop3c",
+ "purpose": "TASKS 253: seed 0 of the whole-pool recipe without P3c, and its hold-out read",
+ "host": "laptop",
+ "workdir": "probes/results_m1",
+ "command": "python ../chain_runner.py probes/runs/benzene_probe_nop3c.json",
+ "sources": [
+  {
+   "local": "probes/chain_runner.py"
+  },
+  {
+   "local": "probes/v14_search.py"
+  },
+  {
+   "local": "probes/promotion_read.py"
+  },
+  {
+   "local": "modules/05_support_predictor/m05/rungC_train.py"
+  }
+ ],
+ "progress": {
+  "regex": "^=== \\(BPROBE\\) progress: |^\\(BPROBE\\) .* done ",
+  "max_gap_minutes": 120,
+  "start_regex": "^=== \\(BPROBE\\) starting: "
+ },
+ "marker_regex": "^=== \\(BPROBE\\) (armed|starting|resuming|RUN FAILED|run done)",
+ "end_regex": "^=== \\(BPROBE\\) run done",
+ "fail_regex": "^=== \\(BPROBE\\) RUN FAILED",
+ "dry_run_args": "--dry-run",
+ "resumable": true,
+ "memory": {
+  "peak_gb": 7.7,
+  "basis": "chain 41's trainer peak (7.7 GB at n = 972-978, 19 Oct 2026); v1.4's pool \u2248 1,200"
+ },
+ "estimate": {
+  "hours": 2.7,
+  "basis": "seed 0 of the whole-pool recipe took 2.2 h on 16-17 Nov (193 epochs at about 41 s); one eval of 2 min"
+ }
+}

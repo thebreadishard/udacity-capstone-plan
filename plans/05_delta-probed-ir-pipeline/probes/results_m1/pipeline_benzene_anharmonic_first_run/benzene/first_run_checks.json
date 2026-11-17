@@ -1,0 +1,53 @@
+{
+ "run": "C:\\Users\\thebr\\Documents\\CapstonePlan\\plans\\05_delta-probed-ir-pipeline\\probes\\results_m1\\pipeline_benzene_anharmonic_first_run\\benzene",
+ "reference": "C:\\Users\\thebr\\Documents\\CapstonePlan\\plans\\05_delta-probed-ir-pipeline\\probes\\results_m1\\anharmonic_step_2026-11-16\\stored_field_demo\\benzene",
+ "status": "applied",
+ "reason": null,
+ "1_steps_within_tolerance": {
+  "passed": false,
+  "tolerance_cm": 1.0,
+  "largest_difference_cm": 1.7,
+  "bands_beyond": [
+   {
+    "omega_cm": 3241.6,
+    "run": -130.9,
+    "reference": -132.6
+   },
+   {
+    "omega_cm": 3241.6,
+    "run": -130.9,
+    "reference": -132.6
+   }
+  ]
+ },
+ "2_no_band_lost": {
+  "passed": false,
+  "stepped": {
+   "run": 26,
+   "reference": 28,
+   "of": 30
+  },
+  "bands_lost": [
+   {
+    "omega_cm": 1691.0,
+    "reason": "no-xtb-partner"
+   },
+   {
+    "omega_cm": 1691.0,
+    "reason": "no-xtb-partner"
+   }
+  ]
+ },
+ "3_degenerate_pairs_equal": {
+  "passed": true,
+  "pairs": 8,
+  "unequal": []
+ },
+ "4_time_and_memory_recorded": {
+  "passed": true,
+  "seconds": 458.1,
+  "peak_memory_mb": 1042,
+  "unit": "m08-anharmonic-benzene-a69245e344.scope"
+ },
+ "passed": false
+}
