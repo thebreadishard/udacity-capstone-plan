@@ -64,3 +64,49 @@ def test_the_carried_models_index_names_the_two_hold_out_twins():
         pytest.skip("the carried models or the manifest are not on this machine")
     held = {v[1][0] for v in S.leaks(S.load(models)).values()}
     assert held == {"A_07cadc7923", "A_3100da3761"}                                  # 2-naphthoic acid and benzonitrile (30 Oct 2026)
+
+
+CATIONS = {"P3c_benz": "c1ccccc1", "P3c_tol": "Cc1ccccc1", "P3c_naph": "c1ccc2ccccc2c1"}
+WITH_CATIONS = S.build({"A_naph", "B_twin", "P3c_benz", "P3c_tol"}, {"a": {"A_benz", "A_cn"}, "b": set()}, SMILES, CATIONS)
+
+
+@pytest.mark.parametrize(("smiles", "listed", "role", "cation"), [
+    ("c1ccccc1", "A_benz", "a", "P3c_benz"),                 # a hold-out molecule whose cation was trained stays held out
+    ("Cc1ccccc1", "B_tol", "catalogue", "P3c_tol"),          # a cation never makes its parent 'trained'
+])
+def test_a_trained_cation_gives_its_parent_a_clause_not_a_role(smiles, listed, role, cation):
+    got = S.status(smiles, WITH_CATIONS, listed)
+    plain = S.status(smiles, SEEN, listed)
+    assert (got["role"], got["ids"], got["cation_trained"]) == (role, plain["ids"], [cation])
+    assert got["text"] == f"{plain['text']}; " + S.TEXT["cation_trained"].format(ids=cation)
+    assert WITH_CATIONS.trained == SEEN.trained and WITH_CATIONS.cations == {"c1ccccc1": ["P3c_benz"], "Cc1ccccc1": ["P3c_tol"]}
+
+
+@pytest.mark.parametrize("smiles", ["c1ccc2ccccc2c1", "N#Cc1ccccc1", "c1ccc2cc3ccccc3cc2c1"])
+def test_a_molecule_without_a_trained_cation_is_unchanged(smiles):
+    assert S.status(smiles, WITH_CATIONS, None) == S.status(smiles, SEEN, None)          # P3c_naph is a row, but was not trained
+
+
+def test_a_cation_twin_is_not_a_leak():
+    assert S.leaks(WITH_CATIONS) == S.leaks(SEEN)
+
+
+def test_an_id_outside_the_manifest_is_refused_beside_cation_rows():
+    with pytest.raises(KeyError, match="A_gone"):
+        S.build({"A_gone", "P3c_benz"}, {"a": set()}, SMILES, CATIONS)
+
+
+def test_load_reads_the_cation_rows_of_the_manifest(tmp_path, monkeypatch):
+    manifest = tmp_path / "manifest.csv"
+    manifest.write_text("id,smiles,layer\nA_benz,c1ccccc1,A\nB_tol,Cc1ccccc1,B\nP3c_benz,c1ccccc1,P3c\n", encoding="utf-8")
+    record = tmp_path / "eval.json"
+    record.write_text(json.dumps({"a": {"per_molecule": {"A_benz": {}}}, "b": {"per_molecule": {}}}), encoding="utf-8")
+    monkeypatch.setattr(S, "MANIFEST", manifest)
+    monkeypatch.setattr(P, "train_ids", lambda models: {"B_tol", "P3c_benz"})
+    monkeypatch.setattr(S.A, "evaluation_records", lambda names: [record])
+    seen = S.load((tmp_path / "m.pt",))
+    assert (seen.trained, seen.holdout, seen.cations) == ({"Cc1ccccc1": ["B_tol"]}, {"c1ccccc1": ("a", ["A_benz"])}, {"c1ccccc1": ["P3c_benz"]})
+    assert S.status("c1ccccc1", seen, "A_benz")["cation_trained"] == ["P3c_benz"]
+    monkeypatch.setattr(P, "train_ids", lambda models: {"B_tol", "P3c_gone"})
+    with pytest.raises(KeyError, match="P3c_gone"):
+        S.load((tmp_path / "m.pt",))
