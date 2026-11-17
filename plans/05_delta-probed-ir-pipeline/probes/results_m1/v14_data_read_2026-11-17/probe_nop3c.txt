@@ -1,0 +1,27 @@
+=== hold-out (a8), corrected-frequency rms per molecule (cm-1)
+                   without P3c, seed 0      with P3c, seed 0       carried, seed 0
+benzophenone                      1.99                  2.43                  3.97
+fluoranthene                      0.95                  1.04                  3.10
+phenanthrene                      1.17                  1.36                  1.43
+biphenylene                       1.87                  1.73                  2.24
+benzene                           1.47                  5.37                  1.54
+phenanthridine                    1.01                  0.97                  1.22
+fluorene                          1.77                  2.25                  2.45
+biphenyl                          2.44                  1.83                  2.54
+
+=== the promotion's cells, single seed
+(a8) ring-ip                       1.22                  1.75                  1.95
+(a8) CH-stretch                    0.60                  1.25                  0.91
+(a8) CH-oop                        1.36                  3.42                  2.47
+(a8) other                         2.57                  2.88                  4.09
+(a8) coupling                     0.127                 0.140                 0.193
+(b) ring-ip                       1.47                  1.89                  2.23
+(b) CH-stretch                    1.58                  2.32                  1.91
+(b) CH-oop                        1.89                  1.51                  2.44
+(b) other                         3.04                  2.95                  3.62
+(b) coupling                     0.149                 0.180                 0.281
+
+=== benzene, first-order error per family (cm-1)
+without P3c, seed 0     ring-ip 0.79  CH-stretch 0.37  CH-oop 1.64  other 2.92
+with P3c, seed 0        ring-ip 4.84  CH-stretch 1.93  CH-oop 8.70  other 5.17
+carried, seed 0         ring-ip 0.96  CH-stretch 0.67  CH-oop 3.00  other 1.10

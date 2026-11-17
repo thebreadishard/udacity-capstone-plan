@@ -1,0 +1,13 @@
+cations in the whole pool: 50 of 1080; manifest P3c rows: 444
+  A_fdc27f1bd1 biphenyl           cation twin P3c_fdc27f1bd1: in manifest, not trained
+  A_8448043181 benzene            cation twin P3c_8448043181: IN THE POOL
+  A_e72997e726 fluorene           cation twin P3c_e72997e726: in manifest, not trained
+  A_541c53d1a5 phenanthrene       cation twin P3c_541c53d1a5: in manifest, not trained
+  A_428228e5a5 fluoranthene       cation twin P3c_428228e5a5: in manifest, not trained
+  A_07cadc7923 2-naphthoic_acid   cation twin P3c_07cadc7923: IN THE POOL
+  A_08dde334d8 benzophenone       cation twin P3c_08dde334d8: in manifest, not trained
+  A_3100da3761 benzonitrile       cation twin P3c_3100da3761: in manifest, not trained
+  A_bce5bae234 phenanthridine     cation twin P3c_bce5bae234: none
+  A_72b86c2331 biphenylene        cation twin P3c_72b86c2331: none
+cations trained, by core: {'naphthalene': 14, 'benzene': 13, 'quinoline': 4, 'pyridine': 4, 'phenanthrene': 4, 'anthracene': 4, 'pyrene': 4, 'fluoranthene': 3}
+the twin-drop of the trainer: drop ['B_3100da3761', 'B_07cadc7923']

@@ -453,3 +453,16 @@ and the reason is benzene's out-of-plane modes. Across the 45 rung-C records on 
 cations of P3, twins kept or dropped), with a handful at 3.0–3.4; 4.2–5.4 appears only in the trainings of 15–17 November — in 3 of
 12 — whose pools are the first with the layer P3c, the 222 newly analytic labels and the low-mode repair. Which of the three it is
 is not known; a training of seed 0 without P3c is the first test (TASKS 253).
+
+**The cause, 17 November 2026, 11:2x (`probes/results_m1/v14_data_read_2026-11-17/probe_nop3c.txt`, `cation_twins.txt`): the benzene radical cation is in the
+training pool.** The probe — seed 0 of the whole-pool recipe without the layer P3c (the 50 cations with analytic labels), everything
+else equal, 1,032 molecules, early stop at epoch 195 — reads benzene at 1.47 cm⁻¹ (with P3c 5.37, the carried version's seed 0 1.54);
+its CH-oop modes 1.64 against 8.70 and 3.00, ring-ip 0.79 against 4.84. On a single seed it is below the carried version's seed 0 in
+all ten promotion cells ((a8) CH-oop 1.36 against 2.47, CH-stretch 0.60 against 0.91; (b) CH-oop 1.89 against 2.44). And P3c holds
+`P3c_8448043181`, 'benzene+' — the radical cation of hold-out (a)'s benzene, the same skeleton (and `P3c_07cadc7923`, the cation of
+2-naphthoic acid, already outside the clean eight). The trainer's twin rule (TASKS 157) drops a neutral twin under another id and
+not a charged one, so hold-out (a)'s definition — never trained on in any form — was broken for benzene by a cation, and the network
+gave neutral benzene the correction of its Jahn–Teller-distorted cation. Earlier I wrote that P3c holds five-rings and aza rings: it
+holds the cations; the aza and five-ring molecules are P3. Two conclusions, stated as such: (i) the measurement pool must drop a
+hold-out molecule's twin in every charge state; (ii) the network's charge input does not keep a cation's correction off its neutral
+skeleton — for the product that is a question of its own (a user's neutral molecule whose cation was trained).

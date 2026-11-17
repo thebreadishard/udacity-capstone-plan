@@ -711,5 +711,12 @@
   "version": "",
   "chain": "v14 search",
   "note": "v1.4 search (Design_2026-10-26_DeltaH_v1.4_Recipe_and_Search.md): a model of the search, not a version"
+ },
+ "v14/E7_rungC_v14s3nop3c_c00_control_model_n1032_seed0.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "v14 search",
+  "note": "v1.4 search (Design_2026-10-26_DeltaH_v1.4_Recipe_and_Search.md): a model of the search, not a version"
  }
 }
