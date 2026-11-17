@@ -5,8 +5,8 @@ neutral parent's SMILES, and a cation is not its parent — read from the corpus
 
 `any_charge` keys by the canonical SMILES alone: the network carries a charged twin's correction onto its neutral skeleton, so the
 radical cation of a hold-out molecule is no held-out test either (TASKS 253: a probe without the P3c layer took benzene's read from 5.37
-to 1.47 cm⁻¹). rungC_eval_saved's hold-out and --eval-ids-file reads and release_checks' check 3 check with it; the trainer under
---holdout-twins drop-any-charge."""
+to 1.47 cm⁻¹). rungC_eval_saved's hold-out (b) and --eval-ids-file reads refuse such a twin and its hold-out (a) read names it (the clean eight
+decide there), release_checks' check 3 refuses it; the trainer drops it under --holdout-twins drop-any-charge."""
 from __future__ import annotations
 
 import csv

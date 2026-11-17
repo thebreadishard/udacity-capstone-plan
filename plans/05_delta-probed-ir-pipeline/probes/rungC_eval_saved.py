@@ -86,12 +86,17 @@ def listed_sets(specs: list) -> dict[str, tuple[str, list[str]]]:
     return out
 
 
-def refuse_trained(label: str, listed: list, trained: set, keys: dict) -> None:
-    """A set with a molecule the model trained on, by id or as a twin of any charge (`keys`: `holdout_twins.manifest_keys`), is no
-    test (TASKS 157, 253)."""
+def refuse_overlap(label: str, listed: list, trained: set) -> None:
+    """A set with a molecule the model trained on under its own id is no test."""
     overlap = sorted(set(listed) & trained)
     if overlap:
         raise SystemExit(f"{label}: {len(overlap)} ids are in the model's training set ({', '.join(overlap[:5])}) — not a test")
+
+
+def refuse_trained(label: str, listed: list, trained: set, keys: dict) -> None:
+    """A set with a molecule the model trained on, by id or as a twin of any charge (`keys`: `holdout_twins.manifest_keys`), is no
+    test (TASKS 157, 253)."""
+    refuse_overlap(label, listed, trained)
     twins = HT.twins(sorted(trained), listed, keys, any_charge=True)
     if twins:
         raise SystemExit(f"{label}: the training set holds {len(twins)} of its molecules under other ids or charges "
@@ -133,18 +138,30 @@ def release_sets(a: argparse.Namespace, mols: dict, held: dict[str, list], tr: l
     return [(NK.insample_name(name), ids, meta) for name, (ids, meta) in named.items()]
 
 
+def holdout_a_twins(held_a: list, trained: set, keys: dict) -> list[str]:
+    """Built-in hold-out (a): an id overlap is refused, a twin of any charge is named and not refused. Since 16 Nov 2026 its ten
+    decide nothing — the clean eight, an --eval-ids-file set, decide — and the carried version (chain 35) trained two of its
+    molecules' neutral twins, which the search's final chain reads again (TASKS 157, 253)."""
+    refuse_overlap("hold-out (a)", held_a, trained)
+    twins = HT.twins(sorted(trained), held_a, keys, any_charge=True)
+    if twins:
+        print(f"hold-out (a): the model trained twins of {len(twins)} of its molecules ({', '.join(twins)}) — not a held-out read for those "
+              "molecules; the clean eight decide", flush=True)
+    return twins
+
+
 def measurement_sets(a: argparse.Namespace, mols: dict, held: dict[str, list], tr: list, substituted: list) -> list[tuple[str, list, dict]]:
     """Hold-outs (a) and (b) — (b) on the frozen list when given, the derived ids outside it apart as (b+) — and every --eval-ids-file
-    set; none, built in or listed, shares a molecule with the training set by id or as a twin of any charge (`refuse_trained`). Each
-    as (name, ids, what the record says about the set)."""
+    set; none shares a molecule with the training set by id or, except hold-out (a) (`holdout_a_twins`: named in its record under
+    "trained_twins"), as a twin of any charge (`refuse_trained`). Each as (name, ids, what the record says about the set)."""
     keys = HT.manifest_keys(a.molecules)
-    for name in ("a", "b"):
-        refuse_trained(f"hold-out ({name})", held[name], set(tr), keys)
+    trained_twins = holdout_a_twins(held["a"], set(tr), keys)
+    refuse_trained("hold-out (b)", held["b"], set(tr), keys)
     test_b, b_plus = held["b"], []
     if a.holdout_b_file:
         test_b, b_plus = split_holdout_b(test_b, read_ids(a.holdout_b_file), mols)
     extra = eval_sets(a.eval_ids_file, mols, tr, keys, substituted)
-    return ([("a", held["a"], {}), ("b", test_b, {})] + ([("b+", b_plus, {})] if b_plus else [])
+    return ([("a", held["a"], {"trained_twins": trained_twins}), ("b", test_b, {})] + ([("b+", b_plus, {})] if b_plus else [])
             + [(name, s["ids"], {k: s[k] for k in ("file", "dropped", "n_analytic")}) for name, s in extra.items()])
 
 

@@ -58,17 +58,31 @@ def test_eval_sets_refuse_a_trained_molecule_under_another_id_or_charge(tmp_path
     assert ES.eval_sets([f"s5={f}"], admitted={"x1": 0, "x2": 0}, train_ids=["p1"], keys=KEYS)["s5"]["ids"] == ["x1", "x2"]
 
 
-def test_the_built_in_hold_outs_refuse_a_trained_molecule_by_id_or_as_a_twin_of_any_charge(monkeypatch):
-    """Hold-outs (a) and (b) pass the same check as an --eval-ids-file set (TASKS 157, 253)."""
+def test_the_built_in_hold_out_b_refuses_a_trained_molecule_by_id_or_as_a_twin_of_any_charge(monkeypatch):
+    """Hold-out (b) decides: it passes the same check as an --eval-ids-file set (TASKS 157, 253); so does an id overlap with (a)."""
+    monkeypatch.setattr(ES.HT, "manifest_keys", lambda molecules: KEYS)
+    a = argparse.Namespace(holdout_b_file=None, eval_ids_file=[], molecules="corpus/molecules")
+    held = {"a": ["x2"], "b": ["x1"]}
+    assert [s[0] for s in ES.measurement_sets(a, {}, held, ["p1"], [])] == ["a", "b"]
+    for trained, why in ((["x1"], r"hold-out \(b\): 1 ids are in the model's training set \(x1\)"),
+                         (["x2"], r"hold-out \(a\): 1 ids are in the model's training set \(x2\)"),
+                         (["P3c_x1"], r"hold-out \(b\): the training set holds 1 of its molecules under other ids or charges \(P3c_x1\)"),
+                         (["B_twin"], r"hold-out \(b\): .* \(B_twin\) — not a test \(TASKS 157, 253\)")):
+        with pytest.raises(SystemExit, match=why):
+            ES.measurement_sets(a, {}, held, trained, [])
+
+
+def test_the_built_in_hold_out_a_names_its_trained_twins_and_reads_on(monkeypatch, capsys):
+    """Hold-out (a)'s ten decide nothing since 16 Nov (the clean eight do), and the carried version trained two of its molecules'
+    neutral twins: a twin of any charge is named in the log and the record, not refused."""
     monkeypatch.setattr(ES.HT, "manifest_keys", lambda molecules: KEYS)
     a = argparse.Namespace(holdout_b_file=None, eval_ids_file=[], molecules="corpus/molecules")
     held = {"a": ["x1"], "b": ["x2"]}
-    assert [s[0] for s in ES.measurement_sets(a, {}, held, ["p1"], [])] == ["a", "b"]
-    for trained, why in ((["x2"], r"hold-out \(b\): 1 ids are in the model's training set \(x2\)"),
-                         (["P3c_x1"], r"hold-out \(a\): the training set holds 1 of its molecules under other ids or charges \(P3c_x1\)"),
-                         (["B_twin"], r"hold-out \(a\): .* \(B_twin\) — not a test \(TASKS 157, 253\)")):
-        with pytest.raises(SystemExit, match=why):
-            ES.measurement_sets(a, {}, held, trained, [])
+    sets = ES.measurement_sets(a, {}, held, ["B_twin", "P3c_x1", "p1"], [])
+    assert sets[0] == ("a", ["x1"], {"trained_twins": ["B_twin", "P3c_x1"]}) and sets[1] == ("b", ["x2"], {})
+    assert ("hold-out (a): the model trained twins of 2 of its molecules (B_twin, P3c_x1) — not a held-out read for those molecules; the "
+            "clean eight decide") in capsys.readouterr().out
+    assert ES.measurement_sets(a, {}, held, ["p1"], [])[0][2] == {"trained_twins": []}
 
 
 def test_eval_sets_refuse_a_taken_name_or_a_malformed_spec(tmp_path):
