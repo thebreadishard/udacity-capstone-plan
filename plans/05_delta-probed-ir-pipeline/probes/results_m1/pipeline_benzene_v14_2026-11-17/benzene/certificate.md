@@ -1,4 +1,4 @@
-# Certificate — benzene · pipeline 0.11 · 2026-11-17 23:37
+# Certificate — benzene · pipeline 0.11 · 2026-11-18 00:18
 
 <!-- delivery 1 -->
 
@@ -12,7 +12,7 @@ benzene: the infrared spectrum of ΔH-network v1.4 (3 seeds) — B3LYP/6-31G* co
 - catalogue: listed as A_8448043181 (benzene, rung 5); its export's B3LYP positions lie within 22.8 cm⁻¹ of this run's (website export catalog.json, molecules/A_8448043181.json)
 - the ΔH network: held out, hold-out (a) (A_8448043181): never trained on; the measured error includes it
 - the ωB97X truth is in the corpus (corpus/molecules/A_8448043181/hessian_wb97x_analytic.npz, 30 bands): the network against it, spectrum overlap 0.994; positions paired by rank, rms 2.02 cm⁻¹ (both independent of the atom order)
-- delivery 1 — only: harmonic, the anharmonic step is switched off: 2026-11-17 23:37:13, 2.3 s after the start
+- delivery 1 — only: harmonic, the anharmonic step is switched off: 2026-11-18 00:18:54, 1.5 s after the start
 
 ## Spectrum, band by band (ΔH-network v1.4, 3 seeds)
 
@@ -89,10 +89,10 @@ Beside it the evaluation records' read-outs — the first-order diagonal error o
 
 ## Cost
 
-- Asus18 (laptop): 1.7 s = 0.0 h, € 0.00 ex VAT (corpus ledger machine column 'Asus18'); steps reuse 0.6 s, correction_and_spectra 1.1 s
+- Asus18 (laptop): 1.2 s = 0.0 h, € 0.00 ex VAT (corpus ledger machine column 'Asus18'); steps reuse 0.3 s, correction_and_spectra 0.9 s
 
 ## Provenance
 
-- result C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\pipeline_benzene_v14_2026-11-17\benzene; run at commit 6697fa40 (uncommitted changes: yes); certificate at 6697fa40
+- result C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\pipeline_benzene_v14_2026-11-17\benzene; run at commit 6f74377f (uncommitted changes: yes); certificate at 6f74377f
 - deck 9e27bf8e934893f3; low level null; host Asus18
 - models: E7_rungC_v14s3clean_c00_control_model_n1082_seed0.pt (carried, sha16 89574ed1b69c4e10); E7_rungC_v14s3clean_c00_control_model_n1082_seed1.pt (carried, sha16 03dbbf9f29b59186); E7_rungC_v14s3clean_c00_control_model_n1082_seed2.pt (carried, sha16 8dd85f3f1ba5bbeb)

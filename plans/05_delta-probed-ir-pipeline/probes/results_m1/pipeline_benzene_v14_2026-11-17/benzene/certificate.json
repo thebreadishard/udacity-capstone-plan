@@ -1,6 +1,6 @@
 {
  "kind": "live certificate",
- "date": "2026-11-17 23:37",
+ "date": "2026-11-18 00:18",
  "pipeline_version": "0.11",
  "molecule": {
   "name": "benzene",
@@ -1237,29 +1237,29 @@
   {
    "number": 1,
    "delivery": "only: harmonic, the anharmonic step is switched off",
-   "at": "2026-11-17 23:37:13",
-   "seconds_since_start": 2.3,
+   "at": "2026-11-18 00:18:54",
+   "seconds_since_start": 1.5,
    "final_by": null
   }
  ],
  "delivery": 1,
  "cost": {
   "steps_s": {
-   "reuse": 0.6,
-   "correction_and_spectra": 1.1
+   "reuse": 0.3,
+   "correction_and_spectra": 0.9
   },
   "machine": "Asus18",
   "machine_class": "laptop",
-  "seconds": 1.7,
+  "seconds": 1.2,
   "hours": 0.0,
   "eur_ex_vat": 0.0,
   "source": "corpus ledger machine column 'Asus18'"
  },
  "provenance": {
   "result": "C:\\Users\\thebr\\Documents\\CapstonePlan\\plans\\05_delta-probed-ir-pipeline\\probes\\results_m1\\pipeline_benzene_v14_2026-11-17\\benzene",
-  "run_commit": "6697fa4012be9bfe3a5c637382497f842502e258",
+  "run_commit": "6f74377f12def24125b504179f359fad118c1f28",
   "run_dirty": "yes",
-  "certificate_commit": "6697fa40",
+  "certificate_commit": "6f74377f",
   "deck_sha16": "9e27bf8e934893f3",
   "low_level_software": null,
   "host": "Asus18",
