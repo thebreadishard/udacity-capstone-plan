@@ -1,0 +1,14 @@
+--- superseded_2026-11-01/A_8448043181
+    dipole_b3lyp_cphf.npz           2026-10-02 17:11  sha16 20256bd6c154ebdc
+    hessian_b3lyp_analytic.npz      2026-09-23 14:10  sha16 a5aac927c42fd8b0
+--- molecules/A_8448043181
+    dipole_b3lyp_cphf.npz           2026-11-02 02:02  sha16 0c6dbfdb9ef1905d
+    dipole_b3lyp_fd.npz             2026-10-02 17:05  sha16 eec8deaf6e207abd
+    hessian_b3lyp.npz               2026-09-15 17:06  sha16 a9edce6003c90609
+    hessian_b3lyp_analytic.npz      2026-11-02 02:00  sha16 3a78b6f3711fa348
+    hessian_b3lyp_densegrid.npz     2026-09-15 17:19  sha16 b0e818cf516675b8
+    hessian_wb97x.npz               2026-09-15 17:11  sha16 1b03dc3271aee0b5
+    hessian_wb97x_analytic.npz      2026-09-23 14:10  sha16 fca8f1a45b125bfd
+    geometry.json                   2026-09-15 17:02  sha16 faf8c13ff08019c5
+hessian_b3lyp_analytic.npz: against superseded_2026-11-01: largest |ΔH| 6.612e-12 hartree/bohr² (largest element 0.743); largest change of a frequency 2.587e-09 cm⁻¹
+hessian_wb97x_analytic.npz: no superseded copy in superseded_2026-11-01 (the file was not replaced then)
