@@ -51,6 +51,7 @@ def stick_differences(a: list[dict], b: list[dict]) -> dict:
 def compare(result: Path, corpus: Path) -> dict:
     rec = json.loads((result / "pipeline.json").read_text(encoding="utf-8"))
     models = tuple(Path(m["path"]) for m in rec["admission"]["models"])
+    P.MR.require_measurement(models, "its spectrum against the corpus's labels of a molecule it may have trained on")   # decision 66
     sym_r, x_r = geometry(result)
     sym_c, x_c = geometry(corpus)
     if sym_r != sym_c:

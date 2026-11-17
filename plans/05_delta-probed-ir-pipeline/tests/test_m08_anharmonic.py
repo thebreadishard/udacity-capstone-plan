@@ -568,7 +568,7 @@ def test_the_step_is_asked_for_with_a_time_budget_checked_up_front(tmp_path, cap
 def stubbed_run(monkeypatch: pytest.MonkeyPatch, calls: list[str], preflight: bool = True) -> None:
     if preflight:
         monkeypatch.setattr(AN, "preflight", lambda: None)            # no WSL is asked in these tests
-    monkeypatch.setattr(P.MR, "require_carried", lambda p: {"status": "carried", "network": P.NETWORK, "version": "pin"})
+    monkeypatch.setattr(P.MR, "require_carried", lambda p, kind=None: {"status": "carried", "network": P.NETWORK, "version": "pin"})
     monkeypatch.setattr(P, "training_set", lambda models: (("C", "H"), (8, 30)))
     monkeypatch.setattr(P, "start_geometry", lambda cfg: calls.append("start_geometry") or ([], None))
     monkeypatch.setattr(P, "optimise", lambda cfg, xyz, opt: {})

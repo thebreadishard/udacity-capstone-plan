@@ -28,6 +28,9 @@ TEXT = {
     "b": "held out, hold-out (b) ({ids}): never trained on; the measured error includes it",
     "catalogue": "in the catalogue ({ids}) but not among the molecules the network trained on",
     "unseen": "not in the catalogue: the network has not seen it",
+    # decision 66 (design note of 17 Nov 2026, §3): the line for a molecule the release networks trained on
+    "release_trained": "in the release networks' training data: the error bars are not an out-of-sample error for this molecule; "
+                       "expect it to be smaller",
 }
 
 
@@ -62,10 +65,23 @@ def leaks(seen: Seen) -> dict[str, tuple[str, list[str], list[str]]]:
     return {c: (seen.holdout[c][0], seen.holdout[c][1], seen.trained[c]) for c in sorted(set(seen.trained) & set(seen.holdout))}
 
 
-def load(models: tuple[Path, ...]) -> Seen:
-    """The index for the models that ran."""
+def neutral_smiles() -> dict[str, str]:
+    """The manifest's neutral rows: id → SMILES."""
     with MANIFEST.open(newline="", encoding="utf-8") as f:
-        smiles_of = {r["id"]: r["smiles"] for r in csv.DictReader(f) if r["layer"] != CATION_LAYER}
+        return {r["id"]: r["smiles"] for r in csv.DictReader(f) if r["layer"] != CATION_LAYER}
+
+
+def release_index(models: tuple[Path, ...]) -> dict[str, list[str]]:
+    """Canonical SMILES → the ids the release networks trained on under it (decision 66). The pipeline's molecules are neutral, and
+    a cation is not its parent, so the cation rows the networks trained on are left out of the index."""
+    smiles_of = neutral_smiles()
+    return by_smiles({i for i in P.train_ids(models) if i in smiles_of}, smiles_of)
+
+
+def load(models: tuple[Path, ...]) -> Seen:
+    """The index for the measurement networks whose records give the error: the models that ran, or — when release networks ran —
+    their version's measurement networks."""
+    smiles_of = neutral_smiles()
     holdout_ids: dict[str, set[str]] = {h: set() for h in A.HOLDOUTS}
     for record in A.evaluation_records(tuple(p.name for p in models)):
         rec = json.loads(record.read_text(encoding="utf-8"))
@@ -74,9 +90,13 @@ def load(models: tuple[Path, ...]) -> Seen:
     return build(P.train_ids(models), holdout_ids, smiles_of)
 
 
-def status(smiles: str, seen: Seen, listed_id: str | None) -> dict:
-    """Trained on, held out, in the catalogue only, or unseen; with the ids and the certificate's sentence."""
+def status(smiles: str, seen: Seen, listed_id: str | None, release_trained: dict[str, list[str]] | None = None) -> dict:
+    """Trained on, held out, in the catalogue only, or unseen; with the ids and the certificate's sentence. `release_trained`
+    (`release_index`) is given when release networks made the spectrum: a molecule in their training data gets decision 66's line,
+    whatever it is to the measurement networks; any other molecule is read as always."""
     c = canonical(smiles)
+    if release_trained is not None and c in release_trained:
+        return {"role": "release_trained", "ids": release_trained[c], "text": TEXT["release_trained"]}
     if c in seen.trained and c in seen.holdout:
         h, held = seen.holdout[c]
         ids = seen.trained[c]

@@ -14,6 +14,7 @@ from .spectrum import shape_accuracy
 
 # isort: split
 # probes/, on the path through m08.pipeline
+import network_kind as NK
 from chain35_read import T1_FAMILY_LINE, T1_RATIO_LINE
 from promotion_read import FAMILIES, QUANTITIES, RATIO, Arm, load_eval_arm, reported
 
@@ -96,10 +97,12 @@ def _model_of(record: Path) -> str:
 
 
 def _records(paths: list[Path]) -> list[dict]:
+    """The evaluation records; one of a release network (decision 66) is refused — it holds no hold-out error."""
     out = []
     for p in paths:
         with open(p, encoding="utf-8") as f:
             out.append(json.load(f))
+        NK.refuse_release(NK.stated_kind(out[-1], p.name), p.name, "its read-outs on the hold-outs")
     return out
 
 
@@ -119,6 +122,7 @@ def product_error_record(models: tuple[str, ...], sha16: dict[str, str] | None =
                              f"record with `{PRODUCT_COMMAND}` (it reads the registry's carried models)")
     with open(path, encoding="utf-8") as f:
         rec = json.load(f)
+    NK.refuse_release(NK.stated_kind(rec, path.name), path.name, "its product error on the hold-outs")
     if sorted(rec["models"]) != sorted(models):
         raise ValueError(f"{path.name} was read on {rec['models']}, not on {list(models)}; make it again with `{PRODUCT_COMMAND}`")
     ran = {n: P.sha16(M05_OUT / n) for n in models if (M05_OUT / n).is_file()} if sha16 is None else sha16
@@ -219,7 +223,7 @@ def stated_errors(accuracy: dict) -> tuple[str, dict[str, dict[str, float]]]:
 
 def carried_version() -> str:
     status = P.MR.read_status(P.MR.STATUS_FILE)
-    versions = {status[m.name]["version"] for m in P.carried_models()}
+    versions = {status[m.name]["version"] for m in P.carried_models(NK.MEASUREMENT)}
     if len(versions) != 1:
         raise RuntimeError(f"the carried ΔH-network files are of {len(versions)} versions: {sorted(versions)}")
     return versions.pop()
@@ -227,6 +231,7 @@ def carried_version() -> str:
 
 def carried_accuracy() -> dict:
     """The error of the carried version, both quantities: the evaluation records and the product-error record of the registry's carried
-    ΔH-network files. A carried version without a product-error record raises `NoProductError` with the command that makes it."""
-    names = tuple(m.name for m in P.carried_models())
+    measurement networks (decision 66: an error is never read on the release networks). A carried version without a product-error
+    record raises `NoProductError` with the command that makes it."""
+    names = tuple(m.name for m in P.carried_models(NK.MEASUREMENT))
     return accuracy_of(names) | {"version": carried_version()}

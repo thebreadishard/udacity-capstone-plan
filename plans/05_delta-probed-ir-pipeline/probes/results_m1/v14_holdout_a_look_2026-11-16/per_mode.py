@@ -18,6 +18,9 @@ for _p in (M05 / "m05", M05 / "corpus", PLAN / "probes"):
 import rungC_infer as RI  # noqa: E402
 import rungC_train as RT  # noqa: E402
 from learning_curve_layerA import normal_modes  # noqa: E402
+from model_registry import require_measurement  # noqa: E402
+
+require_measurement([M05 / "out" / arg.split("=", 1)[1] for arg in sys.argv[3:]], "its error on a corpus molecule")   # decision 66
 
 molecule = sys.argv[2]
 folder = M05 / "corpus" / "molecules" / molecule

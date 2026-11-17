@@ -53,7 +53,7 @@ def main() -> None:
         raise SystemExit(f"{a.out} exists: a batch is never overwritten")
     with S.MANIFEST.open(newline="", encoding="utf-8") as f:
         manifest = {r["id"]: r for r in csv.DictReader(f)}
-    rows = batch_rows(read_ids(a.ids), manifest, S.load(P.carried_models()))
+    rows = batch_rows(read_ids(a.ids), manifest, S.load(P.carried_models(P.NK.MEASUREMENT)))
     a.out.mkdir(parents=True)
     with open(a.out / "batch.tsv", "w", newline="", encoding="utf-8") as f:
         csv.writer(f, delimiter="\t").writerows(rows)

@@ -271,6 +271,7 @@ def main(argv: list[str] | None = None) -> int:
     seed_match = MODEL_NAME.search(a.model.name)
     seed = int(seed_match.group(1)) if seed_match else 0
     status = MR.require_carried(a.model, allow=a.allow_any_model)
+    MR.require_measurement([a.model], "a fine-tune that is then measured on molecules held out of it")   # decision 66
     torch.set_num_threads(a.threads)
     torch.manual_seed(seed)
     t0 = time.time()

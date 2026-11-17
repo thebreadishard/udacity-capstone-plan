@@ -146,29 +146,79 @@ def licence_block(lic: dict) -> dict:
     return {k: lic[k] for k in ("statement", "rule_source", "licensed_families", "quantity", "quantity_name", "caveats")}
 
 
-def statement(name: str, version: str, n_seeds: int, lic: dict, seen_text: str) -> str:
+# design note of 17 Nov 2026, §3, word for word: what made the spectrum, how each network used the molecules (`NK.fitting_sentence`,
+# its numbers from the seed count and the inner-validation share), whose error is stated
+RELEASE_MADE = "The spectrum is made by the release networks of version {version}, trained on all {n} molecules with labels"
+RELEASE_MEASURED = (". Its error bars were measured on the measurement networks of the same version — the same recipe trained without the "
+                    "hold-out molecules — on molecules those networks never saw; the release networks themselves have seen every molecule "
+                    "we hold labels for, so they have no held-out error of their own.")
+HELD_BACK_SENTENCE = ("Version {version} has release networks, and they did not make this spectrum: {reason}. It is made by the "
+                      "measurement networks, whose error was measured on molecules they never saw.")
+
+
+@dataclass(frozen=True)
+class MadeBy:
+    """Decision 66's part of a certificate: the number of molecules the release networks that made the spectrum trained on, or why
+    the version's release networks did not make it. Neither: measurement networks made it and the version has no other."""
+
+    release_trained_on: int | None = None
+    held_back: str | None = None
+    inner_validation: float = 0.0          # the share of the molecules each release network was stopped on, not fitted on
+
+
+NO_RELEASE = MadeBy()
+
+
+def release_sentence(version: str, n_seeds: int, made_by: MadeBy) -> str:
+    """Design note §3's sentence for a spectrum the release networks made. 'Trained on all N' is said with what each network did
+    with the N: under inner validation it is fitted on a part and stopped on the rest."""
+    fitted = f": {P.NK.fitting_sentence(n_seeds, made_by.inner_validation)}" if made_by.inner_validation else ""
+    return RELEASE_MADE.format(version=version, n=made_by.release_trained_on) + fitted + RELEASE_MEASURED
+
+
+def statement(name: str, version: str, n_seeds: int, lic: dict, seen_text: str, made_by: MadeBy = NO_RELEASE) -> str:
     """The certificate's opening sentence; it names the licensed families, so the licence's caveat follows it. It says what the
     licence is a statement about — the harmonic position ω; which position each band is printed at is the paragraph after it
-    (`positions.note`)."""
+    (`positions.note`). When release networks made the spectrum, design note §3's sentence stands in place of 'with the error
+    measured on molecules the network never saw', and the error is named as the measurement networks'."""
+    opening = f"{name}: the infrared spectrum of {P.NETWORK} v{version} ({n_seeds} seeds) — B3LYP/6-31G* corrected toward {A.HIGHER_LEVEL.split(' (')[0]}"
+    if made_by.release_trained_on is None:
+        measured = f" — with the {lic['quantity_name']} measured on molecules the network never saw; the "
+    else:
+        measured = (f". {release_sentence(version, n_seeds, made_by)} The error stated is the measurement networks' "
+                    f"{lic['quantity_name']}; the ")
     return " ".join(filter(None, [
-        f"{name}: the infrared spectrum of {P.NETWORK} v{version} ({n_seeds} seeds) — B3LYP/6-31G* corrected "
-        f"toward {A.HIGHER_LEVEL.split(' (')[0]} — with the {lic['quantity_name']} measured on molecules the network never saw; the "
+        f"{opening}{measured}"
         f"harmonic positions ω are licensed for {', '.join(lic['licensed_families']) or 'no family'} (decision 65), each band marked; at "
         f"the coupled-cluster level {A.CC_NOTE}. The scaled B3LYP spectrum is shown as the baseline only. This molecule and the "
         f"ΔH network: {seen_text}.",
+        HELD_BACK_SENTENCE.format(version=version, reason=made_by.held_back) if made_by.held_back else None,
         caveat_sentence(lic)]))
+
+
+def error_bar_models(adm: dict) -> list[dict]:
+    """The registry entries of the networks whose records give the error: the measurement networks beside release networks that ran
+    (decision 66), else the models that ran — every record written before the decision, and every run of measurement networks."""
+    return adm.get("measurement_models") or adm["models"]
 
 
 def certificate(folder: Path, catalog: Catalog) -> dict:
     r = load_result(folder)
     rec, adm = r.record, r.record["admission"]
-    accuracy = A.accuracy_of(r.models, {PureWindowsPath(m["path"]).name: m["sha16"] for m in adm["models"]})
+    measured = error_bar_models(adm)
+    released = bool(adm.get("measurement_models"))
+    ran = tuple(Path(m["path"]) for m in adm["models"])
+    sha16 = {PureWindowsPath(m["path"]).name: m["sha16"] for m in measured}
+    accuracy = A.accuracy_of(tuple(sha16), sha16)
     w_low = RINT.mode_intensities(r.H_low, r.masses, r.apt)[0]
     listed = listing(adm["smiles"], [float(w) for w in w_low], catalog)
     tolerance = catalog.u_band(listed["name"] if listed else rec["name"])
     version = {m["version"] for m in adm["models"]}.pop()
     lic = licence_state(accuracy)
-    seen = S.status(adm["smiles"], S.load(tuple(Path(m["path"]) for m in adm["models"])), listed["id"] if listed else None)
+    seen = S.status(adm["smiles"], S.load(tuple(Path(m["path"]) for m in measured)), listed["id"] if listed else None,
+                    S.release_index(ran) if released else None)
+    made_by = MadeBy(len(P.train_ids(ran)) if released else None, adm.get("release_held_back"),
+                     P.inner_validation_share(ran) if released else 0.0)
     truth = S.truth_beside(listed["id"], rec["spectra"]["network"]["sticks"]) if listed else None
     summary = POS.summary_of(rec["spectra"])
     return dict(
@@ -176,7 +226,10 @@ def certificate(folder: Path, catalog: Catalog) -> dict:
         molecule=dict(name=rec["name"], smiles=adm["smiles"], formula=adm["formula"], n_atoms=adm["n_atoms"], elements=adm["elements"],
                       training_atoms=adm["training_atoms"], inside_training_sizes=adm["inside_training_sizes"], listed=listed,
                       seen=seen, truth=truth),
-        network=dict(name=P.NETWORK, version=version, models=adm["models"], predicts=A.HIGHER_LEVEL),
+        network=dict(name=P.NETWORK, version=version, models=adm["models"], predicts=A.HIGHER_LEVEL)
+        | ({"kind": P.NK.RELEASE, "trained_on_molecules": made_by.release_trained_on, "inner_validation": made_by.inner_validation,
+            "measurement_models": measured} if released else {})
+        | ({"release_held_back": made_by.held_back} if made_by.held_back else {}),
         accuracy=accuracy, bands=bands(r, accuracy, tolerance, lic["licensed_families"]),
         tolerance=dict(per_region=tolerance, rule=FAMILY_SOURCE),
         licence=licence_block(lic) | {"concerns": POS.LICENCE_SCOPE},
@@ -187,7 +240,7 @@ def certificate(folder: Path, catalog: Catalog) -> dict:
                         certificate_commit=commit_hash(), deck_sha16=rec["deck"]["sha16"], low_level_software=rec["low_level"]["b3lyp"].get("software"),
                         host=rec["provenance"]["host"], note=POS.note(summary),
                         reused_from=rec["reuse"]["source"] if "reuse" in rec and rec["reuse"]["reused"] else None),
-        statement=statement(rec["name"], version, len(r.models), lic, seen["text"]))
+        statement=statement(rec["name"], version, len(r.models), lic, seen["text"], made_by))
 
 
 def _position_lines(bands: list[dict]) -> list[str]:
@@ -328,8 +381,18 @@ def to_markdown(c: dict) -> str:
          + ", ".join(f"{s} {v} s" for s, v in k["steps_s"].items()), "", "## Provenance", "",
          f"- result {p['result']}; run at commit {p['run_commit'][:8]} (uncommitted changes: {p['run_dirty']}); certificate at {p['certificate_commit']}",
          f"- deck {p['deck_sha16']}; low level {json.dumps(p['low_level_software'], ensure_ascii=False)}; host {p['host']}",
-         "- models: " + "; ".join(f"{Path(x['path']).name} ({x['status']}, sha16 {x['sha16']})" for x in n["models"]), ""]
+         "- models: " + "; ".join(f"{Path(x['path']).name} ({x['status']}, sha16 {x['sha16']})" for x in n["models"]),
+         *_measurement_lines(n), ""]
     return "\n".join(L)
+
+
+def _measurement_lines(network: dict) -> list[str]:
+    """Under release networks: the measurement networks whose records give the error bars; nothing otherwise."""
+    if "measurement_models" not in network:
+        return []
+    return [f"- the models above are release networks, trained on {network['trained_on_molecules']} molecules: "
+            f"{P.NK.fitting_sentence(len(network['models']), network['inner_validation'])}; the error bars are those of the "
+            "measurement networks: " + "; ".join(f"{Path(x['path']).name} (sha16 {x['sha16']})" for x in network["measurement_models"])]
 
 
 def write(c: dict, folder: Path) -> tuple[Path, Path]:

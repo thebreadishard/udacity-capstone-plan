@@ -81,3 +81,12 @@ def test_the_same_cap_is_refused(tmp_path):
     old = write_run(tmp_path, "old", 200, OLD_VALS, record(200))
     r = run(old, old)
     assert r.returncode != 0 and "not above the old cap" in r.stderr
+
+
+def test_the_settings_filled_from_the_table_are_named(tmp_path):
+    old = write_run(tmp_path, "old", 200, OLD_VALS, record(200))
+    new = write_run(tmp_path, "new", 500, OLD_VALS, record(500))
+    r = run(old, new)
+    assert r.returncode == 0, r.stdout + r.stderr
+    assert ("settings absent from a record, read from m05/rungC_settings_added.py: old holdout_twins, lr_schedule, network_kind, "
+            "weight_decay; new lr_schedule, network_kind") in r.stdout

@@ -57,14 +57,15 @@ import numpy as np
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from . import reuse as R
-from .progress import Progress
 from .catalog import PLAN, Catalog
+from .progress import Progress
 from .spectrum import cheap_apt, series
 
 M05 = PLAN / "modules" / "05_support_predictor"
 for _p in (M05 / "m05", M05 / "corpus", PLAN / "probes", PLAN / "src"):
     sys.path.insert(0, str(_p))
 import model_registry as MR  # noqa: E402  (module 05's code is not a package)
+import network_kind as NK  # noqa: E402
 import run_corpus as RC  # noqa: E402
 import rungC_infer as RI  # noqa: E402
 import rungC_train as RT  # noqa: E402
@@ -90,6 +91,7 @@ PYSCF_HEADROOM_MB = 584                # pyscf's max_memory below the cap: probe
 KILLED_AT_CAP = (137, 143)             # wsl_capped.sh's kill, and the systemd scope's (probes/cation_oom_check.sh)
 APT_FAILED = 3                         # analytic_hessians.py: the Hessian is written, the APT failed its checks
 CORRECTION = "correction.npz"
+RELEASE_CHECKS_SUFFIX = "_release_checks.json"   # probes/release_checks.py's record beside the release checkpoints
 TRUTH_HESSIAN = "hessian_wb97x_analytic.npz"   # a corpus folder's ωB97X Hessian: the network's target
 REUSE_SETTINGS = R.Settings(deck=RC.DECK, grid=LOW_GRID, cphf_bound=CPHF_BOUND, sum_rule_limit=SUM_RULE_LIMIT)
 
@@ -102,10 +104,53 @@ class Refused(Exception):
         self.reasons = reasons
 
 
-def carried_models() -> tuple[Path, ...]:
-    """The ΔH network's carried checkpoints in the model registry (decision 55), one file per seed."""
-    status = MR.read_status(MR.STATUS_FILE)
-    return tuple(sorted(MR.OUT / k for k, e in status.items() if e["network"] == NETWORK and e["status"] == "carried"))
+def carried_models(kind: str) -> tuple[Path, ...]:
+    """The carried ΔH-network version's checkpoints of one kind in the model registry (decisions 55 and 66), one file per seed:
+    `NK.MEASUREMENT` for anything that reads an error, `NK.RELEASE` for the networks trained on the hold-outs too (none until a
+    version has them)."""
+    return tuple(sorted(MR.OUT / k for k in MR.carried_keys(MR.read_status(MR.STATUS_FILE), NETWORK, kind)))
+
+
+@dataclass(frozen=True)
+class ProductNetworks:
+    """The networks step 4 runs (decision 66), and why a carried version's release networks are not among them when they exist."""
+
+    models: tuple[Path, ...]
+    kind: str
+    held_back: str | None = None
+
+
+def release_checks_reason(release: tuple[Path, ...], measurement: tuple[Path, ...]) -> str | None:
+    """None when `probes/release_checks.py`'s record beside the release checkpoints passed for exactly these files of both kinds
+    (names, and hashes where this machine has the files); else why the release networks may not be run."""
+    stems = {p.name.partition("_model_")[0] for p in release}
+    if len(stems) != 1:
+        return f"the release checkpoints are of {len(stems)} stems ({sorted(stems)}); one version's share one"
+    path = release[0].parent / f"{stems.pop()}{RELEASE_CHECKS_SUFFIX}"
+    if not path.is_file():
+        return f"no checks record {path.name} beside them (python probes/release_checks.py makes it)"
+    rec = json.loads(path.read_text(encoding="utf-8"))
+    if rec.get("passed") is not True:
+        return f"{path.name} refused them: {'; '.join(rec.get('refusals', [])) or 'no reason recorded'}"
+    for kind, files in ((NK.RELEASE, release), (NK.MEASUREMENT, measurement)):
+        if sorted(rec[kind]) != sorted(p.name for p in files):
+            return f"{path.name} checked other {kind} networks ({', '.join(rec[kind])})"
+        differ = [p.name for p in files if p.is_file() and rec["model_sha16"][p.name] != sha16(p)]
+        if differ:
+            return f"{path.name} checked other files of the same names: {', '.join(differ)}"
+    return None
+
+
+def product_networks() -> ProductNetworks:
+    """What the pipeline ships: the carried version's release networks when it has them and their checks record passed; otherwise
+    its measurement networks, as before decision 66 — with the reason when release networks exist and are held back."""
+    measurement, release = carried_models(NK.MEASUREMENT), carried_models(NK.RELEASE)
+    if not release:
+        return ProductNetworks(measurement, NK.MEASUREMENT)
+    reason = release_checks_reason(release, measurement)
+    if reason:
+        return ProductNetworks(measurement, NK.MEASUREMENT, reason)
+    return ProductNetworks(release, NK.RELEASE)
 
 
 def default_psi4_python() -> Path | None:
@@ -124,7 +169,7 @@ class PipelineConfig(BaseModel):
     xyz: Path | None = None
     charge: int = 0
     multiplicity: int = 1
-    models: tuple[Path, ...] = Field(default_factory=lambda: carried_models())          # looked up at build time, so a test can
+    models: tuple[Path, ...] = Field(default_factory=lambda: product_networks().models)        # looked up at build time, so a test can
     psi4_python: Path | None = Field(default_factory=lambda: default_psi4_python())     # point it at a pin model
     pyscf_python: str = Field(WSL_PYSCF, pattern=r"^[~A-Za-z0-9_./-]+$")
     threads: int = Field(4, ge=1, le=32)
@@ -187,7 +232,9 @@ class PipelineConfig(BaseModel):
 @dataclass(frozen=True)
 class Admission:
     """What the refusal checks read — the molecule's elements and size against the carried models' training set, the models' registry
-    entries — and the canonical SMILES and formula the certificate names the molecule by."""
+    entries — and the canonical SMILES and formula the certificate names the molecule by. When `models` are release networks
+    (decision 66), `measurement_models` are the version's measurement networks, whose records give the error bars; when they are
+    measurement networks although the version has release networks, `release_held_back` says why."""
 
     smiles: str
     formula: str
@@ -196,6 +243,14 @@ class Admission:
     training_elements: tuple[str, ...]
     training_atoms: tuple[int, int]
     models: tuple[dict, ...]
+    measurement_models: tuple[dict, ...] = ()
+    release_held_back: str | None = None
+
+    def record(self) -> dict:
+        """The admission as pipeline.json holds it. The two fields of decision 66 are written only when they say something, so a run
+        of measurement networks alone writes the record it always wrote."""
+        kept = {k: v for k, v in vars(self).items() if k not in ("measurement_models", "release_held_back") or v}
+        return kept | {"inside_training_sizes": self.inside_training_sizes}
 
     @property
     def inside_training_sizes(self) -> bool:
@@ -230,6 +285,24 @@ def train_ids(models: tuple[Path, ...]) -> set[str]:
     return ids
 
 
+def inner_validation_share(models: tuple[Path, ...]) -> float:
+    """The share of its training molecules each model was stopped on and not fitted on (its checkpoint's --inner-val); models of
+    different shares are not one recipe and are refused."""
+    import torch
+
+    shares = {float(torch.load(p, map_location="cpu", weights_only=False)["args"]["inner_val"]) for p in models}
+    if len(shares) != 1:
+        raise ValueError(f"the models were trained with {len(shares)} inner-validation shares ({sorted(shares)}); one recipe has one")
+    return shares.pop()
+
+
+def network_kinds(models: tuple[Path, ...]) -> dict[str, str]:
+    """Each model file's kind (decision 66: measurement or release), from its checkpoint's own saved arguments."""
+    import torch
+
+    return {p.name: NK.kind_of_checkpoint(torch.load(p, map_location="cpu", weights_only=False), p.name) for p in models}
+
+
 def training_set(models: tuple[Path, ...]) -> tuple[tuple[str, ...], tuple[int, int]]:
     """The elements and the atom-count range of the molecules the models were trained on, from each checkpoint's train_ids and the corpus."""
     elements: set[str] = set()
@@ -250,14 +323,50 @@ def model_entries(models: tuple[Path, ...]) -> tuple[list[dict], list[str]]:
     entries, reasons = [], []
     for p in models:
         try:
-            s = MR.require_carried(p)
+            s = MR.require_carried(p, kind=None)                # either kind: `admitted_models` sorts them
         except SystemExit as e:
             reasons.append(str(e))
             continue
-        entries.append({"path": str(p), "sha16": sha16(p), "network": s["network"], "version": s["version"], "status": s["status"]})
+        released = {NK.FIELD: NK.RELEASE} if NK.stated_kind(s, p.name) == NK.RELEASE else {}       # a measurement entry is as it always was
+        entries.append({"path": str(p), "sha16": sha16(p), "network": s["network"], "version": s["version"], "status": s["status"]} | released)
     if len({e["version"] for e in entries}) > 1:
         reasons.append(f"the models are of different versions: {sorted({e['version'] for e in entries})}")
+    if len({NK.stated_kind(e, e["path"]) for e in entries}) > 1:
+        reasons.append("the models are of both kinds, measurement and release (decision 66): step 4 runs the seeds of one")
     return entries, reasons
+
+
+@dataclass(frozen=True)
+class AdmittedModels:
+    """The models' registry entries; for release networks the measurement networks' entries; why release networks are held back."""
+
+    entries: tuple[dict, ...]
+    measurement: tuple[dict, ...] = ()
+    held_back: str | None = None
+
+
+def admitted_models(models: tuple[Path, ...]) -> tuple[AdmittedModels, list[str]]:
+    """`model_entries`, and decision 66's part of the admission. A registry entry whose kind its checkpoint contradicts is refused.
+    Release networks run only with carried measurement networks of their version (the error bars are read on those) and a checks
+    record that passed for exactly these files. Measurement networks run as always; when the carried version has release networks,
+    the reason they are not the ones running goes into the record."""
+    entries, reasons = model_entries(models)
+    if reasons:
+        return AdmittedModels(tuple(entries)), reasons
+    entered = {Path(e["path"]).name: NK.stated_kind(e, e["path"]) for e in entries}
+    reasons = [f"{name} is entered in the registry as a {entered[name]} network and its checkpoint says {kind} (decision 66)"
+               for name, kind in network_kinds(models).items() if kind != entered[name]]
+    measurement, release = carried_models(NK.MEASUREMENT), carried_models(NK.RELEASE)
+    if NK.RELEASE not in entered.values():
+        held_back = (release_checks_reason(release, measurement) or "this run was given the measurement networks") if release else None
+        return AdmittedModels(tuple(entries), held_back=held_back), reasons
+    measured, measured_reasons = model_entries(measurement)
+    if {e["version"] for e in measured} != {e["version"] for e in entries}:
+        reasons.append(f"the release networks are of version {sorted({e['version'] for e in entries})} and the carried measurement networks, "
+                       f"whose records give the error bars, of {sorted({e['version'] for e in measured})}")
+    if reason := release_checks_reason(models, measurement):
+        reasons.append(f"release networks run only after their checks have passed (decision 66): {reason}")
+    return AdmittedModels(tuple(entries), tuple(measured)), reasons + measured_reasons
 
 
 def admit(cfg: PipelineConfig) -> Admission:
@@ -265,7 +374,7 @@ def admit(cfg: PipelineConfig) -> Admission:
     reasons = []
     if cfg.folder.exists() and any(cfg.folder.iterdir()):
         reasons.append(f"{cfg.folder} exists and is not empty: a result is never overwritten")
-    entries, model_reasons = model_entries(cfg.models)
+    admitted, model_reasons = admitted_models(cfg.models)
     reasons += model_reasons
     m = rdkit_molecule(cfg)
     if m is None:
@@ -289,7 +398,7 @@ def admit(cfg: PipelineConfig) -> Admission:
     from rdkit.Chem.rdMolDescriptors import CalcMolFormula
 
     return Admission(Chem.MolToSmiles(Chem.RemoveHs(m)), CalcMolFormula(m), elements, m.GetNumAtoms(), training_elements, training_atoms,
-                     tuple(entries))
+                     admitted.entries, admitted.measurement, admitted.held_back)
 
 
 def canonical_smiles(smiles: str) -> str:
@@ -606,7 +715,7 @@ def run(cfg: PipelineConfig, deliver: Deliver | None = None) -> dict:
     progress.done("spectrum")                                # the six stations are the first delivery's; step 6 has none of its own
     rec = {"pipeline_version": PIPELINE_VERSION, "name": cfg.name,
            "input": {"smiles": cfg.smiles, "xyz": cfg.xyz, "xyz_atom_order": xyz_order(cfg) if cfg.xyz is not None else None},
-           "settings": cfg.model_dump(mode="json"), "admission": vars(adm) | {"inside_training_sizes": adm.inside_training_sizes},
+           "settings": cfg.model_dump(mode="json"), "admission": adm.record(),
            "deck": {"file": str(RC.DECK), "sha16": sha16(RC.DECK)}, "optimisation": {k: psi4.get(k) for k in ("e_opt", "timings_s", "opt_options")},
            "low_level": check, "reuse": reused, "seconds": seconds, "spectra": out, "provenance": launched, "deliveries": []}
     ctx = Delivering(d, t0, deliver, progress)

@@ -31,6 +31,7 @@ import e7_t2_posthoc as PH
 import e7_t2_sqm as T2
 import holdout_twins as HT
 import internal_coords as IC
+import network_kind as NK
 import rungC_history as RH
 import rungC_intensities as RI
 from e7_rungB_pairs import molecule_pairs, readouts
@@ -793,6 +794,7 @@ class Corpus:
     excluded: list = field(default_factory=list)
     substituted: list = field(default_factory=list)
     twins: list = field(default_factory=list)      # pool ids dropped as a hold-out molecule under another id (TASKS 157)
+    release: dict = field(default_factory=dict)    # release networks only: what entered the pool beside the measurement pool (`release_pool`)
 
 
 def select_corpus(cfg: TrainConfig, log) -> Corpus:
@@ -802,6 +804,7 @@ def select_corpus(cfg: TrainConfig, log) -> Corpus:
     if cfg.split == "e6" and cfg.pool_layers:
         keep = set(cfg.pool_layers.split(","))
         pool = [i for i in pool if mols[i]["layer"] in keep]
+    pool, test_a, test_b, release = kind_split(cfg, pool, {"a": test_a, "b": test_b}, substituted, log)
     pool, excluded = exclude_pool_ids(pool, cfg.exclude_ids_file)
     pool, test_s = size_split(pool, nat, cfg.size_test_min_atoms, cfg.pool_max_atoms)
     if test_s or cfg.pool_max_atoms:
@@ -819,23 +822,55 @@ def select_corpus(cfg: TrainConfig, log) -> Corpus:
         pool, test_sel = selection_split(pool, mols, *cfg.selection)
         log(f"selection set: {len(test_sel)} molecules of {len({mols[i]['core'] for i in test_sel})} scaffold cores (seed, fraction "
             f"{cfg.selection}); pool {len(pool)}")
-    sizes, seeds = pool_sizes(cfg.sizes, len(pool)), cfg.seed_list
+    sizes, seeds = pool_sizes(cfg.sizes, len(pool)), seeds_of(cfg)
     if cfg.smoke:
-        sizes, seeds = [min(SMOKE_POOL, len(pool))], [0]
+        sizes = [min(SMOKE_POOL, len(pool))]
         test_a, test_b, test_s = test_a[:SMOKE_HOLDOUT], test_b[:SMOKE_HOLDOUT], test_s[:SMOKE_HOLDOUT]
     if cfg.overfit_one:
         if cfg.overfit_one not in mols:
             raise SystemExit(f"--overfit-one {cfg.overfit_one}: not an admitted molecule of this corpus")
         pool, sizes, test_a, test_b = [cfg.overfit_one], [1], [cfg.overfit_one], [cfg.overfit_one]
-    tests = {"a": test_a, "b": test_b} | ({"s": test_s} if test_s else {}) | ({"sel": test_sel} if test_sel else {})
+    # a release network has no hold-out: no entry at all, so that nothing downstream can read one under a hold-out's name
+    tests = {} if release else {"a": test_a, "b": test_b} | ({"s": test_s} if test_s else {}) | ({"sel": test_sel} if test_sel else {})
     pool, twins = drop_twins(cfg, pool, [*test_a, *test_b, *test_s], log)
     return Corpus(mols=mols, pool=pool, tests=tests, cores=cores, sizes=sizes, seeds=seeds, n_atoms=nat, excluded=excluded, substituted=substituted,
-                  twins=twins)
+                  twins=twins, release=release)
+
+
+def seeds_of(cfg: TrainConfig) -> list[int]:
+    """The seeds the run trains: the configured ones, or seed 0 alone under --smoke."""
+    return [0] if cfg.smoke else cfg.seed_list
+
+
+def kind_split(cfg: TrainConfig, pool: list, held: dict[str, list], substituted: list, log) -> tuple[list, list, list, dict]:
+    """(pool, hold-out (a), hold-out (b), what a release pool took in): a measurement network's split as it came; a release
+    network's pool with the hold-outs in it and no hold-out left."""
+    if cfg.network_kind != NK.RELEASE:
+        return pool, held["a"], held["b"], {}
+    pool, release = release_pool(cfg, pool, held, substituted, log)
+    return pool, [], [], release
+
+
+def release_pool(cfg: TrainConfig, pool: list, held: dict[str, list], substituted: list, log) -> tuple[list, dict]:
+    """Decision 66: (the release networks' pool, what entered it). The pool is the measurement pool with the hold-out twins left in,
+    plus hold-outs (a) and (b), in the pool's own order. 'Labels of the carried kind': under --use-analytic a hold-out molecule enters
+    only with analytic labels (`substituted`); one without them is listed under `left_out` and is not trained on."""
+    analytic = set(substituted)
+    added = {h: [i for i in ids if not cfg.use_analytic or i in analytic] for h, ids in held.items()}
+    left_out = sorted(i for h, ids in held.items() for i in ids if i not in added[h])
+    twins = HT.twins(pool, [i for ids in held.values() for i in ids], HT.manifest_keys(cfg.molecules))
+    out = sorted({*pool, *(i for ids in added.values() for i in ids)}, key=E6.sha)
+    log(f"release networks (decision 66): pool {len(out)} = {len(pool)} pool molecules ({len(twins)} of them hold-out twins, kept) + "
+        + " + ".join(f"hold-out ({h}) {len(ids)}" for h, ids in added.items())
+        + (f"; {len(left_out)} hold-out molecules without analytic labels are not trained on" if left_out else "") + "; no hold-out is read"
+        + (f"; {NK.fitting_sentence(len(seeds_of(cfg)), cfg.inner_val)}" if cfg.inner_val else ""))
+    return out, {**added, "twins": twins, "left_out": left_out}
 
 
 def drop_twins(cfg: TrainConfig, pool: list, held: list, log) -> tuple[list, list]:
-    """Without --holdout-twins keep, the pool loses every molecule that is a hold-out (a, b, s) molecule under another id."""
-    if cfg.holdout_twins == "keep":
+    """Without --holdout-twins keep, the pool loses every molecule that is a hold-out (a, b, s) molecule under another id. A release
+    network has no hold-out, so nothing is a twin of one and its pool keeps them (`release_pool` lists them)."""
+    if cfg.holdout_twins == "keep" or cfg.network_kind == NK.RELEASE:
         return pool, []
     found = HT.twins(pool, held, HT.manifest_keys(cfg.molecules))
     if found:
@@ -906,8 +941,8 @@ def new_record(cfg: TrainConfig, corpus: Corpus, target_residuals: dict) -> dict
                 model="rungC_equivariant C1 (from scratch; output scaled by the training set's RMS ΔH, or per entry class)",
                 excluded_ids=corpus.excluded, exclude_ids_file=cfg.exclude_ids_file, size_test_min_atoms=cfg.size_test_min_atoms,
                 holdout_twins=cfg.holdout_twins, holdout_twins_dropped=corpus.twins,
-                pool_max_atoms=cfg.pool_max_atoms, holdout_s=t.get("s", []),
-                n_molecules=len(corpus.mols), holdout_a=t["a"], holdout_b=t["b"], scaffold_cores=corpus.cores, pool=len(corpus.pool),
+                pool_max_atoms=cfg.pool_max_atoms, **split_fields(cfg, corpus),
+                n_molecules=len(corpus.mols), scaffold_cores=corpus.cores, pool=len(corpus.pool),
                 pool_ids=corpus.pool, pool_layers=cfg.pool_layers, sizes=corpus.sizes, seeds=corpus.seeds, epochs=cfg.epochs, lr=cfg.lr,
                 weight_decay=cfg.weight_decay, lr_schedule=cfg.lr_schedule,
                 aux_weight=cfg.aux_weight, loss=cfg.loss, scale=cfg.scale, inner_val=cfg.inner_val, patience=cfg.patience,
@@ -922,6 +957,23 @@ def new_record(cfg: TrainConfig, corpus: Corpus, target_residuals: dict) -> dict
                 **({k: getattr(cfg.primitives, k) for k in PRIMITIVE_KEYS} if cfg.primitives != IC.CARRIED else {}),
                 **({"distortion_file": cfg.distortion_file} if cfg.distortion_file else {}),
                 **({"selection_split": cfg.selection_split, "holdout_sel": t["sel"]} if "sel" in t else {}))
+
+
+def split_fields(cfg: TrainConfig, corpus: Corpus) -> dict:
+    """The record's kind and what goes with it: a measurement network's hold-outs, or what a release network's pool took in — and
+    then no hold-out field at all (`pool_ids` lists the molecules trained on)."""
+    if cfg.network_kind == NK.RELEASE:
+        return {NK.FIELD: NK.RELEASE, "release_pool": corpus.release}
+    t = corpus.tests
+    return {NK.FIELD: NK.MEASUREMENT, "holdout_s": t.get("s", []), "holdout_a": t["a"], "holdout_b": t["b"]}
+
+
+def corpus_line(cfg: TrainConfig, corpus: Corpus) -> str:
+    """The start line's account of the split."""
+    if cfg.network_kind == NK.RELEASE:
+        return f"{len(corpus.mols)} molecules; pool {len(corpus.pool)} (release networks: the hold-outs are in the pool, none is read)"
+    t = corpus.tests
+    return f"{len(corpus.mols)} molecules; pool {len(corpus.pool)}; hold-out (a) {len(t['a'])}, (b) {len(t['b'])} ({corpus.cores})"
 
 
 def table_header(cfg: TrainConfig, date: str) -> list[str]:
@@ -942,6 +994,8 @@ def table_header(cfg: TrainConfig, date: str) -> list[str]:
         recipe += f"; primitives {cfg.angle_choice}, dihedrals {cfg.dihedral_encoding}"
     if cfg.aux_target in ("ls", "kfit"):
         recipe += f"; {cfg.aux_target} pattern target (λ_rel {cfg.ls_lam:g})"
+    if cfg.network_kind == NK.RELEASE:
+        recipe += "; RELEASE networks (decision 66): trained on the hold-outs too, so this table has no hold-out row"
     return [f"# Rung C (equivariant ΔH, C1 from scratch) — {cfg.out_prefix} ({date}){' — SMOKE, not a result' if cfg.smoke else ''}", "",
             recipe, "",
             "| n | seed | hold-out | ring couplings | zero | ratio | corrected ω | zero ω | ΔH residual ratio | s |",
@@ -1035,8 +1089,7 @@ def main(argv: list[str] | None = None) -> int:
         log_line(f"training labels distorted ({cfg.family_scale or cfg.distortion_file}); the read-outs compare with the undistorted labels")
     n_params = sum(p.numel() for p in DeltaHessianModel(n_s=cfg.body_width, n_v=cfg.body_width, n_blocks=cfg.body_blocks,
                                                         tensor_input=cfg.tensor_input).parameters())
-    t = corpus.tests
-    log_line(f"{len(corpus.mols)} molecules; pool {len(corpus.pool)}; hold-out (a) {len(t['a'])}, (b) {len(t['b'])} ({corpus.cores}); "
+    log_line(f"{corpus_line(cfg, corpus)}; "
              f"sizes {corpus.sizes}; seeds {corpus.seeds}; epochs {cfg.epochs}; threads {cfg.threads}; model {n_params:,} parameters, "
              f"{cfg.aggregation} aggregation" + (" — SMOKE" if cfg.smoke else ""))
     res = new_record(cfg, corpus, target_residuals)
@@ -1051,7 +1104,9 @@ def main(argv: list[str] | None = None) -> int:
             lines += rows
         res["curve"][str(n)] = row
     res["seconds"] = round(time.time() - t_start, 1)
-    lines += ["", f"wall {res['seconds']:.0f} s; read-out keys: {sorted(next(iter(res['zero_rule'].values())).keys())}", ""]
+    read_outs = (f"read-out keys: {sorted(next(iter(res['zero_rule'].values())).keys())}" if res["zero_rule"]
+                 else "no hold-out read (release networks, decision 66)")
+    lines += ["", f"wall {res['seconds']:.0f} s; {read_outs}", ""]
     write_record(cfg.out_prefix, res, lines)
     log_line(f"wrote {cfg.out_prefix}.json/.md in {res['seconds']:.0f} s")
     return 0

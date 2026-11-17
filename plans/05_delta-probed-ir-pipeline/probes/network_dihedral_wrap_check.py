@@ -102,7 +102,7 @@ def _frequencies(H: np.ndarray, masses: np.ndarray) -> tuple[np.ndarray, np.ndar
 
 def holdout_a_with_truth() -> list[str]:
     """Hold-out (a) molecules of the carried models' evaluation records that hold a ωB97X analytic truth."""
-    models = tuple(m.name for m in N.P.carried_models())
+    models = tuple(m.name for m in N.P.carried_models(N.P.NK.MEASUREMENT))
     ids = {k for p in V.A.evaluation_records(models) for k in json.loads(p.read_text(encoding="utf-8"))["a"]["per_molecule"]}
     return sorted(i for i in ids if (N.P.CORPUS / i / V.TRUTH).exists())
 
@@ -123,7 +123,7 @@ def pattern_errors(mol_id: str, k: int) -> dict:
         fp, Lp = _frequencies(H + dH, masses)
         return round(float(np.sqrt(np.mean((fp[V.match_modes(L0, Lp)] - truth) ** 2))), 3)
 
-    models = N.P.carried_models()
+    models = N.P.carried_models(N.P.NK.MEASUREMENT)
     stored = N.P.correction(models, d)[0]
     drawn = []
     for seed in range(k):
@@ -159,7 +159,7 @@ def main(argv: list[str] | None = None) -> int:
     for p in (pair, patterns):
         p.add_argument("--out", type=Path, required=True)
     args = ap.parse_args(argv)
-    record: dict = {"action": args.action, "models": [m.name for m in N.P.carried_models()]}
+    record: dict = {"action": args.action, "models": [m.name for m in N.P.carried_models(N.P.NK.MEASUREMENT)]}
     if args.action == "pair":
         record |= {"a": str(args.a), "b": str(args.b), **value_jumps(args.a, args.b), "network_max_diff_cm": network_difference(args.a, args.b)}
         with one_sided_dihedrals():

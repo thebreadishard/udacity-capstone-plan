@@ -17,6 +17,7 @@ from typing import Literal
 
 from internal_coords import PrimitiveSettings
 from learning_curve_layerA import FAMILIES
+from network_kind import MEASUREMENT, RELEASE
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 from rungC_equivariant import AGGREGATION, AGGREGATIONS, AUX_WEIGHT, N_BLOCKS, N_S
 from rungC_targets import LAM_REL
@@ -33,6 +34,7 @@ SMOKE_EPOCHS = 2
 SMOKE_POOL = 5
 SMOKE_HOLDOUT = 3
 NAMED_SIZES = ("all", "half")
+RELEASE_LAYERS = frozenset({"A", "A2"})   # hold-out (a) is drawn from layer A, hold-out (b) from layer A2 (`e6_learning_curve.splits`)
 HYBRID_ONLY = {"sqm_scale": "--sqm-scale", "pair_features": "--pair-features", "parity_odd_mixed": "--parity-odd-mixed",
                "hinge_feature": "--hinge-feature", "save_model": "--save-model"}
 
@@ -86,6 +88,7 @@ class TrainConfig(BaseModel):
     pool_max_atoms: int = Field(0, ge=0)
     exclude_ids_file: str | None = None
     holdout_twins: Literal["drop", "keep"] = "drop"       # TASKS 157: a hold-out molecule's twin leaves the pool; keep = v1.3's pool
+    network_kind: Literal["measurement", "release"] = MEASUREMENT   # decision 66: release trains on the hold-outs too and reads none
     aux: Literal["all", "pattern", "kring", "both"] = "all"
     zero_hlow: bool = False
     tensor_input: bool = False
@@ -334,6 +337,29 @@ CONFLICTS: tuple[tuple[Callable[[TrainConfig], object], str], ...] = (   # (trut
      "--dihedral-encoding changes rung B's pair features; without --pair-features no head reads them"),
     (lambda c: c.family_scale and c.distortion_file,
      "--family-scale and --distortion-file both distort the training label; choose one"),
+    # decision 66: a release network trains on every molecule with labels and has no hold-out, so nothing may hold molecules back or read one
+    (lambda c: c.network_kind == RELEASE and c.selection_split,
+     "--network-kind release with --selection-split: a selection set is held out of the training and read as a hold-out; a release "
+     "network holds nothing out"),
+    (lambda c: c.network_kind == RELEASE and c.size_test_min_atoms,
+     "--network-kind release with --size-test-min-atoms: the size test holds the large molecules out as hold-out (s); a release network "
+     "holds nothing out"),
+    (lambda c: c.network_kind == RELEASE and c.pool_max_atoms,
+     "--network-kind release with --pool-max-atoms: a release network trains on every molecule with labels, the large ones included"),
+    (lambda c: c.network_kind == RELEASE and c.exclude_ids_file,
+     "--network-kind release with --exclude-ids-file: a coverage ablation leaves molecules out; a release network trains on every "
+     "molecule with labels"),
+    (lambda c: c.network_kind == RELEASE and c.split == "layerB",
+     "--network-kind release with --split layerB: that split reads layer A as hold-out (a) and builds hold-out (c) per size; the "
+     "release pool is the e6 pool with its hold-outs"),
+    (lambda c: c.network_kind == RELEASE and c.overfit_one,
+     "--network-kind release with --overfit-one: the diagnostic reads its one molecule as both hold-outs; a release network reads none"),
+    (lambda c: c.network_kind == RELEASE and c.sizes != "all",
+     "--network-kind release needs --sizes all: a pool cut would train on a part of the molecules, and the learning curve's smaller "
+     "sizes have no hold-out to be read on"),
+    (lambda c: c.network_kind == RELEASE and c.split == "e6" and c.pool_layers and not set(c.pool_layers.split(",")) >= RELEASE_LAYERS,
+     "--network-kind release needs layers A and A2 in --pool-layers: hold-out (a) is of layer A and hold-out (b) of layer A2, and a "
+     "filter that drops either would leave the hold-out untrained without a word"),
 )
 
 
@@ -343,6 +369,17 @@ def _output_arguments(ap: argparse.ArgumentParser) -> None:
     ap.add_argument("--event-log", action=argparse.BooleanOptionalAction, default=True,
                     help="write each training's curves as a TensorBoard event log in <out_prefix>_tb/n<n>_seed<seed>/ (default on; "
                          "--no-event-log switches it off; the training is the same to the bit either way)")
+
+
+def _holdout_arguments(ap: argparse.ArgumentParser) -> None:
+    """Which molecules a training may see beside its pool."""
+    ap.add_argument("--holdout-twins", default="drop", choices=["drop", "keep"],
+                    help="TASKS 157 (30 Oct 2026): drop pool molecules that are a hold-out molecule under another id (default); keep = v1.3's pool")
+    ap.add_argument("--network-kind", default=MEASUREMENT, choices=[MEASUREMENT, RELEASE],
+                    help="decision 66 (17 Nov 2026): 'measurement' (default) trains without the hold-outs, and every error, licence and "
+                         "promotion is read on it; 'release' trains on the pool, hold-outs (a) and (b) and their twins — with "
+                         "--use-analytic only the hold-out molecules that have analytic labels — reads no hold-out at all and is what "
+                         "the pipeline ships once probes/release_checks.py has passed; --holdout-twins has no hold-out to act for then")
 
 
 def build_parser(description: str) -> argparse.ArgumentParser:
@@ -385,8 +422,7 @@ def build_parser(description: str) -> argparse.ArgumentParser:
     ap.add_argument("--size-test-min-atoms", type=int, default=0, help="pool molecules with at least this many atoms become hold-out (s) and never train")
     ap.add_argument("--pool-max-atoms", type=int, default=0, help="train only on pool molecules with at most this many atoms")
     ap.add_argument("--exclude-ids-file", default=None, help="coverage ablation: ids (one per line) dropped from the training pool; hold-outs untouched")
-    ap.add_argument("--holdout-twins", default="drop", choices=["drop", "keep"],
-                    help="TASKS 157 (30 Oct 2026): drop pool molecules that are a hold-out molecule under another id (default); keep = v1.3's pool")
+    _holdout_arguments(ap)
     ap.add_argument("--aux", default="all", choices=["all", "pattern", "kring", "both"],
                     help="internal term: 'all' (registered) = every entry of B⁺ᵀ ΔH B⁺; 'pattern' = the pair model's pattern only, one "
                          "standardisation scale per pair class; 'kring' = the ring-mode block of K; 'both' = pattern + kring")
@@ -435,6 +471,24 @@ def _fields(ns: argparse.Namespace) -> dict:
     if fields["pretrained_elements"]:
         fields["pretrained_elements"] = [int(z) for z in fields["pretrained_elements"].split(",")]
     return fields
+
+
+def argv_of(cfg: TrainConfig) -> list[str]:
+    """The command line that parses back into `cfg`: the two positionals, then every option whose value is not the parser's default
+    (a flag is its field's name with dashes). Refuses a config it cannot write back to the same settings."""
+    defaults = _fields(build_parser("").parse_args([cfg.molecules, cfg.out_prefix]))
+    argv = [cfg.molecules, cfg.out_prefix]
+    for field, value in cfg.model_dump().items():
+        flag = "--" + field.replace("_", "-")
+        if field in ("molecules", "out_prefix") or value == defaults[field]:
+            continue
+        if isinstance(value, bool):
+            argv.append(flag if value else "--no-" + flag[2:])
+        else:
+            argv += [flag, ",".join(str(v) for v in value) if isinstance(value, list) else str(value)]
+    if config_from_argv(argv) != cfg:
+        raise ValueError(f"no command line gives these settings back: {argv}")
+    return argv
 
 
 def config_from_argv(argv: Sequence[str], description: str = "rung C trainer") -> TrainConfig:

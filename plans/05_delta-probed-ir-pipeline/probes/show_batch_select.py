@@ -87,7 +87,7 @@ def main() -> None:
     survey = json.loads(a.survey.read_text(encoding="utf-8"))
     with S.MANIFEST.open(newline="", encoding="utf-8") as f:
         names = {r["id"]: r["name"] for r in csv.DictReader(f)}
-    pool = candidates(survey, S.load(P.carried_models()), names)
+    pool = candidates(survey, S.load(P.carried_models(P.NK.MEASUREMENT)), names)
     chosen = select(pool, a.n)
     a.out.mkdir(parents=True)
     with open(a.out / "batch.tsv", "w", newline="", encoding="utf-8") as f:
