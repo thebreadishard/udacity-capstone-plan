@@ -1,0 +1,1270 @@
+{
+ "kind": "live certificate",
+ "date": "2026-11-17 23:37",
+ "pipeline_version": "0.11",
+ "molecule": {
+  "name": "benzene",
+  "smiles": "c1ccccc1",
+  "formula": "C6H6",
+  "n_atoms": 12,
+  "elements": [
+   "C",
+   "H"
+  ],
+  "training_atoms": [
+   8,
+   40
+  ],
+  "inside_training_sizes": true,
+  "listed": {
+   "id": "A_8448043181",
+   "name": "benzene",
+   "rung": 5,
+   "source": "website export catalog.json, molecules/A_8448043181.json",
+   "b3lyp_max_abs_diff_cm": 22.8
+  },
+  "seen": {
+   "role": "a",
+   "ids": [
+    "A_8448043181"
+   ],
+   "text": "held out, hold-out (a) (A_8448043181): never trained on; the measured error includes it"
+  },
+  "truth": {
+   "source": "corpus/molecules/A_8448043181/hessian_wb97x_analytic.npz",
+   "n_bands": 30,
+   "rms_by_rank_cm": 2.02,
+   "overlap": 0.994
+  }
+ },
+ "network": {
+  "name": "ΔH-network",
+  "version": "1.4",
+  "models": [
+   {
+    "path": "C:\\Users\\thebr\\Documents\\CapstonePlan\\plans\\05_delta-probed-ir-pipeline\\modules\\05_support_predictor\\out\\v14\\E7_rungC_v14s3clean_c00_control_model_n1082_seed0.pt",
+    "sha16": "89574ed1b69c4e10",
+    "network": "ΔH-network",
+    "version": "1.4",
+    "status": "carried"
+   },
+   {
+    "path": "C:\\Users\\thebr\\Documents\\CapstonePlan\\plans\\05_delta-probed-ir-pipeline\\modules\\05_support_predictor\\out\\v14\\E7_rungC_v14s3clean_c00_control_model_n1082_seed1.pt",
+    "sha16": "03dbbf9f29b59186",
+    "network": "ΔH-network",
+    "version": "1.4",
+    "status": "carried"
+   },
+   {
+    "path": "C:\\Users\\thebr\\Documents\\CapstonePlan\\plans\\05_delta-probed-ir-pipeline\\modules\\05_support_predictor\\out\\v14\\E7_rungC_v14s3clean_c00_control_model_n1082_seed2.pt",
+    "sha16": "8dd85f3f1ba5bbeb",
+    "network": "ΔH-network",
+    "version": "1.4",
+    "status": "carried"
+   }
+  ],
+  "predicts": "ωB97X/6-31G* (the DFT proxy: the network's ΔH is trained on ωB97X − B3LYP Hessians)"
+ },
+ "accuracy": {
+  "higher_level": "ωB97X/6-31G* (the DFT proxy: the network's ΔH is trained on ωB97X − B3LYP Hessians)",
+  "holdouts": {
+   "a": {
+    "description": "hold-out (a) without its two trained twins (2-naphthoic acid and benzonitrile were trained on as layer-B molecules; TASKS 157): eight layer-A molecules held out on 19 Sep 2026, never trained on under any id",
+    "n_molecules": 8,
+    "readouts": {
+     "ring-ip": {
+      "mean": 1.55,
+      "seeds": [
+       1.77,
+       1.52,
+       1.37
+      ],
+      "target": 3.0,
+      "within_target": true
+     },
+     "CH-stretch": {
+      "mean": 1.15,
+      "seeds": [
+       1.34,
+       1.19,
+       0.92
+      ],
+      "target": 3.0,
+      "within_target": true
+     },
+     "CH-oop": {
+      "mean": 2.22,
+      "seeds": [
+       2.22,
+       2.1,
+       2.35
+      ],
+      "target": 3.0,
+      "within_target": true
+     },
+     "other": {
+      "mean": 2.91,
+      "seeds": [
+       2.79,
+       3.1,
+       2.84
+      ],
+      "target": 3.0,
+      "within_target": true
+     },
+     "coupling_ratio": {
+      "mean": 0.147,
+      "seeds": [
+       0.15,
+       0.147,
+       0.143
+      ],
+      "target": 0.25,
+      "within_target": true
+     }
+    },
+    "product": {
+     "ring-ip": {
+      "rms": 1.17,
+      "n_modes": 199,
+      "n_molecules": 8,
+      "n_molecules_with_modes": 8,
+      "interval": [
+       0.9,
+       1.41
+      ],
+      "share_below_line": 1.0,
+      "target": 3.0,
+      "within_target": true,
+      "interval_crosses_line": false
+     },
+     "CH-stretch": {
+      "rms": 0.8,
+      "n_modes": 73,
+      "n_molecules": 8,
+      "n_molecules_with_modes": 8,
+      "interval": [
+       0.44,
+       1.2
+      ],
+      "share_below_line": 1.0,
+      "target": 3.0,
+      "within_target": true,
+      "interval_crosses_line": false
+     },
+     "CH-oop": {
+      "rms": 1.86,
+      "n_modes": 46,
+      "n_molecules": 8,
+      "n_molecules_with_modes": 5,
+      "interval": [
+       0.93,
+       3.2
+      ],
+      "share_below_line": 0.96,
+      "target": 3.0,
+      "within_target": true,
+      "interval_crosses_line": true
+     },
+     "other": {
+      "rms": 2.38,
+      "n_modes": 156,
+      "n_molecules": 8,
+      "n_molecules_with_modes": 8,
+      "interval": [
+       1.45,
+       3.19
+      ],
+      "share_below_line": 0.93,
+      "target": 3.0,
+      "within_target": true,
+      "interval_crosses_line": true
+     }
+    },
+    "shape": {
+     "n_molecules": 8,
+     "cheap": {
+      "spectrum_overlap": 0.277,
+      "intensity_error": 0.227
+     },
+     "corrected": {
+      "spectrum_overlap": 0.977,
+      "intensity_error": 0.109
+     }
+    }
+   },
+   "b": {
+    "description": "hold-out (b): every substituted molecule of two scaffold cores, frozen on 8 Oct 2026 — scaffolds the network never saw",
+    "n_molecules": 40,
+    "readouts": {
+     "ring-ip": {
+      "mean": 1.64,
+      "seeds": [
+       1.53,
+       1.49,
+       1.89
+      ],
+      "target": 3.0,
+      "within_target": true
+     },
+     "CH-stretch": {
+      "mean": 2.02,
+      "seeds": [
+       2.32,
+       2.2,
+       1.55
+      ],
+      "target": 3.0,
+      "within_target": true
+     },
+     "CH-oop": {
+      "mean": 1.72,
+      "seeds": [
+       1.8,
+       1.96,
+       1.41
+      ],
+      "target": 3.0,
+      "within_target": true
+     },
+     "other": {
+      "mean": 3.68,
+      "seeds": [
+       3.2,
+       4.15,
+       3.7
+      ],
+      "target": 3.0,
+      "within_target": false
+     },
+     "coupling_ratio": {
+      "mean": 0.17,
+      "seeds": [
+       0.168,
+       0.164,
+       0.177
+      ],
+      "target": 0.25,
+      "within_target": true
+     }
+    },
+    "product": {
+     "ring-ip": {
+      "rms": 1.22,
+      "n_modes": 1194,
+      "n_molecules": 40,
+      "n_molecules_with_modes": 40,
+      "interval": [
+       1.09,
+       1.34
+      ],
+      "share_below_line": 1.0,
+      "target": 3.0,
+      "within_target": true,
+      "interval_crosses_line": false
+     },
+     "CH-stretch": {
+      "rms": 1.67,
+      "n_modes": 410,
+      "n_molecules": 40,
+      "n_molecules_with_modes": 40,
+      "interval": [
+       1.37,
+       1.95
+      ],
+      "share_below_line": 1.0,
+      "target": 3.0,
+      "within_target": true,
+      "interval_crosses_line": false
+     },
+     "CH-oop": {
+      "rms": 1.26,
+      "n_modes": 84,
+      "n_molecules": 40,
+      "n_molecules_with_modes": 8,
+      "interval": [
+       0.98,
+       1.59
+      ],
+      "share_below_line": 1.0,
+      "target": 3.0,
+      "within_target": true,
+      "interval_crosses_line": false
+     },
+     "other": {
+      "rms": 2.1,
+      "n_modes": 1258,
+      "n_molecules": 40,
+      "n_molecules_with_modes": 40,
+      "interval": [
+       1.88,
+       2.34
+      ],
+      "share_below_line": 1.0,
+      "target": 3.0,
+      "within_target": true,
+      "interval_crosses_line": false
+     }
+    },
+    "shape": {
+     "n_molecules": 31,
+     "cheap": {
+      "spectrum_overlap": 0.366,
+      "intensity_error": 0.511
+     },
+     "corrected": {
+      "spectrum_overlap": 0.975,
+      "intensity_error": 0.216
+     }
+    }
+   }
+  },
+  "quantities": {
+   "readouts": "first-order diagonal error of each seed's correction, averaged over the seeds",
+   "product": "error of the corrected band positions of the seed-mean correction"
+  },
+  "licence_quantity": "product",
+  "target_source": "3 cm⁻¹ per family — decision 53's line for ring-ip, CH-oop and 'other', every family's under decision 65 (the licence) — and the coupling ratio ≤ 0.25 of chain 35's T1 line (probes/chain35_read.py)",
+  "sources": [
+   "E7_rungC_v14s3clean_c00_control_eval_clean_seed0.json",
+   "E7_rungC_v14s3clean_c00_control_eval_clean_seed1.json",
+   "E7_rungC_v14s3clean_c00_control_eval_clean_seed2.json",
+   "E7_rungC_v14s3clean_c00_control_a8read_seed0.json",
+   "E7_rungC_v14s3clean_c00_control_a8read_seed1.json",
+   "E7_rungC_v14s3clean_c00_control_a8read_seed2.json",
+   "E7_rungC_v14s3clean_c00_control_product_error.json"
+  ],
+  "definitions": {
+   "family": "the read-outs: rms over the family's B3LYP modes of the first-order diagonal error of a seed's ΔH against the higher level, per seed, and the seeds' mean (cm⁻¹); families by module 05's rule (m05/learning_curve_layerA.molecule_features)",
+   "product": "rms over the family's bands of the corrected band position's error against the higher level (cm⁻¹): the seeds' mean ΔH added to the B3LYP Hessian and diagonalised, each corrected band paired to its higher-level band by mode overlap and counted in the family of its B3LYP partner — what the pipeline prints; with the 95 % interval of a bootstrap over whole molecules",
+   "coupling_ratio": "rms of the predicted mode couplings' error over the rms of the couplings themselves; 0 = exact, 1 = no better than none",
+   "spectrum_overlap": "cosine similarity of the two Lorentzian-broadened spectra (FWHM 10 cm⁻¹, 500–3500 cm⁻¹); 1 = identical shape",
+   "intensity_error": "intensity-weighted rms of the relative height error per band, bands paired by the shape of the motion (eigenvector overlap); 0 = identical heights"
+  },
+  "coupled_cluster": "not measured for this network version: the coupled-cluster reads (T3) were made on chain 34, and tests on the 9–11 existing anchors wait for the anchor decision of November 2026"
+ },
+ "bands": [
+  {
+   "network_cm": 425.3,
+   "km_mol": 0.0,
+   "seed_range_cm": [
+    424.2,
+    426.0
+   ],
+   "b3lyp_cm": 415.4,
+   "baseline_cm": 397.1,
+   "family": "other",
+   "licensed": true,
+   "error_cm": {
+    "a": 2.38,
+    "b": 2.1
+   },
+   "lab_region": "low / skeletal",
+   "u_band_cm": 16.05,
+   "printed_cm": 425.3,
+   "printed": "harmonic ω",
+   "nu_cm": null,
+   "delta_anh_cm": null,
+   "step_bar_cm": null,
+   "step_error_measured": null,
+   "step_family": null,
+   "no_step_reason": "not applied",
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+  },
+  {
+   "network_cm": 425.4,
+   "km_mol": 0.0,
+   "seed_range_cm": [
+    424.3,
+    426.1
+   ],
+   "b3lyp_cm": 415.4,
+   "baseline_cm": 397.1,
+   "family": "other",
+   "licensed": true,
+   "error_cm": {
+    "a": 2.38,
+    "b": 2.1
+   },
+   "lab_region": "low / skeletal",
+   "u_band_cm": 16.05,
+   "printed_cm": 425.4,
+   "printed": "harmonic ω",
+   "nu_cm": null,
+   "delta_anh_cm": null,
+   "step_bar_cm": null,
+   "step_error_measured": null,
+   "step_family": null,
+   "no_step_reason": "not applied",
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+  },
+  {
+   "network_cm": 625.5,
+   "km_mol": 0.0,
+   "seed_range_cm": [
+    625.1,
+    626.0
+   ],
+   "b3lyp_cm": 621.9,
+   "baseline_cm": 594.5,
+   "family": "other",
+   "licensed": true,
+   "error_cm": {
+    "a": 2.38,
+    "b": 2.1
+   },
+   "lab_region": "low / skeletal",
+   "u_band_cm": 16.05,
+   "printed_cm": 625.5,
+   "printed": "harmonic ω",
+   "nu_cm": null,
+   "delta_anh_cm": null,
+   "step_bar_cm": null,
+   "step_error_measured": null,
+   "step_family": null,
+   "no_step_reason": "not applied",
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+  },
+  {
+   "network_cm": 625.5,
+   "km_mol": 0.0,
+   "seed_range_cm": [
+    625.1,
+    626.0
+   ],
+   "b3lyp_cm": 621.9,
+   "baseline_cm": 594.5,
+   "family": "other",
+   "licensed": true,
+   "error_cm": {
+    "a": 2.38,
+    "b": 2.1
+   },
+   "lab_region": "low / skeletal",
+   "u_band_cm": 16.05,
+   "printed_cm": 625.5,
+   "printed": "harmonic ω",
+   "nu_cm": null,
+   "delta_anh_cm": null,
+   "step_bar_cm": null,
+   "step_error_measured": null,
+   "step_family": null,
+   "no_step_reason": "not applied",
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+  },
+  {
+   "network_cm": 701.1,
+   "km_mol": 77.57,
+   "seed_range_cm": [
+    699.0,
+    702.2
+   ],
+   "b3lyp_cm": 694.9,
+   "baseline_cm": 664.3,
+   "family": "CH-oop",
+   "licensed": true,
+   "error_cm": {
+    "a": 1.86,
+    "b": 1.26
+   },
+   "lab_region": "CH-oop (10.5-15 um; benzene nu11 at 673 included)",
+   "u_band_cm": 5.22,
+   "printed_cm": 701.1,
+   "printed": "harmonic ω",
+   "nu_cm": null,
+   "delta_anh_cm": null,
+   "step_bar_cm": null,
+   "step_error_measured": null,
+   "step_family": null,
+   "no_step_reason": "not applied",
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+  },
+  {
+   "network_cm": 733.5,
+   "km_mol": 0.0,
+   "seed_range_cm": [
+    732.6,
+    734.1
+   ],
+   "b3lyp_cm": 717.9,
+   "baseline_cm": 686.3,
+   "family": "other",
+   "licensed": true,
+   "error_cm": {
+    "a": 2.38,
+    "b": 2.1
+   },
+   "lab_region": "CH-oop (10.5-15 um; benzene nu11 at 673 included)",
+   "u_band_cm": 5.22,
+   "printed_cm": 733.5,
+   "printed": "harmonic ω",
+   "nu_cm": null,
+   "delta_anh_cm": null,
+   "step_bar_cm": null,
+   "step_error_measured": null,
+   "step_family": null,
+   "no_step_reason": "not applied",
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+  },
+  {
+   "network_cm": 888.3,
+   "km_mol": 0.0,
+   "seed_range_cm": [
+    886.5,
+    889.2
+   ],
+   "b3lyp_cm": 864.9,
+   "baseline_cm": 826.8,
+   "family": "CH-oop",
+   "licensed": true,
+   "error_cm": {
+    "a": 1.86,
+    "b": 1.26
+   },
+   "lab_region": "CH-oop (10.5-15 um; benzene nu11 at 673 included)",
+   "u_band_cm": 5.22,
+   "printed_cm": 888.3,
+   "printed": "harmonic ω",
+   "nu_cm": null,
+   "delta_anh_cm": null,
+   "step_bar_cm": null,
+   "step_error_measured": null,
+   "step_family": null,
+   "no_step_reason": "not applied",
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+  },
+  {
+   "network_cm": 891.0,
+   "km_mol": 0.0,
+   "seed_range_cm": [
+    889.6,
+    892.0
+   ],
+   "b3lyp_cm": 864.8,
+   "baseline_cm": 826.7,
+   "family": "CH-oop",
+   "licensed": true,
+   "error_cm": {
+    "a": 1.86,
+    "b": 1.26
+   },
+   "lab_region": "CH-oop (10.5-15 um; benzene nu11 at 673 included)",
+   "u_band_cm": 5.22,
+   "printed_cm": 891.0,
+   "printed": "harmonic ω",
+   "nu_cm": null,
+   "delta_anh_cm": null,
+   "step_bar_cm": null,
+   "step_error_measured": null,
+   "step_family": null,
+   "no_step_reason": "not applied",
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+  },
+  {
+   "network_cm": 997.6,
+   "km_mol": 0.0,
+   "seed_range_cm": [
+    995.3,
+    999.0
+   ],
+   "b3lyp_cm": 969.4,
+   "baseline_cm": 926.7,
+   "family": "CH-oop",
+   "licensed": true,
+   "error_cm": {
+    "a": 1.86,
+    "b": 1.26
+   },
+   "lab_region": "ring / CH-ip (9-10.5 um)",
+   "u_band_cm": 12.7,
+   "printed_cm": 997.6,
+   "printed": "harmonic ω",
+   "nu_cm": null,
+   "delta_anh_cm": null,
+   "step_bar_cm": null,
+   "step_error_measured": null,
+   "step_family": null,
+   "no_step_reason": "not applied",
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+  },
+  {
+   "network_cm": 998.1,
+   "km_mol": 0.0,
+   "seed_range_cm": [
+    996.1,
+    999.6
+   ],
+   "b3lyp_cm": 969.3,
+   "baseline_cm": 926.7,
+   "family": "CH-oop",
+   "licensed": true,
+   "error_cm": {
+    "a": 1.86,
+    "b": 1.26
+   },
+   "lab_region": "ring / CH-ip (9-10.5 um)",
+   "u_band_cm": 12.7,
+   "printed_cm": 998.1,
+   "printed": "harmonic ω",
+   "nu_cm": null,
+   "delta_anh_cm": null,
+   "step_bar_cm": null,
+   "step_error_measured": null,
+   "step_family": null,
+   "no_step_reason": "not applied",
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+  },
+  {
+   "network_cm": 1024.6,
+   "km_mol": 0.0,
+   "seed_range_cm": [
+    1024.1,
+    1024.8
+   ],
+   "b3lyp_cm": 1019.8,
+   "baseline_cm": 974.9,
+   "family": "ring-ip",
+   "licensed": true,
+   "error_cm": {
+    "a": 1.17,
+    "b": 1.22
+   },
+   "lab_region": "ring / CH-ip (9-10.5 um)",
+   "u_band_cm": 12.7,
+   "printed_cm": 1024.6,
+   "printed": "harmonic ω",
+   "nu_cm": null,
+   "delta_anh_cm": null,
+   "step_bar_cm": null,
+   "step_error_measured": null,
+   "step_family": null,
+   "no_step_reason": "not applied",
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+  },
+  {
+   "network_cm": 1031.9,
+   "km_mol": 0.0,
+   "seed_range_cm": [
+    1030.4,
+    1032.8
+   ],
+   "b3lyp_cm": 1020.0,
+   "baseline_cm": 975.1,
+   "family": "ring-ip",
+   "licensed": true,
+   "error_cm": {
+    "a": 1.17,
+    "b": 1.22
+   },
+   "lab_region": "ring / CH-ip (9-10.5 um)",
+   "u_band_cm": 12.7,
+   "printed_cm": 1031.9,
+   "printed": "harmonic ω",
+   "nu_cm": null,
+   "delta_anh_cm": null,
+   "step_bar_cm": null,
+   "step_error_measured": null,
+   "step_family": null,
+   "no_step_reason": "not applied",
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+  },
+  {
+   "network_cm": 1038.9,
+   "km_mol": 0.0,
+   "seed_range_cm": [
+    1033.7,
+    1043.5
+   ],
+   "b3lyp_cm": 1011.0,
+   "baseline_cm": 966.5,
+   "family": "CH-oop",
+   "licensed": true,
+   "error_cm": {
+    "a": 1.86,
+    "b": 1.26
+   },
+   "lab_region": "ring / CH-ip (9-10.5 um)",
+   "u_band_cm": 12.7,
+   "printed_cm": 1038.9,
+   "printed": "harmonic ω",
+   "nu_cm": null,
+   "delta_anh_cm": null,
+   "step_bar_cm": null,
+   "step_error_measured": null,
+   "step_family": null,
+   "no_step_reason": "not applied",
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+  },
+  {
+   "network_cm": 1078.5,
+   "km_mol": 3.53,
+   "seed_range_cm": [
+    1078.3,
+    1078.9
+   ],
+   "b3lyp_cm": 1068.8,
+   "baseline_cm": 1021.8,
+   "family": "ring-ip",
+   "licensed": true,
+   "error_cm": {
+    "a": 1.17,
+    "b": 1.22
+   },
+   "lab_region": "ring / CH-ip (9-10.5 um)",
+   "u_band_cm": 12.7,
+   "printed_cm": 1078.5,
+   "printed": "harmonic ω",
+   "nu_cm": null,
+   "delta_anh_cm": null,
+   "step_bar_cm": null,
+   "step_error_measured": null,
+   "step_family": null,
+   "no_step_reason": "not applied",
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+  },
+  {
+   "network_cm": 1078.6,
+   "km_mol": 3.53,
+   "seed_range_cm": [
+    1078.3,
+    1078.9
+   ],
+   "b3lyp_cm": 1068.8,
+   "baseline_cm": 1021.8,
+   "family": "ring-ip",
+   "licensed": true,
+   "error_cm": {
+    "a": 1.17,
+    "b": 1.22
+   },
+   "lab_region": "ring / CH-ip (9-10.5 um)",
+   "u_band_cm": 12.7,
+   "printed_cm": 1078.6,
+   "printed": "harmonic ω",
+   "nu_cm": null,
+   "delta_anh_cm": null,
+   "step_bar_cm": null,
+   "step_error_measured": null,
+   "step_family": null,
+   "no_step_reason": "not applied",
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+  },
+  {
+   "network_cm": 1175.5,
+   "km_mol": 0.0,
+   "seed_range_cm": [
+    1174.0,
+    1177.1
+   ],
+   "b3lyp_cm": 1185.5,
+   "baseline_cm": 1128.6,
+   "family": "ring-ip",
+   "licensed": true,
+   "error_cm": {
+    "a": 1.17,
+    "b": 1.22
+   },
+   "lab_region": "CH-ip-bend (8.6 um)",
+   "u_band_cm": 32.24,
+   "printed_cm": 1175.5,
+   "printed": "harmonic ω",
+   "nu_cm": null,
+   "delta_anh_cm": null,
+   "step_bar_cm": null,
+   "step_error_measured": null,
+   "step_family": null,
+   "no_step_reason": "not applied",
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+  },
+  {
+   "network_cm": 1210.1,
+   "km_mol": 0.0,
+   "seed_range_cm": [
+    1208.7,
+    1211.5
+   ],
+   "b3lyp_cm": 1207.7,
+   "baseline_cm": 1149.7,
+   "family": "ring-ip",
+   "licensed": true,
+   "error_cm": {
+    "a": 1.17,
+    "b": 1.22
+   },
+   "lab_region": "CH-ip-bend (8.6 um)",
+   "u_band_cm": 32.24,
+   "printed_cm": 1210.1,
+   "printed": "harmonic ω",
+   "nu_cm": null,
+   "delta_anh_cm": null,
+   "step_bar_cm": null,
+   "step_error_measured": null,
+   "step_family": null,
+   "no_step_reason": "not applied",
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+  },
+  {
+   "network_cm": 1210.1,
+   "km_mol": 0.0,
+   "seed_range_cm": [
+    1208.8,
+    1211.6
+   ],
+   "b3lyp_cm": 1207.7,
+   "baseline_cm": 1149.7,
+   "family": "ring-ip",
+   "licensed": true,
+   "error_cm": {
+    "a": 1.17,
+    "b": 1.22
+   },
+   "lab_region": "CH-ip-bend (8.6 um)",
+   "u_band_cm": 32.24,
+   "printed_cm": 1210.1,
+   "printed": "harmonic ω",
+   "nu_cm": null,
+   "delta_anh_cm": null,
+   "step_bar_cm": null,
+   "step_error_measured": null,
+   "step_family": null,
+   "no_step_reason": "not applied",
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+  },
+  {
+   "network_cm": 1324.1,
+   "km_mol": 0.0,
+   "seed_range_cm": [
+    1321.9,
+    1326.9
+   ],
+   "b3lyp_cm": 1355.6,
+   "baseline_cm": 1290.5,
+   "family": "ring-ip",
+   "licensed": true,
+   "error_cm": {
+    "a": 1.17,
+    "b": 1.22
+   },
+   "lab_region": "CC-stretch/CH-ip (7.7 um)",
+   "u_band_cm": 14.61,
+   "printed_cm": 1324.1,
+   "printed": "harmonic ω",
+   "nu_cm": null,
+   "delta_anh_cm": null,
+   "step_bar_cm": null,
+   "step_error_measured": null,
+   "step_family": null,
+   "no_step_reason": "not applied",
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+  },
+  {
+   "network_cm": 1388.5,
+   "km_mol": 0.0,
+   "seed_range_cm": [
+    1387.2,
+    1389.7
+   ],
+   "b3lyp_cm": 1387.1,
+   "baseline_cm": 1320.5,
+   "family": "ring-ip",
+   "licensed": true,
+   "error_cm": {
+    "a": 1.17,
+    "b": 1.22
+   },
+   "lab_region": "CC-stretch/CH-ip (7.7 um)",
+   "u_band_cm": 14.61,
+   "printed_cm": 1388.5,
+   "printed": "harmonic ω",
+   "nu_cm": null,
+   "delta_anh_cm": null,
+   "step_bar_cm": null,
+   "step_error_measured": null,
+   "step_family": null,
+   "no_step_reason": "not applied",
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+  },
+  {
+   "network_cm": 1541.3,
+   "km_mol": 6.23,
+   "seed_range_cm": [
+    1540.1,
+    1542.0
+   ],
+   "b3lyp_cm": 1531.0,
+   "baseline_cm": 1457.5,
+   "family": "ring-ip",
+   "licensed": true,
+   "error_cm": {
+    "a": 1.17,
+    "b": 1.22
+   },
+   "lab_region": "CC-stretch (6.2 um)",
+   "u_band_cm": 21.14,
+   "printed_cm": 1541.3,
+   "printed": "harmonic ω",
+   "nu_cm": null,
+   "delta_anh_cm": null,
+   "step_bar_cm": null,
+   "step_error_measured": null,
+   "step_family": null,
+   "no_step_reason": "not applied",
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+  },
+  {
+   "network_cm": 1541.4,
+   "km_mol": 6.23,
+   "seed_range_cm": [
+    1540.1,
+    1542.0
+   ],
+   "b3lyp_cm": 1531.1,
+   "baseline_cm": 1457.6,
+   "family": "ring-ip",
+   "licensed": true,
+   "error_cm": {
+    "a": 1.17,
+    "b": 1.22
+   },
+   "lab_region": "CC-stretch (6.2 um)",
+   "u_band_cm": 21.14,
+   "printed_cm": 1541.4,
+   "printed": "harmonic ω",
+   "nu_cm": null,
+   "delta_anh_cm": null,
+   "step_bar_cm": null,
+   "step_error_measured": null,
+   "step_family": null,
+   "no_step_reason": "not applied",
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+  },
+  {
+   "network_cm": 1688.9,
+   "km_mol": 0.0,
+   "seed_range_cm": [
+    1687.2,
+    1690.4
+   ],
+   "b3lyp_cm": 1655.3,
+   "baseline_cm": 1575.8,
+   "family": "ring-ip",
+   "licensed": true,
+   "error_cm": {
+    "a": 1.17,
+    "b": 1.22
+   },
+   "lab_region": "overtone / combination region",
+   "u_band_cm": 15.27,
+   "printed_cm": 1688.9,
+   "printed": "harmonic ω",
+   "nu_cm": null,
+   "delta_anh_cm": null,
+   "step_bar_cm": null,
+   "step_error_measured": null,
+   "step_family": null,
+   "no_step_reason": "not applied",
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+  },
+  {
+   "network_cm": 1689.0,
+   "km_mol": 0.0,
+   "seed_range_cm": [
+    1687.2,
+    1690.4
+   ],
+   "b3lyp_cm": 1655.3,
+   "baseline_cm": 1575.8,
+   "family": "ring-ip",
+   "licensed": true,
+   "error_cm": {
+    "a": 1.17,
+    "b": 1.22
+   },
+   "lab_region": "overtone / combination region",
+   "u_band_cm": 15.27,
+   "printed_cm": 1689.0,
+   "printed": "harmonic ω",
+   "nu_cm": null,
+   "delta_anh_cm": null,
+   "step_bar_cm": null,
+   "step_error_measured": null,
+   "step_family": null,
+   "no_step_reason": "not applied",
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+  },
+  {
+   "network_cm": 3216.6,
+   "km_mol": 0.0,
+   "seed_range_cm": [
+    3216.2,
+    3217.2
+   ],
+   "b3lyp_cm": 3174.0,
+   "baseline_cm": 3047.0,
+   "family": "CH-stretch",
+   "licensed": true,
+   "error_cm": {
+    "a": 0.8,
+    "b": 1.67
+   },
+   "lab_region": "above 3200",
+   "u_band_cm": 15.59,
+   "printed_cm": 3216.6,
+   "printed": "harmonic ω",
+   "nu_cm": null,
+   "delta_anh_cm": null,
+   "step_bar_cm": null,
+   "step_error_measured": null,
+   "step_family": null,
+   "no_step_reason": "not applied",
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+  },
+  {
+   "network_cm": 3226.4,
+   "km_mol": 0.0,
+   "seed_range_cm": [
+    3226.0,
+    3227.1
+   ],
+   "b3lyp_cm": 3183.6,
+   "baseline_cm": 3056.3,
+   "family": "CH-stretch",
+   "licensed": true,
+   "error_cm": {
+    "a": 0.8,
+    "b": 1.67
+   },
+   "lab_region": "above 3200",
+   "u_band_cm": 15.59,
+   "printed_cm": 3226.4,
+   "printed": "harmonic ω",
+   "nu_cm": null,
+   "delta_anh_cm": null,
+   "step_bar_cm": null,
+   "step_error_measured": null,
+   "step_family": null,
+   "no_step_reason": "not applied",
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+  },
+  {
+   "network_cm": 3226.4,
+   "km_mol": 0.0,
+   "seed_range_cm": [
+    3226.0,
+    3227.1
+   ],
+   "b3lyp_cm": 3183.7,
+   "baseline_cm": 3056.4,
+   "family": "CH-stretch",
+   "licensed": true,
+   "error_cm": {
+    "a": 0.8,
+    "b": 1.67
+   },
+   "lab_region": "above 3200",
+   "u_band_cm": 15.59,
+   "printed_cm": 3226.4,
+   "printed": "harmonic ω",
+   "nu_cm": null,
+   "delta_anh_cm": null,
+   "step_bar_cm": null,
+   "step_error_measured": null,
+   "step_family": null,
+   "no_step_reason": "not applied",
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+  },
+  {
+   "network_cm": 3242.3,
+   "km_mol": 51.99,
+   "seed_range_cm": [
+    3241.8,
+    3243.2
+   ],
+   "b3lyp_cm": 3199.4,
+   "baseline_cm": 3071.4,
+   "family": "CH-stretch",
+   "licensed": true,
+   "error_cm": {
+    "a": 0.8,
+    "b": 1.67
+   },
+   "lab_region": "above 3200",
+   "u_band_cm": 15.59,
+   "printed_cm": 3242.3,
+   "printed": "harmonic ω",
+   "nu_cm": null,
+   "delta_anh_cm": null,
+   "step_bar_cm": null,
+   "step_error_measured": null,
+   "step_family": null,
+   "no_step_reason": "not applied",
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+  },
+  {
+   "network_cm": 3242.3,
+   "km_mol": 51.97,
+   "seed_range_cm": [
+    3241.8,
+    3243.2
+   ],
+   "b3lyp_cm": 3199.4,
+   "baseline_cm": 3071.4,
+   "family": "CH-stretch",
+   "licensed": true,
+   "error_cm": {
+    "a": 0.8,
+    "b": 1.67
+   },
+   "lab_region": "above 3200",
+   "u_band_cm": 15.59,
+   "printed_cm": 3242.3,
+   "printed": "harmonic ω",
+   "nu_cm": null,
+   "delta_anh_cm": null,
+   "step_bar_cm": null,
+   "step_error_measured": null,
+   "step_family": null,
+   "no_step_reason": "not applied",
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+  },
+  {
+   "network_cm": 3252.4,
+   "km_mol": 0.0,
+   "seed_range_cm": [
+    3251.3,
+    3253.1
+   ],
+   "b3lyp_cm": 3210.1,
+   "baseline_cm": 3081.7,
+   "family": "CH-stretch",
+   "licensed": true,
+   "error_cm": {
+    "a": 0.8,
+    "b": 1.67
+   },
+   "lab_region": "above 3200",
+   "u_band_cm": 15.59,
+   "printed_cm": 3252.4,
+   "printed": "harmonic ω",
+   "nu_cm": null,
+   "delta_anh_cm": null,
+   "step_bar_cm": null,
+   "step_error_measured": null,
+   "step_family": null,
+   "no_step_reason": "not applied",
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+  }
+ ],
+ "tolerance": {
+  "per_region": {
+   "CC-stretch (6.2 um)": {
+    "u_band": 21.14,
+    "source": "module 03 u_band_by_record_family.csv, benzene, record(s) C71432_0.jdx, C71432_1.jdx",
+    "kind": "species"
+   },
+   "CC-stretch/CH-ip (7.7 um)": {
+    "u_band": 14.61,
+    "source": "module 03 u_band_by_record_family.csv, benzene, record(s) C71432_0.jdx, C71432_1.jdx, C71432_quantir_res0.125_boxcar.jdx",
+    "kind": "species"
+   },
+   "CH-ip-bend (8.6 um)": {
+    "u_band": 32.24,
+    "source": "module 03 u_band_by_record_family.csv, benzene, record(s) C71432_0.jdx, C71432_1.jdx",
+    "kind": "species"
+   },
+   "CH-oop (10.5-15 um; benzene nu11 at 673 included)": {
+    "u_band": 5.22,
+    "source": "module 03 u_band_by_record_family.csv, benzene, record(s) C71432_0.jdx, C71432_1.jdx, C71432_quantir_res0.125_boxcar.jdx",
+    "kind": "species"
+   },
+   "CH-stretch": {
+    "u_band": 8.34,
+    "source": "module 03 u_band_by_record_family.csv, benzene, record(s) C71432_0.jdx, C71432_1.jdx, C71432_quantir_res0.125_boxcar.jdx",
+    "kind": "species"
+   },
+   "above 3200": {
+    "u_band": 15.59,
+    "source": "module 03 u_band_by_record_family.csv, benzene, record(s) C71432_0.jdx, C71432_1.jdx",
+    "kind": "species"
+   },
+   "low / skeletal": {
+    "u_band": 16.05,
+    "source": "module 03 u_band_by_record_family.csv, benzene, record(s) C71432_0.jdx, C71432_1.jdx",
+    "kind": "species"
+   },
+   "overtone / combination region": {
+    "u_band": 15.27,
+    "source": "module 03 u_band_by_record_family.csv, benzene, record(s) C71432_0.jdx, C71432_1.jdx",
+    "kind": "species"
+   },
+   "ring / CH-ip (9-10.5 um)": {
+    "u_band": 12.7,
+    "source": "module 03 u_band_by_record_family.csv, benzene, record(s) C71432_0.jdx, C71432_1.jdx, C71432_quantir_res0.125_boxcar.jdx",
+    "kind": "species"
+   }
+  },
+  "rule": "modules/03_lab_scoreboard/build_lab_tables.py FAMILY_RULE (12 Sep 2026)"
+ },
+ "licence": {
+  "statement": "licensed at the DFT proxy: ring-ip (1.17 / 1.22), CH-stretch (0.8 / 1.67), CH-oop (1.86 / 1.26), other (2.38 / 2.1); not licensed: none — error of the corrected band positions of the seed-mean correction on hold-outs (a) / (b) in cm⁻¹ against 3 (decision 65 as amended on 16 Nov 2026); CH-oop on hold-out (a) rests on 5 of the hold-out's 8 molecules (the others have no such band): the 95 % interval of a bootstrap over molecules is 0.93–3.2 cm⁻¹ and crosses the line (96 % of the resamples lie under it); other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.45–3.19 cm⁻¹ and crosses the line (93 % of the resamples lie under it); the first-order diagonal error of each seed's correction, averaged over the seeds, which the licence read until then: ring-ip (1.55 / 1.64), CH-stretch (1.15 / 2.02), CH-oop (2.22 / 1.72), other (2.91 / 3.68); no coupled-cluster licence",
+  "rule_source": "README.md, decision 65 as amended on 16 Nov 2026",
+  "licensed_families": [
+   "ring-ip",
+   "CH-stretch",
+   "CH-oop",
+   "other"
+  ],
+  "quantity": "product",
+  "quantity_name": "error of the corrected band positions of the seed-mean correction",
+  "caveats": [
+   "CH-oop on hold-out (a) rests on 5 of the hold-out's 8 molecules (the others have no such band): the 95 % interval of a bootstrap over molecules is 0.93–3.2 cm⁻¹ and crosses the line (96 % of the resamples lie under it)",
+   "other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.45–3.19 cm⁻¹ and crosses the line (93 % of the resamples lie under it)"
+  ],
+  "concerns": "the licence (decision 65) is on the harmonic position ω against the DFT proxy (ωB97X); it says nothing about the anharmonic position ν"
+ },
+ "positions": {
+  "note": "positions are harmonic (ω): the anharmonic step was not applied — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)",
+  "cautions": {},
+  "anharmonic": {
+   "status": "not applied",
+   "reason": "the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)",
+   "model": "x2*",
+   "field": null
+  },
+  "drawn": "curves are drawn at the harmonic positions ω, so that the network, B3LYP and ωB97X are compared like with like; the certificate lists each band's anharmonic estimate ν beside its ω"
+ },
+ "deliveries": [
+  {
+   "number": 1,
+   "delivery": "only: harmonic, the anharmonic step is switched off",
+   "at": "2026-11-17 23:37:13",
+   "seconds_since_start": 2.3,
+   "final_by": null
+  }
+ ],
+ "delivery": 1,
+ "cost": {
+  "steps_s": {
+   "reuse": 0.6,
+   "correction_and_spectra": 1.1
+  },
+  "machine": "Asus18",
+  "machine_class": "laptop",
+  "seconds": 1.7,
+  "hours": 0.0,
+  "eur_ex_vat": 0.0,
+  "source": "corpus ledger machine column 'Asus18'"
+ },
+ "provenance": {
+  "result": "C:\\Users\\thebr\\Documents\\CapstonePlan\\plans\\05_delta-probed-ir-pipeline\\probes\\results_m1\\pipeline_benzene_v14_2026-11-17\\benzene",
+  "run_commit": "6697fa4012be9bfe3a5c637382497f842502e258",
+  "run_dirty": "yes",
+  "certificate_commit": "6697fa40",
+  "deck_sha16": "9e27bf8e934893f3",
+  "low_level_software": null,
+  "host": "Asus18",
+  "note": "positions are harmonic (ω): the anharmonic step was not applied — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)",
+  "reused_from": "C:\\Users\\thebr\\Documents\\CapstonePlan\\plans\\05_delta-probed-ir-pipeline\\modules\\05_support_predictor\\corpus\\molecules\\A_8448043181"
+ },
+ "statement": "benzene: the infrared spectrum of ΔH-network v1.4 (3 seeds) — B3LYP/6-31G* corrected toward ωB97X/6-31G* — with the error of the corrected band positions of the seed-mean correction measured on molecules the network never saw; the harmonic positions ω are licensed for ring-ip, CH-stretch, CH-oop, other (decision 65), each band marked; at the coupled-cluster level not measured for this network version: the coupled-cluster reads (T3) were made on chain 34, and tests on the 9–11 existing anchors wait for the anchor decision of November 2026. The scaled B3LYP spectrum is shown as the baseline only. This molecule and the ΔH network: held out, hold-out (a) (A_8448043181): never trained on; the measured error includes it. Licence caveat: CH-oop on hold-out (a) rests on 5 of the hold-out's 8 molecules (the others have no such band): the 95 % interval of a bootstrap over molecules is 0.93–3.2 cm⁻¹ and crosses the line (96 % of the resamples lie under it); other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.45–3.19 cm⁻¹ and crosses the line (93 % of the resamples lie under it)."
+}

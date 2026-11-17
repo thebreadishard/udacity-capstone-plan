@@ -503,25 +503,25 @@
   "note": "proxy check (a) distorted label / (b) without layer A2 - bases for probes/proxy_check_plan.py only, never a production model (GoalGathering/notes/Design_2026-10-21_Few_Anchor_Proxy_Check.md); a base for its plan's reads only, so no candidate (TASKS 187)"
  },
  "E7_rungC_chain35_analytic_model_n750_seed0.pt": {
-  "status": "carried",
+  "status": "superseded",
   "network": "ΔH-network",
   "version": "1.3",
   "chain": "35",
-  "note": "carried since 28 Oct 04:4x (decision 57, the user's rule of 26 Oct): chain 35 - chain 34's recipe at 750 on the analytic labels; read 28 Oct 04:28 (E7_rungC_chain35_read.md), both arms on the same 862 analytic targets: (a) ring-ip 1.66, CH-stretch 1.15, CH-oop 1.99, other 3.35, ratio 0.172; (b) ring-ip 2.12, CH-stretch 2.50, CH-oop 2.70, other 3.89, ratio 0.263; worse on none of the five on either hold-out, lower on 9 of 10 (CH-oop (a) and both ratios beyond 2 SE); T1 not met ('other' 3.35)"
+  "note": "superseded 17 Nov 23:3x by v1.4 (v14/E7_rungC_v14s3clean_c00_control); before: carried since 28 Oct 04:4x (decision 57, the user's rule of 26 Oct): chain 35 - chain 34's recipe at 750 on the analytic labels; read 28 Oct 04:28 (E7_rungC_chain35_read.md), both arms on the same 862 analytic targets: (a) ring-ip 1.66, CH-stretch 1.15, CH-oop 1.99, other 3.35, ratio 0.172; (b) ring-ip 2.12, CH-stretch 2.50, CH-oop 2.70, other 3.89, ratio 0.263; worse on none of the five on either hold-out, lower on 9 of 10 (CH-oop (a) and both ratios beyond 2 SE); T1 not met ('other' 3.35)"
  },
  "E7_rungC_chain35_analytic_model_n750_seed1.pt": {
-  "status": "carried",
+  "status": "superseded",
   "network": "ΔH-network",
   "version": "1.3",
   "chain": "35",
-  "note": "carried since 28 Oct 04:4x (decision 57, the user's rule of 26 Oct): chain 35 - chain 34's recipe at 750 on the analytic labels; read 28 Oct 04:28 (E7_rungC_chain35_read.md), both arms on the same 862 analytic targets: (a) ring-ip 1.66, CH-stretch 1.15, CH-oop 1.99, other 3.35, ratio 0.172; (b) ring-ip 2.12, CH-stretch 2.50, CH-oop 2.70, other 3.89, ratio 0.263; worse on none of the five on either hold-out, lower on 9 of 10 (CH-oop (a) and both ratios beyond 2 SE); T1 not met ('other' 3.35)"
+  "note": "superseded 17 Nov 23:3x by v1.4 (v14/E7_rungC_v14s3clean_c00_control); before: carried since 28 Oct 04:4x (decision 57, the user's rule of 26 Oct): chain 35 - chain 34's recipe at 750 on the analytic labels; read 28 Oct 04:28 (E7_rungC_chain35_read.md), both arms on the same 862 analytic targets: (a) ring-ip 1.66, CH-stretch 1.15, CH-oop 1.99, other 3.35, ratio 0.172; (b) ring-ip 2.12, CH-stretch 2.50, CH-oop 2.70, other 3.89, ratio 0.263; worse on none of the five on either hold-out, lower on 9 of 10 (CH-oop (a) and both ratios beyond 2 SE); T1 not met ('other' 3.35)"
  },
  "E7_rungC_chain35_analytic_model_n750_seed2.pt": {
-  "status": "carried",
+  "status": "superseded",
   "network": "ΔH-network",
   "version": "1.3",
   "chain": "35",
-  "note": "carried since 28 Oct 04:4x (decision 57, the user's rule of 26 Oct): chain 35 - chain 34's recipe at 750 on the analytic labels; read 28 Oct 04:28 (E7_rungC_chain35_read.md), both arms on the same 862 analytic targets: (a) ring-ip 1.66, CH-stretch 1.15, CH-oop 1.99, other 3.35, ratio 0.172; (b) ring-ip 2.12, CH-stretch 2.50, CH-oop 2.70, other 3.89, ratio 0.263; worse on none of the five on either hold-out, lower on 9 of 10 (CH-oop (a) and both ratios beyond 2 SE); T1 not met ('other' 3.35)"
+  "note": "superseded 17 Nov 23:3x by v1.4 (v14/E7_rungC_v14s3clean_c00_control); before: carried since 28 Oct 04:4x (decision 57, the user's rule of 26 Oct): chain 35 - chain 34's recipe at 750 on the analytic labels; read 28 Oct 04:28 (E7_rungC_chain35_read.md), both arms on the same 862 analytic targets: (a) ring-ip 1.66, CH-stretch 1.15, CH-oop 1.99, other 3.35, ratio 0.172; (b) ring-ip 2.12, CH-stretch 2.50, CH-oop 2.70, other 3.89, ratio 0.263; worse on none of the five on either hold-out, lower on 9 of 10 (CH-oop (a) and both ratios beyond 2 SE); T1 not met ('other' 3.35)"
  },
  "anchor_price_2026-10-28/base_c_model_n750_seed0.pt": {
   "status": "superseded",
@@ -720,24 +720,24 @@
   "note": "v1.4 search (Design_2026-10-26_DeltaH_v1.4_Recipe_and_Search.md): a model of the search, not a version"
  },
  "v14/E7_rungC_v14s3clean_c00_control_model_n1082_seed0.pt": {
-  "status": "candidate",
+  "status": "carried",
   "network": "ΔH-network",
-  "version": "",
-  "chain": "v14 search",
-  "note": "v1.4 on the corrected pool (TASKS 253): promoted by decision 57 as amended on 17 Nov (read_clean.md); carried once m08/seen.py reads cation rows (TASKS 264)"
+  "version": "1.4",
+  "chain": "v14_clean",
+  "note": "carried since 17 Nov 23:3x (decision 57 as amended on 17 Nov 2026: the composite 0.690 against 0.844 beyond the Student-t line -0.100, no read-out worse beyond two SE; out/v14/read_clean.md; the rule of 26 Oct refused it, read_clean_rule-of-26oct.md): the carried recipe on the whole pool without hold-out twins of any charge (--holdout-twins drop-any-charge, 1,075 molecules), chain v14_clean, TASKS 253, 263"
  },
  "v14/E7_rungC_v14s3clean_c00_control_model_n1082_seed1.pt": {
-  "status": "candidate",
+  "status": "carried",
   "network": "ΔH-network",
-  "version": "",
-  "chain": "v14 search",
-  "note": "v1.4 on the corrected pool (TASKS 253): promoted by decision 57 as amended on 17 Nov (read_clean.md); carried once m08/seen.py reads cation rows (TASKS 264)"
+  "version": "1.4",
+  "chain": "v14_clean",
+  "note": "carried since 17 Nov 23:3x (decision 57 as amended on 17 Nov 2026: the composite 0.690 against 0.844 beyond the Student-t line -0.100, no read-out worse beyond two SE; out/v14/read_clean.md; the rule of 26 Oct refused it, read_clean_rule-of-26oct.md): the carried recipe on the whole pool without hold-out twins of any charge (--holdout-twins drop-any-charge, 1,075 molecules), chain v14_clean, TASKS 253, 263"
  },
  "v14/E7_rungC_v14s3clean_c00_control_model_n1082_seed2.pt": {
-  "status": "candidate",
+  "status": "carried",
   "network": "ΔH-network",
-  "version": "",
-  "chain": "v14 search",
-  "note": "v1.4 on the corrected pool (TASKS 253): promoted by decision 57 as amended on 17 Nov (read_clean.md); carried once m08/seen.py reads cation rows (TASKS 264)"
+  "version": "1.4",
+  "chain": "v14_clean",
+  "note": "carried since 17 Nov 23:3x (decision 57 as amended on 17 Nov 2026: the composite 0.690 against 0.844 beyond the Student-t line -0.100, no read-out worse beyond two SE; out/v14/read_clean.md; the rule of 26 Oct refused it, read_clean_rule-of-26oct.md): the carried recipe on the whole pool without hold-out twins of any charge (--holdout-twins drop-any-charge, 1,075 molecules), chain v14_clean, TASKS 253, 263"
  }
 }
