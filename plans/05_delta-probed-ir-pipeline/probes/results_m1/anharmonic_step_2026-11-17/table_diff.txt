@@ -1,0 +1,18 @@
+# The set-wise match on the stored molecules (39 molecules, 2244 modes)
+
+partner held one to one: 2168; of those with another shift, mark or overlap under the set-wise match (to the bit): 0
+refused one to one: 76; matched as a set: 3; still refused: 73, of which with the same overlap to the bit: 72 (the others are read against their set's partners and stay under the line)
+
+modes matched as a set (id, mode, omega, family, window; one to one -> set overlap; shift; partners as omega/weight/shift):
+  P3_0bb6c41350 43 1276.74 ring-ip mid: 0.447 -> 0.561; -19.16; 1232.20/0.203/-17.69, 1237.17/0.797/-19.54
+  P3_ff62f88395 61 3183.24 CH-stretch ch: 0.466 -> 0.934; -152.25; 3058.54/0.501/-154.61, 3074.29/0.499/-149.88
+  P3_1e34c6eeef 13 580.28 other mid: 0.485 -> 0.617; -6.01; 539.13/0.213/-9.02, 553.98/0.787/-5.20
+
+by tolerance (cm-1): modes in a set of two or more; refused modes matched as a set
+  0.5: 161; 2
+  1.0: 253; 3
+  3.0: 482; 6
+
+the artefact's table, format 2 (x2star_v2.json) against format 3 (x2star_v3.json):
+  mid: 1310 -> 1312 rows; old rows missing or changed: 0; old rows in their order: True; added: ring-ip at 1276.74 (label -23.91, xtb -19.16); other at 580.28 (label -5.05, xtb -6.01)
+  ch: 288 -> 289 rows; old rows missing or changed: 0; old rows in their order: True; added: CH-stretch at 3183.24 (label -132.43, xtb -152.25)
