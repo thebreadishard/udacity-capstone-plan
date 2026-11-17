@@ -223,7 +223,7 @@ def stated_errors(accuracy: dict) -> tuple[str, dict[str, dict[str, float]]]:
 
 def carried_version() -> str:
     status = P.MR.read_status(P.MR.STATUS_FILE)
-    versions = {status[m.name]["version"] for m in P.carried_models()}
+    versions = {status[m.name]["version"] for m in P.carried_models(NK.MEASUREMENT)}
     if len(versions) != 1:
         raise RuntimeError(f"the carried ΔH-network files are of {len(versions)} versions: {sorted(versions)}")
     return versions.pop()
@@ -231,6 +231,7 @@ def carried_version() -> str:
 
 def carried_accuracy() -> dict:
     """The error of the carried version, both quantities: the evaluation records and the product-error record of the registry's carried
-    ΔH-network files. A carried version without a product-error record raises `NoProductError` with the command that makes it."""
-    names = tuple(m.name for m in P.carried_models())
+    measurement networks (decision 66: an error is never read on the release networks). A carried version without a product-error
+    record raises `NoProductError` with the command that makes it."""
+    names = tuple(m.name for m in P.carried_models(NK.MEASUREMENT))
     return accuracy_of(names) | {"version": carried_version()}

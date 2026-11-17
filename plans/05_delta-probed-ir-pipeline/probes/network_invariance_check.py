@@ -64,7 +64,7 @@ def write_copy(src: Path, dst: Path, perm: np.ndarray, R: np.ndarray) -> None:
 
 
 def corrected_frequencies(d: Path) -> np.ndarray:
-    dH, _ = P.correction(P.carried_models(), d)
+    dH, _ = P.correction(P.carried_models(P.NK.MEASUREMENT), d)
     with np.load(d / P.RI.LOW_HESSIAN) as z:
         H = z["H_projected"]
     masses = np.asarray(json.loads((d / "geometry.json").read_text(encoding="utf-8"))["masses_amu"], float)
@@ -91,7 +91,7 @@ def check(mol_id: str, seed: int, what: str = "both") -> dict:
         write_copy(src, b, perm, R)
         net_a, low_a = corrected_frequencies(a)
         net_b, low_b = corrected_frequencies(b)
-    return {"molecule": mol_id, "seed": seed, "what": what, "n_atoms": n, "models": [m.name for m in P.carried_models()],
+    return {"molecule": mol_id, "seed": seed, "what": what, "n_atoms": n, "models": [m.name for m in P.carried_models(P.NK.MEASUREMENT)],
             "b3lyp_max_abs_diff_cm": float(np.abs(low_a - low_b).max()), "network_max_abs_diff_cm": float(np.abs(net_a - net_b).max()),
             "network_rms_diff_cm": float(np.sqrt(np.mean((net_a - net_b) ** 2)))}
 

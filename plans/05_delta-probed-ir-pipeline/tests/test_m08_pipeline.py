@@ -53,8 +53,11 @@ def test_settings_that_do_not_combine_are_refused_when_built(tmp_path, kw, match
         config(tmp_path, **kw)
 
 
-def test_the_default_models_are_the_carried_seeds_of_one_version():
-    models = P.carried_models()
+def test_the_default_models_are_the_carried_measurement_seeds_of_one_version():
+    models = P.carried_models(P.NK.MEASUREMENT)
+    assert P.carried_models(P.NK.RELEASE) == ()                # no version has release networks yet (decision 66)
+    with pytest.raises(ValueError, match="network kind"):
+        P.carried_models("both")
     status = P.MR.read_status(P.MR.STATUS_FILE)
     assert len(models) == 3 and len({status[m.name]["version"] for m in models}) == 1
     assert all(status[m.name]["network"] == P.NETWORK and status[m.name]["status"] == "carried" for m in models)
@@ -264,7 +267,7 @@ def test_a_zero_correction_gives_the_b3lyp_spectrum(benzene):
 
 @pytest.fixture
 def pin_defaults(monkeypatch):
-    monkeypatch.setattr(P, "carried_models", lambda: (PIN_MODEL,))
+    monkeypatch.setattr(P, "carried_models", lambda kind: (PIN_MODEL,) if kind == P.NK.MEASUREMENT else ())
     monkeypatch.setattr(P, "default_psi4_python", lambda: Path(sys.executable))
 
 

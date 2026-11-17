@@ -273,7 +273,7 @@ def read_holdouts(cfg: Config, models: tuple[Path, ...], sets: dict[str, tuple[s
 
 def carried(m05: Path) -> tuple[tuple[Path, ...], str]:
     """(the registry's carried ΔH-network checkpoints as files under `m05`/out, the stem their records share)."""
-    listed = P.carried_models()
+    listed = P.carried_models(NK.MEASUREMENT)
     if not listed:
         raise SystemExit(f"the registry lists no carried {P.NETWORK} checkpoint")
     models = tuple(m05 / "out" / m.relative_to(P.MR.OUT) for m in listed)

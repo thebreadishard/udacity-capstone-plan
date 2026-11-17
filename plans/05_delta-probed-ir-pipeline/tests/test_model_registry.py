@@ -99,6 +99,7 @@ def test_overview_one_row_per_network_with_current_version():
                      dict(model="b.pt", network=DH, version="1.0", status="superseded", chain="24"),
                      dict(model="c.pt", network=DH, version="—", status="smoke", chain="x")],
               "standout": [dict(model="p2.pt", network="learned order scorer (P2)", version="0.1", status="experimental", chain="P2")]}
+    tables = {key: [row | {"network_kind": "measurement"} for row in rows] for key, rows in tables.items()}
     md = MR.render_overview(tables)
     rows = [ln for ln in md.splitlines() if ln.startswith("| ")][1:]          # the header row, then one row per network
     assert len(rows) == len(MR.NETWORKS)

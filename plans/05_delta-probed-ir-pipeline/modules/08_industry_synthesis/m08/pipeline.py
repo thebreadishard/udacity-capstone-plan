@@ -103,10 +103,11 @@ class Refused(Exception):
         self.reasons = reasons
 
 
-def carried_models() -> tuple[Path, ...]:
-    """The ΔH network's carried checkpoints in the model registry (decision 55), one file per seed."""
-    status = MR.read_status(MR.STATUS_FILE)
-    return tuple(sorted(MR.OUT / k for k, e in status.items() if e["network"] == NETWORK and e["status"] == "carried"))
+def carried_models(kind: str) -> tuple[Path, ...]:
+    """The carried ΔH-network version's checkpoints of one kind in the model registry (decisions 55 and 66), one file per seed:
+    `NK.MEASUREMENT` for anything that reads an error, `NK.RELEASE` for the networks trained on the hold-outs too (none until a
+    version has them)."""
+    return tuple(sorted(MR.OUT / k for k in MR.carried_keys(MR.read_status(MR.STATUS_FILE), NETWORK, kind)))
 
 
 def default_psi4_python() -> Path | None:
@@ -125,7 +126,7 @@ class PipelineConfig(BaseModel):
     xyz: Path | None = None
     charge: int = 0
     multiplicity: int = 1
-    models: tuple[Path, ...] = Field(default_factory=lambda: carried_models())          # looked up at build time, so a test can
+    models: tuple[Path, ...] = Field(default_factory=lambda: carried_models(NK.MEASUREMENT))   # looked up at build time, so a test can
     psi4_python: Path | None = Field(default_factory=lambda: default_psi4_python())     # point it at a pin model
     pyscf_python: str = Field(WSL_PYSCF, pattern=r"^[~A-Za-z0-9_./-]+$")
     threads: int = Field(4, ge=1, le=32)

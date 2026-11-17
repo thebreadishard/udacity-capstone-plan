@@ -71,7 +71,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--threads", type=int, default=6)
     ap.add_argument("--out", type=Path, default=OUT)
     a = ap.parse_args(argv)
-    models = P.carried_models()
+    models = P.carried_models(P.NK.MEASUREMENT)
     seen, catalog = S.load(models), Catalog()
     rows = [verdict(n, s, models, seen, catalog, a.threads) for n, s in CANDIDATES.items()]
     text = markdown(rows, a.threads)
