@@ -28,7 +28,9 @@ import anharmonic_step as AS  # probes/, on the path through m08.pipeline
 SETTINGS = AN.FieldSettings.of(4, 2, 1536, 120)
 BARS = {"ring-ip": 3.37, "other": 3.84, "CH-oop": 8.38, "CH-stretch": 6.21}
 BENZENE = "c1ccccc1"
-SWAPPED, SCRAMBLED = (13, 18), (20, 21, 22)
+SWAPPED, SCRAMBLED = (13, 18), (4, 5, 10)      # the scrambled three are modes without a degenerate partner (TASKS 255):
+#                                                 a member of a pair is read against its pair's partners, and two of three
+#                                                 scrambled vectors hold 5/9 of it
 
 
 @pytest.fixture(scope="module")
@@ -105,7 +107,7 @@ def test_the_step_gives_every_band_its_position_and_its_reason(result, artefact,
     out = stepped(result, artefact, monkeypatch)
     sticks, s = out["network"]["sticks"], out["anharmonic"]
     assert s["status"] == POS.APPLIED and s["model"] == "x2*" and s["artefact"]["bars_cm"] == BARS
-    assert s["artefact"]["file"] == "probes/anharmonic_step/x2star_v2.json" and s["field"]["peak_memory_mb"] == 7
+    assert s["artefact"]["file"] == "probes/anharmonic_step/x2star_v3.json" and s["field"]["peak_memory_mb"] == 7
     assert len(sticks) == 30 and s["bands"]["stepped"] + sum(s["bands"]["no_step"].values()) == 30
     for stick in sticks:
         a = stick["anharmonic"]

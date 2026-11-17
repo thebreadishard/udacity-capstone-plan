@@ -19,8 +19,11 @@ Three functions, none of which reads a file it was not handed:
   the family's bar — the rms of the step against its VPT2 label, not an error of a position — and whether that bar was measured
   for this kind of mode (family 'other' with o ≥ 0.8: it was not, and such a step carries none);
 - `agree_on_family`: a step is withheld where a second family rule (the certificate's) names another family for the mode;
-- `carry_to_bands`: the steps carried to the corrected bands by mode overlap, one B3LYP mode per band, never by rank; a band whose
-  partner overlaps below 0.5 gets no step.
+- `carry_to_bands`: the steps carried to the corrected bands by mode overlap, never by rank; a band whose partner — one B3LYP
+  mode, or the near-degenerate set of them it lies in — overlaps below 0.5 gets no step.
+
+Both matches, B3LYP mode to xtb mode and corrected band to B3LYP mode, are `s2_xtb_read.match_sets` (TASKS 255): one mode to one
+mode where that overlap holds, and otherwise near-degenerate set to set, so that a degenerate pair is not refused for its basis.
 """
 from __future__ import annotations
 
@@ -38,14 +41,16 @@ sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, "..", "src"))
 from s1_anharmonic_level import harmonic_modes  # noqa: E402
 from s2_read import FAMILIES, XTB_KEY, in_window, load_molecule, mode_description  # noqa: E402
-from s2_xtb_read import MIN_OVERLAP, X2_GRID, attach_xtb, match_modes  # noqa: E402
+from s2_xtb_read import MARK_SHARE, MIN_OVERLAP, X2_GRID, SetMatch, attach_xtb, match_sets  # noqa: E402
 from s3_read import predictors  # noqa: E402
 
 from dpir.qff import MASS, harmonic  # noqa: E402
 
-FORMAT = 2
+FORMAT = 3
 MODEL = "x2*"
-ARTEFACT = os.path.join(HERE, "anharmonic_step", "x2star_v2.json")
+ARTEFACT = os.path.join(HERE, "anharmonic_step", "x2star_v3.json")
+SUPERSEDED = {2: "its training table was built with the one-to-one match to the xtb field, which this code no longer uses "
+                 "(TASKS 255: a degenerate pair was refused for its basis); refit with probes/anharmonic_step_fit.py"}
 TABLE_KEYS = ("omega", "delta", "family", "h", "o", XTB_KEY)      # s2_read.concat's columns, in its order
 REQUIRED = ("commit", "registration", "decisions", "scope", "training_molecules", "windows", "molecules", "targets", "elements",
             "compositions", "probes")
@@ -65,7 +70,8 @@ MODE_REASONS = (LARGE_AMPLITUDE, NO_XTB_PARTNER, XTB_PARTNER_MARKED)     # the l
 REASON_TEXT = {
     LARGE_AMPLITUDE: "a large-amplitude mode (half or more of its hydrogen motion on an sp-carbon, N–H or O–H hydrogen): the model "
                      "was not trained on such modes",
-    NO_XTB_PARTNER: f"no GFN2-xTB mode matches this B3LYP mode (overlap below {MIN_OVERLAP}), so the model has no input for it",
+    NO_XTB_PARTNER: f"no GFN2-xTB mode and no near-degenerate set of them matches this B3LYP mode (overlap below {MIN_OVERLAP}), "
+                    "so the model has no input for it",
     XTB_PARTNER_MARKED: "the matched GFN2-xTB mode is outside perturbation theory's domain, so its shift is not a number the "
                         "theory can state",
     UNMEASURED: "no model was measured for this family in this range",
@@ -79,11 +85,14 @@ NOT_MEASURED_TEXT = (f"the step's error is not measured for this kind of mode (f
 @dataclass(frozen=True)
 class FamilyModel:
     """One family's model in one window: S2b's configuration, the registered bar (the rms of the step against the targets' VPT2
-    labels), the artefact's own reproduction of it, and that rms on each target molecule."""
+    labels, read with the one-to-one match), that read reproduced, the same rms with this artefact's table (the set-wise match,
+    TASKS 255: the model that runs) and that rms on each target molecule; and how many rows the set-wise match added to the table."""
     config: str
     bar_cm: float
+    bar_one_to_one_cm: float
     bar_refit_cm: float
     n_training_modes: int
+    n_training_modes_one_to_one: int
     n_target_rows: int
     per_target_rms_cm: dict[str, float]
 
@@ -168,13 +177,15 @@ class ModeStep:
 
 @dataclass(frozen=True)
 class BandStep:
-    """A corrected band's step: its B3LYP partner (None below the overlap line), that overlap, and what the partner carries."""
+    """A corrected band's step: its B3LYP partner (None below the overlap line), the overlap the match was read on, and what the
+    partner carries — or, for a band matched as a set, what its near-degenerate set of B3LYP modes carries."""
     mode: int | None
     overlap: float
     delta_anh_cm: float | None
     reason: str | None
     bar_cm: float | None
     error_not_measured: bool
+    set_wise: bool
 
     def as_record(self) -> dict[str, Any]:
         return asdict(self)
@@ -202,6 +213,8 @@ def load_artefact(path: str = ARTEFACT) -> Artefact:
     training molecules it came from, and two windows that hold the same family (a mode would have two steps)."""
     with open(path, encoding="utf-8") as fh:
         raw = json.load(fh)
+    if raw.get("format") in SUPERSEDED:
+        raise ValueError(f"{path}: format {raw['format']} is superseded — {SUPERSEDED[raw['format']]}")
     if raw.get("format") != FORMAT or raw.get("model") != MODEL:
         raise ValueError(f"{path}: format {raw.get('format')!r}, model {raw.get('model')!r}; this code reads format {FORMAT} of {MODEL}")
     missing = [k for k in REQUIRED if not raw.get(k)]
@@ -325,18 +338,37 @@ def mode_steps(modes: Modes, xtb: XtbField, artefact: Artefact) -> list[ModeStep
     return out
 
 
-def carry_to_bands(q_bands: np.ndarray, q_modes: np.ndarray, steps: list[ModeStep], min_overlap: float = MIN_OVERLAP) -> list[BandStep]:
-    """Each corrected band's step: that of the B3LYP mode the one-to-one assignment of largest total squared overlap gives it
-    (`s2_xtb_read.match_modes`, the match the training used), whatever the two modes' ranks. Below `min_overlap` the band is no
-    B3LYP mode's and gets no step."""
+def _set_band(match: SetMatch, k: int, steps: list[ModeStep]) -> BandStep:
+    """The step of a band matched as a set: the overlap-weighted mean of its B3LYP modes' steps. Where the members without a step
+    hold MARK_SHARE of the band or more it gets none, with the heaviest such member's reason; a bar is the largest of the
+    members', and one member whose error was not measured takes the bar's claim from the band."""
+    members = [(float(match.weights[k, j]), steps[int(j)]) for j in np.flatnonzero(match.weights[k])]
+    without = sorted(((w, s) for w, s in members if s.reason is not None), key=lambda m: -m[0])
+    partner, overlap = int(match.partner[k]), float(match.overlap[k])
+    if sum(w for w, _ in without) >= MARK_SHARE:
+        return BandStep(partner, overlap, None, without[0][1].reason, None, False, True)
+    stepped = [(w, s) for w, s in members if s.reason is None]
+    delta = sum(w * s.delta_anh_cm for w, s in stepped) / sum(w for w, _ in stepped)
+    flagged = any(s.error_not_measured for _, s in stepped)
+    return BandStep(partner, overlap, float(delta), None, None if flagged else max(s.bar_cm for _, s in stepped), flagged, True)
+
+
+def carry_to_bands(omega_bands: np.ndarray, q_bands: np.ndarray, q_modes: np.ndarray, steps: list[ModeStep],
+                   min_overlap: float = MIN_OVERLAP) -> list[BandStep]:
+    """Each corrected band's step, by `s2_xtb_read.match_sets` (the match the training uses), whatever the modes' ranks: that of
+    the B3LYP mode the one-to-one assignment of largest total squared overlap gives it, and for a band that mode overlaps below
+    `min_overlap`, that of its near-degenerate set of B3LYP modes (`_set_band`). A band neither matches is no B3LYP mode's and
+    gets no step. `omega_bands` are the bands' harmonic positions, in the order of q_bands' columns."""
     if len(steps) != q_modes.shape[1]:
         raise ValueError(f"{len(steps)} steps for {q_modes.shape[1]} B3LYP modes")
-    partner, overlap = match_modes(q_bands, q_modes, min_overlap)
+    match = match_sets(omega_bands, q_bands, q_modes, min_overlap)
     out = []
-    for k, ov in zip(partner, overlap, strict=True):
-        if k < 0:
-            out.append(BandStep(None, float(ov), None, MIXED_BAND, None, False))
+    for k, partner in enumerate(match.partner):
+        if partner < 0:
+            out.append(BandStep(None, float(match.overlap[k]), None, MIXED_BAND, None, False, False))
+        elif match.set_wise[k]:
+            out.append(_set_band(match, k, steps))
         else:
-            s = steps[int(k)]
-            out.append(BandStep(int(k), float(ov), s.delta_anh_cm, s.reason, s.bar_cm, s.error_not_measured))
+            s = steps[int(partner)]
+            out.append(BandStep(int(partner), float(match.overlap[k]), s.delta_anh_cm, s.reason, s.bar_cm, s.error_not_measured, False))
     return out
