@@ -195,6 +195,18 @@ def test_plan_refuses_missing_checkpoints_and_overwrites(sandbox):
         V.cmd_plan(carried)
 
 
+def test_the_final_chain_is_not_written_over_a_record_on_disk(sandbox):
+    """read2 writes the final chain; a whole-pool record already at its prefix would be trained over, so it refuses."""
+    root, carried = sandbox
+    V.cmd_plan(carried)
+    w = V.load_list()[0][0]
+    assert V.prefix(w, V.FINAL_TAG) != V.prefix(w, V.FULL_TAG)                      # never the data arm's s3full
+    write_record(root, V.prefix(w, V.FINAL_TAG), {0: 0.0}, split=False)
+    with pytest.raises(SystemExit, match=r"v14s3win_c00_control\.json exists: the final chain would train over a record on disk"):
+        V._write_final_chain(w, carried)
+    assert not (root / "probes" / "runs" / "v14_final.json").exists()
+
+
 def test_an_edited_list_is_refused(sandbox):
     root, carried = sandbox
     V.cmd_plan(carried)
@@ -258,6 +270,10 @@ def full_checkpoint(w: V.Config, seed: int) -> str:
     return f"{V.prefix(w, V.FULL_TAG)}_model_n1082_seed{seed}.pt"
 
 
+def winner_checkpoint(w: V.Config, seed: int) -> str:
+    return f"{V.prefix(w, V.FINAL_TAG)}_model_n1082_seed{seed}.pt"
+
+
 def patterns_the_runner_expands(root: Path, name: str) -> int:
     """A written chain walked through the runner's own `expand`: every argument with a '*' must be in a step the runner expands
     (17 Nov 2026: `expand` dropped glob_args and the patterns reached their programs as written). Returns the number of patterns."""
@@ -283,7 +299,7 @@ def assert_final_chain(root: Path, w: V.Config, other: V.Config, carried: list[s
     assert other_step == V.train_step(other, "s3other", FINAL_SEEDS)                # the target check's arm keeps the selection split
     assert other_step["argv"].count("--aux-target") == (other.target != V.CARRIED_TARGET)
     assert other_step["argv"].count("--selection-split") == 1
-    split_twin = V.trainer_argv(w, V.prefix(w, V.FULL_TAG), FINAL_SEEDS)             # the winner's stage command at this prefix and seeds
+    split_twin = V.trainer_argv(w, V.prefix(w, V.FINAL_TAG), FINAL_SEEDS)             # the winner's stage command at this prefix and seeds
     k = split_twin.index("--selection-split")
     assert full_step["argv"] == [*split_twin[:k], "--holdout-twins", "drop-any-charge", *split_twin[k + 2:]]   # the split out, the twin rule in
     whole = config_from_argv(full_step["argv"][2:])
@@ -291,7 +307,7 @@ def assert_final_chain(root: Path, w: V.Config, other: V.Config, carried: list[s
     assert whole.holdout_twins == "drop-any-charge" and config_from_argv(other_step["argv"][2:]).holdout_twins == "drop"
     assert all(s["argv"][-2:] == ["--eval-ids-file", "a8=out/holdout_a_clean_2026-10-30.txt"] for s in final["steps"][3:9])
     assert [s["argv"][2:4] for s in final["steps"][3:6]] == [
-        [f"{V.OUT}/E7_rungC_v14s3full_{w.name}_model_n*_seed{s}.pt", f"{V.OUT}/eval_winner_seed{s}"] for s in range(3)]
+        [f"{V.OUT}/E7_rungC_v14s3win_{w.name}_model_n*_seed{s}.pt", f"{V.OUT}/eval_winner_seed{s}"] for s in range(3)]
     assert [s["argv"][2] for s in final["steps"][6:9]] == carried
 
 
@@ -309,9 +325,9 @@ def assert_both_scores_agree(root: Path, chosen: list[str]) -> None:
 
 def read3_once_the_twin_rule_holds(root: Path, w: V.Config) -> dict:
     """read3 refuses the winner's whole-pool record until it states drop-any-charge; then it reads, deciding on (a8) and (b)."""
-    with pytest.raises(SystemExit, match=r"v14s3full_.*\.json was trained with holdout_twins None, not 'drop-any-charge'"):
+    with pytest.raises(SystemExit, match=r"v14s3win_.*\.json was trained with holdout_twins None, not 'drop-any-charge'"):
         V.cmd_read3()
-    with_fields(root, V.prefix(w, V.FULL_TAG), CLEAN_RULE)
+    with_fields(root, V.prefix(w, V.FINAL_TAG), CLEAN_RULE)
     V.cmd_read3()
     rec = json.loads((root / "m05" / V.OUT / "read3.json").read_text(encoding="utf-8"))
     assert rec["decided_on"] == ["a8", "b"] and rec["winner_holdout_twins"] == "drop-any-charge"
@@ -360,9 +376,9 @@ def test_plan_to_read3_end_to_end(sandbox):
     with pytest.raises(SystemExit, match="trained with --selection-split"):
         V.cmd_read3()
     assert not (root / "m05" / V.OUT / "read3.json").exists()
-    write_record(root, V.prefix(w, V.FULL_TAG), dict.fromkeys(range(3), 0.0), split=False)
+    write_record(root, V.prefix(w, V.FINAL_TAG), dict.fromkeys(range(3), 0.0), split=False)
     for s in range(3):
-        write_final_eval(root, "winner", 0.5, s, full_checkpoint(w, s))
+        write_final_eval(root, "winner", 0.5, s, winner_checkpoint(w, s))
     rec = read3_once_the_twin_rule_holds(root, w)
     assert rec["promotion"]["promoted"] and rec["target_check"]["promoted"]          # the other target is better: the choice goes to the user
     assert rec["winner_trained_on"] == "whole pool" and rec["winner_best_epochs"] == [100, 100, 100]
@@ -405,10 +421,10 @@ def at_read3(root: Path, carried: list[str], winner_index: int, full_epoch: int 
     for tag, seed in (("s1a", 0), ("s1b", 1), ("s2", V.STAGE2_SEED)):
         write_record(root, V.prefix(w, tag), {seed: 0.3})
     write_record(root, V.prefix(other, "s3other"), dict.fromkeys(range(3), 0.1))
-    write_record(root, V.prefix(w, V.FULL_TAG), dict.fromkeys(range(3), 0.0), best_epoch=full_epoch, split=False)
-    with_fields(root, V.prefix(w, V.FULL_TAG), CLEAN_RULE)
+    write_record(root, V.prefix(w, V.FINAL_TAG), dict.fromkeys(range(3), 0.0), best_epoch=full_epoch, split=False)
+    with_fields(root, V.prefix(w, V.FINAL_TAG), CLEAN_RULE)
     for s in range(3):
-        write_final_eval(root, "winner", 0.5, s, full_checkpoint(w, s))
+        write_final_eval(root, "winner", 0.5, s, winner_checkpoint(w, s))
         write_final_eval(root, "carried", 0.1, s, carried[s])
     return w
 
@@ -417,7 +433,7 @@ def test_read3_refuses_winner_evals_of_any_other_checkpoint(sandbox):
     root, carried = sandbox
     w = at_read3(root, carried, winner_index=0)
     V.cmd_read3()                                                                   # the whole-pool checkpoints: read
-    write_final_eval(root, "winner", 0.5, 1, full_checkpoint(w, 2))                       # a whole-pool model, the wrong seed
+    write_final_eval(root, "winner", 0.5, 1, winner_checkpoint(w, 2))                       # a whole-pool model, the wrong seed
     with pytest.raises(SystemExit, match="not seed 1 of"):
         V.cmd_read3()
     write_final_eval(root, "winner", 0.5, 1, carried[1])                                  # no trainer checkpoint's name
@@ -459,7 +475,7 @@ def test_read3_reads_the_prediction_on_biphenylene(sandbox):
     assert rec["prediction"] == {"molecule": "A_72b86c2331", "winner": [2.0] * 3, "carried": [2.0] * 3, "line": 4.7, "passed": True}
     assert "**PASS**" in (root / "m05" / V.OUT / "read3.md").read_text(encoding="utf-8")
     for s in range(3):
-        write_final_eval(root, "winner", 0.5, s, full_checkpoint(w, s), biphenylene=6.0 + s)
+        write_final_eval(root, "winner", 0.5, s, winner_checkpoint(w, s), biphenylene=6.0 + s)
     V.cmd_read3()
     rec = json.loads((root / "m05" / V.OUT / "read3.json").read_text(encoding="utf-8"))
     report = (root / "m05" / V.OUT / "read3.md").read_text(encoding="utf-8")
@@ -494,7 +510,7 @@ def test_read3_decides_on_the_clean_eight_and_prints_the_ten(sandbox):
 def test_read3_refuses_a_winner_trained_with_a_charged_twin(sandbox, fields):
     root, carried = sandbox
     w = at_read3(root, carried, winner_index=0)
-    with_fields(root, V.prefix(w, V.FULL_TAG), fields)
+    with_fields(root, V.prefix(w, V.FINAL_TAG), fields)
     with pytest.raises(SystemExit, match=r"holdout_twins 'drop', not 'drop-any-charge'|did not drop P3c_8448043181"):
         V.cmd_read3()
     assert not (root / "m05" / V.OUT / "read3.json").exists()
@@ -662,11 +678,11 @@ def test_register_enters_the_final_chains_six_checkpoints(sandbox, registry):
     for s in range(3):
         (root / "m05" / f"{V.prefix(other, 's3other')}_model_n913_seed{s}.pt").write_bytes(b"x")
     assert V.main(["register"]) == 0
-    names = [Path(full_checkpoint(w, s)).name for s in range(3)] + [f"E7_rungC_v14s3other_{w.name}_model_n913_seed{s}.pt" for s in range(3)]
+    names = [Path(winner_checkpoint(w, s)).name for s in range(3)] + [f"E7_rungC_v14s3other_{w.name}_model_n913_seed{s}.pt" for s in range(3)]
     assert sorted(json.loads(registry.read_text(encoding="utf-8"))) == sorted(names)
-    assert MR.require_carried(root / "m05" / full_checkpoint(w, 1), allow=True, status_file=registry)["status"] == "candidate"
+    assert MR.require_carried(root / "m05" / winner_checkpoint(w, 1), allow=True, status_file=registry)["status"] == "candidate"
     assert V.main(["register"]) == 0                                                # a second run enters nothing and refuses nothing
-    (root / "m05" / full_checkpoint(w, 2)).unlink()
+    (root / "m05" / winner_checkpoint(w, 2)).unlink()
     with pytest.raises(RuntimeError, match="matches 0 files"):                      # a training that saved no checkpoint stops the chain here
         V.main(["register"])
 
@@ -711,7 +727,7 @@ def test_read3_says_whether_the_expectation_of_more_data_held(sandbox):
     rec = json.loads((root / "m05" / V.OUT / "read3.json").read_text(encoding="utf-8"))
     assert rec["expectation"]["a"]["held"] and rec["expectation"]["b"]["held"]
     for s in range(3):
-        write_final_eval(root, "winner", 0.05, s, full_checkpoint(w, s))                  # now above the carried version on both
+        write_final_eval(root, "winner", 0.05, s, winner_checkpoint(w, s))                  # now above the carried version on both
     V.cmd_read3()
     rec = json.loads((root / "m05" / V.OUT / "read3.json").read_text(encoding="utf-8"))
     report = (root / "m05" / V.OUT / "read3.md").read_text(encoding="utf-8")

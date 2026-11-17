@@ -67,7 +67,8 @@ STAGE1_TAGS = {0: "s1a", 1: "s1b"}         # a step and a record per seed: a res
 STAGE2_SEED = 2                            # the third seed, for the best of stage 1 and the control
 STAGE2_BEST = 4
 FINAL_SEEDS = (0, 1, 2)                    # the final chain's trainings: the other target, and the winner on the whole pool
-FULL_TAG = "s3full"                        # the winner's recipe without the selection split (§12)
+FULL_TAG = "s3full"                        # the data arm (§14): the control's recipe without the selection split
+FINAL_TAG = "s3win"                        # the final chain's winner without the selection split (§12), never written over s3full
 CLEAN_TAG = "s3clean"                      # the carried recipe on the whole pool without any hold-out twin of any charge (TASKS 253)
 CLEAN_TWINS = "drop-any-charge"            # the twin rule of every whole-pool training a promotion is read on (TASKS 253)
 CHECKPOINT = re.compile(r"(?P<prefix>.+)_model_n\d+_seed(?P<seed>\d+)\.pt")   # the trainer's `<prefix>_model_n<N>_seed<S>.pt`
@@ -77,7 +78,8 @@ EXCLUDED_SELECTION_CORES = ("biphenylene",)  # not scored (§13): the corpus's o
 N_EXCLUDED = 8                             # derivatives, so no configuration can learn it and its error is not a recipe's
 SEL_ALL, SEL_SCORED = "selall", "selscored"  # the evaluator's names for the whole selection set and the part the score is read on
 SEL_REPRODUCTION_TOL = 1e-3                # score units: a selection eval must give the trainer's own score on the whole set
-TRAINED_WITH_SPLIT, TRAINED_WHOLE = 911, 1080  # molecules a stage training and a whole-pool one train on (two hold-out twins dropped)
+TRAINED_WITH_SPLIT, TRAINED_WHOLE = 911, 1080  # molecules a stage training and a whole-pool one train on (an estimate: 1080 with two
+                                                # hold-out twins dropped; drop-any-charge leaves about 1075)
 PREDICTION_MOLECULE, PREDICTION_LINE = "A_72b86c2331", 4.7  # §12: biphenylene's corrected ω rms on the whole-pool models, cm⁻¹
 RERUN_CAP = 450                            # the cap §12 names for a whole-pool rerun when the cap, not the data, stopped a seed
 CLEAN_A = "a8"                             # hold-out (a) without its two trained twins, as the evals name it (m08.accuracy.CLEAN_SET)
@@ -420,7 +422,7 @@ def evaluated_checkpoint(path: Path) -> Path:
     return Path(model)
 
 
-def whole_pool_reads(w: Config, eval_paths: list[Path], tag: str = FULL_TAG) -> list[SeedRead]:
+def whole_pool_reads(w: Config, eval_paths: list[Path], tag: str) -> list[SeedRead]:
     """The trainings behind the winner's hold-out evals, one per seed of FINAL_SEEDS, with no selection read (they trained on that set).
     The trainer's record beside the checkpoint an eval names carries a selection split only when one was used. Refused: a checkpoint
     trained with a selection split — the stage checkpoints never saw the selection set's scaffold cores and the carried version did,
@@ -658,15 +660,18 @@ def _eval_step(model: str, out: str, sets: dict[str, str] | None = None) -> dict
 
 def winner_models(w: Config) -> list[str]:
     """The winner's whole-pool checkpoints, one per seed of FINAL_SEEDS (a pattern: the file name carries the pool size)."""
-    return [f"{prefix(w, FULL_TAG)}_model_n*_seed{s}.pt" for s in FINAL_SEEDS]
+    return [f"{prefix(w, FINAL_TAG)}_model_n*_seed{s}.pt" for s in FINAL_SEEDS]
 
 
 def _write_final_chain(w: Config, carried_models: list[str]) -> None:
     """The other target with the selection split (the target check is a selection-set read), the winner on the whole pool without any
     hold-out twin of any charge (the models the promotion is read on), both arms on the hold-outs and the clean eight, read3."""
     other = replace(w, target=next(t for t in TARGETS if t != w.target))
+    for pre in (prefix(w, FINAL_TAG), prefix(other, "s3other")):
+        if (M05 / f"{pre}.json").is_file():
+            raise SystemExit(f"{pre}.json exists: the final chain would train over a record on disk")
     seeds = ",".join(str(s) for s in FINAL_SEEDS)
-    steps = [train_step(other, "s3other", seeds), train_step(w, FULL_TAG, seeds, selection_split=False, twins=CLEAN_TWINS),
+    steps = [train_step(other, "s3other", seeds), train_step(w, FINAL_TAG, seeds, selection_split=False, twins=CLEAN_TWINS),
              read_step("register")]
     clean = {CLEAN_A: chain_runner.HOLDOUT_A_CLEAN}
     steps += [_eval_step(m, f"{OUT}/eval_winner_seed{s}", clean) for s, m in zip(FINAL_SEEDS, winner_models(w), strict=True)]
@@ -969,8 +974,8 @@ def final_evals(w: Config) -> tuple[list[SeedRead], list[Path], list[Path]]:
     passed `whole_pool_reads`, the twin rule CLEAN_TWINS and the cap rule; every eval holds the clean set (§14's addition of 16 Nov:
     hold-out (a) decides on its clean eight, the ten are printed beside them)."""
     evals = [M05 / f"{OUT}/eval_{who}_seed{s}.json" for who in ("winner", "carried") for s in FINAL_SEEDS]
-    full = whole_pool_reads(w, evals[:3])
-    require_twin_rule(prefix(w, FULL_TAG), CLEAN_TWINS)
+    full = whole_pool_reads(w, evals[:3], FINAL_TAG)
+    require_twin_rule(prefix(w, FINAL_TAG), CLEAN_TWINS)
     require_below_cap(w, full)
     require_clean_set(evals)
     return full, evals[:3], evals[3:]
