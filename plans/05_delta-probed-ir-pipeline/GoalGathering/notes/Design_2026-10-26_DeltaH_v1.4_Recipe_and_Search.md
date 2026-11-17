@@ -481,3 +481,10 @@ beforehand, deciding nothing: the probe without P3c (one seed) was below the car
 verdict and the clean arm's three seeds may differ. The reader refuses a hold-out read on a model that trained a twin of any charge
 (rungC_eval_saved, release_checks), so the data arm's networks are now refused as measurement networks, and the release chain
 (TASKS 252) needs the clean arm's.
+
+**§12's addition of 17 November 2026 (17 Nov, 15:2x), before read2 has written the final chain:** the winner's whole-pool retraining trains
+with `--holdout-twins drop-any-charge` (the clean arm's pool, §14's addition of the same day), and read3 decides on hold-out (a)'s
+clean eight and hold-out (b), with the ten printed beside them deciding nothing, as read-data does. Stages 1 and 2 keep their frozen
+commands: their scores are read on the selection set, whose pool holds no cation twin of a selection molecule (checked 17 Nov), so the
+ranking is unaffected. The evaluator now refuses hold-out (b) on a model that trained a twin of any charge, and records — without
+refusing — the twins of hold-out (a)'s ten, with their charge.
