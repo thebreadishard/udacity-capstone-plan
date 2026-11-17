@@ -822,9 +822,9 @@ def select_corpus(cfg: TrainConfig, log) -> Corpus:
         pool, test_sel = selection_split(pool, mols, *cfg.selection)
         log(f"selection set: {len(test_sel)} molecules of {len({mols[i]['core'] for i in test_sel})} scaffold cores (seed, fraction "
             f"{cfg.selection}); pool {len(pool)}")
-    sizes, seeds = pool_sizes(cfg.sizes, len(pool)), cfg.seed_list
+    sizes, seeds = pool_sizes(cfg.sizes, len(pool)), seeds_of(cfg)
     if cfg.smoke:
-        sizes, seeds = [min(SMOKE_POOL, len(pool))], [0]
+        sizes = [min(SMOKE_POOL, len(pool))]
         test_a, test_b, test_s = test_a[:SMOKE_HOLDOUT], test_b[:SMOKE_HOLDOUT], test_s[:SMOKE_HOLDOUT]
     if cfg.overfit_one:
         if cfg.overfit_one not in mols:
@@ -835,6 +835,11 @@ def select_corpus(cfg: TrainConfig, log) -> Corpus:
     pool, twins = drop_twins(cfg, pool, [*test_a, *test_b, *test_s], log)
     return Corpus(mols=mols, pool=pool, tests=tests, cores=cores, sizes=sizes, seeds=seeds, n_atoms=nat, excluded=excluded, substituted=substituted,
                   twins=twins, release=release)
+
+
+def seeds_of(cfg: TrainConfig) -> list[int]:
+    """The seeds the run trains: the configured ones, or seed 0 alone under --smoke."""
+    return [0] if cfg.smoke else cfg.seed_list
 
 
 def kind_split(cfg: TrainConfig, pool: list, held: dict[str, list], substituted: list, log) -> tuple[list, list, list, dict]:
@@ -858,8 +863,7 @@ def release_pool(cfg: TrainConfig, pool: list, held: dict[str, list], substitute
     log(f"release networks (decision 66): pool {len(out)} = {len(pool)} pool molecules ({len(twins)} of them hold-out twins, kept) + "
         + " + ".join(f"hold-out ({h}) {len(ids)}" for h, ids in added.items())
         + (f"; {len(left_out)} hold-out molecules without analytic labels are not trained on" if left_out else "") + "; no hold-out is read"
-        + (f"; each seed fits on a random {100 * (1 - cfg.inner_val):g} % of the pool and is stopped on the other {100 * cfg.inner_val:g} %, a "
-           "different part per seed, so a molecule is fitted by most seeds and not by every one" if cfg.inner_val else ""))
+        + (f"; {NK.fitting_sentence(len(seeds_of(cfg)), cfg.inner_val)}" if cfg.inner_val else ""))
     return out, {**added, "twins": twins, "left_out": left_out}
 
 

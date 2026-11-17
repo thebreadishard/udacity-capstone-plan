@@ -17,8 +17,10 @@ for _p in (M05 / "m05", M05 / "corpus", PLAN / "probes"):
     sys.path.insert(0, str(_p))
 import rungC_infer as RI  # noqa: E402
 import rungC_train as RT  # noqa: E402
+from model_registry import require_measurement  # noqa: E402
 
 folder = M05 / "corpus" / "molecules" / sys.argv[2]
+require_measurement([M05 / "out" / sys.argv[3]], "its ΔH on a corpus molecule")   # decision 66
 model, record = RT.load_hybrid_model(M05 / "out" / sys.argv[3])
 tensors = RI.input_tensors_of(folder, RT.tensor_config(record))
 print(f"{platform.system()} python {platform.python_version()} torch {torch.__version__} numpy {np.__version__} threads {torch.get_num_threads()}")

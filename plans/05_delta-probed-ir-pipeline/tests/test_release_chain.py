@@ -139,3 +139,43 @@ def test_seeds_of_different_recipes_a_missing_prefix_and_an_existing_chain_are_r
     written(tmp_path)
     with pytest.raises(SystemExit, match="exists, not overwritten"):
         RL.main([PREFIX, "--m05", str(tmp_path / "m05"), "--out-dir", str(tmp_path)])
+
+
+def test_an_earlier_release_of_the_recipe_is_refused_by_name_and_nothing_is_written(tmp_path):
+    measurement(tmp_path / "m05")
+    (tmp_path / "m05" / f"{PREFIX}_release_model_n1082_seed0.pt").write_bytes(b"")
+    with pytest.raises(SystemExit, match=r"a release of this recipe exists .*out/v14/E7_carried_release_model_n1082_seed0\.pt"):
+        RL.main([PREFIX, "--m05", str(tmp_path / "m05"), "--out-dir", str(tmp_path)])
+    assert not (tmp_path / "probes").exists()
+
+
+def test_a_pool_that_lost_its_hold_out_twins_was_trained_on_whole(tmp_path):
+    """`--sizes all` is read against the pool before the twins leave it: v1.4's n1082 on a pool of 1080 is the whole pool."""
+    measurement(tmp_path / "m05", n=1082, pool=1080)
+    assert written(tmp_path)[0]["steps"][0]["label"] == "train release E7_carried_release"
+    assert NK.trained_on_whole_pool({"pool": 972}, 972) and not NK.trained_on_whole_pool({"pool": 972}, 750)    # v1.3: 750 of 972
+    with pytest.raises(ValueError, match="states no pool size"):
+        NK.trained_on_whole_pool({}, 750)
+
+
+def ignored_record(rel: str) -> Path:
+    """A training record under module 05's out/ with its (ignored) checkpoints beside it: this checkout's, or in a worktree the
+    main checkout's (git's common directory)."""
+    import subprocess
+
+    common = subprocess.run(["git", "rev-parse", "--path-format=absolute", "--git-common-dir"], cwd=PLAN, capture_output=True, text=True,
+                            check=True).stdout.strip()
+    for root in (PLAN, Path(common).parent / PLAN.relative_to(PLAN.parents[1])):
+        path = root / RL.M05_REL / rel
+        if path.is_file() and any(path.parent.glob(f"{path.stem}_model_n*_seed*.pt")):
+            return path
+    pytest.skip(f"{rel}: no such record with its checkpoints in this checkout or the main one (they are ignored files)")
+
+
+@pytest.mark.parametrize(("record", "n"), [("out/v14/E7_rungC_v14s3full_c00_control.json", 1082), ("out/E7_rungC_chain42_arm0.json", 978)])
+def test_the_real_records_that_dropped_two_twins_trained_on_their_whole_pool(record, n):
+    path = ignored_record(record)
+    rec = json.loads(path.read_text(encoding="utf-8"))
+    names = sorted(p.name for p in path.parent.glob(f"{path.stem}_model_n*_seed*.pt"))
+    assert rec["sizes"] == [n] and names and all(f"_model_n{n}_seed" in name for name in names)
+    assert rec["pool"] == n - len(rec["holdout_twins_dropped"]) == n - 2 and NK.trained_on_whole_pool(rec, n)

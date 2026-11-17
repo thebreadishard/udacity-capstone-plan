@@ -27,8 +27,9 @@ after that, and are released only if the checks of §4 pass.
 One sentence, on every certificate and on the card, in place of today's 'with the error measured on molecules the network never saw':
 
 > The spectrum is made by the release networks of version X, trained on all N molecules with labels: each of the 3 networks is
-> fitted on a random 85 % of them and stopped on the other 15 %, a different 15 % per seed, so a molecule is fitted by most of the
-> networks and not by every one (rarely by none). Its error bars were measured on the measurement networks of the same version —
+> fitted on a random 85 % of the molecules and stopped on the other 15 %, a different 15 % per seed, so not every molecule is fitted
+> by every network (with 3 networks about 0.15³ ≈ 0.3 % by none). Its error bars were measured on the measurement networks of the
+> same version —
 > the same recipe trained without the hold-out molecules — on molecules those networks never saw; the release networks themselves
 > have seen every molecule we hold labels for, so they have no held-out error of their own.
 

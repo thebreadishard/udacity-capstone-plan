@@ -141,10 +141,10 @@ def test_the_statement_under_release_networks_carries_the_design_notes_sentence(
                 "no held-out error of their own.")
     s = LC.statement("benzene", "1.4", 3, LIC, S.TEXT["release_trained"], LC.MadeBy(release_trained_on=1132))     # no inner validation
     fitted = LC.statement("benzene", "1.4", 3, LIC, S.TEXT["release_trained"], LC.MadeBy(release_trained_on=1132, inner_validation=0.15))
-    assert ("trained on all 1132 molecules with labels: each of the 3 networks is fitted on a random 85 % of them and stopped on the other "
-            "15 %, a different 15 % per seed, so a molecule is fitted by most of the networks and not by every one (rarely by none). Its "
-            "error bars were measured on the measurement networks of the same version") in fitted
-    assert fitted.replace(LC.RELEASE_FITTED.format(k=3, fitted="85", stopped="15"), "") == s           # and nothing else moves
+    assert ("trained on all 1132 molecules with labels: each of the 3 networks is fitted on a random 85 % of the molecules and stopped "
+            "on the other 15 %, a different 15 % per seed, so not every molecule is fitted by every network (with 3 networks about "
+            "0.15³ ≈ 0.3 % by none). Its error bars were measured on the measurement networks of the same version") in fitted
+    assert fitted.replace(": " + NK.fitting_sentence(3, 0.15), "") == s           # and nothing else moves
     assert sentence in s and "measured on molecules the network never saw" not in s
     assert f"The error stated is the measurement networks' {LIC['quantity_name']}; the harmonic positions ω are licensed for ring-ip" in s
     assert s.endswith("This molecule and the ΔH network: in the release networks' training data: the error bars are not an out-of-sample "
@@ -241,10 +241,18 @@ def test_a_certificate_of_release_networks_takes_its_error_bars_from_the_measure
     assert c["molecule"]["seen"] == {"role": "release_trained", "ids": [BENZENE], "text": S.TEXT["release_trained"]}
     assert c["network"]["kind"] == NK.RELEASE and c["network"]["trained_on_molecules"] == 1 and c["network"]["measurement_models"] == v13
     assert LC.release_sentence("1.3", 3, LC.MadeBy(1, None, 0.15)) in c["statement"] and "the network never saw" not in c["statement"]
-    assert "each of the 3 networks is fitted on a random 85 % of them" in c["statement"] and c["network"]["inner_validation"] == 0.15
+    assert "each of the 3 networks is fitted on a random 85 % of the molecules" in c["statement"] and c["network"]["inner_validation"] == 0.15
     md = LC.to_markdown(c)
     assert "- the ΔH network: in the release networks' training data: the error bars are not an out-of-sample error for this molecule" in md
-    assert ("- the models above are release networks, trained on 1 molecules (each fitted on 85 % of them and stopped on the rest); the "
-            "error bars are those of the measurement networks: " + V13[0]) in md
+    assert (f"- the models above are release networks, trained on 1 molecules: {NK.fitting_sentence(len(c['network']['models']), 0.15)}; "
+            "the error bars are those of the measurement networks: " + V13[0]) in md
+    whole = LC._measurement_lines(c["network"] | {"inner_validation": 0.0})[0]          # no inner validation: nothing was stopped on
+    assert "fitted on all of the molecules" in whole and "stopped" not in whole
     with pytest.raises(ValueError, match="evaluation records"):                 # and never from records under the release networks' names
         A.accuracy_of(ran)
+
+
+def test_the_design_notes_sentence_is_the_one_the_certificate_prints():
+    note = (PLAN / "GoalGathering" / "notes" / "Design_2026-11-17_Measurement_and_Release_Networks.md").read_text(encoding="utf-8")
+    quoted = " ".join(line[2:] for line in note.splitlines() if line.startswith("> "))
+    assert f"with labels: {NK.fitting_sentence(3, 0.15)}. Its error bars" in quoted and "fitted by most" not in note

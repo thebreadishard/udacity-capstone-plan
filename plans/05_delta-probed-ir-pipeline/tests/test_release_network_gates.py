@@ -71,7 +71,7 @@ def test_the_table_of_settings_added_is_one_and_names_what_it_fills():
     import epoch_repeat_check as ER
     import release_checks as RC
 
-    assert ER.SETTINGS_ADDED is SETTINGS_ADDED and RC.with_absent_settings is with_absent_settings
+    assert ER.with_absent_settings is with_absent_settings and RC.with_absent_settings is with_absent_settings
     assert SETTINGS_ADDED == {"weight_decay": 1e-4, "holdout_twins": "keep", "lr_schedule": "constant", "network_kind": "measurement"}
     assert with_absent_settings({"lr": 1.0, "weight_decay": 3e-5}) == (
         {"lr": 1.0, "weight_decay": 3e-5, "holdout_twins": "keep", "lr_schedule": "constant", "network_kind": "measurement"},
@@ -130,3 +130,15 @@ def test_check_1_reads_an_absent_setting_by_the_table_and_says_so():
     dropped = tuple(net("V_rel", NK.RELEASE, s, args=today | {"holdout_twins": "drop"}) for s in (0, 1))
     assert RC.same_recipe(dropped, measurement({})).refusal == "2 setting(s) differ beside the kind: holdout_twins"
     assert RC.same_recipe(release, measurement({"holdout_twins": "keep", "pattern": "f"})).refusal == "2 setting(s) differ beside the kind: pattern"
+
+
+@pytest.mark.parametrize(("script", "argv"), [
+    ("results_m1/v14_holdout_a_look_2026-11-16/per_mode.py", ["A_x", "m={model}"]),
+    ("results_m1/v14_seleval_smoke_2026-11-16/platform_diff.py", ["A_x", "{model}", "out.npz"]),
+])
+def test_the_record_scripts_that_load_a_checkpoint_refuse_a_release_network(release, tmp_path, script, argv):
+    """Two record scripts loaded any checkpoint; the gate comes before the molecule or the model is read."""
+    args = [a.format(model=release) for a in argv]
+    r = subprocess.run([sys.executable, str(PLAN / "probes" / script), str(PLAN), *args], capture_output=True, text=True, encoding="utf-8",
+                       check=False, cwd=tmp_path)
+    assert r.returncode == 1 and "r.pt is a release network (decision 66)" in r.stderr and r.stdout == ""

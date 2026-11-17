@@ -97,8 +97,9 @@ def test_a_release_pool_takes_the_hold_outs_in_and_keeps_the_twins(corpus):
     assert "pool 4" in lines[0] and "1 hold-out molecules without analytic labels" in lines[0] and "no hold-out is read" in lines[0]
     assert "fits on" not in lines[0]                                           # no inner validation: every seed fits on the whole pool
     RT.kind_split(cfg.model_copy(update={"inner_val": 0.15}), ["B_tol", "B_xyl"], held, ["A_tol", "A2_naph", "B_tol", "B_xyl"], lines.append)
-    assert lines[-1].endswith("each seed fits on a random 85 % of the pool and is stopped on the other 15 %, a different part per seed, so a "
-                              "molecule is fitted by most seeds and not by every one")
+    assert lines[-1].endswith("; each of the 3 networks is fitted on a random 85 % of the molecules and stopped on the other 15 %, a "
+                              "different 15 % per seed, so not every molecule is fitted by every network (with 3 networks about "
+                              "0.15³ ≈ 0.3 % by none)")
     assert RT.drop_twins(cfg, pool, [], lines.append) == (pool, [])
     without_analytic = cfg.model_copy(update={"use_analytic": False})
     assert RT.kind_split(without_analytic, ["B_tol", "B_xyl"], held, [], lines.append)[3]["left_out"] == []   # one kind of label: all enter
@@ -186,3 +187,16 @@ def test_the_kind_of_what_predates_the_decision_is_measurement():
     NK.refuse_release(NK.MEASUREMENT, "m.pt", "its error on hold-out (a)")
     with pytest.raises(NK.ReleaseNetworkError, match=r"m\.pt is a release network \(decision 66\).*its error on hold-out \(a\)"):
         NK.refuse_release(NK.RELEASE, "m.pt", "its error on hold-out (a)")
+
+
+def test_the_fitting_sentence_takes_its_numbers_from_the_seeds_and_the_share():
+    """Review of 17 Nov 2026: 'fitted by most of the networks' was false (0.85³ ≈ 61 % are fitted by all three); the sentence now says
+    what follows from k seeds and a share v, v^k by none, and without inner validation it says nothing was stopped on."""
+    assert NK.fitting_sentence(3, 0.15) == ("each of the 3 networks is fitted on a random 85 % of the molecules and stopped on the other 15 %, "
+                                            "a different 15 % per seed, so not every molecule is fitted by every network (with 3 networks "
+                                            "about 0.15³ ≈ 0.3 % by none)")
+    assert NK.fitting_sentence(2, 0.2).endswith("(with 2 networks about 0.2² ≈ 4 % by none)")
+    assert NK.fitting_sentence(3, 0.0) == "each of the 3 networks is fitted on all of the molecules, none kept back for stopping"
+    for networks, share in ((0, 0.15), (3, 1.0), (3, -0.1)):
+        with pytest.raises(ValueError, match="at least one network and a share"):
+            NK.fitting_sentence(networks, share)

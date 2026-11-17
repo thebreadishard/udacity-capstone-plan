@@ -17,7 +17,9 @@ on the hold-outs — both wrong for networks that trained on the hold-outs. So t
 A measurement prefix is a training's output prefix relative to module 05 (`<prefix>_model_n<N>_seed<S>.pt`, `<prefix>.json`);
 several are given when the seeds were trained in several runs. Refused before anything is written: a checkpoint that is not a
 measurement network, seeds trained with different settings, a measurement network trained on a part of its pool (check 1 would
-refuse its release: `all` is not its recipe), settings the trainer refuses with `release`, and files that exist.
+refuse its release: `all` is not its recipe), settings the trainer refuses with `release`, and files that exist: the chain, its
+run spec, and anything `<prefix>_release*` under module 05 (an earlier release of the recipe, whose checkpoints and records the
+training would overwrite).
 
 Written: `probes/runs/<name>.json` (the chain) and `probes/runspecs/<name>.json` (its run spec). Nothing is launched: dry-run the
 chain and smoke the training first (`tools/runspec.py launch probes/runspecs/<name>.json`, on the user's word)."""
@@ -69,7 +71,7 @@ def measurement_networks(prefixes: list[str], m05: Path) -> Measured:
         if NK.kind_of_checkpoint(ck, path.name) != NK.MEASUREMENT:
             raise SystemExit(f"{path.name} is a release network; the chain is built from a version's measurement networks")
         record = json.loads((m05 / f"{pre}.json").read_text(encoding="utf-8"))
-        if record["pool"] != ck["n"]:
+        if not NK.trained_on_whole_pool(record, int(ck["n"])):
             raise SystemExit(f"{path.name} trained on {ck['n']} of its pool's {record['pool']} molecules: a release trains on all of its pool, "
                              "which is another recipe (release check 1 would refuse it)")
         settings.append({k: v for k, v in with_absent_settings(ck["args"])[0].items() if k not in RUN_ONLY})
@@ -152,8 +154,12 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--out-dir", type=Path, default=PLAN, help="the plan folder whose probes/runs and probes/runspecs are written")
     ap.add_argument("--threads", type=int, default=8)
     a = ap.parse_args(argv)
-    measured = measurement_networks(a.prefixes, a.m05.resolve())
+    m05 = a.m05.resolve()
+    measured = measurement_networks(a.prefixes, m05)
     cfg = release_config(measured, a.threads)
+    if earlier := sorted(p.relative_to(m05).as_posix() for p in m05.glob(f"{cfg.out_prefix}*")):
+        raise SystemExit(f"a release of this recipe exists under {m05}: {', '.join(earlier)}; its training would overwrite them — "
+                         "move them away first")
     name = a.name or f"release_{Path(measured.prefix).name}"[:40]
     targets = {a.out_dir / "probes" / "runs" / f"{name}.json": chain(name, measured, cfg),
                a.out_dir / "probes" / "runspecs" / f"{name}.json": runspec(name, measured)}

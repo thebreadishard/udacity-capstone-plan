@@ -167,7 +167,7 @@ def same_recipe(release: tuple[Net, ...], measurement: tuple[Net, ...]) -> Check
         (m_args, read_as[m.path.name]), (r_args, read_as[r.path.name]) = with_absent_settings(m.args), with_absent_settings(r.args)
         keys = sorted((set(r_args) | set(m_args)) - {*RUN_ONLY, NK.FIELD})
         diff = {k: {NK.MEASUREMENT: m_args.get(k), NK.RELEASE: r_args.get(k)} for k in keys if m_args.get(k) != r_args.get(k)}
-        whole_pool[m.path.name] = m.record.get("pool") == m.n
+        whole_pool[m.path.name] = NK.trained_on_whole_pool(m.record, m.n)
         if whole_pool[m.path.name] and r.args.get("sizes") == "all":
             diff.pop("sizes", None)                      # the measurement network trained on its whole pool, which is what 'all' says
         differences[r.path.name] = diff

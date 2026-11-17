@@ -282,3 +282,11 @@ def test_the_evaluator_reads_a_release_network_in_sample_only_and_under_in_sampl
     held = json.loads((work / "held_out.json").read_text(encoding="utf-8"))
     assert held[NK.FIELD] == NK.MEASUREMENT and {"a", "b"} <= set(held) and not any(k.startswith(NK.INSAMPLE_PREFIX) for k in held)
     capsys.readouterr()
+
+
+def test_a_measurement_pool_that_lost_its_twins_counts_as_whole():
+    """n is read against the pool before the hold-out twins left it (v1.4: n1082, pool 1080): `all` is still what it trained on."""
+    release = tuple(net("V_rel", NK.RELEASE, s) for s in (0, 1))
+    twins = tuple(net("V_meas", NK.MEASUREMENT, s, args={"sizes": "21"}, n=21, pool=19) for s in (0, 1))
+    check = RC.same_recipe(release, twins)
+    assert check.passed and all(check.numbers["measurement_trained_on_its_whole_pool"].values())

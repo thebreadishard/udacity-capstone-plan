@@ -146,10 +146,9 @@ def licence_block(lic: dict) -> dict:
     return {k: lic[k] for k in ("statement", "rule_source", "licensed_families", "quantity", "quantity_name", "caveats")}
 
 
-# design note of 17 Nov 2026, §3, word for word: what made the spectrum, how each network used the molecules, whose error is stated
+# design note of 17 Nov 2026, §3, word for word: what made the spectrum, how each network used the molecules (`NK.fitting_sentence`,
+# its numbers from the seed count and the inner-validation share), whose error is stated
 RELEASE_MADE = "The spectrum is made by the release networks of version {version}, trained on all {n} molecules with labels"
-RELEASE_FITTED = (": each of the {k} networks is fitted on a random {fitted} % of them and stopped on the other {stopped} %, a different "
-                  "{stopped} % per seed, so a molecule is fitted by most of the networks and not by every one (rarely by none)")
 RELEASE_MEASURED = (". Its error bars were measured on the measurement networks of the same version — the same recipe trained without the "
                     "hold-out molecules — on molecules those networks never saw; the release networks themselves have seen every molecule "
                     "we hold labels for, so they have no held-out error of their own.")
@@ -173,9 +172,7 @@ NO_RELEASE = MadeBy()
 def release_sentence(version: str, n_seeds: int, made_by: MadeBy) -> str:
     """Design note §3's sentence for a spectrum the release networks made. 'Trained on all N' is said with what each network did
     with the N: under inner validation it is fitted on a part and stopped on the rest."""
-    fitted = ""
-    if made_by.inner_validation:
-        fitted = RELEASE_FITTED.format(k=n_seeds, fitted=f"{100 * (1 - made_by.inner_validation):g}", stopped=f"{100 * made_by.inner_validation:g}")
+    fitted = f": {P.NK.fitting_sentence(n_seeds, made_by.inner_validation)}" if made_by.inner_validation else ""
     return RELEASE_MADE.format(version=version, n=made_by.release_trained_on) + fitted + RELEASE_MEASURED
 
 
@@ -393,8 +390,8 @@ def _measurement_lines(network: dict) -> list[str]:
     """Under release networks: the measurement networks whose records give the error bars; nothing otherwise."""
     if "measurement_models" not in network:
         return []
-    return [f"- the models above are release networks, trained on {network['trained_on_molecules']} molecules (each fitted on "
-            f"{100 * (1 - network['inner_validation']):g} % of them and stopped on the rest); the error bars are those of the "
+    return [f"- the models above are release networks, trained on {network['trained_on_molecules']} molecules: "
+            f"{P.NK.fitting_sentence(len(network['models']), network['inner_validation'])}; the error bars are those of the "
             "measurement networks: " + "; ".join(f"{Path(x['path']).name} (sha16 {x['sha16']})" for x in network["measurement_models"])]
 
 
