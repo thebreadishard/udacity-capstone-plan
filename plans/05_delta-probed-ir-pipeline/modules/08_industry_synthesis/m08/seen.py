@@ -98,7 +98,7 @@ def load(models: tuple[Path, ...]) -> Seen:
     their version's measurement networks."""
     neutral, cation = manifest_smiles()
     holdout_ids: dict[str, set[str]] = {h: set() for h in A.HOLDOUTS}
-    for record in A.evaluation_records(tuple(p.name for p in models)):
+    for record in A.evaluation_records(tuple(A.model_key(p) for p in models)):
         rec = json.loads(record.read_text(encoding="utf-8"))
         for h, ids in holdout_ids.items():
             ids |= set(rec[h]["per_molecule"])

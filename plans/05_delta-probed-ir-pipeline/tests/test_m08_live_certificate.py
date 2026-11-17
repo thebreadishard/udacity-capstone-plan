@@ -83,6 +83,59 @@ def test_clean_reads_for_some_models_only_are_refused():
         A.clean_a_records((V13[0], "E7_rungC_nochain_model_n750_seed1.pt"))
 
 
+@pytest.mark.parametrize("path, key", [
+    ("C:\\Users\\x\\plans\\05_delta-probed-ir-pipeline\\modules\\05_support_predictor\\out\\v14\\m_model_n1_seed0.pt", "v14/m_model_n1_seed0.pt"),
+    ("/home/x/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/out/m_model_n1_seed0.pt", "m_model_n1_seed0.pt"),
+    ("out/v14/m_model_n1_seed0.pt", "v14/m_model_n1_seed0.pt"),
+    (A.M05_OUT / "v14" / "m_model_n1_seed0.pt", "v14/m_model_n1_seed0.pt")])
+def test_a_models_key_is_its_path_under_module_05s_out(path, key):
+    assert A.model_key(path) == key
+
+
+@pytest.mark.parametrize("path", ["m_model_n1_seed0.pt", "C:\\elsewhere\\m_model_n1_seed0.pt", str(A.M05_OUT)])
+def test_a_path_outside_module_05s_out_has_no_key(path):
+    with pytest.raises(ValueError, match="not a checkpoint under module 05's out/"):
+        A.model_key(path)
+
+
+def test_the_carried_version_is_read_by_the_registrys_key_under_out(monkeypatch):
+    """v1.4's registry keys carry their folder (`v14/…_seed0.pt`); a look-up by file name alone raised KeyError (TASKS 264)."""
+    keys = [f"v14/E7_rungC_x_model_n1_seed{s}.pt" for s in range(3)]
+    monkeypatch.setattr(P, "carried_models", lambda kind: tuple(P.MR.OUT / k for k in keys))
+    monkeypatch.setattr(P.MR, "read_status", lambda path: {k: {"version": "1.4"} for k in keys})
+    assert A.carried_version() == "1.4"
+
+
+@pytest.fixture
+def v13_files() -> list[Path]:
+    """v1.3's evaluation, clean hold-out (a) and product-error records as they lie in module 05's out/."""
+    return [*A.evaluation_records(V13), *A.clean_a_records(V13), A.product_error_path(V13)]
+
+
+def test_a_model_in_a_subfolder_finds_its_records_beside_it(tmp_path, monkeypatch, v13_files):
+    """TASKS 264: v1.4's checkpoints lie in out/v14/, and their records beside them; a model directly in out/ reads out/ as before."""
+    sub = tmp_path / "v14"
+    sub.mkdir()
+    for p in v13_files:
+        shutil.copy(p, sub / p.name)
+    shutil.copy(v13_files[0], tmp_path / v13_files[0].name)                    # a stray copy in out/ is not the subfolder model's record
+    monkeypatch.setattr(A, "M05_OUT", tmp_path)
+    keys = tuple(f"v14/{n}" for n in V13)
+    assert A.evaluation_records(keys) == [sub / p.name for p in v13_files[:3]]
+    assert A.clean_a_records(keys) == [sub / p.name for p in v13_files[3:6]]
+    assert A.product_error_path(keys) == A.product_error_record(keys) == sub / v13_files[6].name
+    assert A.evaluation_records(V13[:1]) == [tmp_path / v13_files[0].name]
+    with pytest.raises(ValueError, match=r"0 evaluation records in .*v14"):
+        A.evaluation_records(("v14/E7_rungC_nochain_model_n750_seed0.pt",))
+    shutil.copy(v13_files[0], sub / v13_files[0].name.replace("_eval_", "_eval_again_"))
+    with pytest.raises(ValueError, match=r"2 evaluation records in .*v14"):
+        A.evaluation_records(keys[:1])
+    with pytest.raises(ValueError, match="some models only"):
+        A.clean_a_records((keys[0], "v14/E7_rungC_nochain_model_n750_seed1.pt"))
+    with pytest.raises(ValueError, match="lie in 2 folders"):
+        A.product_error_path((keys[0], V13[1]))
+
+
 @pytest.fixture
 def result(tmp_path) -> Path:
     require_frozen_corpus()

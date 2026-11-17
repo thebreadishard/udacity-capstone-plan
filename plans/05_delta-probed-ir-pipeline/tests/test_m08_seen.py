@@ -103,13 +103,14 @@ def test_load_reads_the_cation_rows_of_the_manifest(tmp_path, monkeypatch):
     record.write_text(json.dumps({"a": {"per_molecule": {"A_benz": {}}}, "b": {"per_molecule": {}}}), encoding="utf-8")
     monkeypatch.setattr(S, "MANIFEST", manifest)
     monkeypatch.setattr(P, "train_ids", lambda models: {"B_tol", "P3c_benz"})
-    monkeypatch.setattr(S.A, "evaluation_records", lambda names: [record])
-    seen = S.load((tmp_path / "m.pt",))
+    monkeypatch.setattr(S.A, "evaluation_records", lambda keys: [record] if keys == ("v14/m.pt",) else pytest.fail(f"keys {keys}"))
+    model = S.A.M05_OUT / "v14" / "m.pt"             # the records are found by the model's key under module 05's out/ (TASKS 264)
+    seen = S.load((model,))
     assert (seen.trained, seen.holdout, seen.cations) == ({"Cc1ccccc1": ["B_tol"]}, {"c1ccccc1": ("a", ["A_benz"])}, {"c1ccccc1": ["P3c_benz"]})
     assert S.status("c1ccccc1", seen, "A_benz")["cation_trained"] == ["P3c_benz"]
     monkeypatch.setattr(P, "train_ids", lambda models: {"B_tol", "P3c_gone"})
     with pytest.raises(KeyError, match="P3c_gone"):
-        S.load((tmp_path / "m.pt",))
+        S.load((model,))
 
 
 BOTH = S.build({"A_naph", "B_twin", "P3c_naph", "P3c_cn"}, {"a": {"A_benz", "A_cn"}, "b": set()}, SMILES,
