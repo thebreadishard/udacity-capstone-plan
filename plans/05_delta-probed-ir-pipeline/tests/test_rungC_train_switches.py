@@ -120,12 +120,16 @@ def test_the_validation_main_term_is_the_mean_of_the_molecules_own_terms():
     assert all(np.isnan(RT.inner_val_terms(trained.model, tensors, [], trained.loss)))
 
 
-def test_recording_the_validation_main_term_leaves_the_training_unchanged(monkeypatch):
+@pytest.mark.parametrize(("settings", "epochs_run", "best_epoch"), [
+    ({}, 4, 4),                                                # the cap of 4 epochs is reached, the last one is the best
+    ({"lr_schedule": "cosine", "epochs": 30}, 6, 4),            # stops early at 6 of 30 and restores epoch 4's weights
+])
+def test_recording_the_validation_main_term_leaves_the_training_unchanged(monkeypatch, settings, epochs_run, best_epoch):
     """Against the validation read as it stood before 17 Nov 2026 (the auxiliary term only): the same weights to the bit, the same best
-    epoch and the same numbers in every entry of the history that existed then."""
+    epoch and the same numbers in every entry of the history that existed then — also when the run stops early and restores."""
     tensors = _water_tensors(4)
     ids = list(tensors)
-    cfg = TrainConfig(**VAL_CFG)
+    cfg = TrainConfig(**{**VAL_CFG, **settings})
     new = RT.train_one(ids[:2], tensors, 0, cfg, val_ids=ids[2:], log=lambda s: None)
 
     def aux_only(model, tensors, ids, loss):
@@ -137,7 +141,7 @@ def test_recording_the_validation_main_term_leaves_the_training_unchanged(monkey
     old = RT.train_one(ids[:2], tensors, 0, cfg, val_ids=ids[2:], log=lambda s: None)
     new_state, old_state = new.model.state_dict(), old.model.state_dict()
     assert list(new_state) == list(old_state) and all(torch.equal(new_state[k], old_state[k]) for k in new_state)
-    assert new.best_epoch == old.best_epoch and len(new.history) == len(old.history)
+    assert (len(new.history), new.best_epoch) == (len(old.history), old.best_epoch) == (epochs_run, best_epoch)
     assert [{k: h[k] for k in ("epoch", "main", "aux", "val_aux")} for h in new.history] == [
         {k: h[k] for k in ("epoch", "main", "aux", "val_aux")} for h in old.history]
 
@@ -161,8 +165,9 @@ def test_a_history_reader_names_why_a_series_is_missing():
     no_validation = [dict(epoch=1, main=2.0, aux=1.0)]
     assert RH.history_series(now, "val_main") == [3.0] and RH.history_series(before, "val_aux") == [1.5]
     assert RH.history_series(no_validation, "main") == [2.0]
-    with pytest.raises(ValueError, match="not recorded before 17 Nov 2026"):
-        RH.history_series(before, "val_main")
+    for key in ("val_main", "lr"):
+        with pytest.raises(ValueError, match=f"{key}: not recorded before 17 Nov 2026"):
+            RH.history_series(before, key)
     for key in ("val_main", "val_aux"):
         with pytest.raises(ValueError, match="no inner-validation set"):
             RH.history_series(no_validation, key)

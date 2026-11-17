@@ -69,5 +69,5 @@ def test_weight_decay_defaults_to_the_carried_value_and_reaches_adamw(monkeypatc
     monkeypatch.setattr(RT.torch.optim, "AdamW", fake_adamw)
     fold = RT.Fold(tensors={}, fit_ids=[], val_ids=[])
     with pytest.raises(Stop):
-        RT._fit(torch.nn.Linear(1, 1), None, config(weight_decay=3e-5, epochs=1), fold, 0, print)
+        RT._fit(torch.nn.Linear(1, 1), None, config(weight_decay=3e-5, epochs=1), fold, 0, RT.Progress())
     assert seen == {"lr": 1e-3, "weight_decay": 3e-5}
