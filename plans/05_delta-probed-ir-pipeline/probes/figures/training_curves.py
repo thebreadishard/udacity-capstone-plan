@@ -24,6 +24,8 @@ COLUMNS = ["n", "seed", "epoch", "lr", "main", "val_main", "aux", "val_aux", "be
 
 def pool_row(record: dict, n: int | None) -> dict:
     """The record's row of pool size `n`; without `n` the record must hold one size."""
+    if not isinstance(record.get("curve"), dict) or "epochs" not in record:
+        raise ValueError("the file has no 'curve' or no 'epochs': not a record of m05/rungC_train.py")
     rows = {row["n"]: row for row in record["curve"].values()}
     if n is None and len(rows) != 1:
         raise ValueError(f"the record holds the pool sizes {sorted(rows)}: choose one with --n")
@@ -80,8 +82,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--title", default=None)
     ap.add_argument("--out", type=Path, default=FIO.FIGURES)
     args = ap.parse_args(argv)
-    record = FIO.read_json(args.record)
     try:
+        record = FIO.read_json(args.record)
         row = pool_row(record, args.n)
     except ValueError as e:
         ap.error(str(e))

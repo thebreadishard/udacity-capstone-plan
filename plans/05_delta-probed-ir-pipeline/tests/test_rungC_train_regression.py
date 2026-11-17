@@ -17,8 +17,9 @@ every state tensor. Shared tools: `tests/pin_tools.py`.
 Rewritten on 17 Nov 2026, when the trainer began to record the main term on the inner-validation molecules: against the pin before it
 the record gained `val_main` in every history entry and `inner_val_main` per seed, and nothing else moved (every earlier number and every
 state tensor's digest the same). Once more the same day for `lr` in every history entry, again nothing else. The TensorBoard event log
-(`--event-log`, on by default) is no part of the record or the checkpoint: 'carried' is pinned with it and without it against one golden,
-and with it the log must hold the record's history.
+(`--event-log`, on by default) is no part of the record or the checkpoint: 'carried' is pinned with it, without it and with its folder
+blocked by a file, against one golden; with it the log must hold the record's history, blocked the training must finish the same and
+its record say `event_log_incomplete`.
 
     python tests/test_rungC_train_regression.py --write-golden [TRAINER]   # with the old trainer before a refactor, or after a deliberate change
 """
@@ -53,7 +54,7 @@ VOLATILE = frozenset({"date", "provenance", "seconds", "exclude_ids_file"})
 RUN_PATHS = frozenset({"molecules", "out_prefix", "exclude_ids_file"})    # the run's own temporary paths, in the checkpoint's args
 CASES = {"carried": ["--epochs", "3"],
          "chainlike": ["--epochs", "2", "--size-test-min-atoms", "{size_min_atoms}", "--aux-target", "kfit", "--exclude-ids-file", "{excluded}"]}
-PINNED = [("carried", True), ("carried", False), ("chainlike", True)]          # (case, with the event log)
+PINNED = [("carried", "on"), ("carried", "off"), ("carried", "blocked"), ("chainlike", "on")]          # (case, the event log)
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "probes"))
 sys.path.insert(0, str(M05))
@@ -112,17 +113,24 @@ def logged_history_differs(case: str, workdir: Path, record: dict) -> str | None
 def test_the_pinned_run_is_unchanged(case, event_log, tmp_path):
     pytest.importorskip("torch")
     pytest.importorskip("geometric")
-    pytest.importorskip("tensorboard")
+    if event_log != "off":
+        pytest.importorskip("tensorboard")                   # without the package only the run that asks for no log can be pinned
     if not GOLDEN.exists():
         pytest.fail(f"no pin at {GOLDEN}: write it with --write-golden before changing the trainer")
     require_frozen_corpus()
     golden = json.loads(GOLDEN.read_text(encoding="utf-8"))
     require_pinning_environment(golden)
-    assert (diff := first_difference(golden[case], run_pin(case, tmp_path, extra=() if event_log else ("--no-event-log",)))) is None, diff
-    if event_log:
-        assert (diff := logged_history_differs(case, tmp_path, golden[case]["record"])) is None, diff
+    if event_log == "blocked":
+        (tmp_path / f"{case}_tb").write_text("a file where the logs' folder goes", encoding="utf-8")
+    run = run_pin(case, tmp_path, extra=("--no-event-log",) if event_log == "off" else ())
+    notes = [seed.pop("event_log_incomplete", None) for seed in run["record"]["curve"]["5"]["per_seed"]]
+    assert (diff := first_difference(golden[case], run)) is None, diff
+    if event_log == "on":
+        assert notes == [None] and (diff := logged_history_differs(case, tmp_path, golden[case]["record"])) is None, diff
+    elif event_log == "blocked":
+        assert len(notes) == 1 and notes[0] and "Error" in notes[0] and (tmp_path / f"{case}_tb").is_file()
     else:
-        assert not (tmp_path / f"{case}_tb").exists()
+        assert notes == [None] and not (tmp_path / f"{case}_tb").exists()
 
 
 def test_the_chainlike_case_exercises_its_switches():

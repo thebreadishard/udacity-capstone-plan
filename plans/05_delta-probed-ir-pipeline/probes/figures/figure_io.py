@@ -20,8 +20,17 @@ DPI = 150
 
 
 def read_json(path: Path) -> dict:
-    with path.open(encoding="utf-8") as fh:
-        return json.load(fh)
+    """A record; a missing file or one that is no JSON object is a ValueError with the reason, for the script's `ap.error`."""
+    if not path.is_file():
+        raise ValueError(f"{path}: not found")
+    try:
+        with path.open(encoding="utf-8") as fh:
+            record = json.load(fh)
+    except json.JSONDecodeError as e:
+        raise ValueError(f"{path}: not JSON ({e})") from e
+    if not isinstance(record, dict):
+        raise ValueError(f"{path}: a {type(record).__name__}, not a record")
+    return record
 
 
 def save_png(fig: plt.Figure, path: Path) -> None:

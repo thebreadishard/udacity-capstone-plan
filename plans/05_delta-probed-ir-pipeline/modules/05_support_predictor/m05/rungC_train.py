@@ -964,7 +964,7 @@ def train_and_read(cfg: TrainConfig, corpus: Corpus, tensors: dict, n: int, seed
     t1 = time.time()
     tr = corpus.pool[:n]
     val_ids, fit_ids = inner_split(tr, seed, cfg.inner_val)
-    with RH.EventLog(RH.event_log_dir(cfg.out_prefix, n, seed) if cfg.event_log else None) as events:
+    with RH.EventLog(RH.event_log_dir(cfg.out_prefix, n, seed) if cfg.event_log else None, log) as events:
         trained = train_fold(Fold(tensors, fit_ids, val_ids), seed, cfg, Progress(log, events.epoch))
         model = trained.model
         # both on the weights the model ends with: the best epoch's when patience restored them, else the last epoch's
@@ -984,7 +984,9 @@ def train_and_read(cfg: TrainConfig, corpus: Corpus, tensors: dict, n: int, seed
     out = {"seed": seed, "train_history": trained.history, "output_scale": trained.output_scale, "class_scale": trained.class_scale,
            "aux_class_scale": None if trained.loss.class_scale is None else trained.loss.class_scale.tolist(),
            "seconds": round(time.time() - t1, 1), "inner_val_ids": val_ids,
-           "inner_val_aux": val_aux, "inner_val_main": val_main, "best_epoch": trained.best_epoch}
+           "inner_val_aux": val_aux, "inner_val_main": val_main, "best_epoch": trained.best_epoch,
+           # only when the event log failed, so that nobody trusts a cut-off log; the record is whole either way
+           **({"event_log_incomplete": events.incomplete} if events.incomplete else {})}
     if val_ids:
         log(f"  n={n} seed {seed}: inner validation internal term {val_aux:.4g}, main term {val_main:.4g} on {len(val_ids)} molecules "
             f"(fit on {len(fit_ids)})")
@@ -1024,6 +1026,7 @@ def main(argv: list[str] | None = None) -> int:
     cfg = parse_config(argv, __doc__.splitlines()[0]).resolved()
     if cfg.event_log:
         RH.summary_writer_class()                                        # refused here, before the corpus is loaded, when there is no writer
+        RH.prepare_event_logs(cfg.out_prefix, log_line)                  # a blocked folder is a line now, not a stop: the log is a view
     torch.set_num_threads(cfg.threads)
     t_start = time.time()
     corpus = select_corpus(cfg, log_line)

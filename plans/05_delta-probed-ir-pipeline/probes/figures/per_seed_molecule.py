@@ -47,8 +47,6 @@ def read_rows(arms: list[tuple[str, str]], seeds: list[int], pick: tuple[str, st
     for label, pattern in arms:
         for seed in seeds:
             path = Path(pattern.format(seed=seed))
-            if not path.is_file():
-                raise ValueError(f"arm {label!r}, seed {seed}: {path} not found")
             rows.append({"arm": label, "seed": seed, "value": molecule_value(FIO.read_json(path), path, *pick), "record": path.as_posix()})
     return rows
 

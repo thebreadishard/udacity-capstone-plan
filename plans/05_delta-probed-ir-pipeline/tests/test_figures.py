@@ -50,7 +50,7 @@ def test_the_converter_writes_a_records_history_as_events(tmp_path, capsys):
     record = _record()
     path = _write(tmp_path, "E7_rungC_pin", record)
     assert H2T.main([str(path), "--out", str(tmp_path / "tb")]) == 0
-    run_dir = tmp_path / "tb" / "E7_rungC_pin" / "n5_seed0"
+    run_dir = tmp_path / "tb" / "E7_rungC_pin" / "n00005_seed0"
     scalars = event_scalars(run_dir)
     assert all([step for step, _ in scalars[tag]] == [1, 2, 3] for tag in RH.SCALAR_TAGS.values())
     assert [v for _, v in scalars["loss/val_main"]] == pytest.approx([h["val_main"] for h in _history(record)], rel=1e-6)
@@ -64,7 +64,7 @@ def test_the_converter_says_what_an_old_record_lacks(tmp_path, capsys):
     pytest.importorskip("tensorboard")
     path = _write(tmp_path, "E7_rungC_old", _old_format(_record()))
     assert H2T.main([str(path), "--out", str(tmp_path / "tb")]) == 0
-    scalars = event_scalars(tmp_path / "tb" / "E7_rungC_old" / "n5_seed0")
+    scalars = event_scalars(tmp_path / "tb" / "E7_rungC_old" / "n00005_seed0")
     assert {"loss/train_main", "loss/train_aux", "loss/val_aux"} <= set(scalars) and not {"loss/val_main", "lr", "hparam/inner_val_main"} & set(scalars)
     out = capsys.readouterr().out
     assert "left out: val_main: not recorded before 17 Nov 2026; lr: not recorded before 17 Nov 2026" in out
@@ -146,7 +146,7 @@ def test_per_seed_molecule_reads_one_molecule_from_two_arms(tmp_path, capsys):
     (["--molecule", "A_absent"], "molecule 'A_absent' is not on hold-out 'a8'"),
     (["--holdout", "b"], "no per-molecule read-outs on hold-out 'b'"),
     (["--metric", "coupling_rms"], "no 'coupling_rms' for A_benzene"),
-    (["--seeds", "0,3"], "seed 3"),
+    (["--seeds", "0,3"], "eval_new_seed3.json: not found"),
     (["--arm", "third=x{seed}.json"], "2 arms with different labels"),
     (["--arm", "no-seed=x.json"], "'label=path' with {seed} in the path"),
 ])
@@ -155,3 +155,26 @@ def test_per_seed_molecule_refuses_with_the_reason(tmp_path, capsys, change, rea
     with pytest.raises(SystemExit):
         PSM.main(argv)
     assert reason in capsys.readouterr().err and not (tmp_path / "figures").exists()
+
+
+@pytest.mark.parametrize(("content", "reason"), [
+    (None, "not found"),
+    ("{broken", "not JSON"),
+    ("[1, 2]", "a list, not a record"),
+    ('{"a8": {}}', "not a record of m05/rungC_train.py"),
+])
+def test_training_curves_refuses_what_is_no_record(tmp_path, capsys, content, reason):
+    path = tmp_path / "record.json"
+    if content is not None:
+        path.write_text(content, encoding="utf-8")
+    with pytest.raises(SystemExit):
+        TC.main([str(path), "--out", str(tmp_path / "figures")])
+    assert reason in capsys.readouterr().err and not (tmp_path / "figures").exists()
+
+
+def test_per_seed_molecule_refuses_a_file_that_is_no_record(tmp_path, capsys):
+    arms = _eval_records(tmp_path)
+    (tmp_path / "eval_new_seed1.json").write_text("{broken", encoding="utf-8")
+    with pytest.raises(SystemExit):
+        PSM.main(["--molecule", "A_benzene", "--name", "x", "--seeds", "0,1,2", *arms, "--out", str(tmp_path / "figures")])
+    assert "eval_new_seed1.json: not JSON" in capsys.readouterr().err and not (tmp_path / "figures").exists()

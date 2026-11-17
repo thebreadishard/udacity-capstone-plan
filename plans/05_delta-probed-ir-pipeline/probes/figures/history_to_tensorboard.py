@@ -5,8 +5,9 @@ the record stays the source of every number.
     python probes/figures/history_to_tensorboard.py out/E7_rungC_<a>.json out/v14/E7_rungC_<b>.json … --out out/tensorboard
     tensorboard --logdir out/tensorboard
 
-One run folder per record, size and seed: `<out>/<record's file name without .json>/n<n>_seed<seed>/`, so the runs sort as the records'
-names do. A record made before 17 Nov 2026 has no `val_main` and no `lr`: those series are left out and named in the output."""
+One run folder per record, size and seed: `<out>/<record's file name without .json>/n<n, five digits>_seed<seed>/`, so the runs sort
+as the records' names and the pool sizes do. A record made before 17 Nov 2026 has no `val_main` and no `lr`: those series are left
+out and named in the output."""
 from __future__ import annotations
 
 import argparse
@@ -35,7 +36,7 @@ def convert(path: Path, out: Path) -> list[str]:
     lines = []
     for n, entry in trainings(record, path):
         history, seed = entry["train_history"], entry["seed"]
-        run_dir = out / path.stem / f"n{n}_seed{seed}"
+        run_dir = out / path.stem / RH.run_name(n, seed)
         final = {"inner_val_aux": entry.get("inner_val_aux"), "inner_val_main": entry.get("inner_val_main"), "epochs_run": len(history)}
         tags = RH.write_event_log(run_dir, history, entry.get("best_epoch"), RH.hparams(record, n, seed), final)
         lacks = [reason for key in RH.SCALAR_TAGS if (reason := RH.missing_reason(history, key))]
