@@ -439,3 +439,17 @@ three, most in seed 0; its CH stretches 1.93 / 0.59 / 1.61 against 0.67 / 1.42 /
 2.81 / 1.35. For the seed mean the product delivers, benzene's CH-oop bands are 4.16 against 1.98 cm⁻¹. So 'the seed' is half of it:
 seed 0 is the extreme, but the recipe on the new pool is weaker on benzene's out-of-plane modes in every seed so far. Benzene is the
 smallest and most symmetric molecule of the set and the one every reader tries first; why the larger pool costs it is not known.
+
+**Five seeds, 17 November 2026, 08:4x (`probes/results_m1/v14_data_read_2026-11-17/five_seeds.txt`; seeds 3 and 4 trained 04:33–08:36, early stops at epochs
+171 and 166, best inner validation 0.070 and 0.039 against 0.051–0.055 for seeds 0–2).** As stated beforehand this changes nothing
+in the three-seed read. (i) Benzene's corrected frequencies per seed: 5.37, 2.05, 1.95, 2.07, 4.22 cm⁻¹ against the carried version's
+1.54, 2.23, 1.20 — two seeds of five fail on it, three read it as the carried version does. (ii) Its out-of-plane C–H modes are
+worse in all five: 8.70, 4.10, 2.94, 3.42, 4.61 against 3.00, 2.19, 1.48; its ring-ip 4.84, 0.88, 1.90, 1.24, 5.32 against 0.96, 2.81,
+1.35; the seed-mean CH-oop bands of five seeds 3.85 against 1.98. (iii) On five-seed means one of the ten cells is worse than the
+carried version: (a8) CH-oop 2.32 against 2.17 (CH-stretch is 1.18 against 1.19); (a8) 'other' rises to 3.28 with seed 3 (4.52:
+benzophenone 5.25 and biphenyl 3.41 in that seed) and stays below 3.62. So on five seeds too the registered rule does not promote,
+and the reason is benzene's out-of-plane modes. Across the 45 rung-C records on disk (`probes/results_m1/v14_data_read_2026-11-17/benzene_across_records.txt`) benzene read
+1.1–2.6 cm⁻¹ in almost every training on analytic labels from October to chain 42 (10 Nov; pools of 370–986, with and without the
+cations of P3, twins kept or dropped), with a handful at 3.0–3.4; 4.2–5.4 appears only in the trainings of 15–17 November — in 3 of
+12 — whose pools are the first with the layer P3c, the 222 newly analytic labels and the low-mode repair. Which of the three it is
+is not known; a training of seed 0 without P3c is the first test (TASKS 253).

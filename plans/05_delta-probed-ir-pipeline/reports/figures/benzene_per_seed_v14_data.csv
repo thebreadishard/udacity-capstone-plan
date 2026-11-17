@@ -1,0 +1,7 @@
+arm,seed,value,record
+v1.4 candidate,0,5.370079376238066,modules/05_support_predictor/out/v14/eval_data_seed0.json
+v1.4 candidate,1,2.0463359200354114,modules/05_support_predictor/out/v14/eval_data_seed1.json
+v1.4 candidate,2,1.9452478467241023,modules/05_support_predictor/out/v14/eval_data_seed2.json
+v1.3 (carried),0,1.5372901707178819,modules/05_support_predictor/out/v14/eval_carried_data_seed0.json
+v1.3 (carried),1,2.2277485421624106,modules/05_support_predictor/out/v14/eval_carried_data_seed1.json
+v1.3 (carried),2,1.2045784133137596,modules/05_support_predictor/out/v14/eval_carried_data_seed2.json
