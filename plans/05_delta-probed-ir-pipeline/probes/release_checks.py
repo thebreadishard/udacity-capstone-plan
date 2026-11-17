@@ -56,12 +56,11 @@ import rungC_intensities as RINT  # noqa: E402
 import v14_search as V14  # noqa: E402
 from learning_curve_layerA import molecule_features, normal_modes  # noqa: E402
 from promotion_read import FAMILIES  # noqa: E402
-from rungC_settings_added import with_absent_settings  # noqa: E402
+from rungC_settings_added import RUN_ONLY, setting_differences  # noqa: E402
 
 BENZENE = "A_8448043181"
 SAMPLE_SEED = 20261117
 SAMPLE_SIZE = 40
-RUN_ONLY = ("out_prefix", "threads", "seeds")     # the run's own: where it wrote, its threads, how the seeds were grouped into runs
 SUFFIX = "_release_checks"
 PREVIOUS = "previous_release"
 HOLDOUT_FILES = {"a8": "out/holdout_a_clean_2026-10-30.txt", "b": "corpus/holdout_b_frozen_2026-10-08.txt"}   # relative to --m05
@@ -164,9 +163,8 @@ def same_recipe(release: tuple[Net, ...], measurement: tuple[Net, ...]) -> Check
     differences, whole_pool, read_as = {}, {}, {}
     for r in release:
         m = by_seed[r.seed]
-        (m_args, read_as[m.path.name]), (r_args, read_as[r.path.name]) = with_absent_settings(m.args), with_absent_settings(r.args)
-        keys = sorted((set(r_args) | set(m_args)) - {*RUN_ONLY, NK.FIELD})
-        diff = {k: {NK.MEASUREMENT: m_args.get(k), NK.RELEASE: r_args.get(k)} for k in keys if m_args.get(k) != r_args.get(k)}
+        pairs, read_as[m.path.name], read_as[r.path.name] = setting_differences(m.args, r.args, {*RUN_ONLY, NK.FIELD})
+        diff = {k: {NK.MEASUREMENT: mv, NK.RELEASE: rv} for k, (mv, rv) in pairs.items()}
         whole_pool[m.path.name] = NK.trained_on_whole_pool(m.record, m.n)
         if whole_pool[m.path.name] and r.args.get("sizes") == "all":
             diff.pop("sizes", None)                      # the measurement network trained on its whole pool, which is what 'all' says

@@ -58,6 +58,7 @@ import model_registry as MR  # noqa: E402, RUF100
 import promotion_read as P  # noqa: E402, RUF100
 from rungC_config import LR_SCHEDULES, WEIGHT_DECAY  # noqa: E402, RUF100
 from rungC_equivariant import N_BLOCKS, N_S  # noqa: E402, RUF100
+from rungC_settings_added import RUN_ONLY, setting_differences  # noqa: E402, RUF100
 
 SEARCH_SEED = 20261026
 N_DRAWN = 12
@@ -68,6 +69,7 @@ STAGE2_BEST = 4
 FINAL_SEEDS = (0, 1, 2)                    # the final chain's trainings: the other target, and the winner on the whole pool
 FULL_TAG = "s3full"                        # the winner's recipe without the selection split (§12)
 CLEAN_TAG = "s3clean"                      # the carried recipe on the whole pool without any hold-out twin of any charge (TASKS 253)
+CLEAN_TWINS = "drop-any-charge"            # the twin rule of every whole-pool training a promotion is read on (TASKS 253)
 CHECKPOINT = re.compile(r"(?P<prefix>.+)_model_n\d+_seed(?P<seed>\d+)\.pt")   # the trainer's `<prefix>_model_n<N>_seed<S>.pt`
 SELECTION = "26:0.15"
 N_SELECTION = 169                          # what the split sets aside in this search's corpus, of 18 scaffold cores
@@ -187,10 +189,10 @@ def _flags(flags: list[str]) -> dict[str, str | None]:
     return out
 
 
-def trainer_argv(cfg: Config, prefix: str, seeds: str, *, selection_split: bool = True) -> list[str]:
+def trainer_argv(cfg: Config, prefix: str, seeds: str, *, selection_split: bool = True, twins: str | None = None) -> list[str]:
     """The trainer command of one configuration: the carried BASE and RECIPE_V11 with the search's values put in their place. Every
     training the search selects on sets the selection set aside; `selection_split=False` trains on the whole pool (the final chain's
-    retraining of the winner)."""
+    retraining of the winner), and `twins` names a --holdout-twins rule other than the trainer's default (that retraining's)."""
     flags = _flags([*chain_runner.BASE, *chain_runner.RECIPE_V11])
     flags |= {"--pool-layers": POOL_LAYERS, "--epochs": str(EPOCH_CAP), "--lr": f"{cfg.lr:g}", "--weight-decay": f"{cfg.weight_decay:g}",
               "--body-width": str(cfg.body_width), "--body-blocks": str(cfg.body_blocks), "--hybrid-hidden": str(cfg.hybrid_hidden),
@@ -207,7 +209,8 @@ def trainer_argv(cfg: Config, prefix: str, seeds: str, *, selection_split: bool 
         flags |= {"--lr-schedule": cfg.schedule, "--patience": str(EPOCH_CAP)}
     argv = [x for f, v in flags.items() for x in ((f,) if v is None else (f, v))]
     split = ("--selection-split", SELECTION) if selection_split else ()
-    return ["{python}", "m05/rungC_train.py", "corpus/molecules", prefix, *argv, *split, "--sizes", "all",
+    twin_rule = ("--holdout-twins", twins) if twins else ()
+    return ["{python}", "m05/rungC_train.py", "corpus/molecules", prefix, *argv, *split, *twin_rule, "--sizes", "all",
             "--seeds", seeds, "--threads", THREADS, "--save-model"]
 
 
@@ -215,10 +218,10 @@ def prefix(cfg: Config, stage: str) -> str:
     return f"{OUT}/E7_rungC_v14{stage}_{cfg.name}"
 
 
-def train_step(cfg: Config, stage: str, seeds: str, *, selection_split: bool = True) -> dict:
+def train_step(cfg: Config, stage: str, seeds: str, *, selection_split: bool = True, twins: str | None = None) -> dict:
     pre = prefix(cfg, stage)
     return {"kind": "cmd", "label": f"train {cfg.name} ({stage}, seeds {seeds})", "cwd": M05_REL,
-            "log": f"{M05_REL}/{pre}.log", "argv": trainer_argv(cfg, pre, seeds, selection_split=selection_split)}
+            "log": f"{M05_REL}/{pre}.log", "argv": trainer_argv(cfg, pre, seeds, selection_split=selection_split, twins=twins)}
 
 
 def read_step(command: str, extra: list[str] | None = None) -> dict:
@@ -659,13 +662,15 @@ def winner_models(w: Config) -> list[str]:
 
 
 def _write_final_chain(w: Config, carried_models: list[str]) -> None:
-    """The other target with the selection split (the target check is a selection-set read), the winner on the whole pool (the models
-    the promotion is read on), both arms on the hold-outs, read3."""
+    """The other target with the selection split (the target check is a selection-set read), the winner on the whole pool without any
+    hold-out twin of any charge (the models the promotion is read on), both arms on the hold-outs and the clean eight, read3."""
     other = replace(w, target=next(t for t in TARGETS if t != w.target))
     seeds = ",".join(str(s) for s in FINAL_SEEDS)
-    steps = [train_step(other, "s3other", seeds), train_step(w, FULL_TAG, seeds, selection_split=False), read_step("register")]
-    steps += [_eval_step(m, f"{OUT}/eval_winner_seed{s}") for s, m in zip(FINAL_SEEDS, winner_models(w), strict=True)]
-    steps += [_eval_step(m, f"{OUT}/eval_carried_seed{s}") for s, m in enumerate(carried_models)]
+    steps = [train_step(other, "s3other", seeds), train_step(w, FULL_TAG, seeds, selection_split=False, twins=CLEAN_TWINS),
+             read_step("register")]
+    clean = {CLEAN_A: chain_runner.HOLDOUT_A_CLEAN}
+    steps += [_eval_step(m, f"{OUT}/eval_winner_seed{s}", clean) for s, m in zip(FINAL_SEEDS, winner_models(w), strict=True)]
+    steps += [_eval_step(m, f"{OUT}/eval_carried_seed{s}", clean) for s, m in enumerate(carried_models)]
     steps.append(read_step("read3"))
     about = (f"v1.4 final: {w.name} with the other target and {w.name} on the whole pool (three seeds each), the whole-pool models and "
              "the carried version read on the hold-outs, read3")
@@ -816,13 +821,11 @@ class DataArm:
 NOT_PROMOTED = "nothing is carried, and the cause is looked at per molecule before anything else is decided."
 CLEAN_BY = ("By §14's addition of 17 November (the clean arm replaces the data arm, whose hold-out (a) was not clean for benzene)")
 DATA_ARMS = {"data": DataArm(FULL_TAG, "data", "read_data", None, "", "By §14 these three models are version 1.4.", f"By §14 {NOT_PROMOTED}"),
-             "clean": DataArm(CLEAN_TAG, "clean", "read_clean", "drop-any-charge", ", clean arm (no hold-out twin of any charge)",
+             "clean": DataArm(CLEAN_TAG, "clean", "read_clean", CLEAN_TWINS, ", clean arm (no hold-out twin of any charge)",
                               f"{CLEAN_BY} these three models are version 1.4.", f"{CLEAN_BY} {NOT_PROMOTED}")}
-BENZENE_CATION = "P3c_8448043181"          # hold-out (a)'s benzene as a radical cation: the twin the clean arm exists to drop (TASKS 253)
-# What the clean arm's training may differ in from the data arm's: the twin rule, the pool it changes, and what is no setting
-CLEAN_ARM_FREE = frozenset({"date", "provenance", "seconds", "curve", "zero_rule", "holdout_twins", "holdout_twins_dropped", "pool",
-                            "pool_ids"})
-ABSENT = "<absent>"
+BENZENE_CATION = "P3c_8448043181"          # hold-out (a)'s benzene as a radical cation: the twin the clean training exists to drop (TASKS 253)
+TEN_NOTE = ("The eight decide (§14's addition of 16 Nov): the carried version trained on twins of two of the ten (2-naphthoic acid and "
+            "benzonitrile, TASKS 157), so on the ten the comparison favours it on two molecules it has seen.")
 
 
 def shown_value(v: object) -> str:
@@ -830,28 +833,68 @@ def shown_value(v: object) -> str:
     return text if len(text) <= 60 else f"{text[:57]}..."
 
 
-def recipe_differences(clean: dict, full: dict) -> list[str]:
-    """Every recorded setting in which the clean arm's training differs from the data arm's, beside CLEAN_ARM_FREE."""
-    return [f"{k}: {shown_value(full.get(k, ABSENT))} -> {shown_value(clean.get(k, ABSENT))}"
-            for k in sorted((set(clean) | set(full)) - CLEAN_ARM_FREE) if clean.get(k, ABSENT) != full.get(k, ABSENT)]
+def checkpoint_args(pre: str, seed: int) -> dict:
+    """The validated trainer config (`args`) that the one checkpoint of `seed` under the prefix `pre` saved."""
+    import torch  # only the clean arm's recipe check opens a checkpoint; every other read of the search runs without torch
+
+    found = sorted((M05 / pre).parent.glob(f"{Path(pre).name}_model_n*_seed{seed}.pt"))
+    if len(found) != 1:
+        raise SystemExit(f"{pre}: {len(found)} checkpoints of seed {seed}, not one")
+    return dict(torch.load(found[0], map_location="cpu", weights_only=False)["args"])
+
+
+def recipe_differences(w: Config, arm: DataArm) -> list[str]:
+    """Seed by seed, every saved setting in which the arm's checkpoints differ from the data arm's, beside the twin rule and the
+    run's own fields — `setting_differences`, as release_checks' check 1 compares two trainings (absent settings by the table)."""
+    out = []
+    for seed in FINAL_SEEDS:
+        pairs, _, _ = setting_differences(checkpoint_args(prefix(w, FULL_TAG), seed), checkpoint_args(prefix(w, arm.tag), seed),
+                                          {*RUN_ONLY, "holdout_twins"})
+        out += [f"seed {seed}: {k}: {shown_value(old)} -> {shown_value(new)}" for k, (old, new) in pairs.items()]
+    return out
+
+
+def require_twin_rule(pre: str, setting: str) -> None:
+    """The trainer record `<pre>.json` trained under the twin rule `setting`, and benzene's radical cation left its pool."""
+    rec = trainer_record(pre)
+    found = rec.get("holdout_twins")
+    if found != setting:
+        raise SystemExit(f"{pre}.json was trained with holdout_twins {found!r}, not {setting!r}: the promotion is read on the recipe "
+                         f"trained without any hold-out molecule's twin of any charge (--holdout-twins {setting}, TASKS 253)")
+    if BENZENE_CATION not in rec.get("holdout_twins_dropped", []):
+        raise SystemExit(f"{pre}.json did not drop {BENZENE_CATION}, benzene's radical cation, from its pool: its hold-out (a) is not "
+                         "clean for benzene (TASKS 253)")
 
 
 def require_clean_training(w: Config, arm: DataArm) -> None:
-    """The clean arm's training is the data arm's with the twin rule `arm.holdout_twins` and nothing else changed, and benzene's
-    radical cation left its pool."""
-    pre, full_pre = prefix(w, arm.tag), prefix(w, FULL_TAG)
-    clean = trainer_record(pre)
-    found = clean.get("holdout_twins")
-    if found != arm.holdout_twins:
-        raise SystemExit(f"{pre}.json was trained with holdout_twins {found!r}, not {arm.holdout_twins!r}: the clean arm reads the carried "
-                         f"recipe trained without any hold-out molecule's twin of any charge (--holdout-twins {arm.holdout_twins}, TASKS 253)")
-    diffs = recipe_differences(clean, trainer_record(full_pre))
+    """The clean arm's training is the data arm's with the twin rule `arm.holdout_twins` and nothing else changed."""
+    require_twin_rule(prefix(w, arm.tag), arm.holdout_twins)
+    diffs = recipe_differences(w, arm)
     if diffs:
-        raise SystemExit(f"{pre}.json differs from {full_pre}.json, the data arm's training, in {len(diffs)} setting(s) beside the twin "
-                         f"rule and its pool ({'; '.join(diffs)}): the clean arm reads the carried recipe with the twin rule alone changed")
-    if BENZENE_CATION not in clean.get("holdout_twins_dropped", []):
-        raise SystemExit(f"{pre}.json did not drop {BENZENE_CATION}, benzene's radical cation, from its pool: its hold-out (a) is not "
-                         "clean for benzene (TASKS 253)")
+        raise SystemExit(f"{prefix(w, arm.tag)}'s checkpoints differ from {prefix(w, FULL_TAG)}'s, the data arm's training, in "
+                         f"{len(diffs)} saved setting(s) beside the twin rule ({'; '.join(diffs)}): the clean arm reads the carried "
+                         "recipe with the twin rule alone changed")
+
+
+def require_clean_set(paths: list[Path]) -> None:
+    """Every eval record holds hold-out (a)'s clean set, which the promotion is read on."""
+    for path in paths:
+        if CLEAN_A not in json.loads(path.read_text(encoding="utf-8")):
+            raise SystemExit(f"{path.name} holds no set {CLEAN_A} (hold-out (a)'s eight clean molecules): the evals of chains v14_data and "
+                             f"v14_final carry it (--eval-ids-file {CLEAN_A}=…), an older record does not, and the promotion is read on "
+                             "it (§14)")
+
+
+def ten_section(new_evals: list[Path], old_evals: list[Path], label: str) -> tuple[list[str], dict]:
+    """(the report's lines, the record) of hold-out (a) on all ten molecules, printed beside the promotion and deciding nothing."""
+    new_ten, carried_ten = P.load_eval_arm(new_evals), P.load_eval_arm(old_evals)
+    comps_ten = P.compare(new_ten, carried_ten)
+    promo_ten = P.promotion(comps_ten)
+    lines = ["## Beside it, deciding nothing: hold-out (a) on all ten molecules", "", TEN_NOTE,
+             "", *P.comparison_table(new_ten, carried_ten, comps_ten, label, "carried"), "",
+             f"On the ten the same rule would read: {'promoted' if promo_ten.promoted else 'not promoted'}, worse on "
+             f"{', '.join(promo_ten.worse) or 'none'}, better on {len(promo_ten.better)} of {len(comps_ten)}."]
+    return lines, {"promotion": asdict(promo_ten), "comparisons": [asdict(c) for c in comps_ten]}
 
 
 def pool_note(w: Config, arm: DataArm) -> str:
@@ -877,10 +920,7 @@ def data_arms(arm: DataArm = DATA_ARMS["data"]) -> tuple[Config, list[SeedRead],
     for path, model in zip(old_evals, carried_models, strict=True):
         if evaluated_checkpoint(path).as_posix() != model:
             raise SystemExit(f"{path.name} evaluated {evaluated_checkpoint(path).as_posix()}, not the carried version's {model}")
-    for path in (*new_evals, *old_evals):
-        if CLEAN_A not in json.loads(path.read_text(encoding="utf-8")):
-            raise SystemExit(f"{path.name} holds no set {CLEAN_A} (hold-out (a)'s eight clean molecules): chain v14_data's evals carry "
-                             f"it (--eval-ids-file {CLEAN_A}=…), an older record does not, and the promotion is read on it (§14)")
+    require_clean_set([*new_evals, *old_evals])
     return configs[0], full, new_evals, old_evals
 
 
@@ -898,9 +938,7 @@ def cmd_read_data(replace_record: bool, arm_name: str = "data") -> int:
     new, carried = (P.load_eval_arm(paths, holdouts=(CLEAN_A, "b")) for paths in (new_evals, old_evals))
     comps = P.compare(new, carried)
     promo = P.promotion(comps)
-    new_ten, carried_ten = P.load_eval_arm(new_evals), P.load_eval_arm(old_evals)
-    comps_ten = P.compare(new_ten, carried_ten)
-    promo_ten = P.promotion(comps_ten)
+    ten_lines, ten = ten_section(new_evals, old_evals, "v1.4 candidate")
     _, expectation = expectation_read(new_evals, old_evals, a_set=CLEAN_A)
     _, prediction = prediction_read(new_evals, old_evals, a_set=CLEAN_A)
     meaning = arm.promoted if promo.promoted else arm.not_promoted
@@ -913,13 +951,7 @@ def cmd_read_data(replace_record: bool, arm_name: str = "data") -> int:
              "", *P.comparison_table(new, carried, comps, "v1.4 candidate", "carried"), "",
              f"**Promotion: {'promoted' if promo.promoted else 'not promoted'}** — worse on {', '.join(promo.worse) or 'none'}, "
              f"better on {len(promo.better)} of {len(comps)} (the registered rule: §5, decision 57). {meaning} This read carries "
-             "nothing itself and changes no registry entry.", "",
-             "## Beside it, deciding nothing: hold-out (a) on all ten molecules", "",
-             "The eight decide (§14's addition of 16 Nov): the carried version trained on twins of two of the ten (2-naphthoic acid and "
-             "benzonitrile, TASKS 157), so on the ten the comparison favours it on two molecules it has seen.",
-             "", *P.comparison_table(new_ten, carried_ten, comps_ten, "v1.4 candidate", "carried"), "",
-             f"On the ten the same rule would read: {'promoted' if promo_ten.promoted else 'not promoted'}, worse on "
-             f"{', '.join(promo_ten.worse) or 'none'}, better on {len(promo_ten.better)} of {len(comps_ten)}.",
+             "nothing itself and changes no registry entry.", "", *ten_lines,
              "", "## What was stated beforehand", "", *stated_lines(expectation, prediction), "", DATA_LICENCE_NOTE]
     if on_record:
         print(f"replacing the read on record ({' and '.join(on_record)})", flush=True)
@@ -927,10 +959,21 @@ def cmd_read_data(replace_record: bool, arm_name: str = "data") -> int:
                                       **({"arm": arm_name, "holdout_twins": arm.holdout_twins} if arm.holdout_twins else {}),
                                       "decided_on": [CLEAN_A, "b"], "promotion": asdict(promo), "meaning": meaning,
                                       "expectation": expectation, "prediction": prediction, "comparisons": [asdict(c) for c in comps],
-                                      "on_the_ten_deciding_nothing": {"promotion": asdict(promo_ten),
-                                                                      "comparisons": [asdict(c) for c in comps_ten]}})
+                                      "on_the_ten_deciding_nothing": ten})
     print("\n".join(lines))
     return 0
+
+
+def final_evals(w: Config) -> tuple[list[SeedRead], list[Path], list[Path]]:
+    """read3's checked inputs: (the winner's whole-pool trainings, their hold-out evals, the carried version's). The trainings
+    passed `whole_pool_reads`, the twin rule CLEAN_TWINS and the cap rule; every eval holds the clean set (§14's addition of 16 Nov:
+    hold-out (a) decides on its clean eight, the ten are printed beside them)."""
+    evals = [M05 / f"{OUT}/eval_{who}_seed{s}.json" for who in ("winner", "carried") for s in FINAL_SEEDS]
+    full = whole_pool_reads(w, evals[:3])
+    require_twin_rule(prefix(w, FULL_TAG), CLEAN_TWINS)
+    require_below_cap(w, full)
+    require_clean_set(evals)
+    return full, evals[:3], evals[3:]
 
 
 def cmd_read3() -> int:
@@ -939,28 +982,29 @@ def cmd_read3() -> int:
     o_reads = [o_by_seed[s] for s in FINAL_SEEDS]
     target_check = P.promotion(P.compare(arm(o_reads, SCORED), arm(w_reads, SCORED)))
     target_registered = P.promotion(P.compare(arm(o_reads, REGISTERED), arm(w_reads, REGISTERED)))
-    # the registered read takes hold-out (a) on its ten; §14's addition of 16 Nov: the search's final read takes the clean eight when it comes
-    evals = [M05 / f"{OUT}/eval_{who}_seed{s}.json" for who in ("winner", "carried") for s in FINAL_SEEDS]
-    full = whole_pool_reads(w, evals[:3])
-    require_below_cap(w, full)
-    new, carried = P.load_eval_arm(evals[:3]), P.load_eval_arm(evals[3:])
+    full, new_evals, old_evals = final_evals(w)
+    new, carried = (P.load_eval_arm(paths, holdouts=(CLEAN_A, "b")) for paths in (new_evals, old_evals))
     comps = P.compare(new, carried)
     promo = P.promotion(comps)
-    expectation_line, expectation = expectation_read(evals[:3], evals[3:])
-    prediction_line, prediction = prediction_read(evals[:3], evals[3:])
+    ten_lines, ten = ten_section(new_evals, old_evals, "v1.4 winner")
+    expectation_line, expectation = expectation_read(new_evals, old_evals, a_set=CLEAN_A)
+    prediction_line, prediction = prediction_read(new_evals, old_evals, a_set=CLEAN_A)
     lines = ["# v1.4 final read", "", *target_lines(w, other, target_check, target_registered),
-             "", f"The winner's models below are {w.name} retrained on the whole pool, selection set included (seeds "
+             "", f"The winner's models below are {w.name} retrained on the whole pool, selection set included, without any hold-out "
+             f"molecule's twin of any charge (--holdout-twins {CLEAN_TWINS}, TASKS 253; seeds "
              f"{', '.join(str(s) for s in FINAL_SEEDS)}; best epochs {', '.join(epoch_note(r, w.schedule) for r in full)} / {full[0].cap}): "
              "the selection split had taken every derivative of biphenylene, a hold-out (a) molecule, out of the training pool, and the "
              "carried version trained on seven of them (§12). Their selection-set scores are not shown: they trained on that set.",
-             "", *P.comparison_table(new, carried, comps, "v1.4 winner", "carried"), "",
+             "", f"## The promotion: hold-out (a) on its eight clean molecules ({CLEAN_A}), and hold-out (b)", "",
+             *P.comparison_table(new, carried, comps, "v1.4 winner", "carried"), "",
              f"**Promotion: {'carried as version 1.4' if promo.promoted else 'not promoted'}** — worse on {', '.join(promo.worse) or 'none'}, "
-             f"better on {len(promo.better)} of {len(comps)} (decision 57, the user's rule of 26 Oct).", "", expectation_line, "",
-             prediction_line]
+             f"better on {len(promo.better)} of {len(comps)} (decision 57, the user's rule of 26 Oct).", "", *ten_lines, "",
+             expectation_line, "", prediction_line]
     _write_report("read3", lines, {"winner": w.name, "winner_trained_on": "whole pool", "winner_best_epochs": [r.best_epoch for r in full],
+                                   "winner_holdout_twins": CLEAN_TWINS, "decided_on": [CLEAN_A, "b"],
                                    "target_check": asdict(target_check), "target_check_registered": asdict(target_registered),
                                    "promotion": asdict(promo), "expectation": expectation, "prediction": prediction,
-                                   "comparisons": [asdict(c) for c in comps]})
+                                   "comparisons": [asdict(c) for c in comps], "on_the_ten_deciding_nothing": ten})
     print("\n".join(lines))
     return 0
 

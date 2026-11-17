@@ -79,9 +79,10 @@ def test_the_built_in_hold_out_a_names_its_trained_twins_and_reads_on(monkeypatc
     a = argparse.Namespace(holdout_b_file=None, eval_ids_file=[], molecules="corpus/molecules")
     held = {"a": ["x1"], "b": ["x2"]}
     sets = ES.measurement_sets(a, {}, held, ["B_twin", "P3c_x1", "p1"], [])
-    assert sets[0] == ("a", ["x1"], {"trained_twins": ["B_twin", "P3c_x1"]}) and sets[1] == ("b", ["x2"], {})
-    assert ("hold-out (a): the model trained twins of 2 of its molecules (B_twin, P3c_x1) — not a held-out read for those molecules; the "
-            "clean eight decide") in capsys.readouterr().out
+    assert sets[0] == ("a", ["x1"], {"trained_twins": [{"id": "B_twin", "charge": 0}, {"id": "P3c_x1", "charge": 1}]})
+    assert sets[1] == ("b", ["x2"], {})
+    assert ("hold-out (a): the model trained twins of 2 of its molecules (B_twin (charge +0), P3c_x1 (charge +1)) — not a held-out read for "
+            "those molecules; the clean eight decide") in capsys.readouterr().out
     assert ES.measurement_sets(a, {}, held, ["p1"], [])[0][2] == {"trained_twins": []}
 
 

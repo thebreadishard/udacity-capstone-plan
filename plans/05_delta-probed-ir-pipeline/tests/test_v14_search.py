@@ -239,6 +239,21 @@ def write_eval(root: Path, name: str, shift: float, seed: int, model: str | None
     (root / "m05" / V.OUT / f"eval_{name}_seed{seed}.json").write_text(json.dumps(rec), encoding="utf-8")
 
 
+CLEAN_DROPPED = ["B_07cadc7923", "B_3100da3761", "P3c_07cadc7923", "P3c_8448043181", "P3c_311e979a14"]
+CLEAN_RULE = {"holdout_twins": V.CLEAN_TWINS, "holdout_twins_dropped": CLEAN_DROPPED}
+
+
+def write_final_eval(root: Path, name: str, shift: float, seed: int, model: str | None, biphenylene: float = 2.0) -> None:
+    """A final-chain eval record: the hold-outs and the clean set, both `shift` below the lines."""
+    write_eval(root, name, shift, seed, model, biphenylene=biphenylene, clean_shift=shift)
+
+
+def with_fields(root: Path, pre: str, fields: dict) -> None:
+    """The trainer record `<pre>.json` with `fields` set."""
+    path = root / "m05" / f"{pre}.json"
+    path.write_text(json.dumps(json.loads(path.read_text(encoding="utf-8")) | fields), encoding="utf-8")
+
+
 def full_checkpoint(w: V.Config, seed: int) -> str:
     return f"{V.prefix(w, V.FULL_TAG)}_model_n1082_seed{seed}.pt"
 
@@ -270,9 +285,11 @@ def assert_final_chain(root: Path, w: V.Config, other: V.Config, carried: list[s
     assert other_step["argv"].count("--selection-split") == 1
     split_twin = V.trainer_argv(w, V.prefix(w, V.FULL_TAG), FINAL_SEEDS)             # the winner's stage command at this prefix and seeds
     k = split_twin.index("--selection-split")
-    assert full_step["argv"] == split_twin[:k] + split_twin[k + 2:]                 # the same command, the split alone taken out
+    assert full_step["argv"] == [*split_twin[:k], "--holdout-twins", "drop-any-charge", *split_twin[k + 2:]]   # the split out, the twin rule in
     whole = config_from_argv(full_step["argv"][2:])
     assert whole.selection_split is None and whole.seeds == FINAL_SEEDS and whole.inner_val > 0   # early stopping keeps its inner split
+    assert whole.holdout_twins == "drop-any-charge" and config_from_argv(other_step["argv"][2:]).holdout_twins == "drop"
+    assert all(s["argv"][-2:] == ["--eval-ids-file", "a8=out/holdout_a_clean_2026-10-30.txt"] for s in final["steps"][3:9])
     assert [s["argv"][2:4] for s in final["steps"][3:6]] == [
         [f"{V.OUT}/E7_rungC_v14s3full_{w.name}_model_n*_seed{s}.pt", f"{V.OUT}/eval_winner_seed{s}"] for s in range(3)]
     assert [s["argv"][2] for s in final["steps"][6:9]] == carried
@@ -288,6 +305,17 @@ def assert_both_scores_agree(root: Path, chosen: list[str]) -> None:
     assert "all 169 (mean ± SE)" in report2
     assert ("Among these candidates, which stage 1 chose on the scored set, the winner rule on the registered score gives the same "
             "winner.") in report2
+
+
+def read3_once_the_twin_rule_holds(root: Path, w: V.Config) -> dict:
+    """read3 refuses the winner's whole-pool record until it states drop-any-charge; then it reads, deciding on (a8) and (b)."""
+    with pytest.raises(SystemExit, match=r"v14s3full_.*\.json was trained with holdout_twins None, not 'drop-any-charge'"):
+        V.cmd_read3()
+    with_fields(root, V.prefix(w, V.FULL_TAG), CLEAN_RULE)
+    V.cmd_read3()
+    rec = json.loads((root / "m05" / V.OUT / "read3.json").read_text(encoding="utf-8"))
+    assert rec["decided_on"] == ["a8", "b"] and rec["winner_holdout_twins"] == "drop-any-charge"
+    return rec
 
 
 def test_plan_to_read3_end_to_end(sandbox):
@@ -327,16 +355,15 @@ def test_plan_to_read3_end_to_end(sandbox):
     write_record(root, V.prefix(other, "s3other"), {0: stage1[best] + 0.2, 1: stage1[best] + 0.21, 2: stage1[best] + 0.19})  # larger shift = better
     stage_checkpoints = [f"{V.prefix(w, tag)}_model_n913_seed{s}.pt" for s, tag in enumerate(("s1a", "s1b", "s2"))]
     for s in range(3):
-        write_eval(root, "winner", 0.5, s, stage_checkpoints[s])                    # what the final chain evaluated before 16 Nov
-        write_eval(root, "carried", 0.1, s, carried[s])
+        write_final_eval(root, "winner", 0.5, s, stage_checkpoints[s])                    # what the final chain evaluated before 16 Nov
+        write_final_eval(root, "carried", 0.1, s, carried[s])
     with pytest.raises(SystemExit, match="trained with --selection-split"):
         V.cmd_read3()
     assert not (root / "m05" / V.OUT / "read3.json").exists()
     write_record(root, V.prefix(w, V.FULL_TAG), dict.fromkeys(range(3), 0.0), split=False)
     for s in range(3):
-        write_eval(root, "winner", 0.5, s, full_checkpoint(w, s))
-    V.cmd_read3()
-    rec = json.loads((root / "m05" / V.OUT / "read3.json").read_text(encoding="utf-8"))
+        write_final_eval(root, "winner", 0.5, s, full_checkpoint(w, s))
+    rec = read3_once_the_twin_rule_holds(root, w)
     assert rec["promotion"]["promoted"] and rec["target_check"]["promoted"]          # the other target is better: the choice goes to the user
     assert rec["winner_trained_on"] == "whole pool" and rec["winner_best_epochs"] == [100, 100, 100]
     report = (root / "m05" / V.OUT / "read3.md").read_text(encoding="utf-8")
@@ -379,9 +406,10 @@ def at_read3(root: Path, carried: list[str], winner_index: int, full_epoch: int 
         write_record(root, V.prefix(w, tag), {seed: 0.3})
     write_record(root, V.prefix(other, "s3other"), dict.fromkeys(range(3), 0.1))
     write_record(root, V.prefix(w, V.FULL_TAG), dict.fromkeys(range(3), 0.0), best_epoch=full_epoch, split=False)
+    with_fields(root, V.prefix(w, V.FULL_TAG), CLEAN_RULE)
     for s in range(3):
-        write_eval(root, "winner", 0.5, s, full_checkpoint(w, s))
-        write_eval(root, "carried", 0.1, s, carried[s])
+        write_final_eval(root, "winner", 0.5, s, full_checkpoint(w, s))
+        write_final_eval(root, "carried", 0.1, s, carried[s])
     return w
 
 
@@ -389,19 +417,19 @@ def test_read3_refuses_winner_evals_of_any_other_checkpoint(sandbox):
     root, carried = sandbox
     w = at_read3(root, carried, winner_index=0)
     V.cmd_read3()                                                                   # the whole-pool checkpoints: read
-    write_eval(root, "winner", 0.5, 1, full_checkpoint(w, 2))                       # a whole-pool model, the wrong seed
+    write_final_eval(root, "winner", 0.5, 1, full_checkpoint(w, 2))                       # a whole-pool model, the wrong seed
     with pytest.raises(SystemExit, match="not seed 1 of"):
         V.cmd_read3()
-    write_eval(root, "winner", 0.5, 1, carried[1])                                  # no trainer checkpoint's name
+    write_final_eval(root, "winner", 0.5, 1, carried[1])                                  # no trainer checkpoint's name
     with pytest.raises(SystemExit, match="not a trainer checkpoint"):
         V.cmd_read3()
-    write_eval(root, "winner", 0.5, 1, "out/elsewhere_model_n1082_seed1.pt")        # a checkpoint without its training's record
+    write_final_eval(root, "winner", 0.5, 1, "out/elsewhere_model_n1082_seed1.pt")        # a checkpoint without its training's record
     with pytest.raises(SystemExit, match="no trainer record"):
         V.cmd_read3()
-    write_eval(root, "winner", 0.5, 1, f"{V.prefix(w, 's1b')}_model_n913_seed1.pt")  # one stage checkpoint among whole-pool ones
+    write_final_eval(root, "winner", 0.5, 1, f"{V.prefix(w, 's1b')}_model_n913_seed1.pt")  # one stage checkpoint among whole-pool ones
     with pytest.raises(SystemExit, match="trained with --selection-split"):
         V.cmd_read3()
-    write_eval(root, "winner", 0.5, 1, None)                                        # a record without its model
+    write_final_eval(root, "winner", 0.5, 1, None)                                        # a record without its model
     with pytest.raises(SystemExit, match="names no model"):
         V.cmd_read3()
     (root / "m05" / V.OUT / "eval_winner_seed1.json").unlink()                      # the eval step has not run
@@ -431,7 +459,7 @@ def test_read3_reads_the_prediction_on_biphenylene(sandbox):
     assert rec["prediction"] == {"molecule": "A_72b86c2331", "winner": [2.0] * 3, "carried": [2.0] * 3, "line": 4.7, "passed": True}
     assert "**PASS**" in (root / "m05" / V.OUT / "read3.md").read_text(encoding="utf-8")
     for s in range(3):
-        write_eval(root, "winner", 0.5, s, full_checkpoint(w, s), biphenylene=6.0 + s)
+        write_final_eval(root, "winner", 0.5, s, full_checkpoint(w, s), biphenylene=6.0 + s)
     V.cmd_read3()
     rec = json.loads((root / "m05" / V.OUT / "read3.json").read_text(encoding="utf-8"))
     report = (root / "m05" / V.OUT / "read3.md").read_text(encoding="utf-8")
@@ -439,9 +467,44 @@ def test_read3_reads_the_prediction_on_biphenylene(sandbox):
     assert "winner 6.00, 7.00, 8.00 (mean 7.00), carried 2.00, 2.00, 2.00 (mean 2.00)" in report and "**FAIL**" in report
     rec_path = root / "m05" / V.OUT / "eval_carried_seed1.json"
     stripped = json.loads(rec_path.read_text(encoding="utf-8"))
-    del stripped["a"]["per_molecule"]
+    del stripped[V.CLEAN_A]["per_molecule"]
     rec_path.write_text(json.dumps(stripped), encoding="utf-8")
     with pytest.raises(SystemExit, match="no corrected_freq_rms of A_72b86c2331"):
+        V.cmd_read3()
+
+
+def test_read3_decides_on_the_clean_eight_and_prints_the_ten(sandbox):
+    """§14's addition of 16 Nov: hold-out (a) decides on its clean eight; the ten are printed beside them, deciding nothing."""
+    root, carried = sandbox
+    at_read3(root, carried, winner_index=0)
+    for s in range(3):                                                              # worse than the carried version on the ten
+        path = root / "m05" / V.OUT / f"eval_winner_seed{s}.json"
+        rec = json.loads(path.read_text(encoding="utf-8"))
+        rec["a"] |= {"diag_rms": dict.fromkeys(P.FAMILIES, 3.5), P.RATIO: 0.3, "corrected_freq_rms": 3.5}
+        path.write_text(json.dumps(rec), encoding="utf-8")
+    V.cmd_read3()
+    rec = json.loads((root / "m05" / V.OUT / "read3.json").read_text(encoding="utf-8"))
+    report = (root / "m05" / V.OUT / "read3.md").read_text(encoding="utf-8")
+    assert rec["promotion"]["promoted"] and not rec["on_the_ten_deciding_nothing"]["promotion"]["promoted"]
+    assert "## The promotion: hold-out (a) on its eight clean molecules (a8), and hold-out (b)" in report and V.TEN_NOTE in report
+    assert "| (a8) | ring-ip |" in report and "| (a) | ring-ip |" in report
+
+
+@pytest.mark.parametrize("fields", [{"holdout_twins": "drop"}, {"holdout_twins_dropped": ["B_07cadc7923"]}])
+def test_read3_refuses_a_winner_trained_with_a_charged_twin(sandbox, fields):
+    root, carried = sandbox
+    w = at_read3(root, carried, winner_index=0)
+    with_fields(root, V.prefix(w, V.FULL_TAG), fields)
+    with pytest.raises(SystemExit, match=r"holdout_twins 'drop', not 'drop-any-charge'|did not drop P3c_8448043181"):
+        V.cmd_read3()
+    assert not (root / "m05" / V.OUT / "read3.json").exists()
+
+
+def test_read3_refuses_evals_without_the_clean_eight(sandbox):
+    root, carried = sandbox
+    at_read3(root, carried, winner_index=0)
+    write_eval(root, "carried", 0.1, 0, carried[0])                                 # an eval made before the chain carried a8
+    with pytest.raises(SystemExit, match=r"eval_carried_seed0\.json holds no set a8"):
         V.cmd_read3()
 
 
@@ -648,7 +711,7 @@ def test_read3_says_whether_the_expectation_of_more_data_held(sandbox):
     rec = json.loads((root / "m05" / V.OUT / "read3.json").read_text(encoding="utf-8"))
     assert rec["expectation"]["a"]["held"] and rec["expectation"]["b"]["held"]
     for s in range(3):
-        write_eval(root, "winner", 0.05, s, full_checkpoint(w, s))                  # now above the carried version on both
+        write_final_eval(root, "winner", 0.05, s, full_checkpoint(w, s))                  # now above the carried version on both
     V.cmd_read3()
     rec = json.loads((root / "m05" / V.OUT / "read3.json").read_text(encoding="utf-8"))
     report = (root / "m05" / V.OUT / "read3.md").read_text(encoding="utf-8")
@@ -743,17 +806,34 @@ def test_read_data_refuses_the_wrong_models_and_missing_evals(sandbox):
 CLEAN_DROPPED = ["B_07cadc7923", "B_3100da3761", "P3c_07cadc7923", "P3c_8448043181", "P3c_311e979a14"]
 
 
-def at_read_clean(root: Path, carried: list[str], twins: str | None = "drop-any-charge", changed: dict | None = None) -> V.Config:
-    """read-data --arm clean's files: the data arm's whole-pool record, the control's at the clean tag — the same but trained with
-    `twins`, CLEAN_DROPPED left out and `changed` — its three evals and the carried version's three."""
+def save_checkpoints(root: Path, pre: str, args: dict) -> None:
+    """Three whole-pool checkpoints that hold the trainer config they were trained with (`args`, as the trainer saves it)."""
+    import torch
+
+    for s in range(3):
+        torch.save({"args": args, "seed": s}, root / "m05" / f"{pre}_model_n1082_seed{s}.pt")
+
+
+def whole_pool_args(w: V.Config, stage: str, twins: str | None = None) -> dict:
+    """The validated config of the search's whole-pool command for `w` at `stage`, as a checkpoint saves it."""
+    return config_from_argv(V.trainer_argv(w, V.prefix(w, stage), "0,1,2", selection_split=False, twins=twins)[2:]).model_dump()
+
+
+def at_read_clean(root: Path, carried: list[str], twins: str | None = "drop-any-charge", changed: dict | None = None,
+                  changed_args: dict | None = None) -> V.Config:
+    """read-data --arm clean's files: the data arm's whole-pool record and checkpoints — saved before decision 66, so without
+    network_kind — and the control's at the clean tag: trained with `twins`, CLEAN_DROPPED left out, the record's fields `changed` and
+    the checkpoints' settings `changed_args`; its three evals and the carried version's three."""
     V.cmd_plan(carried)
     w = V.load_list()[0][0]
-    pre = V.prefix(w, V.CLEAN_TAG)
-    write_record(root, V.prefix(w, V.FULL_TAG), dict.fromkeys(range(3), 0.0), split=False)
+    pre, full_pre = V.prefix(w, V.CLEAN_TAG), V.prefix(w, V.FULL_TAG)
+    write_record(root, full_pre, dict.fromkeys(range(3), 0.0), split=False)
     write_record(root, pre, dict.fromkeys(range(3), 0.0), split=False)
-    path = root / "m05" / f"{pre}.json"
-    clean = {"holdout_twins": twins, "holdout_twins_dropped": CLEAN_DROPPED} | (changed or {})
-    path.write_text(json.dumps(json.loads(path.read_text(encoding="utf-8")) | clean), encoding="utf-8")
+    with_fields(root, pre, {"holdout_twins": twins, "holdout_twins_dropped": CLEAN_DROPPED} | (changed or {}))
+    old = whole_pool_args(w, V.FULL_TAG)
+    del old["network_kind"]
+    save_checkpoints(root, full_pre, old)
+    save_checkpoints(root, pre, whole_pool_args(w, V.CLEAN_TAG, twins=V.CLEAN_TWINS) | (changed_args or {}))
     for s in range(3):
         write_eval(root, "clean", 0.5, s, f"{pre}_model_n1082_seed{s}.pt", clean_shift=0.5)
         write_eval(root, "carried_data", 0.1, s, carried[s], clean_shift=0.1)
@@ -796,11 +876,14 @@ def test_read_data_clean_arm_refuses_the_data_arms_evals(sandbox):
         V.cmd_read_data(replace_record=False, arm_name="clean")
 
 
-def test_read_data_clean_arm_refuses_another_recipe_by_name(sandbox):
-    """The clean arm changes the twin rule and nothing else: every other setting must be the data arm's training's."""
+@pytest.mark.parametrize(("changed", "named"), [({"dihedral_encoding": "cossin"}, r"dihedral_encoding: '\w+' -> 'cossin'"),
+                                              ({"lr": 0.123}, r"lr: [0-9.e-]+ -> 0\.123")])
+def test_read_data_clean_arm_refuses_another_recipe_by_name(sandbox, changed, named):
+    """The clean arm changes the twin rule and nothing else: every other saved setting must be the data arm's checkpoints', seed by
+    seed (the data arm's absent network_kind read by the table, so it passes)."""
     root, carried = sandbox
-    at_read_clean(root, carried, changed={"lr": 1e-3, "epochs": 500})
-    with pytest.raises(SystemExit, match=r"in 2 setting\(s\) beside the twin rule and its pool \(epochs: \d+ -> 500; lr: '<absent>' -> 0\.001\)"):
+    at_read_clean(root, carried, changed_args=changed)
+    with pytest.raises(SystemExit, match=rf"in 3 saved setting\(s\) beside the twin rule \(seed 0: {named}; seed 1: "):
         V.cmd_read_data(replace_record=False, arm_name="clean")
     assert not (root / "m05" / V.OUT / "read_clean.json").exists()
 

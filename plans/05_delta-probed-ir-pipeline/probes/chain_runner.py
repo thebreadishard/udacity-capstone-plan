@@ -48,6 +48,7 @@ RECIPE_V11 = ["--head", "hybrid", "--aux", "both", "--kring-weight", "0.3", "--k
               "--pair-features", "--aux-weight", "1.0", "--epochs", "200", "--patience", "20", "--lr", "3e-4", "--hybrid-hidden", "256", "--pattern", "f"]
 BASE = ["--use-analytic", "--pool-layers", "A,A2,B", "--inner-val", "0.15", "--aggregation", "sum"]
 HOLDOUT_B = "corpus/holdout_b_frozen_2026-10-08.txt"
+HOLDOUT_A_CLEAN = "out/holdout_a_clean_2026-10-30.txt"   # hold-out (a) without its two neutral twins, read as a8 (§14's addition of 16 Nov)
 STATE_DIR = PLAN / "probes" / "watch_state" / "chains"                 # resume records; tests point it at a temporary folder
 PROGRESS_S = 600                                                       # seconds between progress checks of a running step; tests lower it
 

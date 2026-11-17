@@ -39,11 +39,10 @@ import model_registry as MR  # noqa: E402
 import network_kind as NK  # noqa: E402
 import promotion_read  # noqa: E402
 from rungC_config import TrainConfig, argv_of  # noqa: E402
-from rungC_settings_added import with_absent_settings  # noqa: E402
+from rungC_settings_added import RUN_ONLY, with_absent_settings  # noqa: E402
 
 TAG = "REL"
-CLEAN_A = "out/holdout_a_clean_2026-10-30.txt"       # hold-out (a) without its two twins: the set the licence reads as a8
-RUN_ONLY = ("out_prefix", "threads", "seeds")        # as release_checks.RUN_ONLY: the run's own, not the recipe's
+CLEAN_A = chain_runner.HOLDOUT_A_CLEAN              # hold-out (a) without its two twins: the set the licence reads as a8
 MAX_GAP_MINUTES = 120                                # the run-spec schema's ceiling; the chain runner prints progress while a log grows
 HOURS = 7.0
 PEAK_GB = 7.7
