@@ -160,7 +160,7 @@ SEEN = S.build({"A_naph"}, {"a": {"A_benz"}, "b": set()}, SMILES)
 
 
 def test_the_seen_line_of_a_molecule_the_release_networks_trained_on():
-    index = S.by_smiles({"A_naph", "A_benz"}, SMILES)
+    index = S.build({"A_naph", "A_benz"}, {}, SMILES)
     for smiles, ids in (("C1=CC=CC=C1", ["A_benz"]), ("c1ccc2ccccc2c1", ["A_naph"])):       # held out and pool alike, to the measurement networks
         got = S.status(smiles, SEEN, None, index)
         assert got == {"role": "release_trained", "ids": ids, "text": "in the release networks' training data: the error bars are not an "
@@ -169,12 +169,15 @@ def test_the_seen_line_of_a_molecule_the_release_networks_trained_on():
     assert S.status("c1ccccc1", SEEN, "A_benz")["role"] == "a" == S.status("c1ccccc1", SEEN, "A_benz", None)["role"]
 
 
-def test_the_release_index_leaves_the_cation_rows_out(tmp_path, monkeypatch):
+def test_the_release_index_keeps_the_cation_rows_apart(tmp_path, monkeypatch):
     manifest = tmp_path / "manifest.csv"
     manifest.write_text("id,smiles,layer\nA_benz,c1ccccc1,A\nB_tol,Cc1ccccc1,B\nP3c_benz,c1ccccc1,P3c\n", encoding="utf-8")
     monkeypatch.setattr(S, "MANIFEST", manifest)
     monkeypatch.setattr(P, "train_ids", lambda models: {"A_benz", "B_tol", "P3c_benz"})
-    assert S.release_index(()) == {"c1ccccc1": ["A_benz"], "Cc1ccccc1": ["B_tol"]}
+    index = S.release_index(())
+    assert (index.trained, index.holdout, index.cations) == ({"c1ccccc1": ["A_benz"], "Cc1ccccc1": ["B_tol"]}, {}, {"c1ccccc1": ["P3c_benz"]})
+    got = S.status("c1ccccc1", SEEN, "A_benz", index)
+    assert (got["role"], got["cation_trained"]) == ("release_trained", ["P3c_benz"]) and "radical cation (P3c_benz)" in got["text"]
 
 
 def test_the_share_a_network_is_stopped_on_is_its_checkpoints_own(tmp_path):

@@ -19,7 +19,7 @@ from .catalog import canonical
 from .spectrum import cheap_apt, overlap, series
 
 MANIFEST = P.M05 / "corpus" / "manifest.csv"
-CATION_LAYER = "P3c"                   # a cation row carries its neutral parent's SMILES; the network trained on neutral molecules only
+CATION_LAYER = "P3c"                   # a cation row carries its neutral parent's SMILES; a cation is not its parent
 TEXT = {
     "trained": "in the network's training set ({ids}): the hold-out error is not this molecule's measure",
     "trained_and_held_out": "in the network's training set ({ids}) and also in hold-out ({h}) as {held}: that hold-out was not clean for it, "
@@ -28,17 +28,24 @@ TEXT = {
     "b": "held out, hold-out (b) ({ids}): never trained on; the measured error includes it",
     "catalogue": "in the catalogue ({ids}) but not among the molecules the network trained on",
     "unseen": "not in the catalogue: the network has not seen it",
+    "unseen_neutral": "not in the catalogue as a neutral molecule: the network has not seen it as one",
     # decision 66 (design note of 17 Nov 2026, §3): the line for a molecule the release networks trained on
     "release_trained": "in the release networks' training data: the error bars are not an out-of-sample error for this molecule; "
                        "expect it to be smaller",
+    # the clause for a neutral molecule whose radical cation the networks trained on (TASKS 253, 257, 264): seed 0 of v1.4's recipe,
+    # benzene's corrected-frequency rms 1.47 cm-1 without the P3c layer, 5.37 with it (probes/results_m1/v14_data_read_2026-11-17/probe_nop3c.txt)
+    "cation_trained": "its radical cation ({ids}) is in the networks' training data; in a test, training on benzene's cation raised neutral "
+                      "benzene's error from 1.5 to 5.4 cm⁻¹ for one network, so this molecule's error may be larger than the measured one",
 }
 
 
 @dataclass(frozen=True)
 class Seen:
-    """Canonical SMILES → the ids the network trained on under it, and → (hold-out, ids) for the hold-out molecules."""
+    """Canonical SMILES → the ids the network trained on under it, → (hold-out, ids) for the hold-out molecules, and → the ids of that
+    neutral molecule's radical cations the network trained on (a cation is not its parent: it never makes the parent 'trained')."""
     trained: dict[str, list[str]]
     holdout: dict[str, tuple[str, list[str]]]
+    cations: dict[str, list[str]]
 
 
 def by_smiles(ids: set[str], smiles_of: dict[str, str]) -> dict[str, list[str]]:
@@ -53,50 +60,69 @@ def by_smiles(ids: set[str], smiles_of: dict[str, str]) -> dict[str, list[str]]:
     return out
 
 
-def build(trained_ids: set[str], holdout_ids: dict[str, set[str]], smiles_of: dict[str, str]) -> Seen:
+def build(trained_ids: set[str], holdout_ids: dict[str, set[str]], smiles_of: dict[str, str],
+          cation_smiles: dict[str, str] | None = None) -> Seen:
     """The index. A molecule may be both trained on and held out, under two ids (a hold-out molecule's twin in another layer); `status`
-    names it, and `leaks` lists them."""
+    names it, and `leaks` lists them. A trained id that is a cation row (`cation_smiles`: id → its parent's SMILES) is indexed under its
+    parent, apart from the neutral ones; every other trained id must be a neutral row."""
+    cation_ids = {i for i in trained_ids if i in (cation_smiles or {})}
     holdout = {c: (h, ids) for h, these in holdout_ids.items() for c, ids in by_smiles(these, smiles_of).items()}
-    return Seen(by_smiles(trained_ids, smiles_of), holdout)
+    return Seen(by_smiles(trained_ids - cation_ids, smiles_of), holdout, by_smiles(cation_ids, cation_smiles or {}))
 
 
 def leaks(seen: Seen) -> dict[str, tuple[str, list[str], list[str]]]:
-    """Canonical SMILES → (hold-out, its ids there, its ids in the training set) for every hold-out molecule the network also trained on."""
+    """Canonical SMILES → (hold-out, its ids there, its ids in the training set) for every hold-out molecule the network also trained on.
+    A hold-out molecule's cation twin is not listed here: the training (`--holdout-twins drop-any-charge`) and the readers (rungC_eval_saved,
+    release_checks) refuse it upstream (TASKS 253, m05/holdout_twins.py); `status` still names it."""
     return {c: (seen.holdout[c][0], seen.holdout[c][1], seen.trained[c]) for c in sorted(set(seen.trained) & set(seen.holdout))}
 
 
-def neutral_smiles() -> dict[str, str]:
-    """The manifest's neutral rows: id → SMILES."""
+def manifest_smiles() -> tuple[dict[str, str], dict[str, str]]:
+    """The manifest's rows, id → SMILES: the neutral rows, and the cation rows (which carry their neutral parent's SMILES)."""
+    neutral: dict[str, str] = {}
+    cation: dict[str, str] = {}
     with MANIFEST.open(newline="", encoding="utf-8") as f:
-        return {r["id"]: r["smiles"] for r in csv.DictReader(f) if r["layer"] != CATION_LAYER}
+        for r in csv.DictReader(f):
+            (cation if r["layer"] == CATION_LAYER else neutral)[r["id"]] = r["smiles"]
+    return neutral, cation
 
 
-def release_index(models: tuple[Path, ...]) -> dict[str, list[str]]:
-    """Canonical SMILES → the ids the release networks trained on under it (decision 66). The pipeline's molecules are neutral, and
-    a cation is not its parent, so the cation rows the networks trained on are left out of the index."""
-    smiles_of = neutral_smiles()
-    return by_smiles({i for i in P.train_ids(models) if i in smiles_of}, smiles_of)
+def release_index(models: tuple[Path, ...]) -> Seen:
+    """The index of the release networks' training data (decision 66); they hold nothing out. The pipeline's molecules are neutral and a
+    cation is not its parent, so the cation rows the networks trained on are indexed apart, under their parent."""
+    return build(P.train_ids(models), {}, *manifest_smiles())
 
 
 def load(models: tuple[Path, ...]) -> Seen:
     """The index for the measurement networks whose records give the error: the models that ran, or — when release networks ran —
     their version's measurement networks."""
-    smiles_of = neutral_smiles()
+    neutral, cation = manifest_smiles()
     holdout_ids: dict[str, set[str]] = {h: set() for h in A.HOLDOUTS}
     for record in A.evaluation_records(tuple(p.name for p in models)):
         rec = json.loads(record.read_text(encoding="utf-8"))
         for h, ids in holdout_ids.items():
             ids |= set(rec[h]["per_molecule"])
-    return build(P.train_ids(models), holdout_ids, smiles_of)
+    return build(P.train_ids(models), holdout_ids, neutral, cation)
 
 
-def status(smiles: str, seen: Seen, listed_id: str | None, release_trained: dict[str, list[str]] | None = None) -> dict:
-    """Trained on, held out, in the catalogue only, or unseen; with the ids and the certificate's sentence. `release_trained`
-    (`release_index`) is given when release networks made the spectrum: a molecule in their training data gets decision 66's line,
-    whatever it is to the measurement networks; any other molecule is read as always."""
+def status(smiles: str, seen: Seen, listed_id: str | None, release: Seen | None = None) -> dict:
+    """Trained on, held out, in the catalogue only, or unseen; with the ids and the certificate's sentence. `release` (`release_index`) is
+    given when release networks made the spectrum: a molecule in their training data gets decision 66's line, whatever it is to the
+    measurement networks; any other molecule is read as always. A molecule whose radical cation either set of networks trained on keeps
+    its role and gains `cation_trained` and a clause saying so; for every other molecule the record is as it was."""
     c = canonical(smiles)
-    if release_trained is not None and c in release_trained:
-        return {"role": "release_trained", "ids": release_trained[c], "text": TEXT["release_trained"]}
+    got = role_of(c, seen, listed_id, release)
+    cations = sorted(set(seen.cations.get(c, [])) | set(release.cations.get(c, []) if release is not None else []))
+    if not cations:
+        return got
+    head = TEXT["unseen_neutral"] if got["role"] == "unseen" else got["text"]        # its parent row is the corpus's, the catalogue lacks it
+    return got | {"cation_trained": cations, "text": f"{head}; {TEXT['cation_trained'].format(ids=', '.join(cations))}"}
+
+
+def role_of(c: str | None, seen: Seen, listed_id: str | None, release: Seen | None) -> dict:
+    """The role of the molecule of canonical SMILES `c`, with its ids and sentence (`status`, without the cation clause)."""
+    if release is not None and c in release.trained:
+        return {"role": "release_trained", "ids": release.trained[c], "text": TEXT["release_trained"]}
     if c in seen.trained and c in seen.holdout:
         h, held = seen.holdout[c]
         ids = seen.trained[c]
