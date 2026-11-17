@@ -1,0 +1,39 @@
+{
+ "name": "v14_data_more",
+ "purpose": "v1.4 on the data: seeds 3 and 4 of the whole-pool control and their hold-out evals",
+ "host": "laptop",
+ "workdir": "probes/results_m1",
+ "command": "python ../chain_runner.py probes/runs/v14_data_more.json",
+ "sources": [
+  {
+   "local": "probes/chain_runner.py"
+  },
+  {
+   "local": "probes/v14_search.py"
+  },
+  {
+   "local": "probes/promotion_read.py"
+  },
+  {
+   "local": "modules/05_support_predictor/m05/rungC_train.py"
+  }
+ ],
+ "progress": {
+  "regex": "^=== \\(V14M\\) progress: |^\\(V14M\\) .* done ",
+  "max_gap_minutes": 120,
+  "start_regex": "^=== \\(V14M\\) starting: "
+ },
+ "marker_regex": "^=== \\(V14M\\) (armed|starting|resuming|RUN FAILED|run done)",
+ "end_regex": "^=== \\(V14M\\) run done",
+ "fail_regex": "^=== \\(V14M\\) RUN FAILED",
+ "dry_run_args": "--dry-run",
+ "resumable": true,
+ "memory": {
+  "peak_gb": 7.7,
+  "basis": "chain 41's trainer peak (7.7 GB at n = 972-978, 19 Oct 2026); v1.4's pool \u2248 1,200"
+ },
+ "estimate": {
+  "hours": 4.9,
+  "basis": "the three whole-pool seeds of 16-17 Nov took 6.4 h together, early-stopped at epochs 193, 162 and 189; two evals of 2 min"
+ }
+}

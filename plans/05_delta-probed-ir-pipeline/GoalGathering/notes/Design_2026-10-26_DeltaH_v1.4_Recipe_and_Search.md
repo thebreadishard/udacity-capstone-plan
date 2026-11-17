@@ -408,3 +408,24 @@ and prints the ten beside it. The carried version trained on layer-B twins of tw
 TASKS 157), which the trainer has dropped from the pool since; on the ten the comparison would favour the carried version on two
 molecules it has seen, and since 3 November the certificates read (a) on the eight for the same reason. `read3` as registered reads
 the ten; the search's own final read takes the eight too when it comes.
+
+**The read, 17 November 2026, 04:29 (`probes/results_m1/v14_data_read_2026-11-17/read_data.md`): not promoted.** By the registered rule the three whole-pool models are
+worse than the carried version on two of the ten cells, both on hold-out (a8): CH-stretch 1.21 against 1.19 and CH-oop 2.43 against
+2.17 cm⁻¹ (three-seed means; neither beyond 2 SE), and better on the other eight, six of them beyond 2 SE — (a8) 'other' 2.83
+against 3.62, (b) ring-ip 1.61 against 2.12, CH-oop 1.67 against 2.70, 'other' 2.96 against 3.88, both coupling ratios. The three
+stated expectations hold: (b) 2.10 against 2.79, (a8) 2.02 against 2.37, biphenylene 2.17 on the mean (1.73, 3.29, 1.48). So by §14
+nothing is carried, and the cause was looked at per molecule (`probes/results_m1/v14_data_read_2026-11-17/per_molecule_a8.txt`): it is **benzene in seed 0** — corrected
+frequencies 5.37 cm⁻¹ against 2.05 and 1.95 in seeds 1 and 2 (the carried version 1.54, 2.23, 1.21), ΔH residual ratio 0.192
+against 0.054 and 0.071; (a8) CH-oop reads 3.42 / 2.21 / 1.66 over the three seeds. The stage training of the same recipe and seed
+(c00, seed 0, without the selection set) read benzene at 5.35: the same seed, the same molecule, twice. Every other molecule of the
+eight is level with or better than the carried version in every seed. The licence's quantity, the band error of the seed mean
+(`out/v14/E7_rungC_v14s3full_c00_control_product_error.json`): (a8) 1.17 / 1.10 / 1.82 / 2.16, (b) 1.36 / 2.20 / 1.09 / 2.15
+(ring-ip / CH-stretch / CH-oop / 'other'), against the carried 1.43 / 0.95 / 1.64 / 2.78 and 1.91 / 2.19 / 1.88 / 2.77 — all below
+the line, the same two (a8) cells above the carried version's.
+
+**Stated at 04:3x, before they exist: two more seeds (3 and 4) of the same whole-pool recipe** (chain `v14_data_more`,
+stage tag `s3more`, ≈ 4.9 h), to tell the seed from the recipe. They change nothing in the read above — its verdict on seeds 0, 1, 2
+stands as read. They are reported as (i) benzene's error per seed over five seeds, and (ii) the same ten cells on five-seed means,
+beside the three-seed read. What is done with a recipe that is better on eight cells and worse on two through one molecule in one
+seed is the user's decision: the registered rule has no margin, and whether a version is promoted on five seeds, on a rule with a
+margin, or not at all is not decided here.

@@ -1,6 +1,8 @@
-# Certificate — naphthalene (A_01f3186607), rung 4 · anchored — 2026-11-16 02:49
+# Certificate — naphthalene (A_01f3186607), rung 4 · anchored — 2026-11-17 02:55
 
-naphthalene: rung 4 (anchored). The cheap-level spectrum is served with the laboratory tolerance per family; no predicted correction is shown in this record — the pipeline serves it for the licensed families (ring-ip, CH-stretch, CH-oop; decision 65); the anchor coverage lists what coupled-cluster evidence exists and where it is wider than the tolerance.
+naphthalene: rung 4 (anchored). The cheap-level spectrum is served with the laboratory tolerance per family; no predicted correction is shown in this record — the pipeline serves it for the licensed families (ring-ip, CH-stretch, CH-oop, other; decision 65); the anchor coverage lists what coupled-cluster evidence exists and where it is wider than the tolerance. Licence caveat: other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie under it).
+
+**Positions.** Positions are harmonic (ω): a catalogue record carries no anharmonic step; the pipeline (m08/pipeline.py) prints the anharmonic estimate ν = ω + Δ_anh for a molecule it computes, and claims no licence for it.
 
 ## Ladder
 
@@ -18,7 +20,7 @@ naphthalene: rung 4 (anchored). The cheap-level spectrum is served with the labo
 - **b3lyp**: 48 vibrational modes, 0 imaginary; source website export molecules/A_01f3186607.json ← corpus molecules/A_01f3186607/ (deck 97ed2d67c66b)
 - **wb97x**: 48 vibrational modes, 0 imaginary; source website export molecules/A_01f3186607.json ← corpus molecules/A_01f3186607/ (deck 97ed2d67c66b)
 
-## Spectral shape (cheap rung; positions and heights)
+## Spectral shape (cheap rung; harmonic positions and heights)
 
 Positions only: no dipole derivatives (APT) computed for this molecule — heights are not shown rather than guessed.
 
@@ -36,7 +38,7 @@ Positions only: no dipole derivatives (APT) computed for this molecule — heigh
 | overtone / combination region | 2 | 1658.8–1688.1 | 15.91 | — | module 03 u_band_by_record_family.csv, naphthalene, record(s) C91203_0.jdx |
 | ring / CH-ip (9-10.5 um) | 5 | 963.1–1055.8 | 15.87 | — | module 03 u_band_by_record_family.csv, naphthalene, record(s) C91203_0.jdx |
 
-*Ensemble ±:* — : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7); not licensed: other (3.62 / 3.89) — seed-mean error on hold-outs (a) / (b) in cm⁻¹ against 3; no coupled-cluster licence).
+*Ensemble ±:* — : this record is the cheap level; the pipeline serves the correction with its measured error (licence, decision 65: licensed at the DFT proxy: ring-ip (1.43 / 1.91), CH-stretch (0.95 / 2.19), CH-oop (1.64 / 1.88), other (2.78 / 2.77); not licensed: none — error of the corrected band positions of the seed-mean correction on hold-outs (a) / (b) in cm⁻¹ against 3 (decision 65 as amended on 16 Nov 2026); other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie under it); the first-order diagonal error of each seed's correction, averaged over the seeds, which the licence read until then: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7), other (3.62 / 3.89); no coupled-cluster licence).
 
 ## The anchor in force
 
@@ -61,7 +63,7 @@ Source: `modules/05_support_predictor/out/ANCHORS_STATUS.json`, the project's an
 
 ## Provenance
 
-- releases: layerA2_2026-09-23, layerA2_2026-09-23b, layerA2_2026-09-24, layerA_2026-09-22; deck 97ed2d67c66b; commit 37bbe63f; export built 2026-11-02T10:01:23Z
+- releases: layerA2_2026-09-23, layerA2_2026-09-23b, layerA2_2026-09-24, layerA_2026-09-22; deck 97ed2d67c66b; commit 26e87c9f; export built 2026-11-02T10:01:23Z
 - evidence: modules/05_support_predictor/out/composite_full_naphthalene_2026-10-07.npz (exists); probes/results_m1/e8_naphthalene_ccpvdz_tlambda_2026-10-02/E8_locality_naphthalene.md (exists); probes/results_m1/M3_TZ_MODE22_READING_2026-09-23.md (exists)
-- licence: 3 families licensed (README.md, decision 65)
+- licence: 4 families licensed, read on the error of the corrected band positions of the seed-mean correction (README.md, decision 65 as amended on 16 Nov 2026); other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie under it)
 - family rule: modules/03_lab_scoreboard/build_lab_tables.py FAMILY_RULE (12 Sep 2026)

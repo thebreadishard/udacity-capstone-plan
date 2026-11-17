@@ -1,0 +1,241 @@
+{
+ "models": "c00_control",
+ "trained_on": "whole pool",
+ "best_epochs": [
+  173,
+  142,
+  169
+ ],
+ "decided_on": [
+  "a8",
+  "b"
+ ],
+ "promotion": {
+  "promoted": false,
+  "worse": [
+   "(a8) CH-stretch",
+   "(a8) CH-oop"
+  ],
+  "better": [
+   "(a8) ring-ip",
+   "(a8) other",
+   "(a8) coupling_ratio",
+   "(b) ring-ip",
+   "(b) CH-stretch",
+   "(b) CH-oop",
+   "(b) other",
+   "(b) coupling_ratio"
+  ]
+ },
+ "meaning": "By \u00a714 nothing is carried, and the cause is looked at per molecule before anything else is decided.",
+ "expectation": {
+  "b": {
+   "winner": 2.1028176753243932,
+   "carried": 2.788376414955066,
+   "held": true
+  },
+  "a": {
+   "winner": 2.020402278883251,
+   "carried": 2.374324873178067,
+   "held": true
+  }
+ },
+ "prediction": {
+  "molecule": "A_72b86c2331",
+  "winner": [
+   1.730429897873261,
+   3.294566402664085,
+   1.4763818201330692
+  ],
+  "carried": [
+   2.235697856248914,
+   2.271039310365616,
+   1.3824236543130006
+  ],
+  "line": 4.7,
+  "passed": true
+ },
+ "comparisons": [
+  {
+   "hold": "a8",
+   "quantity": "ring-ip",
+   "new": 1.5244037629142977,
+   "carried": 1.773283213001615,
+   "difference": -0.24887945008731727,
+   "beyond_two_se": false
+  },
+  {
+   "hold": "a8",
+   "quantity": "CH-stretch",
+   "new": 1.2142048868732356,
+   "carried": 1.1856549232638443,
+   "difference": 0.028549963609391327,
+   "beyond_two_se": false
+  },
+  {
+   "hold": "a8",
+   "quantity": "CH-oop",
+   "new": 2.4311333433599827,
+   "carried": 2.172922664994664,
+   "difference": 0.25821067836531864,
+   "beyond_two_se": false
+  },
+  {
+   "hold": "a8",
+   "quantity": "other",
+   "new": 2.8262165596229596,
+   "carried": 3.6240152751241035,
+   "difference": -0.7977987155011439,
+   "beyond_two_se": true
+  },
+  {
+   "hold": "a8",
+   "quantity": "coupling_ratio",
+   "new": 0.14604725077443537,
+   "carried": 0.1840601221381639,
+   "difference": -0.03801287136372852,
+   "beyond_two_se": true
+  },
+  {
+   "hold": "b",
+   "quantity": "ring-ip",
+   "new": 1.612463246128143,
+   "carried": 2.115498980760491,
+   "difference": -0.5030357346323482,
+   "beyond_two_se": true
+  },
+  {
+   "hold": "b",
+   "quantity": "CH-stretch",
+   "new": 2.3513880291446805,
+   "carried": 2.5078734184273843,
+   "difference": -0.15648538928270384,
+   "beyond_two_se": false
+  },
+  {
+   "hold": "b",
+   "quantity": "CH-oop",
+   "new": 1.6677403880538197,
+   "carried": 2.7045117047196428,
+   "difference": -1.036771316665823,
+   "beyond_two_se": true
+  },
+  {
+   "hold": "b",
+   "quantity": "other",
+   "new": 2.9634136668725612,
+   "carried": 3.884021518371861,
+   "difference": -0.9206078514992999,
+   "beyond_two_se": true
+  },
+  {
+   "hold": "b",
+   "quantity": "coupling_ratio",
+   "new": 0.16908952466896554,
+   "carried": 0.26285925375330566,
+   "difference": -0.09376972908434011,
+   "beyond_two_se": true
+  }
+ ],
+ "on_the_ten_deciding_nothing": {
+  "promotion": {
+   "promoted": false,
+   "worse": [
+    "(a) CH-stretch",
+    "(a) CH-oop"
+   ],
+   "better": [
+    "(a) ring-ip",
+    "(a) other",
+    "(a) coupling_ratio",
+    "(b) ring-ip",
+    "(b) CH-stretch",
+    "(b) CH-oop",
+    "(b) other",
+    "(b) coupling_ratio"
+   ]
+  },
+  "comparisons": [
+   {
+    "hold": "a",
+    "quantity": "ring-ip",
+    "new": 1.4291304766366524,
+    "carried": 1.6637943955545165,
+    "difference": -0.2346639189178641,
+    "beyond_two_se": false
+   },
+   {
+    "hold": "a",
+    "quantity": "CH-stretch",
+    "new": 1.1604551052896628,
+    "carried": 1.1537153007469574,
+    "difference": 0.0067398045427053965,
+    "beyond_two_se": false
+   },
+   {
+    "hold": "a",
+    "quantity": "CH-oop",
+    "new": 2.2138399667262445,
+    "carried": 1.9939077515782895,
+    "difference": 0.21993221514795502,
+    "beyond_two_se": false
+   },
+   {
+    "hold": "a",
+    "quantity": "other",
+    "new": 2.641713810030779,
+    "carried": 3.349295384044183,
+    "difference": -0.7075815740134037,
+    "beyond_two_se": true
+   },
+   {
+    "hold": "a",
+    "quantity": "coupling_ratio",
+    "new": 0.13762468497320593,
+    "carried": 0.17151156135484535,
+    "difference": -0.033886876381639425,
+    "beyond_two_se": true
+   },
+   {
+    "hold": "b",
+    "quantity": "ring-ip",
+    "new": 1.612463246128143,
+    "carried": 2.115498980760491,
+    "difference": -0.5030357346323482,
+    "beyond_two_se": true
+   },
+   {
+    "hold": "b",
+    "quantity": "CH-stretch",
+    "new": 2.3513880291446805,
+    "carried": 2.5078734184273843,
+    "difference": -0.15648538928270384,
+    "beyond_two_se": false
+   },
+   {
+    "hold": "b",
+    "quantity": "CH-oop",
+    "new": 1.6677403880538197,
+    "carried": 2.7045117047196428,
+    "difference": -1.036771316665823,
+    "beyond_two_se": true
+   },
+   {
+    "hold": "b",
+    "quantity": "other",
+    "new": 2.9634136668725612,
+    "carried": 3.884021518371861,
+    "difference": -0.9206078514992999,
+    "beyond_two_se": true
+   },
+   {
+    "hold": "b",
+    "quantity": "coupling_ratio",
+    "new": 0.16908952466896554,
+    "carried": 0.26285925375330566,
+    "difference": -0.09376972908434011,
+    "beyond_two_se": true
+   }
+  ]
+ }
+}

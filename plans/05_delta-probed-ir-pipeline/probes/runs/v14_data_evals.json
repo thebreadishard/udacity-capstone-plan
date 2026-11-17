@@ -1,0 +1,165 @@
+{
+ "_about": "v1.4 on the data, what v14_data left (design note 14): every v14 checkpoint without a status registered by name, then both arms read on the hold-outs with the clean eight",
+ "name": "V14E",
+ "poll_s": 1800,
+ "wait": [],
+ "steps": [
+  {
+   "kind": "cmd",
+   "label": "register candidates",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/v14/registry_v14_data_evals.log",
+   "argv": [
+    "{python}",
+    "m05/model_registry.py",
+    "--add-candidates",
+    "out/v14/E7_rungC_v14s1a_c01_control_parity_model_n913_seed0.pt",
+    "out/v14/E7_rungC_v14s1a_c02_control_target_model_n913_seed0.pt",
+    "out/v14/E7_rungC_v14s1a_c03_control_schedule_model_n913_seed0.pt",
+    "out/v14/E7_rungC_v14s1a_c04_model_n913_seed0.pt",
+    "out/v14/E7_rungC_v14s1a_c05_model_n913_seed0.pt",
+    "out/v14/E7_rungC_v14s1a_c06_model_n913_seed0.pt",
+    "out/v14/E7_rungC_v14s3full_c00_control_model_n1082_seed0.pt",
+    "out/v14/E7_rungC_v14s3full_c00_control_model_n1082_seed1.pt",
+    "out/v14/E7_rungC_v14s3full_c00_control_model_n1082_seed2.pt",
+    "out/v14_smoke/c03_control_schedule_model_n5_seed0.pt",
+    "out/v14_smoke/c04_model_n5_seed0.pt",
+    "--chain",
+    "v14 search",
+    "--note",
+    "v1.4 search (Design_2026-10-26_DeltaH_v1.4_Recipe_and_Search.md): a model of the search, not a version"
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "eval eval_data_seed0",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/v14/eval_data_seed0.log",
+   "glob_args": true,
+   "argv": [
+    "{python}",
+    "../../probes/rungC_eval_saved.py",
+    "out/v14/E7_rungC_v14s3full_c00_control_model_n1082_seed0.pt",
+    "out/v14/eval_data_seed0",
+    "--use-analytic",
+    "--threads",
+    "8",
+    "--allow-any-model",
+    "--holdout-b-file",
+    "corpus/holdout_b_frozen_2026-10-08.txt",
+    "--eval-ids-file",
+    "a8=out/holdout_a_clean_2026-10-30.txt"
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "eval eval_data_seed1",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/v14/eval_data_seed1.log",
+   "glob_args": true,
+   "argv": [
+    "{python}",
+    "../../probes/rungC_eval_saved.py",
+    "out/v14/E7_rungC_v14s3full_c00_control_model_n1082_seed1.pt",
+    "out/v14/eval_data_seed1",
+    "--use-analytic",
+    "--threads",
+    "8",
+    "--allow-any-model",
+    "--holdout-b-file",
+    "corpus/holdout_b_frozen_2026-10-08.txt",
+    "--eval-ids-file",
+    "a8=out/holdout_a_clean_2026-10-30.txt"
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "eval eval_data_seed2",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/v14/eval_data_seed2.log",
+   "glob_args": true,
+   "argv": [
+    "{python}",
+    "../../probes/rungC_eval_saved.py",
+    "out/v14/E7_rungC_v14s3full_c00_control_model_n1082_seed2.pt",
+    "out/v14/eval_data_seed2",
+    "--use-analytic",
+    "--threads",
+    "8",
+    "--allow-any-model",
+    "--holdout-b-file",
+    "corpus/holdout_b_frozen_2026-10-08.txt",
+    "--eval-ids-file",
+    "a8=out/holdout_a_clean_2026-10-30.txt"
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "eval eval_carried_data_seed0",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/v14/eval_carried_data_seed0.log",
+   "glob_args": true,
+   "argv": [
+    "{python}",
+    "../../probes/rungC_eval_saved.py",
+    "out/E7_rungC_chain35_analytic_model_n750_seed0.pt",
+    "out/v14/eval_carried_data_seed0",
+    "--use-analytic",
+    "--threads",
+    "8",
+    "--allow-any-model",
+    "--holdout-b-file",
+    "corpus/holdout_b_frozen_2026-10-08.txt",
+    "--eval-ids-file",
+    "a8=out/holdout_a_clean_2026-10-30.txt"
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "eval eval_carried_data_seed1",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/v14/eval_carried_data_seed1.log",
+   "glob_args": true,
+   "argv": [
+    "{python}",
+    "../../probes/rungC_eval_saved.py",
+    "out/E7_rungC_chain35_analytic_model_n750_seed1.pt",
+    "out/v14/eval_carried_data_seed1",
+    "--use-analytic",
+    "--threads",
+    "8",
+    "--allow-any-model",
+    "--holdout-b-file",
+    "corpus/holdout_b_frozen_2026-10-08.txt",
+    "--eval-ids-file",
+    "a8=out/holdout_a_clean_2026-10-30.txt"
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "eval eval_carried_data_seed2",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/v14/eval_carried_data_seed2.log",
+   "glob_args": true,
+   "argv": [
+    "{python}",
+    "../../probes/rungC_eval_saved.py",
+    "out/E7_rungC_chain35_analytic_model_n750_seed2.pt",
+    "out/v14/eval_carried_data_seed2",
+    "--use-analytic",
+    "--threads",
+    "8",
+    "--allow-any-model",
+    "--holdout-b-file",
+    "corpus/holdout_b_frozen_2026-10-08.txt",
+    "--eval-ids-file",
+    "a8=out/holdout_a_clean_2026-10-30.txt"
+   ]
+  }
+ ],
+ "outputs": [
+  "modules/05_support_predictor/out/v14/eval_data_seed0.json",
+  "modules/05_support_predictor/out/v14/eval_data_seed1.json",
+  "modules/05_support_predictor/out/v14/eval_data_seed2.json"
+ ]
+}
