@@ -60,7 +60,8 @@ def test_today_the_product_is_the_carried_measurement_networks():
     """The committed registry: no version has release networks, so step 4's default models are what they were."""
     product = P.product_networks()
     assert product == P.ProductNetworks(P.carried_models(NK.MEASUREMENT), NK.MEASUREMENT, None) and len(product.models) == 3
-    assert tuple(p.name for p in product.models) == V13
+    status = P.MR.read_status(P.MR.STATUS_FILE)
+    assert [P.MR.checkpoint_key(p, P.MR.OUT) for p in product.models] == P.MR.carried_keys(status, P.NETWORK, NK.MEASUREMENT)
 
 
 def test_release_networks_are_the_product_only_after_their_checks_passed_for_these_files(version, tmp_path):

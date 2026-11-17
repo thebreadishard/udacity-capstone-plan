@@ -59,8 +59,9 @@ def test_the_default_models_are_the_carried_measurement_seeds_of_one_version():
     with pytest.raises(ValueError, match="network kind"):
         P.carried_models("both")
     status = P.MR.read_status(P.MR.STATUS_FILE)
-    assert len(models) == 3 and len({status[m.name]["version"] for m in models}) == 1
-    assert all(status[m.name]["network"] == P.NETWORK and status[m.name]["status"] == "carried" for m in models)
+    keys = [P.MR.checkpoint_key(m, P.MR.OUT) for m in models]          # the registry keys a checkpoint by its path under out/
+    assert len(models) == 3 and len({status[k]["version"] for k in keys}) == 1
+    assert all(status[k]["network"] == P.NETWORK and status[k]["status"] == "carried" for k in keys)
 
 
 @pytest.mark.parametrize("smiles, reason", [

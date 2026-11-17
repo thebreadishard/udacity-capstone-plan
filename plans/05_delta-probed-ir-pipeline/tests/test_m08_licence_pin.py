@@ -2,12 +2,14 @@
 family's value on both hold-outs under both quantities, the licensed families and the statement as certificates print it. A change of the
 quantity the licence reads, of a record or of the wording shows here first. The records are read as JSON; no model file is loaded.
 
-Re-pinned on 16 Nov 2026 with the amendment of decision 65: the licence is read on the product's error (the product-error record),
-so 'other' (first order 3.62 / 3.89, product 2.78 / 2.77) is licensed; the first-order values are unchanged and stay pinned."""
+Pinned on version 1.4, carried since 17 Nov 2026 (chain v14_clean's three seeds; the registry says which version is carried), read on
+the product's error as decision 65 has since its amendment of 16 Nov 2026; hold-out (b) holds 40 molecules for this version."""
 from __future__ import annotations
 
 import json
 import sys
+
+import pytest
 
 from pin_tools import PLAN
 
@@ -15,29 +17,33 @@ sys.path.insert(0, str(PLAN / "modules" / "08_industry_synthesis"))
 from m08 import accuracy as A
 from m08 import licence
 
-V13_RECORDS = [f"E7_rungC_chain35_analytic_{kind}_seed{s}.json" for kind in ("eval_frozenb", "a8read") for s in range(3)]
-FIRST_ORDER = {"a": {"ring-ip": (1.77, [1.95, 1.68, 1.7]), "CH-stretch": (1.19, [0.91, 1.74, 0.91]), "CH-oop": (2.17, [2.47, 2.06, 1.99]),
-                     "other": (3.62, [4.09, 3.27, 3.51]), "coupling_ratio": (0.184, [0.193, 0.176, 0.183])},
-               "b": {"ring-ip": (2.12, [2.25, 2.02, 2.11]), "CH-stretch": (2.5, [1.91, 3.51, 2.08]), "CH-oop": (2.7, [2.44, 2.95, 2.72]),
-                     "other": (3.89, [3.65, 4.51, 3.52]), "coupling_ratio": (0.263, [0.282, 0.243, 0.265])}}
-N_MOLECULES = {"a": 8, "b": 39}
-PRODUCT_RECORD = "E7_rungC_chain35_analytic_product_error.json"
-WITH_BANDS = {"a": {"ring-ip": 8, "CH-stretch": 8, "CH-oop": 5, "other": 8}, "b": {"ring-ip": 39, "CH-stretch": 39, "CH-oop": 8, "other": 39}}
-PRODUCT = {"a": {"ring-ip": (1.43, [1.13, 1.7], 199), "CH-stretch": (0.95, [0.39, 1.48], 73), "CH-oop": (1.64, [1.19, 1.97], 46),
-                 "other": (2.78, [1.68, 3.76], 156)},
-           "b": {"ring-ip": (1.91, [1.84, 2.0], 1164), "CH-stretch": (2.19, [1.8, 2.53], 401), "CH-oop": (1.88, [1.56, 2.16], 84),
-                 "other": (2.77, [2.56, 2.97], 1225)}}
-STATEMENT = ("licensed at the DFT proxy: ring-ip (1.43 / 1.91), CH-stretch (0.95 / 2.19), CH-oop (1.64 / 1.88), other (2.78 / 2.77); not "
+VERSION = "1.4"
+RECORDS = [f"E7_rungC_v14s3clean_c00_control_{kind}_seed{s}.json" for kind in ("eval_clean", "a8read") for s in range(3)]
+FIRST_ORDER = {"a": {"ring-ip": (1.55, [1.77, 1.52, 1.37]), "CH-stretch": (1.15, [1.34, 1.19, 0.92]), "CH-oop": (2.22, [2.22, 2.1, 2.35]),
+                     "other": (2.91, [2.79, 3.1, 2.84]), "coupling_ratio": (0.147, [0.15, 0.147, 0.143])},
+               "b": {"ring-ip": (1.64, [1.53, 1.49, 1.89]), "CH-stretch": (2.02, [2.32, 2.2, 1.55]), "CH-oop": (1.72, [1.8, 1.96, 1.41]),
+                     "other": (3.68, [3.2, 4.15, 3.7]), "coupling_ratio": (0.17, [0.168, 0.164, 0.177])}}
+N_MOLECULES = {"a": 8, "b": 40}
+PRODUCT_RECORD = "E7_rungC_v14s3clean_c00_control_product_error.json"
+WITH_BANDS = {"a": {"ring-ip": 8, "CH-stretch": 8, "CH-oop": 5, "other": 8}, "b": {"ring-ip": 40, "CH-stretch": 40, "CH-oop": 8, "other": 40}}
+PRODUCT = {"a": {"ring-ip": (1.17, [0.9, 1.41], 199), "CH-stretch": (0.8, [0.44, 1.2], 73), "CH-oop": (1.86, [0.93, 3.2], 46),
+                 "other": (2.38, [1.45, 3.19], 156)},
+           "b": {"ring-ip": (1.22, [1.09, 1.34], 1194), "CH-stretch": (1.67, [1.37, 1.95], 410), "CH-oop": (1.26, [0.98, 1.59], 84),
+                 "other": (2.1, [1.88, 2.34], 1258)}}
+CROSSING = [("a", "CH-oop"), ("a", "other")]
+STATEMENT = ("licensed at the DFT proxy: ring-ip (1.17 / 1.22), CH-stretch (0.8 / 1.67), CH-oop (1.86 / 1.26), other (2.38 / 2.1); not "
              "licensed: none — error of the corrected band positions of the seed-mean correction on hold-outs (a) / (b) in cm⁻¹ against 3 "
-             "(decision 65 as amended on 16 Nov 2026); other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over "
-             "molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie under it); the first-order diagonal error of "
-             "each seed's correction, averaged over the seeds, which the licence read until then: ring-ip (1.77 / 2.12), CH-stretch "
-             "(1.19 / 2.5), CH-oop (2.17 / 2.7), other (3.62 / 3.89); no coupled-cluster licence")
+             "(decision 65 as amended on 16 Nov 2026); CH-oop on hold-out (a) rests on 5 of the hold-out's 8 molecules (the others have no "
+             "such band): the 95 % interval of a bootstrap over molecules is 0.93–3.2 cm⁻¹ and crosses the line (96 % of the resamples lie "
+             "under it); other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.45–3.19 cm⁻¹ and "
+             "crosses the line (93 % of the resamples lie under it); the first-order diagonal error of each seed's correction, averaged over "
+             "the seeds, which the licence read until then: ring-ip (1.55 / 1.64), CH-stretch (1.15 / 2.02), CH-oop (2.22 / 1.72), other "
+             "(2.91 / 3.68); no coupled-cluster licence")
 
 
 def test_the_carried_versions_read_outs_per_seed_and_their_means():
     acc = A.carried_accuracy()
-    assert acc["version"] == "1.3" and acc["sources"] == [*V13_RECORDS, PRODUCT_RECORD]
+    assert acc["version"] == VERSION and acc["sources"] == [*RECORDS, PRODUCT_RECORD]
     for h, rows in FIRST_ORDER.items():
         got = acc["holdouts"][h]
         assert got["n_molecules"] == N_MOLECULES[h]
@@ -46,7 +52,7 @@ def test_the_carried_versions_read_outs_per_seed_and_their_means():
         assert all(p["n_molecules"] == N_MOLECULES[h] and p["within_target"] for p in got["product"].values())
         assert {f: p["n_molecules_with_modes"] for f, p in got["product"].items()} == WITH_BANDS[h]
     crossing = [(h, f) for h in PRODUCT for f, p in acc["holdouts"][h]["product"].items() if p["interval_crosses_line"]]
-    assert crossing == [("a", "other")] and acc["licence_quantity"] == "product"
+    assert crossing == CROSSING and acc["licence_quantity"] == "product"
 
 
 def test_the_carried_versions_licence():
@@ -54,7 +60,7 @@ def test_the_carried_versions_licence():
     assert s["licensed_families"] == ["ring-ip", "CH-stretch", "CH-oop", "other"] and s["line_cm"] == 3.0 and s["quantity"] == "product"
     assert s["errors"] == {f: {h: PRODUCT[h][f][0] for h in PRODUCT} for f in PRODUCT["a"]}
     assert s["first_order_errors"] == {f: {h: FIRST_ORDER[h][f][0] for h in FIRST_ORDER} for f in PRODUCT["a"]}
-    assert s["statement"] == STATEMENT and len(s["caveats"]) == 1 and s["caveats"][0] in STATEMENT
+    assert s["statement"] == STATEMENT and len(s["caveats"]) == len(CROSSING) and all(c in STATEMENT for c in s["caveats"])
     assert s["rule"].startswith("decision 65 (29 Oct 2026, amended 16 Nov 2026): a mode family is licensed where the error of what the "
                                 "product delivers — the error of the corrected band positions of the seed-mean correction")
     assert s["rule_source"] == "README.md, decision 65 as amended on 16 Nov 2026"
@@ -71,4 +77,10 @@ def test_the_carried_record_names_what_it_was_read_on():
         assert all(sorted(v) == rec["labels"]["files"] and all(len(x) == 16 for x in v.values()) for v in hashes.values())
     assert set(rec["run"]) == {"started", "ended", "seconds", "peak_memory_gb", "threads"} and 0 < rec["run"]["peak_memory_gb"] < 3.0
     assert rec["checks"]["first_order_reproduces_evaluation_records"]["largest_difference_cm"] < 0.005
+
+
+@pytest.mark.xfail(strict=True, raises=KeyError, reason="v1.4's product-error record was read without --package: aromir ships v1.3, so "
+                   "the second route (the package's own product_error.json) does not exist for v1.4 yet")
+def test_the_carried_record_agrees_with_the_package():
+    rec = json.loads((A.M05_OUT / PRODUCT_RECORD).read_text(encoding="utf-8"))
     assert rec["checks"]["agrees_with_package"]["largest_difference_cm"] < 0.01
