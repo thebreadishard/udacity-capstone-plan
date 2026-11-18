@@ -105,3 +105,24 @@ def test_the_recorded_runs_are_met_within_a_quarter():
         if pyscf in versions:
             smiles = json.loads((RT.RESULTS / folder / "pipeline.json").read_text(encoding="utf-8"))["input"]["smiles"]
             assert RT.estimate(smiles, 6, pyscf)["seconds"] == pytest.approx(seconds, rel=0.25), folder
+
+
+def test_without_a_fit_on_the_asked_version_the_other_version_answers_labelled(tmp_path):
+    for name, smi, n in (("b", BENZENE, 102), ("n", NAPHTHALENE, 166), ("a", ANTHRACENE, 230)):
+        run(tmp_path, name, smi, cubic(n))
+    assert RT.estimate_or_other(BENZENE, 6, OLD, tmp_path)["other_version"] is False
+    e = RT.estimate_or_other(BENZENE, 6, NEW, tmp_path)
+    assert e["other_version"] and e["pyscf"] == OLD and e["seconds"] == round(cubic(102))
+    assert RT.estimate_or_other(BENZENE, 8, NEW, tmp_path) is None
+
+
+def test_the_pipeline_says_when_step_3_recorded_another_pyscf(tmp_path):
+    cfg = P.PipelineConfig(name="x", out_root=tmp_path, smiles="c1ccccc1", models=(Path("m.pt"),), psi4_python=Path(sys.executable))
+
+    def rec(version, reused=False):
+        return {"reuse": {"reused": reused}, "low_level": {"b3lyp": {"software": {"pyscf": version}}}}
+
+    assert P.pyscf_as_recorded(cfg, rec("2.15.0")) is None and P.pyscf_as_recorded(cfg, rec("2.14.0", reused=True)) is None
+    assert P.pyscf_as_recorded(cfg, rec("2.16.0")) == "step 3 recorded pyscf 2.16.0; the time estimate assumed 2.15.0"
+    other = cfg.model_copy(update={"pyscf_python": "~/other/bin/python"})
+    assert P.pyscf_as_recorded(other, rec("2.15.0")) == "step 3 recorded pyscf 2.15.0; the time estimate assumed an unknown version"

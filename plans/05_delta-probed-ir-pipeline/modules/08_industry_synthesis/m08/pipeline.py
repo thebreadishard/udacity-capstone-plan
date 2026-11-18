@@ -773,6 +773,18 @@ def step3_pyscf(cfg: PipelineConfig) -> str | None:
     return WSL_PYSCF_VERSION if cfg.pyscf_python == WSL_PYSCF else None
 
 
+def pyscf_as_recorded(cfg: PipelineConfig, rec: dict) -> str | None:
+    """A line when step 3, computed by this run, recorded another pyscf than the one the time estimate assumed (`step3_pyscf`); None
+    when they agree or when steps 2–3 came from the corpus."""
+    if rec["reuse"]["reused"]:
+        return None
+    recorded = (rec["low_level"]["b3lyp"].get("software") or {}).get("pyscf")
+    assumed = step3_pyscf(cfg)
+    if recorded == assumed:
+        return None
+    return f"step 3 recorded pyscf {recorded}; the time estimate assumed {assumed or 'an unknown version'}"
+
+
 def parse_args(argv: list[str] | None) -> argparse.Namespace:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--name", required=True, help="the result folder's name under --out")
@@ -830,6 +842,8 @@ def main(argv: list[str] | None = None) -> int:
     except Refused as r:
         print("REFUSED: " + "\n  ".join(["", *r.reasons]), flush=True)
         return 2
+    if differs := pyscf_as_recorded(cfg, rec):
+        print(f"[pipeline] {differs}", flush=True)
     n = len(rec["spectra"]["network"]["sticks"])
     print(f"[pipeline] done: {n} bands, {cfg.folder / 'pipeline.json'} ({sum(rec['seconds'].values()):.0f} s)", flush=True)
     print(f"[pipeline] certificate: {cfg.folder / 'certificate.md'}", flush=True)      # the last line: a run spec's end marker

@@ -64,6 +64,16 @@ def fitted_versions(threads: int, results: Path = RESULTS) -> list[str]:
     return sorted(v for v in {r[3] for r in runs} if v is not None and len({n for n, _, _, w in runs if w == v}) >= 3)
 
 
+def estimate_or_other(smiles: str, threads: int, pyscf: str, results: Path = RESULTS) -> dict | None:
+    """The estimate on `pyscf` (`other_version` False); where that version has no fit, the newest fitted other version's
+    (`other_version` True, its own version under `pyscf`); None where no version has one."""
+    try:
+        return estimate(smiles, threads, pyscf, results) | {"other_version": False}
+    except ValueError:
+        others = [v for v in fitted_versions(threads, results) if v != pyscf]
+        return estimate(smiles, threads, others[-1], results) | {"other_version": True} if others else None
+
+
 def announce(smiles: str | None, threads: int, pyscf: str | None, results: Path = RESULTS) -> str:
     """The pipeline's line about the expected time: the estimate for step 3's pyscf version, or why there is none (an xyz input, an
     interpreter whose version is not known before the run, too few timed runs on that version) — with, in the last case, what the
