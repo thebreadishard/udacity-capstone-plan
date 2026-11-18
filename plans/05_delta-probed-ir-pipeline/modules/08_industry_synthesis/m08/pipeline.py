@@ -86,6 +86,7 @@ PSI4_WORKER = M05 / "corpus" / "psi4_worker.py"
 ANALYTIC = M05 / "corpus" / "analytic_hessians.py"
 WSL_CAPPED = PLAN / "probes" / "wsl_capped.sh"
 WSL_PYSCF = "~/qc215/bin/python"      # pyscf 2.15.0: the low-mode repair needs it, and 2.14.0 refuses it (TASKS 225)
+WSL_PYSCF_VERSION = "2.15.0"           # the pyscf of WSL_PYSCF's environment
 LOW_GRID = (99, 590)                   # the analytic Hessian's and APT's grid: the corpus's labels, so a reused folder is what step 3 computes
 PYSCF_HEADROOM_MB = 584                # pyscf's max_memory below the cap: probes/cation_analytic_all.sh's measured margin (19 Oct 2026)
 KILLED_AT_CAP = (137, 143)             # wsl_capped.sh's kill, and the systemd scope's (probes/cation_oom_check.sh)

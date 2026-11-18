@@ -76,6 +76,7 @@ h2 { margin: 0; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; tex
 .badge[data-role="a"], .badge[data-role="b"] { border-color: var(--ok); color: var(--ok); }
 .badge[data-role="unseen"], .badge[data-role="catalogue"] { border-color: var(--accent); color: var(--accent); }
 .badge[data-role="trained"], .badge[data-role="trained_and_held_out"] { color: var(--fg-muted); }
+.badge[data-role="release_trained"] { color: var(--fg-muted); border-color: var(--corpus); }
 
 /* middle: the metro map */
 .stage { position: relative; display: flex; flex-direction: column; gap: 1rem; min-height: 0; flex: 1; }
@@ -254,7 +255,8 @@ document.querySelectorAll("[data-theme-choice]").forEach((b) => b.addEventListen
 })();
 
 /* picker */
-const ROLE_LABEL = { a: "hold-out (a)", b: "hold-out (b)", unseen: "unseen", catalogue: "not trained", trained: "trained", trained_and_held_out: "trained" };
+const ROLE_LABEL = { a: "hold-out (a)", b: "hold-out (b)", unseen: "unseen", catalogue: "not trained", trained: "trained", trained_and_held_out: "trained",
+                     release_trained: "trained (release networks)" };
 function renderPicker() {
   const counts = [...new Set(DATA.molecules.map((m) => m.n_c))].sort((x, y) => x - y);
   $("#chips").innerHTML = ['<button class="chip" data-c="all" aria-pressed="' + (state.carbon === null) + '">All</button>']
@@ -468,14 +470,17 @@ function spectrumSVG(sp) {
 function showResult(m) {
   const fam = m.families.map((f) => `<tr><td>${esc(f.family)}</td><td class="num">${f.bands}</td><td class="num">${f.error_a.toFixed(2)}</td><td class="num">${f.error_b.toFixed(2)}</td>
     <td><span class="lic ${f.licensed ? "yes" : "no"}">${f.licensed ? "licensed" : "not licensed"}</span></td></tr>`).join("");
-  const truth = m.truth ? `<span>against ωB97X <b>${m.truth.rms_cm.toFixed(2)} cm⁻¹</b> rms</span><span>overlap <b>${m.truth.overlap.toFixed(3)}</b></span>` : `<span class="muted">no ωB97X truth: the molecule is not in the corpus</span>`;
+  /* the truth's rms needs equal band counts and its overlap an APT in the corpus folder: either may be missing */
+  const truth = !m.truth ? `<span class="muted">no ωB97X truth: the corpus holds no ωB97X Hessian of this molecule</span>`
+    : (m.truth.rms_cm !== null ? `<span>against ωB97X <b>${m.truth.rms_cm.toFixed(2)} cm⁻¹</b> rms</span>` : `<span class="muted">against ωB97X: band counts differ, no rms</span>`)
+      + (m.truth.overlap !== null ? `<span>overlap <b>${m.truth.overlap.toFixed(3)}</b></span>` : `<span class="muted">no APT in the corpus folder, no overlap</span>`);
   $("#result").innerHTML = `<div class="spec fade-in">${spectrumSVG(m.spectrum)}
       <div class="legend"><span><i style="border-color:var(--accent)"></i>network (corrected)</span><span><i style="border-color:var(--fg-muted)"></i>B3LYP (input)</span>${m.spectrum.curves.truth ? '<span><i style="border-color:var(--ok);border-top-style:dashed"></i>ωB97X truth</span>' : ""}</div></div>
     <div class="cert fade-in"><div class="facts-row">${truth}<span>seeds agree within <b>${m.seed_spread_cm.toFixed(1)} cm⁻¹</b></span></div>
       <table><thead><tr><th>family</th><th class="num">bands</th><th class="num">error (a)</th><th class="num">error (b)</th><th>licence (≤ ${DATA.licence_line_cm} cm⁻¹)</th></tr></thead><tbody>${fam}</tbody></table>
       ${m.licence_caveat ? `<div class="facts-row muted"><span>${esc(m.licence_caveat)}</span></div>` : ""}
       <div class="facts-row muted"><span>Positions: ${esc(m.positions)}</span></div>
-      <div class="facts-row muted"><span>pipeline ${esc(m.pipeline_version)}</span><span>${esc(DATA.network)}</span><span>errors: the ${esc(m.error_quantity)}, on molecules the network never saw (cm⁻¹)</span></div>
+      <div class="facts-row muted"><span>pipeline ${esc(m.pipeline_version)}</span><span>${esc(m.network.label)}</span><span>${esc(m.errors_text)}</span></div>
       ${m.atlas ? `<div class="facts-row"><a href="${esc(m.atlas)}" target="_blank" rel="noopener">${esc(m.name)} in the Spectrum Atlas ↗</a></div>` : ""}</div>`;
   document.querySelectorAll(".spec polyline.draw").forEach((p) => {
     const len = p.getTotalLength(); p.style.strokeDasharray = len; p.style.strokeDashoffset = len;

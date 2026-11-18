@@ -120,6 +120,62 @@ def test_a_pass_that_timed_nothing_says_so():
     assert S.real_time(rec).endswith("steps 3–4 from the corpus (their time is not recorded)")
 
 
+def admission(version, kind=None):
+    model = {"path": r"C:\x\05_support_predictor\out\m_model_n1_seed0.pt", "version": version} | ({"network_kind": kind} if kind else {})
+    return {"name": "x", "admission": {"models": [model, dict(model)]}}
+
+
+def test_each_card_names_its_own_network_and_kind():
+    assert S.network_of(admission("1.3")) == {"version": "1.3", "kind": "measurement", "label": "ΔH network v1.3"}
+    assert S.network_of(admission("1.4", "release")) == {"version": "1.4", "kind": "release", "label": "ΔH network v1.4 · release networks"}
+    mixed = admission("1.4", "release")
+    mixed["admission"]["models"][1]["version"] = "1.3"
+    with pytest.raises(ValueError, match="a run has one"):
+        S.network_of(mixed)
+
+
+def test_a_release_card_says_its_errors_are_the_measurement_networks():
+    q = "error of the corrected band positions of the seed-mean correction"
+    release = S.errors_text(q, S.network_of(admission("1.4", "release")))
+    assert "v1.4's measurement networks" in release and "the network never saw" not in release
+    assert S.errors_text(q, S.network_of(admission("1.3"))) == f"errors: the {q}, on molecules the network never saw (cm⁻¹)"
+
+
+def test_step_3_names_the_pyscf_its_record_names():
+    computed = {"name": "x", "pipeline_version": "0.10", "reuse": {"reused": False}, "low_level": {"b3lyp": {"software": {"pyscf": "2.15.0"}}}}
+    assert S.low_level_software(computed) == "pyscf 2.15.0"
+    reused = {**computed, "reuse": {"reused": True}, "low_level": {"b3lyp": {"software": None}}}
+    assert "does not record its version" in S.low_level_software(reused)
+    with pytest.raises(ValueError, match="does not name step 3's pyscf"):
+        S.low_level_software({**computed, "low_level": {"b3lyp": {}}})
+    assert S.molecule(NO_TRUTH[1])["stations"][3]["tool"] == "pyscf 2.14.0 · analytic"       # cinnoline, 30 Oct
+    assert "2.14" not in S.STATIONS[3]["tool"]
+
+
+def test_runs_of_two_versions_share_a_page_each_card_with_its_own(tmp_path):
+    """A v1.4 release run beside v1.3 runs: the page used to print one page-wide network on every card, and refused mixed versions."""
+    copy = tmp_path / "pipeline_x" / "cinnoline"
+    shutil.copytree(NO_TRUTH[1], copy)
+    rec, cert = record(copy)
+    for m in rec["admission"]["models"]:
+        m.update(version="1.4", network_kind="release")
+    cert["molecule"]["seen"] = {"role": "release_trained", "text": "in the release networks' training data"}
+    (copy / "pipeline.json").write_text(json.dumps(rec), encoding="utf-8")
+    (copy / "certificate.json").write_text(json.dumps(cert), encoding="utf-8")
+    data = S.payload((NO_TRUTH[1], copy))
+    labels = sorted(m["network"]["label"] for m in data["molecules"])
+    assert labels == ["ΔH network v1.3", "ΔH network v1.4 · release networks"] == data["networks"]
+    html = S.page(data)
+    assert "DATA.network)" not in html and "m.network.label" in html and 'release_trained: "trained (release networks)"' in html
+
+
+def test_the_live_page_takes_no_replay_runs():
+    from m08 import show_live as L
+
+    page = L.live_page(())
+    assert '"molecules": []' in page and '"live": true' in page
+
+
 def test_the_page_carries_the_data_once_and_reads_back():
     data = S.payload(NO_TRUTH)
     html = S.page(data)
@@ -147,7 +203,7 @@ def test_the_whole_default_set_where_the_corpus_holds_the_truth():
     if not all(p.exists() for p in truth_files):
         pytest.skip("the corpus's truth Hessians are not on this machine")
     data = S.payload(S.DEFAULT_RUNS)
-    assert len(data["molecules"]) == len(S.DEFAULT_RUNS) and data["network"] == "ΔH network v1.3"
+    assert len(data["molecules"]) == len(S.DEFAULT_RUNS) and data["networks"] == ["ΔH network v1.3"]
     reused = [m for m in data["molecules"] if m["route"] == "reused"]
     assert [m["name"] for m in reused] == ["carbazole"] and reused[0]["stations"][2]["time"].startswith("from the corpus")
     for m in data["molecules"]:
