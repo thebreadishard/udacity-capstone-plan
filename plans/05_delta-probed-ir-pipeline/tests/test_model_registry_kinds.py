@@ -1,7 +1,7 @@
 """Decision 66 (17 Nov 2026) in the model registry: a network's kind beside its version, and 'carried' naming the pair.
 
 The kind is the checkpoint's own; a status entry repeats it as `network_kind`, an entry without the field is a measurement network
-(every committed entry is one), and an entry that contradicts its checkpoint stops the generator. `carried_keys` gives one kind's
+(release entries state theirs), and an entry that contradicts its checkpoint stops the generator. `carried_keys` gives one kind's
 files; a carried release network without carried measurement networks of its version is refused."""
 from __future__ import annotations
 
@@ -51,7 +51,8 @@ def pair(tmp_path):
 
 def test_every_committed_entry_states_its_kind_and_its_name_agrees():
     """An entry without the field reads as a measurement network (the migration's default); a release network states its kind,
-    and its file name says `_release` (release_chain.py's prefix), so neither kind can pass for the other. The carried ΔH version
+    and its file name says `_release` (release_chain.py's prefix): a cheap cross-check of the naming, without the checkpoints
+    (the generator's `checked_kind` compares an entry with its checkpoint). The carried ΔH version
     is three measurement networks and, once its release networks have passed their checks, three release networks of the same
     version (decision 66)."""
     for module in MR.MODULES.values():
@@ -63,7 +64,8 @@ def test_every_committed_entry_states_its_kind_and_its_name_agrees():
     measured = MR.carried_keys(status, DH, NK.MEASUREMENT)
     released = MR.carried_keys(status, DH, NK.RELEASE)
     assert len(measured) == 3 and len(released) in (0, 3)
-    assert {str(status[k]["version"]) for k in released} <= {str(status[k]["version"]) for k in measured}
+    versions = {str(status[k]["version"]) for k in (*measured, *released)}
+    assert len(versions) == 1, versions          # one version: check_pairs allows release networks of any measured version
 
 
 def test_the_committed_registries_carry_the_generators_header():
