@@ -24,6 +24,7 @@ import hashlib
 import json
 import os
 import sys
+import tempfile
 from pathlib import Path
 
 import torch
@@ -148,6 +149,20 @@ def convert_seeds(checkpoints: list[Path], folder: Path) -> None:
             raise SystemExit(f"{path.name} holds seed {recipe.seed}")
 
 
+def seeds_from_checkpoints() -> dict[str, str]:
+    """Each release seed's tensor sha256 as a fresh conversion of its checkpoint gives it, checked against the seed in
+    <out>/release: release.json is then bound to the checkpoints it names, not only to the folder."""
+    written = {f"seed-{s}": json.loads((OUT / "release" / f"seed-{s}.json").read_text(encoding="utf-8"))["sha256"]
+               for s in range(len(RELEASE))}
+    with tempfile.TemporaryDirectory() as scratch:
+        convert_seeds(RELEASE, Path(scratch) / "release")
+        fresh = {name: json.loads((Path(scratch) / "release" / f"{name}.json").read_text(encoding="utf-8"))["sha256"]
+                 for name in written}
+    if fresh != written:
+        raise SystemExit(f"STOP: the seeds in {OUT / 'release'} are not the conversion of the release checkpoints")
+    return fresh
+
+
 def release_record(n_release_ids: int, shares: set[float]) -> dict:
     """aromir's release.json: the checks by name, the checkpoints by hash (checked against the checks' record)."""
     checks = json.loads(CHECKS.read_text(encoding="utf-8"))
@@ -163,8 +178,7 @@ def release_record(n_release_ids: int, shares: set[float]) -> dict:
         "n_entries": n_release_ids,
         "fitted_share": round(1 - shares.pop(), 6),
         "checks": {name: bool(check["passed"]) for name, check in checks["checks"].items()},
-        "seed_sha256": {f"seed-{s}": json.loads((OUT / "release" / f"seed-{s}.json").read_text(encoding="utf-8"))["sha256"]
-                        for s in range(len(RELEASE))},
+        "seed_sha256": seeds_from_checkpoints(),
         "release_checkpoints": {p.name: hashes[p.name] for p in RELEASE},
         "measurement_checkpoints": {p.name: hashes[p.name] for p in MEASUREMENT},
         "source": (f"modules/05_support_predictor/out/v14/{CHECKS.name} of thebreadishard/udacity-capstone-plan (plan 05), "
