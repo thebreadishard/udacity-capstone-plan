@@ -4,14 +4,14 @@
 // under an anchor its curve is the anchor card's lower panel (design §10), so this card keeps only the words and the accuracy table (chart={false}).
 import IRSpectrum from './IRSpectrum.astro';
 import type { Band } from '../lib/bands';
-const { name, bands, acc, licence, networks = null, lead = false, chart = true } =
-  Astro.props as { name: string; bands: Band[]; acc: any; licence?: any; networks?: any; lead?: boolean; chart?: boolean };
+const { name, bands, acc, licence, networks = null, levelName = '', lead = false, chart = true } =
+  Astro.props as { name: string; bands: Band[]; acc: any; licence?: any; networks?: any; levelName?: string; lead?: boolean; chart?: boolean };
 // Reader text says 'test set' for the hold-outs (the user, 17 Nov 2026, TASKS 261); the export keeps the keys a and b.
 const holdoutLabel: Record<string, string> = { a: 'test set (a): unseen simple aromatics (layer A)', b: 'test set (b): molecules of unseen scaffolds' };
 const families: string[] = acc ? Object.keys(acc.holdouts.a.product) : [];
 const licensed: string[] = licence ? licence.licensed_families : [];
-const level: string = acc ? acc.higher_level.split(' (')[0] : '';
-const line: number = families.length ? acc.holdouts.a.product[families[0]].target : 0;
+const line: number = licence ? licence.line_cm : 0;
+const molecules = (p: any) => p.n_molecules_with_modes === p.n_molecules ? `${p.n_molecules} molecules` : `${p.n_molecules_with_modes} of ${p.n_molecules} molecules`;
 const fmt = (x: number) => x.toFixed(2);
 const heightsNote = 'Band heights from the molecule\'s dipole derivatives and the same B3LYP Hessian as the listed positions (double harmonic).';
 ---
@@ -22,12 +22,12 @@ const heightsNote = 'Band heights from the molecule\'s dipole derivatives and th
         <p class="muted">{heightsNote}</p>
       </IRSpectrum>
     : <p class="muted small">Drawn as the lower panel of the anchor spectrum above. {heightsNote}</p>}
-  <p class="muted small"><strong>Predicted spectrum</strong> (rung 3, the learned correction): computed by the pipeline, not drawn on this page{licensed.length > 0 && `; licensed for ${licensed.join(', ')} against ${level}, the DFT stand-in — not coupled cluster or experiment (decision 65)`}.</p>
+  <p class="muted small"><strong>Predicted spectrum</strong> (rung 3, the learned correction): computed by the pipeline, not drawn on this page{licensed.length > 0 && `; licensed for ${licensed.join(', ')} against ${levelName}, the DFT stand-in — not coupled cluster or experiment (decision 65)`}.</p>
   {acc && (
     <details class="acc" open>
       <summary>How well is this spectrum known?</summary>
       <p class="small">{networks && networks.kind === 'release'
-        ? `The spectra the pipeline prints come from the release networks of ΔH network v${acc.version}, trained on all ${networks.trained_on_entries} labelled entries of the training pool, test sets (a) and (b) included. Every error and the licence below were measured on the measurement networks of the same version (${networks.measurement_networks} networks): the same recipe trained without the molecules of test sets (a) and (b), on molecules those networks never saw.`
+        ? `The spectra the pipeline prints come from the release networks of ΔH network v${acc.version}, trained on all ${networks.trained_on_entries} labelled entries of the training pool (an entry is one labelled molecule in one charge state: a cation counts apart from its neutral parent), test sets (a) and (b) included: ${networks.fitting}. Every error and the licence below were measured on the measurement networks of the same version (${networks.measurement_networks} networks): the same recipe trained without the molecules of test sets (a) and (b), on molecules those networks never saw.`
         : `The spectra the pipeline prints and every error below come from the measurement networks of ΔH network v${acc.version}, measured on molecules they never saw.`}</p>
       <table class="lic">
         <thead><tr><th>mode family</th><th class="num">test set (a)</th><th class="num">test set (b)</th><th>licensed</th></tr></thead>
@@ -35,15 +35,15 @@ const heightsNote = 'Band heights from the molecule\'s dipole derivatives and th
           {families.map((f) => (
             <tr><td>{f}</td>{(['a', 'b'] as const).map((h) => {
               const p = acc.holdouts[h].product[f];
-              return <td class="num" title={`95 % interval ${fmt(p.interval[0])}–${fmt(p.interval[1])} cm⁻¹ over ${p.n_molecules_with_modes} of ${p.n_molecules} molecules`}>{fmt(p.rms)}{p.interval_crosses_line ? ' †' : ''}</td>;
+              return <td class="num" title={`95 % interval ${fmt(p.interval[0])}–${fmt(p.interval[1])} cm⁻¹ over ${p.n_molecules_with_modes} of ${p.n_molecules} molecules`}>{fmt(p.rms)}{p.interval_crosses_line ? ' †' : ''}<br /><span class="muted">{molecules(p)}</span></td>;
             })}<td>{licensed.includes(f) ? 'yes' : 'no'}</td></tr>
           ))}
         </tbody>
       </table>
       <p class="muted small">Licence: error of the corrected band positions (cm⁻¹, rms over the family's bands, seed-mean correction) on molecules
-        the measurement networks never saw, against {level} — the DFT stand-in for the higher level, not against coupled cluster and not against
-        experiment. A family is licensed when its error is at most {line} cm⁻¹ on both test sets (decision 65). † the 95 % interval of a bootstrap
-        over molecules reaches above the line (hover for the interval and how many molecules have such bands).</p>
+        the measurement networks never saw, against {levelName} — the DFT stand-in for the higher level, not against coupled cluster and not against
+        experiment. A family is licensed when its error is at most {line} cm⁻¹ on both test sets (decision 65). Under each error: how many of the test
+        set's molecules have bands of that family. † the 95 % interval of a bootstrap over molecules reaches above {line} cm⁻¹ (hover for the interval).</p>
       <table>
         <thead><tr><th>shape measured on (ΔH network v{acc.version}, measurement networks)</th><th class="num">spectrum overlap<br />cheap → corrected</th><th class="num">height error<br />cheap → corrected</th></tr></thead>
         <tbody>

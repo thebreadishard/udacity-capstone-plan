@@ -248,7 +248,7 @@ def statement(name: str, version: str, n_seeds: int, lic: dict, seen_text: str, 
     licence is a statement about — the harmonic position ω; which position each band is printed at is the paragraph after it
     (`positions.note`). When release networks made the spectrum, design note §3's sentence stands in place of 'with the error
     measured on molecules the network never saw', and the error is named as the measurement networks'."""
-    opening = f"{name}: the infrared spectrum of {P.NETWORK} v{version} ({n_seeds} seeds) — B3LYP/6-31G* corrected toward {A.HIGHER_LEVEL.split(' (')[0]}"
+    opening = f"{name}: the infrared spectrum of {P.NETWORK} v{version} ({n_seeds} seeds) — B3LYP/6-31G* corrected toward {A.HIGHER_LEVEL_NAME}"
     if made_by.release_trained_on is None:
         measured = f" — with the {lic['quantity_name']} measured on molecules the network never saw; the "
     else:

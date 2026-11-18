@@ -57,8 +57,8 @@ const notifyHref = `https://github.com/thebreadishard/spectrum-atlas/issues/new?
 
   <div class="cols">
     {lead === 'anchor' && <AnchorSpectrumCard name={row.name} anchor={mol.anchor_spectrum} comparison={mol.comparison} test={mol.test_prediction} cheap={cheapBands} wb97x={vib.wb97x.vibrational} validated={row.rung === 5} />}
-    {lead === 'cheap' && <CheapSpectrumCard name={row.name} bands={cheapBands} acc={summary.shape_accuracy} licence={summary.licence} networks={summary.networks} lead />}
-    {lead === 'positions' && <FrequenciesCard name={row.name} rows={rows} b3lyp={vib.b3lyp.vibrational} wb97x={vib.wb97x.vibrational} hasHeights={false} lead />}
+    {lead === 'cheap' && <CheapSpectrumCard name={row.name} bands={cheapBands} acc={summary.shape_accuracy} licence={summary.licence} networks={summary.networks} levelName={summary.higher_level_name} lead />}
+    {lead === 'positions' && <FrequenciesCard name={row.name} rows={rows} b3lyp={vib.b3lyp.vibrational} wb97x={vib.wb97x.vibrational} hasHeights={false} heightsMissing={mol.heights_missing} lead />}
     <aside class="side">
       <section class="card">
         <h2>Structure</h2>
@@ -73,7 +73,7 @@ const notifyHref = `https://github.com/thebreadishard/spectrum-atlas/issues/new?
             <li class={reached(i) ? 'on' : 'off'}><span class="mark" aria-hidden="true">{reached(i) ? '●' : '○'}</span> {l}
               {i === 1 && reached(1) && mol.ledger && <span class="muted small"> — {mol.ledger.end.slice(0, 10)}, {mol.ledger.machine}</span>}
               {(i === 4 || i === 5) && reached(i) && row.evidence && <span class="muted small"> — <a href={repo + row.evidence[0]}>evidence</a></span>}
-              {(i === 2 || i === 3) && <span class="muted small"> — not yet: the learned layer is training</span>}
+              {(i === 2 || i === 3) && <span class="muted small"> — made on request by the pipeline (ΔH network v{summary.shape_accuracy.version}); this page shows the B3LYP spectrum and the network's measured accuracy, not the prediction</span>}
             </li>
           ))}
         </ol>
@@ -84,14 +84,14 @@ const notifyHref = `https://github.com/thebreadishard/spectrum-atlas/issues/new?
       </section>}
       <section class="card">
         <h2>Request a run</h2>
-        <p class="muted small">Not available on this site yet: the pipeline (a molecule in, its spectrum and certificate out) runs on the project's own computer, with {summary.licence.licensed_families.length === Object.keys(summary.shape_accuracy.holdouts.a.product).length ? `all ${summary.licence.licensed_families.length}` : `${summary.licence.licensed_families.length} of the ${Object.keys(summary.shape_accuracy.holdouts.a.product).length}`} mode families licensed at the DFT stand-in level (ωB97X/6-31G*, not coupled cluster or experiment). Sign-in will be needed only to request runs; reading stays open.</p>
+        <p class="muted small">Not available on this site yet: the pipeline (a molecule in, its spectrum and certificate out) runs on the project's own computer, with {summary.licence.licensed_families.length === Object.keys(summary.shape_accuracy.holdouts.a.product).length ? `all ${summary.licence.licensed_families.length}` : `${summary.licence.licensed_families.length} of the ${Object.keys(summary.shape_accuracy.holdouts.a.product).length}`} mode families licensed at the DFT stand-in level ({summary.higher_level_name}, not coupled cluster or experiment). Sign-in will be needed only to request runs; reading stays open.</p>
         <p class="small"><strong>Notify me</strong> when this molecule climbs the ladder: <a href={notifyHref}>open a GitHub issue</a> — you are subscribed to it and we close it with a link when the page changes. No e-mail address is stored by this site.</p>
       </section>
     </aside>
 
     <div class="mainc">
-      {lead === 'anchor' && heights && <CheapSpectrumCard name={row.name} bands={cheapBands} acc={summary.shape_accuracy} licence={summary.licence} networks={summary.networks} chart={false} />}
-      {lead !== 'positions' && <FrequenciesCard name={row.name} rows={rows} b3lyp={vib.b3lyp.vibrational} wb97x={vib.wb97x.vibrational} hasHeights={!!heights} />}
+      {lead === 'anchor' && heights && <CheapSpectrumCard name={row.name} bands={cheapBands} acc={summary.shape_accuracy} licence={summary.licence} networks={summary.networks} levelName={summary.higher_level_name} chart={false} />}
+      {lead !== 'positions' && <FrequenciesCard name={row.name} rows={rows} b3lyp={vib.b3lyp.vibrational} wb97x={vib.wb97x.vibrational} hasHeights={!!heights} heightsMissing={mol.heights_missing} />}
       {mol.second_route && (
         <section class="card">
           <h2>Second route</h2>

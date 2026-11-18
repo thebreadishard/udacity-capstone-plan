@@ -60,7 +60,7 @@ def without_anchor_or_heights() -> str:
 
 def test_a_molecule_without_anchor_or_heights_leads_with_positions():
     h = page(without_anchor_or_heights())
-    assert leads_with(h, "Harmonic frequencies at the cheap level") and "Band heights are not computed for this molecule yet" in h
+    assert leads_with(h, "Harmonic frequencies at the cheap level") and "Positions only, at unit height: no dipole derivatives (APT) computed for this molecule" in h
 
 
 def test_anchor_card_draws_the_cheap_input_as_its_lower_panel_and_the_cheap_card_no_second_chart():
@@ -138,3 +138,16 @@ def test_the_accuracy_card_states_the_licence_on_the_test_sets_against_the_dft_p
     assert "test set (a)" in card and "test set (b)" in card and "hold-out" not in card
     assert "measurement networks" in card and ("release networks" in card) == (summary["networks"]["kind"] == "release")
     assert "against ωB97X/6-31G*" in card and "not against coupled cluster" in card and f"v{acc['version']}" in card
+    assert summary["networks"]["fitting"] in card and "one labelled molecule in one charge state" in card
+    assert "above 3 cm⁻¹" in card and "the line" not in card and " of 8 molecules" in card
+
+
+def test_analytic_only_pages_say_why_heights_are_missing():
+    """The review of 4f985958: a D page draws heights; coronene says its dipole derivatives failed their check."""
+    assert 'class="irspec"' in page("D_210c3076e6")
+    assert "failed their own check" in page("T_94b3a9d13a") and "not computed" not in page("T_94b3a9d13a")
+
+
+def test_the_ladder_says_the_pipeline_predicts_and_the_page_measures():
+    h = page("A_07cadc7923")
+    assert "the learned layer is training" not in h and "on request" in h

@@ -20,6 +20,7 @@ import json
 import os
 import sys
 import time
+from pathlib import Path
 
 import numpy as np
 
@@ -36,8 +37,8 @@ SOURCES = {
     "P3c": "pool 3, chosen by rule (decision 54): cations of finished parents",
     "G": "proposed by the candidate generator (module 06): a new fused ring system",
     "R4": "rung 4 of the size ladder, chosen by rule: four-ring families as broad sets (TASKS 61)",
-    "T": "large PAHs from NASA Ames PAHdb for the size test of lever 5 (TASKS 49), coronene to hexa-peri-hexabenzocoronene",
-    "D": "PAHs of 22 to 34 carbons from NASA Ames PAHdb for the size test of lever 5 (TASKS 49)",
+    "T": "large PAHs from NASA Ames PAHdb (coronene to hexa-peri-hexabenzocoronene), computed to test how the method scales with size",
+    "D": "PAHs of 22 to 34 carbons from NASA Ames PAHdb, computed to test how the method scales with size",
 }
 
 
@@ -49,23 +50,51 @@ def source_of(r):
     return s
 
 
-def hessian_path(mdir: str, tag: str, analytic_only: bool) -> str:
-    """The Hessian file the corpus labels a functional with: the finite-difference `hessian_<tag>.npz`, or for an analytic-only folder
-    (module 05's `is_analytic_only`, TASKS 49) the analytic `hessian_<tag>_analytic.npz`."""
-    return os.path.join(mdir, f"hessian_{tag}_analytic.npz" if analytic_only else f"hessian_{tag}.npz")
-
-
 def second_route_of(mdir: str, analytic_only: bool) -> dict | None:
     """Per functional the largest frequency difference (cm⁻¹) and dH_max between the analytic second route and the corpus's
     finite-difference Hessian; None without a check. An analytic-only folder has no finite-difference Hessian — its labels are the
-    analytic ones — so there is nothing to compare and None is returned; any other check without corpus frequencies raises."""
+    analytic ones — so there is nothing to compare and None is returned. A check without corpus frequencies in a folder with
+    finite-difference labels is refused with the reason."""
     path = os.path.join(mdir, "analytic_check.json")
     if analytic_only or not os.path.exists(path):
         return None
     with open(path, encoding="utf-8") as f:
         chk = json.load(f)
+    bare = sorted(tag for tag, v in chk.items() if "freq_corpus" not in v)
+    if bare:
+        raise ValueError(f"{path}: no corpus frequencies for {bare} in a folder with finite-difference labels, so the second route has "
+                         "nothing to be compared with")
     return {tag: dict(max_abs_dfreq_cm=float(np.abs(np.array(v["freq_analytic"]) - np.array(v["freq_corpus"])).max()), dH_max=v["dH_max"])
             for tag, v in chk.items()}
+
+
+def deck_of(result: dict, mdir: str, analytic_only: bool) -> dict | None:
+    """The deck the molecule's labels were made with. result.json's deck describes psi4's finite-difference Hessians; in an
+    analytic-only folder psi4 optimised the geometry only and both Hessians are pyscf's analytic ones, said from the files' own
+    provenance (the pyscf version in analytic_check.json, the grid in the Hessian files)."""
+    deck = result.get("deck")
+    if not analytic_only:
+        return deck
+    with open(os.path.join(mdir, "analytic_check.json"), encoding="utf-8") as f:
+        pyscf = {v["software"]["pyscf"] for v in json.load(f).values()}
+    grids = set()
+    for tag in ("b3lyp", "wb97x"):
+        with np.load(os.path.join(mdir, f"hessian_{tag}_analytic.npz")) as z:
+            grids.add(tuple(int(x) for x in np.ravel(z["grid"])))
+    if len(pyscf) != 1 or len(grids) != 1:
+        raise ValueError(f"{mdir}: the two analytic Hessians come from {sorted(pyscf)} on grids {sorted(grids)}; one deck has one of each")
+    hessian = (f"pyscf {pyscf.pop()} analytic Hessians of both functionals at the psi4-optimised geometry, 6-31G* with Cartesian d, grid "
+               f"{grids.pop()} (module 05's corpus/analytic_hessians.py); psi4 optimised the geometry only")
+    return {**{k: v for k, v in deck.items() if k != "text_corrections"}, "hessian": hessian, "labels": "analytic_only"}
+
+
+def licence_line(accuracy: dict) -> float:
+    """The one error line every family's licence is read against; families or test sets with different lines are refused, since the
+    Atlas card states a single line."""
+    lines = {row["target"] for holdout in accuracy["holdouts"].values() for row in holdout["product"].values()}
+    if len(lines) != 1:
+        raise ValueError(f"the licence lines differ between families or test sets ({sorted(lines)}); the Atlas card states one line")
+    return lines.pop()
 
 
 def network_pair(pipeline) -> dict:
@@ -202,7 +231,11 @@ def heights_for(shape: dict, listed: list[float]) -> list[float] | None:
     return out
 
 
-def build(repo, out, limit=None):  # noqa: C901, PLR0912, PLR0915  one export loop older than the gate; splitting it needs a pinned-output test first
+def build(repo, out, limit=None, ids=None):  # noqa: C901, PLR0912, PLR0915  one export loop older than the gate; splitting it needs a pinned-output test first
+    """Export the catalogue to `out`. `limit` keeps the first N rows (layer A first); `ids` keeps the named manifest rows (an id without
+    a row is refused); the two do not combine."""
+    if limit and ids:
+        raise ValueError("build: give limit or ids, not both")
     plan = os.path.join(repo, "plans", "05_delta-probed-ir-pipeline"); corpus = os.path.join(plan, "modules", "05_support_predictor", "corpus")
     sys.path.insert(0, os.path.join(plan, "modules", "08_industry_synthesis"))
     # TASKS 44: one implementation of the band heights for module 08's certificate and the Atlas
@@ -210,9 +243,14 @@ def build(repo, out, limit=None):  # noqa: C901, PLR0912, PLR0915  one export lo
     from m08.accuracy import carried_accuracy
     from m08.licence import state as licence_state
     from m08 import pipeline as pipeline_mod
-    from learning_curve_layerA import is_analytic_only     # module 05, on the path through m08.pipeline
+    from m08.accuracy import HIGHER_LEVEL_NAME
     manifest_p = os.path.join(corpus, "manifest.csv"); ledger_p = os.path.join(corpus, "ledger.csv")
     manifest = list(csv.DictReader(open(manifest_p, encoding="utf-8")))
+    if ids:
+        unknown = sorted(set(ids) - {r["id"] for r in manifest})
+        if unknown:
+            raise ValueError(f"build: no manifest row for {unknown}")
+        manifest = [r for r in manifest if r["id"] in ids]
     if limit:
         done_first = sorted(manifest, key=lambda r: (r["status"] != "done", r["layer"] != "A", r["id"])); manifest = done_first[:limit]   # layer A (benzene, naphthalene) first
     ledger = {}
@@ -258,10 +296,9 @@ def build(repo, out, limit=None):  # noqa: C901, PLR0912, PLR0915  one export lo
                    rung=0, rung_label="listed", flags=[], releases=releases.get(mid, []), manifest_status=r["status"])
         if computed:
             res = json.load(open(result_p, encoding="utf-8"))
-            analytic_only = is_analytic_only(mdir)
+            analytic_only = shape_mod.analytic_only(Path(mdir))
             for tag in ("b3lyp", "wb97x"):
-                hp = hessian_path(mdir, tag, analytic_only)
-                if not os.path.exists(hp):
+                if not shape_mod.listed_hessian(Path(mdir), tag).exists():
                     problems.append(f"{mid}: computed but no {tag} Hessian"); continue
             row["rung"] = 1
             n_im = {tag: int(res.get(f"n_imaginary_{tag}", 0)) for tag in ("b3lyp", "wb97x")}
@@ -276,12 +313,12 @@ def build(repo, out, limit=None):  # noqa: C901, PLR0912, PLR0915  one export lo
             if mid in screen and screen[mid]["max_abs_shift"] > 80:
                 row["flags"].append("screen_flagged")
             mol = dict(id=mid, name=r["name"], smiles=r["smiles"], formula=formula, layer=r["layer"], source=row["source"], n_atoms=N,
-                       geometry=json.load(open(os.path.join(mdir, "geometry.json"), encoding="utf-8")), deck=res.get("deck"), timings_s=res.get("timings_s"),
+                       geometry=json.load(open(os.path.join(mdir, "geometry.json"), encoding="utf-8")), deck=deck_of(res, mdir, analytic_only), timings_s=res.get("timings_s"),
                        energies=dict(b3lyp=res.get("e_b3lyp"), wb97x=res.get("e_wb97x")), n_imaginary=n_im, frequencies_cm={}, releases=releases.get(mid, []),
-                       ledger=ledger.get(mid), second_route=None, intensities_km_mol=None, shape=None, predicted_spectrum=None,
+                       ledger=ledger.get(mid), second_route=None, intensities_km_mol=None, shape=None, heights_missing=None, predicted_spectrum=None,
                        anchor_spectrum=None, comparison=None, test_prediction=None)
             for tag in ("b3lyp", "wb97x"):
-                z = np.load(hessian_path(mdir, tag, analytic_only)); fr = np.asarray(z["freq_cm"], float)
+                z = np.load(shape_mod.listed_hessian(Path(mdir), tag)); fr = np.asarray(z["freq_cm"], float)
                 if len(fr) != 3 * N:
                     problems.append(f"{mid}: {tag} frequency list has {len(fr)} entries, 3N = {3 * N}")
                 mol["frequencies_cm"][tag] = dict(all=fr.round(2).tolist(), vibrational=vib_only(fr).round(2).tolist())
@@ -293,6 +330,8 @@ def build(repo, out, limit=None):  # noqa: C901, PLR0912, PLR0915  one export lo
                 row["has_intensities"] = True; n_heights += 1
             elif sh.get("kind") == "positions and heights":
                 problems.append(f"{mid}: APT present but its positions do not match the listed ones ({sh.get('max_dev_from_listed_cm')} cm⁻¹)")
+            else:
+                mol["heights_missing"] = sh["reason"]
             if mid in ANCHORED:                              # TASKS 45: the page leads with the best spectrum it has
                 an = shape_mod.anchor_series(mid)
                 if an is not None:
@@ -327,7 +366,8 @@ def build(repo, out, limit=None):  # noqa: C901, PLR0912, PLR0915  one export lo
     summary = dict(built_utc=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), n_molecules=len(catalog), rung_counts=counts, layer_counts=layer_counts, source_counts=source_counts,
                    rungs=RUNGS, sources=dict(manifest=sha256(manifest_p), ledger=sha256(ledger_p)), releases=sorted({n for v in releases.values() for n in v}),
                    n_changelog=len(changelog), n_with_intensities=n_heights, n_anchor_spectra=n_anchor_spectra, shape_accuracy=accuracy,
-                   licence={k: licence[k] for k in ("licensed_families", "statement", "rule_source")}, networks=network_pair(pipeline_mod))
+                   licence={k: licence[k] for k in ("licensed_families", "statement", "rule_source")} | {"line_cm": licence_line(accuracy)},
+                   higher_level_name=HIGHER_LEVEL_NAME, networks=network_pair(pipeline_mod))
     json.dump(summary, open(os.path.join(out, "summary.json"), "w", encoding="utf-8"), indent=1)
     return summary
 

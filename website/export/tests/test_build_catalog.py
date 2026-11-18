@@ -156,15 +156,16 @@ def test_anchor_readings_travel_with_the_registry_file(built):
 def test_an_analytic_only_folder_reads_its_analytic_hessians(built):
     """TASKS 49's large PAHs carry analytic labels only: no finite-difference Hessian, and an analytic check without corpus
     frequencies. The export reads the analytic files and states no second route; a finite-difference folder with such a check raises."""
-    from learning_curve_layerA import is_analytic_only    # on the path once build() has run
+    from m08 import spectrum                               # on the path once build() has run
     mdir = os.path.join(CORPUS, "T_94b3a9d13a")              # coronene
     if not os.path.isdir(mdir):
         pytest.skip("no corpus data in this checkout (set ATLAS_REPO)")
-    assert is_analytic_only(mdir)
-    assert bc.hessian_path(mdir, "b3lyp", True).endswith("hessian_b3lyp_analytic.npz")
-    assert bc.hessian_path(mdir, "b3lyp", False).endswith("hessian_b3lyp.npz")
+    from pathlib import Path
+    assert spectrum.analytic_only(Path(mdir)) and spectrum.listed_hessian(Path(mdir), "wb97x").name == "hessian_wb97x_analytic.npz"
+    benzene = Path(CORPUS) / "A_8448043181"                  # finite-difference labels beside an analytic second route
+    assert not spectrum.analytic_only(benzene) and spectrum.listed_hessian(benzene).name == "hessian_b3lyp.npz"
     assert bc.second_route_of(mdir, True) is None
-    with pytest.raises(KeyError):
+    with pytest.raises(ValueError, match="no corpus frequencies"):
         bc.second_route_of(mdir, False)
 
 
@@ -176,3 +177,40 @@ def test_summary_states_the_network_pair(built):
     if pair["kind"] == "release":
         assert pair["trained_on_entries"] > 0 and pair["fitting"].startswith("each of the") and pair["held_back"] is None
     assert acc["version"] and set(summary["licence"]["licensed_families"]) <= set(acc["holdouts"]["a"]["product"])
+    assert summary["licence"]["line_cm"] == 3 and summary["higher_level_name"] == "ωB97X/6-31G*"
+    assert acc["higher_level"].startswith(summary["higher_level_name"])
+
+
+ANALYTIC_ONLY = ("D_210c3076e6", "T_94b3a9d13a")   # PAHdb 284 (its APT passed its checks) and coronene (its APT failed the sum rule)
+
+
+@pytest.fixture(scope="module")
+def built_analytic(tmp_path_factory):
+    if not os.path.isdir(os.path.join(CORPUS, ANALYTIC_ONLY[0])):
+        pytest.skip("no corpus data in this checkout (set ATLAS_REPO)")
+    out = tmp_path_factory.mktemp("atlas_analytic")
+    return out, bc.build(REPO, str(out), ids=set(ANALYTIC_ONLY))
+
+
+def test_analytic_only_molecules_go_through_the_real_loop(built_analytic):
+    """The review of 4f985958: a D molecule gets heights from its analytic Hessian and its passed APT; coronene, whose APT failed,
+    says so; both decks name the analytic route and neither carries a second route."""
+    out, summary = built_analytic
+    assert summary["n_molecules"] == 2 and summary["n_with_intensities"] == 1
+    mols = []
+    for mid in ANALYTIC_ONLY:
+        with open(out / "molecules" / f"{mid}.json", encoding="utf-8") as f:
+            mols.append(json.load(f))
+    d, t = mols
+    assert d["intensities_km_mol"] and d["shape"]["hessian_source"].endswith("hessian_b3lyp_analytic.npz") and d["heights_missing"] is None
+    assert t["intensities_km_mol"] is None and "failed their own check" in t["heights_missing"]
+    for m in (d, t):
+        assert m["deck"]["hessian"].startswith("pyscf ") and m["deck"]["labels"] == "analytic_only" and m["second_route"] is None
+        assert len(m["frequencies_cm"]["b3lyp"]["all"]) == 3 * m["n_atoms"]
+
+
+def test_limit_and_ids_do_not_combine(tmp_path):
+    with pytest.raises(ValueError, match="not both"):
+        bc.build(REPO, str(tmp_path), limit=5, ids={"A_8448043181"})
+    with pytest.raises(ValueError, match="no manifest row"):
+        bc.build(REPO, str(tmp_path), ids={"Z_nothing"})

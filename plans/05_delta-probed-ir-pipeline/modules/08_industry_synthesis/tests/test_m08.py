@@ -58,8 +58,9 @@ def test_scenarios_as_registered(cat):
     d2 = decide(Request(**(by["S2"]["request"] | {"molecule": rung_one_parent(cat)})), cat)
     assert d2.kind == "refusal" and "not licensed" in d2.gate_named and "R14" in d2.rule_ids
     assert any(p["step"] == "anchor_e8_cc_hessian_naphthalene" for p in d2.price_lines)
-    # coronene (10 Oct 2026): the earlier stand-in, a five-ring PAH, is now listed as a module-06 generator row (layer G) in the export
-    outside = "c1cc2ccc3ccc4ccc5ccc6ccc1c1c2c3c4c5c61"; assert cat.find(outside) is None
+    # 1-methylcoronene (18 Nov 2026): coronene, the stand-in since 10 Oct, has a manifest row (layer T, TASKS 49) that the export carries
+    outside = "Cc1cc2ccc3ccc4ccc5ccc6ccc1c1c2c3c4c5c61"
+    assert cat.find(outside) is None
     d3 = decide(Request(molecule=outside, target_rung=4, budget_eur=20), cat)
     assert d3.kind == "refusal" and "cap" in d3.gate_named and any("rung 1" in r for r in d3.reasons)
     d4a = decide(Request(**by["S4a"]["request"]), cat); assert d4a.kind == "refusal" and "invalid" in d4a.gate_named
@@ -138,6 +139,24 @@ def test_anchor_series_and_comparison():
     assert n["kind"] == "positions only" and all(s["km_mol"] is None for s in n["sticks"])
     assert S.comparison("A_01f3186607", n)["spectrum_overlap"] is None
     assert S.anchor_series("A_07cadc7923") is None
+
+
+def test_spectral_shape_reads_the_listed_hessian_of_both_folder_kinds():
+    """Review of the Atlas v1.4 branch (18 Nov 2026): a finite-difference folder keeps the deck's Hessian even beside an analytic
+    second route (benzene: the same sticks as from hessian_b3lyp.npz itself); an analytic-only folder (TASKS 49) draws on its analytic
+    Hessian; one whose APTs all failed their checks says so instead of 'not computed'."""
+    import numpy as np
+    from m08 import spectrum as S
+    b = S.shape("A_8448043181")
+    assert b["hessian_source"].endswith("/hessian_b3lyp.npz")
+    direct = S.series(S.CORPUS / "A_8448043181" / S.HESSIAN, np.asarray(S._geometry("A_8448043181")["masses_amu"], float),
+                      S.cheap_apt(S.CORPUS / "A_8448043181"))
+    assert b["sticks"] == direct["sticks"]
+    d = S.shape("D_210c3076e6")
+    assert d["kind"] == "positions and heights" and d["hessian_source"].endswith("/hessian_b3lyp_analytic.npz")
+    t = S.shape("T_94b3a9d13a")
+    assert t == dict(kind="positions only", reason=S.FAILED_APT) and S.failed_apt(S.CORPUS / "T_94b3a9d13a")
+    assert S.shape("A_01f3186607")["reason"] == S.NO_APT                                   # naphthalene: no APT file at all
 
 
 def test_failure_case_is_displayed_not_hidden(cat):

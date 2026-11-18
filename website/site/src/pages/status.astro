@@ -13,6 +13,7 @@ const labels = { listed: 'Listed', cheap_level_done: 'Cheap level done', correct
       <thead><tr><th>rung</th><th class="num">molecules</th></tr></thead>
       <tbody>{summary.rungs.map((r) => <tr><td>{labels[r]}</td><td class="num">{summary.rung_counts[r].toLocaleString('en')}</td></tr>)}</tbody>
     </table>
+    <p class="muted small">Correction predicted and Spectrum predicted count molecules whose corrected spectrum is published here: none yet. The pipeline makes it on request on the project's computer (ΔH network v{summary.shape_accuracy.version}); the molecule pages show the B3LYP spectrum and the network's measured accuracy.</p>
     <h3 style="margin-top: 16px">By layer</h3>
     <table>
       <thead><tr><th>layer</th><th class="num">molecules</th></tr></thead>
