@@ -1,5 +1,5 @@
 {
- "pipeline_version": "0.11",
+ "pipeline_version": "0.12",
  "name": "benzene",
  "input": {
   "smiles": "c1ccccc1",
@@ -289,7 +289,7 @@
  },
  "seconds": {
   "reuse": 0.5,
-  "correction_and_spectra": 0.9
+  "correction_and_spectra": 1.1
  },
  "spectra": {
   "network": {
@@ -749,29 +749,29 @@
   },
   "anharmonic": {
    "status": "not applied",
-   "reason": "the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)",
+   "reason": "the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on",
    "model": "x2*",
    "field": null
   },
-  "note": "positions are harmonic (ω): the anharmonic step was not applied — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+  "note": "positions are harmonic (ω): the anharmonic step was not applied — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on"
  },
  "provenance": {
-  "timestamp_utc": "2026-11-18 06:28:51",
+  "timestamp_utc": "2026-11-18 19:58:41",
   "host": "Asus18",
   "python": "3.14.6",
   "numpy": "2.5.1",
   "command": "pipeline.py --name benzene --smiles c1ccccc1 --out ../../probes/results_m1/pipeline_benzene_v14_2026-11-17 --threads 4 --reuse-only",
-  "commit": "ed8a8e34c3d8956e81b29fab7af625f5eb2b8c4c",
+  "commit": "6ee43785f31c60363fb864617d88295e59b306b5",
   "dirty": "yes"
  },
  "deliveries": [
   {
    "number": 1,
    "delivery": "only: harmonic, the anharmonic step is switched off",
-   "at": "2026-11-18 07:28:52",
-   "seconds_since_start": 2.0,
+   "at": "2026-11-18 20:58:43",
+   "seconds_since_start": 2.2,
    "final_by": null
   }
  ],
- "commit_at_end": "ed8a8e34c3d8956e81b29fab7af625f5eb2b8c4c"
+ "commit_at_end": "6ee43785f31c60363fb864617d88295e59b306b5"
 }

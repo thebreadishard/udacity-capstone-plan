@@ -1,7 +1,7 @@
 {
  "kind": "live certificate",
- "date": "2026-11-18 07:28",
- "pipeline_version": "0.11",
+ "date": "2026-11-18 20:58",
+ "pipeline_version": "0.12",
  "molecule": {
   "name": "benzene",
   "smiles": "c1ccccc1",
@@ -21,7 +21,10 @@
    "name": "benzene",
    "rung": 5,
    "source": "website export catalog.json, molecules/A_8448043181.json",
-   "b3lyp_max_abs_diff_cm": 22.8
+   "export_b3lyp_source": "psi4 1.11 (conda env qc, Windows), modules/05_support_predictor/corpus/molecules/A_8448043181/hessian_b3lyp.npz",
+   "b3lyp_max_abs_diff_cm": 22.8,
+   "analytic_b3lyp_max_abs_diff_cm": 0.0,
+   "analytic_b3lyp_source": "corpus/molecules/A_8448043181/hessian_b3lyp_analytic.npz"
   },
   "seen": {
    "role": "release_trained",
@@ -98,7 +101,7 @@
   "higher_level": "ωB97X/6-31G* (the DFT proxy: the network's ΔH is trained on ωB97X − B3LYP Hessians)",
   "holdouts": {
    "a": {
-    "description": "hold-out (a) without its two trained twins (2-naphthoic acid and benzonitrile were trained on as layer-B molecules; TASKS 157): eight layer-A molecules held out on 19 Sep 2026, never trained on under any id",
+    "description": "hold-out (a) on its eight molecules never trained on in any version (the set fixed on 30 Oct 2026): eight layer-A molecules held out on 19 Sep 2026; this version's training left out the twins of the hold-out molecules, so the other two, 2-naphthoic acid and benzonitrile, are clean too, and the eight are kept for comparability with v1.3",
     "n_molecules": 8,
     "readouts": {
      "ring-ip": {
@@ -223,7 +226,7 @@
     }
    },
    "b": {
-    "description": "hold-out (b): every substituted molecule of two scaffold cores, frozen on 8 Oct 2026 — scaffolds the network never saw",
+    "description": "hold-out (b): every substituted molecule of two scaffold cores, frozen on 8 Oct 2026 — scaffolds the measurement networks never saw",
     "n_molecules": 40,
     "readouts": {
      "ring-ip": {
@@ -364,13 +367,13 @@
    "E7_rungC_v14s3clean_c00_control_product_error.json"
   ],
   "definitions": {
-   "family": "the read-outs: rms over the family's B3LYP modes of the first-order diagonal error of a seed's ΔH against the higher level, per seed, and the seeds' mean (cm⁻¹); families by module 05's rule (m05/learning_curve_layerA.molecule_features)",
+   "family": "rms over the family's B3LYP modes of the first-order diagonal error of a seed's ΔH against the higher level, per seed, and the seeds' mean (cm⁻¹); families by module 05's rule (m05/learning_curve_layerA.molecule_features)",
    "product": "rms over the family's bands of the corrected band position's error against the higher level (cm⁻¹): the seeds' mean ΔH added to the B3LYP Hessian and diagonalised, each corrected band paired to its higher-level band by mode overlap and counted in the family of its B3LYP partner — what the pipeline prints; with the 95 % interval of a bootstrap over whole molecules",
    "coupling_ratio": "rms of the predicted mode couplings' error over the rms of the couplings themselves; 0 = exact, 1 = no better than none",
    "spectrum_overlap": "cosine similarity of the two Lorentzian-broadened spectra (FWHM 10 cm⁻¹, 500–3500 cm⁻¹); 1 = identical shape",
    "intensity_error": "intensity-weighted rms of the relative height error per band, bands paired by the shape of the motion (eigenvector overlap); 0 = identical heights"
   },
-  "coupled_cluster": "not measured for this network version: the coupled-cluster reads (T3) were made on chain 34, and tests on the 9–11 existing anchors wait for the anchor decision of November 2026"
+  "coupled_cluster": "not measured for this network version: the coupled-cluster reads (T3) were made on an earlier network (chain 34)"
  },
  "bands": [
   {
@@ -398,7 +401,7 @@
    "step_error_measured": null,
    "step_family": null,
    "no_step_reason": "not applied",
-   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on"
   },
   {
    "network_cm": 426.0,
@@ -425,7 +428,7 @@
    "step_error_measured": null,
    "step_family": null,
    "no_step_reason": "not applied",
-   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on"
   },
   {
    "network_cm": 625.7,
@@ -452,7 +455,7 @@
    "step_error_measured": null,
    "step_family": null,
    "no_step_reason": "not applied",
-   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on"
   },
   {
    "network_cm": 625.8,
@@ -479,7 +482,7 @@
    "step_error_measured": null,
    "step_family": null,
    "no_step_reason": "not applied",
-   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on"
   },
   {
    "network_cm": 702.5,
@@ -506,7 +509,7 @@
    "step_error_measured": null,
    "step_family": null,
    "no_step_reason": "not applied",
-   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on"
   },
   {
    "network_cm": 735.4,
@@ -533,7 +536,7 @@
    "step_error_measured": null,
    "step_family": null,
    "no_step_reason": "not applied",
-   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on"
   },
   {
    "network_cm": 884.7,
@@ -560,7 +563,7 @@
    "step_error_measured": null,
    "step_family": null,
    "no_step_reason": "not applied",
-   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on"
   },
   {
    "network_cm": 885.7,
@@ -587,7 +590,7 @@
    "step_error_measured": null,
    "step_family": null,
    "no_step_reason": "not applied",
-   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on"
   },
   {
    "network_cm": 1000.1,
@@ -614,7 +617,7 @@
    "step_error_measured": null,
    "step_family": null,
    "no_step_reason": "not applied",
-   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on"
   },
   {
    "network_cm": 1000.2,
@@ -641,7 +644,7 @@
    "step_error_measured": null,
    "step_family": null,
    "no_step_reason": "not applied",
-   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on"
   },
   {
    "network_cm": 1024.8,
@@ -668,7 +671,7 @@
    "step_error_measured": null,
    "step_family": null,
    "no_step_reason": "not applied",
-   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on"
   },
   {
    "network_cm": 1033.0,
@@ -695,7 +698,7 @@
    "step_error_measured": null,
    "step_family": null,
    "no_step_reason": "not applied",
-   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on"
   },
   {
    "network_cm": 1037.0,
@@ -722,7 +725,7 @@
    "step_error_measured": null,
    "step_family": null,
    "no_step_reason": "not applied",
-   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on"
   },
   {
    "network_cm": 1078.8,
@@ -749,7 +752,7 @@
    "step_error_measured": null,
    "step_family": null,
    "no_step_reason": "not applied",
-   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on"
   },
   {
    "network_cm": 1078.9,
@@ -776,7 +779,7 @@
    "step_error_measured": null,
    "step_family": null,
    "no_step_reason": "not applied",
-   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on"
   },
   {
    "network_cm": 1175.8,
@@ -803,7 +806,7 @@
    "step_error_measured": null,
    "step_family": null,
    "no_step_reason": "not applied",
-   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on"
   },
   {
    "network_cm": 1210.8,
@@ -830,7 +833,7 @@
    "step_error_measured": null,
    "step_family": null,
    "no_step_reason": "not applied",
-   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on"
   },
   {
    "network_cm": 1210.8,
@@ -857,7 +860,7 @@
    "step_error_measured": null,
    "step_family": null,
    "no_step_reason": "not applied",
-   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on"
   },
   {
    "network_cm": 1323.9,
@@ -884,7 +887,7 @@
    "step_error_measured": null,
    "step_family": null,
    "no_step_reason": "not applied",
-   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on"
   },
   {
    "network_cm": 1390.3,
@@ -911,7 +914,7 @@
    "step_error_measured": null,
    "step_family": null,
    "no_step_reason": "not applied",
-   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on"
   },
   {
    "network_cm": 1541.5,
@@ -938,7 +941,7 @@
    "step_error_measured": null,
    "step_family": null,
    "no_step_reason": "not applied",
-   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on"
   },
   {
    "network_cm": 1541.5,
@@ -965,7 +968,7 @@
    "step_error_measured": null,
    "step_family": null,
    "no_step_reason": "not applied",
-   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on"
   },
   {
    "network_cm": 1689.0,
@@ -992,7 +995,7 @@
    "step_error_measured": null,
    "step_family": null,
    "no_step_reason": "not applied",
-   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on"
   },
   {
    "network_cm": 1689.0,
@@ -1019,7 +1022,7 @@
    "step_error_measured": null,
    "step_family": null,
    "no_step_reason": "not applied",
-   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on"
   },
   {
    "network_cm": 3215.1,
@@ -1046,7 +1049,7 @@
    "step_error_measured": null,
    "step_family": null,
    "no_step_reason": "not applied",
-   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on"
   },
   {
    "network_cm": 3225.2,
@@ -1073,7 +1076,7 @@
    "step_error_measured": null,
    "step_family": null,
    "no_step_reason": "not applied",
-   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on"
   },
   {
    "network_cm": 3225.2,
@@ -1100,7 +1103,7 @@
    "step_error_measured": null,
    "step_family": null,
    "no_step_reason": "not applied",
-   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on"
   },
   {
    "network_cm": 3240.8,
@@ -1127,7 +1130,7 @@
    "step_error_measured": null,
    "step_family": null,
    "no_step_reason": "not applied",
-   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on"
   },
   {
    "network_cm": 3240.8,
@@ -1154,7 +1157,7 @@
    "step_error_measured": null,
    "step_family": null,
    "no_step_reason": "not applied",
-   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on"
   },
   {
    "network_cm": 3251.2,
@@ -1181,7 +1184,7 @@
    "step_error_measured": null,
    "step_family": null,
    "no_step_reason": "not applied",
-   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)"
+   "position_note": "harmonic position, no anharmonic step: the step was not applied to this molecule — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on"
   }
  ],
  "tolerance": {
@@ -1252,11 +1255,11 @@
   "concerns": "the licence (decision 65) is on the harmonic position ω against the DFT proxy (ωB97X); it says nothing about the anharmonic position ν"
  },
  "positions": {
-  "note": "positions are harmonic (ω): the anharmonic step was not applied — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)",
+  "note": "positions are harmonic (ω): the anharmonic step was not applied — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on",
   "cautions": {},
   "anharmonic": {
    "status": "not applied",
-   "reason": "the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)",
+   "reason": "the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on",
    "model": "x2*",
    "field": null
   },
@@ -1266,8 +1269,8 @@
   {
    "number": 1,
    "delivery": "only: harmonic, the anharmonic step is switched off",
-   "at": "2026-11-18 07:28:52",
-   "seconds_since_start": 2.0,
+   "at": "2026-11-18 20:58:43",
+   "seconds_since_start": 2.2,
    "final_by": null
   }
  ],
@@ -1275,25 +1278,25 @@
  "cost": {
   "steps_s": {
    "reuse": 0.5,
-   "correction_and_spectra": 0.9
+   "correction_and_spectra": 1.1
   },
   "machine": "Asus18",
   "machine_class": "laptop",
-  "seconds": 1.4,
+  "seconds": 1.6,
   "hours": 0.0,
   "eur_ex_vat": 0.0,
   "source": "corpus ledger machine column 'Asus18'"
  },
  "provenance": {
   "result": "C:\\Users\\thebr\\Documents\\CapstonePlan\\plans\\05_delta-probed-ir-pipeline\\probes\\results_m1\\pipeline_benzene_v14_2026-11-17\\benzene",
-  "run_commit": "ed8a8e34c3d8956e81b29fab7af625f5eb2b8c4c",
+  "run_commit": "6ee43785f31c60363fb864617d88295e59b306b5",
   "run_dirty": "yes",
-  "certificate_commit": "ed8a8e34",
+  "certificate_commit": "6ee43785",
   "deck_sha16": "9e27bf8e934893f3",
   "low_level_software": null,
   "host": "Asus18",
-  "note": "positions are harmonic (ω): the anharmonic step was not applied — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)",
+  "note": "positions are harmonic (ω): the anharmonic step was not applied — the step exists and was not run: it is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on",
   "reused_from": "C:\\Users\\thebr\\Documents\\CapstonePlan\\plans\\05_delta-probed-ir-pipeline\\modules\\05_support_predictor\\corpus\\molecules\\A_8448043181"
  },
- "statement": "benzene: the infrared spectrum of ΔH-network v1.4 (3 seeds) — B3LYP/6-31G* corrected toward ωB97X/6-31G*. The spectrum is made by the release networks of version 1.4, trained on all 1132 molecules with labels: each of the 3 networks is fitted on a random 85 % of the molecules and stopped on the other 15 %, a different 15 % per seed, so not every molecule is fitted by every network (with 3 networks about 0.15³ ≈ 0.3 % by none). Its error bars were measured on the measurement networks of the same version — the same recipe trained without the hold-out molecules — on molecules those networks never saw; the release networks themselves have seen every molecule we hold labels for, so they have no held-out error of their own. The error stated is the measurement networks' error of the corrected band positions of the seed-mean correction; the harmonic positions ω are licensed for ring-ip, CH-stretch, CH-oop, other (decision 65), each band marked; at the coupled-cluster level not measured for this network version: the coupled-cluster reads (T3) were made on chain 34, and tests on the 9–11 existing anchors wait for the anchor decision of November 2026. The scaled B3LYP spectrum is shown as the baseline only. This molecule and the ΔH network: in the release networks' training data: the error bars are not an out-of-sample error for this molecule; expect it to be smaller. Licence caveat: CH-oop on hold-out (a) rests on 5 of the hold-out's 8 molecules (the others have no such band): the 95 % interval of a bootstrap over molecules is 0.93–3.2 cm⁻¹ and crosses the line (96 % of the resamples lie under it); other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.45–3.19 cm⁻¹ and crosses the line (93 % of the resamples lie under it)."
+ "statement": "benzene: the infrared spectrum of ΔH-network v1.4 (3 seeds) — B3LYP/6-31G* corrected toward ωB97X/6-31G*. The spectrum is made by the release networks of version 1.4, trained on the 1132 labelled entries of their training pool, hold-outs (a) and (b) included: each of the 3 networks is fitted on a random 85 % of the molecules and stopped on the other 15 %, a different 15 % per seed, so not every molecule is fitted by every network (with 3 networks about 0.15³ ≈ 0.3 % by none). Its error bars were measured on the measurement networks of the same version — the same recipe trained without the hold-out molecules — on molecules those networks never saw; the release networks themselves have seen the molecules of hold-outs (a) and (b), so they have no held-out error of their own. The error stated is the measurement networks' error of the corrected band positions of the seed-mean correction; the harmonic positions ω are licensed for ring-ip, CH-stretch, CH-oop, other (decision 65), each band marked; at the coupled-cluster level not measured for this network version: the coupled-cluster reads (T3) were made on an earlier network (chain 34). The scaled B3LYP spectrum is shown as the baseline only. This molecule and the ΔH network: in the release networks' training data: the error bars are not an out-of-sample error for this molecule; expect it to be smaller."
 }
