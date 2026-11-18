@@ -33,7 +33,7 @@ def test_benzene_leads_with_the_cc_anchor_and_keeps_the_cheap_card():
     h = page("A_8448043181")
     assert leads_with(h, "Infrared spectrum at the anchor level") and "own coupled-cluster dipole derivatives" in h          # the apostrophe is HTML-escaped
     assert "Compared with the cheap Hessian (B3LYP, analytic, the same dipole derivatives): spectrum overlap 0.26" in h
-    assert "Infrared spectrum at the cheap level" in h and "How well is this shape known?" in h   # the cheap card follows, below the lead
+    assert "Infrared spectrum at the cheap level" in h and "How well is this spectrum known?" in h   # the cheap card follows, below the lead
 
 
 def test_benzonitrile_says_its_heights_use_cheap_dipole_derivatives():
@@ -123,3 +123,18 @@ def test_methods_source_blocks_take_keyboard_focus():
     assert sources and all('tabindex="0"' in s and 'role="region"' in s and "aria-label=" in s for s in sources)
     outs = re.findall(r'<div class="mermaid-out"[^>]*>', h)
     assert len(outs) == len(sources) and all('role="figure"' in o for o in outs)
+
+
+def test_the_accuracy_card_states_the_licence_on_the_test_sets_against_the_dft_proxy():
+    """v1.4 on the Atlas (18 Nov 2026): the licence per family on test sets (a)/(b) as exported, against wB97X and not coupled cluster,
+    with the release / measurement networks said (decision 66); reader text says 'test set' (TASKS 261)."""
+    with open(os.path.join(OUT, "summary.json"), encoding="utf-8") as f:
+        summary = json.load(f)
+    acc = summary["shape_accuracy"]
+    card = lead_card(page("A_07cadc7923"))
+    for family in acc["holdouts"]["a"]["product"]:
+        for h in "ab":
+            assert f">{acc['holdouts'][h]['product'][family]['rms']:.2f}" in card, (family, h)
+    assert "test set (a)" in card and "test set (b)" in card and "hold-out" not in card
+    assert "measurement networks" in card and ("release networks" in card) == (summary["networks"]["kind"] == "release")
+    assert "against ωB97X/6-31G*" in card and "not against coupled cluster" in card and f"v{acc['version']}" in card

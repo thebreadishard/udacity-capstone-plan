@@ -49,7 +49,7 @@ first; `body` is the first 300 characters. Nothing is rewritten; corrections app
 ## `summary.json`
 
 `built_utc`, `n_molecules`, `rung_counts` (sum = n_molecules — checked), `layer_counts`, `source_counts`, `rungs`, `sources` (SHA-256 of manifest and ledger),
-`releases`, `n_changelog`; since 10 Oct 2026 `n_with_intensities` (pages with band heights) and `shape_accuracy` (the measured accuracy of the spectral shape, read by module 08's `m08.spectrum.measured_accuracy` from module 05's records).
+`releases`, `n_changelog`; since 10 Oct 2026 `n_with_intensities` (pages with band heights) and `shape_accuracy` (the measured accuracy of the spectral shape, read by module 08's `m08.spectrum.measured_accuracy` from module 05's records). Since 18 Nov 2026 `shape_accuracy` is `m08.accuracy.carried_accuracy()` — the carried version's `version`, `higher_level` and per hold-out (`a`, `b`; 'test set' in reader text) the first-order `readouts`, the `product` error per family that the licence reads, and the `shape` — and `licence` holds `licensed_families`, `statement` and `rule_source`. `networks` (decision 66, `m08.pipeline.product_networks`): `kind` (`release` or `measurement`) of the networks that make the printed spectra, `n_networks`, `held_back` (why release networks were not used, or null), `measurement_networks`, and for release networks `trained_on_entries` and `fitting`. Analytic-only corpus folders (layers T and D, TASKS 49) are read from `hessian_<tag>_analytic.npz` and carry no `second_route`.
 
 ## Invariants the build enforces
 

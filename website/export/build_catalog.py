@@ -5,7 +5,8 @@ checks, the anchor registry (`modules/05_support_predictor/out/ANCHORS_STATUS.js
 its file is the evidence — 7 Oct 2026) and the fixed list of validated molecules below. Outputs:
   out/catalog.json           one row per manifest molecule: identity, size, source, rung, flags, release membership, formula and InChIKey (RDKit)
   out/molecules/<id>.json    per computed molecule: geometry, frequency lists per functional, imaginary counts, timings, deck, second route, releases
-  out/summary.json           rung, layer and source counts, data freshness, source hashes
+  out/summary.json           rung, layer and source counts, data freshness, source hashes, the carried network's accuracy, licence and
+                             network pair (decision 66: release networks print, measurement networks measure)
 The script fails (non-zero exit) when an invariant breaks: a catalog id without a manifest row, a frequency list whose length is not 3N, rung
 counts that do not add up, a computed molecule without both Hessians. Nothing here is typed by hand; the anchored/validated list names its files.
 
@@ -35,6 +36,8 @@ SOURCES = {
     "P3c": "pool 3, chosen by rule (decision 54): cations of finished parents",
     "G": "proposed by the candidate generator (module 06): a new fused ring system",
     "R4": "rung 4 of the size ladder, chosen by rule: four-ring families as broad sets (TASKS 61)",
+    "T": "large PAHs from NASA Ames PAHdb for the size test of lever 5 (TASKS 49), coronene to hexa-peri-hexabenzocoronene",
+    "D": "PAHs of 22 to 34 carbons from NASA Ames PAHdb for the size test of lever 5 (TASKS 49)",
 }
 
 
@@ -44,6 +47,38 @@ def source_of(r):
     if r["layer"] == "G":
         s += ", known to PubChem" if "pubchem yes" in r.get("note", "") else ", not in PubChem"
     return s
+
+
+def hessian_path(mdir: str, tag: str, analytic_only: bool) -> str:
+    """The Hessian file the corpus labels a functional with: the finite-difference `hessian_<tag>.npz`, or for an analytic-only folder
+    (module 05's `is_analytic_only`, TASKS 49) the analytic `hessian_<tag>_analytic.npz`."""
+    return os.path.join(mdir, f"hessian_{tag}_analytic.npz" if analytic_only else f"hessian_{tag}.npz")
+
+
+def second_route_of(mdir: str, analytic_only: bool) -> dict | None:
+    """Per functional the largest frequency difference (cm⁻¹) and dH_max between the analytic second route and the corpus's
+    finite-difference Hessian; None without a check. An analytic-only folder has no finite-difference Hessian — its labels are the
+    analytic ones — so there is nothing to compare and None is returned; any other check without corpus frequencies raises."""
+    path = os.path.join(mdir, "analytic_check.json")
+    if analytic_only or not os.path.exists(path):
+        return None
+    with open(path, encoding="utf-8") as f:
+        chk = json.load(f)
+    return {tag: dict(max_abs_dfreq_cm=float(np.abs(np.array(v["freq_analytic"]) - np.array(v["freq_corpus"])).max()), dH_max=v["dH_max"])
+            for tag, v in chk.items()}
+
+
+def network_pair(pipeline) -> dict:
+    """Decision 66's pair of the carried version, as module 08's pipeline runs it (`m08.pipeline.product_networks`): which kind makes
+    the printed spectra, how many networks, and for release networks the number of training-pool entries they trained on and how each
+    used them; the errors and the licence are always the measurement networks'."""
+    made = pipeline.product_networks()
+    out = dict(kind=made.kind, n_networks=len(made.models), held_back=made.held_back,
+               measurement_networks=len(pipeline.carried_models(pipeline.NK.MEASUREMENT)), trained_on_entries=None, fitting=None)
+    if made.kind == pipeline.NK.RELEASE:
+        share = pipeline.inner_validation_share(made.models)
+        out |= dict(trained_on_entries=len(pipeline.train_ids(made.models)), fitting=pipeline.NK.fitting_sentence(len(made.models), share))
+    return out
 
 def anchored_from_registry(plan: str) -> tuple[dict, dict]:
     """7 Oct 2026: {mol_id: [evidence path]} and {mol_id: level} for every carried entry of the anchor registry — the best coupled-cluster Hessian of
@@ -167,13 +202,15 @@ def heights_for(shape: dict, listed: list[float]) -> list[float] | None:
     return out
 
 
-def build(repo, out, limit=None):
+def build(repo, out, limit=None):  # noqa: C901, PLR0912, PLR0915  one export loop older than the gate; splitting it needs a pinned-output test first
     plan = os.path.join(repo, "plans", "05_delta-probed-ir-pipeline"); corpus = os.path.join(plan, "modules", "05_support_predictor", "corpus")
     sys.path.insert(0, os.path.join(plan, "modules", "08_industry_synthesis"))
     # TASKS 44: one implementation of the band heights for module 08's certificate and the Atlas
     from m08 import spectrum as shape_mod
     from m08.accuracy import carried_accuracy
     from m08.licence import state as licence_state
+    from m08 import pipeline as pipeline_mod
+    from learning_curve_layerA import is_analytic_only     # module 05, on the path through m08.pipeline
     manifest_p = os.path.join(corpus, "manifest.csv"); ledger_p = os.path.join(corpus, "ledger.csv")
     manifest = list(csv.DictReader(open(manifest_p, encoding="utf-8")))
     if limit:
@@ -221,17 +258,18 @@ def build(repo, out, limit=None):
                    rung=0, rung_label="listed", flags=[], releases=releases.get(mid, []), manifest_status=r["status"])
         if computed:
             res = json.load(open(result_p, encoding="utf-8"))
+            analytic_only = is_analytic_only(mdir)
             for tag in ("b3lyp", "wb97x"):
-                hp = os.path.join(mdir, f"hessian_{tag}.npz")
+                hp = hessian_path(mdir, tag, analytic_only)
                 if not os.path.exists(hp):
                     problems.append(f"{mid}: computed but no {tag} Hessian"); continue
             row["rung"] = 1
             n_im = {tag: int(res.get(f"n_imaginary_{tag}", 0)) for tag in ("b3lyp", "wb97x")}
             if any(n_im.values()):
                 row["flags"].append(verdicts.get(mid, "imaginary_mode_under_review"))
-            if os.path.exists(os.path.join(mdir, "analytic_check.json")):
-                chk = json.load(open(os.path.join(mdir, "analytic_check.json"), encoding="utf-8"))
-                worst = max(float(np.abs(np.array(v["freq_analytic"]) - np.array(v["freq_corpus"])).max()) for v in chk.values())
+            second = second_route_of(mdir, analytic_only)
+            if second is not None:
+                worst = max(v["max_abs_dfreq_cm"] for v in second.values())
                 row["flags"].append("second_route_agrees" if worst <= 15 else "second_route_disagrees")
             if mid in replaced:
                 row["flags"].append("replaced_by_second_route")
@@ -243,7 +281,7 @@ def build(repo, out, limit=None):
                        ledger=ledger.get(mid), second_route=None, intensities_km_mol=None, shape=None, predicted_spectrum=None,
                        anchor_spectrum=None, comparison=None, test_prediction=None)
             for tag in ("b3lyp", "wb97x"):
-                z = np.load(os.path.join(mdir, f"hessian_{tag}.npz")); fr = np.asarray(z["freq_cm"], float)
+                z = np.load(hessian_path(mdir, tag, analytic_only)); fr = np.asarray(z["freq_cm"], float)
                 if len(fr) != 3 * N:
                     problems.append(f"{mid}: {tag} frequency list has {len(fr)} entries, 3N = {3 * N}")
                 mol["frequencies_cm"][tag] = dict(all=fr.round(2).tolist(), vibrational=vib_only(fr).round(2).tolist())
@@ -262,9 +300,7 @@ def build(repo, out, limit=None):
                     mol["comparison"] = shape_mod.comparison(mid, an)
                     mol["test_prediction"] = shape_mod.test_prediction(mid, an)
                     n_anchor_spectra += 1
-            if os.path.exists(os.path.join(mdir, "analytic_check.json")):
-                chk = json.load(open(os.path.join(mdir, "analytic_check.json"), encoding="utf-8"))
-                mol["second_route"] = {tag: dict(max_abs_dfreq_cm=float(np.abs(np.array(v["freq_analytic"]) - np.array(v["freq_corpus"])).max()), dH_max=v["dH_max"]) for tag, v in chk.items()}
+            mol["second_route"] = second
             json.dump(mol, open(os.path.join(out, "molecules", mid + ".json"), "w", encoding="utf-8"), ensure_ascii=False)
         if mid in ANCHORED:
             row["rung"] = 4; row["evidence"] = ANCHORED[mid]; row["anchor_level"] = anchor_level[mid]
@@ -291,7 +327,7 @@ def build(repo, out, limit=None):
     summary = dict(built_utc=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), n_molecules=len(catalog), rung_counts=counts, layer_counts=layer_counts, source_counts=source_counts,
                    rungs=RUNGS, sources=dict(manifest=sha256(manifest_p), ledger=sha256(ledger_p)), releases=sorted({n for v in releases.values() for n in v}),
                    n_changelog=len(changelog), n_with_intensities=n_heights, n_anchor_spectra=n_anchor_spectra, shape_accuracy=accuracy,
-                   licence={k: licence[k] for k in ("licensed_families", "statement", "rule_source")})
+                   licence={k: licence[k] for k in ("licensed_families", "statement", "rule_source")}, networks=network_pair(pipeline_mod))
     json.dump(summary, open(os.path.join(out, "summary.json"), "w", encoding="utf-8"), indent=1)
     return summary
 

@@ -9,7 +9,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, ".."))
 import build_catalog as bc  # noqa: E402
 
-REPO = os.path.abspath(os.path.join(HERE, "..", "..", ".."))
+# ATLAS_REPO: a worktree has the code but not the ignored corpus data; point the build at a checkout that has them
+REPO = os.environ.get("ATLAS_REPO") or os.path.abspath(os.path.join(HERE, "..", "..", ".."))
 CORPUS = os.path.join(REPO, "plans", "05_delta-probed-ir-pipeline", "modules", "05_support_predictor", "corpus", "molecules")
 
 
@@ -34,7 +35,7 @@ def test_heights_for_benzene_aligned_and_none_for_naphthalene(built):
     n = read("A_01f3186607.json")
     assert n["intensities_km_mol"] is None and n["shape"] is None
     assert summary["n_with_intensities"] >= 1 and summary["shape_accuracy"]["holdouts"]["a"]["shape"]["corrected"]["spectrum_overlap"] > 0.9
-    assert summary["licence"]["licensed_families"] == ["ring-ip", "CH-stretch", "CH-oop"]
+    assert summary["licence"]["licensed_families"] == ["ring-ip", "CH-stretch", "CH-oop", "other"]   # v1.4, carried since 18 Nov 2026
 
 
 def test_anchor_pages_carry_the_anchor_spectrum(built):
@@ -130,6 +131,7 @@ def test_source_per_layer(built):
     assert known.endswith("known to PubChem") and new.endswith("not in PubChem")
     assert bc.source_of(dict(layer="C", note="")) == bc.SOURCES["C"]
     assert bc.source_of(dict(layer="R4", note="rung4 chrysene")) == bc.SOURCES["R4"]          # 15 Oct 2026: rung 4's rows, TASKS 61
+    assert bc.source_of(dict(layer="T", note="")) == bc.SOURCES["T"] and bc.source_of(dict(layer="D", note="")) == bc.SOURCES["D"]
     with pytest.raises(KeyError):
         bc.source_of(dict(layer="Z", note=""))
 
@@ -149,3 +151,28 @@ def test_anchor_readings_travel_with_the_registry_file(built):
     out, _ = built
     b = {r["id"]: r for r in json.load(open(out / "catalog.json", encoding="utf-8"))}["A_8448043181"]
     assert any(f.endswith("R0_DIAGONAL_READING_2026-09-22.md") for f in b["evidence"][1:])
+
+
+def test_an_analytic_only_folder_reads_its_analytic_hessians(built):
+    """TASKS 49's large PAHs carry analytic labels only: no finite-difference Hessian, and an analytic check without corpus
+    frequencies. The export reads the analytic files and states no second route; a finite-difference folder with such a check raises."""
+    from learning_curve_layerA import is_analytic_only    # on the path once build() has run
+    mdir = os.path.join(CORPUS, "T_94b3a9d13a")              # coronene
+    if not os.path.isdir(mdir):
+        pytest.skip("no corpus data in this checkout (set ATLAS_REPO)")
+    assert is_analytic_only(mdir)
+    assert bc.hessian_path(mdir, "b3lyp", True).endswith("hessian_b3lyp_analytic.npz")
+    assert bc.hessian_path(mdir, "b3lyp", False).endswith("hessian_b3lyp.npz")
+    assert bc.second_route_of(mdir, True) is None
+    with pytest.raises(KeyError):
+        bc.second_route_of(mdir, False)
+
+
+def test_summary_states_the_network_pair(built):
+    """Decision 66: the summary says which networks print the spectra; errors and licence are the measurement networks'."""
+    _, summary = built
+    pair, acc = summary["networks"], summary["shape_accuracy"]
+    assert pair["kind"] in ("release", "measurement") and pair["measurement_networks"] >= 1
+    if pair["kind"] == "release":
+        assert pair["trained_on_entries"] > 0 and pair["fitting"].startswith("each of the") and pair["held_back"] is None
+    assert acc["version"] and set(summary["licence"]["licensed_families"]) <= set(acc["holdouts"]["a"]["product"])
