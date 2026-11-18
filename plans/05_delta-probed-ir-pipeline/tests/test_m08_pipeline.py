@@ -53,15 +53,19 @@ def test_settings_that_do_not_combine_are_refused_when_built(tmp_path, kw, match
         config(tmp_path, **kw)
 
 
-def test_the_default_models_are_the_carried_measurement_seeds_of_one_version():
-    models = P.carried_models(P.NK.MEASUREMENT)
-    assert P.carried_models(P.NK.RELEASE) == ()                # no version has release networks yet (decision 66)
+def test_the_carried_networks_are_three_seeds_of_one_version_per_kind_the_same_for_both():
     with pytest.raises(ValueError, match="network kind"):
         P.carried_models("both")
     status = P.MR.read_status(P.MR.STATUS_FILE)
-    keys = [P.MR.checkpoint_key(m, P.MR.OUT) for m in models]          # the registry keys a checkpoint by its path under out/
-    assert len(models) == 3 and len({status[k]["version"] for k in keys}) == 1
-    assert all(status[k]["network"] == P.NETWORK and status[k]["status"] == "carried" for k in keys)
+    versions = set()
+    for kind in (P.NK.MEASUREMENT, P.NK.RELEASE):
+        models = P.carried_models(kind)
+        keys = sorted(P.MR.checkpoint_key(m, P.MR.OUT) for m in models)      # the registry keys a checkpoint by its path under out/
+        assert keys == P.MR.carried_keys(status, P.NETWORK, kind)
+        assert sorted(m.stem.rpartition("_seed")[2] for m in models) == ["0", "1", "2"]
+        assert all(status[k]["network"] == P.NETWORK and status[k]["status"] == "carried" for k in keys)
+        versions |= {str(status[k]["version"]) for k in keys}
+    assert len(versions) == 1
 
 
 @pytest.mark.parametrize("smiles, reason", [
