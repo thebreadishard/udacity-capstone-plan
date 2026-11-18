@@ -207,12 +207,27 @@ def test_the_read_stores_the_label_files_hashes_and_can_state_its_peak_memory(tm
     out = PE.read_holdouts(cfg, (), {"a": ("a8", [BENZENE])})
     assert out["a"]["label_sha16"] == {BENZENE: {name: PE.P.sha16(folder / name) for name in PE.LABELS}}
     assert len(out["a"]["label_sha16"][BENZENE]) == 2 and 0.0 < PE.peak_memory_gb() < 64.0
-    assert {"label_sha16", "run"} <= set(PE.DEFINITIONS)
+    assert {"label_sha16", "run", "family_differences"} <= set(PE.DEFINITIONS)
+    assert out["a"]["family_differences"]["n_modes"] == len(out["a"]["family_differences"]["modes"])
 
 
 def synthetic_read(first: list[list[float]], band: list[float], families: list[str], band_families: list[str] | None = None) -> PE.MoleculeRead:
     fam = np.array(families)
-    return PE.MoleculeRead(fam, fam, np.array(first, float), fam if band_families is None else np.array(band_families), np.array(band, float))
+    return PE.MoleculeRead(fam, fam, np.array(first, float), fam if band_families is None else np.array(band_families), np.array(band, float),
+                           np.arange(len(fam), dtype=float))
+
+
+def test_the_modes_whose_two_families_differ_are_named():
+    """One rule on two Hessians: a mode near a threshold counted in one family by the records and another by the certificate is named,
+    with its molecule, index and analytic frequency."""
+    same = synthetic_read([[1.0, 1.0]], [1.0, 1.0], ["other", "CH-oop"])
+    moved = PE.MoleculeRead(np.array(["other", "other", "ring-ip"]), np.array(["other", "CH-oop", "ring-ip"]), np.zeros((1, 3)),
+                            np.array(["other", "CH-oop", "ring-ip"]), np.zeros(3), np.array([500.0, 853.9, 1200.0]))
+    assert PE.family_differences(["A_same", "A_moved"], [same, moved]) == {
+        "n_modes": 1, "modes": [{"molecule": "A_moved", "mode": 1, "freq_cm": 853.9, "record_family": "other", "certificate_family": "CH-oop"}]}
+    assert PE.family_differences(["A_same"], [same]) == {"n_modes": 0, "modes": []}
+    oop = PE.family_summary([same, moved], "CH-oop")
+    assert (oop["first_order"]["n_modes"], oop["first_order_certificate_families"]["n_modes"]) == (1, 2)
 
 
 def test_the_summary_counts_modes_and_molecules_and_averages_the_seeds_rms():
