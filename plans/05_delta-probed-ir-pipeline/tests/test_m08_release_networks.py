@@ -1,7 +1,7 @@
 """Decision 66 (17 Nov 2026) in the pipeline and the live certificate: step 4 runs the carried version's release networks once their
 checks record has passed for exactly those files; the error bars, the licence and the seen index of the measurement networks stay
 those of the measurement networks; the certificate carries design note §3's sentence and the release networks' seen line. With no
-release network — today — the admission's record, the statement and the whole certificate are what they were.
+release network the admission's record, the statement and the whole certificate are what they were.
 
 On made-up registries and tiny checkpoint files, v1.3's committed records, and the frozen corpus's benzene with a zero correction."""
 from __future__ import annotations
@@ -56,12 +56,14 @@ def version(tmp_path, monkeypatch):
     return measurement, release, checks, listed, entered
 
 
-def test_today_the_product_is_the_carried_measurement_networks():
-    """The committed registry: no version has release networks, so step 4's default models are what they were."""
+def test_the_product_is_the_carried_release_networks_whose_checks_record_passed():
+    """The committed registry and the tracked checks record beside the release checkpoints: step 4 runs the carried release networks.
+    The record is compared by file name everywhere and by hash only where a checkpoint is on this machine (`release_checks_reason`
+    skips an absent file's hash): in CI, which has no checkpoints, this test checks the names and the record's verdict, not the files."""
     product = P.product_networks()
-    assert product == P.ProductNetworks(P.carried_models(NK.MEASUREMENT), NK.MEASUREMENT, None) and len(product.models) == 3
     status = P.MR.read_status(P.MR.STATUS_FILE)
-    assert [P.MR.checkpoint_key(p, P.MR.OUT) for p in product.models] == P.MR.carried_keys(status, P.NETWORK, NK.MEASUREMENT)
+    assert (product.kind, product.held_back, len(product.models)) == (NK.RELEASE, None, 3)
+    assert sorted(P.MR.checkpoint_key(p, P.MR.OUT) for p in product.models) == P.MR.carried_keys(status, P.NETWORK, NK.RELEASE)
 
 
 def test_release_networks_are_the_product_only_after_their_checks_passed_for_these_files(version, tmp_path):
@@ -177,8 +179,7 @@ def test_the_release_index_keeps_the_cation_rows_apart(tmp_path, monkeypatch):
     monkeypatch.setattr(P, "train_ids", lambda models: {"A_benz", "B_tol", "P3c_benz"})
     index = S.release_index(())
     assert (index.trained, index.holdout, index.cations) == ({"c1ccccc1": ["A_benz"], "Cc1ccccc1": ["B_tol"]}, {}, {"c1ccccc1": ["P3c_benz"]})
-    got = S.status("c1ccccc1", SEEN, "A_benz", index)
-    assert (got["role"], got["cation_trained"]) == ("release_trained", ["P3c_benz"]) and "radical cation (P3c_benz)" in got["text"]
+    assert S.status("c1ccccc1", SEEN, "A_benz", index) == {"role": "release_trained", "ids": ["A_benz"], "text": S.TEXT["release_trained"]}
 
 
 def test_the_share_a_network_is_stopped_on_is_its_checkpoints_own(tmp_path):

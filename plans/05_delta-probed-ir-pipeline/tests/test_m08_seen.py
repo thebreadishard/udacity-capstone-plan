@@ -118,21 +118,33 @@ BOTH = S.build({"A_naph", "B_twin", "P3c_naph", "P3c_cn"}, {"a": {"A_benz", "A_c
                CATIONS | {"P3c_cn": "N#Cc1ccccc1"})
 
 
-@pytest.mark.parametrize(("smiles", "role", "ids", "cation"), [
-    ("c1ccc2ccccc2c1", "trained", ["A_naph"], "P3c_naph"),                   # trained itself, and its cation too
-    ("N#Cc1ccccc1", "trained_and_held_out", ["B_twin"], "P3c_cn"),           # a hold-out twin trained, and its cation too
-])
-def test_a_trained_cation_beside_a_trained_parent_adds_its_clause(smiles, role, ids, cation):
-    got = S.status(smiles, BOTH, None)
-    assert (got["role"], got["ids"], got["cation_trained"]) == (role, ids, [cation])
-    assert got["text"] == f"{S.status(smiles, SEEN, None)['text']}; " + S.TEXT["cation_trained"].format(ids=cation)
+@pytest.mark.parametrize("smiles", ["c1ccc2ccccc2c1", "N#Cc1ccccc1"])     # trained itself / a hold-out twin trained; each cation too
+def test_networks_that_trained_the_molecule_itself_give_no_cation_clause(smiles):
+    assert S.status(smiles, BOTH, None) == S.status(smiles, SEEN, None)
+    assert BOTH.cations == {"c1ccc2ccccc2c1": ["P3c_naph"], "N#Cc1ccccc1": ["P3c_cn"]}
 
 
-def test_the_cations_of_measurement_and_release_networks_are_one_list():
-    release = S.build({"A_naph", "P3c_benz", "P3c_benz2"}, {}, SMILES, CATIONS | {"P3c_benz2": "C1=CC=CC=C1"})
-    got = S.status("c1ccccc1", WITH_CATIONS, "A_benz", release)
-    assert (got["role"], got["cation_trained"]) == ("a", ["P3c_benz", "P3c_benz2"])
-    assert got["text"].count("radical cation (P3c_benz, P3c_benz2)") == 1
+RELEASED = {"A_naph", "B_twin", "A_benz", "A_cn"}                         # the measurement set and its hold-outs (decision 66)
+
+
+def test_the_cations_are_the_release_networks_own_when_they_made_the_spectrum():
+    release = S.build(RELEASED | {"P3c_tol2", "P3c_pyr"}, {}, SMILES,
+                      CATIONS | {"P3c_tol2": "CC1=CC=CC=C1", "P3c_pyr": "c1ccc2cc3ccccc3cc2c1"})
+    got = S.status("Cc1ccccc1", WITH_CATIONS, "B_tol", release)          # the measurement networks' P3c_tol is not theirs
+    assert (got["role"], got["cation_trained"]) == ("catalogue", ["P3c_tol2"])
+    assert got["text"] == f"{S.status('Cc1ccccc1', SEEN, 'B_tol')['text']}; " + S.TEXT["cation_trained"].format(ids="P3c_tol2")
+    unseen = S.status("c1ccc2cc3ccccc3cc2c1", WITH_CATIONS, None, release)
+    assert (unseen["role"], unseen["cation_trained"]) == ("unseen", ["P3c_pyr"])
+    assert unseen["text"] == S.TEXT["unseen_neutral"] + "; " + S.TEXT["cation_trained"].format(ids="P3c_pyr")
+    no_cation = S.status("Cc1ccccc1", WITH_CATIONS, "B_tol", S.build(RELEASED, {}, SMILES))
+    assert no_cation == S.status("Cc1ccccc1", SEEN, "B_tol")
+    trained_itself = S.status("c1ccccc1", WITH_CATIONS, "A_benz", S.build(RELEASED | {"P3c_benz"}, {}, SMILES, CATIONS))
+    assert trained_itself == {"role": "release_trained", "ids": ["A_benz"], "text": S.TEXT["release_trained"]}
+
+
+def test_release_networks_that_lack_a_molecule_the_measurement_networks_trained_are_refused():
+    with pytest.raises(ValueError, match="c1ccc2ccccc2c1: the measurement networks trained on it"):
+        S.status("c1ccc2ccccc2c1", SEEN, None, S.build({"A_benz"}, {}, SMILES))
 
 
 def test_an_unseen_molecule_with_a_trained_cation_is_unseen_as_a_neutral_one():

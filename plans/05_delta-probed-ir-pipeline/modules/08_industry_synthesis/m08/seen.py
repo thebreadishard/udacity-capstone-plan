@@ -108,11 +108,18 @@ def load(models: tuple[Path, ...]) -> Seen:
 def status(smiles: str, seen: Seen, listed_id: str | None, release: Seen | None = None) -> dict:
     """Trained on, held out, in the catalogue only, or unseen; with the ids and the certificate's sentence. `release` (`release_index`) is
     given when release networks made the spectrum: a molecule in their training data gets decision 66's line, whatever it is to the
-    measurement networks; any other molecule is read as always. A molecule whose radical cation either set of networks trained on keeps
-    its role and gains `cation_trained` and a clause saying so; for every other molecule the record is as it was."""
+    measurement networks; any other molecule is read as always. A molecule whose radical cation the networks that made the spectrum
+    (the release networks when `release` is given, else the measurement networks) trained on, while they did not train on the molecule
+    itself, keeps its role and gains `cation_trained` and a clause saying so: networks that fitted the molecule's own answer are not
+    what the cation test measured. For every other molecule the record is as it was. Release networks that lack a molecule the
+    measurement networks trained on are refused: decision 66's release set holds the measurement set."""
     c = canonical(smiles)
+    if release is not None and c in seen.trained and c not in release.trained:
+        raise ValueError(f"{smiles}: the measurement networks trained on it ({', '.join(seen.trained[c])}) and the release networks did "
+                         "not; a release set holds its measurement set (decision 66)")
     got = role_of(c, seen, listed_id, release)
-    cations = sorted(set(seen.cations.get(c, [])) | set(release.cations.get(c, []) if release is not None else []))
+    ran = seen if release is None else release
+    cations = [] if c in ran.trained else ran.cations.get(c, [])
     if not cations:
         return got
     head = TEXT["unseen_neutral"] if got["role"] == "unseen" else got["text"]        # its parent row is the corpus's, the catalogue lacks it
