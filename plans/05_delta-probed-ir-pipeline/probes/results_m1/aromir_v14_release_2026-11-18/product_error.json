@@ -1,0 +1,662 @@
+{
+ "release": "measurement",
+ "source_of_sets": "E7_rungC_v14s3clean_c00_control_eval_clean_seed0.json",
+ "sets": {
+  "a8": {
+   "n_molecules": 8,
+   "ids": [
+    "A_08dde334d8",
+    "A_428228e5a5",
+    "A_541c53d1a5",
+    "A_72b86c2331",
+    "A_8448043181",
+    "A_bce5bae234",
+    "A_e72997e726",
+    "A_fdc27f1bd1"
+   ],
+   "aromir_order_equals_corpus_order": 7,
+   "largest_band_error_change_between_orders_cm": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.5711993013503616,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "corpus": {
+    "mean": {
+     "ring-ip": {
+      "first_order": 1.2040118311987282,
+      "band": 1.1688511434581206,
+      "n_modes": 199
+     },
+     "CH-stretch": {
+      "first_order": 0.8097874914889711,
+      "band": 0.8010864012312572,
+      "n_modes": 73
+     },
+     "CH-oop": {
+      "first_order": 1.904088933509054,
+      "band": 1.8609286056534091,
+      "n_modes": 46
+     },
+     "other": {
+      "first_order": 2.4573966339754416,
+      "band": 2.377708493107355,
+      "n_modes": 156
+     }
+    },
+    "seed0": {
+     "ring-ip": {
+      "first_order": 1.7664287357420412,
+      "band": 1.684586035358597,
+      "n_modes": 199
+     },
+     "CH-stretch": {
+      "first_order": 1.3413175371287005,
+      "band": 1.3230908371211585,
+      "n_modes": 73
+     },
+     "CH-oop": {
+      "first_order": 2.2218310665545316,
+      "band": 2.1722482241786816,
+      "n_modes": 46
+     },
+     "other": {
+      "first_order": 2.7897294802337678,
+      "band": 2.6937844377549798,
+      "n_modes": 156
+     }
+    },
+    "seed1": {
+     "ring-ip": {
+      "first_order": 1.5154128553881412,
+      "band": 1.4724013294849985,
+      "n_modes": 199
+     },
+     "CH-stretch": {
+      "first_order": 1.1893106006683778,
+      "band": 1.179791885795402,
+      "n_modes": 73
+     },
+     "CH-oop": {
+      "first_order": 2.100782941745932,
+      "band": 2.0468119752301726,
+      "n_modes": 46
+     },
+     "other": {
+      "first_order": 3.1022337083864113,
+      "band": 3.009506001308733,
+      "n_modes": 156
+     }
+    },
+    "seed2": {
+     "ring-ip": {
+      "first_order": 1.3704944422904932,
+      "band": 1.3898173922381578,
+      "n_modes": 199
+     },
+     "CH-stretch": {
+      "first_order": 0.9187342502228489,
+      "band": 0.9111422200482171,
+      "n_modes": 73
+     },
+     "CH-oop": {
+      "first_order": 2.3458901430698824,
+      "band": 2.2989963703440464,
+      "n_modes": 46
+     },
+     "other": {
+      "first_order": 2.8419270114286728,
+      "band": 2.6770285050893277,
+      "n_modes": 156
+     }
+    },
+    "mean_band_bootstrap": {
+     "ring-ip": {
+      "p2.5": 0.8972871599640321,
+      "p97.5": 1.4069697358906395,
+      "share_below_line": 1.0,
+      "line": 3.0,
+      "draws": 4000,
+      "largest_single_molecule_rms": 1.7095245069012133
+     },
+     "CH-stretch": {
+      "p2.5": 0.44329047199358956,
+      "p97.5": 1.2009754783017788,
+      "share_below_line": 1.0,
+      "line": 3.0,
+      "draws": 4000,
+      "largest_single_molecule_rms": 1.7840172410668795
+     },
+     "CH-oop": {
+      "p2.5": 0.9333486935443713,
+      "p97.5": 3.199533798784786,
+      "share_below_line": 0.9555,
+      "line": 3.0,
+      "draws": 4000,
+      "largest_single_molecule_rms": 4.38090260547528
+     },
+     "other": {
+      "p2.5": 1.4460848420726602,
+      "p97.5": 3.1940672395849905,
+      "share_below_line": 0.9305,
+      "line": 3.0,
+      "draws": 4000,
+      "largest_single_molecule_rms": 4.222832153988543
+     }
+    },
+    "printed_quantity": {
+     "ring-ip": 1.5507786778068917,
+     "CH-stretch": 1.1497874626733091,
+     "CH-oop": 2.222834717123449,
+     "other": 2.9112967333496176
+    },
+    "band_seed_average": {
+     "ring-ip": 1.5156015856939178,
+     "CH-stretch": 1.1380083143215927,
+     "CH-oop": 2.172685523250967,
+     "other": 2.793439648051013
+    }
+   },
+   "aromir": {
+    "mean": {
+     "ring-ip": {
+      "first_order": 1.2040118017175816,
+      "band": 1.168851116583103,
+      "n_modes": 199
+     },
+     "CH-stretch": {
+      "first_order": 0.8097874869768023,
+      "band": 0.8010863253579629,
+      "n_modes": 73
+     },
+     "CH-oop": {
+      "first_order": 1.9282842786072343,
+      "band": 1.880344696232382,
+      "n_modes": 46
+     },
+     "other": {
+      "first_order": 2.4573760789222816,
+      "band": 2.3776844410804463,
+      "n_modes": 156
+     }
+    },
+    "seed0": {
+     "ring-ip": {
+      "first_order": 1.766428743356335,
+      "band": 1.6845859854228133,
+      "n_modes": 199
+     },
+     "CH-stretch": {
+      "first_order": 1.3413174668234134,
+      "band": 1.323091468711477,
+      "n_modes": 73
+     },
+     "CH-oop": {
+      "first_order": 2.2705021525995566,
+      "band": 2.211515329071303,
+      "n_modes": 46
+     },
+     "other": {
+      "first_order": 2.789710257594065,
+      "band": 2.693747877274975,
+      "n_modes": 156
+     }
+    },
+    "seed1": {
+     "ring-ip": {
+      "first_order": 1.5154129168118151,
+      "band": 1.4724015225116682,
+      "n_modes": 199
+     },
+     "CH-stretch": {
+      "first_order": 1.1893105584239214,
+      "band": 1.1797917871919599,
+      "n_modes": 73
+     },
+     "CH-oop": {
+      "first_order": 2.101343664749685,
+      "band": 2.0470559815910394,
+      "n_modes": 46
+     },
+     "other": {
+      "first_order": 3.1022116425311634,
+      "band": 3.00949849726669,
+      "n_modes": 156
+     }
+    },
+    "seed2": {
+     "ring-ip": {
+      "first_order": 1.3704942933473347,
+      "band": 1.3898171185602646,
+      "n_modes": 199
+     },
+     "CH-stretch": {
+      "first_order": 0.9187342832134715,
+      "band": 0.9111422696735548,
+      "n_modes": 73
+     },
+     "CH-oop": {
+      "first_order": 2.357806530124781,
+      "band": 2.3088131398359386,
+      "n_modes": 46
+     },
+     "other": {
+      "first_order": 2.841916844763257,
+      "band": 2.6770123664264913,
+      "n_modes": 156
+     }
+    },
+    "mean_band_bootstrap": {
+     "ring-ip": {
+      "p2.5": 0.8972871580691038,
+      "p97.5": 1.4069697145729207,
+      "share_below_line": 1.0,
+      "line": 3.0,
+      "draws": 4000,
+      "largest_single_molecule_rms": 1.7095245069012133
+     },
+     "CH-stretch": {
+      "p2.5": 0.4432904604359502,
+      "p97.5": 1.200975427059219,
+      "share_below_line": 1.0,
+      "line": 3.0,
+      "draws": 4000,
+      "largest_single_molecule_rms": 1.7840172410668795
+     },
+     "CH-oop": {
+      "p2.5": 0.9333486935443713,
+      "p97.5": 3.242757055026111,
+      "share_below_line": 0.95525,
+      "line": 3.0,
+      "draws": 4000,
+      "largest_single_molecule_rms": 4.444009587677655
+     },
+     "other": {
+      "p2.5": 1.4460467716517023,
+      "p97.5": 3.194051000509729,
+      "share_below_line": 0.9305,
+      "line": 3.0,
+      "draws": 4000,
+      "largest_single_molecule_rms": 4.222832153988543
+     }
+    },
+    "printed_quantity": {
+     "ring-ip": 1.5507786511718284,
+     "CH-stretch": 1.1497874361536022,
+     "CH-oop": 2.2432174491580077,
+     "other": 2.911279581629495
+    },
+    "band_seed_average": {
+     "ring-ip": 1.5156015421649152,
+     "CH-stretch": 1.138008508525664,
+     "CH-oop": 2.1891281501660935,
+     "other": 2.7934195803227184
+    }
+   }
+  },
+  "b": {
+   "n_molecules": 40,
+   "ids": [
+    "A2_00b0ff5a24",
+    "A2_0101e57296",
+    "A2_02c8833bd5",
+    "A2_041da590e8",
+    "A2_043da5bed2",
+    "A2_048ea73dab",
+    "A2_05f5ff045c",
+    "A2_06222c33e3",
+    "A2_066237c4f5",
+    "A2_06873ee7ad",
+    "A2_097651503c",
+    "A2_0dc3aa4eb9",
+    "A2_0e1c741b76",
+    "A2_10d7d03408",
+    "A2_11c681aefb",
+    "A2_1543119d9d",
+    "A2_16521f2764",
+    "A2_1b389dc1d8",
+    "A2_1bb2e3fbf1",
+    "A2_1c2781e93a",
+    "A2_20d3215ce3",
+    "A2_210c322595",
+    "A2_21b688db0c",
+    "A2_27130c4c79",
+    "A2_27370742a0",
+    "A2_27edf7297c",
+    "A2_28eed45ad3",
+    "A2_2931e48c62",
+    "A2_2e154f6054",
+    "A2_2f079d63a1",
+    "A2_3058513f57",
+    "A2_311e979a14",
+    "A2_331729cd47",
+    "A2_372920f181",
+    "A2_3825e7205b",
+    "A2_39baaea0dd",
+    "A2_3b6ae59b2d",
+    "A2_3cf20db4ac",
+    "A2_3f25a88e27",
+    "A2_42ab9eb0a0"
+   ],
+   "aromir_order_equals_corpus_order": 40,
+   "largest_band_error_change_between_orders_cm": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "corpus": {
+    "mean": {
+     "ring-ip": {
+      "first_order": 1.192557747039087,
+      "band": 1.2239286562082183,
+      "n_modes": 1194
+     },
+     "CH-stretch": {
+      "first_order": 1.6876994268181744,
+      "band": 1.6654813336762115,
+      "n_modes": 410
+     },
+     "CH-oop": {
+      "first_order": 1.295652477745055,
+      "band": 1.2640697238229077,
+      "n_modes": 84
+     },
+     "other": {
+      "first_order": 3.1257516166122032,
+      "band": 2.0995733516106183,
+      "n_modes": 1258
+     }
+    },
+    "seed0": {
+     "ring-ip": {
+      "first_order": 1.5294294265104214,
+      "band": 1.5405810640981827,
+      "n_modes": 1194
+     },
+     "CH-stretch": {
+      "first_order": 2.3154342722333348,
+      "band": 2.280979408776753,
+      "n_modes": 410
+     },
+     "CH-oop": {
+      "first_order": 1.7977984570728442,
+      "band": 1.7869107501426749,
+      "n_modes": 84
+     },
+     "other": {
+      "first_order": 3.2022411938303947,
+      "band": 2.5782995392347137,
+      "n_modes": 1258
+     }
+    },
+    "seed1": {
+     "ring-ip": {
+      "first_order": 1.4926758269950893,
+      "band": 1.5159955622101822,
+      "n_modes": 1194
+     },
+     "CH-stretch": {
+      "first_order": 2.1992514787705093,
+      "band": 2.175979327785699,
+      "n_modes": 410
+     },
+     "CH-oop": {
+      "first_order": 1.9495355887759405,
+      "band": 1.908497674998742,
+      "n_modes": 84
+     },
+     "other": {
+      "first_order": 4.1475898828304585,
+      "band": 2.573330455715986,
+      "n_modes": 1258
+     }
+    },
+    "seed2": {
+     "ring-ip": {
+      "first_order": 1.886739624750352,
+      "band": 1.8898457610434327,
+      "n_modes": 1194
+     },
+     "CH-stretch": {
+      "first_order": 1.5482358215747942,
+      "band": 1.5353459541039522,
+      "n_modes": 410
+     },
+     "CH-oop": {
+      "first_order": 1.4207177617277849,
+      "band": 1.362581937801114,
+      "n_modes": 84
+     },
+     "other": {
+      "first_order": 3.696835610885729,
+      "band": 2.4426842640890944,
+      "n_modes": 1258
+     }
+    },
+    "mean_band_bootstrap": {
+     "ring-ip": {
+      "p2.5": 1.0918181983246902,
+      "p97.5": 1.3414413694565859,
+      "share_below_line": 1.0,
+      "line": 3.0,
+      "draws": 4000,
+      "largest_single_molecule_rms": 1.7447353918123745
+     },
+     "CH-stretch": {
+      "p2.5": 1.3680716629828515,
+      "p97.5": 1.9484790781820396,
+      "share_below_line": 1.0,
+      "line": 3.0,
+      "draws": 4000,
+      "largest_single_molecule_rms": 3.774246545125108
+     },
+     "CH-oop": {
+      "p2.5": 0.9810274536290452,
+      "p97.5": 1.5852041558291088,
+      "share_below_line": 1.0,
+      "line": 3.0,
+      "draws": 4000,
+      "largest_single_molecule_rms": 2.084323184980952
+     },
+     "other": {
+      "p2.5": 1.8821709539402962,
+      "p97.5": 2.3352430072757557,
+      "share_below_line": 1.0,
+      "line": 3.0,
+      "draws": 4000,
+      "largest_single_molecule_rms": 4.455026221890547
+     }
+    },
+    "printed_quantity": {
+     "ring-ip": 1.6362816260852877,
+     "CH-stretch": 2.020973857526213,
+     "CH-oop": 1.7226839358588564,
+     "other": 3.6822222291821944
+    },
+    "band_seed_average": {
+     "ring-ip": 1.6488074624505993,
+     "CH-stretch": 1.9974348968888016,
+     "CH-oop": 1.6859967876475102,
+     "other": 2.531438086346598
+    }
+   },
+   "aromir": {
+    "mean": {
+     "ring-ip": {
+      "first_order": 1.192557747039087,
+      "band": 1.2239286562082183,
+      "n_modes": 1194
+     },
+     "CH-stretch": {
+      "first_order": 1.6876994268181744,
+      "band": 1.6654813336762115,
+      "n_modes": 410
+     },
+     "CH-oop": {
+      "first_order": 1.295652477745055,
+      "band": 1.2640697238229077,
+      "n_modes": 84
+     },
+     "other": {
+      "first_order": 3.1257516166122032,
+      "band": 2.0995733516106183,
+      "n_modes": 1258
+     }
+    },
+    "seed0": {
+     "ring-ip": {
+      "first_order": 1.5294294265104214,
+      "band": 1.5405810640981827,
+      "n_modes": 1194
+     },
+     "CH-stretch": {
+      "first_order": 2.3154342722333348,
+      "band": 2.280979408776753,
+      "n_modes": 410
+     },
+     "CH-oop": {
+      "first_order": 1.7977984570728442,
+      "band": 1.7869107501426749,
+      "n_modes": 84
+     },
+     "other": {
+      "first_order": 3.2022411938303947,
+      "band": 2.5782995392347137,
+      "n_modes": 1258
+     }
+    },
+    "seed1": {
+     "ring-ip": {
+      "first_order": 1.4926758269950893,
+      "band": 1.5159955622101822,
+      "n_modes": 1194
+     },
+     "CH-stretch": {
+      "first_order": 2.1992514787705093,
+      "band": 2.175979327785699,
+      "n_modes": 410
+     },
+     "CH-oop": {
+      "first_order": 1.9495355887759405,
+      "band": 1.908497674998742,
+      "n_modes": 84
+     },
+     "other": {
+      "first_order": 4.1475898828304585,
+      "band": 2.573330455715986,
+      "n_modes": 1258
+     }
+    },
+    "seed2": {
+     "ring-ip": {
+      "first_order": 1.886739624750352,
+      "band": 1.8898457610434327,
+      "n_modes": 1194
+     },
+     "CH-stretch": {
+      "first_order": 1.5482358215747942,
+      "band": 1.5353459541039522,
+      "n_modes": 410
+     },
+     "CH-oop": {
+      "first_order": 1.4207177617277849,
+      "band": 1.362581937801114,
+      "n_modes": 84
+     },
+     "other": {
+      "first_order": 3.696835610885729,
+      "band": 2.4426842640890944,
+      "n_modes": 1258
+     }
+    },
+    "mean_band_bootstrap": {
+     "ring-ip": {
+      "p2.5": 1.0918181983246902,
+      "p97.5": 1.3414413694565859,
+      "share_below_line": 1.0,
+      "line": 3.0,
+      "draws": 4000,
+      "largest_single_molecule_rms": 1.7447353918123745
+     },
+     "CH-stretch": {
+      "p2.5": 1.3680716629828515,
+      "p97.5": 1.9484790781820396,
+      "share_below_line": 1.0,
+      "line": 3.0,
+      "draws": 4000,
+      "largest_single_molecule_rms": 3.774246545125108
+     },
+     "CH-oop": {
+      "p2.5": 0.9810274536290452,
+      "p97.5": 1.5852041558291088,
+      "share_below_line": 1.0,
+      "line": 3.0,
+      "draws": 4000,
+      "largest_single_molecule_rms": 2.084323184980952
+     },
+     "other": {
+      "p2.5": 1.8821709539402962,
+      "p97.5": 2.3352430072757557,
+      "share_below_line": 1.0,
+      "line": 3.0,
+      "draws": 4000,
+      "largest_single_molecule_rms": 4.455026221890547
+     }
+    },
+    "printed_quantity": {
+     "ring-ip": 1.6362816260852877,
+     "CH-stretch": 2.020973857526213,
+     "CH-oop": 1.7226839358588564,
+     "other": 3.6822222291821944
+    },
+    "band_seed_average": {
+     "ring-ip": 1.6488074624505993,
+     "CH-stretch": 1.9974348968888016,
+     "CH-oop": 1.6859967876475102,
+     "other": 2.531438086346598
+    }
+   }
+  }
+ }
+}

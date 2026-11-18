@@ -1,0 +1,23 @@
+{
+ "network_version": "1.4",
+ "n_molecules": 1132,
+ "fitted_share": 0.85,
+ "checks": {
+  "same_recipe": true,
+  "pool_agreement": true,
+  "holdouts_learnt": true,
+  "early_stopping": true,
+  "benzene": true
+ },
+ "release_checkpoints": {
+  "E7_rungC_v14s3clean_c00_control_release_model_n1132_seed0.pt": "6f52c9d8570fbcf5",
+  "E7_rungC_v14s3clean_c00_control_release_model_n1132_seed1.pt": "1e820b8755078b90",
+  "E7_rungC_v14s3clean_c00_control_release_model_n1132_seed2.pt": "bc4de0b6458e44f2"
+ },
+ "measurement_checkpoints": {
+  "E7_rungC_v14s3clean_c00_control_model_n1082_seed0.pt": "89574ed1b69c4e10",
+  "E7_rungC_v14s3clean_c00_control_model_n1082_seed1.pt": "03dbbf9f29b59186",
+  "E7_rungC_v14s3clean_c00_control_model_n1082_seed2.pt": "8dd85f3f1ba5bbeb"
+ },
+ "source": "modules/05_support_predictor/out/v14/E7_rungC_v14s3clean_c00_control_release_release_checks.json of thebreadishard/udacity-capstone-plan (plan 05), 2026-11-18 07:16"
+}

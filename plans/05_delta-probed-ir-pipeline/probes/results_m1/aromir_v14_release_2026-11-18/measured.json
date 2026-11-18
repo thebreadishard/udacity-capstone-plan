@@ -1,0 +1,140 @@
+{
+ "a": {
+  "n_molecules": 8,
+  "band_error_seed_mean": {
+   "ring-ip": {
+    "rms_cm": 1.17,
+    "n_modes": 199,
+    "interval_cm": [
+     0.9,
+     1.41
+    ],
+    "share_of_resamples_within_line": 1.0
+   },
+   "CH-stretch": {
+    "rms_cm": 0.8,
+    "n_modes": 73,
+    "interval_cm": [
+     0.44,
+     1.2
+    ],
+    "share_of_resamples_within_line": 1.0
+   },
+   "CH-oop": {
+    "rms_cm": 1.88,
+    "n_modes": 46,
+    "interval_cm": [
+     0.93,
+     3.24
+    ],
+    "share_of_resamples_within_line": 0.96
+   },
+   "other": {
+    "rms_cm": 2.38,
+    "n_modes": 156,
+    "interval_cm": [
+     1.45,
+     3.19
+    ],
+    "share_of_resamples_within_line": 0.93
+   }
+  },
+  "first_order_error_per_seed": {
+   "ring-ip": [
+    1.77,
+    1.52,
+    1.37
+   ],
+   "CH-stretch": [
+    1.34,
+    1.19,
+    0.92
+   ],
+   "CH-oop": [
+    2.27,
+    2.1,
+    2.36
+   ],
+   "other": [
+    2.79,
+    3.1,
+    2.84
+   ]
+  },
+  "first_order_error_per_seed_mean": {
+   "ring-ip": 1.55,
+   "CH-stretch": 1.15,
+   "CH-oop": 2.24,
+   "other": 2.91
+  }
+ },
+ "b": {
+  "n_molecules": 40,
+  "band_error_seed_mean": {
+   "ring-ip": {
+    "rms_cm": 1.22,
+    "n_modes": 1194,
+    "interval_cm": [
+     1.09,
+     1.34
+    ],
+    "share_of_resamples_within_line": 1.0
+   },
+   "CH-stretch": {
+    "rms_cm": 1.67,
+    "n_modes": 410,
+    "interval_cm": [
+     1.37,
+     1.95
+    ],
+    "share_of_resamples_within_line": 1.0
+   },
+   "CH-oop": {
+    "rms_cm": 1.26,
+    "n_modes": 84,
+    "interval_cm": [
+     0.98,
+     1.59
+    ],
+    "share_of_resamples_within_line": 1.0
+   },
+   "other": {
+    "rms_cm": 2.1,
+    "n_modes": 1258,
+    "interval_cm": [
+     1.88,
+     2.34
+    ],
+    "share_of_resamples_within_line": 1.0
+   }
+  },
+  "first_order_error_per_seed": {
+   "ring-ip": [
+    1.53,
+    1.49,
+    1.89
+   ],
+   "CH-stretch": [
+    2.32,
+    2.2,
+    1.55
+   ],
+   "CH-oop": [
+    1.8,
+    1.95,
+    1.42
+   ],
+   "other": [
+    3.2,
+    4.15,
+    3.7
+   ]
+  },
+  "first_order_error_per_seed_mean": {
+   "ring-ip": 1.64,
+   "CH-stretch": 2.02,
+   "CH-oop": 1.72,
+   "other": 3.68
+  }
+ }
+}

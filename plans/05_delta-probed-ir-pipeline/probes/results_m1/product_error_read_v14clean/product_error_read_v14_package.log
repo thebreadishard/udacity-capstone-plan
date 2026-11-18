@@ -1,0 +1,67 @@
+product-error 1/48 (a) A_08dde334d8
+product-error 2/48 (a) A_428228e5a5
+product-error 3/48 (a) A_541c53d1a5
+product-error 4/48 (a) A_72b86c2331
+product-error 5/48 (a) A_8448043181
+product-error 6/48 (a) A_bce5bae234
+product-error 7/48 (a) A_e72997e726
+product-error 8/48 (a) A_fdc27f1bd1
+product-error 9/48 (b) A2_00b0ff5a24
+product-error 10/48 (b) A2_0101e57296
+product-error 11/48 (b) A2_02c8833bd5
+product-error 12/48 (b) A2_041da590e8
+product-error 13/48 (b) A2_043da5bed2
+product-error 14/48 (b) A2_048ea73dab
+product-error 15/48 (b) A2_05f5ff045c
+product-error 16/48 (b) A2_06222c33e3
+product-error 17/48 (b) A2_066237c4f5
+product-error 18/48 (b) A2_06873ee7ad
+product-error 19/48 (b) A2_097651503c
+product-error 20/48 (b) A2_0dc3aa4eb9
+product-error 21/48 (b) A2_0e1c741b76
+product-error 22/48 (b) A2_10d7d03408
+product-error 23/48 (b) A2_11c681aefb
+product-error 24/48 (b) A2_1543119d9d
+product-error 25/48 (b) A2_16521f2764
+product-error 26/48 (b) A2_1b389dc1d8
+product-error 27/48 (b) A2_1bb2e3fbf1
+product-error 28/48 (b) A2_1c2781e93a
+product-error 29/48 (b) A2_20d3215ce3
+product-error 30/48 (b) A2_210c322595
+product-error 31/48 (b) A2_21b688db0c
+product-error 32/48 (b) A2_27130c4c79
+product-error 33/48 (b) A2_27370742a0
+product-error 34/48 (b) A2_27edf7297c
+product-error 35/48 (b) A2_28eed45ad3
+product-error 36/48 (b) A2_2931e48c62
+product-error 37/48 (b) A2_2e154f6054
+product-error 38/48 (b) A2_2f079d63a1
+product-error 39/48 (b) A2_3058513f57
+product-error 40/48 (b) A2_311e979a14
+product-error 41/48 (b) A2_331729cd47
+product-error 42/48 (b) A2_372920f181
+product-error 43/48 (b) A2_3825e7205b
+product-error 44/48 (b) A2_39baaea0dd
+product-error 45/48 (b) A2_3b6ae59b2d
+product-error 46/48 (b) A2_3cf20db4ac
+product-error 47/48 (b) A2_3f25a88e27
+product-error 48/48 (b) A2_42ab9eb0a0
+first order, hold-out (a), seed means                          ring-ip  CH-stretch      CH-oop       other
+  this read                                                      1.551       1.150       2.223       2.911
+  evaluation records                                             1.551       1.150       2.223       2.911
+first order, hold-out (b), seed means                          ring-ip  CH-stretch      CH-oop       other
+  this read                                                      1.636       2.021       1.723       3.681
+  evaluation records                                             1.636       2.021       1.723       3.681
+product, hold-out (a, 'a8')                                    ring-ip  CH-stretch      CH-oop       other
+  this read                                                      1.169       0.801       1.861       2.378
+  the package                                                    1.169       0.801       1.861       2.378
+first_order_certificate_families, hold-out (a, 'a8')           ring-ip  CH-stretch      CH-oop       other
+  this read                                                      1.551       1.150       2.223       2.911
+  the package                                                    1.551       1.150       2.223       2.911
+product, hold-out (b, 'b')                                     ring-ip  CH-stretch      CH-oop       other
+  this read                                                      1.224       1.665       1.264       2.100
+  the package                                                    1.224       1.665       1.264       2.100
+first_order_certificate_families, hold-out (b, 'b')            ring-ip  CH-stretch      CH-oop       other
+  this read                                                      1.636       2.021       1.723       3.682
+  the package                                                    1.636       2.021       1.723       3.682
+product error read: 48 molecules, record C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\05_support_predictor\out\v14\E7_rungC_v14s3clean_c00_control_product_error.json

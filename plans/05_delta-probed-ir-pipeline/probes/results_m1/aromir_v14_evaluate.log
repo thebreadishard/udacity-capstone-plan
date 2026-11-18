@@ -1,0 +1,19 @@
+=== (EVAL14) start
+start 2026-11-18T08:40:40+01:00
+wrote measurement/evaluation.json from the capstone's read
+a8 -> holdouts/a: 8 molecules
+b -> holdouts/b: 40 molecules
+done: 2 hold-out(s) measured, in measured.json
+ring-ip    (a) band: aromir evaluate 1.17, product_error.py in aromir's order 1.169, the capstone in the corpus order 1.17 | modes 199 / 199
+ring-ip    (b) band: aromir evaluate 1.22, product_error.py in aromir's order 1.224, the capstone in the corpus order 1.22 | modes 1194 / 1194
+CH-stretch (a) band: aromir evaluate 0.80, product_error.py in aromir's order 0.801, the capstone in the corpus order 0.80 | modes 73 / 73
+CH-stretch (b) band: aromir evaluate 1.67, product_error.py in aromir's order 1.665, the capstone in the corpus order 1.67 | modes 410 / 410
+CH-oop     (a) band: aromir evaluate 1.88, product_error.py in aromir's order 1.880, the capstone in the corpus order 1.86 | modes 46 / 46
+CH-oop     (b) band: aromir evaluate 1.26, product_error.py in aromir's order 1.264, the capstone in the corpus order 1.26 | modes 84 / 84
+other      (a) band: aromir evaluate 2.38, product_error.py in aromir's order 2.378, the capstone in the corpus order 2.38 | modes 156 / 156
+other      (b) band: aromir evaluate 2.10, product_error.py in aromir's order 2.100, the capstone in the corpus order 2.10 | modes 1258 / 1258
+largest difference to product_error.py in aromir's order, any cell: 0.0048 cm-1 (tolerance 0.01); to the capstone's corpus-order read: 0.050 cm-1 (the atom order); mode counts that differ: {}
+wrote evaluation.json from aromir's measurement
+end 2026-11-18T08:41:31+01:00
+(EVAL14) max RSS 457076 kB, wall 51.12 s
+=== (EVAL14) done

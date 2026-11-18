@@ -1,0 +1,8 @@
+{'a': 8, 'b': 40} hold-out molecules
+kinds {'measurement'} {'release'} inner-validation shares {0.15} {0.15}
+release adds 57 ids to the measurement networks' 1075
+measurement:
+  1075 ids (1030 neutral, 45 cation rows) -> 1028 neutral SMILES, 45 cation parents; 8-40 atoms, ['C', 'Cl', 'F', 'H', 'N', 'O', 'S']
+release:
+  1132 ids (1082 neutral, 50 cation rows) -> 1078 neutral SMILES, 50 cation parents; 8-40 atoms, ['C', 'Cl', 'F', 'H', 'N', 'O', 'S']
+done

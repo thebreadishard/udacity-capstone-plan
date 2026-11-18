@@ -1,0 +1,64 @@
+{
+ "ids": {
+  "a": [
+   "A_08dde334d8",
+   "A_428228e5a5",
+   "A_541c53d1a5",
+   "A_72b86c2331",
+   "A_8448043181",
+   "A_bce5bae234",
+   "A_e72997e726",
+   "A_fdc27f1bd1"
+  ],
+  "b": [
+   "A2_00b0ff5a24",
+   "A2_0101e57296",
+   "A2_02c8833bd5",
+   "A2_041da590e8",
+   "A2_043da5bed2",
+   "A2_048ea73dab",
+   "A2_05f5ff045c",
+   "A2_06222c33e3",
+   "A2_066237c4f5",
+   "A2_06873ee7ad",
+   "A2_097651503c",
+   "A2_0dc3aa4eb9",
+   "A2_0e1c741b76",
+   "A2_10d7d03408",
+   "A2_11c681aefb",
+   "A2_1543119d9d",
+   "A2_16521f2764",
+   "A2_1b389dc1d8",
+   "A2_1bb2e3fbf1",
+   "A2_1c2781e93a",
+   "A2_20d3215ce3",
+   "A2_210c322595",
+   "A2_21b688db0c",
+   "A2_27130c4c79",
+   "A2_27370742a0",
+   "A2_27edf7297c",
+   "A2_28eed45ad3",
+   "A2_2931e48c62",
+   "A2_2e154f6054",
+   "A2_2f079d63a1",
+   "A2_3058513f57",
+   "A2_311e979a14",
+   "A2_331729cd47",
+   "A2_372920f181",
+   "A2_3825e7205b",
+   "A2_39baaea0dd",
+   "A2_3b6ae59b2d",
+   "A2_3cf20db4ac",
+   "A2_3f25a88e27",
+   "A2_42ab9eb0a0"
+  ]
+ },
+ "descriptions": {
+  "a": "eight of the ten molecules set aside on 19 September 2026, before any network was trained; the other two have a twin in another layer of the training pool and are left out of the read (30 October 2026)",
+  "b": "every substituted molecule of two ring scaffolds, set aside on 8 October 2026; no measurement network trained on a molecule of either scaffold"
+ },
+ "sets": {
+  "a": "a8",
+  "b": "b"
+ }
+}

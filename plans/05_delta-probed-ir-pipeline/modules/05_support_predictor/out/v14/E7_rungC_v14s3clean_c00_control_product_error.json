@@ -1,7 +1,7 @@
 {
  "kind": "product error read",
  "network": "ΔH-network",
- "network_version": "candidate (read with --models; not a carried version)",
+ "network_version": "1.4",
  "network_kind": "measurement",
  "models": [
   "E7_rungC_v14s3clean_c00_control_model_n1082_seed0.pt",
@@ -21,9 +21,12 @@
   ]
  },
  "sets_from": [
-  "eval_clean_seed0.json",
-  "eval_clean_seed1.json",
-  "eval_clean_seed2.json"
+  "E7_rungC_v14s3clean_c00_control_eval_clean_seed0.json",
+  "E7_rungC_v14s3clean_c00_control_eval_clean_seed1.json",
+  "E7_rungC_v14s3clean_c00_control_eval_clean_seed2.json",
+  "E7_rungC_v14s3clean_c00_control_a8read_seed0.json",
+  "E7_rungC_v14s3clean_c00_control_a8read_seed1.json",
+  "E7_rungC_v14s3clean_c00_control_a8read_seed2.json"
  ],
  "line_cm": 3.0,
  "definitions": {
@@ -608,22 +611,205 @@
      }
     }
    }
+  },
+  "agrees_with_package": {
+   "source": "probes/results_m1/aromir_v14_release_2026-11-18/product_error.json",
+   "tolerance_cm": 0.01,
+   "largest_difference_cm": 4.4000545185163276e-07,
+   "cells": {
+    "a": {
+     "product": {
+      "ring-ip": {
+       "here": 1.1688510308213589,
+       "package": 1.1688511434581206,
+       "difference": -1.1263676169548376e-07
+      },
+      "CH-stretch": {
+       "here": 0.8010861600899998,
+       "package": 0.8010864012312572,
+       "difference": -2.411412574065963e-07
+      },
+      "CH-oop": {
+       "here": 1.8609286636289724,
+       "package": 1.8609286056534091,
+       "difference": 5.7975563239054395e-08
+      },
+      "other": {
+       "here": 2.3777083300146638,
+       "package": 2.377708493107355,
+       "difference": -1.630926913520625e-07
+      }
+     },
+     "first_order_certificate_families": {
+      "ring-ip": {
+       "here": 1.5507786230757095,
+       "package": 1.5507786778068917,
+       "difference": -5.473118225296503e-08
+      },
+      "CH-stretch": {
+       "here": 1.1497872908931634,
+       "package": 1.1497874626733091,
+       "difference": -1.7178014566354705e-07
+      },
+      "CH-oop": {
+       "here": 2.222834845229981,
+       "package": 2.222834717123449,
+       "difference": 1.2810653204908817e-07
+      },
+      "other": {
+       "here": 2.9112966716880293,
+       "package": 2.9112967333496176,
+       "difference": -6.166158827980439e-08
+      }
+     },
+     "product_interval": {
+      "ring-ip": {
+       "here": [
+        0.8972872645194069,
+        1.4069695644017532
+       ],
+       "package": [
+        0.8972871599640321,
+        1.4069697358906395
+       ]
+      },
+      "CH-stretch": {
+       "here": [
+        0.4432903394515247,
+        1.2009750131159047
+       ],
+       "package": [
+        0.44329047199358956,
+        1.2009754783017788
+       ]
+      },
+      "CH-oop": {
+       "here": [
+        0.9333485823154077,
+        3.1995337977454406
+       ],
+       "package": [
+        0.9333486935443713,
+        3.199533798784786
+       ]
+      },
+      "other": {
+       "here": [
+        1.446084789909372,
+        3.1940668010263717
+       ],
+       "package": [
+        1.4460848420726602,
+        3.1940672395849905
+       ]
+      }
+     }
+    },
+    "b": {
+     "product": {
+      "ring-ip": {
+       "here": 1.2239286382811532,
+       "package": 1.2239286562082183,
+       "difference": -1.7927065165679323e-08
+      },
+      "CH-stretch": {
+       "here": 1.6654814254055121,
+       "package": 1.6654813336762115,
+       "difference": 9.172930059975215e-08
+      },
+      "CH-oop": {
+       "here": 1.2640692838174559,
+       "package": 1.2640697238229077,
+       "difference": -4.4000545185163276e-07
+      },
+      "other": {
+       "here": 2.099573412014801,
+       "package": 2.0995733516106183,
+       "difference": 6.040418254471547e-08
+      }
+     },
+     "first_order_certificate_families": {
+      "ring-ip": {
+       "here": 1.6362815778219881,
+       "package": 1.6362816260852877,
+       "difference": -4.82632995790766e-08
+      },
+      "CH-stretch": {
+       "here": 2.020973986010168,
+       "package": 2.020973857526213,
+       "difference": 1.2848395503084475e-07
+      },
+      "CH-oop": {
+       "here": 1.722683825050125,
+       "package": 1.7226839358588564,
+       "difference": -1.1080873130175917e-07
+      },
+      "other": {
+       "here": 3.682222270817803,
+       "package": 3.6822222291821944,
+       "difference": 4.163560873848837e-08
+      }
+     },
+     "product_interval": {
+      "ring-ip": {
+       "here": [
+        1.0918181642142761,
+        1.3414412988290692
+       ],
+       "package": [
+        1.0918181983246902,
+        1.3414413694565859
+       ]
+      },
+      "CH-stretch": {
+       "here": [
+        1.3680717826068138,
+        1.948478941278324
+       ],
+       "package": [
+        1.3680716629828515,
+        1.9484790781820396
+       ]
+      },
+      "CH-oop": {
+       "here": [
+        0.9810270925753579,
+        1.585203675815571
+       ],
+       "package": [
+        0.9810274536290452,
+        1.5852041558291088
+       ]
+      },
+      "other": {
+       "here": [
+        1.882170709588299,
+        2.3352431758649357
+       ],
+       "package": [
+        1.8821709539402962,
+        2.3352430072757557
+       ]
+      }
+     }
+    }
+   }
   }
  },
  "data_root": "C:\\Users\\thebr\\Documents\\CapstonePlan\\plans\\05_delta-probed-ir-pipeline\\modules\\05_support_predictor",
  "provenance": {
-  "timestamp_utc": "2026-11-17 21:48:32",
+  "timestamp_utc": "2026-11-18 07:44:00",
   "host": "Asus18",
   "python": "3.14.6",
   "numpy": "2.5.1",
-  "command": "product_error_read.py --threads 2 --out ../../../modules/05_support_predictor/out/v14/E7_rungC_v14s3clean_c00_control_product_error.json --models out/v14/E7_rungC_v14s3clean_c00_control_model_n*_seed0.pt out/v14/E7_rungC_v14s3clean_c00_control_model_n*_seed1.pt out/v14/E7_rungC_v14s3clean_c00_control_model_n*_seed2.pt --records out/v14/eval_clean_seed0.json out/v14/eval_clean_seed1.json out/v14/eval_clean_seed2.json",
-  "commit": "04586268b11e83be686af8e255a62eb9a53cf5c2",
+  "command": "product_error_read.py --threads 2 --package ../aromir_v14_release_2026-11-18/product_error.json",
+  "commit": "6b4cbcf9bdf7a76dc24fa1286331747bafbbc3fc",
   "dirty": "yes"
  },
  "run": {
-  "started": "2026-11-17 22:46:50",
-  "ended": "2026-11-17 22:48:32",
-  "seconds": 102.0,
+  "started": "2026-11-18 08:42:15",
+  "ended": "2026-11-18 08:44:00",
+  "seconds": 105.4,
   "peak_memory_gb": 0.37,
   "threads": 2
  }

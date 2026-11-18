@@ -1,0 +1,19 @@
+{
+ "name": "product_error_read_v14_package",
+ "purpose": "Decision 66 in aromir, 18 Nov 2026: the second route for v1.4, now carried. The registry's carried measurement networks read as product_error_read_v14clean read them, and checked against aromir's own read (`--package`: probes/results_m1/aromir_v14_release_2026-11-18/product_error.json, aromir's code on the stored Hessians in the corpus atom order) to 0.01 cm-1 in every family and set; the carried record is rewritten with that check, which tests/test_m08_licence_pin.py::test_the_carried_record_agrees_with_the_package reads.",
+ "host": "laptop",
+ "workdir": "probes/results_m1/product_error_read_v14clean",
+ "command": "PYTHONUTF8=1 python ../../product_error_read.py --threads 2 --package ../aromir_v14_release_2026-11-18/product_error.json",
+ "sources": [
+  {"local": "probes/product_error_read.py"},
+  {"local": "modules/08_industry_synthesis/m08/accuracy.py"},
+  {"local": "modules/08_industry_synthesis/m08/pipeline.py"}
+ ],
+ "progress": {"regex": "^product-error [0-9]+/[0-9]+ ", "max_gap_minutes": 20},
+ "marker_regex": "^STOP: ",
+ "end_regex": "^product error read: [0-9]+ molecules, record ",
+ "threads": 2,
+ "resumable": false,
+ "estimate": {"hours": 0.1, "basis": "product_error_read_v14clean read the same 48 molecules with the same three checkpoints in 102 s on 17 Nov 2026 (its record's run.seconds)"},
+ "memory": {"peak_gb": 1.0, "basis": "product_error_read_v14clean peaked at 0.37 GB (its record's run.peak_memory_gb); it holds one molecule at a time"}
+}
