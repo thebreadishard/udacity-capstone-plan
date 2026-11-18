@@ -9,8 +9,10 @@ candidate with its verdict; the short list is the admitted, unseen ones within h
 from __future__ import annotations
 
 import argparse
+import functools
 import sys
 import tempfile
+from collections.abc import Callable
 from pathlib import Path
 
 PLAN = Path(__file__).resolve().parents[1]
@@ -35,7 +37,7 @@ CANDIDATES = {   # name: SMILES — small aromatics a spectroscopist recognises,
 }
 
 
-def verdict(name: str, smiles: str, models: tuple[Path, ...], seen: S.Seen, catalog: Catalog, threads: int) -> dict:
+def verdict(name: str, smiles: str, models: tuple[Path, ...], seen: S.Seen, catalog: Catalog, estimate: Callable[[str], dict]) -> dict:
     """One candidate through the checks; a refusal by admission is a verdict, not an error."""
     with tempfile.TemporaryDirectory() as tmp:
         cfg = P.PipelineConfig(name="candidate", out_root=Path(tmp), smiles=smiles, models=models, psi4_python=Path(sys.executable))
@@ -45,7 +47,7 @@ def verdict(name: str, smiles: str, models: tuple[Path, ...], seen: S.Seen, cata
             return {"name": name, "smiles": smiles, "admitted": False, "reason": "; ".join(r.reasons)}
     row = catalog.find(adm.smiles)
     st = S.status(adm.smiles, seen, row["id"] if row else None)
-    est = RT.estimate(adm.smiles, threads)
+    est = estimate(adm.smiles)
     return {"name": name, "smiles": adm.smiles, "admitted": True, "atoms": adm.n_atoms, "functions": est["basis_functions"],
             "minutes": round(est["seconds"] / 60), "role": st["role"], "seen": st["text"],
             "short_list": st["role"] in ("unseen", "catalogue") and est["within_half_hour"]}
@@ -69,11 +71,13 @@ def markdown(rows: list[dict], threads: int) -> str:
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--threads", type=int, default=6)
+    ap.add_argument("--pyscf", default=P.WSL_PYSCF_VERSION, help="step 3's pyscf version: the estimate is fitted on that version's runs")
     ap.add_argument("--out", type=Path, default=OUT)
     a = ap.parse_args(argv)
     models = P.carried_models(P.NK.MEASUREMENT)
     seen, catalog = S.load(models), Catalog()
-    rows = [verdict(n, s, models, seen, catalog, a.threads) for n, s in CANDIDATES.items()]
+    estimate = functools.partial(RT.estimate, threads=a.threads, pyscf=a.pyscf)
+    rows = [verdict(n, s, models, seen, catalog, estimate) for n, s in CANDIDATES.items()]
     text = markdown(rows, a.threads)
     tmp = a.out.with_suffix(".tmp")
     tmp.write_text(text, encoding="utf-8")

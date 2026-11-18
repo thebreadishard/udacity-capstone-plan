@@ -37,7 +37,7 @@ Every refusal — the charge state, a radical, no aromatic ring, an element the 
 output folder in use — comes before step 1, and so does the reading of the anharmonic step's artefact. The record says of every band
 which position it prints (`m08/positions.py`).
 
-    python -m m08.pipeline --name benzene --smiles c1ccccc1 --out <folder> [--threads 4] [--psi4-python <qc env python>]
+    python -m m08.pipeline --name benzene --smiles c1ccccc1 --out <folder> [--threads 6] [--psi4-python <qc env python>]
                           [--pyscf-python <WSL python>] [--no-reuse] [--anharmonic-minutes 120 | --no-anharmonic]
 """
 from __future__ import annotations
@@ -172,7 +172,7 @@ class PipelineConfig(BaseModel):
     models: tuple[Path, ...] = Field(default_factory=lambda: product_networks().models)        # looked up at build time, so a test can
     psi4_python: Path | None = Field(default_factory=lambda: default_psi4_python())     # point it at a pin model
     pyscf_python: str = Field(WSL_PYSCF, pattern=r"^[~A-Za-z0-9_./-]+$")
-    threads: int = Field(4, ge=1, le=32)
+    threads: int = Field(6, ge=1, le=32)    # the timed runs' count: the time estimate is fitted at the thread count it is asked for
     psi4_memory_gb: int = Field(4, ge=1, le=64)
     wsl_cap_mb: int = Field(6144, ge=2048, le=65536)
     reuse_corpus: bool = True                # TASKS 150: steps 2–3 from the corpus where it holds the molecule at these settings
@@ -727,6 +727,11 @@ def run(cfg: PipelineConfig, deliver: Deliver | None = None) -> dict:
     return rec
 
 
+def step3_pyscf(cfg: PipelineConfig) -> str | None:
+    """The pyscf version step 3 will run: the default interpreter's, or None for one given on the command line (unknown before the run)."""
+    return WSL_PYSCF_VERSION if cfg.pyscf_python == WSL_PYSCF else None
+
+
 def parse_args(argv: list[str] | None) -> argparse.Namespace:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--name", required=True, help="the result folder's name under --out")
@@ -737,7 +742,7 @@ def parse_args(argv: list[str] | None) -> argparse.Namespace:
     ap.add_argument("--psi4-python", type=Path, help="the qc env's python (default: CORPUS_QC_PYTHON)")
     ap.add_argument("--pyscf-python",
                     help="the WSL python step 3 runs the label route on; the low-mode repair needs pyscf 2.15.0 or newer")
-    ap.add_argument("--threads", type=int, default=4)
+    ap.add_argument("--threads", type=int, default=6, help="the timed runs' count, so the time estimate holds (default 6)")
     ap.add_argument("--psi4-memory-gb", type=int, default=4)
     ap.add_argument("--wsl-cap-mb", type=int, default=6144)
     ap.add_argument("--no-reuse", action="store_true", help="compute steps 2-3 even where the corpus holds the molecule (TASKS 150)")
@@ -770,10 +775,10 @@ def main(argv: list[str] | None = None) -> int:
             adm = admit(cfg)
             print(f"[pipeline] admitted: {cfg.name}, {adm.n_atoms} atoms ({', '.join(adm.elements)}); models "
                   f"{', '.join(Path(m['path']).name for m in adm.models)}; training sizes {adm.training_atoms}", flush=True)
-            print(f"[pipeline] {announce(adm.smiles, cfg.threads)}", flush=True)
+            print(f"[pipeline] {announce(adm.smiles, cfg.threads, step3_pyscf(cfg))}", flush=True)
             return 0
         catalog = Catalog()             # the certificate's catalogue and tolerances: read before any computation
-        print(f"[pipeline] {announce(cfg.smiles, cfg.threads)}", flush=True)
+        print(f"[pipeline] {announce(cfg.smiles, cfg.threads, step3_pyscf(cfg))}", flush=True)
 
         def deliver(folder: Path, what: str) -> None:
             """The certificate of the record as it stands at this delivery, written over the earlier delivery's."""
