@@ -171,3 +171,13 @@ plans/05_delta-probed-ir-pipeline/probes/results_m1/s2_xtb_2026-10-18/xtb/
 
 # TensorBoard event logs of the trainings (m05/rungC_history.py; probes/figures/history_to_tensorboard.py): output, made again from the records
 *_tb/
+
+# Run outputs (18 Nov 2026): the live run folders of the laptop and the servers, superseded corpus copies and the pipeline's run logs.
+# They are not committed: a run writes into its folder while it runs, and one server fetch is thousands of files. tools/backup_data.py
+# mirrors them nightly to thebreadishard/capstone-data. A result a document cites is committed by name (`git add -f`: its read script and
+# its .txt/.md/.json); files already tracked stay tracked.
+plans/*/probes/results_m1/
+plans/*/modules/05_support_predictor/corpus/superseded_*/
+plans/*/modules/05_support_predictor/corpus/reoptimised_*/
+plans/*/modules/05_support_predictor/out/superseded_*/
+plans/*/modules/08_industry_synthesis/*.log
