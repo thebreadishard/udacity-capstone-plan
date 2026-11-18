@@ -1,0 +1,81 @@
+{
+ "counts": {
+  "stamped": 894,
+  "unstamped": 830,
+  "count_mismatch": 0
+ },
+ "stale": [
+  {
+   "id": "A2_13bafae8e0",
+   "file": "hessian_b3lyp_analytic.npz",
+   "stamped": false,
+   "max_abs_diff_cm": 0.727,
+   "stored_lowest_cm": 58.66,
+   "own_lowest_cm": 58.68,
+   "at_risk": []
+  },
+  {
+   "id": "A2_13bafae8e0",
+   "file": "hessian_wb97x_analytic.npz",
+   "stamped": false,
+   "max_abs_diff_cm": 0.756,
+   "stored_lowest_cm": 79.02,
+   "own_lowest_cm": 79.07,
+   "at_risk": []
+  },
+  {
+   "id": "A2_22d0e8105c",
+   "file": "hessian_b3lyp_analytic.npz",
+   "stamped": false,
+   "max_abs_diff_cm": 0.726,
+   "stored_lowest_cm": 77.52,
+   "own_lowest_cm": 77.56,
+   "at_risk": []
+  },
+  {
+   "id": "A2_22d0e8105c",
+   "file": "hessian_wb97x_analytic.npz",
+   "stamped": false,
+   "max_abs_diff_cm": 0.754,
+   "stored_lowest_cm": 98.65,
+   "own_lowest_cm": 98.71,
+   "at_risk": []
+  },
+  {
+   "id": "A2_3a2982dd85",
+   "file": "hessian_b3lyp_analytic.npz",
+   "stamped": false,
+   "max_abs_diff_cm": 0.758,
+   "stored_lowest_cm": 83.2,
+   "own_lowest_cm": 83.22,
+   "at_risk": []
+  },
+  {
+   "id": "A2_3a2982dd85",
+   "file": "hessian_wb97x_analytic.npz",
+   "stamped": false,
+   "max_abs_diff_cm": 0.771,
+   "stored_lowest_cm": 97.12,
+   "own_lowest_cm": 97.16,
+   "at_risk": []
+  },
+  {
+   "id": "A_8448043181",
+   "file": "hessian_b3lyp_analytic.npz",
+   "stamped": false,
+   "max_abs_diff_cm": 0.687,
+   "stored_lowest_cm": 415.26,
+   "own_lowest_cm": 415.4,
+   "at_risk": []
+  },
+  {
+   "id": "A_8448043181",
+   "file": "hessian_wb97x_analytic.npz",
+   "stamped": false,
+   "max_abs_diff_cm": 0.708,
+   "stored_lowest_cm": 425.39,
+   "own_lowest_cm": 425.54,
+   "at_risk": []
+  }
+ ]
+}

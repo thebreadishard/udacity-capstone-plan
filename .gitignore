@@ -185,3 +185,5 @@ plans/*/modules/08_industry_synthesis/*.log
 plans/*/modules/05_support_predictor/out/**/*.safetensors
 plans/*/modules/05_support_predictor/out/v14_smoke/
 plans/*/modules/05_support_predictor/out/**/smoke_*
+# The run door's own logs beside a module (`<run>.log` in its workdir); the run's results are in out/.
+plans/*/modules/*/*.log
