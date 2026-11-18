@@ -187,3 +187,5 @@ plans/*/modules/05_support_predictor/out/v14_smoke/
 plans/*/modules/05_support_predictor/out/**/smoke_*
 # The run door's own logs beside a module (`<run>.log` in its workdir); the run's results are in out/.
 plans/*/modules/*/*.log
+# The v1.4 search's stage trainings write their logs live; a finished stage's log is committed by name (`git add -f`).
+plans/*/modules/05_support_predictor/out/v14/E7_rungC_v14s[12]*.log
