@@ -1,0 +1,503 @@
+{
+ "kind": "release checks",
+ "date": "2026-11-18 07:16",
+ "decision": "66 (design note of 17 Nov 2026, §4)",
+ "passed": true,
+ "refusals": [],
+ "release": [
+  "E7_rungC_v14s3clean_c00_control_release_model_n1132_seed0.pt",
+  "E7_rungC_v14s3clean_c00_control_release_model_n1132_seed1.pt",
+  "E7_rungC_v14s3clean_c00_control_release_model_n1132_seed2.pt"
+ ],
+ "measurement": [
+  "E7_rungC_v14s3clean_c00_control_model_n1082_seed0.pt",
+  "E7_rungC_v14s3clean_c00_control_model_n1082_seed1.pt",
+  "E7_rungC_v14s3clean_c00_control_model_n1082_seed2.pt"
+ ],
+ "model_sha16": {
+  "E7_rungC_v14s3clean_c00_control_release_model_n1132_seed0.pt": "6f52c9d8570fbcf5",
+  "E7_rungC_v14s3clean_c00_control_release_model_n1132_seed1.pt": "1e820b8755078b90",
+  "E7_rungC_v14s3clean_c00_control_release_model_n1132_seed2.pt": "bc4de0b6458e44f2",
+  "E7_rungC_v14s3clean_c00_control_model_n1082_seed0.pt": "89574ed1b69c4e10",
+  "E7_rungC_v14s3clean_c00_control_model_n1082_seed1.pt": "03dbbf9f29b59186",
+  "E7_rungC_v14s3clean_c00_control_model_n1082_seed2.pt": "8dd85f3f1ba5bbeb"
+ },
+ "checks": {
+  "same_recipe": {
+   "passed": true,
+   "numbers": {
+    "differences": {
+     "E7_rungC_v14s3clean_c00_control_release_model_n1132_seed0.pt": {},
+     "E7_rungC_v14s3clean_c00_control_release_model_n1132_seed1.pt": {},
+     "E7_rungC_v14s3clean_c00_control_release_model_n1132_seed2.pt": {}
+    },
+    "measurement_trained_on_its_whole_pool": {
+     "E7_rungC_v14s3clean_c00_control_model_n1082_seed0.pt": true,
+     "E7_rungC_v14s3clean_c00_control_model_n1082_seed1.pt": true,
+     "E7_rungC_v14s3clean_c00_control_model_n1082_seed2.pt": true
+    },
+    "record_kinds": {
+     "E7_rungC_v14s3clean_c00_control_release_model_n1132_seed0.pt": "release",
+     "E7_rungC_v14s3clean_c00_control_release_model_n1132_seed1.pt": "release",
+     "E7_rungC_v14s3clean_c00_control_release_model_n1132_seed2.pt": "release",
+     "E7_rungC_v14s3clean_c00_control_model_n1082_seed0.pt": "measurement",
+     "E7_rungC_v14s3clean_c00_control_model_n1082_seed1.pt": "measurement",
+     "E7_rungC_v14s3clean_c00_control_model_n1082_seed2.pt": "measurement"
+    },
+    "ignored": [
+     "out_prefix",
+     "threads",
+     "seeds",
+     "network_kind"
+    ],
+    "absent_settings_read_as": {
+     "E7_rungC_v14s3clean_c00_control_model_n1082_seed0.pt": {},
+     "E7_rungC_v14s3clean_c00_control_release_model_n1132_seed0.pt": {},
+     "E7_rungC_v14s3clean_c00_control_model_n1082_seed1.pt": {},
+     "E7_rungC_v14s3clean_c00_control_release_model_n1132_seed1.pt": {},
+     "E7_rungC_v14s3clean_c00_control_model_n1082_seed2.pt": {},
+     "E7_rungC_v14s3clean_c00_control_release_model_n1132_seed2.pt": {}
+    }
+   },
+   "refusal": null
+  },
+  "pool_agreement": {
+   "passed": true,
+   "numbers": {
+    "families": {
+     "ring-ip": {
+      "difference": 2.8516691039692237,
+      "seed_spread": 2.8622594141891033,
+      "n_bands": 853
+     },
+     "CH-stretch": {
+      "difference": 0.887767356262134,
+      "seed_spread": 1.567193973043259,
+      "n_bands": 293
+     },
+     "CH-oop": {
+      "difference": 0.8982789066489152,
+      "seed_spread": 1.7765508597119493,
+      "n_bands": 99
+     },
+     "other": {
+      "difference": 1.4537493301754196,
+      "seed_spread": 3.6615578554103916,
+      "n_bands": 981
+     }
+    },
+    "sample": [
+     "A2_07f1fa9135",
+     "A2_1e3ee2b3a8",
+     "A2_3c982d4d3f",
+     "A2_6849063f11",
+     "A2_7fb917c8c9",
+     "A2_8aee63833a",
+     "A2_a748e707a3",
+     "A2_fae1c8f737",
+     "A_90df3e4aa9",
+     "B_00580f71bc",
+     "B_02145d28ae",
+     "B_038a62c6d7",
+     "B_077b344788",
+     "B_07e6c03ae6",
+     "B_0a006a11c0",
+     "B_0e9ba6e5c1",
+     "B_0ee42ff100",
+     "B_134d596518",
+     "B_1a5124714e",
+     "B_1b1ee38f9b",
+     "B_1d00850716",
+     "B_1d4cf70cdf",
+     "B_1db552d10b",
+     "B_1e9ccb2ea3",
+     "B_1f4942051b",
+     "B_1f4e104c2d",
+     "B_23a7c9c6b2",
+     "B_246b2a4557",
+     "B_26f4a2441f",
+     "B_2804096c51",
+     "B_285537f48b",
+     "B_2a0d775b59",
+     "B_30022fd926",
+     "B_4120ea3621",
+     "B_44c3726875",
+     "B_54b643d16d",
+     "B_6d47368e74",
+     "B_df987fb28b",
+     "P3c_049751d07c",
+     "P3c_09d0b3be91"
+    ],
+    "drawn_from": 1041,
+    "sample_seed": 20261117
+   },
+   "refusal": null
+  },
+  "holdouts_learnt": {
+   "passed": true,
+   "numbers": {
+    "sets": {
+     "a8": {
+      "file": "holdout_a_clean_2026-10-30.txt",
+      "n_listed": 8,
+      "n_read": 8,
+      "dropped_not_in_the_release_training_data": [],
+      "in_a_measurement_networks_training_data": [],
+      "families": {
+       "ring-ip": {
+        "release": 0.7179355643744241,
+        "measurement": 1.1688510308213589,
+        "n_bands": 199
+       },
+       "CH-stretch": {
+        "release": 0.6142143472635326,
+        "measurement": 0.8010861600899998,
+        "n_bands": 73
+       },
+       "CH-oop": {
+        "release": 1.1215450328144452,
+        "measurement": 1.8609286636289724,
+        "n_bands": 46
+       },
+       "other": {
+        "release": 1.7243018268227035,
+        "measurement": 2.3777083300146638,
+        "n_bands": 156
+       }
+      }
+     },
+     "b": {
+      "file": "holdout_b_frozen_2026-10-08.txt",
+      "n_listed": 41,
+      "n_read": 40,
+      "dropped_not_in_the_release_training_data": [
+       "A2_2c22216564"
+      ],
+      "in_a_measurement_networks_training_data": [],
+      "families": {
+       "ring-ip": {
+        "release": 0.5338334644051222,
+        "measurement": 1.2239286382811532,
+        "n_bands": 1194
+       },
+       "CH-stretch": {
+        "release": 0.6903712577893275,
+        "measurement": 1.6654814254055121,
+        "n_bands": 410
+       },
+       "CH-oop": {
+        "release": 0.8109408187072713,
+        "measurement": 1.2640692838174559,
+        "n_bands": 84
+       },
+       "other": {
+        "release": 1.2067988597648154,
+        "measurement": 2.099573412014801,
+        "n_bands": 1258
+       }
+      }
+     }
+    }
+   },
+   "refusal": null
+  },
+  "early_stopping": {
+   "passed": true,
+   "numbers": {
+    "seeds": {
+     "E7_rungC_v14s3clean_c00_control_release_model_n1132_seed0.pt": {
+      "best_epoch": 160,
+      "cap": 300,
+      "lr_schedule": "constant",
+      "at_cap": false,
+      "read_as": "160"
+     },
+     "E7_rungC_v14s3clean_c00_control_release_model_n1132_seed1.pt": {
+      "best_epoch": 165,
+      "cap": 300,
+      "lr_schedule": "constant",
+      "at_cap": false,
+      "read_as": "165"
+     },
+     "E7_rungC_v14s3clean_c00_control_release_model_n1132_seed2.pt": {
+      "best_epoch": 158,
+      "cap": 300,
+      "lr_schedule": "constant",
+      "at_cap": false,
+      "read_as": "158"
+     }
+    },
+    "cap_margin": 0.1
+   },
+   "refusal": null
+  },
+  "benzene": {
+   "passed": true,
+   "numbers": {
+    "molecule": "A_8448043181",
+    "in_training_data_of": {
+     "release": [
+      "E7_rungC_v14s3clean_c00_control_release_model_n1132_seed0.pt",
+      "E7_rungC_v14s3clean_c00_control_release_model_n1132_seed1.pt",
+      "E7_rungC_v14s3clean_c00_control_release_model_n1132_seed2.pt"
+     ],
+     "measurement": []
+    },
+    "fitted_by_release_networks": [
+     "E7_rungC_v14s3clean_c00_control_release_model_n1132_seed0.pt",
+     "E7_rungC_v14s3clean_c00_control_release_model_n1132_seed2.pt"
+    ],
+    "previous_release": "none",
+    "bands": [
+     {
+      "b3lyp": 415.4,
+      "family": "other",
+      "wb97x": 425.87,
+      "measurement": 425.31,
+      "release": 425.88
+     },
+     {
+      "b3lyp": 415.42,
+      "family": "other",
+      "wb97x": 425.54,
+      "measurement": 425.42,
+      "release": 426.01
+     },
+     {
+      "b3lyp": 621.86,
+      "family": "other",
+      "wb97x": 625.54,
+      "measurement": 625.45,
+      "release": 625.74
+     },
+     {
+      "b3lyp": 621.88,
+      "family": "other",
+      "wb97x": 625.58,
+      "measurement": 625.47,
+      "release": 625.76
+     },
+     {
+      "b3lyp": 694.85,
+      "family": "CH-oop",
+      "wb97x": 699.77,
+      "measurement": 701.12,
+      "release": 702.46
+     },
+     {
+      "b3lyp": 717.88,
+      "family": "other",
+      "wb97x": 734.14,
+      "measurement": 733.51,
+      "release": 735.39
+     },
+     {
+      "b3lyp": 864.85,
+      "family": "CH-oop",
+      "wb97x": 883.58,
+      "measurement": 891.0,
+      "release": 884.69
+     },
+     {
+      "b3lyp": 864.85,
+      "family": "CH-oop",
+      "wb97x": 883.32,
+      "measurement": 888.34,
+      "release": 885.67
+     },
+     {
+      "b3lyp": 969.35,
+      "family": "CH-oop",
+      "wb97x": 1001.5,
+      "measurement": 998.14,
+      "release": 1000.12
+     },
+     {
+      "b3lyp": 969.35,
+      "family": "CH-oop",
+      "wb97x": 1001.7,
+      "measurement": 997.59,
+      "release": 1000.19
+     },
+     {
+      "b3lyp": 1010.99,
+      "family": "CH-oop",
+      "wb97x": 1036.65,
+      "measurement": 1038.87,
+      "release": 1036.97
+     },
+     {
+      "b3lyp": 1019.81,
+      "family": "ring-ip",
+      "wb97x": 1024.81,
+      "measurement": 1024.56,
+      "release": 1024.76
+     },
+     {
+      "b3lyp": 1019.96,
+      "family": "ring-ip",
+      "wb97x": 1032.62,
+      "measurement": 1031.88,
+      "release": 1033.05
+     },
+     {
+      "b3lyp": 1068.79,
+      "family": "ring-ip",
+      "wb97x": 1078.72,
+      "measurement": 1078.51,
+      "release": 1078.83
+     },
+     {
+      "b3lyp": 1068.84,
+      "family": "ring-ip",
+      "wb97x": 1078.41,
+      "measurement": 1078.56,
+      "release": 1078.87
+     },
+     {
+      "b3lyp": 1185.54,
+      "family": "ring-ip",
+      "wb97x": 1174.93,
+      "measurement": 1175.5,
+      "release": 1175.8
+     },
+     {
+      "b3lyp": 1207.69,
+      "family": "ring-ip",
+      "wb97x": 1210.16,
+      "measurement": 1210.05,
+      "release": 1210.76
+     },
+     {
+      "b3lyp": 1207.72,
+      "family": "ring-ip",
+      "wb97x": 1210.54,
+      "measurement": 1210.08,
+      "release": 1210.79
+     },
+     {
+      "b3lyp": 1355.6,
+      "family": "ring-ip",
+      "wb97x": 1324.62,
+      "measurement": 1324.14,
+      "release": 1323.89
+     },
+     {
+      "b3lyp": 1387.15,
+      "family": "ring-ip",
+      "wb97x": 1390.79,
+      "measurement": 1388.5,
+      "release": 1390.27
+     },
+     {
+      "b3lyp": 1531.04,
+      "family": "ring-ip",
+      "wb97x": 1540.8,
+      "measurement": 1541.32,
+      "release": 1541.48
+     },
+     {
+      "b3lyp": 1531.08,
+      "family": "ring-ip",
+      "wb97x": 1540.91,
+      "measurement": 1541.35,
+      "release": 1541.51
+     },
+     {
+      "b3lyp": 1655.29,
+      "family": "ring-ip",
+      "wb97x": 1689.1,
+      "measurement": 1688.94,
+      "release": 1688.98
+     },
+     {
+      "b3lyp": 1655.33,
+      "family": "ring-ip",
+      "wb97x": 1689.18,
+      "measurement": 1688.99,
+      "release": 1689.02
+     },
+     {
+      "b3lyp": 3174.02,
+      "family": "CH-stretch",
+      "wb97x": 3217.19,
+      "measurement": 3216.59,
+      "release": 3215.13
+     },
+     {
+      "b3lyp": 3183.65,
+      "family": "CH-stretch",
+      "wb97x": 3226.68,
+      "measurement": 3226.43,
+      "release": 3225.17
+     },
+     {
+      "b3lyp": 3183.65,
+      "family": "CH-stretch",
+      "wb97x": 3226.69,
+      "measurement": 3226.43,
+      "release": 3225.17
+     },
+     {
+      "b3lyp": 3199.41,
+      "family": "CH-stretch",
+      "wb97x": 3242.24,
+      "measurement": 3242.32,
+      "release": 3240.84
+     },
+     {
+      "b3lyp": 3199.42,
+      "family": "CH-stretch",
+      "wb97x": 3242.25,
+      "measurement": 3242.33,
+      "release": 3240.85
+     },
+     {
+      "b3lyp": 3210.07,
+      "family": "CH-stretch",
+      "wb97x": 3252.69,
+      "measurement": 3252.42,
+      "release": 3251.21
+     }
+    ],
+    "family_error": {
+     "measurement": {
+      "ring-ip": 0.7469759739413019,
+      "CH-stretch": 0.31169956265055504,
+      "CH-oop": 4.380902651571028,
+      "other": 0.38516239355496384
+     },
+     "release": {
+      "ring-ip": 0.5025768221690716,
+      "CH-stretch": 1.5795891341351531,
+      "CH-oop": 1.745617102080092,
+      "other": 0.6093719992314527
+     }
+    }
+   },
+   "refusal": null
+  }
+ },
+ "definitions": {
+  "same_recipe": "the checkpoints' saved arguments (the trainer's whole validated config), release against measurement of the same seed; ignored: out_prefix, threads, seeds and network_kind",
+  "pool_agreement": "per family, over the sampled molecules' bands: 'difference' = rms of (corrected band position under the release networks' seed-mean ΔH − under the measurement networks' seed-mean ΔH); 'seed_spread' = rms of the same difference between two single measurement seeds, over every pair; bands in the order of their B3LYP partners (mode overlap), families by the certificate's rule. Under one distribution the seed means of three seeds differ by about 0.58 of the single-seed spread, so the bound leaves that margin and no more",
+  "holdouts_learnt": "per set and family: rms over the family's bands of the corrected band position's error against ωB97X, the seed-mean ΔH of each kind (the licence's quantity); the release networks' is in-sample",
+  "early_stopping": "per release seed: its best epoch, the epoch cap and v14_search.at_cap (constant rate: a best epoch within 10 % of the cap); a seed without a best epoch trained without early stopping and is refused",
+  "benzene": "per B3LYP mode of benzene, cm⁻¹: its position, its family, its ωB97X partner and its corrected position under each kind's seed-mean ΔH; per family the error of each kind against ωB97X"
+ },
+ "data_root": "C:\\Users\\thebr\\Documents\\CapstonePlan\\plans\\05_delta-probed-ir-pipeline\\modules\\05_support_predictor\\corpus\\molecules",
+ "provenance": {
+  "timestamp_utc": "2026-11-18 06:16:56",
+  "host": "Asus18",
+  "python": "3.14.6",
+  "numpy": "2.5.1",
+  "command": "release_checks.py out/v14/E7_rungC_v14s3clean_c00_control_release_model_n1132_seed0.pt out/v14/E7_rungC_v14s3clean_c00_control_release_model_n1132_seed1.pt out/v14/E7_rungC_v14s3clean_c00_control_release_model_n1132_seed2.pt --measurement out/v14/E7_rungC_v14s3clean_c00_control_model_n1082_seed0.pt out/v14/E7_rungC_v14s3clean_c00_control_model_n1082_seed1.pt out/v14/E7_rungC_v14s3clean_c00_control_model_n1082_seed2.pt --threads 2",
+  "commit": "4050f7c15f94b9da8500ef416a2a18955b6c289e",
+  "dirty": "yes"
+ },
+ "run": {
+  "seconds": 211.1,
+  "peak_memory_gb": 0.4,
+  "threads": 2
+ }
+}

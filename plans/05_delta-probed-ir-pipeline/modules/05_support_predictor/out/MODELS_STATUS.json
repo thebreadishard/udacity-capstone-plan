@@ -747,5 +747,29 @@
   "chain": "release_v14 smoke",
   "note": "smoke of the release chain (TASKS 252): 2 epochs, seed 0; never a product",
   "network_kind": "release"
+ },
+ "v14/E7_rungC_v14s3clean_c00_control_release_model_n1132_seed0.pt": {
+  "status": "carried",
+  "network": "ΔH-network",
+  "version": "1.4",
+  "chain": "release_v14",
+  "note": "carried since 18 Nov 07:1x: v1.4's release networks (decision 66) — the measurement recipe on all 1,132 molecules with labels; the five checks passed (out/v14/E7_rungC_v14s3clean_c00_control_release_release_checks.md); error bars and licence from v1.4's measurement networks",
+  "network_kind": "release"
+ },
+ "v14/E7_rungC_v14s3clean_c00_control_release_model_n1132_seed1.pt": {
+  "status": "carried",
+  "network": "ΔH-network",
+  "version": "1.4",
+  "chain": "release_v14",
+  "note": "carried since 18 Nov 07:1x: v1.4's release networks (decision 66) — the measurement recipe on all 1,132 molecules with labels; the five checks passed (out/v14/E7_rungC_v14s3clean_c00_control_release_release_checks.md); error bars and licence from v1.4's measurement networks",
+  "network_kind": "release"
+ },
+ "v14/E7_rungC_v14s3clean_c00_control_release_model_n1132_seed2.pt": {
+  "status": "carried",
+  "network": "ΔH-network",
+  "version": "1.4",
+  "chain": "release_v14",
+  "note": "carried since 18 Nov 07:1x: v1.4's release networks (decision 66) — the measurement recipe on all 1,132 molecules with labels; the five checks passed (out/v14/E7_rungC_v14s3clean_c00_control_release_release_checks.md); error bars and licence from v1.4's measurement networks",
+  "network_kind": "release"
  }
 }
