@@ -308,12 +308,12 @@ def assert_final_chain(root: Path, w: V.Config, other: V.Config, carried: list[s
     evals — and none of the frozen list's carried models (read3 reads the carried version in its own chain's evals)."""
     spec = RUNSPEC.RunSpec.model_validate_json((root / "probes" / "runspecs" / "v14_final.json").read_text(encoding="utf-8"))
     final = json.loads((root / "probes" / "runs" / "v14_final.json").read_text(encoding="utf-8"))
-    assert patterns_the_runner_expands(root, "v14_stage2") == 0 and patterns_the_runner_expands(root, "v14_final") == 3   # eval_winner_seed*
+    assert patterns_the_runner_expands(root, "v14_stage2") == 0 and patterns_the_runner_expands(root, "v14_final") == 6   # evals, product read
     assert spec.estimate.hours == pytest.approx(3 * V.HOURS[w.schedule] * (1 + 1080 / 911) + 1.0)   # the whole pool is 18.6 % larger
     assert spec.progress.max_gap_minutes == V.MAX_GAP_MINUTES and spec.memory.peak_gb == 7.7
     assert [s["label"].split(" (")[0] for s in final["steps"]] == [
         f"train {w.name}", f"train {w.name}", "v1.4 search register",
-        *(f"eval eval_winner_seed{s}" for s in range(3)), "v1.4 search read3"]
+        *(f"eval eval_winner_seed{s}" for s in range(3)), "product error read", "v1.4 search read3"]
     assert final["steps"][2]["argv"] == ["{python}", "probes/v14_search.py", "register"]   # the registry entry before the evals
     other_step, full_step = final["steps"][:2]
     assert other_step == V.train_step(other, "s3other", FINAL_SEEDS)                # the target check's arm keeps the selection split
@@ -329,6 +329,26 @@ def assert_final_chain(root: Path, w: V.Config, other: V.Config, carried: list[s
     assert [s["argv"][2:4] for s in final["steps"][3:6]] == [
         [f"{V.OUT}/E7_rungC_v14s3win_{w.name}_model_n*_seed{s}.pt", f"{V.OUT}/eval_winner_seed{s}"] for s in range(3)]
     assert not any(c in s["argv"] for s in final["steps"] for c in carried)
+    assert_product_error_step(final, spec, w)
+
+
+def assert_product_error_step(final: dict, spec: RUNSPEC.RunSpec, w: V.Config) -> None:
+    """After the winner's evals and before read3: the product-error read of the winner's three whole-pool models on their three
+    evals, its record beside the models under the name m08.accuracy looks for, named among the chain's outputs."""
+    sys.path.insert(0, str(PLAN / "modules" / "08_industry_synthesis"))
+    from m08 import accuracy
+    step = final["steps"][6]
+    pre = f"{V.OUT}/E7_rungC_v14s3win_{w.name}"
+    models = [f"{pre}_model_n*_seed{s}.pt" for s in range(3)]
+    assert V.PRODUCT_SUFFIX == accuracy.PRODUCT_SUFFIX
+    assert step["cwd"] == V.M05_REL and step["glob_args"]
+    assert step["argv"] == ["{python}", "../../probes/product_error_read.py", "--threads", "2", "--out", f"{pre}_product_error.json",
+                            "--models", *models, "--records", *(f"{V.OUT}/eval_winner_seed{s}.json" for s in range(3))]
+    assert models == [s["argv"][2] for s in final["steps"][3:6]]                     # the checkpoints the evals read
+    found = accuracy.product_error_path(tuple(m.replace("n*", "n1080").removeprefix("out/") for m in models))
+    assert found.name == Path(step["argv"][5]).name
+    assert final["outputs"] == [f"{V.M05_REL}/{pre}_product_error.json", f"{V.M05_REL}/{V.OUT}/read3.json"]
+    assert any("probes/product_error_read.py" in str(s) for s in spec.sources)
 
 
 def assert_a_final_chain_recorded(root: Path) -> None:

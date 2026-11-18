@@ -11,6 +11,8 @@ script measures, per family, in cm⁻¹:
   first order   each seed's first-order diagonal error and the seeds' mean, with the families the evaluation records used (the corpus
                 loader's, kept by mode index when the analytic Hessians replace the finite-difference ones). It must reproduce the
                 records' seed means to FIRST_ORDER_TOL, or the script stops without a record. Also given with the certificate's families.
+                The two are one rule (`learning_curve_layerA.molecule_features`) on two B3LYP Hessians, finite-difference and analytic,
+                so a mode near a threshold can fall in another family: each hold-out's `family_differences` names those modes.
   product       the error of the corrected band positions of the seed-mean ΔH: every band of H_B3LYP + ΔH paired to its ωB97X band by
                 mode overlap (`rungC_intensities.match_modes`) and counted in the family of its B3LYP partner by the rule the live
                 certificate marks bands with (`learning_curve_layerA.molecule_features` on the analytic B3LYP Hessian); with a
@@ -69,6 +71,11 @@ DEFINITIONS = {
     "record_families": "the evaluation records' families: the corpus loader's (finite-difference B3LYP modes), kept by mode index "
                        "when the analytic Hessians replace them (e7_rungB_reread_analytic.substitute)",
     "certificate_families": "the live certificate's families: learning_curve_layerA.molecule_features on the analytic B3LYP Hessian",
+    "family_differences": "per hold-out, the B3LYP modes whose record family and certificate family differ — one rule on the "
+                          "finite-difference and on the analytic Hessian, a mode near a threshold falling either side — by molecule, mode "
+                          "index and analytic frequency; they are why a family's first_order and first_order_certificate_families (and "
+                          "the product) can count different modes. The evaluation records keep the loader's families (the trainer's), "
+                          "the live certificate has only the analytic Hessian",
     "interval": "2.5th and 97.5th percentile of the set's rms under resampling of whole molecules; a statement about this hold-out's "
                 "molecules as a sample",
     "label_sha16": "per hold-out and molecule, the sha16 of the two label files that were read; stored so that a later reader can tell "
@@ -115,6 +122,7 @@ class MoleculeRead:
     first_order: np.ndarray    # (seeds, modes)
     band_family: np.ndarray
     band: np.ndarray
+    freq: np.ndarray           # the analytic B3LYP frequencies, cm⁻¹, the modes' order of the two family labels
 
 
 def label_hessians(folder: Path) -> tuple[np.ndarray, np.ndarray]:
@@ -144,7 +152,7 @@ def molecule_read(folder: Path, models: tuple[Path, ...]) -> MoleculeRead:
     if np.abs(w_low - np.asarray(truth["freq"])).max() > 1e-6:
         raise SystemExit(f"{folder.name}: the family rule's modes are not the B3LYP normal modes")
     band = w_net - w_ref[RINT.match_modes(V_net, V_ref)]
-    return MoleculeRead(record_family, family, first, family[RINT.match_modes(V_net, V_low)], band)
+    return MoleculeRead(record_family, family, first, family[RINT.match_modes(V_net, V_low)], band, np.asarray(truth["freq"], float))
 
 
 def peak_memory_gb() -> float:
@@ -186,6 +194,14 @@ def family_summary(reads: list[MoleculeRead], fam: str) -> dict:
                "n_molecules_with_modes": int(sum(len(b) > 0 for b in bands)), **bootstrap(bands, A.LICENCE_LINE_CM)}
     return {"first_order": first_order_summary(reads, [r.record_family == fam for r in reads]),
             "first_order_certificate_families": first_order_summary(reads, [r.family == fam for r in reads]), "product": product}
+
+
+def family_differences(ids: list[str], reads: list[MoleculeRead]) -> dict:
+    """The modes of these molecules whose record family and certificate family differ, with their count."""
+    modes = [{"molecule": i, "mode": int(k), "freq_cm": float(r.freq[k]), "record_family": str(r.record_family[k]),
+              "certificate_family": str(r.family[k])}
+             for i, r in zip(ids, reads, strict=True) for k in np.flatnonzero(r.record_family != r.family)]
+    return {"n_modes": len(modes), "modes": modes}
 
 
 def holdout_sets(records: list[Path], clean: list[Path] | None) -> tuple[dict[str, tuple[str, list[str]]], dict[str, dict[str, float]],
@@ -267,7 +283,7 @@ def read_holdouts(cfg: Config, models: tuple[Path, ...], sets: dict[str, tuple[s
             done += 1
             print(f"product-error {done}/{total} ({h}) {i}", flush=True)
         out[h] = {"set": key, "n_molecules": len(ids), "ids": ids, "families": {f: family_summary(reads, f) for f in FAMILIES},
-                  "label_sha16": hashes}
+                  "family_differences": family_differences(ids, reads), "label_sha16": hashes}
     return out
 
 

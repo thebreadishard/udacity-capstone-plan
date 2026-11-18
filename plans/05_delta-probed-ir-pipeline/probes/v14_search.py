@@ -86,6 +86,8 @@ TRAINED_WITH_SPLIT, TRAINED_WHOLE = 911, 1080  # molecules a stage training and 
 PREDICTION_MOLECULE, PREDICTION_LINE = "A_72b86c2331", 4.7  # §12: biphenylene's corrected ω rms on the whole-pool models, cm⁻¹
 RERUN_CAP = 450                            # the cap §12 names for a whole-pool rerun when the cap, not the data, stopped a seed
 CLEAN_A = "a8"                             # hold-out (a) without its two trained twins, as the evals name it (m08.accuracy.CLEAN_SET)
+PRODUCT_SUFFIX = "_product_error.json"     # m08.accuracy.PRODUCT_SUFFIX: where the certificate finds a version's product-error record
+PRODUCT_THREADS = "2"                      # as runspecs/product_error_read_v14clean.json, whose memory basis is at two threads
 DATA_LICENCE_NOTE = ("Apart from this read, and deciding nothing in it: the licence's quantity — the band error of the seed-mean ΔH "
                      "(decision 65 as amended on 16 Nov 2026) — is made by `probes/product_error_read.py` and is not in this read.")
 REGISTRY_STATUS_FILE: Path | None = None   # None: the model registry's own status file for the checkpoint's folder; tests name another
@@ -687,10 +689,26 @@ def winner_models(w: Config) -> list[str]:
     return [f"{prefix(w, FINAL_TAG)}_model_n*_seed{s}.pt" for s in FINAL_SEEDS]
 
 
+def winner_eval(seed: int) -> str:
+    """The evaluation record of the winner's whole-pool checkpoint of this seed, without its .json."""
+    return f"{OUT}/eval_winner_seed{seed}"
+
+
+def product_error_step(w: Config) -> dict:
+    """The licence's quantity for the winner's whole-pool models (`probes/product_error_read.py --models --records`, as
+    runspecs/product_error_read_v14clean.json calls it), its record beside the models where `m08.accuracy` finds it: the winner's
+    certificates are made from it (decision 65 as amended on 16 Nov 2026)."""
+    pre = prefix(w, FINAL_TAG)
+    return {"kind": "cmd", "label": "product error read", "cwd": M05_REL, "log": f"{M05_REL}/{pre}_product_error.log", "glob_args": True,
+            "argv": ["{python}", "../../probes/product_error_read.py", "--threads", PRODUCT_THREADS, "--out", f"{pre}{PRODUCT_SUFFIX}",
+                     "--models", *winner_models(w), "--records", *(f"{winner_eval(s)}.json" for s in FINAL_SEEDS)]}
+
+
 def _write_final_chain(w: Config) -> None:
     """The other target with the selection split (the target check is a selection-set read), the winner on the whole pool without any
-    hold-out twin of any charge (the models the promotion is read on) on the hold-outs and the clean eight, read3. The carried version
-    is not evaluated here: read3 reads it in the evals its own chain made (`carried_version`)."""
+    hold-out twin of any charge (the models the promotion is read on) on the hold-outs and the clean eight, their product-error read
+    (`product_error_step`), read3. The carried version is not evaluated here: read3 reads it in the evals its own chain made
+    (`carried_version`)."""
     other = replace(w, target=next(t for t in TARGETS if t != w.target))
     for pre in (prefix(w, FINAL_TAG), prefix(other, "s3other")):
         if (M05 / f"{pre}.json").is_file():
@@ -699,16 +717,19 @@ def _write_final_chain(w: Config) -> None:
     steps = [train_step(other, "s3other", seeds), train_step(w, FINAL_TAG, seeds, selection_split=False, twins=CLEAN_TWINS),
              read_step("register")]
     clean = {CLEAN_A: chain_runner.HOLDOUT_A_CLEAN}
-    steps += [_eval_step(m, f"{OUT}/eval_winner_seed{s}", clean) for s, m in zip(FINAL_SEEDS, winner_models(w), strict=True)]
-    steps.append(read_step("read3"))
+    steps += [_eval_step(m, winner_eval(s), clean) for s, m in zip(FINAL_SEEDS, winner_models(w), strict=True)]
+    steps += [product_error_step(w), read_step("read3")]
     about = (f"v1.4 final: {w.name} with the other target and {w.name} on the whole pool (three seeds each), the whole-pool models "
-             "read on the hold-outs, read3 against the carried version")
-    write_new(PLAN / FINAL_CHAIN, chain("V14F", about, steps, [f"{M05_REL}/{OUT}/read3.json"]))
-    write_new(PLAN / "probes" / "runspecs" / "v14_final.json",
-              runspec("v14_final", "V14F", "v1.4 final: target check, whole-pool retraining, hold-out reads, promotion",
-                      len(FINAL_SEEDS) * HOURS[w.schedule] * (1 + TRAINED_WHOLE / TRAINED_WITH_SPLIT) + 1.0,
-                      f"six trainings at the winner's schedule: three with the other target, three on the whole pool at "
-                      f"{TRAINED_WHOLE}/{TRAINED_WITH_SPLIT} of that time; three hold-out evals ≈ 10 min and three selection evals"))
+             "read on the hold-outs, their product error, read3 against the carried version")
+    outputs = [f"{M05_REL}/{prefix(w, FINAL_TAG)}{PRODUCT_SUFFIX}", f"{M05_REL}/{OUT}/read3.json"]
+    write_new(PLAN / FINAL_CHAIN, chain("V14F", about, steps, outputs))
+    spec = runspec("v14_final", "V14F", "v1.4 final: target check, whole-pool retraining, hold-out reads, product error, promotion",
+                   len(FINAL_SEEDS) * HOURS[w.schedule] * (1 + TRAINED_WHOLE / TRAINED_WITH_SPLIT) + 1.0,
+                   f"six trainings at the winner's schedule: three with the other target, three on the whole pool at "
+                   f"{TRAINED_WHOLE}/{TRAINED_WITH_SPLIT} of that time; three hold-out evals ≈ 10 min, three selection evals and "
+                   f"the product-error read ≈ 2 min (102 s for the carried version on 16 Nov 2026)")
+    spec["sources"] += [{"local": "probes/product_error_read.py"}, {"local": "modules/08_industry_synthesis/m08/accuracy.py"}]
+    write_new(PLAN / "probes" / "runspecs" / "v14_final.json", spec)
 
 
 def holdout_values(paths: list[Path], hold: str, molecule: str | None = None) -> list[float]:
@@ -1098,7 +1119,7 @@ def final_evals(w: Config) -> tuple[list[SeedRead], list[Path], CarriedVersion]:
     """read3's checked inputs: (the winner's whole-pool trainings, their hold-out evals, the carried version with its evals). The
     trainings passed `whole_pool_reads`, the twin rule CLEAN_TWINS and the cap rule; every eval holds the clean set exactly and (b) on
     the frozen list (§14's addition of 16 Nov: hold-out (a) decides on its clean eight, the ten are printed beside them)."""
-    evals = [M05 / f"{OUT}/eval_winner_seed{s}.json" for s in FINAL_SEEDS]
+    evals = [M05 / f"{winner_eval(s)}.json" for s in FINAL_SEEDS]
     full = whole_pool_reads(w, evals, FINAL_TAG)
     require_twin_rule(prefix(w, FINAL_TAG), CLEAN_TWINS)
     require_below_cap(w, full)
