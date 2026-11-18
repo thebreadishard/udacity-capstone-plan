@@ -79,7 +79,7 @@ from scale_factor_baseline import PAHDB_FACTORS, pahdb_region  # noqa: E402
 
 from dpir.provenance import git_state, provenance  # noqa: E402
 
-PIPELINE_VERSION = "0.11"              # modules/PIPELINE.md
+PIPELINE_VERSION = "0.12"              # modules/PIPELINE.md
 NETWORK = "ΔH-network"
 CORPUS_ROOT = M05 / "corpus"
 CORPUS = CORPUS_ROOT / "molecules"
