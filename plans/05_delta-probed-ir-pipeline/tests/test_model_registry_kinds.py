@@ -49,13 +49,21 @@ def pair(tmp_path):
     return tmp_path, files, entries
 
 
-def test_every_committed_entry_is_a_measurement_network():
-    """The migration is the default: no committed entry carries the field, and each one reads as a measurement network."""
+def test_every_committed_entry_states_its_kind_and_its_name_agrees():
+    """An entry without the field reads as a measurement network (the migration's default); a release network states its kind,
+    and its file name says `_release` (release_chain.py's prefix), so neither kind can pass for the other. The carried ΔH version
+    is three measurement networks and, once its release networks have passed their checks, three release networks of the same
+    version (decision 66)."""
     for module in MR.MODULES.values():
         status = MR.read_status(module["status"])
-        assert status and all(NK.FIELD not in e and NK.stated_kind(e, k) == NK.MEASUREMENT for k, e in status.items())
-    assert len(MR.carried_keys(MR.read_status(MR.STATUS_FILE), DH, NK.MEASUREMENT)) == 3
-    assert MR.carried_keys(MR.read_status(MR.STATUS_FILE), DH, NK.RELEASE) == []
+        assert status
+        for key, entry in status.items():
+            assert (NK.stated_kind(entry, key) == NK.RELEASE) == ("_release" in Path(key).name), key
+    status = MR.read_status(MR.STATUS_FILE)
+    measured = MR.carried_keys(status, DH, NK.MEASUREMENT)
+    released = MR.carried_keys(status, DH, NK.RELEASE)
+    assert len(measured) == 3 and len(released) in (0, 3)
+    assert {str(status[k]["version"]) for k in released} <= {str(status[k]["version"]) for k in measured}
 
 
 def test_the_committed_registries_carry_the_generators_header():
