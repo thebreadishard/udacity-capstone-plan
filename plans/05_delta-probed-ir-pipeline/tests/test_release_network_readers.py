@@ -43,10 +43,12 @@ def test_a_promotion_arm_refuses_a_release_networks_record(tmp_path):
 
 @pytest.fixture
 def v13_records(tmp_path, monkeypatch):
-    """v1.3's evaluation, clean hold-out (a) and product-error records, copied to a folder the accuracy reads instead of module 05's."""
+    """v1.3's evaluation, clean hold-out (a), product-error and training records, copied to a folder the accuracy reads instead of
+    module 05's (the training record says whether hold-out (a)'s twins were trained on)."""
     from m08 import accuracy as A
 
-    names = [*A.evaluation_records(V13), *A.clean_a_records(V13), A.M05_OUT / f"E7_rungC_chain35_analytic{A.PRODUCT_SUFFIX}"]
+    names = [*A.evaluation_records(V13), *A.clean_a_records(V13), A.M05_OUT / f"E7_rungC_chain35_analytic{A.PRODUCT_SUFFIX}",
+             A.M05_OUT / "E7_rungC_chain35_analytic.json"]
     for p in names:
         shutil.copy(p, tmp_path / p.name)
     monkeypatch.setattr(A, "M05_OUT", tmp_path)

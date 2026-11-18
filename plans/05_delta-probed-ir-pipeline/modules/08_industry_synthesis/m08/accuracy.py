@@ -17,6 +17,7 @@ from .spectrum import shape_accuracy
 import network_kind as NK
 from chain35_read import T1_FAMILY_LINE, T1_RATIO_LINE
 from promotion_read import FAMILIES, QUANTITIES, RATIO, Arm, load_eval_arm, reported
+from rungC_settings_added import SETTINGS_ADDED  # module 05's code, on the path through m08.pipeline
 
 OUT_DIR = "out"                        # module 05's checkpoint folder; a model's key is its path under it (the registry's keys)
 M05_OUT = P.M05 / OUT_DIR
@@ -25,10 +26,16 @@ TARGETS = {**dict.fromkeys(FAMILIES, LICENCE_LINE_CM), RATIO: T1_RATIO_LINE}
 TARGET_SOURCE = ("3 cm⁻¹ per family — decision 53's line for ring-ip, CH-oop and 'other', every family's under decision 65 (the licence) — "
                  "and the coupling ratio ≤ 0.25 of chain 35's T1 line (probes/chain35_read.py)")
 HOLDOUTS = {"a": "hold-out (a): layer-A molecules held out on 19 Sep 2026 (benzene, phenanthrene, fluoranthene, benzonitrile, benzophenone, …), never trained",
-            "b": "hold-out (b): every substituted molecule of two scaffold cores, frozen on 8 Oct 2026 — scaffolds the network never saw"}
+            "b": "hold-out (b): every substituted molecule of two scaffold cores, frozen on 8 Oct 2026 — scaffolds the measurement networks "
+                 "never saw"}
 CLEAN_SET = "a8"                       # probes/holdout_a_clean.sh's extra test set
-CLEAN_A = ("hold-out (a) without its two trained twins (2-naphthoic acid and benzonitrile were trained on as layer-B molecules; TASKS 157): "
-           "eight layer-A molecules held out on 19 Sep 2026, never trained on under any id")
+TWINS_KEPT = "keep"                    # rungC_train --holdout-twins: the hold-out molecules' twins stayed in the training pool
+CLEAN_A = ("hold-out (a) on its eight molecules never trained on in any version (the set fixed on 30 Oct 2026): eight layer-A molecules "
+           "held out on 19 Sep 2026; this version trained on the other two, 2-naphthoic acid and benzonitrile, under layer-B ids")
+CLEAN_A_TWINS_DROPPED = ("hold-out (a) on its eight molecules never trained on in any version (the set fixed on 30 Oct 2026): eight "
+                         "layer-A molecules held out on 19 Sep 2026; this version's training left out the twins of the hold-out "
+                         "molecules, so the other two, 2-naphthoic acid and benzonitrile, are clean too, and the eight are kept for "
+                         "comparability with v1.3")
 HIGHER_LEVEL = "ωB97X/6-31G* (the DFT proxy: the network's ΔH is trained on ωB97X − B3LYP Hessians)"
 FIRST_ORDER = "first_order"
 PRODUCT = "product"
@@ -38,8 +45,7 @@ QUANTITY_NAMES = {FIRST_ORDER: "first-order diagonal error of each seed's correc
                   PRODUCT: "error of the corrected band positions of the seed-mean correction"}
 PRODUCT_SUFFIX = "_product_error.json"  # probes/product_error_read.py: <stem>_product_error.json beside the evaluation records
 PRODUCT_COMMAND = "python tools/runspec.py launch probes/runspecs/product_error_read.json"
-CC_NOTE = ("not measured for this network version: the coupled-cluster reads (T3) were made on chain 34, and tests on the 9–11 existing "
-           "anchors wait for the anchor decision of November 2026")
+CC_NOTE = "not measured for this network version: the coupled-cluster reads (T3) were made on an earlier network (chain 34)"
 DEFINITIONS = dict(
     family="the read-outs: rms over the family's B3LYP modes of the first-order diagonal error of a seed's ΔH against the higher level, per "
            "seed, and the seeds' mean (cm⁻¹); families by module 05's rule (m05/learning_curve_layerA.molecule_features)",
@@ -118,6 +124,28 @@ def clean_a_records(models: tuple[str, ...]) -> list[Path] | None:
 def _model_of(record: Path) -> str:
     with open(record, encoding="utf-8") as f:
         return Path(json.load(f)["model"]).name
+
+
+def holdout_twins_setting(record: Path) -> str:
+    """The --holdout-twins setting of the training an evaluation record's model comes from, read from that training's record
+    (`<stem>.json` beside it); a training recorded before the setting existed kept the twins (`SETTINGS_ADDED`). A missing training
+    record is refused: the description would be a guess."""
+    stem, _ = _stem_seed(_model_of(record))
+    training = record.parent / f"{stem}.json"
+    if not training.is_file():
+        raise FileNotFoundError(f"{record.name}: no training record {training.name} beside it, so whether its training kept the "
+                                "hold-out twins cannot be read")
+    with open(training, encoding="utf-8") as f:
+        return json.load(f).get("holdout_twins", SETTINGS_ADDED["holdout_twins"])
+
+
+def clean_a_description(clean: list[Path]) -> str:
+    """Hold-out (a)'s description on its eight clean molecules, true for the version the records are of: whether its training kept
+    the twins of the other two."""
+    settings = {holdout_twins_setting(p) for p in clean}
+    if len(settings) != 1:
+        raise ValueError(f"the clean hold-out (a) reads come from trainings of {len(settings)} twin settings ({sorted(settings)}); one version has one")
+    return CLEAN_A if settings.pop() == TWINS_KEPT else CLEAN_A_TWINS_DROPPED
 
 
 def _records(paths: list[Path]) -> list[dict]:
@@ -217,15 +245,17 @@ def network_accuracy(records: list[Path], clean: list[Path] | None = None, produ
     seed mean and seed values as reported, its target and whether the mean is within it. `product` is the error of what the product
     delivers, per family, from the product-error record (`product_error_record`); None without one, and then no licence can be read
     (`stated_errors`). With them the spectral shape (overlap and height error, uncorrected → corrected) over the molecules with an APT.
-    With `clean` (`clean_a_records`), hold-out (a) is read on the molecules never trained on under any id. `quantities` names both and
-    `licence_quantity` the one the licence reads."""
+    With `clean` (`clean_a_records`), hold-out (a) is read on the eight molecules never trained on in any version, described as the
+    version's training record says (`clean_a_description`). `quantities` names both and `licence_quantity` the one the licence reads."""
     sources = {h: (load_eval_arm(records), _records(records), h) for h in HOLDOUTS}
+    descriptions = dict(HOLDOUTS)
     if clean is not None:
         sources["a"] = (load_eval_arm(clean, holdouts=(CLEAN_SET, "b")), _records(clean), CLEAN_SET)
+        descriptions["a"] = clean_a_description(clean)
     holdouts = {}
-    for h, description in HOLDOUTS.items():
+    for h, description in descriptions.items():
         arm, recs, key = sources[h]
-        holdouts[h] = dict(description=CLEAN_A if key == CLEAN_SET else description, n_molecules=len(recs[0][key]["per_molecule"]),
+        holdouts[h] = dict(description=description, n_molecules=len(recs[0][key]["per_molecule"]),
                            readouts=_readout_rows(arm, key), product=None, shape=shape_accuracy(recs, key))
     if product is not None:
         for h, rows in _product_rows(product, {h: (sources[h][2], holdouts[h]["n_molecules"]) for h in HOLDOUTS}).items():

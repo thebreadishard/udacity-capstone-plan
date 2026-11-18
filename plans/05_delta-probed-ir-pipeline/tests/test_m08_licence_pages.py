@@ -93,7 +93,8 @@ def test_the_show_page_prints_the_caveat_with_the_certificate_card(tmp_path, ame
     assert all(row["licensed"] for row in m["families"]) and {r["family"]: (r["error_a"], r["error_b"]) for r in m["families"]}["other"] == (2.78, 2.77)
     page = S.page(S.payload((folder,)))
     assert "Licence caveat: other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.68" in page
-    assert "${m.licence_caveat ? `<div" in page and "errors: the ${esc(m.error_quantity)}" in page
+    assert "${m.licence_caveat ? `<div" in page and "${esc(m.errors_text)}" in page
+    assert m["errors_text"] == f"errors: the {PRODUCT_NAME}, on molecules the network never saw (cm⁻¹)"
     assert S.molecule(STORED)["licence_caveat"] == ""
 
 

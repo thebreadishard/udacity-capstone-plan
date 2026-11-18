@@ -221,3 +221,19 @@ def test_a_correction_of_other_models_is_refused(result):
     P.save_correction(result, ZERO, [ZERO], (Path("other_model.pt"),))
     with pytest.raises(RuntimeError, match="names other models"):
         LC.load_result(result)
+
+
+def test_hold_out_a_s_clean_description_is_the_version_s_own(tmp_path):
+    """Demo review 4: the text said the two twins were trained on, which v1.4 (twins dropped) never did. The training record's
+    --holdout-twins decides; v1.3's record predates the setting and kept them."""
+    clean = A.clean_a_records(V13)
+    assert {A.holdout_twins_setting(p) for p in clean} == {"keep"} and A.clean_a_description(clean) == A.CLEAN_A
+    copies = [Path(shutil.copy(p, tmp_path / p.name)) for p in clean]
+    with pytest.raises(FileNotFoundError, match="no training record"):
+        A.clean_a_description(copies)
+    stem = A._stem_seed(A._model_of(copies[0]))[0]
+    (tmp_path / f"{stem}.json").write_text(json.dumps({"holdout_twins": "drop-any-charge"}), encoding="utf-8")
+    assert A.clean_a_description(copies) == A.CLEAN_A_TWINS_DROPPED
+    assert "clean too" in A.CLEAN_A_TWINS_DROPPED and "comparability with v1.3" in A.CLEAN_A_TWINS_DROPPED
+    assert "TASKS" not in A.CLEAN_A + A.CLEAN_A_TWINS_DROPPED + A.CC_NOTE and "November 2026" not in A.CC_NOTE
+    assert "measurement networks" in A.HOLDOUTS["b"]

@@ -247,7 +247,7 @@ def test_the_runtime_fit_leaves_reused_runs_out(tmp_path, monkeypatch):
         if reuse is not None:                     # records before 0.5 carry no reuse entry
             rec["reuse"] = reuse
         (d / "pipeline.json").write_text(json.dumps(rec), encoding="utf-8")
-    assert sorted(f for _, _, f in RT.timed_runs(4, tmp_path)) == ["pipeline_x/computed", "pipeline_x/old"]
+    assert sorted(f for _, _, f, _ in RT.timed_runs(4, tmp_path)) == ["pipeline_x/computed", "pipeline_x/old"]
 
 
 @pytest.mark.skipif(sys.platform != "win32", reason="the WSL step's command names the laptop's Windows paths")
