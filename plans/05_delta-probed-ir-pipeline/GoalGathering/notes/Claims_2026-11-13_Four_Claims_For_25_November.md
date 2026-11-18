@@ -1,38 +1,31 @@
 # The four claims, as of 18 November 2026
 
+**In four sentences.** An equivariant graph network predicts the correction ΔH that turns an aromatic molecule's B3LYP/6-31G\* Hessian
+into its ωB97X/6-31G\* Hessian, and the infrared spectrum follows from the corrected Hessian. On molecules it never saw, the corrected band
+positions are off by 0.80–2.38 cm⁻¹ rms per mode family, where uncorrected B3LYP is off by about 23 cm⁻¹ over all modes and the best
+fitted scale factor leaves 2.0–15.3 cm⁻¹ per family (that comparison was read on the earlier v1.1). On four molecules of 36–60 atoms,
+larger than the corpus, the error is still 7.9 cm⁻¹. Accuracy against coupled cluster or experiment is not established.
+
+Sources: the licence table below; the uncorrected 23.37 / 22.93 cm⁻¹ on hold-outs (a) / (b) are lines 28 and 30 of
+`modules/05_support_predictor/out/v14/E7_rungC_v14s3clean_c00_control.log` ("zero"); the scale factors are
+`modules/05_support_predictor/out/scale_factor_baseline_2026-10-25.md` (hold-out (a); 3.9–14.6 on (b)); the size test is claim (1).
+
 TASKS 140. The meeting of Wednesday 25 November is a conversation, not a resource request (decision 63). The user speaks with the
 supervisor, she speaks with me through the chat, and the funding of further expensive calculations is discussed on the day (the user,
-9 November: no written note). This page is what the chat reads from. Every number names the file it comes from. A claim without a number
-and a counterpart counts as not made.
+9 November: no written note). This page is what the chat reads from. Every number names its file. A claim without a number and a
+counterpart counts as not made.
 
 **Do not send her to the README's opening summary:** it is dated 12 September and describes the plan before the network existed. If she
 asks for the binding text, point her to decisions 63 (the capstone's end point), 65 (the licence) and 66 (release networks) in
 `README.md`'s 'Decisions'.
 
-## Read this first: what the errors are measured against, and two rules changed after data
-
-- **Every error on this page is against ωB97X/6-31G\*, a DFT level used as a stand-in (the proxy).** The network corrects B3LYP/6-31G\*
-  toward ωB97X/6-31G\*. No coupled-cluster licence and no laboratory licence exists (decision 65: "It holds at the level the network is
-  measured at, the DFT proxy").
-- **The licence quantity changed on 16 November** (decision 65 amended): from the first-order frequency error of each seed's correction
-  to the error of the band positions the pipeline prints, from the seeds' mean correction.
-- **The promotion rule changed on 17 November** (decision 57 amended): from "no read-out worse at the reported precision" to a combined
-  score that must improve beyond a Student-t line.
-- **Both changes came after data and both favour v1.4.** On the old rules v1.4 is not promoted (worse on (a8) CH-oop by 0.05, inside two
-  standard errors; `modules/05_support_predictor/out/v14/read_clean_rule-of-26oct.md`), and 'other' on hold-out (b) reads 3.68, above
-  the line of 3 (`modules/05_support_predictor/out/v14/read_clean.md`).
-- **The new rule would have refused v1.3** (combined score 0.820 against 0.915, line 0.103:
-  `probes/results_m1/promotion_rule_test_2026-11-17/rule_test.txt`).
-- **The new rule's power was estimated at v1.4's own observed effect**: on simulated arms it promotes 72.8 % of improvements that size
-  (the old rule 12.0 %), with 1.5 % false promotions. For an improvement the size of v1.3's it promotes 40.7 % (same file).
-
 ## Words used on this page
 
 | term | meaning |
 |---|---|
-| hold-out (a) | ten small parent molecules (benzene, phenanthrene, fluorene, …) held out on 19 September |
+| hold-out (a) | ten small parent molecules (benzene, phenanthrene, fluorene, …) kept out of training since 19 September |
 | (a8) | the eight of those ten never trained on under any name; the other two (2-naphthoic acid, benzonitrile) had a twin in training |
-| hold-out (b) | every substituted molecule of two scaffold cores (fluoranthene, fluorene), frozen on 8 October; read on 40 molecules |
+| hold-out (b) | the substituted molecules of two scaffold cores (fluoranthene, fluorene): 70 kept out of training; the 41 frozen on 8 October are read, 40 of them (see below) |
 | twin | the same molecule under another id or in another charge state, e.g. benzene's radical cation beside benzene |
 | carried / promoted | the carried version is the network the pipeline uses; a new version is promoted to carried by a registered rule (decision 57) |
 | measurement / release networks | measurement networks train without the hold-outs and give every error bar; release networks train on all labelled molecules and are what ships (decision 66) |
@@ -43,11 +36,29 @@ asks for the binding text, point her to decisions 63 (the capstone's end point),
 | arm 0 / arm D | the size test's two trainings: arm 0 without molecules of the target size, arm D with one molecule per target size (34–54 atoms) |
 | aromir | the public Python package that carries the pipeline and the release networks (GitHub) |
 
+## Two rules changed after data
+
+- **Every error on this page is against ωB97X/6-31G\*, the DFT proxy.** No coupled-cluster licence and no laboratory licence exists
+  (decision 65: "It holds at the level the network is measured at, the DFT proxy").
+- **The licence quantity changed on 16 November** (decision 65 amended). The old one was each seed's first-order frequency error,
+  averaged over the seeds. The new one is the error of the band positions the pipeline prints: the seeds' mean correction, diagonalised.
+  The new quantity is what the product prints. It averages the seeds before the error is taken and includes the couplings, and both can
+  lower it; how much each contributes is not measured.
+- **The promotion rule changed on 17 November** (decision 57 amended). The old rule was "no read-out worse at the reported precision".
+  The new rule asks the combined score to improve beyond a Student-t line.
+- **Both changes came after data and both favour v1.4.** On the old rules v1.4 is not promoted: it is worse on (a8) CH-oop by 0.05,
+  inside two standard errors (`modules/05_support_predictor/out/v14/read_clean_rule-of-26oct.md`). On the old quantity 'other' on
+  hold-out (b) reads 3.68, above the line of 3 (`modules/05_support_predictor/out/v14/read_clean.md`).
+- **The new rule would have refused v1.3.** v1.3's combined-score difference against its predecessor was −0.095, not below the line of
+  −0.103 (`probes/results_m1/promotion_rule_test_2026-11-17/rule_test.txt`).
+- **The new rule's power was estimated at v1.4's own observed effect.** On simulated arms it promotes 72.8 % of improvements that size
+  (the old rule 12.0 %), with 1.5 % false promotions. For an improvement the size of v1.3's it promotes 40.7 % (same file).
+
 ## Where v1.4 stands on 18 November
 
 | claim | number | counterpart | molecules | file | read on |
 |---|---|---|---|---|---|
-| v1.4 promoted | combined score 0.690 | v1.3's 0.844; line −0.100 | (a8) 8, (b) 40 | `modules/05_support_predictor/out/v14/read_clean.md` | v1.4 measurement networks |
+| v1.4 promoted | combined-score difference −0.155 (0.690 against v1.3's 0.844) | line −0.100 | (a8) 8, (b) 40 | `modules/05_support_predictor/out/v14/read_clean.md` | v1.4 measurement networks |
 | licence, ring-ip | 1.17 / 1.22 cm⁻¹ on (a) / (b) | 3 | 8 / 40 | `probes/results_m1/pipeline_benzene_v14_2026-11-17/benzene/certificate.md` | v1.4 measurement networks |
 | licence, CH-stretch | 0.80 / 1.67 | 3 | 8 / 40 | same | same |
 | licence, CH-oop | 1.86 / 1.26 | 3 | 5 of 8 / 40 | same | same |
@@ -61,23 +72,34 @@ Notes to the table:
 - **The licence rests on few molecules in two cells.** CH-oop on (a) rests on 5 molecules (the other three have no such band); its 95 %
   bootstrap interval over molecules is 0.93–3.2 cm⁻¹ and crosses the line. 'other' on (a) rests on 8 molecules; its interval is
   1.45–3.19 and crosses it too (certificate).
-- **The measurement networks trained on 1,075 molecules** (914 fitted, 161 for early stopping;
-  `E7_rungC_v14s3clean_c00_control_eval_clean_seed0.json`, `"n_train_ids": 1075`, and the training log). The `n1082` in their file
-  names is the size requested, which is larger than the pool.
+- **Hold-out (b) is read on 40 of its 41 frozen molecules.** The 41st, A2_2c22216564, has an imaginary mode in its B3LYP label
+  (−35.6 cm⁻¹, `modules/05_support_predictor/corpus/molecules/A2_2c22216564/analytic_check.json`), and molecules with one are left out
+  (`probes/results_m1/low_mode_coverage_2026-11-14/coverage.json`). The 70 kept out of training (training log line 4) include
+  molecules of the two scaffolds added after the freeze; those are read apart as (b+), 30 molecules.
+- **The measurement networks trained on 1,075 molecules**: 914 fitted, 161 for early stopping
+  (`E7_rungC_v14s3clean_c00_control_eval_clean_seed0.json`, `"n_train_ids": 1075`; training log line 27).
+- **They trained on the repaired low-mode labels.** v1.4's run started on 17 November at 16:05. All 120 label files swapped on 14 and
+  15 November are on disk with the swap records' post-swap checksums, unchanged since 15 November
+  (`probes/results_m1/low_mode_swap_2026-11-14/swap.json`, `probes/results_m1/low_mode_swap_fd222_2026-11-15/swap.json`).
 - **What ships is trained on all data (decision 66).** The pipeline and aromir use v1.4's release networks, trained on all 1,132
-  labelled molecules, with error bars and licence from the measurement networks. aromir is on GitHub at `42a8956`, CI green. The
-  weights go to Hugging Face only after aromir's acceptance tests (TASKS 269).
+  labelled molecules, with error bars and licence from the measurement networks. aromir is on GitHub at `42a8956`, CI green; the
+  weights go to Hugging Face only after aromir's acceptance tests (TASKS 269). *To be updated on 24 November.*
 - **Benzene's demo certificate is in-sample.** Its rms of 1.13 cm⁻¹ against ωB97X comes from release networks that trained on benzene
   (two of the three fitted it), so it is not an out-of-sample error (certificate; release checks §5).
 
 **The hold-out lesson.** Benzene's radical cation had been trained beside the held-out neutral benzene, because the twin rule matched
-charge. On one network it raised benzene's error from 1.47 to 5.37 cm⁻¹ (`probes/results_m1/v14_data_read_2026-11-17/probe_nop3c.txt`,
-seed 0). The rule now drops a hold-out molecule's twin in every charge state, and the readers refuse a model that trained one. The clean
-arm removed seven pool molecules, one of them benzene's cation. It brought benzene to 2.35 on the mean of three seeds (2.63, 1.98,
-2.44; `clean_benzene.txt`). That is still worse than v1.3's 1.66, so the cation is part of the cause, not all of it.
+charge.
 
-**The search for a better recipe runs** (`probes/v14_search.py`, stage 1 on 18 November). Two of ten finished one-seed candidates lead
-the carried recipe on the selection set. One seed is not a verdict; the registered read decides, against v1.4.
+- With the cation in training, benzene read 5.37, 2.05 and 1.95 cm⁻¹ on the three seeds (`clean_benzene.txt`, 'data' column).
+- On seed 0, a probe without the whole cation layer (about 50 trained cations, benzene's among them;
+  `probes/results_m1/v14_data_read_2026-11-17/cation_twins.txt`) brought benzene from 5.37 to 1.47
+  (`probes/results_m1/v14_data_read_2026-11-17/probe_nop3c.txt`).
+- The rule now drops a hold-out molecule's twin in every charge state, and the readers refuse a model that trained one. The clean arm
+  removed seven twins, benzene's cation among them, and reads benzene at 2.35 on the mean of three seeds (2.63, 1.98, 2.44).
+- That is still worse than v1.3's 1.66. The cation is part of the cause, not all of it.
+
+**The search for a better recipe runs** (`probes/v14_search.py`). Its registered read decides, against v1.4. *To be updated on
+24 November.*
 
 ## The line
 
@@ -91,7 +113,8 @@ with its notes, which are part of the claim and not a caveat added afterwards:
 
 ## (1) The correction is learned, and it carries to larger molecules — **open**
 
-This is the central claim, and it is still open. All of it was read before v1.4.
+Five fused rings learned from four carries (q5 = 1.06). Four molecules of 36–60 atoms do not (q_T = 4.40). All of it was read before
+v1.4, on the size tests' own trainings.
 
 | read | number | counterpart | file |
 |---|---|---|---|
@@ -102,29 +125,31 @@ This is the central claim, and it is still open. All of it was read before v1.4.
 
 - The learned correction removes about two thirds of the error at 36–60 atoms. It does not reach 3.
 - The registration reads a steep q_T as: the mandate's spectra need the target sizes in the corpus, or another route.
-- **q_T = 4.40 stands.** It is arm 0's number. Arm D trained on five of its six molecules, because D_ac28161d06 left the pool with a
-  negative mode. That mode was repaired on 13 November (−7.48 → +7.05 cm⁻¹,
-  `probes/results_m1/low_mode_patch_2026-11-13/corpus/D_ac28161d06/report.json`). Re-running arm D with six can move g
-  (0.92, arm D against arm 0), not q_T.
-- **Still owed:** the floor re-read on the 36–60-atom molecules with v1.4.
+- **q_T = 4.40 stands.** It is arm 0's number. Arm D trained on five of its six molecules, because one left the pool with a negative
+  mode. That mode was repaired on 13 November (−7.48 → +7.05 cm⁻¹,
+  `probes/results_m1/low_mode_patch_2026-11-13/corpus/D_ac28161d06/report.json`). Re-running arm D with six can move g (0.92, arm D
+  against arm 0), not q_T.
+- **Still owed:** the same read with v1.4 on the 36–60-atom molecules. *To be updated on 24 November.*
 
 **How it will be presented:** as *what large molecules need*, not as *it carries*. The learned correction cuts the error at 36–60 atoms
 from 22.8 to about 7.9 cm⁻¹. The penalty with size is steep. We have measured what closing the rest would take.
 
 ## (2) A few examples move a pretrained network — **stands on the proxy, for known families**
 
-Read on 21–22 October with the proxy check's own base networks, before v1.3; not re-read on v1.4.
+Read on 21–22 October with the proxy check's own base networks, before v1.3; not re-read on v1.4
+(`modules/05_support_predictor/out/proxy_check_2026-10-21/proxy_check_read.md`).
 
-- Arm (a), a different correction on known families: re-fitting the whole output head takes CH-oop from **6.55 to 2.82 cm⁻¹** as the
-  anchors rise from 5 to 200. Re-fitting only the last layer stays at 8–10 cm⁻¹ at every count. So the whole head moves, not a scaling
-  (`modules/05_support_predictor/out/proxy_check_2026-10-21/proxy_check_read.md`).
-- **Arm (b), a new domain: the registered line does not hold.** The base network already reads 2.66 cm⁻¹ CH-oop there before any anchor,
-  and the whole head beats the last layer at only one of three anchor counts (same file).
+- **Test A, a different correction on known families.** Re-fitting the whole output head takes CH-oop from **6.55 to 2.82 cm⁻¹** as the
+  anchors rise from 5 to 200. Re-fitting only the last layer stays at 8–10 cm⁻¹ at every count. So the whole head moves, not a scaling.
+- **Test B, a new domain: the registered line does not hold.** The base network already reads 2.66 cm⁻¹ CH-oop there before any
+  anchor, and the whole head beats the last layer at only one of three anchor counts.
 
 ## (3) The anchor count per accuracy, with prices — **stands on the proxy**
 
-Read on 29 October with the count's own base networks, not a carried version (proxy task, arm (c), body1_es); not re-read on v1.4
-(`modules/05_support_predictor/out/anchor_count_2026-10-29/anchor_count_read.md`):
+Read on 29 October with the count's own base networks, not a carried version; not re-read on v1.4
+(`modules/05_support_predictor/out/anchor_count_2026-10-29/anchor_count_read.md`). The simulated anchors follow correction model C: the
+CH-oop shift per ring context, as the coupled-cluster anchors measured it. The fitting method is the registered one: the whole head plus
+the body's last interaction block, early-stopped on 15 % of the anchors.
 
 | family | anchors to 3 cm⁻¹ |
 |---|---|
@@ -133,19 +158,21 @@ Read on 29 October with the count's own base networks, not a carried version (pr
 | CH-oop | **167** (153–177) |
 | 'other' | not reached by 200 (3.59 at 200) |
 
+- The fitting method matters for CH-oop. The whole head alone, without early stopping, does not reach the line by 200 (range 167 to
+  beyond 200). With early stopping it reaches it at 146 (136–157).
 - Of the three families that reach the line, CH-oop needs the most anchors.
 - 167 anchors cost ≈ €729 for the cheapest selection and ≈ €3,026 drawn as the count drew them
   (`modules/05_support_predictor/out/anchor_plan/count_n167.md`).
 - The price leaves out the MP2 basis step. The €729 selection uses smaller molecules than the count measured.
 - Whether to make them is a funding question for 25 November (TASKS 82). Paid computation stopped on 15 November (decision 63).
 
-## (4) The eleven coupled-cluster anchors as the bridge — **direction confirmed**
+## (4) The eleven coupled-cluster anchors as the bridge — **consistent with the direction**
 
-The registry holds eleven carried anchors (`modules/05_support_predictor/out/ANCHORS_STATUS.json`). Read on 21 October on chain 34 (v1.1);
-not re-read since (`modules/05_support_predictor/out/anchor_set3_headall_2026-10-21/read_set3.md`):
+The registry holds eleven carried anchors (`modules/05_support_predictor/out/ANCHORS_STATUS.json`). Read on 21 October on the v1.1
+network; not re-read since (`modules/05_support_predictor/out/anchor_set3_headall_2026-10-21/read_set3.md`).
 
-- **CH-oop on the original six anchors: 7.24 → 6.25 cm⁻¹** with all anchors in the whole-head fit (−13.8 %, predicted ≈ −16 %). The
-  registered reading is "between".
+- **CH-oop on the original six anchors: 7.24 ± 0.49 → 6.25 ± 0.31 cm⁻¹ (n = 3)** with all anchors in the whole-head fit, −13.8 %.
+  The prediction was ≈ −16 % (`GoalGathering/notes/Diagnosis_2026-10-21_Set_Three_Read.md`). The registered reading is "between".
 - **Intensities on the three low-symmetry anchors:** the whole head's matched intensities beat the uncorrected B3LYP shapes on 3 of 3 —
   pyridine 0.136 against 0.262, fluorobenzene 0.063 against 0.104, benzonitrile 0.086 against 0.258.
 - **This confirms the direction, not the protocol:** the protocol was chosen on the same anchors (ledger, 21 October).
@@ -157,8 +184,8 @@ not re-read since (`modules/05_support_predictor/out/anchor_set3_headall_2026-10
 
 ## Beside the four
 
-**The network beats every fitted scale factor on the proxy task.** Read on 25 October on chain 34 (v1.1), not re-read on v1.4
-(`modules/05_support_predictor/out/scale_factor_baseline_2026-10-25.md`; the frequency shift B3LYP → ωB97X, cm⁻¹):
+**The network beats every fitted scale factor on the proxy task.** Read on 25 October on v1.1, not re-read on v1.4
+(`modules/05_support_predictor/out/scale_factor_baseline_2026-10-25.md`; the frequency shift B3LYP → ωB97X on the old quantity, cm⁻¹):
 
 | family | network, (a) / (b) | three factors on the PAHdb regions, (a) / (b) |
 |---|---|---|
@@ -170,10 +197,11 @@ not re-read since (`modules/05_support_predictor/out/anchor_set3_headall_2026-10
 One factor per family does better than the three regions in CH-oop (6.61 / 6.93) and still loses to the network everywhere.
 
 **The anharmonic shift** (TASKS 53) is a model of its own beside the network. Its truth is GVPT2 at B3LYP/6-31G\*. S3's registered read
-of 13 November, on coronene and tetracene, with the two modes VPT2 cannot state excluded
-(`probes/results_m1/labels_domain_2026-11-13/s3_read_exclude/s3_read.md`, `route_rule/route_rule.md`, `route_rule/route_rule_ch.md`):
+of 13 November, with the two modes VPT2 cannot state excluded
+(`probes/results_m1/labels_domain_2026-11-13/s3_read_exclude/s3_read.md`,
+`probes/results_m1/labels_domain_2026-11-13/route_rule/route_rule.md`, `probes/results_m1/labels_domain_2026-11-13/route_rule/route_rule_ch.md`):
 
-| family | model's error | line | coronene | tetracene | error of keeping the harmonic position |
+| family, measured on 2 molecules | model's error | line | coronene | tetracene | error of keeping the harmonic position |
 |---|---|---|---|---|---|
 | CH-oop | 8.38 | 3.0 | 11.91 | 4.55 | 12.48 |
 | ring-ip | 3.37 | 3.0 | 4.25 | 2.35 | 26.23 |
@@ -192,18 +220,22 @@ of 13 November, on coronene and tetracene, with the two modes VPT2 cannot state 
 - **The current default is harmonic.** The step exists but is off unless the run is given `--anharmonic-minutes`, so the 18 November
   benzene certificate prints harmonic positions (certificate).
 
-**VPT2 has a domain, and we now mark it.**
+**VPT2 has a domain, and we now mark it** (`GoalGathering/notes/Design_2026-11-13_VPT2_Domain_Marks.md`).
 
 - For an out-of-plane mode of a highly symmetric planar molecule, symmetry removes the cubic terms that normally cancel the quartic one.
-  Second-order perturbation theory then cannot state the fundamental. Coronene's mode 36 gets +179 cm⁻¹, 22 % of ω.
-- The threshold comes from the distribution. Over 2,028 labelled modes in 36 force fields the strain's median is 0.018 and its 99th
+  Second-order perturbation theory is then outside its domain. Coronene's mode 36 gets +179 cm⁻¹ from VPT2, 22 % of ω.
+- A mode is marked when either of two measures exceeds 0.10: the strain (the shift as a fraction of ω) or the partner share (its largest
+  single coupling as a fraction of ω).
+- The strain's threshold comes from the distribution. Over 2,028 labelled modes in 36 force fields its median is 0.018 and its 99th
   percentile 0.052. The C–H stretches, where a −170 cm⁻¹ correction is sound VPT2, sit at 0.054–0.056. Above them the next modes are at
-  0.166, 0.193, 0.222 and 0.388 (`GoalGathering/notes/Design_2026-11-13_VPT2_Domain_Marks.md`).
-- The line of 0.10 marks 8 modes in 5 of those 36 force fields (same note). This is a different population from the coverage screen's
-  (3,129 modes in 57 force fields, B3LYP and GFN2-xTB), whose 8 modes at 0.08 are another set.
-- Coronene's two marked modes are solved without perturbation theory, by a two-mode block: mode 24 at 681.45 and mode 36 at
-  969.41 cm⁻¹ (`probes/results_m1/solved_modes_2026-11-13/coronene/solved_modes_pair.md`). The corpus cases cannot be covered this way and
-  stay marked.
+  0.166, 0.193, 0.222 and 0.388.
+- Together the two measures mark 8 modes in 5 of those 36 force fields: the strain marks those four, the partner share four more. The
+  coverage screen's 8 modes at a strain of 0.08 are a different population and another set.
+- Coronene's two marked modes are solved without perturbation theory, by a two-mode block
+  (`probes/results_m1/solved_modes_2026-11-13/coronene/solved_modes_pair.md`). Mode 24: ω 642.94, VPT2 709.16, solved 681.45 cm⁻¹.
+  Mode 36: ω 807.09, VPT2 986.19, solved 969.41 cm⁻¹. So VPT2 overstates both, by 27.7 and 16.8 cm⁻¹, and the large upward shift of
+  mode 36 stays: +162 cm⁻¹ in the block.
+- The corpus cases cannot be covered by such a block and stay marked.
 
 ## What is not proved, and will be said so
 
@@ -213,9 +245,9 @@ of 13 November, on coronene and tetracene, with the two modes VPT2 cannot state 
 - T3's ≤ 3 cm⁻¹ (claim 4).
 - Anything about modes like coronene's 24 and 36. The corpus contains nothing like them; a corpus that does is the open question of
   TASKS 200 and 210.
-- That the low label modes are clean. pyscf's CPU DFT Hessian has no grid-weight derivatives, so label modes below ≈ 25 cm⁻¹ carry grid
-  noise, which reaches into 'other' (TASKS 201). The repaired Hessians became the labels on 14 November
-  (`probes/results_m1/low_mode_swap_2026-11-14/swap.json`). Which reads already use them is not on this page.
+- That every low label mode is clean. pyscf's CPU DFT Hessian has no grid-weight derivatives, so label modes below ≈ 25 cm⁻¹ carry grid
+  noise, which reaches into 'other' (TASKS 201). The repaired labels replaced the worst of them on 14–15 November, and v1.4 trained on
+  them; the repair does not remove the noise from every molecule.
 
 ## Questions for her
 
@@ -223,7 +255,7 @@ of 13 November, on coronene and tetracene, with the two modes VPT2 cannot state 
 - The pyrene laboratory truth.
 - The 2015 CCSD(T)/cc-pVTZ naphthalene reference.
 - An open-shell reference for the cations.
-- Closed-access papers: the paste-ready block `PDF_Request_2026-10-25_Supervisor.md` (22 papers).
+- Closed-access papers: the paste-ready block `PDF_Request_2026-10-25_Supervisor.md` (27 papers).
 - Funding for anchors. No file states a request; the figure comes from the anchor price table in claim (3): ≈ €729–3,026 for 167
   anchors, without the MP2 step.
 
