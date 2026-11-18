@@ -47,3 +47,7 @@ hold-out twins: 2 pool molecules are hold-out molecules under another id and lea
     seed 0 epoch 30/300: loss main 1.567e-07 aux 0.0566 val 0.08525 val_main 1.488e-07 (1920 s)
     seed 0 epoch 40/300: loss main 1.17e-07 aux 0.04341 val 0.07224 val_main 1.293e-07 (2618 s)
     seed 0 epoch 50/300: loss main 1.066e-07 aux 0.03362 val 0.06968 val_main 1.225e-07 (3357 s)
+    seed 0 epoch 60/300: loss main 1.02e-07 aux 0.03152 val 0.06865 val_main 1.259e-07 (4091 s)
+    seed 0 epoch 70/300: loss main 9.848e-08 aux 0.02531 val 0.06834 val_main 1.228e-07 (4835 s)
+    seed 0 epoch 80/300: loss main 7.449e-08 aux 0.02009 val 0.06302 val_main 1.047e-07 (5567 s)
+    seed 0 epoch 90/300: loss main 5.899e-08 aux 0.01603 val 0.06308 val_main 1.05e-07 (6317 s)
