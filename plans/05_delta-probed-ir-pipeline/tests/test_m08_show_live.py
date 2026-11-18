@@ -89,3 +89,17 @@ def test_a_folder_that_is_not_a_run_s_plain_name_is_refused(server, name):
     with pytest.raises(urllib.error.HTTPError) as e:
         get(server + f"/result?folder={name}")
     assert e.value.code == 404
+
+
+def test_a_run_that_stopped_says_where_and_why(tmp_path):
+    p = Progress(tmp_path, "benzene", "0.12", {"smiles": "c1ccccc1", "formula": "C6H6", "n_atoms": 12})
+    p.start("molecule")
+    p.done("molecule")
+    p.start("geometry")
+    p.fail("failed: RuntimeError: boom")
+    v = L.progress_view(tmp_path)
+    assert v["failed"] == {"reason": "failed: RuntimeError: boom"} and v["stations"][1] == {"state": "failed", "time": "stopped here"}
+    refused = tmp_path / "refused"
+    Progress.refused(refused, "refused", "0.12", {"smiles": None, "formula": None, "n_atoms": None, "given": "C1CC1"}, "refused: x")
+    v = L.progress_view(refused)
+    assert v["failed"]["reason"] == "refused: x" and v["molecule"]["depiction"] == "" and v["route"] == "unknown"

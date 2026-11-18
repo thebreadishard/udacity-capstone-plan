@@ -102,6 +102,8 @@ h2 { margin: 0; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; tex
 .lines .dot.corpus-stop.done { fill: var(--corpus); }
 .lines .dot.active { stroke: var(--accent); }
 .lines .dot.skipped { stroke-dasharray: 4 4; stroke: var(--fg-muted); }
+.lines .dot.failed { stroke: var(--warn); fill: var(--warn); }
+.empty.failed { color: var(--warn); font-weight: 600; }
 .lines .stop-label { fill: var(--corpus); font-size: 0.9rem; font-weight: 700; }
 .lines .stop-sub { fill: var(--fg-muted); font-size: 0.78rem; }
 .badges { position: absolute; top: 0; left: 0; display: flex; gap: 0.6rem; flex-wrap: wrap; font-size: 0.85rem; z-index: 1; }
@@ -535,7 +537,13 @@ async function liveTick() {
   if (p.folder !== live.folder) liveStart(p);
   /* a run delivers twice (pipeline 0.11): the harmonic result, then the final one; the page shows each as it comes */
   const delivery = p.delivery ? p.delivery.number : (p.finished ? 1 : 0);
-  $("#livestate").textContent = `${p.name} · pipeline ${p.pipeline_version} · ${p.delivery ? p.delivery.state : (p.finished ? "finished" : "running")}`;
+  const said = p.failed ? p.failed.reason : (p.delivery ? p.delivery.state : (p.finished ? "finished" : "running"));
+  $("#livestate").textContent = `${p.name} · pipeline ${p.pipeline_version} · ${said}`;
+  if (p.failed) {   /* the run stopped without a result: its stations stay as they stopped, the result area says why */
+    p.stations.forEach((s, i) => setStation(i, s.state === "reused" ? "skipped" : s.state, s.time));
+    $("#result").innerHTML = `<p class="empty failed">The run stopped without a spectrum — ${esc(p.failed.reason)}</p>`;
+    return;
+  }
   live.mol.route = p.route === "reused" ? "reused" : "computed";
   p.stations.forEach((s, i) => setStation(i, s.state === "reused" ? "skipped" : s.state, s.time));
   if (p.route === "reused") setStation("C", "done");
@@ -558,7 +566,7 @@ function liveStart(p) {
                stations: DATA.station_titles.map((t) => ({ ...t, time: "", detail: t.tool })) };
   state.key = live.mol.key; state.stations = []; state.corpusStop = null; state.finished = false;
   $("#current").innerHTML = `<div class="pic">${p.molecule.depiction}</div><div><div class="title">${esc(p.name)}</div>
-    <div class="facts"><span class="mono">${esc(p.molecule.formula || "")}</span> · ${p.molecule.n_atoms} atoms · live run</div>
+    <div class="facts"><span class="mono">${esc(p.molecule.formula || p.molecule.given || "")}</span>${p.molecule.n_atoms ? ` · ${p.molecule.n_atoms} atoms` : ""} · live run</div>
     <div class="realtime" id="realtime"></div></div>`;
   const tok = $("#token"); tok.innerHTML = p.molecule.depiction; tok.hidden = false;
   drawMap(live.mol); resetResult(); place(geometry().main[0]);

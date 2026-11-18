@@ -1,7 +1,8 @@
 """A pipeline run's progress for the live show (TASKS 146): one small JSON beside the result, `progress.json`, rewritten at every step, so
 that a page can follow a run while it computes. The six steps are the show's stations; a step is pending, active, done (with its seconds
-on this machine) or reused (taken from the corpus, with the seconds it took when the corpus computed it). The file is written to a temp
-file and moved over the old one, so a reader never sees half of it."""
+on this machine), reused (taken from the corpus, with the seconds it took when the corpus computed it) or failed (the run stopped there).
+A run that stops without a result — refused, failed, interrupted — records `failed` with the reason, so a page does not wait on it for
+good. The file is written to a temp file and moved over the old one, so a reader never sees half of it."""
 from __future__ import annotations
 
 import json
@@ -11,6 +12,7 @@ from pathlib import Path
 
 STEPS = ("molecule", "geometry", "optimise", "hessian", "network", "spectrum")
 FILE = "progress.json"
+FAILED = "failed"
 
 
 class Progress:
@@ -61,6 +63,34 @@ class Progress:
             self._write()
         else:
             self.finish()
+
+    def fail(self, reason: str) -> None:
+        """The run stopped without a result: the step that was running is marked failed and the record says why. A run that has
+        delivered its result already keeps it — its record and certificate say what stopped after the delivery."""
+        if self.record["finished"]:
+            return
+        for entry in self.record["steps"].values():
+            if entry["state"] == "active":
+                entry["state"] = FAILED
+        self.record[FAILED] = {"reason": reason}
+        self._write()
+
+    @classmethod
+    def refused(cls, folder: Path, name: str, version: str, molecule: dict, reason: str) -> Progress:
+        """The record of a run refused before its first step, written in a folder made for it: no step started, failed with the
+        reasons. A later run may take over a folder that holds nothing else (`refused_only`)."""
+        folder.mkdir(parents=True, exist_ok=True)
+        self = cls(folder, name, version, molecule)
+        self.record[FAILED] = {"reason": reason, "before_start": True}
+        self._write()
+        return self
+
+    @staticmethod
+    def refused_only(folder: Path) -> bool:
+        """Whether `folder` holds nothing but the record of a run refused before its first step."""
+        if [p.name for p in folder.iterdir()] != [FILE]:
+            return False
+        return bool(json.loads((folder / FILE).read_text(encoding="utf-8")).get(FAILED, {}).get("before_start"))
 
     def finish(self) -> None:
         unfinished = [s for s, v in self.record["steps"].items() if v["state"] not in ("done", "reused")]

@@ -74,6 +74,7 @@ def test_the_carried_networks_are_three_seeds_of_one_version_per_kind_the_same_f
     ("c1cc[nH+]cc1", "net formal charge"),
     ("Brc1ccccc1", "element(s) BR outside"),
     ("c1ccccc1(", "does not parse"),
+    ("c1ccccc1.c1ccncc1", "2 separate molecules"),
 ])
 def test_a_molecule_outside_the_models_reach_is_refused(tmp_path, pin_registry, smiles, reason):
     with pytest.raises(P.Refused, match=reason.replace("(", r"\(").replace(")", r"\)")):
@@ -92,6 +93,37 @@ def test_a_used_output_folder_is_refused_and_nothing_runs(tmp_path, pin_registry
     monkeypatch.setattr(P, "start_geometry", lambda cfg: pytest.fail("a step ran after a refusal"))
     with pytest.raises(P.Refused, match="never overwritten"):
         P.run(config(tmp_path))
+    assert sorted(p.name for p in (tmp_path / "mol").iterdir()) == ["pipeline.json"]     # another run's folder: no record written in it
+
+
+def test_a_refusal_at_admission_leaves_a_record_the_live_show_reads(tmp_path, pin_registry, monkeypatch):
+    """Demo review 3: a refused run wrote no progress record, so the page kept showing the run before it. The record says why, starts
+    no step, and a corrected request may take the folder over."""
+    with pytest.raises(P.Refused, match="no aromatic ring"):
+        P.run(config(tmp_path, smiles="C1CCCCC1"))
+    rec = json.loads((tmp_path / "mol" / "progress.json").read_text(encoding="utf-8"))
+    assert rec["failed"]["before_start"] and rec["failed"]["reason"].startswith("refused: no aromatic ring")
+    assert {s["state"] for s in rec["steps"].values()} == {"pending"} and not rec["finished"] and rec["molecule"]["given"] == "C1CCCCC1"
+    assert Progress.refused_only(tmp_path / "mol") and P.admit(config(tmp_path)).smiles == "c1ccccc1"
+
+
+def test_a_run_that_fails_after_its_first_step_says_so_where_it_stopped(tmp_path, pin_registry, monkeypatch):
+    def broken(cfg):
+        raise RuntimeError("the optimisation failed (exit 1)")
+
+    monkeypatch.setattr(P, "start_geometry", broken)
+    with pytest.raises(RuntimeError, match="exit 1"):
+        P.run(config(tmp_path))
+    rec = json.loads((tmp_path / "mol" / "progress.json").read_text(encoding="utf-8"))
+    assert rec["failed"] == {"reason": "failed: RuntimeError: the optimisation failed (exit 1)"}
+    assert rec["steps"]["molecule"]["state"] == "done" and rec["steps"]["geometry"]["state"] == "failed" and not rec["finished"]
+    assert not Progress.refused_only(tmp_path / "mol")
+
+
+@pytest.mark.parametrize("error, said", [(P.Refused(["a", "b"]), "refused: a; b"), (KeyboardInterrupt(), "interrupted (Ctrl-C)"),
+                                         (ValueError(), "failed: ValueError")])
+def test_each_way_of_stopping_has_its_words(error, said):
+    assert P.failure_reason(error) == said
 
 
 def test_benzene_is_admitted_with_its_size_against_the_training_range(tmp_path, pin_registry):
