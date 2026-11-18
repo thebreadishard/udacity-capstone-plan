@@ -138,7 +138,8 @@ def test_the_accuracy_card_states_the_licence_on_the_test_sets_against_the_dft_p
     assert "test set (a)" in card and "test set (b)" in card and "hold-out" not in card
     assert "measurement networks" in card and ("release networks" in card) == (summary["networks"]["kind"] == "release")
     assert "against ωB97X/6-31G*" in card and "not against coupled cluster" in card and f"v{acc['version']}" in card
-    assert summary["networks"]["fitting"] in card and "one labelled molecule in one charge state" in card
+    assert summary["networks"]["fitting"] in card and "an entry is one corpus row: a labelled molecule in one charge state" in card
+    assert "Size caveat" not in card                                                   # inside the pool's atom range
     assert "above 3 cm⁻¹" in card and "the line" not in card and " of 8 molecules" in card
 
 
@@ -150,4 +151,12 @@ def test_analytic_only_pages_say_why_heights_are_missing():
 
 def test_the_ladder_says_the_pipeline_predicts_and_the_page_measures():
     h = page("A_07cadc7923")
-    assert "the learned layer is training" not in h and "on request" in h
+    assert "the learned layer is training" not in h and "on request" in h and "not drawn on molecule pages" in h
+
+
+def test_a_molecule_outside_the_pools_atom_range_gets_the_size_caveat():
+    """D_8a1c3dddb7 (C34H20, 54 atoms) lies above the release pool's range; the range is read from the export, not typed."""
+    with open(os.path.join(OUT, "summary.json"), encoding="utf-8") as f:
+        lo, hi = json.load(f)["networks"]["pool_atoms"]
+    h = page("D_8a1c3dddb7")
+    assert "Size caveat" in h and f"molecules of {lo}–{hi} atoms" in h and "54 atoms" in h

@@ -179,6 +179,47 @@ def test_summary_states_the_network_pair(built):
     assert acc["version"] and set(summary["licence"]["licensed_families"]) <= set(acc["holdouts"]["a"]["product"])
     assert summary["licence"]["line_cm"] == 3 and summary["higher_level_name"] == "ωB97X/6-31G*"
     assert acc["higher_level"].startswith(summary["higher_level_name"])
+    lo, hi = pair["pool_atoms"]
+    assert 0 < lo < hi and (pair["kind"] != "release" or 0 < pair["distinct_entries"] <= pair["trained_on_entries"])
+
+
+def test_pool_counts_rows_and_distinct_molecule_charge_pairs():
+    rows = [dict(id="A_1", smiles="c1ccccc1", n_atoms="12", note=""), dict(id="B_1", smiles="c1ccccc1", n_atoms="12", note=""),
+            dict(id="P3c_1", smiles="c1ccccc1", n_atoms="12", note="pool3 cation; charge 1 mult 2"),
+            dict(id="A_2", smiles="c1ccc2ccccc2c1", n_atoms="18", note=""),
+            dict(id="B_2", smiles="O=Cc1c[nH]cn1", n_atoms="11", note=""), dict(id="B_3", smiles="O=Cc1cnc[nH]1", n_atoms="11", note="")]
+    assert bc.pool_of({"A_1", "B_1", "P3c_1", "A_2", "B_2", "B_3"}, rows) == dict(entries=6, distinct=5, atoms=[11, 18])   # tautomers apart
+    with pytest.raises(ValueError, match="without a manifest row"):
+        bc.pool_of({"A_1", "Z_9"}, rows)
+
+
+def test_licence_line_refuses_mixed_lines():
+    one = {"holdouts": {h: {"product": {"ring-ip": {"target": 3.0}, "other": {"target": 3.0}}} for h in "ab"}}
+    assert bc.licence_line(one) == 3.0
+    one["holdouts"]["b"]["product"]["other"]["target"] = 4.0
+    with pytest.raises(ValueError, match="differ"):
+        bc.licence_line(one)
+
+
+def _analytic_folder(path, versions, grids):
+    import numpy as np
+    path.mkdir()
+    check = {tag: {"software": {"pyscf": v}} for tag, v in zip(("b3lyp", "wb97x"), versions, strict=True)}
+    (path / "analytic_check.json").write_text(json.dumps(check), encoding="utf-8")
+    for tag, grid in zip(("b3lyp", "wb97x"), grids, strict=True):
+        np.savez(path / f"hessian_{tag}_analytic.npz", grid=np.array(grid))
+    return str(path)
+
+
+def test_deck_of_refuses_two_pyscf_versions_or_grids(tmp_path):
+    result = {"deck": {"deck": "v1", "hessian": "psi4 finite differences", "text_corrections": ["…"]}}
+    good = _analytic_folder(tmp_path / "good", ("2.14.0", "2.14.0"), ((99, 590), (99, 590)))
+    deck = bc.deck_of(result, good, True)
+    assert deck["hessian"].startswith("pyscf 2.14.0 ") and "(99, 590)" in deck["hessian"] and "text_corrections" not in deck
+    assert bc.deck_of(result, good, False) is result["deck"]
+    for name, versions, grids in (("versions", ("2.14.0", "2.15.0"), ((99, 590),) * 2), ("grids", ("2.14.0",) * 2, ((99, 590), (75, 302)))):
+        with pytest.raises(ValueError, match="one deck has one of each"):
+            bc.deck_of(result, _analytic_folder(tmp_path / name, versions, grids), True)
 
 
 ANALYTIC_ONLY = ("D_210c3076e6", "T_94b3a9d13a")   # PAHdb 284 (its APT passed its checks) and coronene (its APT failed the sum rule)

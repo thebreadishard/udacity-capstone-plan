@@ -48,13 +48,13 @@ def _ri():
 
 
 @functools.cache
-def _learning_curve():
-    return _m05_module("learning_curve_layerA")
+def _corpus_labels():
+    return _m05_module("corpus_labels")
 
 
 def analytic_only(d: Path) -> bool:
-    """Whether a corpus folder is labelled by the analytic route alone (module 05's `is_analytic_only`, TASKS 49)."""
-    return _learning_curve().is_analytic_only(d)
+    """Whether a corpus folder is labelled by the analytic route alone (module 05's `corpus_labels.is_analytic_only`, TASKS 49)."""
+    return _corpus_labels().is_analytic_only(d)
 
 
 def listed_hessian(d: Path, tag: str = "b3lyp") -> Path:

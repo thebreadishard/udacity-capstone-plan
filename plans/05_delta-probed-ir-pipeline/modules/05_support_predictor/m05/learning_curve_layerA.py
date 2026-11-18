@@ -27,19 +27,10 @@ import torch.nn as nn
 
 # one definition of each, beside the label route that writes the Hessians (TASKS 221, 14 Nov 2026)
 from units import AMU2AU, HARTREE2CM
+# the analytic-only rule lives in a light module (no torch) that module 08 reads per molecule; re-exported for this module's callers
+from corpus_labels import ANALYTIC_ONLY, is_analytic_only  # noqa: F401  re-exported (rungC_equivariant, e6_learning_curve)
+
 FAMILIES = ["CH-stretch", "CH-oop", "ring-ip", "other"]
-ANALYTIC_ONLY = "analytic_only"   # result.json "labels" of a folder labelled by analytic_hessians.py alone, no psi4 layer (TASKS 49, 12 Oct 2026)
-
-
-def is_analytic_only(mol_dir) -> bool:
-    """A folder without the psi4 FD pair whose result.json says labels 'analytic_only' and which has both analytic Hessians."""
-    mol_dir = Path(mol_dir)
-    if (mol_dir / "hessian_b3lyp.npz").exists() or (mol_dir / "hessian_wb97x.npz").exists():
-        return False
-    if not ((mol_dir / "hessian_b3lyp_analytic.npz").exists() and (mol_dir / "hessian_wb97x_analytic.npz").exists()):
-        return False
-    r = json.load(open(mol_dir / "result.json", encoding="utf-8")) if (mol_dir / "result.json").exists() else {}
-    return r.get("labels") == ANALYTIC_ONLY
 
 
 def hessian_pair(mol_dir, analytic_only_ok=False):

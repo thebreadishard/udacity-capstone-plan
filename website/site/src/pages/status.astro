@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import summary from '../../../export/out/summary.json';
+import show from '../../../export/out/pipeline_show.json';
 import changelog from '../../../export/out/changelog.json';
 const labels = { listed: 'Listed', cheap_level_done: 'Cheap level done', correction_predicted: 'Correction predicted', spectrum_predicted: 'Spectrum predicted', anchored: 'Anchored', validated: 'Validated' };
 ---
@@ -13,7 +14,7 @@ const labels = { listed: 'Listed', cheap_level_done: 'Cheap level done', correct
       <thead><tr><th>rung</th><th class="num">molecules</th></tr></thead>
       <tbody>{summary.rungs.map((r) => <tr><td>{labels[r]}</td><td class="num">{summary.rung_counts[r].toLocaleString('en')}</td></tr>)}</tbody>
     </table>
-    <p class="muted small">Correction predicted and Spectrum predicted count molecules whose corrected spectrum is published here: none yet. The pipeline makes it on request on the project's computer (ΔH network v{summary.shape_accuracy.version}); the molecule pages show the B3LYP spectrum and the network's measured accuracy.</p>
+    <p class="muted small">Correction predicted and Spectrum predicted count molecules whose ΔH network v{summary.shape_accuracy.version} spectrum is published here: none yet. The pipeline makes it on request on the project's computer; molecule pages draw the cheap-level spectrum, or the coupled-cluster anchor's where one exists, with the network's measured accuracy. Recorded runs of {Object.keys(show.molecules).length} molecules, made with {show.network}, are on the Pipeline page.</p>
     <h3 style="margin-top: 16px">By layer</h3>
     <table>
       <thead><tr><th>layer</th><th class="num">molecules</th></tr></thead>

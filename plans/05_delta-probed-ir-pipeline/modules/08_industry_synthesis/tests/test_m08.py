@@ -159,6 +159,24 @@ def test_spectral_shape_reads_the_listed_hessian_of_both_folder_kinds():
     assert S.shape("A_01f3186607")["reason"] == S.NO_APT                                   # naphthalene: no APT file at all
 
 
+
+def test_spectral_shape_imports_no_torch():
+    """Review of 18 Nov 2026: the analytic-only rule comes from module 05's light corpus_labels, so drawing a spectrum loads no torch;
+    learning_curve_layerA re-exports the same function for its callers."""
+    import subprocess
+    import sys
+
+    code = ("import sys; sys.path[:0] = [sys.argv[1], sys.argv[2]]; from m08 import spectrum as S; "
+            "s = S.shape('D_210c3076e6'); print(s['kind'], 'torch' in sys.modules)")
+    m05 = HERE.parents[1] / "modules" / "05_support_predictor" / "m05"
+    out = subprocess.run([sys.executable, "-c", code, str(HERE), str(m05)], capture_output=True, text=True, check=True).stdout.split()
+    assert out[-1] == "False" and "heights" in out
+    sys.path.insert(0, str(m05))
+    import corpus_labels
+    import learning_curve_layerA
+    assert learning_curve_layerA.is_analytic_only is corpus_labels.is_analytic_only
+
+
 def test_failure_case_is_displayed_not_hidden(cat):
     c = certificate(cat.find("benzene"), cat)
     wider = [a for a in c["anchor_coverage"] if a["wider_than_tolerance"]]

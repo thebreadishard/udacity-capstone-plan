@@ -18,6 +18,7 @@ import glob
 import hashlib
 import json
 import os
+import re
 import sys
 import time
 from pathlib import Path
@@ -97,16 +98,50 @@ def licence_line(accuracy: dict) -> float:
     return lines.pop()
 
 
-def network_pair(pipeline) -> dict:
+CHARGE = re.compile(r"\bcharge (-?\d+)")
+
+
+def charge_of(row: dict) -> int:
+    """A manifest row's charge: charged rows (pool 3's cations) state it in their note; the others are neutral, the deck's charge 0."""
+    m = CHARGE.search(row.get("note", ""))
+    return int(m.group(1)) if m else 0
+
+
+def canonical_smiles(smiles: str) -> str:
+    """RDKit's canonical SMILES; an unparsable one is refused. It keeps tautomers apart, which the InChIKey merges (4- and
+    5-formylimidazole are two computed rows with one InChIKey)."""
+    from rdkit import Chem
+    mol = Chem.MolFromSmiles(smiles)
+    if mol is None:
+        raise ValueError(f"unparsable SMILES {smiles!r}")
+    return Chem.MolToSmiles(mol)
+
+
+def pool_of(ids: set[str], manifest: list[dict]) -> dict:
+    """What a training pool holds, from the manifest: its entries (corpus rows), the distinct molecule-and-charge pairs among them (a
+    molecule may have a row in two layers) and the range of their atom counts. An id without a manifest row is refused."""
+    rows = {r["id"]: r for r in manifest if r["id"] in ids}
+    if len(rows) != len(ids):
+        raise ValueError(f"training ids without a manifest row: {sorted(ids - set(rows))[:5]}")
+    pairs = {(canonical_smiles(r["smiles"]), charge_of(r)) for r in rows.values()}
+    atoms = [int(r["n_atoms"]) for r in rows.values()]
+    return dict(entries=len(rows), distinct=len(pairs), atoms=[min(atoms), max(atoms)])
+
+
+def network_pair(pipeline, manifest: list[dict]) -> dict:
     """Decision 66's pair of the carried version, as module 08's pipeline runs it (`m08.pipeline.product_networks`): which kind makes
-    the printed spectra, how many networks, and for release networks the number of training-pool entries they trained on and how each
-    used them; the errors and the licence are always the measurement networks'."""
+    the printed spectra, how many networks, the atom-count range of their training pool, and for release networks the number of
+    training-pool entries, the distinct molecule-and-charge pairs among them and how each network used them; the errors and the licence
+    are always the measurement networks'."""
     made = pipeline.product_networks()
-    out = dict(kind=made.kind, n_networks=len(made.models), held_back=made.held_back,
-               measurement_networks=len(pipeline.carried_models(pipeline.NK.MEASUREMENT)), trained_on_entries=None, fitting=None)
+    pool = pool_of(pipeline.train_ids(made.models), manifest)
+    out = dict(kind=made.kind, n_networks=len(made.models), held_back=made.held_back, pool_atoms=pool["atoms"],
+               measurement_networks=len(pipeline.carried_models(pipeline.NK.MEASUREMENT)), trained_on_entries=None,
+               distinct_entries=None, fitting=None)
     if made.kind == pipeline.NK.RELEASE:
         share = pipeline.inner_validation_share(made.models)
-        out |= dict(trained_on_entries=len(pipeline.train_ids(made.models)), fitting=pipeline.NK.fitting_sentence(len(made.models), share))
+        out |= dict(trained_on_entries=pool["entries"], distinct_entries=pool["distinct"],
+                    fitting=pipeline.NK.fitting_sentence(len(made.models), share))
     return out
 
 def anchored_from_registry(plan: str) -> tuple[dict, dict]:
@@ -246,6 +281,7 @@ def build(repo, out, limit=None, ids=None):  # noqa: C901, PLR0912, PLR0915  one
     from m08.accuracy import HIGHER_LEVEL_NAME
     manifest_p = os.path.join(corpus, "manifest.csv"); ledger_p = os.path.join(corpus, "ledger.csv")
     manifest = list(csv.DictReader(open(manifest_p, encoding="utf-8")))
+    manifest_all = manifest                            # the training pool is read against every row, whatever this build keeps
     if ids:
         unknown = sorted(set(ids) - {r["id"] for r in manifest})
         if unknown:
@@ -367,7 +403,7 @@ def build(repo, out, limit=None, ids=None):  # noqa: C901, PLR0912, PLR0915  one
                    rungs=RUNGS, sources=dict(manifest=sha256(manifest_p), ledger=sha256(ledger_p)), releases=sorted({n for v in releases.values() for n in v}),
                    n_changelog=len(changelog), n_with_intensities=n_heights, n_anchor_spectra=n_anchor_spectra, shape_accuracy=accuracy,
                    licence={k: licence[k] for k in ("licensed_families", "statement", "rule_source")} | {"line_cm": licence_line(accuracy)},
-                   higher_level_name=HIGHER_LEVEL_NAME, networks=network_pair(pipeline_mod))
+                   higher_level_name=HIGHER_LEVEL_NAME, networks=network_pair(pipeline_mod, manifest_all))
     json.dump(summary, open(os.path.join(out, "summary.json"), "w", encoding="utf-8"), indent=1)
     return summary
 

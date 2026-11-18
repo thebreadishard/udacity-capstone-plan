@@ -28,7 +28,8 @@ const mol = JSON.parse(fs.readFileSync(path.join(outDir, 'molecules', `${row.id}
 const svgPath = path.join(outDir, 'depictions', `${row.id}.svg`);
 const svg = fs.existsSync(svgPath) ? fs.readFileSync(svgPath, 'utf8') : '';
 const showPath = path.join(outDir, 'pipeline_show.json');   // export/pipeline_show.py: the show's key for each molecule with a recorded run
-const showKey = fs.existsSync(showPath) ? JSON.parse(fs.readFileSync(showPath, 'utf8')).molecules[row.id] ?? null : null;
+const show = fs.existsSync(showPath) ? JSON.parse(fs.readFileSync(showPath, 'utf8')) : null;
+const showKey = show ? show.molecules[row.id] ?? null : null;
 const labels = ['Listed', 'Cheap level done', 'Correction predicted', 'Spectrum predicted', 'Anchored', 'Validated'];
 const reached = (i) => i <= row.rung && !(i === 2 || i === 3);   // rungs 2–3 are reserved until the layer produces them
 const vib = mol.frequencies_cm;
@@ -57,7 +58,7 @@ const notifyHref = `https://github.com/thebreadishard/spectrum-atlas/issues/new?
 
   <div class="cols">
     {lead === 'anchor' && <AnchorSpectrumCard name={row.name} anchor={mol.anchor_spectrum} comparison={mol.comparison} test={mol.test_prediction} cheap={cheapBands} wb97x={vib.wb97x.vibrational} validated={row.rung === 5} />}
-    {lead === 'cheap' && <CheapSpectrumCard name={row.name} bands={cheapBands} acc={summary.shape_accuracy} licence={summary.licence} networks={summary.networks} levelName={summary.higher_level_name} lead />}
+    {lead === 'cheap' && <CheapSpectrumCard name={row.name} bands={cheapBands} acc={summary.shape_accuracy} licence={summary.licence} networks={summary.networks} levelName={summary.higher_level_name} nAtoms={row.n_atoms} lead />}
     {lead === 'positions' && <FrequenciesCard name={row.name} rows={rows} b3lyp={vib.b3lyp.vibrational} wb97x={vib.wb97x.vibrational} hasHeights={false} heightsMissing={mol.heights_missing} lead />}
     <aside class="side">
       <section class="card">
@@ -73,7 +74,7 @@ const notifyHref = `https://github.com/thebreadishard/spectrum-atlas/issues/new?
             <li class={reached(i) ? 'on' : 'off'}><span class="mark" aria-hidden="true">{reached(i) ? '●' : '○'}</span> {l}
               {i === 1 && reached(1) && mol.ledger && <span class="muted small"> — {mol.ledger.end.slice(0, 10)}, {mol.ledger.machine}</span>}
               {(i === 4 || i === 5) && reached(i) && row.evidence && <span class="muted small"> — <a href={repo + row.evidence[0]}>evidence</a></span>}
-              {(i === 2 || i === 3) && <span class="muted small"> — made on request by the pipeline (ΔH network v{summary.shape_accuracy.version}); this page shows the B3LYP spectrum and the network's measured accuracy, not the prediction</span>}
+              {(i === 2 || i === 3) && <span class="muted small"> — made on request by the pipeline (ΔH network v{summary.shape_accuracy.version}); not drawn on molecule pages{showKey ? `; a recorded run of this molecule (${show.network}) is on the Pipeline page` : ''}</span>}
             </li>
           ))}
         </ol>
@@ -90,7 +91,7 @@ const notifyHref = `https://github.com/thebreadishard/spectrum-atlas/issues/new?
     </aside>
 
     <div class="mainc">
-      {lead === 'anchor' && heights && <CheapSpectrumCard name={row.name} bands={cheapBands} acc={summary.shape_accuracy} licence={summary.licence} networks={summary.networks} levelName={summary.higher_level_name} chart={false} />}
+      {lead === 'anchor' && heights && <CheapSpectrumCard name={row.name} bands={cheapBands} acc={summary.shape_accuracy} licence={summary.licence} networks={summary.networks} levelName={summary.higher_level_name} nAtoms={row.n_atoms} chart={false} />}
       {lead !== 'positions' && <FrequenciesCard name={row.name} rows={rows} b3lyp={vib.b3lyp.vibrational} wb97x={vib.wb97x.vibrational} hasHeights={!!heights} heightsMissing={mol.heights_missing} />}
       {mol.second_route && (
         <section class="card">

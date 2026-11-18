@@ -1,9 +1,10 @@
 ---
 import Base from '../layouts/Base.astro';
+import summary from '../../../export/out/summary.json';
 ---
 <Base title="About" description="Who makes the Spectrum Atlas, under which licences, and how to cite it.">
   <h1>About</h1>
-  <p>Spectrum Atlas is the public front door of one research pipeline: infrared spectra of molecules, corrected toward a higher level of theory by a learned layer (today trained on the DFT stand-in ωB97X; coupled-cluster anchors where they exist), with the status and the provenance of every number. It is built as a capstone project and documented in the open.</p>
+  <p>Spectrum Atlas is the public front door of one research pipeline: infrared spectra of molecules, corrected by a learned layer trained on the DFT stand-in {summary.higher_level_name}; coupled-cluster anchors, where they exist, are shown beside it as checks, with the status and the provenance of every number. It is built as a capstone project and documented in the open.</p>
   <h2>Licences</h2>
   <p>Data: CC BY 4.0. Code: MIT. Reading, browsing and downloading need no account; until then, "notify me" on a molecule page opens a GitHub issue that you are subscribed to (no e-mail address is stored here); sign-in will be asked only of people who want to feed the pipeline (request a run, submit a molecule).</p>
   <h2>Cite</h2>

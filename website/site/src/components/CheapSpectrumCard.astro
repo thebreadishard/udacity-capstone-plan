@@ -4,8 +4,8 @@
 // under an anchor its curve is the anchor card's lower panel (design §10), so this card keeps only the words and the accuracy table (chart={false}).
 import IRSpectrum from './IRSpectrum.astro';
 import type { Band } from '../lib/bands';
-const { name, bands, acc, licence, networks = null, levelName = '', lead = false, chart = true } =
-  Astro.props as { name: string; bands: Band[]; acc: any; licence?: any; networks?: any; levelName?: string; lead?: boolean; chart?: boolean };
+const { name, bands, acc, licence, networks = null, levelName = '', nAtoms = 0, lead = false, chart = true } =
+  Astro.props as { name: string; bands: Band[]; acc: any; licence?: any; networks?: any; levelName?: string; nAtoms?: number; lead?: boolean; chart?: boolean };
 // Reader text says 'test set' for the hold-outs (the user, 17 Nov 2026, TASKS 261); the export keeps the keys a and b.
 const holdoutLabel: Record<string, string> = { a: 'test set (a): unseen simple aromatics (layer A)', b: 'test set (b): molecules of unseen scaffolds' };
 const families: string[] = acc ? Object.keys(acc.holdouts.a.product) : [];
@@ -13,6 +13,9 @@ const licensed: string[] = licence ? licence.licensed_families : [];
 const line: number = licence ? licence.line_cm : 0;
 const molecules = (p: any) => p.n_molecules_with_modes === p.n_molecules ? `${p.n_molecules} molecules` : `${p.n_molecules_with_modes} of ${p.n_molecules} molecules`;
 const fmt = (x: number) => x.toFixed(2);
+const pool: number[] | null = networks ? networks.pool_atoms : null;
+const outsidePool = !!pool && nAtoms > 0 && (nAtoms < pool[0] || nAtoms > pool[1]);
+const twice: number = networks && networks.distinct_entries !== null ? networks.trained_on_entries - networks.distinct_entries : 0;
 const heightsNote = 'Band heights from the molecule\'s dipole derivatives and the same B3LYP Hessian as the listed positions (double harmonic).';
 ---
 <section class:list={['card', { first: lead }]}>
@@ -23,11 +26,12 @@ const heightsNote = 'Band heights from the molecule\'s dipole derivatives and th
       </IRSpectrum>
     : <p class="muted small">Drawn as the lower panel of the anchor spectrum above. {heightsNote}</p>}
   <p class="muted small"><strong>Predicted spectrum</strong> (rung 3, the learned correction): computed by the pipeline, not drawn on this page{licensed.length > 0 && `; licensed for ${licensed.join(', ')} against ${levelName}, the DFT stand-in — not coupled cluster or experiment (decision 65)`}.</p>
+  {outsidePool && <p class="small"><strong>Size caveat:</strong> {name} has {nAtoms} atoms; the networks were trained on molecules of {pool![0]}–{pool![1]} atoms, and the errors and the licence below were measured inside that range, so they may not hold for this molecule.</p>}
   {acc && (
     <details class="acc" open>
       <summary>How well is this spectrum known?</summary>
       <p class="small">{networks && networks.kind === 'release'
-        ? `The spectra the pipeline prints come from the release networks of ΔH network v${acc.version}, trained on all ${networks.trained_on_entries} labelled entries of the training pool (an entry is one labelled molecule in one charge state: a cation counts apart from its neutral parent), test sets (a) and (b) included: ${networks.fitting}. Every error and the licence below were measured on the measurement networks of the same version (${networks.measurement_networks} networks): the same recipe trained without the molecules of test sets (a) and (b), on molecules those networks never saw.`
+        ? `The spectra the pipeline prints come from the release networks of ΔH network v${acc.version}, trained on all ${networks.trained_on_entries} labelled entries of the training pool (an entry is one corpus row: a labelled molecule in one charge state${twice ? `; ${twice} molecules appear in two layers` : ''}), test sets (a) and (b) included: ${networks.fitting}. Every error and the licence below were measured on the measurement networks of the same version (${networks.measurement_networks} networks): the same recipe trained without the molecules of test sets (a) and (b), on molecules those networks never saw.`
         : `The spectra the pipeline prints and every error below come from the measurement networks of ΔH network v${acc.version}, measured on molecules they never saw.`}</p>
       <table class="lic">
         <thead><tr><th>mode family</th><th class="num">test set (a)</th><th class="num">test set (b)</th><th>licensed</th></tr></thead>
