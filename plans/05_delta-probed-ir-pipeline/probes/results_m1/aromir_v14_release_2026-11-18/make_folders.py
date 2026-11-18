@@ -1,6 +1,9 @@
 """Write aromir's two v1.4 network folders from the training checkpoints (decision 66; the parent's task of 18 Nov 2026).
 
-    python make_folders.py <plan folder> <out folder>
+    python make_folders.py <plan folder> <out folder> [--release-record]
+
+`--release-record` rewrites only `<out>/release/release.json` from the folders already written (the conversion is deterministic;
+release.json gained the seeds' tensor hashes after the review of aromir 6954a77).
 
 `<out>/measurement/`: the measurement networks (`..._model_n1082_seed*.pt`) as an aromir release folder of the v1.3 kind — the
 seeds' weights and recipes and their `training.json` (what they fitted or stopped on, and the two hold-outs they never saw). It
@@ -157,9 +160,11 @@ def release_record(n_release_ids: int, shares: set[float]) -> dict:
         raise SystemExit(f"{CHECKS.name} was read on other checkpoints: {checks['model_sha16']} against {hashes}")
     return {
         "network_version": VERSION,
-        "n_molecules": n_release_ids,
+        "n_entries": n_release_ids,
         "fitted_share": round(1 - shares.pop(), 6),
         "checks": {name: bool(check["passed"]) for name, check in checks["checks"].items()},
+        "seed_sha256": {f"seed-{s}": json.loads((OUT / "release" / f"seed-{s}.json").read_text(encoding="utf-8"))["sha256"]
+                        for s in range(len(RELEASE))},
         "release_checkpoints": {p.name: hashes[p.name] for p in RELEASE},
         "measurement_checkpoints": {p.name: hashes[p.name] for p in MEASUREMENT},
         "source": (f"modules/05_support_predictor/out/v14/{CHECKS.name} of thebreadishard/udacity-capstone-plan (plan 05), "
@@ -167,7 +172,19 @@ def release_record(n_release_ids: int, shares: set[float]) -> dict:
     }
 
 
+def release_record_only() -> None:
+    """Rewrite release.json alone, from the checkpoints and the seeds already converted."""
+    r_ids, r_shares, _ = train_ids(RELEASE)
+    write_json(OUT / "release" / "release.json", release_record(len(r_ids), r_shares))
+    print("release.json rewritten", flush=True)
+
+
 def main() -> None:
+    if sys.argv[3:] == ["--release-record"]:
+        release_record_only()
+        return
+    if sys.argv[3:]:
+        raise SystemExit(f"unknown arguments {sys.argv[3:]}")
     rows = manifest()
     holdout_ids, holdout_smiles = held_out_sets(rows)
     print({h: len(v) for h, v in holdout_ids.items()}, "hold-out molecules", flush=True)

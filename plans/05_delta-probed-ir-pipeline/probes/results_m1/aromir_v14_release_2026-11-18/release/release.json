@@ -1,6 +1,6 @@
 {
  "network_version": "1.4",
- "n_molecules": 1132,
+ "n_entries": 1132,
  "fitted_share": 0.85,
  "checks": {
   "same_recipe": true,
@@ -8,6 +8,11 @@
   "holdouts_learnt": true,
   "early_stopping": true,
   "benzene": true
+ },
+ "seed_sha256": {
+  "seed-0": "4e82e0f99715bb99ef050410410869e2f68cdbcf57f43398cd0d7febee655a14",
+  "seed-1": "14059360ed350c1bfaa2ca51bb852fa22eccb6e2644226b2250ccb6652a831aa",
+  "seed-2": "c6451ca246977bd704392d45911233b8d7ea581bfc33268212b54bc504400b0c"
  },
  "release_checkpoints": {
   "E7_rungC_v14s3clean_c00_control_release_model_n1132_seed0.pt": "6f52c9d8570fbcf5",
