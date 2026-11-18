@@ -37,8 +37,25 @@ One sentence, on every certificate and on the card, in place of today's 'with th
 pool out of each seed's fit, the hold-out molecules included; for three seeds 0.15³ of the molecules, about four of 1,132, are
 fitted by no network. The release checks' record says, for benzene, how many release networks fitted it.)
 
+(Amended 18 November 2026, TASKS 268, after the independent review of aromir 6954a77: 'all N molecules with labels' and 'every
+molecule we hold labels for' said more than the release networks saw, and so does §2's 'everything with labels of the carried
+kind'. N counts the entries of the training pool — for v1.4 1,132: 1,082 neutral ids, which are 1,078 distinct SMILES, and 50
+radical-cation rows — and 59 corpus folders with a ωB97X analytic Hessian are outside it: 42 dropped by the trainer's loader for
+an imaginary mode, 10 of the layers D and T, which are not among the pool's layers, and 7 of hold-out (c), which is never trained
+(decision 54); `probes/results_m1/aromir_audit_answers_2026-11-18/outside_pool.json`. The 42 are inferred from aromir's
+vibrational analysis of the stored analytic Hessians (an imaginary mode at either level), the trainer's loader's rule, not read
+from its log. The 59 count folders with a ωB97X analytic Hessian; the pool also holds 37 cation entries whose ωB97X label is
+semi-numerical, and 49 more folders with semi-numerical labels only lie outside it (35 A2, set b+ among them, 6 B, 8 P3c;
+`semi_numerical.log` beside it). The sentence now reads: 'The spectrum is made by the release networks of version X, trained on
+the N labelled entries of their training pool, hold-outs (a) and (b) included: … the release networks themselves have seen the
+molecules of hold-outs (a) and (b), so they have no held-out error of their own.' — (a) and (b) by name, because hold-out (c) is
+never trained. aromir's sentence says it in its own terms, 'entries' throughout, the pool's neutral molecules and cations
+counted in brackets, and 'the hold-out molecules' where the pipeline names (a) and (b), since aromir's records hold no other
+hold-out; the fitting clause the pipeline appends (`m05/network_kind.fitting_sentence`) still says 'molecules',
+and changes when module 05 may be changed again.)
+
 Per molecule the 'seen' line then reads, for a molecule that is in the training data of the release networks (benzene, every
-hold-out molecule, every pool molecule): 'in the release networks' training data: the error bars are not an out-of-sample error for
+molecule of hold-outs (a) and (b), every pool molecule): 'in the release networks' training data: the error bars are not an out-of-sample error for
 this molecule; expect it to be smaller'. For any other molecule: as now.
 
 The licence keeps its meaning: a family is licensed where the measurement networks' error is within the line on both hold-outs.
