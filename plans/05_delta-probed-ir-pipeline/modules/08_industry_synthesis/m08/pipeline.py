@@ -106,8 +106,7 @@ class Refused(Exception):
 
 def carried_models(kind: str) -> tuple[Path, ...]:
     """The carried ΔH-network version's checkpoints of one kind in the model registry (decisions 55 and 66), one file per seed:
-    `NK.MEASUREMENT` for anything that reads an error, `NK.RELEASE` for the networks trained on the hold-outs too (none until a
-    version has them)."""
+    `NK.MEASUREMENT` for anything that reads an error, `NK.RELEASE` for the networks trained on the hold-outs too."""
     return tuple(sorted(MR.OUT / k for k in MR.carried_keys(MR.read_status(MR.STATUS_FILE), NETWORK, kind)))
 
 
