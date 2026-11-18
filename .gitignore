@@ -181,3 +181,7 @@ plans/*/modules/05_support_predictor/corpus/superseded_*/
 plans/*/modules/05_support_predictor/corpus/reoptimised_*/
 plans/*/modules/05_support_predictor/out/superseded_*/
 plans/*/modules/08_industry_synthesis/*.log
+# Weights are binary and published with aromir (and mirrored); smoke runs prove a path and are not results.
+plans/*/modules/05_support_predictor/out/**/*.safetensors
+plans/*/modules/05_support_predictor/out/v14_smoke/
+plans/*/modules/05_support_predictor/out/**/smoke_*

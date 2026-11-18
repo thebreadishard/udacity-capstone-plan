@@ -1,0 +1,47 @@
+analytic second-route Hessians substituted for 1154 molecules
+atomic polar tensors found for 757 molecules: intensity read-outs on (lever 5, registered 2 Oct 2026 06:5x)
+selection set: 169 molecules of 18 scaffold cores (seed, fraction (26, 0.15)); pool 913
+hold-out twins: 2 pool molecules are hold-out molecules under another id and leave the pool (B_3100da3761, B_07cadc7923)
+1181 molecules; pool 911; hold-out (a) 10, (b) 70 (['fluoranthene', 'fluorene']); sizes [913]; seeds [0]; epochs 300; threads 8; model 172,194 parameters, sum aggregation
+  rung B's 66 pair features added to the hybrid head (standardised on the fit molecules)
+  hybrid head: 304,276 parameters; F_low input scales 0.0338, 0.286, 0.123; SQM α per class on
+  fresh sum body pre-flight: worst |output| 48.1 on the training molecules
+    seed 0 epoch 1/300: loss main 1.41e-06 aux 0.5392 val 0.4949 (32 s)
+    seed 0 epoch 10/300: loss main 3.731e-07 aux 0.1706 val 0.1601 (323 s)
+    seed 0 epoch 20/300: loss main 2.31e-07 aux 0.09696 val 0.1225 (648 s)
+    seed 0 epoch 30/300: loss main 1.777e-07 aux 0.07211 val 0.09647 (972 s)
+    seed 0 epoch 40/300: loss main 1.514e-07 aux 0.05745 val 0.08213 (1297 s)
+    seed 0 epoch 50/300: loss main 1.337e-07 aux 0.04753 val 0.07814 (1622 s)
+    seed 0 epoch 60/300: loss main 1.314e-07 aux 0.03964 val 0.077 (1946 s)
+    seed 0 epoch 70/300: loss main 1.026e-07 aux 0.03231 val 0.08269 (2270 s)
+    seed 0 epoch 80/300: loss main 9.693e-08 aux 0.02958 val 0.07251 (2595 s)
+    seed 0 epoch 90/300: loss main 8.668e-08 aux 0.02509 val 0.07573 (2920 s)
+    seed 0 epoch 100/300: loss main 7.521e-08 aux 0.02102 val 0.06734 (3244 s)
+    seed 0 epoch 110/300: loss main 7.762e-08 aux 0.02027 val 0.06517 (3569 s)
+    seed 0 epoch 120/300: loss main 6.804e-08 aux 0.01801 val 0.066 (3894 s)
+    seed 0 epoch 130/300: loss main 6.647e-08 aux 0.01659 val 0.06387 (4219 s)
+    seed 0 epoch 140/300: loss main 6.153e-08 aux 0.0148 val 0.06482 (4544 s)
+    seed 0 epoch 150/300: loss main 5.677e-08 aux 0.01327 val 0.06342 (4869 s)
+    seed 0 epoch 160/300: loss main 5.803e-08 aux 0.01333 val 0.06305 (5194 s)
+    seed 0 epoch 170/300: loss main 5.097e-08 aux 0.01113 val 0.06267 (5519 s)
+    seed 0 epoch 180/300: loss main 4.932e-08 aux 0.01056 val 0.06377 (5844 s)
+    seed 0 epoch 190/300: loss main 4.635e-08 aux 0.009455 val 0.06239 (6169 s)
+    seed 0 epoch 200/300: loss main 4.467e-08 aux 0.008976 val 0.06243 (6494 s)
+    seed 0 epoch 210/300: loss main 4.282e-08 aux 0.008269 val 0.06242 (6818 s)
+    seed 0 epoch 220/300: loss main 4.204e-08 aux 0.008016 val 0.06247 (7153 s)
+    seed 0 epoch 230/300: loss main 4.055e-08 aux 0.00755 val 0.06299 (7521 s)
+    seed 0 epoch 240/300: loss main 3.968e-08 aux 0.007241 val 0.06314 (7896 s)
+    seed 0 epoch 250/300: loss main 3.898e-08 aux 0.006981 val 0.06337 (8268 s)
+    seed 0 epoch 260/300: loss main 3.837e-08 aux 0.006796 val 0.06363 (8660 s)
+    seed 0 epoch 270/300: loss main 3.805e-08 aux 0.006656 val 0.06364 (9022 s)
+    seed 0 epoch 280/300: loss main 3.774e-08 aux 0.006569 val 0.06377 (9407 s)
+    seed 0 epoch 290/300: loss main 3.761e-08 aux 0.006515 val 0.06387 (9798 s)
+    seed 0 epoch 300/300: loss main 3.752e-08 aux 0.006485 val 0.0639 (10171 s)
+  model saved: out\v14\E7_rungC_v14s1a_c03_control_schedule_model_n913_seed0.pt
+  n=913 seed 0: inner validation internal term 0.06167 on 137 molecules (fit on 774)
+  n=913 seed 0 (a): ring couplings 0.74 vs zero 3.73 (ratio 0.20) | corrected ω 3.51 (zero 23.37) | ΔH residual ratio 0.177
+  n=913 seed 0 (b): 1 molecules without an intensity read-out (a mode crossed the threshold)
+  n=913 seed 0 (b): ring couplings 0.83 vs zero 3.87 (ratio 0.22) | corrected ω 2.40 (zero 22.93) | ΔH residual ratio 0.184
+  n=913 seed 0 (sel): 3 molecules without an intensity read-out (a mode crossed the threshold)
+  n=913 seed 0 (sel): ring couplings 1.68 vs zero 4.09 (ratio 0.41) | corrected ω 3.58 (zero 22.92) | ΔH residual ratio 0.290
+wrote out/v14/E7_rungC_v14s1a_c03_control_schedule.json/.md in 10587 s

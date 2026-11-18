@@ -1,0 +1,43 @@
+release checks: pool sample 1/40 A2_07f1fa9135
+release checks: pool sample 2/40 A2_1e3ee2b3a8
+release checks: pool sample 3/40 A2_3c982d4d3f
+release checks: pool sample 4/40 A2_6849063f11
+release checks: pool sample 5/40 A2_7fb917c8c9
+release checks: pool sample 6/40 A2_8aee63833a
+release checks: pool sample 7/40 A2_a748e707a3
+release checks: pool sample 8/40 A2_fae1c8f737
+release checks: pool sample 9/40 A_90df3e4aa9
+release checks: pool sample 10/40 B_00580f71bc
+release checks: pool sample 11/40 B_02145d28ae
+release checks: pool sample 12/40 B_038a62c6d7
+release checks: pool sample 13/40 B_077b344788
+release checks: pool sample 14/40 B_07e6c03ae6
+release checks: pool sample 15/40 B_0a006a11c0
+release checks: pool sample 16/40 B_0e9ba6e5c1
+release checks: pool sample 17/40 B_0ee42ff100
+release checks: pool sample 18/40 B_134d596518
+release checks: pool sample 19/40 B_1a5124714e
+release checks: pool sample 20/40 B_1b1ee38f9b
+release checks: pool sample 21/40 B_1d00850716
+release checks: pool sample 22/40 B_1d4cf70cdf
+release checks: pool sample 23/40 B_1db552d10b
+release checks: pool sample 24/40 B_1e9ccb2ea3
+release checks: pool sample 25/40 B_1f4942051b
+release checks: pool sample 26/40 B_1f4e104c2d
+release checks: pool sample 27/40 B_23a7c9c6b2
+release checks: pool sample 28/40 B_246b2a4557
+release checks: pool sample 29/40 B_26f4a2441f
+release checks: pool sample 30/40 B_2804096c51
+release checks: pool sample 31/40 B_285537f48b
+release checks: pool sample 32/40 B_2a0d775b59
+release checks: pool sample 33/40 B_30022fd926
+release checks: pool sample 34/40 B_4120ea3621
+release checks: pool sample 35/40 B_44c3726875
+release checks: pool sample 36/40 B_54b643d16d
+release checks: pool sample 37/40 B_6d47368e74
+release checks: pool sample 38/40 B_df987fb28b
+release checks: pool sample 39/40 P3c_049751d07c
+release checks: pool sample 40/40 P3c_09d0b3be91
+release checks: hold-out (a8) read on 8 molecules
+release checks: hold-out (b) read on 40 molecules
+release checks passed: record C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\05_support_predictor\out\v14\E7_rungC_v14s3clean_c00_control_release_release_checks.json

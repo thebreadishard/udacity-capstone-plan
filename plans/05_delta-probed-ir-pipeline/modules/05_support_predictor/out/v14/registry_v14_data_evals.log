@@ -1,0 +1,5 @@
+registered as candidate: v14/E7_rungC_v14s1a_c01_control_parity_model_n913_seed0.pt, v14/E7_rungC_v14s1a_c02_control_target_model_n913_seed0.pt, v14/E7_rungC_v14s1a_c03_control_schedule_model_n913_seed0.pt, v14/E7_rungC_v14s1a_c04_model_n913_seed0.pt, v14/E7_rungC_v14s1a_c05_model_n913_seed0.pt, v14/E7_rungC_v14s1a_c06_model_n913_seed0.pt, v14/E7_rungC_v14s3full_c00_control_model_n1082_seed0.pt, v14/E7_rungC_v14s3full_c00_control_model_n1082_seed1.pt, v14/E7_rungC_v14s3full_c00_control_model_n1082_seed2.pt, v14_smoke/c03_control_schedule_model_n5_seed0.pt, v14_smoke/c04_model_n5_seed0.pt
+wrote C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\05_support_predictor\MODELS.md (102 models; carried: 3)
+wrote C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\standout_pattern_proposer\MODELS.md (42 models; carried: 3)
+wrote C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\06_generative_candidates\MODELS.md (5 models; carried: 0)
+wrote C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\MODELS.md

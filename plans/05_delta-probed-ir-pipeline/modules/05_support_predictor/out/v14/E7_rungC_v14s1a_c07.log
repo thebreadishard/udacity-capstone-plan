@@ -1,0 +1,49 @@
+analytic second-route Hessians substituted for 1154 molecules
+atomic polar tensors found for 757 molecules: intensity read-outs on (lever 5, registered 2 Oct 2026 06:5x)
+selection set: 169 molecules of 18 scaffold cores (seed, fraction (26, 0.15)); pool 913
+hold-out twins: 2 pool molecules are hold-out molecules under another id and leave the pool (B_3100da3761, B_07cadc7923)
+1181 molecules; pool 911; hold-out (a) 10, (b) 70 (['fluoranthene', 'fluorene']); sizes [913]; seeds [0]; epochs 300; threads 8; model 224,866 parameters, sum aggregation
+  rung B's 66 pair features added to the hybrid head (standardised on the fit molecules)
+  hybrid head: 617,812 parameters; F_low input scales 0.0338, 0.286, 0.123; SQM α per class on
+  fresh sum body pre-flight: worst |output| 25.5 on the training molecules
+    seed 0 epoch 1/300: loss main 1.231e-06 aux 0.5198 val 0.486 (101 s)
+    seed 0 epoch 10/300: loss main 1.181e-06 aux 0.1899 val 0.1357 (990 s)
+    seed 0 epoch 20/300: loss main 2.004e-07 aux 0.08118 val 0.1172 (1990 s)
+    seed 0 epoch 30/300: loss main 1.477e-07 aux 0.05558 val 0.08432 (2949 s)
+    seed 0 epoch 40/300: loss main 1.278e-07 aux 0.04606 val 0.07482 (4067 s)
+    seed 0 epoch 50/300: loss main 1.111e-07 aux 0.03691 val 0.07007 (5137 s)
+    seed 0 epoch 60/300: loss main 9.265e-08 aux 0.02797 val 0.0695 (6306 s)
+    seed 0 epoch 70/300: loss main 7.982e-08 aux 0.02231 val 0.06657 (7897 s)
+    seed 0 epoch 80/300: loss main 6.959e-08 aux 0.01965 val 0.06365 (9359 s)
+    seed 0 epoch 90/300: loss main 5.859e-08 aux 0.01653 val 0.06736 (10829 s)
+    seed 0 epoch 100/300: loss main 5.221e-08 aux 0.01341 val 0.06316 (12368 s)
+analytic second-route Hessians substituted for 1154 molecules
+atomic polar tensors found for 757 molecules: intensity read-outs on (lever 5, registered 2 Oct 2026 06:5x)
+selection set: 169 molecules of 18 scaffold cores (seed, fraction (26, 0.15)); pool 913
+hold-out twins: 2 pool molecules are hold-out molecules under another id and leave the pool (B_3100da3761, B_07cadc7923)
+1181 molecules; pool 911; hold-out (a) 10, (b) 70 (['fluoranthene', 'fluorene']); sizes [913]; seeds [0]; epochs 300; threads 8; model 224,866 parameters, sum aggregation
+  rung B's 66 pair features added to the hybrid head (standardised on the fit molecules)
+  hybrid head: 617,812 parameters; F_low input scales 0.0338, 0.286, 0.123; SQM α per class on
+  fresh sum body pre-flight: worst |output| 25.5 on the training molecules
+    seed 0 epoch 1/300: loss main 1.231e-06 aux 0.5198 val 0.486 val_main 9.972e-07 (66 s)
+    seed 0 epoch 10/300: loss main 3.225e-07 aux 0.1466 val 0.1459 val_main 2.502e-07 (741 s)
+    seed 0 epoch 20/300: loss main 2.035e-07 aux 0.0839 val 0.1042 val_main 1.946e-07 (1486 s)
+    seed 0 epoch 30/300: loss main 1.552e-07 aux 0.05757 val 0.08115 val_main 1.305e-07 (2192 s)
+    seed 0 epoch 40/300: loss main 1.22e-07 aux 0.04181 val 0.07124 val_main 1.272e-07 (2895 s)
+    seed 0 epoch 50/300: loss main 1.014e-07 aux 0.03262 val 0.0751 val_main 1.151e-07 (3605 s)
+    seed 0 epoch 60/300: loss main 9.383e-08 aux 0.0284 val 0.06544 val_main 1.287e-07 (4265 s)
+    seed 0 epoch 70/300: loss main 7.54e-08 aux 0.02191 val 0.06802 val_main 1.161e-07 (4944 s)
+analytic second-route Hessians substituted for 1154 molecules
+atomic polar tensors found for 757 molecules: intensity read-outs on (lever 5, registered 2 Oct 2026 06:5x)
+selection set: 169 molecules of 18 scaffold cores (seed, fraction (26, 0.15)); pool 913
+hold-out twins: 2 pool molecules are hold-out molecules under another id and leave the pool (B_3100da3761, B_07cadc7923)
+1181 molecules; pool 911; hold-out (a) 10, (b) 70 (['fluoranthene', 'fluorene']); sizes [913]; seeds [0]; epochs 300; threads 8; model 224,866 parameters, sum aggregation
+  rung B's 66 pair features added to the hybrid head (standardised on the fit molecules)
+  hybrid head: 617,812 parameters; F_low input scales 0.0338, 0.286, 0.123; SQM α per class on
+  fresh sum body pre-flight: worst |output| 25.5 on the training molecules
+    seed 0 epoch 1/300: loss main 1.231e-06 aux 0.5198 val 0.486 val_main 9.972e-07 (66 s)
+    seed 0 epoch 10/300: loss main 4.277e-07 aux 0.1595 val 0.1403 val_main 2.635e-07 (643 s)
+    seed 0 epoch 20/300: loss main 2.007e-07 aux 0.08342 val 0.1074 val_main 1.974e-07 (1282 s)
+    seed 0 epoch 30/300: loss main 1.567e-07 aux 0.0566 val 0.08525 val_main 1.488e-07 (1920 s)
+    seed 0 epoch 40/300: loss main 1.17e-07 aux 0.04341 val 0.07224 val_main 1.293e-07 (2618 s)
+    seed 0 epoch 50/300: loss main 1.066e-07 aux 0.03362 val 0.06968 val_main 1.225e-07 (3357 s)
