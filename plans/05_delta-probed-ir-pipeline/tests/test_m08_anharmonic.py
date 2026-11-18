@@ -539,7 +539,7 @@ def test_by_default_no_run_starts_a_force_field_and_the_certificate_says_the_ste
     rec = P.run(default, lambda folder, what: delivered.append(what))
     assert delivered == [P.ONLY_DELIVERY] and rec["spectra"]["anharmonic"]["status"] == POS.NOT_APPLIED
     assert rec["spectra"]["note"] == ("positions are harmonic (ω): the anharmonic step was not applied — the step exists and was not run: it "
-                                      "is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)")
+                                      "is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on")
     common = ["--name", "m", "--out", str(tmp_path), "--smiles", BENZENE]
     assert P.parse_args(common).anharmonic_minutes is None and not P.parse_args(common).no_anharmonic      # the command line adds none
 
@@ -638,7 +638,7 @@ def test_the_harmonic_result_is_delivered_complete_before_step_6_starts(tmp_path
     assert [(x["number"], x["delivery"]) for x in final["deliveries"]] == [(1, P.FIRST_DELIVERY), (2, P.SECOND_DELIVERY)]
     assert final["deliveries"][1]["final_by"] is None and final["spectra"]["note"] == "said"
     assert final["spectra"]["network"]["sticks"][0]["nu_cm"] == 690.0 and "anharmonic" in final["seconds"] == rec["seconds"]
-    assert all(x["seconds_since_start"] >= 0 and x["at"] for x in final["deliveries"]) and rec["pipeline_version"] == "0.11"
+    assert all(x["seconds_since_start"] >= 0 and x["at"] for x in final["deliveries"]) and rec["pipeline_version"] == P.PIPELINE_VERSION == "0.12"
 
 
 def test_a_step_over_its_budget_ends_in_the_harmonic_result_with_the_reason(tmp_path, monkeypatch):

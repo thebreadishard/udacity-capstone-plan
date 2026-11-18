@@ -93,17 +93,20 @@ def test_the_show_page_prints_the_caveat_with_the_certificate_card(tmp_path, ame
     assert all(row["licensed"] for row in m["families"]) and {r["family"]: (r["error_a"], r["error_b"]) for r in m["families"]}["other"] == (2.78, 2.77)
     page = S.page(S.payload((folder,)))
     assert "Licence caveat: other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.68" in page
-    assert "${m.licence_caveat ? `<div" in page and "errors: the ${esc(m.error_quantity)}" in page
+    assert "${m.licence_caveat ? `<div" in page and "${esc(m.errors_text)}" in page
+    assert m["errors_text"] == f"errors: the {PRODUCT_NAME}, on molecules the network never saw (cm⁻¹)"
     assert S.molecule(STORED)["licence_caveat"] == ""
 
 
-def test_the_live_certificates_band_table_and_statement_end_with_the_caveat(amended):
+def test_the_live_certificates_band_table_ends_with_the_caveat_and_the_statement_does_not_repeat_it(amended):
+    """Since the demo review the caveat is printed once on the page, under the band table; the licence line keeps its own clause."""
     lines = LC._band_lines(amended)
     assert lines[-1] == f"*{CAVEAT}*" and lines[-2] == "" and lines[-3].startswith("| ")
-    assert amended["statement"].endswith(f"This molecule and the ΔH network: {amended['molecule']['seen']['text']}. {CAVEAT}")
+    assert amended["statement"].endswith(f"This molecule and the ΔH network: {amended['molecule']['seen']['text']}.")
+    assert CAVEAT not in amended["statement"]
     quiet = {**amended, "licence": {**amended["licence"], "caveats": []}}
     assert LC._band_lines(quiet)[-1].startswith("| ")
     lic = {"quantity_name": PRODUCT_NAME, "licensed_families": ["ring-ip"], "caveats": []}
     assert LC.statement("x", "1.3", 3, lic, "never seen").endswith("This molecule and the ΔH network: never seen.")
     page = LC.to_markdown(amended)
-    assert page.count(CAVEAT) == 2 and page.count(amended["licence"]["caveats"][0]) == 3   # statement, band table; and the licence line
+    assert page.count(CAVEAT) == 1 and page.count(amended["licence"]["caveats"][0]) == 2   # the band table; and the licence line

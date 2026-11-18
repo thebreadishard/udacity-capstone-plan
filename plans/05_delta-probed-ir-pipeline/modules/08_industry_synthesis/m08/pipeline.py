@@ -33,11 +33,12 @@ the pipeline starts a GFN2-xTB force field unless its command names a budget (th
 `probes/runspecs/pipeline_benzene_anharmonic.json`, the checks `probes/results_m1/anharmonic_step_2026-11-16/first_run_checks.py`),
 and a certificate without the step says in one line that the step exists, was not run, and how it is switched on.
 
-Every refusal — the charge state, a radical, no aromatic ring, an element the carried models never saw, a model that is not carried, an
-output folder in use — comes before step 1, and so does the reading of the anharmonic step's artefact. The record says of every band
-which position it prints (`m08/positions.py`).
+Every refusal — the charge state, a radical, no aromatic ring, more than one molecule, an element the carried models never saw, a model
+that is not carried, an output folder in use — comes before step 1, and so does the reading of the anharmonic step's artefact. The record
+says of every band which position it prints (`m08/positions.py`). A run that stops — refused, failed or interrupted — says so in its
+`progress.json` with the reason (a refusal at admission writes one in the folder made for it), so the live show does not wait on it.
 
-    python -m m08.pipeline --name benzene --smiles c1ccccc1 --out <folder> [--threads 4] [--psi4-python <qc env python>]
+    python -m m08.pipeline --name benzene --smiles c1ccccc1 --out <folder> [--threads 6] [--psi4-python <qc env python>]
                           [--pyscf-python <WSL python>] [--no-reuse] [--anharmonic-minutes 120 | --no-anharmonic]
 """
 from __future__ import annotations
@@ -78,7 +79,7 @@ from scale_factor_baseline import PAHDB_FACTORS, pahdb_region  # noqa: E402
 
 from dpir.provenance import git_state, provenance  # noqa: E402
 
-PIPELINE_VERSION = "0.11"              # modules/PIPELINE.md
+PIPELINE_VERSION = "0.12"              # modules/PIPELINE.md
 NETWORK = "ΔH-network"
 CORPUS_ROOT = M05 / "corpus"
 CORPUS = CORPUS_ROOT / "molecules"
@@ -86,6 +87,7 @@ PSI4_WORKER = M05 / "corpus" / "psi4_worker.py"
 ANALYTIC = M05 / "corpus" / "analytic_hessians.py"
 WSL_CAPPED = PLAN / "probes" / "wsl_capped.sh"
 WSL_PYSCF = "~/qc215/bin/python"      # pyscf 2.15.0: the low-mode repair needs it, and 2.14.0 refuses it (TASKS 225)
+WSL_PYSCF_VERSION = "2.15.0"           # the pyscf of WSL_PYSCF's environment
 LOW_GRID = (99, 590)                   # the analytic Hessian's and APT's grid: the corpus's labels, so a reused folder is what step 3 computes
 PYSCF_HEADROOM_MB = 584                # pyscf's max_memory below the cap: probes/cation_analytic_all.sh's measured margin (19 Oct 2026)
 KILLED_AT_CAP = (137, 143)             # wsl_capped.sh's kill, and the systemd scope's (probes/cation_oom_check.sh)
@@ -171,7 +173,7 @@ class PipelineConfig(BaseModel):
     models: tuple[Path, ...] = Field(default_factory=lambda: product_networks().models)        # looked up at build time, so a test can
     psi4_python: Path | None = Field(default_factory=lambda: default_psi4_python())     # point it at a pin model
     pyscf_python: str = Field(WSL_PYSCF, pattern=r"^[~A-Za-z0-9_./-]+$")
-    threads: int = Field(4, ge=1, le=32)
+    threads: int = Field(6, ge=1, le=32)    # the timed runs' count: the time estimate is fitted at the thread count it is asked for
     psi4_memory_gb: int = Field(4, ge=1, le=64)
     wsl_cap_mb: int = Field(6144, ge=2048, le=65536)
     reuse_corpus: bool = True                # TASKS 150: steps 2–3 from the corpus where it holds the molecule at these settings
@@ -371,14 +373,18 @@ def admitted_models(models: tuple[Path, ...]) -> tuple[AdmittedModels, list[str]
 def admit(cfg: PipelineConfig) -> Admission:
     """Every refusal before any computation; raises Refused with all reasons found."""
     reasons = []
-    if cfg.folder.exists() and any(cfg.folder.iterdir()):
+    if cfg.folder.exists() and any(cfg.folder.iterdir()) and not Progress.refused_only(cfg.folder):
         reasons.append(f"{cfg.folder} exists and is not empty: a result is never overwritten")
     admitted, model_reasons = admitted_models(cfg.models)
     reasons += model_reasons
     m = rdkit_molecule(cfg)
     if m is None:
         raise Refused([*reasons, f"the input ({cfg.smiles or cfg.xyz}) does not parse as a molecule"])
+    from rdkit import Chem
+
     elements = tuple(sorted({a.GetSymbol().upper() for a in m.GetAtoms()}))
+    if (fragments := len(Chem.GetMolFrags(m))) > 1:
+        reasons.append(f"the input holds {fragments} separate molecules: one molecule per run")
     if sum(a.GetFormalCharge() for a in m.GetAtoms()) != 0:
         reasons.append("the molecule carries a net formal charge: this version is for neutral molecules")
     if any(a.GetNumRadicalElectrons() for a in m.GetAtoms()):
@@ -393,7 +399,6 @@ def admit(cfg: PipelineConfig) -> Admission:
         reasons.append(f"element(s) {', '.join(unseen)} outside the carried models' training set ({', '.join(training_elements)})")
     if reasons:
         raise Refused(reasons)
-    from rdkit import Chem
     from rdkit.Chem.rdMolDescriptors import CalcMolFormula
 
     return Admission(Chem.MolToSmiles(Chem.RemoveHs(m)), CalcMolFormula(m), elements, m.GetNumAtoms(), training_elements, training_atoms,
@@ -679,15 +684,51 @@ def _second_delivery(rec: dict, step6, dH: np.ndarray, ctx: Delivering) -> None:
     _deliver(rec, SECOND_DELIVERY if applied else FINAL_HARMONIC, ctx)
 
 
+def failure_reason(e: BaseException) -> str:
+    """What a progress record says of the exception that stopped a run."""
+    if isinstance(e, Refused):
+        return "refused: " + "; ".join(e.reasons)
+    if isinstance(e, KeyboardInterrupt):
+        return "interrupted (Ctrl-C)"
+    return f"failed: {type(e).__name__}" + (f": {e}" if str(e) else "")
+
+
+def record_refusal(cfg: PipelineConfig, refused: Refused) -> None:
+    """A refused molecule's progress record, in the folder made for it, so the live show says why instead of showing the run before
+    it — never in a folder in use, which is another run's. The machine's own refusals (the anharmonic step's preflight) come later and
+    leave no folder."""
+    if cfg.folder.exists() and any(cfg.folder.iterdir()) and not Progress.refused_only(cfg.folder):
+        return
+    given = {"smiles": None, "formula": None, "n_atoms": None, "given": cfg.smiles or str(cfg.xyz)}
+    Progress.refused(cfg.folder, cfg.name, PIPELINE_VERSION, given, failure_reason(refused))
+
+
 def run(cfg: PipelineConfig, deliver: Deliver | None = None) -> dict:
     """The whole pipeline for one molecule; the record is written to <folder>/pipeline.json — after step 5 and again after
-    step 6 — and returned. `deliver(folder, what)` is called at each delivery (the command line writes the certificate there)."""
+    step 6 — and returned. `deliver(folder, what)` is called at each delivery (the command line writes the certificate there).
+    A run that stops after its progress record exists marks it failed with the reason (`Progress.fail`), a refused molecule gets one
+    (`record_refusal`), and the exception is raised again."""
+    started: list[Progress] = []                 # the run's progress record, once `_steps` has made it
+    try:
+        return _steps(cfg, deliver, started)
+    except BaseException as e:
+        if started:
+            started[0].fail(failure_reason(e))
+        raise
+
+
+def _steps(cfg: PipelineConfig, deliver: Deliver | None, started: list[Progress]) -> dict:
+    """`run`'s steps; the progress record is put in `started` as soon as it exists."""
     import torch
 
     from . import anharmonic as AN  # that module imports this one
 
     t0 = time.time()
-    adm = admit(cfg)
+    try:
+        adm = admit(cfg)
+    except Refused as r:
+        record_refusal(cfg, r)
+        raise
     if cfg.anharmonic:
         AN.preflight()                # a machine that could not own and stop the force field is refused here, not after an hour
     # the step's artefact is read and checked here — its probe rows predicted — before the first step computes anything
@@ -699,6 +740,7 @@ def run(cfg: PipelineConfig, deliver: Deliver | None = None) -> dict:
     d = cfg.folder
     d.mkdir(parents=True, exist_ok=True)
     progress = Progress(d, cfg.name, PIPELINE_VERSION, {"smiles": adm.smiles, "formula": adm.formula, "n_atoms": adm.n_atoms})
+    started.append(progress)
     progress.start("molecule")
     progress.done("molecule")                               # admitted before the folder existed
     seconds: dict[str, float] = {}
@@ -726,6 +768,23 @@ def run(cfg: PipelineConfig, deliver: Deliver | None = None) -> dict:
     return rec
 
 
+def step3_pyscf(cfg: PipelineConfig) -> str | None:
+    """The pyscf version step 3 will run: the default interpreter's, or None for one given on the command line (unknown before the run)."""
+    return WSL_PYSCF_VERSION if cfg.pyscf_python == WSL_PYSCF else None
+
+
+def pyscf_as_recorded(cfg: PipelineConfig, rec: dict) -> str | None:
+    """A line when step 3, computed by this run, recorded another pyscf than the one the time estimate assumed (`step3_pyscf`); None
+    when they agree or when steps 2–3 came from the corpus."""
+    if rec["reuse"]["reused"]:
+        return None
+    recorded = (rec["low_level"]["b3lyp"].get("software") or {}).get("pyscf")
+    assumed = step3_pyscf(cfg)
+    if recorded == assumed:
+        return None
+    return f"step 3 recorded pyscf {recorded}; the time estimate assumed {assumed or 'an unknown version'}"
+
+
 def parse_args(argv: list[str] | None) -> argparse.Namespace:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--name", required=True, help="the result folder's name under --out")
@@ -736,7 +795,7 @@ def parse_args(argv: list[str] | None) -> argparse.Namespace:
     ap.add_argument("--psi4-python", type=Path, help="the qc env's python (default: CORPUS_QC_PYTHON)")
     ap.add_argument("--pyscf-python",
                     help="the WSL python step 3 runs the label route on; the low-mode repair needs pyscf 2.15.0 or newer")
-    ap.add_argument("--threads", type=int, default=4)
+    ap.add_argument("--threads", type=int, default=6, help="the timed runs' count, so the time estimate holds (default 6)")
     ap.add_argument("--psi4-memory-gb", type=int, default=4)
     ap.add_argument("--wsl-cap-mb", type=int, default=6144)
     ap.add_argument("--no-reuse", action="store_true", help="compute steps 2-3 even where the corpus holds the molecule (TASKS 150)")
@@ -769,10 +828,10 @@ def main(argv: list[str] | None = None) -> int:
             adm = admit(cfg)
             print(f"[pipeline] admitted: {cfg.name}, {adm.n_atoms} atoms ({', '.join(adm.elements)}); models "
                   f"{', '.join(Path(m['path']).name for m in adm.models)}; training sizes {adm.training_atoms}", flush=True)
-            print(f"[pipeline] {announce(adm.smiles, cfg.threads)}", flush=True)
+            print(f"[pipeline] {announce(adm.smiles, cfg.threads, step3_pyscf(cfg))}", flush=True)
             return 0
         catalog = Catalog()             # the certificate's catalogue and tolerances: read before any computation
-        print(f"[pipeline] {announce(cfg.smiles, cfg.threads)}", flush=True)
+        print(f"[pipeline] {announce(cfg.smiles, cfg.threads, step3_pyscf(cfg))}", flush=True)
 
         def deliver(folder: Path, what: str) -> None:
             """The certificate of the record as it stands at this delivery, written over the earlier delivery's."""
@@ -783,6 +842,8 @@ def main(argv: list[str] | None = None) -> int:
     except Refused as r:
         print("REFUSED: " + "\n  ".join(["", *r.reasons]), flush=True)
         return 2
+    if differs := pyscf_as_recorded(cfg, rec):
+        print(f"[pipeline] {differs}", flush=True)
     n = len(rec["spectra"]["network"]["sticks"])
     print(f"[pipeline] done: {n} bands, {cfg.folder / 'pipeline.json'} ({sum(rec['seconds'].values()):.0f} s)", flush=True)
     print(f"[pipeline] certificate: {cfg.folder / 'certificate.md'}", flush=True)      # the last line: a run spec's end marker

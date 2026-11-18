@@ -47,7 +47,7 @@ STATIONS = (
     {"icon": "molecule", "title": "Molecule", "tool": "RDKit · canonical SMILES"},
     {"icon": "geometry", "title": "Start geometry", "tool": "RDKit ETKDG + MMFF"},
     {"icon": "optimise", "title": "Optimisation", "tool": "psi4 1.11 · B3LYP/6-31G*"},
-    {"icon": "hessian", "title": "Hessian + APT", "tool": "pyscf 2.14 · analytic"},
+    {"icon": "hessian", "title": "Hessian + APT", "tool": f"pyscf {P.WSL_PYSCF_VERSION} · analytic"},
     {"icon": "network", "title": "ΔH network", "tool": "three seeds"},
     {"icon": "spectrum", "title": "Spectrum + certificate", "tool": "double harmonic · licence"},
 )
@@ -133,6 +133,37 @@ def corpus_low_level_text(rec: dict) -> str:
     return f"from the corpus · Hessian {duration(hessian) if hessian is not None else 'time not recorded'}, APT {duration(apt)}"
 
 
+def low_level_software(rec: dict) -> str:
+    """Step 3's pyscf as the record names it. A reused run takes the corpus folder's record, which may not name one; a computed run's
+    record always does, and one that does not is refused."""
+    version = (rec["low_level"]["b3lyp"].get("software") or {}).get("pyscf")
+    if version:
+        return f"pyscf {version}"
+    if reused(rec):
+        return "pyscf (the corpus folder does not record its version)"
+    raise ValueError(f"{rec['name']}: a computed run whose record does not name step 3's pyscf")
+
+
+def network_of(rec: dict) -> dict:
+    """The networks that made a run's spectrum, from its admission: their version, their kind (decision 66) and the card's label."""
+    models = rec["admission"]["models"]
+    versions = {m["version"] for m in models}
+    kinds = {P.NK.stated_kind(m, m["path"]) for m in models}
+    if len(versions) != 1 or len(kinds) != 1:
+        raise ValueError(f"{rec['name']}: the record's models are of versions {sorted(versions)} and kinds {sorted(kinds)}; a run has one")
+    version, kind = versions.pop(), kinds.pop()
+    label = f"ΔH network v{version}" + (" · release networks" if kind == P.NK.RELEASE else "")
+    return {"version": version, "kind": kind, "label": label}
+
+
+def errors_text(quantity: str, network: dict) -> str:
+    """Whose error the card's table states: release networks have none of their own, so theirs is the measurement networks'."""
+    if network["kind"] == P.NK.RELEASE:
+        return (f"errors: the {quantity} of v{network['version']}'s measurement networks, on molecules those networks never saw "
+                "(cm⁻¹)")
+    return f"errors: the {quantity}, on molecules the network never saw (cm⁻¹)"
+
+
 def stations(rec: dict) -> list[dict]:
     """The six stations with each one's recorded time: the laptop's for a computed step, the corpus record's for a reused one."""
     sec = rec["seconds"]
@@ -143,16 +174,20 @@ def stations(rec: dict) -> list[dict]:
              corpus_low_level_text(rec) if from_corpus else f"{duration(sec['low_level'])} on the laptop",
              f"{duration(sec['correction_and_spectra'])} with the spectrum", "certified"]
     adm = rec["admission"]
+    software = low_level_software(rec)
+    network = network_of(rec)
+    makers = "the release networks of" if network["kind"] == P.NK.RELEASE else "the carried"
     details = [f"{adm['formula']} · {adm['n_atoms']} atoms · neutral and closed-shell, every element seen in training; canonical SMILES {adm['smiles']}",
                "the corpus's own start: RDKit ETKDG and MMFF from the canonical SMILES, seed 0",
                "B3LYP/6-31G* minimum with psi4 1.11, deck v1" + (" — taken from the corpus folder, which computed it at these settings"
                                                                  if from_corpus else ""),
-               "analytic B3LYP Hessian and the atomic polar tensor (band heights) with pyscf 2.14, grid 99/590"
+               f"analytic B3LYP Hessian and the atomic polar tensor (band heights) with {software}, grid 99/590"
                + (" — taken from the corpus folder" if from_corpus else ""),
-               f"the carried ΔH network v{adm['models'][0]['version']}: three seeds, their mean ΔH added to the B3LYP Hessian",
+               f"{makers} ΔH network v{network['version']}: {len(adm['models'])} seeds, their mean ΔH added to the B3LYP Hessian",
                "harmonic positions ω from the corrected Hessian, heights from the B3LYP APT (double harmonic); each band's family and "
                "the licence of its ω; the certificate says which position each band is printed at, ν or ω"]
-    return [{**s, "time": times[i], "detail": details[i]} for i, s in enumerate(STATIONS)]
+    tools = {3: f"{software} · analytic"}
+    return [{**s, "tool": tools.get(i, s["tool"]), "time": times[i], "detail": details[i]} for i, s in enumerate(STATIONS)]
 
 
 def real_time(rec: dict) -> str:
@@ -234,26 +269,25 @@ def molecule(folder: Path) -> dict:
     rec, adm = r.record, r.record["admission"]
     seen = cert["molecule"]["seen"]
     truth = cert["molecule"].get("truth")
+    network = network_of(rec)
+    quantity = A.QUANTITY_NAMES[A.stated_errors(cert["accuracy"])[0]]
     return {"key": folder.parent.name + "/" + folder.name, "name": rec["name"], "formula": adm["formula"], "smiles": adm["smiles"],
             "n_atoms": adm["n_atoms"], "n_c": carbon_count(adm["formula"]),
             "hetero": sorted(e for e in adm["elements"] if e not in ("C", "H")),
             "status": {"role": seen["role"], "text": seen["text"]}, "depiction": depiction(adm["smiles"]),
             "atlas": atlas_link(cert["molecule"]["listed"]),
-            "route": "reused" if reused(rec) else "computed", "pipeline_version": rec["pipeline_version"],
+            "route": "reused" if reused(rec) else "computed", "pipeline_version": rec["pipeline_version"], "network": network,
             "stations": stations(rec), "real_time": real_time(rec), "spectrum": spectrum(r, cert), "families": families(cert["bands"]),
-            "error_quantity": A.QUANTITY_NAMES[A.stated_errors(cert["accuracy"])[0]], "licence_caveat": caveat_sentence(cert["licence"]),
+            "error_quantity": quantity, "errors_text": errors_text(quantity, network), "licence_caveat": caveat_sentence(cert["licence"]),
             "positions": f"{POS.DRAWN}; {POS.of_certificate(cert)}",
             "truth": {"rms_cm": truth["rms_by_rank_cm"], "overlap": truth["overlap"]} if truth else None,
             "seed_spread_cm": max(b["seed_range_cm"][1] - b["seed_range_cm"][0] for b in cert["bands"])}
 
 
 def payload(runs: tuple[Path, ...]) -> dict:
+    """The page's data. Runs of different network versions and kinds share a page: each card names its own (`network_of`)."""
     mols = [molecule(f) for f in runs]
-    networks = {f"ΔH network v{json.loads((f / 'pipeline.json').read_text(encoding='utf-8'))['admission']['models'][0]['version']}"
-                for f in runs}
-    if len(networks) != 1:
-        raise ValueError(f"the runs carry different network versions: {sorted(networks)}")
-    return {"molecules": sorted(mols, key=lambda m: (m["n_c"], m["name"])), "network": networks.pop(),
+    return {"molecules": sorted(mols, key=lambda m: (m["n_c"], m["name"])), "networks": sorted({m["network"]["label"] for m in mols}),
             "licence_line_cm": 3, "station_titles": [dict(s) for s in STATIONS], "live": False}
 
 
@@ -292,7 +326,7 @@ def main(argv: list[str] | None = None) -> int:
     tmp.replace(a.out)
     index = a.out.with_name(a.out.stem + "_index.json")       # the Atlas reads it (website/export/pipeline_show.py)
     tmp = index.with_suffix(".tmp")
-    tmp.write_text(json.dumps({"network": data["network"], "molecules": atlas_index(data)}, indent=1), encoding="utf-8")
+    tmp.write_text(json.dumps({"networks": data["networks"], "molecules": atlas_index(data)}, indent=1), encoding="utf-8")
     tmp.replace(index)
     print(f"wrote {a.out} ({len(html_text) / 1024:.0f} KB, {len(a.runs)} runs) and {index.name}")
     if a.check_links:

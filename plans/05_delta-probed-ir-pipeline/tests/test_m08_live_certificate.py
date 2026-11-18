@@ -221,3 +221,56 @@ def test_a_correction_of_other_models_is_refused(result):
     P.save_correction(result, ZERO, [ZERO], (Path("other_model.pt"),))
     with pytest.raises(RuntimeError, match="names other models"):
         LC.load_result(result)
+
+
+def test_hold_out_a_s_clean_description_is_the_version_s_own(tmp_path):
+    """Demo review 4: the text said the two twins were trained on, which v1.4 (twins dropped) never did. The training record's
+    --holdout-twins decides; v1.3's record predates the setting and kept them."""
+    clean = A.clean_a_records(V13)
+    assert {A.holdout_twins_setting(p) for p in clean} == {"keep"} and A.clean_a_description(clean) == A.CLEAN_A
+    copies = [Path(shutil.copy(p, tmp_path / p.name)) for p in clean]
+    with pytest.raises(FileNotFoundError, match="no training record"):
+        A.clean_a_description(copies)
+    stem = A._stem_seed(A._model_of(copies[0]))[0]
+    (tmp_path / f"{stem}.json").write_text(json.dumps({"holdout_twins": "drop-any-charge"}), encoding="utf-8")
+    assert A.clean_a_description(copies) == A.CLEAN_A_TWINS_DROPPED
+    assert "clean too" in A.CLEAN_A_TWINS_DROPPED and "comparability with v1.3" in A.CLEAN_A_TWINS_DROPPED
+    assert "TASKS" not in A.CLEAN_A + A.CLEAN_A_TWINS_DROPPED + A.CC_NOTE and "November 2026" not in A.CC_NOTE
+    assert "measurement networks" in A.HOLDOUTS["b"]
+
+
+def test_the_catalogue_line_names_the_export_s_source_and_the_analytic_row_beside_it():
+    """Demo review 8: benzene's export lists the corpus's psi4 Hessian, 22.8 cm⁻¹ from the analytic route this run took; the line said
+    'its export's B3LYP positions' without saying which, and nothing set the analytic row beside them."""
+    mol = {"deck": {"engine": "psi4 1.11 (conda env qc, Windows)"}, "shape": {"hessian_source": "corpus/molecules/A_1/hessian_b3lyp.npz"}}
+    source = LC.export_b3lyp_source(mol)
+    assert source == "psi4 1.11 (conda env qc, Windows), corpus/molecules/A_1/hessian_b3lyp.npz" and LC.export_b3lyp_source({}) == "the export does not say"
+    listed = {"id": "A_1", "name": "benzene", "rung": 5, "source": "website export", "export_b3lyp_source": source, "b3lyp_max_abs_diff_cm": 22.8,
+              "analytic_b3lyp_max_abs_diff_cm": 0.0, "analytic_b3lyp_source": "corpus/molecules/A_1/hessian_b3lyp_analytic.npz"}
+    line = LC._catalogue_line(listed)
+    assert f"the export's B3LYP positions ({source}) lie within 22.8 cm⁻¹ of this run's" in line
+    assert "the corpus's analytic B3LYP Hessian (corpus/molecules/A_1/hessian_b3lyp_analytic.npz), the route step 3 computes, within 0.0 cm⁻¹" in line
+    older = {k: v for k, v in listed.items() if not k.startswith(("analytic", "export"))}
+    assert "source not recorded in this certificate" in LC._catalogue_line(older) and "analytic" not in LC._catalogue_line(older)
+    assert LC._catalogue_line(None) == "- catalogue: not listed"
+    assert LC._max_abs_diff([1.0, 3.0], [2.9, 1.2]) == 0.2 and LC._max_abs_diff([1.0], [1.0, 2.0]) is None
+
+
+@pytest.mark.parametrize("seconds, text", [(1.4, "1.4 s"), (754.0, "754 s = 13 min"), (4694.7, "4695 s = 1.30 h")])
+def test_the_run_s_time_reads_with_sensible_precision(seconds, text):
+    assert LC._duration(seconds) == text
+
+
+def test_a_host_missing_from_the_price_table_is_not_priced_rather_than_refused():
+    unpriced = {"steps_s": {"reuse": 0.5}} | LC.prices.price_of_run(0.5, "some-new-host")
+    assert LC._cost_line(unpriced) == "- some-new-host (unknown): 0.5 s, not priced (machine not in the price table); steps reuse 0.5 s"
+    priced = {"steps_s": {"low_level": 1261.5}} | LC.prices.price_of_run(1261.5, "Asus18")
+    assert LC._cost_line(priced).startswith("- Asus18 (laptop): 1262 s = 21 min, € 0.00 ex VAT")
+
+
+def test_the_cation_clause_says_the_cation_layer_was_left_out():
+    from m08 import seen as S
+
+    text = S.TEXT["cation_trained"]
+    assert "training without the cation layer (about 50 cations, benzene's among them)" in text and "from 5.4 to 1.5" in text
+    assert "training on benzene's cation raised" not in text

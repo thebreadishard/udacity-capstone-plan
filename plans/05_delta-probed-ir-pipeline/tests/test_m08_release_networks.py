@@ -250,7 +250,8 @@ def test_a_certificate_of_release_networks_takes_its_error_bars_from_the_measure
     assert "each of the 3 networks is fitted on a random 85 % of the molecules" in c["statement"] and c["network"]["inner_validation"] == 0.15
     md = LC.to_markdown(c)
     assert "- the ΔH network: in the release networks' training data: the error bars are not an out-of-sample error for this molecule" in md
-    assert (f"- the models above are release networks, trained on 1 molecules: {NK.fitting_sentence(len(c['network']['models']), 0.15)}; "
+    assert (f"- the models above are release networks, trained on the 1 labelled entries of their training pool: "
+            f"{NK.fitting_sentence(len(c['network']['models']), 0.15)}; "
             "the error bars are those of the measurement networks: " + V13[0]) in md
     whole = LC._measurement_lines(c["network"] | {"inner_validation": 0.0})[0]          # no inner validation: nothing was stopped on
     assert "fitted on all of the molecules" in whole and "stopped" not in whole

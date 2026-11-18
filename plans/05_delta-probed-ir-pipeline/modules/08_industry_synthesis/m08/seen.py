@@ -33,9 +33,11 @@ TEXT = {
     "release_trained": "in the release networks' training data: the error bars are not an out-of-sample error for this molecule; "
                        "expect it to be smaller",
     # the clause for a neutral molecule whose radical cation the networks trained on (TASKS 253, 257, 264): seed 0 of v1.4's recipe,
-    # benzene's corrected-frequency rms 1.47 cm-1 without the P3c layer, 5.37 with it (probes/results_m1/v14_data_read_2026-11-17/probe_nop3c.txt)
-    "cation_trained": "its radical cation ({ids}) is in the networks' training data; in a test, training on benzene's cation raised neutral "
-                      "benzene's error from 1.5 to 5.4 cm⁻¹ for one network, so this molecule's error may be larger than the measured one",
+    # benzene's corrected-frequency rms 5.37 cm-1 with the whole P3c layer (about 50 cations, benzene's among them) and 1.47 without it
+    # (probes/results_m1/v14_data_read_2026-11-17/probe_nop3c.txt, cation_twins.txt): the layer was removed, not benzene's cation alone
+    "cation_trained": "its radical cation ({ids}) is in the networks' training data; in a test on one network, training without the cation "
+                      "layer (about 50 cations, benzene's among them) lowered neutral benzene's error from 5.4 to 1.5 cm⁻¹, so this "
+                      "molecule's error may be larger than the measured one",
 }
 
 

@@ -16,7 +16,7 @@ from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
 from . import show as S
-from .progress import FILE, STEPS
+from .progress import FAILED, FILE, STEPS
 
 HOST = "127.0.0.1"                     # this machine only: the server reads result folders and must not be reachable from the network
 FOLDER_NAME = re.compile(r"^[A-Za-z0-9_-]{1,64}$")
@@ -37,6 +37,8 @@ def station_time(step: str, entry: dict) -> str:
     """What a station says of its step: running, its seconds on this machine, or the corpus's seconds for a reused step."""
     if entry["state"] == "active":
         return "running…"
+    if entry["state"] == FAILED:
+        return "stopped here"
     if entry["state"] == "reused":
         return f"from the corpus · {S.duration(entry['seconds_then'])}"
     if entry["state"] == "done":
@@ -52,6 +54,7 @@ def progress_view(folder: Path) -> dict:
     mol = rec["molecule"]
     return {"folder": folder.name, "name": rec["name"], "pipeline_version": rec["pipeline_version"], "finished": rec["finished"],
             "delivery": rec.get("delivery"),          # None for a run of a pipeline before 0.11: finished means final there
+            "failed": rec.get(FAILED),                # the reason a run stopped without a result; None while it runs or once it delivered
             "route": route, "molecule": {**mol, "depiction": depiction(mol["smiles"]) if mol.get("smiles") else ""},
             "stations": [{"state": steps[s]["state"], "time": station_time(s, steps[s])} for s in STEPS]}
 

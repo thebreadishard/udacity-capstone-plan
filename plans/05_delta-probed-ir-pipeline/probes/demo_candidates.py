@@ -9,8 +9,10 @@ candidate with its verdict; the short list is the admitted, unseen ones within h
 from __future__ import annotations
 
 import argparse
+import functools
 import sys
 import tempfile
+from collections.abc import Callable
 from pathlib import Path
 
 PLAN = Path(__file__).resolve().parents[1]
@@ -35,7 +37,17 @@ CANDIDATES = {   # name: SMILES — small aromatics a spectroscopist recognises,
 }
 
 
-def verdict(name: str, smiles: str, models: tuple[Path, ...], seen: S.Seen, catalog: Catalog, threads: int) -> dict:
+def timing(smiles: str, threads: int, pyscf: str) -> dict:
+    """The candidate's laptop time on step 3's pyscf version; where that version has no fit yet, the fitted other version's time,
+    labelled as such (`RT.estimate_or_other`); none where no version has one."""
+    e = RT.estimate_or_other(smiles, threads, pyscf)
+    if e is None:
+        return {"functions": None, "minutes": None, "within_half_hour": False, "time_on": f"no pyscf {pyscf} fit yet"}
+    on = f"pyscf {e['pyscf']}'s time, not {pyscf}'s (no {pyscf} fit yet)" if e["other_version"] else f"pyscf {pyscf}"
+    return {"functions": e["basis_functions"], "minutes": round(e["seconds"] / 60), "within_half_hour": e["within_half_hour"], "time_on": on}
+
+
+def verdict(name: str, smiles: str, models: tuple[Path, ...], seen: S.Seen, catalog: Catalog, estimate: Callable[[str], dict]) -> dict:
     """One candidate through the checks; a refusal by admission is a verdict, not an error."""
     with tempfile.TemporaryDirectory() as tmp:
         cfg = P.PipelineConfig(name="candidate", out_root=Path(tmp), smiles=smiles, models=models, psi4_python=Path(sys.executable))
@@ -45,10 +57,10 @@ def verdict(name: str, smiles: str, models: tuple[Path, ...], seen: S.Seen, cata
             return {"name": name, "smiles": smiles, "admitted": False, "reason": "; ".join(r.reasons)}
     row = catalog.find(adm.smiles)
     st = S.status(adm.smiles, seen, row["id"] if row else None)
-    est = RT.estimate(adm.smiles, threads)
-    return {"name": name, "smiles": adm.smiles, "admitted": True, "atoms": adm.n_atoms, "functions": est["basis_functions"],
-            "minutes": round(est["seconds"] / 60), "role": st["role"], "seen": st["text"],
-            "short_list": st["role"] in ("unseen", "catalogue") and est["within_half_hour"]}
+    t = estimate(adm.smiles)
+    return {"name": name, "smiles": adm.smiles, "admitted": True, "atoms": adm.n_atoms, "functions": t["functions"],
+            "minutes": t["minutes"], "time_on": t["time_on"], "role": st["role"], "seen": st["text"],
+            "short_list": st["role"] in ("unseen", "catalogue") and t["within_half_hour"]}
 
 
 def markdown(rows: list[dict], threads: int) -> str:
@@ -56,24 +68,28 @@ def markdown(rows: list[dict], threads: int) -> str:
     lines = ["# Demo candidates: unseen by the network, within half an hour (TASKS 152)", "",
              f"Laptop estimates at {threads} threads (`m08.runtime`); seen-ness by canonical SMILES (`m08.seen`). "
              f"Short list: {len(short)} of {len(rows)}.", "",
-             "| name | SMILES | atoms | basis functions | est. minutes | the network | short list |", "|---|---|---|---|---|---|---|"]
-    for r in sorted(rows, key=lambda r: (not r.get("short_list"), r.get("minutes", 1e9))):
+             "| name | SMILES | atoms | basis functions | est. minutes | estimated on | the network | short list |",
+             "|---|---|---|---|---|---|---|---|"]
+    for r in sorted(rows, key=lambda r: (not r.get("short_list"), r.get("minutes") or 1e9)):
         if r["admitted"]:
-            lines.append(f"| {r['name']} | `{r['smiles']}` | {r['atoms']} | {r['functions']} | {r['minutes']} | {r['seen']} | "
-                         f"{'yes' if r['short_list'] else 'no'} |")
+            minutes = "—" if r["minutes"] is None else r["minutes"]
+            lines.append(f"| {r['name']} | `{r['smiles']}` | {r['atoms']} | {r['functions'] or '—'} | {minutes} | {r['time_on']} | "
+                         f"{r['seen']} | {'yes' if r['short_list'] else 'no'} |")
         else:
-            lines.append(f"| {r['name']} | `{r['smiles']}` | — | — | — | refused: {r['reason']} | no |")
+            lines.append(f"| {r['name']} | `{r['smiles']}` | — | — | — | — | refused: {r['reason']} | no |")
     return "\n".join(lines) + "\n"
 
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--threads", type=int, default=6)
+    ap.add_argument("--pyscf", default=P.WSL_PYSCF_VERSION, help="step 3's pyscf version: the estimate is fitted on that version's runs")
     ap.add_argument("--out", type=Path, default=OUT)
     a = ap.parse_args(argv)
     models = P.carried_models(P.NK.MEASUREMENT)
     seen, catalog = S.load(models), Catalog()
-    rows = [verdict(n, s, models, seen, catalog, a.threads) for n, s in CANDIDATES.items()]
+    estimate = functools.partial(timing, threads=a.threads, pyscf=a.pyscf)
+    rows = [verdict(n, s, models, seen, catalog, estimate) for n, s in CANDIDATES.items()]
     text = markdown(rows, a.threads)
     tmp = a.out.with_suffix(".tmp")
     tmp.write_text(text, encoding="utf-8")

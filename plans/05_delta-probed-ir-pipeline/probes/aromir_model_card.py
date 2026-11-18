@@ -63,6 +63,9 @@ def reader_wording() -> dict[str, tuple[str, int | None]]:
         A.CLEAN_A: ("eight molecules set aside on 19 September 2026, before any network was trained, and never trained on in any form "
                     "(two more molecules of that set, 2-naphthoic acid and benzonitrile, are left out of this read because the network "
                     "had trained on them under another identifier)", 8),
+        A.CLEAN_A_TWINS_DROPPED: ("eight molecules set aside on 19 September 2026, before any network was trained, and never trained on "
+                                  "in any form (two more molecules of that set, 2-naphthoic acid and benzonitrile, are clean for this "
+                                  "network too; they are left out of this read so that it compares with the earlier versions)", 8),
         A.HOLDOUTS["a"]: ("the molecules set aside on 19 September 2026, before any network was trained; two of them, 2-naphthoic "
                           "acid and benzonitrile, were trained on under another identifier, so this read is not clean", None),
         A.HOLDOUTS["b"]: ("every substituted molecule of two ring scaffolds, set aside on 8 October 2026; the network trained on no "

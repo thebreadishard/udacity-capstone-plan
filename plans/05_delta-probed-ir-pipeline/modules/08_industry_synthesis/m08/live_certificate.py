@@ -127,17 +127,82 @@ def bands(r: Result, accuracy: dict, tolerance: dict[str, dict], licensed: list[
     return [row for _, row in sorted(zip(rank, rows, strict=True), key=lambda t: t[0])]      # the record's stick order
 
 
+def _max_abs_diff(a: list[float], b: list[float]) -> float | None:
+    """The largest difference between two position lists paired by rank; None when their lengths differ."""
+    if len(a) != len(b):
+        return None
+    return round(max(abs(x - y) for x, y in zip(sorted(a), sorted(b), strict=True)), 1)
+
+
+def export_b3lyp_source(mol: dict) -> str:
+    """Where the export's B3LYP positions come from, as its molecule record says: the corpus deck's engine and Hessian file (for
+    benzene the psi4 Hessian, whose positions differ from the analytic route's by up to 22.9 cm⁻¹: its `second_route`)."""
+    said = [x for x in ((mol.get("deck") or {}).get("engine"), (mol.get("shape") or {}).get("hessian_source")) if x]
+    return ", ".join(said) or "the export does not say"
+
+
+def corpus_analytic_positions(corpus_id: str) -> tuple[list[float], str] | None:
+    """The positions above the spectrum's line of the corpus folder's analytic B3LYP Hessian — the label route, which step 3 computes
+    — and its file; None where the folder has none."""
+    d = P.CORPUS / corpus_id
+    if not (d / P.RI.LOW_HESSIAN).is_file():
+        return None
+    masses = np.asarray(json.loads((d / "geometry.json").read_text(encoding="utf-8"))["masses_amu"], float)
+    with np.load(d / P.RI.LOW_HESSIAN) as z:
+        H = z["H_projected"]
+    w = RINT.mode_intensities(H, masses, np.zeros((3, H.shape[0])))[0]
+    return [float(x) for x in w], f"corpus/molecules/{corpus_id}/{P.RI.LOW_HESSIAN}"
+
+
 def listing(smiles: str, b3lyp_cm: list[float], catalog: Catalog) -> dict | None:
-    """The catalogue's row of the same molecule (canonical SMILES), with how far the B3LYP positions its export lists lie from this run's."""
+    """The catalogue's row of the same molecule (canonical SMILES), with how far the B3LYP positions its export lists lie from this run's
+    and what they were computed with, and — where the corpus folder has one — how far its analytic B3LYP Hessian's lie."""
     row = catalog.find(smiles)
     if row is None:
         return None
     mol = catalog.molecule(row["id"])
     out = dict(id=row["id"], name=row["name"], rung=int(row["rung"]), source=f"website export catalog.json, molecules/{row['id']}.json")
-    listed = sorted(float(v) for v in mol["frequencies_cm"]["b3lyp"]["vibrational"]) if mol else []
-    if len(listed) == len(b3lyp_cm):
-        out["b3lyp_max_abs_diff_cm"] = round(max(abs(a - b) for a, b in zip(listed, sorted(b3lyp_cm), strict=True)), 1)
+    if mol:
+        out["export_b3lyp_source"] = export_b3lyp_source(mol)
+    diff = _max_abs_diff([float(v) for v in mol["frequencies_cm"]["b3lyp"]["vibrational"]] if mol else [], b3lyp_cm)
+    if diff is not None:
+        out["b3lyp_max_abs_diff_cm"] = diff
+    if (analytic := corpus_analytic_positions(row["id"])) is not None:
+        positions, source = analytic
+        if (diff := _max_abs_diff(positions, b3lyp_cm)) is not None:
+            out |= {"analytic_b3lyp_max_abs_diff_cm": diff, "analytic_b3lyp_source": source}
     return out
+
+
+def _catalogue_line(listed: dict | None) -> str:
+    """The certificate's catalogue line: the row, the export's B3LYP positions against this run's with their source named, and the
+    corpus's analytic row against them where it exists (a certificate written before the analytic row says what it held)."""
+    if not listed:
+        return "- catalogue: not listed"
+    parts = [f"listed as {listed['id']} ({listed['name']}, rung {listed['rung']}; {listed['source']})"]
+    if "b3lyp_max_abs_diff_cm" in listed:
+        parts.append(f"the export's B3LYP positions ({listed.get('export_b3lyp_source', 'source not recorded in this certificate')}) "
+                     f"lie within {listed['b3lyp_max_abs_diff_cm']} cm⁻¹ of this run's")
+    if "analytic_b3lyp_max_abs_diff_cm" in listed:
+        parts.append(f"the corpus's analytic B3LYP Hessian ({listed['analytic_b3lyp_source']}), the route step 3 computes, within "
+                     f"{listed['analytic_b3lyp_max_abs_diff_cm']} cm⁻¹")
+    return "- catalogue: " + "; ".join(parts)
+
+
+def _duration(seconds: float) -> str:
+    """A run's seconds, with minutes or hours beside them where those read better."""
+    if seconds < 60:
+        return f"{seconds:.1f} s"
+    if seconds < 3600:
+        return f"{seconds:.0f} s = {seconds / 60:.0f} min"
+    return f"{seconds:.0f} s = {seconds / 3600:.2f} h"
+
+
+def _cost_line(k: dict) -> str:
+    """The run's machine, time and price; a host missing from the price table is said to be unpriced, not refused after the run."""
+    price = f"€ {k['eur_ex_vat']:.2f} ex VAT ({k['source']})" if k["eur_ex_vat"] is not None else f"not priced ({k['source']})"
+    return (f"- {k['machine']} ({k['machine_class']}): {_duration(k['seconds'])}, {price}; steps "
+            + ", ".join(f"{s} {v} s" for s, v in k["steps_s"].items()))
 
 
 def licence_block(lic: dict) -> dict:
@@ -179,7 +244,7 @@ def release_sentence(version: str, n_seeds: int, made_by: MadeBy) -> str:
 
 
 def statement(name: str, version: str, n_seeds: int, lic: dict, seen_text: str, made_by: MadeBy = NO_RELEASE) -> str:
-    """The certificate's opening sentence; it names the licensed families, so the licence's caveat follows it. It says what the
+    """The certificate's opening sentence; it names the licensed families, whose caveat the band table carries once. It says what the
     licence is a statement about — the harmonic position ω; which position each band is printed at is the paragraph after it
     (`positions.note`). When release networks made the spectrum, design note §3's sentence stands in place of 'with the error
     measured on molecules the network never saw', and the error is named as the measurement networks'."""
@@ -194,8 +259,7 @@ def statement(name: str, version: str, n_seeds: int, lic: dict, seen_text: str, 
         f"harmonic positions ω are licensed for {', '.join(lic['licensed_families']) or 'no family'} (decision 65), each band marked; at "
         f"the coupled-cluster level {A.CC_NOTE}. The scaled B3LYP spectrum is shown as the baseline only. This molecule and the "
         f"ΔH network: {seen_text}.",
-        HELD_BACK_SENTENCE.format(version=version, reason=made_by.held_back) if made_by.held_back else None,
-        caveat_sentence(lic)]))
+        HELD_BACK_SENTENCE.format(version=version, reason=made_by.held_back) if made_by.held_back else None]))
 
 
 def error_bar_models(adm: dict) -> list[dict]:
@@ -363,7 +427,7 @@ def read_certificate(folder: Path) -> dict:
 
 
 def to_markdown(c: dict) -> str:
-    m, n, k, p = c["molecule"], c["network"], c["cost"], c["provenance"]
+    m, n, p = c["molecule"], c["network"], c["provenance"]
     listed = m["listed"]
     model_seen = (c["positions"].get("cautions") or {}).get("seen")
     mark = [DELIVERY_MARK.format(c["delivery"]), ""] if c.get("delivery") else []
@@ -371,17 +435,16 @@ def to_markdown(c: dict) -> str:
          *_position_paragraphs(c), "## Molecule", "",
          f"- {m['smiles']}, {m['formula']}, {m['n_atoms']} atoms ({', '.join(m['elements'])}); the network's training set spans "
          f"{m['training_atoms'][0]}–{m['training_atoms'][1]} atoms: {'inside' if m['inside_training_sizes'] else 'OUTSIDE'}",
-         "- catalogue: " + (f"listed as {listed['id']} ({listed['name']}, rung {listed['rung']}); its export's B3LYP positions lie within "
-                            f"{listed.get('b3lyp_max_abs_diff_cm', '—')} cm⁻¹ of this run's ({listed['source']})" if listed else "not listed"),
+         _catalogue_line(listed),
          f"- the ΔH network: {m['seen']['text']}", *([f"- {model_seen}"] if model_seen else []), *_truth_lines(m["truth"]),
          *_delivery_lines(c),
          "", f"## Spectrum, band by band ({n['name']} v{n['version']}, {len(n['models'])} seeds)", "", *_band_lines(c), "",
          f"*Laboratory region and u_band:* {c['tolerance']['rule']}, read at the printed position.", "",
          "## How well the network is known (its product-error record and its evaluation records)", "", *_accuracy_lines(c["accuracy"]), "",
          f"*Licence:* {c['licence']['statement']} ({c['licence']['rule_source']}).", "", "## Cost", "",
-         f"- {k['machine']} ({k['machine_class']}): {k['seconds']} s = {k['hours']} h, € {k['eur_ex_vat']:.2f} ex VAT ({k['source']}); steps "
-         + ", ".join(f"{s} {v} s" for s, v in k["steps_s"].items()), "", "## Provenance", "",
+         _cost_line(c["cost"]), "", "## Provenance", "",
          f"- result {p['result']}; run at commit {p['run_commit'][:8]} (uncommitted changes: {p['run_dirty']}); certificate at {p['certificate_commit']}",
+         *([f"- steps 2–3 taken from the corpus folder {p['reused_from']}"] if p.get("reused_from") else []),
          f"- deck {p['deck_sha16']}; low level {json.dumps(p['low_level_software'], ensure_ascii=False)}; host {p['host']}",
          "- models: " + "; ".join(f"{Path(x['path']).name} ({x['status']}, sha16 {x['sha16']})" for x in n["models"]),
          *_measurement_lines(n), ""]
@@ -392,7 +455,7 @@ def _measurement_lines(network: dict) -> list[str]:
     """Under release networks: the measurement networks whose records give the error bars; nothing otherwise."""
     if "measurement_models" not in network:
         return []
-    return [f"- the models above are release networks, trained on {network['trained_on_molecules']} molecules: "
+    return [f"- the models above are release networks, trained on the {network['trained_on_molecules']} labelled entries of their training pool: "
             f"{P.NK.fitting_sentence(len(network['models']), network['inner_validation'])}; the error bars are those of the "
             "measurement networks: " + "; ".join(f"{Path(x['path']).name} (sha16 {x['sha16']})" for x in network["measurement_models"])]
 
