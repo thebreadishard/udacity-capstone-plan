@@ -146,12 +146,14 @@ def licence_block(lic: dict) -> dict:
     return {k: lic[k] for k in ("statement", "rule_source", "licensed_families", "quantity", "quantity_name", "caveats")}
 
 
-# design note of 17 Nov 2026, §3, word for word: what made the spectrum, how each network used the molecules (`NK.fitting_sentence`,
-# its numbers from the seed count and the inner-validation share), whose error is stated
-RELEASE_MADE = "The spectrum is made by the release networks of version {version}, trained on all {n} molecules with labels"
+# design note of 17 Nov 2026, §3, as amended on 18 Nov (TASKS 268: N counts the training pool's entries, and labelled molecules
+# outside the pool exist), word for word: what made the spectrum, how each network used the molecules (`NK.fitting_sentence`, its
+# numbers from the seed count and the inner-validation share), whose error is stated
+RELEASE_MADE = ("The spectrum is made by the release networks of version {version}, trained on the {n} labelled entries of their "
+                "training pool, the hold-out molecules included")
 RELEASE_MEASURED = (". Its error bars were measured on the measurement networks of the same version — the same recipe trained without the "
-                    "hold-out molecules — on molecules those networks never saw; the release networks themselves have seen every molecule "
-                    "we hold labels for, so they have no held-out error of their own.")
+                    "hold-out molecules — on molecules those networks never saw; the release networks themselves have seen the hold-out "
+                    "molecules, so they have no held-out error of their own.")
 HELD_BACK_SENTENCE = ("Version {version} has release networks, and they did not make this spectrum: {reason}. It is made by the "
                       "measurement networks, whose error was measured on molecules they never saw.")
 
