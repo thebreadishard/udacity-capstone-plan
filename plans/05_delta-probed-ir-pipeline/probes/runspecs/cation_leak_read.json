@@ -1,0 +1,35 @@
+{
+ "name": "cation_leak_read",
+ "purpose": "TASKS 257: does a trained cation's correction leak onto its neutral skeleton? Per family first-order error, data arm v14s3full (with P3c) against the probe v14s3nop3c (without), on the 43 pool parents whose cation trained, 987 control pool molecules, and hold-out (a)'s benzene and 2-naphthoic acid (also against the clean arm). Read-only.",
+ "host": "laptop",
+ "workdir": "probes/results_m1/cation_leak_2026-11-18",
+ "command": "PYTHONUTF8=1 python cation_leak.py ../../../modules/05_support_predictor --threads 2",
+ "sources": [
+  {
+   "local": "probes/results_m1/cation_leak_2026-11-18/cation_leak.py"
+  },
+  {
+   "local": "probes/product_error_read.py"
+  },
+  {
+   "local": "modules/08_industry_synthesis/m08/pipeline.py"
+  }
+ ],
+ "progress": {
+  "regex": "^cation-leak [0-9]+/[0-9]+ read",
+  "max_gap_minutes": 15
+ },
+ "marker_regex": "^(WITH pool|parents) ",
+ "end_regex": "^cation leak read: ",
+ "dry_run_args": "--count",
+ "threads": 2,
+ "resumable": false,
+ "estimate": {
+  "hours": 1.0,
+  "basis": "product_error_read took 102 s for 47 molecules x 3 checkpoints on 16 Nov 2026 (about 0.7 s per molecule and checkpoint); this read is 1,030 molecules x 4 checkpoints plus 2 x 7"
+ },
+ "memory": {
+  "peak_gb": 2.0,
+  "basis": "product_error_read_v14clean, the same molecule_read with three checkpoints per molecule, one molecule at a time (declared 3.0 GB on a measured 1.94 GB max RSS of a larger evaluation; a 0.5 GB read of this kind passed the door on 18 Nov); this read holds at most three checkpoints at a time and prints its own peak"
+ }
+}

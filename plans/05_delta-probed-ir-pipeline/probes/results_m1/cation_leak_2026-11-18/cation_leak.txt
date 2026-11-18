@@ -1,0 +1,138 @@
+WITH pool 1080 (50 P3c cations), WITHOUT pool 1030
+neutral molecules in both pools 1030, 0 without both analytic labels (left out)
+cations whose neutral parent is in both pools with labels: 43; cations with no parent in the pool: 7 ['pyridine+CH3+F+', 'naphthalene+COOH+', 'fluoranthene+CONH2+', 'anthracene+NO2+', 'fluoranthene+Cl+', 'fluoranthene+CN+', 'benzene+']
+hold-out A_8448043181 benzene: cation twin P3c_8448043181 in WITH pool: True, in CLEAN pool: False; molecule in a pool: False
+hold-out A_07cadc7923 2-naphthoic acid: cation twin P3c_07cadc7923 in WITH pool: True, in CLEAN pool: False; molecule in a pool: False
+parents 43 (layers ['A', 'A2', 'B']); control 987, of them in the parents' layers 935
+
+=== (1) PARENTS whose cation WITH trained (in-sample): d = rms(WITH seed s) - rms(WITHOUT seed 0), cm-1, 43 molecules
+ring-ip     seed 0  n   43  mean  +0.299  sd  0.450  median  +0.230  d>0   38  min  -0.136  max  +2.180
+ring-ip     seed 1  n   43  mean  +0.196  sd  0.226  median  +0.148  d>0   38  min  -0.130  max  +0.947
+ring-ip     seed 2  n   43  mean  +0.355  sd  0.580  median  +0.180  d>0   39  min  -0.079  max  +3.424
+CH-stretch  seed 0  n   43  mean  +0.153  sd  0.487  median  +0.047  d>0   27  min  -0.761  max  +1.958
+CH-stretch  seed 1  n   43  mean  +0.207  sd  0.478  median  +0.226  d>0   28  min  -0.677  max  +2.178
+CH-stretch  seed 2  n   43  mean  +0.159  sd  0.438  median  +0.105  d>0   27  min  -0.495  max  +1.443
+CH-oop      seed 0  n   22  mean  +0.276  sd  1.010  median  +0.136  d>0   14  min  -0.830  max  +4.278
+CH-oop      seed 1  n   22  mean  -0.053  sd  0.454  median  +0.096  d>0   13  min  -1.104  max  +0.730
+CH-oop      seed 2  n   22  mean  +0.089  sd  0.573  median  +0.123  d>0   13  min  -0.959  max  +1.581
+other       seed 0  n   43  mean  +0.230  sd  1.066  median  +0.185  d>0   28  min  -3.202  max  +3.410
+other       seed 1  n   43  mean  +0.279  sd  0.874  median  +0.238  d>0   28  min  -2.557  max  +3.738
+other       seed 2  n   43  mean  +0.262  sd  0.903  median  +0.324  d>0   28  min  -2.752  max  +3.203
+  seed noise inside WITH: rms(WITH seed s) - rms(WITH seed 0)
+ring-ip     seed 1  n   43  mean  -0.103  sd  0.526  median  -0.018  d>0   18  min  -2.134  max  +0.823
+ring-ip     seed 2  n   43  mean  +0.056  sd  0.801  median  +0.031  d>0   24  min  -2.191  max  +3.497
+CH-stretch  seed 1  n   43  mean  +0.054  sd  0.587  median  +0.016  d>0   24  min  -1.785  max  +2.065
+CH-stretch  seed 2  n   43  mean  +0.006  sd  0.363  median  +0.024  d>0   24  min  -0.632  max  +0.733
+CH-oop      seed 1  n   22  mean  -0.329  sd  0.867  median  -0.207  d>0    7  min  -3.548  max  +0.735
+CH-oop      seed 2  n   22  mean  -0.187  sd  1.053  median  -0.036  d>0   10  min  -3.434  max  +1.640
+other       seed 1  n   43  mean  +0.049  sd  1.240  median  +0.036  d>0   24  min  -3.824  max  +3.552
+other       seed 2  n   43  mean  +0.032  sd  1.156  median  -0.008  d>0   21  min  -3.008  max  +4.139
+
+=== (3) CONTROL, neutral pool molecules whose cation was not trained (in-sample): d = rms(WITH seed s) - rms(WITHOUT seed 0), cm-1, 987 molecules
+ring-ip     seed 0  n  987  mean  +0.104  sd  0.319  median  +0.096  d>0  687  min  -3.031  max  +1.659
+ring-ip     seed 1  n  987  mean  +0.099  sd  0.319  median  +0.087  d>0  702  min  -2.000  max  +3.234
+ring-ip     seed 2  n  987  mean  +0.105  sd  0.309  median  +0.102  d>0  696  min  -2.881  max  +1.973
+CH-stretch  seed 0  n  987  mean  +0.097  sd  0.478  median  +0.100  d>0  602  min  -4.392  max  +2.275
+CH-stretch  seed 1  n  987  mean  +0.117  sd  0.521  median  +0.104  d>0  587  min  -4.697  max  +3.271
+CH-stretch  seed 2  n  987  mean  +0.113  sd  0.522  median  +0.084  d>0  582  min  -4.497  max  +3.785
+CH-oop      seed 0  n  441  mean  +0.103  sd  0.682  median  +0.148  d>0  262  min  -3.687  max  +2.839
+CH-oop      seed 1  n  441  mean  +0.137  sd  0.670  median  +0.172  d>0  279  min  -3.252  max  +2.652
+CH-oop      seed 2  n  441  mean  +0.168  sd  0.651  median  +0.131  d>0  273  min  -2.797  max  +4.791
+other       seed 0  n  987  mean  +0.104  sd  1.182  median  +0.119  d>0  588  min -17.159  max +12.514
+other       seed 1  n  987  mean  +0.169  sd  1.109  median  +0.161  d>0  613  min -18.350  max  +8.574
+other       seed 2  n  987  mean  +0.008  sd  1.088  median  +0.028  d>0  519  min -18.828  max  +5.082
+  seed noise inside WITH: rms(WITH seed s) - rms(WITH seed 0)
+ring-ip     seed 1  n  987  mean  -0.005  sd  0.311  median  -0.001  d>0  491  min  -1.905  max  +2.336
+ring-ip     seed 2  n  987  mean  +0.001  sd  0.343  median  -0.002  d>0  493  min  -2.881  max  +2.020
+CH-stretch  seed 1  n  987  mean  +0.020  sd  0.483  median  +0.011  d>0  506  min  -1.606  max  +2.750
+CH-stretch  seed 2  n  987  mean  +0.016  sd  0.500  median  -0.020  d>0  480  min  -2.181  max  +3.411
+CH-oop      seed 1  n  441  mean  +0.035  sd  0.650  median  +0.023  d>0  228  min  -3.040  max  +3.382
+CH-oop      seed 2  n  441  mean  +0.066  sd  0.759  median  +0.031  d>0  233  min  -3.350  max  +5.249
+other       seed 1  n  987  mean  +0.065  sd  1.009  median  +0.034  d>0  528  min -11.325  max  +6.996
+other       seed 2  n  987  mean  -0.096  sd  0.933  median  -0.072  d>0  432  min  -8.689  max  +5.155
+
+=== (3') CONTROL in the parents' layers: d = rms(WITH seed s) - rms(WITHOUT seed 0), cm-1, 935 molecules
+ring-ip     seed 0  n  935  mean  +0.099  sd  0.324  median  +0.092  d>0  640  min  -3.031  max  +1.659
+ring-ip     seed 1  n  935  mean  +0.095  sd  0.323  median  +0.083  d>0  659  min  -2.000  max  +3.234
+ring-ip     seed 2  n  935  mean  +0.102  sd  0.315  median  +0.097  d>0  653  min  -2.881  max  +1.973
+CH-stretch  seed 0  n  935  mean  +0.090  sd  0.480  median  +0.098  d>0  564  min  -4.392  max  +2.275
+CH-stretch  seed 1  n  935  mean  +0.118  sd  0.529  median  +0.111  d>0  559  min  -4.697  max  +3.271
+CH-stretch  seed 2  n  935  mean  +0.110  sd  0.527  median  +0.085  d>0  551  min  -4.497  max  +3.785
+CH-oop      seed 0  n  413  mean  +0.101  sd  0.696  median  +0.148  d>0  245  min  -3.687  max  +2.839
+CH-oop      seed 1  n  413  mean  +0.126  sd  0.682  median  +0.162  d>0  258  min  -3.252  max  +2.652
+CH-oop      seed 2  n  413  mean  +0.164  sd  0.658  median  +0.126  d>0  257  min  -2.797  max  +4.791
+other       seed 0  n  935  mean  +0.095  sd  1.206  median  +0.106  d>0  545  min -17.159  max +12.514
+other       seed 1  n  935  mean  +0.155  sd  1.126  median  +0.143  d>0  571  min -18.350  max  +8.574
+other       seed 2  n  935  mean  +0.008  sd  1.104  median  +0.017  d>0  487  min -18.828  max  +5.082
+  seed noise inside WITH: rms(WITH seed s) - rms(WITH seed 0)
+ring-ip     seed 1  n  935  mean  -0.004  sd  0.314  median  -0.003  d>0  464  min  -1.905  max  +2.336
+ring-ip     seed 2  n  935  mean  +0.003  sd  0.349  median  -0.002  d>0  467  min  -2.881  max  +2.020
+CH-stretch  seed 1  n  935  mean  +0.028  sd  0.487  median  +0.018  d>0  484  min  -1.606  max  +2.750
+CH-stretch  seed 2  n  935  mean  +0.020  sd  0.506  median  -0.007  d>0  462  min  -2.181  max  +3.411
+CH-oop      seed 1  n  413  mean  +0.024  sd  0.659  median  +0.014  d>0  211  min  -3.040  max  +3.382
+CH-oop      seed 2  n  413  mean  +0.063  sd  0.775  median  +0.023  d>0  215  min  -3.350  max  +5.249
+other       seed 1  n  935  mean  +0.060  sd  1.026  median  +0.028  d>0  500  min -11.325  max  +6.996
+other       seed 2  n  935  mean  -0.087  sd  0.943  median  -0.053  d>0  418  min  -8.689  max  +5.155
+
+=== (1) per parent, seed 0: rms WITH / WITHOUT per family, cm-1
+A2_09d0b3be91  phenanthrene+CONH2      ring-ip  0.92/ 0.67  CH-stretch  1.14/ 0.61  other  1.93/ 1.19
+A2_0a2c2f12b8  phenanthrene+Cl         ring-ip  0.93/ 0.72  CH-stretch  0.62/ 0.80  CH-oop  1.33/ 1.20  other  1.01/ 1.27
+A2_19eaf39036  phenanthrene+NO2        ring-ip  0.69/ 0.73  CH-stretch  0.86/ 0.82  CH-oop  1.53/ 1.34  other  2.98/ 1.76
+A2_238c9ced38  phenanthrene+CF3        ring-ip  0.79/ 0.64  CH-stretch  0.85/ 0.81  other  1.27/ 1.63
+A2_25fe240a5d  pyrene+OCH3             ring-ip  1.79/ 1.57  CH-stretch  0.77/ 0.58  other  1.15/ 1.17
+A2_25fed68b27  anthracene+F            ring-ip  1.39/ 1.18  CH-stretch  0.80/ 1.04  CH-oop  1.57/ 1.17  other  1.40/ 1.41
+A2_29caedd47d  anthracene+COOH         ring-ip  1.19/ 1.09  CH-stretch  0.71/ 0.70  CH-oop  3.03/ 1.79  other  2.81/ 2.11
+A2_2d6f59a2bf  pyrene+OH               ring-ip  2.39/ 2.07  CH-stretch  0.52/ 1.28  CH-oop  1.53/ 0.98  other  1.09/ 1.26
+A2_35c01ca552  pyrene+NO2              ring-ip  1.89/ 1.55  CH-stretch  0.70/ 0.87  other  1.02/ 1.57
+A_6e858b26e5   pyridine                ring-ip  2.83/ 0.65  CH-stretch  2.22/ 0.26  CH-oop  5.48/ 1.20  other  2.01/ 0.24
+A_a1e6ec1862   anthracene              ring-ip  1.77/ 1.29  CH-stretch  0.86/ 0.35  CH-oop  1.68/ 1.72  other  1.08/ 1.49
+A_cce0ad25a5   pyrene                  ring-ip  2.76/ 2.48  CH-stretch  0.81/ 0.39  CH-oop  0.89/ 0.75  other  1.12/ 0.95
+A_ff98e1160d   quinoline               ring-ip  0.52/ 0.65  CH-stretch  0.81/ 0.66  CH-oop  0.74/ 1.36  other  0.87/ 0.83
+B_001ea7d3a5   quinoline+OH            ring-ip  1.11/ 0.59  CH-stretch  0.71/ 0.94  CH-oop  1.72/ 1.23  other  1.86/ 0.83
+B_00e041576d   pyridine+SH             ring-ip  0.73/ 0.80  CH-stretch  1.26/ 0.73  CH-oop  0.78/ 1.61  other  1.88/ 1.55
+B_02d75f732a   pyridine+OH             ring-ip  0.43/ 0.38  CH-stretch  1.00/ 0.85  CH-oop  1.40/ 1.46  other  0.69/ 0.57
+B_03923c2081   benzene+CN+OCH3         ring-ip  0.65/ 0.60  CH-stretch  1.21/ 0.48  other  1.99/ 0.91
+B_03bf20e8fe   benzene+CH3+NO2         ring-ip  0.99/ 0.73  CH-stretch  1.11/ 1.23  other  3.48/ 6.26
+B_049751d07c   benzene+OCH3+NO2        ring-ip  0.95/ 0.77  CH-stretch  0.93/ 0.90  other  1.19/ 1.54
+B_09978bbd5d   benzene+CH3+Cl          ring-ip  0.83/ 0.47  CH-stretch  0.67/ 0.92  other  7.31/ 6.04
+B_0aed490e42   quinoline+CF3           ring-ip  0.76/ 0.59  CH-stretch  0.68/ 0.39  other  1.38/ 1.38
+B_0da4a5aea1   naphthalene+OH+CN       ring-ip  0.54/ 0.47  CH-stretch  0.42/ 0.60  CH-oop  0.60/ 1.12  other  1.67/ 2.09
+B_0ef4494cfc   benzene+COOH+COOH       ring-ip  2.72/ 0.58  CH-stretch  1.86/ 0.81  CH-oop  2.61/ 1.94  other  4.80/ 1.39
+B_0f27b44587   naphthalene+CN+vinyl    ring-ip  1.19/ 0.76  CH-stretch  1.58/ 0.73  CH-oop  1.40/ 0.89  other  1.46/ 1.39
+B_10bab624bc   benzene+OCH3+SH         ring-ip  0.70/ 0.43  CH-stretch  1.01/ 0.71  other  3.99/ 1.55
+B_11d1915b38   naphthalene+CONH2       ring-ip  0.59/ 0.59  CH-stretch  0.63/ 0.37  other  1.17/ 1.52
+B_134d596518   naphthalene+NO2+CF3     ring-ip  0.63/ 0.59  CH-stretch  1.36/ 1.17  other  2.61/ 3.34
+B_1428bc8164   benzene+COOH+NO2        ring-ip  0.72/ 0.49  CH-stretch  1.41/ 0.52  CH-oop  1.43/ 1.77  other  2.32/ 1.97
+B_1519881f69   quinoline+COOH          ring-ip  0.86/ 0.60  CH-stretch  1.22/ 1.01  CH-oop  1.58/ 1.47  other  1.44/ 0.74
+B_16116c90de   naphthalene+Cl          ring-ip  0.51/ 0.51  CH-stretch  0.42/ 0.66  CH-oop  0.68/ 1.17  other  0.87/ 0.69
+B_16769b963f   benzene+OH+CF3          ring-ip  0.64/ 0.52  CH-stretch  0.69/ 0.64  other  1.18/ 0.72
+B_168ec38a52   naphthalene+CN+ethynyl  ring-ip  0.55/ 0.50  CH-stretch  0.51/ 1.16  CH-oop  0.91/ 0.85  other  2.06/ 1.55
+B_170b47dadd   benzene+OCH3+CONH2      ring-ip  1.07/ 0.66  CH-stretch  1.16/ 1.23  other  1.82/ 0.76
+B_18c473d7dd   naphthalene+F+CN        ring-ip  0.67/ 0.43  CH-stretch  0.50/ 1.00  CH-oop  0.98/ 0.80  other  1.10/ 1.32
+B_1a41c96f37   benzene+F+CONH2         ring-ip  0.65/ 0.35  CH-stretch  0.73/ 0.74  other  1.17/ 0.93
+B_1c07e976be   benzene+NH2+CF3         ring-ip  0.61/ 0.49  CH-stretch  0.62/ 0.62  other  1.98/ 1.60
+B_1f8e4687bd   naphthalene+NH2+OCH3    ring-ip  1.00/ 0.58  CH-stretch  0.79/ 0.81  other  1.30/ 1.34
+B_20332edd59   naphthalene+NH2+COOH    ring-ip  0.80/ 0.52  CH-stretch  1.30/ 1.18  other  1.77/ 1.35
+B_476dc42b85   naphthalene+vinyl+SH    ring-ip  0.62/ 0.46  CH-stretch  0.93/ 0.29  other  1.37/ 1.25
+B_55cca3aaf2   naphthalene+OH+vinyl    ring-ip  1.08/ 0.53  CH-stretch  0.98/ 0.53  CH-oop  1.65/ 1.76  other  1.33/ 4.53
+B_5d15d13032   naphthalene+OCH3+vinyl  ring-ip  0.97/ 0.43  CH-stretch  0.84/ 0.64  other  1.88/ 1.62
+B_67a14c45e8   naphthalene+CHO+COOH    ring-ip  0.52/ 0.66  CH-stretch  1.07/ 1.03  other  2.25/ 2.02
+B_8b12a55d3a   benzene+F               ring-ip  0.72/ 0.43  CH-stretch  0.24/ 0.84  CH-oop  0.90/ 0.73  other  0.83/ 0.33
+
+=== (2) hold-out (a), out of sample: rms per family, cm-1
+benzene           with     seed 0  ring-ip  4.84  CH-stretch  1.93  CH-oop  8.70  other  5.17
+benzene           with     seed 1  ring-ip  0.88  CH-stretch  0.59  CH-oop  4.10  other  1.84
+benzene           with     seed 2  ring-ip  1.90  CH-stretch  1.61  CH-oop  2.94  other  1.10
+benzene           without  seed 0  ring-ip  0.79  CH-stretch  0.37  CH-oop  1.64  other  2.92
+benzene           clean    seed 0  ring-ip  1.72  CH-stretch  0.80  CH-oop  5.26  other  1.16
+benzene           clean    seed 1  ring-ip  1.25  CH-stretch  0.60  CH-oop  4.14  other  0.28
+benzene           clean    seed 2  ring-ip  0.96  CH-stretch  0.58  CH-oop  5.34  other  0.39
+2-naphthoic acid  with     seed 0  ring-ip  0.46  CH-stretch  0.28  CH-oop  1.17  other  0.89
+2-naphthoic acid  with     seed 1  ring-ip  0.47  CH-stretch  0.89  CH-oop  0.79  other  1.73
+2-naphthoic acid  with     seed 2  ring-ip  0.49  CH-stretch  1.31  CH-oop  1.84  other  1.33
+2-naphthoic acid  without  seed 0  ring-ip  0.44  CH-stretch  0.63  CH-oop  0.49  other  1.43
+2-naphthoic acid  clean    seed 0  ring-ip  0.50  CH-stretch  0.45  CH-oop  0.92  other  1.07
+2-naphthoic acid  clean    seed 1  ring-ip  0.61  CH-stretch  0.61  CH-oop  0.93  other  1.59
+2-naphthoic acid  clean    seed 2  ring-ip  0.65  CH-stretch  1.25  CH-oop  1.04  other  1.53
+
+cation leak read: 43 parents, 987 controls, 2 hold-out molecules, 1815 s, peak 0.42 GB, threads 2
