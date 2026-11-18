@@ -146,9 +146,10 @@ def product_error_record(models: tuple[str, ...], sha16: dict[str, str] | None =
     """The models' product-error record, `<stem>_product_error.json` beside their evaluation records. A version without one is refused
     with the command that makes it: its licence is not read on the first-order quantity instead. The record names the checkpoints it
     was read on by file name and by hash; a record read on other files of the same names is refused. `sha16` gives the hashes of the
-    files that ran, per file name (a pipeline record's admission); without it the checkpoints beside the records are hashed where this
-    machine has them, and where it has none (the model files are not in git) the names alone are compared. `models` are keys under
-    module 05's out/ (`model_key`); the record names the files by file name."""
+    files that ran, per file name (a pipeline record's admission), one for each model and no other — a missing hash would leave that
+    file unchecked; without it the checkpoints beside the records are hashed where this machine has them, and where it has none (the
+    model files are not in git) the names alone are compared. `models` are keys under module 05's out/ (`model_key`); the record names
+    the files by file name."""
     path = product_error_path(models)
     names = tuple(_name(key) for key in models)
     if not path.is_file():
@@ -161,8 +162,9 @@ def product_error_record(models: tuple[str, ...], sha16: dict[str, str] | None =
     if sorted(rec["models"]) != sorted(names):
         raise ValueError(f"{path.name} was read on {rec['models']}, not on {list(names)}; make it again with `{PRODUCT_COMMAND}`")
     ran = {_name(k): P.sha16(M05_OUT / k) for k in models if (M05_OUT / k).is_file()} if sha16 is None else sha16
-    if not set(ran) <= set(names):
-        raise ValueError(f"hashes given for {sorted(set(ran) - set(names))}, which are not among the models {list(names)}")
+    if sha16 is not None and set(sha16) != set(names):
+        raise ValueError(f"the hashes given must name exactly the models {list(names)}: missing for {sorted(set(names) - set(sha16))}, "
+                         f"given for {sorted(set(sha16) - set(names))}, which are not among them")
     differ = [f"{n} (record {rec['model_sha16'][n]}, file {h})" for n, h in sorted(ran.items()) if rec["model_sha16"][n] != h]
     if differ:
         raise ValueError(f"{path.name} was read on other files than these models, whose names it shares: sha16 differs for "

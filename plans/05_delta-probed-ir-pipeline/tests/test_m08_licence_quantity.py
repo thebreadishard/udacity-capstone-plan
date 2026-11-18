@@ -179,9 +179,22 @@ def test_a_record_read_on_other_files_of_the_same_names_is_refused(tmp_path, mon
     assert A.product_error_record(V13) == record                         # seed 0 hashed and equal; seeds 1 and 2 not on this machine
     assert A.product_error_record(V13, {m: "0" * 16 for m in V13[1:]} | {V13[0]: own}) == record
     with pytest.raises(ValueError, match=rf"sha16 differs for {V13[2]} \(record 0000000000000000, file ffff\)"):
-        A.product_error_record(V13, {V13[2]: "ffff"})
-    with pytest.raises(ValueError, match="not among the models"):
-        A.product_error_record(V13, {"E7_rungC_other_model_n750_seed0.pt": own})
+        A.product_error_record(V13, {V13[0]: own, V13[1]: "0" * 16, V13[2]: "ffff"})
+
+
+def test_the_hashes_given_must_name_exactly_the_models(tmp_path, monkeypatch):
+    """A partial dict would leave the files it does not name unchecked; an extra name is a file that did not run as these models."""
+    monkeypatch.setattr(A, "M05_OUT", tmp_path)
+    product_record(tmp_path, FLAT).rename(tmp_path / f"E7_rungC_chain35_analytic{A.PRODUCT_SUFFIX}")
+    full = {m: "0" * 16 for m in V13}
+    assert A.product_error_record(V13, full).is_file()
+    with pytest.raises(ValueError, match=rf"missing for \['{V13[1]}', '{V13[2]}'\], given for \[\]"):
+        A.product_error_record(V13, {V13[0]: "0" * 16})
+    other = "E7_rungC_other_model_n750_seed0.pt"
+    with pytest.raises(ValueError, match=rf"missing for \[\], given for \['{other}'\], which are not among them"):
+        A.product_error_record(V13, full | {other: "0" * 16})
+    with pytest.raises(ValueError, match=rf"missing for \['{V13[0]}'\], given for \['{other}'\]"):
+        A.product_error_record(V13, {k: v for k, v in full.items() if k != V13[0]} | {other: "0" * 16})
 
 
 # ------------------------------------------------------------------------------------------------ the read script
