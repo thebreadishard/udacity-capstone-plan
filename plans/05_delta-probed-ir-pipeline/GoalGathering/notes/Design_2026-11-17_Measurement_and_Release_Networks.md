@@ -49,12 +49,13 @@ semi-numerical, and 49 more folders with semi-numerical labels only lie outside 
 `semi_numerical.log` beside it). The sentence now reads: 'The spectrum is made by the release networks of version X, trained on
 the N labelled entries of their training pool, hold-outs (a) and (b) included: … the release networks themselves have seen the
 molecules of hold-outs (a) and (b), so they have no held-out error of their own.' — (a) and (b) by name, because hold-out (c) is
-never trained. aromir's sentence says it in its own terms, 'entries' throughout and the pool's neutral molecules and cations
-counted in brackets; the fitting clause the pipeline appends (`m05/network_kind.fitting_sentence`) still says 'molecules',
+never trained. aromir's sentence says it in its own terms, 'entries' throughout, the pool's neutral molecules and cations
+counted in brackets, and 'the hold-out molecules' where the pipeline names (a) and (b), since aromir's records hold no other
+hold-out; the fitting clause the pipeline appends (`m05/network_kind.fitting_sentence`) still says 'molecules',
 and changes when module 05 may be changed again.)
 
 Per molecule the 'seen' line then reads, for a molecule that is in the training data of the release networks (benzene, every
-hold-out molecule, every pool molecule): 'in the release networks' training data: the error bars are not an out-of-sample error for
+molecule of hold-outs (a) and (b), every pool molecule): 'in the release networks' training data: the error bars are not an out-of-sample error for
 this molecule; expect it to be smaller'. For any other molecule: as now.
 
 The licence keeps its meaning: a family is licensed where the measurement networks' error is within the line on both hold-outs.
