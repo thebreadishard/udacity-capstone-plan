@@ -139,12 +139,12 @@ def test_the_statement_without_release_networks_is_word_for_word_what_it_was():
 
 def test_the_statement_under_release_networks_carries_the_design_notes_sentence():
     sentence = ("The spectrum is made by the release networks of version 1.4, trained on the 1132 labelled entries of their training "
-                "pool, the hold-out molecules included. Its error bars were measured on the measurement networks of the same version — the "
-                "same recipe trained without the hold-out molecules — on molecules those networks never saw; the release networks "
-                "themselves have seen the hold-out molecules, so they have no held-out error of their own.")
+                "pool, hold-outs (a) and (b) included. Its error bars were measured on the measurement networks of the same version — "
+                "the same recipe trained without the hold-out molecules — on molecules those networks never saw; the release networks "
+                "themselves have seen the molecules of hold-outs (a) and (b), so they have no held-out error of their own.")
     s = LC.statement("benzene", "1.4", 3, LIC, S.TEXT["release_trained"], LC.MadeBy(release_trained_on=1132))     # no inner validation
     fitted = LC.statement("benzene", "1.4", 3, LIC, S.TEXT["release_trained"], LC.MadeBy(release_trained_on=1132, inner_validation=0.15))
-    assert ("trained on the 1132 labelled entries of their training pool, the hold-out molecules included: each of the 3 networks is "
+    assert ("trained on the 1132 labelled entries of their training pool, hold-outs (a) and (b) included: each of the 3 networks is "
             "fitted on a random 85 % of the molecules and stopped "
             "on the other 15 %, a different 15 % per seed, so not every molecule is fitted by every network (with 3 networks about "
             "0.15³ ≈ 0.3 % by none). Its error bars were measured on the measurement networks of the same version") in fitted

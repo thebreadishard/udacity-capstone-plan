@@ -150,30 +150,30 @@ def licence_block(lic: dict) -> dict:
 # outside the pool exist), word for word: what made the spectrum, how each network used the molecules (`NK.fitting_sentence`, its
 # numbers from the seed count and the inner-validation share), whose error is stated
 RELEASE_MADE = ("The spectrum is made by the release networks of version {version}, trained on the {n} labelled entries of their "
-                "training pool, the hold-out molecules included")
+                "training pool, hold-outs (a) and (b) included")
 RELEASE_MEASURED = (". Its error bars were measured on the measurement networks of the same version — the same recipe trained without the "
-                    "hold-out molecules — on molecules those networks never saw; the release networks themselves have seen the hold-out "
-                    "molecules, so they have no held-out error of their own.")
+                    "hold-out molecules — on molecules those networks never saw; the release networks themselves have seen the molecules "
+                    "of hold-outs (a) and (b), so they have no held-out error of their own.")
 HELD_BACK_SENTENCE = ("Version {version} has release networks, and they did not make this spectrum: {reason}. It is made by the "
                       "measurement networks, whose error was measured on molecules they never saw.")
 
 
 @dataclass(frozen=True)
 class MadeBy:
-    """Decision 66's part of a certificate: the number of molecules the release networks that made the spectrum trained on, or why
-    the version's release networks did not make it. Neither: measurement networks made it and the version has no other."""
+    """Decision 66's part of a certificate: the number of training-pool entries the release networks that made the spectrum trained
+    on, or why the version's release networks did not make it. Neither: measurement networks made it and the version has no other."""
 
     release_trained_on: int | None = None
     held_back: str | None = None
-    inner_validation: float = 0.0          # the share of the molecules each release network was stopped on, not fitted on
+    inner_validation: float = 0.0          # the share of the entries each release network was stopped on, not fitted on
 
 
 NO_RELEASE = MadeBy()
 
 
 def release_sentence(version: str, n_seeds: int, made_by: MadeBy) -> str:
-    """Design note §3's sentence for a spectrum the release networks made. 'Trained on all N' is said with what each network did
-    with the N: under inner validation it is fitted on a part and stopped on the rest."""
+    """Design note §3's sentence for a spectrum the release networks made. 'Trained on the N labelled entries' is said with what
+    each network did with them: under inner validation it is fitted on a part and stopped on the rest."""
     fitted = f": {P.NK.fitting_sentence(n_seeds, made_by.inner_validation)}" if made_by.inner_validation else ""
     return RELEASE_MADE.format(version=version, n=made_by.release_trained_on) + fitted + RELEASE_MEASURED
 
