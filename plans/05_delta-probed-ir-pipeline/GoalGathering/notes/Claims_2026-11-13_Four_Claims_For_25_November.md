@@ -5,6 +5,30 @@ supervisor, she speaks with me through the chat, and the funding of further expe
 9 November: no written note). This page is what the chat reads from. Every number here names the file it comes from; a claim without a
 number and a counterpart counts as not made.
 
+## Since 13 November (update of 18 November, 19:5x)
+
+- **Version 1.4 is carried.** The carried recipe trained on the whole pool without any hold-out molecule in any charge state
+  (`--holdout-twins drop-any-charge`, 1,075 molecules), read against v1.3 on hold-out (a)'s clean eight and hold-out (b): the composite
+  0.690 against 0.844, beyond the Student-t line 0.100 (`modules/05_support_predictor/out/v14/read_clean.md`).
+- **It was promoted under a rule changed after the read, and that is said.** The rule of 26 October (no read-out worse at the reported
+  precision) refused it for (a8) CH-oop +0.05 inside two standard errors while it was better in nine cells, five beyond two standard
+  errors (`read_clean_rule-of-26oct.md`, kept). A test of both rules on simulated arms found the old rule promotes about 12 % of real
+  improvements of this size, the composite with a Student-t threshold 73 %, with 1.5 % false promotions
+  (`probes/results_m1/promotion_rule_test_2026-11-17/rule_test.txt`); decision 57 was amended on the user's word.
+- **Every family is licensed on the product's quantity:** ring-ip 1.17 / 1.22, CH-stretch 0.80 / 1.67, CH-oop 1.86 / 1.26, 'other'
+  2.38 / 2.10 cm⁻¹ on (a) / (b) against 3 (`probes/results_m1/pipeline_benzene_v14_2026-11-17/benzene/certificate.md`).
+- **What ships is trained on all data (decision 66).** The pipeline and aromir use v1.4's release networks — the same recipe on all
+  1,132 labelled entries — with error bars and licence from the measurement networks; the five release checks passed
+  (`modules/05_support_predictor/out/v14/E7_rungC_v14s3clean_c00_control_release_release_checks.md`). aromir is on GitHub at
+  `42a8956`, CI green; the weights go to Hugging Face only after six acceptance tests (TASKS 269).
+- **A lesson about the hold-out.** Benzene's radical cation had been trained beside the held-out neutral benzene (the twin rule matched
+  charge); it raised benzene's error on one network from 1.5 to 5.4 cm⁻¹ (`probes/results_m1/v14_data_read_2026-11-17/probe_nop3c.txt`).
+  The rule now drops a hold-out molecule's twin in every charge state, and the readers refuse a model that trained one. Removing the
+  cation alone brought benzene to 2.35 on the mean of three seeds, so the cation is part of the cause, not all of it.
+- **The search for a better recipe runs** (`probes/v14_search.py`, stage 1 at 12 of 34 steps on 18 November). On one seed, two of ten
+  finished candidates score better than the carried recipe on the selection set (1.06 and 1.10 against 1.18; both a larger network with
+  a cosine learning-rate schedule). One seed is not a verdict; the registered read decides, against v1.4.
+
 ## The line
 
 Pretrained on ωB97X, adjusted with few coupled-cluster anchors. "100–200 anchors for the final goal" (the user's wording, 21 October),
@@ -29,8 +53,8 @@ This is the central claim and the one still open. What stands and what does not:
   with a negative analytic mode. Its low mode was repaired on 13 November (−7.48 → +7.05 cm⁻¹,
   `probes/results_m1/low_mode_patch_2026-11-13/corpus/D_ac28161d06/report.json`), so arm D can be re-run with six. Whether it is
   re-run waits on one decision of the user's (do the repaired Hessians become the corpus's labels, TASKS 201).
-- **What is still owed before 25 November:** v1.4 after the CCX53 labels merge (TASKS 129, search from Monday 16 November, ending
-  ≈ 19 November), and the floor re-read on the ≥ 34-atom molecules.
+- **Still owed:** the floor re-read on the ≥ 34-atom molecules with v1.4 (carried since 18 November); the 4.40 above is chain 42's,
+  read before v1.4.
 
 **How it will be presented:** as *what large molecules need*, not as *it carries*. The honest statement on the day is that the learned
 correction cuts the error at 36–60 atoms from 22.8 to about 7.9 cm⁻¹, that the penalty with size is steep, and that we have measured
@@ -41,7 +65,7 @@ what closing the rest would take.
 - The proxy check (read 22 October, ledger): the whole head goes from **6.55 to 2.82 cm⁻¹** in CH-oop as k rises from 5 to 200
   anchors, while a single λ stays stuck at 8–10 at every k. It is the whole head that moves, not a scaling.
 - Repeated on set three with the whole head (R-B, 3 of 3; read 21 October, ledger).
-- Re-read on v1.4 only if v1.4 becomes the carried model.
+- v1.4 became the carried model on 18 November; these numbers are from before it and are not re-read on v1.4 by 25 November.
 
 ## (3) The anchor count per accuracy, with prices — **stands**
 
@@ -109,5 +133,5 @@ consistent with claims (4) and with the spectral shape below: the same family is
 
 ## Schedule
 
-One rerun fits before the last reads of 16–18 November. Every read lands here with its number, so that the chat can answer her on the
-day.
+No expensive calculation before 25 November (the user, 18 November). Every read lands here with its number, so that the chat can
+answer her on the day.
