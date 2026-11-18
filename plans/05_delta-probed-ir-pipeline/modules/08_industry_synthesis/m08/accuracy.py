@@ -47,7 +47,7 @@ PRODUCT_SUFFIX = "_product_error.json"  # probes/product_error_read.py: <stem>_p
 PRODUCT_COMMAND = "python tools/runspec.py launch probes/runspecs/product_error_read.json"
 CC_NOTE = "not measured for this network version: the coupled-cluster reads (T3) were made on an earlier network (chain 34)"
 DEFINITIONS = dict(
-    family="the read-outs: rms over the family's B3LYP modes of the first-order diagonal error of a seed's ΔH against the higher level, per "
+    family="rms over the family's B3LYP modes of the first-order diagonal error of a seed's ΔH against the higher level, per "
            "seed, and the seeds' mean (cm⁻¹); families by module 05's rule (m05/learning_curve_layerA.molecule_features)",
     product="rms over the family's bands of the corrected band position's error against the higher level (cm⁻¹): the seeds' mean ΔH added "
             "to the B3LYP Hessian and diagonalised, each corrected band paired to its higher-level band by mode overlap and counted in the "

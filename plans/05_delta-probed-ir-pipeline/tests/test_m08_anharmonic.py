@@ -539,7 +539,7 @@ def test_by_default_no_run_starts_a_force_field_and_the_certificate_says_the_ste
     rec = P.run(default, lambda folder, what: delivered.append(what))
     assert delivered == [P.ONLY_DELIVERY] and rec["spectra"]["anharmonic"]["status"] == POS.NOT_APPLIED
     assert rec["spectra"]["note"] == ("positions are harmonic (ω): the anharmonic step was not applied — the step exists and was not run: it "
-                                      "is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on (TASKS 211)")
+                                      "is off unless the run names a time budget, and `--anharmonic-minutes 120` switches it on")
     common = ["--name", "m", "--out", str(tmp_path), "--smiles", BENZENE]
     assert P.parse_args(common).anharmonic_minutes is None and not P.parse_args(common).no_anharmonic      # the command line adds none
 
