@@ -9,8 +9,6 @@ from __future__ import annotations
 import json
 import sys
 
-import pytest
-
 from pin_tools import PLAN
 
 sys.path.insert(0, str(PLAN / "modules" / "08_industry_synthesis"))
@@ -87,8 +85,10 @@ def test_the_carried_record_names_what_it_was_read_on():
     assert rec["checks"]["first_order_reproduces_evaluation_records"]["largest_difference_cm"] < 0.005
 
 
-@pytest.mark.xfail(strict=True, raises=KeyError, reason="v1.4's product-error record was read without --package: aromir ships v1.3, so "
-                   "the second route (the package's own product_error.json) does not exist for v1.4 yet")
 def test_the_carried_record_agrees_with_the_package():
+    """The second route: aromir's own code on the stored Hessians with v1.4's measurement networks, in the corpus atom order
+    (probes/results_m1/aromir_v14_release_2026-11-18/product_error.py, 18 Nov 2026), agrees with the carried read."""
     rec = carried_record()
-    assert rec["checks"]["agrees_with_package"]["largest_difference_cm"] < 0.01
+    package = rec["checks"]["agrees_with_package"]
+    assert package["source"] == "probes/results_m1/aromir_v14_release_2026-11-18/product_error.json"
+    assert package["largest_difference_cm"] < 0.01
