@@ -11,6 +11,7 @@ The accuracy statement is read from the records, not typed: module 05's re-read 
 and the T3 transfer to CCSD(T)/cc-pVTZ on benzene (9 Oct), seed means over three seeds."""
 from __future__ import annotations
 
+import functools
 import importlib.util
 import inspect
 import json
@@ -24,6 +25,8 @@ M05 = paths.resolve("modules/05_support_predictor", must_exist=False)
 CORPUS = M05 / "corpus" / "molecules"
 APT_FILES = ("dipole_b3lyp_cphf.npz", "dipole_b3lyp_fd.npz")
 HESSIAN = "hessian_b3lyp.npz"
+NO_APT = "no dipole derivatives (APT) computed for this molecule — heights are not shown rather than guessed"
+FAILED_APT = "the dipole derivatives (APT) were computed but failed their own check — heights are not shown rather than guessed"
 FWHM, GRID = 10.0, (500.0, 3500.0)                     # module 05's read-out: Lorentzian FWHM 10 cm⁻¹ on 500–3500 cm⁻¹
 ACTIVE_FRACTION = 0.005                                # 'infrared-active': ≥ 0.5 % of the strongest band (FD noise leaks ~0.1 km/mol into dark modes)
 ANCHORS_STATUS = M05 / "out" / "ANCHORS_STATUS.json"
@@ -32,11 +35,33 @@ CC_APT = "apt_ccsd_t.npz"            # the CC APT an anchor run stores beside it
                                     # 10 Oct 2026: the first version read 'network_head' (λ = 0) and quoted 0.59 instead of 0.37.
 
 
-def _ri():
-    spec = importlib.util.spec_from_file_location("rungC_intensities", M05 / "m05" / "rungC_intensities.py")
+def _m05_module(name: str):
+    """Module 05's file `m05/<name>.py`, loaded as a module (module 05's code is not a package)."""
+    spec = importlib.util.spec_from_file_location(name, M05 / "m05" / f"{name}.py")
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod
+
+
+def _ri():
+    return _m05_module("rungC_intensities")
+
+
+@functools.cache
+def _corpus_labels():
+    return _m05_module("corpus_labels")
+
+
+def analytic_only(d: Path) -> bool:
+    """Whether a corpus folder is labelled by the analytic route alone (module 05's `corpus_labels.is_analytic_only`, TASKS 49)."""
+    return _corpus_labels().is_analytic_only(d)
+
+
+def listed_hessian(d: Path, tag: str = "b3lyp") -> Path:
+    """The Hessian a corpus folder's listed positions of one functional come from: the deck's finite differences
+    (`hessian_<tag>.npz`), or for an analytic-only folder its analytic Hessian. Not `cheap_hessian`, which takes the analytic B3LYP
+    wherever it exists — for a folder with both, the listed positions and the heights drawn on them come from the deck's file."""
+    return d / (f"hessian_{tag}_analytic.npz" if analytic_only(d) else f"hessian_{tag}.npz")
 
 
 def _rel(p: Path) -> str:
@@ -78,19 +103,26 @@ def cheap_apt(d: Path) -> Path | None:
     return None
 
 
+def failed_apt(d: Path) -> bool:
+    """Whether the folder holds APT files and every one of them failed its own checks."""
+    return any((d / f).exists() for f in APT_FILES) and cheap_apt(d) is None
+
+
 def vib_min_cm() -> float:
     """The vibrational threshold of `rungC_intensities.mode_intensities` (its default), so the listed modes are cut where the spectrum is."""
     return float(inspect.signature(_ri().mode_intensities).parameters["vib_min_cm"].default)
 
 
 def shape(mid: str, listed_cm: list[float] | None = None) -> dict:
-    """The cheap rung's sticks (position, height) for one corpus molecule, or the reason there are none. `listed_cm` = the listed B3LYP positions:
+    """The cheap rung's sticks (position, height) for one corpus molecule, from the Hessian its positions are listed from
+    (`listed_hessian`), or the reason there are none: no APT, or APTs that all failed their checks. `listed_cm` = the listed B3LYP positions:
     the largest difference to the positions computed here is recorded as a consistency check (same Hessian → ≈ 0)."""
     d = CORPUS / mid
+    hessian = listed_hessian(d)
     apt = cheap_apt(d)
-    if apt is None or not (d / HESSIAN).exists():
-        return dict(kind="positions only", reason="no dipole derivatives (APT) computed for this molecule — heights are not shown rather than guessed")
-    s = series(d / HESSIAN, np.asarray(_geometry(mid)["masses_amu"], float), apt)
+    if apt is None or not hessian.exists():
+        return dict(kind="positions only", reason=FAILED_APT if hessian.exists() and failed_apt(d) else NO_APT)
+    s = series(hessian, np.asarray(_geometry(mid)["masses_amu"], float), apt)
     freq = np.array([x["omega_cm"] for x in s["sticks"]])
     check = None
     listed = None if listed_cm is None else np.sort(np.asarray(listed_cm, float))

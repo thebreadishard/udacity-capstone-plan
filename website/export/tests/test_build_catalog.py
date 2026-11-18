@@ -9,7 +9,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, ".."))
 import build_catalog as bc  # noqa: E402
 
-REPO = os.path.abspath(os.path.join(HERE, "..", "..", ".."))
+# ATLAS_REPO: a worktree has the code but not the ignored corpus data; point the build at a checkout that has them
+REPO = os.environ.get("ATLAS_REPO") or os.path.abspath(os.path.join(HERE, "..", "..", ".."))
 CORPUS = os.path.join(REPO, "plans", "05_delta-probed-ir-pipeline", "modules", "05_support_predictor", "corpus", "molecules")
 
 
@@ -34,7 +35,7 @@ def test_heights_for_benzene_aligned_and_none_for_naphthalene(built):
     n = read("A_01f3186607.json")
     assert n["intensities_km_mol"] is None and n["shape"] is None
     assert summary["n_with_intensities"] >= 1 and summary["shape_accuracy"]["holdouts"]["a"]["shape"]["corrected"]["spectrum_overlap"] > 0.9
-    assert summary["licence"]["licensed_families"] == ["ring-ip", "CH-stretch", "CH-oop"]
+    assert summary["licence"]["licensed_families"] == ["ring-ip", "CH-stretch", "CH-oop", "other"]   # v1.4, carried since 18 Nov 2026
 
 
 def test_anchor_pages_carry_the_anchor_spectrum(built):
@@ -130,6 +131,7 @@ def test_source_per_layer(built):
     assert known.endswith("known to PubChem") and new.endswith("not in PubChem")
     assert bc.source_of(dict(layer="C", note="")) == bc.SOURCES["C"]
     assert bc.source_of(dict(layer="R4", note="rung4 chrysene")) == bc.SOURCES["R4"]          # 15 Oct 2026: rung 4's rows, TASKS 61
+    assert bc.source_of(dict(layer="T", note="")) == bc.SOURCES["T"] and bc.source_of(dict(layer="D", note="")) == bc.SOURCES["D"]
     with pytest.raises(KeyError):
         bc.source_of(dict(layer="Z", note=""))
 
@@ -149,3 +151,107 @@ def test_anchor_readings_travel_with_the_registry_file(built):
     out, _ = built
     b = {r["id"]: r for r in json.load(open(out / "catalog.json", encoding="utf-8"))}["A_8448043181"]
     assert any(f.endswith("R0_DIAGONAL_READING_2026-09-22.md") for f in b["evidence"][1:])
+
+
+def test_an_analytic_only_folder_reads_its_analytic_hessians(built):
+    """TASKS 49's large PAHs carry analytic labels only: no finite-difference Hessian, and an analytic check without corpus
+    frequencies. The export reads the analytic files and states no second route; a finite-difference folder with such a check raises."""
+    from m08 import spectrum                               # on the path once build() has run
+    mdir = os.path.join(CORPUS, "T_94b3a9d13a")              # coronene
+    if not os.path.isdir(mdir):
+        pytest.skip("no corpus data in this checkout (set ATLAS_REPO)")
+    from pathlib import Path
+    assert spectrum.analytic_only(Path(mdir)) and spectrum.listed_hessian(Path(mdir), "wb97x").name == "hessian_wb97x_analytic.npz"
+    benzene = Path(CORPUS) / "A_8448043181"                  # finite-difference labels beside an analytic second route
+    assert not spectrum.analytic_only(benzene) and spectrum.listed_hessian(benzene).name == "hessian_b3lyp.npz"
+    assert bc.second_route_of(mdir, True) is None
+    with pytest.raises(ValueError, match="no corpus frequencies"):
+        bc.second_route_of(mdir, False)
+
+
+def test_summary_states_the_network_pair(built):
+    """Decision 66: the summary says which networks print the spectra; errors and licence are the measurement networks'."""
+    _, summary = built
+    pair, acc = summary["networks"], summary["shape_accuracy"]
+    assert pair["kind"] in ("release", "measurement") and pair["measurement_networks"] >= 1
+    if pair["kind"] == "release":
+        assert pair["trained_on_entries"] > 0 and pair["fitting"].startswith("each of the") and pair["held_back"] is None
+    assert acc["version"] and set(summary["licence"]["licensed_families"]) <= set(acc["holdouts"]["a"]["product"])
+    assert summary["licence"]["line_cm"] == 3 and summary["higher_level_name"] == "ωB97X/6-31G*"
+    assert acc["higher_level"].startswith(summary["higher_level_name"])
+    lo, hi = pair["pool_atoms"]
+    assert 0 < lo < hi and (pair["kind"] != "release" or 0 < pair["distinct_entries"] <= pair["trained_on_entries"])
+
+
+def test_pool_counts_rows_and_distinct_molecule_charge_pairs():
+    rows = [dict(id="A_1", smiles="c1ccccc1", n_atoms="12", note=""), dict(id="B_1", smiles="c1ccccc1", n_atoms="12", note=""),
+            dict(id="P3c_1", smiles="c1ccccc1", n_atoms="12", note="pool3 cation; charge 1 mult 2"),
+            dict(id="A_2", smiles="c1ccc2ccccc2c1", n_atoms="18", note=""),
+            dict(id="B_2", smiles="O=Cc1c[nH]cn1", n_atoms="11", note=""), dict(id="B_3", smiles="O=Cc1cnc[nH]1", n_atoms="11", note="")]
+    assert bc.pool_of({"A_1", "B_1", "P3c_1", "A_2", "B_2", "B_3"}, rows) == dict(entries=6, distinct=5, atoms=[11, 18])   # tautomers apart
+    with pytest.raises(ValueError, match="without a manifest row"):
+        bc.pool_of({"A_1", "Z_9"}, rows)
+
+
+def test_licence_line_refuses_mixed_lines():
+    one = {"holdouts": {h: {"product": {"ring-ip": {"target": 3.0}, "other": {"target": 3.0}}} for h in "ab"}}
+    assert bc.licence_line(one) == 3.0
+    one["holdouts"]["b"]["product"]["other"]["target"] = 4.0
+    with pytest.raises(ValueError, match="differ"):
+        bc.licence_line(one)
+
+
+def _analytic_folder(path, versions, grids):
+    import numpy as np
+    path.mkdir()
+    check = {tag: {"software": {"pyscf": v}} for tag, v in zip(("b3lyp", "wb97x"), versions, strict=True)}
+    (path / "analytic_check.json").write_text(json.dumps(check), encoding="utf-8")
+    for tag, grid in zip(("b3lyp", "wb97x"), grids, strict=True):
+        np.savez(path / f"hessian_{tag}_analytic.npz", grid=np.array(grid))
+    return str(path)
+
+
+def test_deck_of_refuses_two_pyscf_versions_or_grids(tmp_path):
+    result = {"deck": {"deck": "v1", "hessian": "psi4 finite differences", "text_corrections": ["…"]}}
+    good = _analytic_folder(tmp_path / "good", ("2.14.0", "2.14.0"), ((99, 590), (99, 590)))
+    deck = bc.deck_of(result, good, True)
+    assert deck["hessian"].startswith("pyscf 2.14.0 ") and "(99, 590)" in deck["hessian"] and "text_corrections" not in deck
+    assert bc.deck_of(result, good, False) is result["deck"]
+    for name, versions, grids in (("versions", ("2.14.0", "2.15.0"), ((99, 590),) * 2), ("grids", ("2.14.0",) * 2, ((99, 590), (75, 302)))):
+        with pytest.raises(ValueError, match="one deck has one of each"):
+            bc.deck_of(result, _analytic_folder(tmp_path / name, versions, grids), True)
+
+
+ANALYTIC_ONLY = ("D_210c3076e6", "T_94b3a9d13a")   # PAHdb 284 (its APT passed its checks) and coronene (its APT failed the sum rule)
+
+
+@pytest.fixture(scope="module")
+def built_analytic(tmp_path_factory):
+    if not os.path.isdir(os.path.join(CORPUS, ANALYTIC_ONLY[0])):
+        pytest.skip("no corpus data in this checkout (set ATLAS_REPO)")
+    out = tmp_path_factory.mktemp("atlas_analytic")
+    return out, bc.build(REPO, str(out), ids=set(ANALYTIC_ONLY))
+
+
+def test_analytic_only_molecules_go_through_the_real_loop(built_analytic):
+    """The review of 4f985958: a D molecule gets heights from its analytic Hessian and its passed APT; coronene, whose APT failed,
+    says so; both decks name the analytic route and neither carries a second route."""
+    out, summary = built_analytic
+    assert summary["n_molecules"] == 2 and summary["n_with_intensities"] == 1
+    mols = []
+    for mid in ANALYTIC_ONLY:
+        with open(out / "molecules" / f"{mid}.json", encoding="utf-8") as f:
+            mols.append(json.load(f))
+    d, t = mols
+    assert d["intensities_km_mol"] and d["shape"]["hessian_source"].endswith("hessian_b3lyp_analytic.npz") and d["heights_missing"] is None
+    assert t["intensities_km_mol"] is None and "failed their own check" in t["heights_missing"]
+    for m in (d, t):
+        assert m["deck"]["hessian"].startswith("pyscf ") and m["deck"]["labels"] == "analytic_only" and m["second_route"] is None
+        assert len(m["frequencies_cm"]["b3lyp"]["all"]) == 3 * m["n_atoms"]
+
+
+def test_limit_and_ids_do_not_combine(tmp_path):
+    with pytest.raises(ValueError, match="not both"):
+        bc.build(REPO, str(tmp_path), limit=5, ids={"A_8448043181"})
+    with pytest.raises(ValueError, match="no manifest row"):
+        bc.build(REPO, str(tmp_path), ids={"Z_nothing"})

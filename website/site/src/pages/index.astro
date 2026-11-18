@@ -2,6 +2,7 @@
 // Home: the question, the search, the ladder with live counts, three doors (design §4.1).
 import Base from '../layouts/Base.astro';
 import summary from '../../../export/out/summary.json';
+import show from '../../../export/out/pipeline_show.json';
 import { withBase } from '../lib/base';
 const labels = {
   listed: 'Listed', cheap_level_done: 'Cheap level done', correction_predicted: 'Correction predicted',
@@ -12,7 +13,7 @@ const rungs = summary.rungs.map((r, i) => ({ key: r, i, label: labels[r], n: sum
 <Base title="Home">
   <section class="hero">
     <h1>Has this molecule been through the pipeline, and what came out?</h1>
-    <p class="lead">Infrared spectra of molecules, corrected by a learned layer trained on coupled-cluster anchors — with the status and the provenance of every number. Polycyclic aromatics first.</p>
+    <p class="lead">Infrared spectra of molecules, corrected by a learned layer trained on the DFT stand-in {summary.higher_level_name}; coupled-cluster anchors, where they exist, are shown beside it as checks — with the status and the provenance of every number. Polycyclic aromatics first.</p>
     <p class="examples muted">Try <a href={withBase('/atlas/?q=naphthalene')}>naphthalene</a>, <a href={withBase('/atlas/?q=C14H10')}>C14H10</a> or <a href={withBase('/atlas/?q=c1ccc2ccccc2c1')}>c1ccc2ccccc2c1</a>.</p>
   </section>
 
@@ -26,7 +27,7 @@ const rungs = summary.rungs.map((r, i) => ({ key: r, i, label: labels[r], n: sum
         </li>
       ))}
     </ol>
-    <p class="muted small">A molecule holds the highest rung it reaches. Counts come from the export, never from the page. <a href={withBase('/status/')}>What changed, and when</a>.</p>
+    <p class="muted small">A molecule holds the highest rung it reaches. Correction predicted and Spectrum predicted count molecules whose ΔH network v{summary.shape_accuracy.version} spectrum is published here: none yet. The pipeline makes it on request on the project's computer; molecule pages draw the cheap-level spectrum, or the coupled-cluster anchor's where one exists, with the network's measured accuracy. Recorded runs of {Object.keys(show.molecules).length} molecules, made with {show.network}, are on the Pipeline page. Counts come from the export, never from the page. <a href={withBase('/status/')}>What changed, and when</a>.</p>
   </section>
 
   <section class="doors grid">

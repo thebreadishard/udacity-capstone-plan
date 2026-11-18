@@ -36,7 +36,8 @@ CLEAN_A_TWINS_DROPPED = ("hold-out (a) on its eight molecules never trained on i
                          "layer-A molecules held out on 19 Sep 2026; this version's training left out the twins of the hold-out "
                          "molecules, so the other two, 2-naphthoic acid and benzonitrile, are clean too, and the eight are kept for "
                          "comparability with v1.3")
-HIGHER_LEVEL = "ωB97X/6-31G* (the DFT proxy: the network's ΔH is trained on ωB97X − B3LYP Hessians)"
+HIGHER_LEVEL_NAME = "ωB97X/6-31G*"    # the level the ΔH network predicts and is licensed against, by name
+HIGHER_LEVEL = f"{HIGHER_LEVEL_NAME} (the DFT proxy: the network's ΔH is trained on ωB97X − B3LYP Hessians)"
 FIRST_ORDER = "first_order"
 PRODUCT = "product"
 LICENCE_QUANTITY = PRODUCT             # README decision 65, amendment of 16 Nov 2026: the licence is read on what the product delivers
