@@ -1,11 +1,13 @@
 """Shared tools of the regression pins (TASKS 72, 16 Oct 2026): the frozen corpus and its record, the environment bit-identity depends on,
-and the comparison of JSON trees. The pins themselves are `test_rungC_train_regression.py` and `test_rungC_cc_transfer_regression.py`."""
+the comparison of JSON trees and the checkout masked out of recorded paths. The pins themselves are `test_rungC_train_regression.py`,
+`test_rungC_cc_transfer_regression.py` and the other `test_*_regression.py` files that import from here."""
 from __future__ import annotations
 
 import hashlib
 import json
 import math
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -90,6 +92,21 @@ def stable(record, volatile: frozenset[str]):
     if isinstance(record, list):
         return [stable(v, volatile) for v in record]
     return record
+
+
+# A separator is a run of slashes or backslashes: a recorded path appears with one, two or four backslashes per separator, as it sits in
+# one or two levels of JSON strings. The drive letter stands alone and the span holds no space, quote or second colon, so an earlier
+# 'http:/' or 'line:\n' on the same line cannot stretch the match over real text up to a later plan path.
+PLAN_IN_A_PATH = re.compile(r"(?<![A-Za-z0-9])[A-Za-z]:[\\/]+[^\s\"':]*?05_delta-probed-ir-pipeline[\\/]+")
+
+
+def without_checkout(text: str) -> str:
+    """Return the text with every absolute path into a checkout of this plan starting at `<plan>/` instead.
+
+    A pin that records absolute paths passes only in the checkout it was written in, while CLAUDE.md asks for a refactor to be done in a
+    worktree (TASKS 222, 277). Both sides of a comparison pass through here.
+    """
+    return PLAN_IN_A_PATH.sub("<plan>/", text)
 
 
 def first_difference(a, b, path: str = "$", rel_tol: float = 0.0) -> str | None:

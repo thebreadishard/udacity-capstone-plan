@@ -1,6 +1,7 @@
 """Regression pin of `probes/anchor_deck_rehearsal.py` (decision 58's rehearsal, 20 Oct 2026), written before its clean-code refactor: the three
 registered runs of 4 Oct on today's files — pyridine with the analytic B3LYP alone (--no-network), pyridine and naphthalene with chain 34's three
-carried models — compared without the date, the seconds and each model's registry status (it changes by design; the runner bypasses its gate).
+carried models — compared without the date, the seconds and each model's registry status (it changes by design; the runner bypasses its gate), with the
+checkout's own location read as `<plan>/` (TASKS 277: the pin passes in a worktree too).
 
 DECK_PROBES=<folder> selects the folder whose script is tested (default: this checkout's probes; a worktree's for a refactor). Every run goes
 through tests/deck_pin_runner.py: this checkout's data (corpus, models, the scorer's checkpoints) and dependencies, the script from that folder.
@@ -18,7 +19,7 @@ from pathlib import Path
 
 import pytest
 
-from pin_tools import DATA, PLAN, environment, require_free_memory, require_pinning_environment, single_thread_env
+from pin_tools import DATA, PLAN, environment, require_free_memory, require_pinning_environment, single_thread_env, without_checkout
 
 GOLDEN = DATA / "anchor_deck_rehearsal_golden.json"
 RUNNER = Path(__file__).with_name("deck_pin_runner.py")
@@ -49,7 +50,8 @@ def run_case(case: str, work: Path, folder: Path) -> dict:
     rec = {k: v for k, v in json.loads(Path(f"{prefix}.json").read_text(encoding="utf-8")).items() if k not in VOLATILE}
     md = Path(f"{prefix}.md").read_text(encoding="utf-8")
     md = re.sub(r"\d{4}-\d\d-\d\d \d\d:\d\d", "<date>", md.replace(str(prefix), "<prefix>"))
-    return {"json": json.dumps(rec, sort_keys=True).replace(json.dumps(str(prefix))[1:-1], "<prefix>"), "md": re.sub(r"\b\d+ s\b", "<s> s", md)}
+    record = json.dumps(rec, sort_keys=True).replace(json.dumps(str(prefix))[1:-1], "<prefix>")
+    return {"json": without_checkout(record), "md": without_checkout(re.sub(r"\b\d+ s\b", "<s> s", md))}
 
 
 @pytest.mark.parametrize("case", sorted(CASES))
@@ -57,7 +59,7 @@ def test_the_pinned_rehearsal_is_unchanged(case, tmp_path):
     pytest.importorskip("torch")
     if not GOLDEN.exists():
         pytest.fail(f"no pin at {GOLDEN}: write it with --write-golden before changing the script")
-    golden = json.loads(GOLDEN.read_text(encoding="utf-8"))
+    golden = json.loads(without_checkout(GOLDEN.read_text(encoding="utf-8")))
     require_pinning_environment(golden)
     require_free_memory()                                                   # it loads the corpus and three models
     assert without_model_status(run_case(case, tmp_path, probes())) == without_model_status(golden["cases"][case])

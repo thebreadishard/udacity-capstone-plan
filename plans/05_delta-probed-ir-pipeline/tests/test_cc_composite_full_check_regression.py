@@ -30,6 +30,7 @@ from pin_tools import (
     require_pinning_environment,
     single_thread_env,
     stable,
+    without_checkout,
 )
 
 SCRIPT = PLAN / "probes" / "cc_composite_full_check.py"
@@ -66,19 +67,16 @@ def inputs(case: str) -> list[Path]:
     return [x for x in CASES[case] if isinstance(x, Path)]
 
 
-PLAN_IN_A_PATH = re.compile(r"[A-Za-z]:[\\/]+.*?05_delta-probed-ir-pipeline[\\/]+")
-
-
 def anonymised(text: str, work: Path) -> str:
     """The run's work folder and the checkout it ran in, replaced by placeholders.
 
     The checkout too, since 14 November 2026 (TASKS 222): the pin recorded absolute paths, so it passed in the checkout it was
     written in and nowhere else, while CLAUDE.md asks for a refactor to be done in a worktree. Both sides of the comparison pass
-    through here.
+    through here (`pin_tools.without_checkout`).
     """
     for spelling in (json.dumps(str(work))[1:-1], str(work), work.as_posix()):
         text = text.replace(spelling, "<work>")
-    return PLAN_IN_A_PATH.sub("<plan>/", text)
+    return without_checkout(text)
 
 
 def npz_summary(path: Path, work: Path) -> dict:
@@ -112,7 +110,7 @@ def test_the_pinned_outputs_are_unchanged(case, tmp_path):
     pytest.importorskip("torch")
     if not GOLDEN.exists():
         pytest.fail(f"no pin at {GOLDEN}: write it with --write-golden before changing the script")
-    golden = json.loads(PLAN_IN_A_PATH.sub("<plan>/", GOLDEN.read_text(encoding="utf-8")))
+    golden = json.loads(without_checkout(GOLDEN.read_text(encoding="utf-8")))
     require_pinning_environment(golden)
     if case == "read_benzene":
         require_free_memory()                                               # test 2's read loads the corpus
