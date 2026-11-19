@@ -3,7 +3,7 @@
  "host": "laptop",
  "workdir": "probes/results_m1",
  "command": "MSYS_NO_PATHCONV=1 wsl -e bash /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/wsl_capped.sh 9216 -- bash /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/methyl_rotor.sh /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/methyl_rotor_2026-11-04",
- "sources": [{"local": "probes/methyl_rotor.sh"}, {"local": "probes/methyl_rotor_grid.py"}, {"local": "probes/methyl_torsion_scan.py"},
+ "sources": [{"local": "probes/methyl_rotor.sh"}, {"local": "probes/methyl_rotor_grid.py"}, {"local": "probes/methyl_torsion_scan.py"}, {"local": "probes/geomopt_verdict.py"},
              {"local": "probes/pyscf_hessians_for_qff.py"}, {"local": "probes/library_log.py"}, {"local": "probes/scf_converge.py"},
              {"local": "probes/wsl_capped.sh"}],
  "progress": {"regex": "^\\[[0-9:]+\\] (scan lane|lane) |^=== \\(ROTOR\\) ", "max_gap_minutes": 30,

@@ -8,7 +8,8 @@ the labels' settings (D_ac28161d06: -7.48 cm-1), and the trainer drops a molecul
 1. The folder's geometry is displaced along its lowest B3LYP analytic mode when that mode is negative: a start on a symmetric saddle would
    otherwise stay there, because the gradient along an antisymmetric mode is zero.
 2. geomeTRIC optimises at the labels' SCF (`labels_mol`, `labels_ks`), called as pyscf's own pyscf/geomopt/test/test_geometric_solver.py
-   (test_optimize_with_hessian) calls `geometric_solver.kernel`; a run that does not converge raises.
+   (test_optimize_with_hessian) calls `geometric_solver.kernel`, through `geomopt_verdict.converged_geometry`; a run that does not
+   converge raises.
 3. A new folder receives job.json (copied), result.json (labels "analytic_only", the re-optimisation recorded) and geometry.json, written
    last, so its presence means the optimisation is complete. `analytic_hessians.py <out>` then adds the Hessians and the imaginary counts.
 The source folder is only read.
@@ -43,9 +44,9 @@ from analytic_hessians import (  # noqa: E402  (the corpus code lives in the mod
     software,
     vib_only,
 )
+from geomopt_verdict import converged_geometry  # noqa: E402
 from library_log import PYSCF_LOG_NAME  # noqa: E402
 from pyscf import lib  # noqa: E402
-from pyscf.geomopt import geometric_solver  # noqa: E402
 from vibrations import signed_cm  # noqa: E402
 
 LABEL_XC = dict(FUNCTIONALS)["b3lyp"]
@@ -121,10 +122,7 @@ def optimise(start: dict, cfg: Reoptimisation, lib_log: TextIO) -> tuple[np.ndar
         gmax = float(np.abs(env["gradients"]).max())
         print(f"(RLS) step {len(steps)} E {steps[-1]:.10f} gmax {gmax:.2e} {time.strftime('%F %T')}", flush=True)
 
-    # assert_convergence: an unconverged SCF at any step raises instead of feeding the optimiser a wrong gradient
-    converged, mol_eq = geometric_solver.kernel(mf, assert_convergence=True, callback=report, maxsteps=MAX_STEPS, **CONVERGENCE)
-    if not converged:
-        raise RuntimeError(f"geomeTRIC did not converge in {len(steps)} steps (limit {MAX_STEPS})")
+    mol_eq = converged_geometry(mf, str(cfg.source), maxsteps=MAX_STEPS, callback=report, **CONVERGENCE)
     return mol_eq.atom_coords(unit="Bohr"), steps[-1], len(steps)
 
 
