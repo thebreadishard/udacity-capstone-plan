@@ -1,0 +1,49 @@
+{
+ "run": "C:\\Users\\thebr\\Documents\\CapstonePlan\\plans\\05_delta-probed-ir-pipeline\\probes\\results_m1\\pipeline_benzene_anharmonic_v3_2026-11-19\\benzene",
+ "reference": "C:\\Users\\thebr\\Documents\\CapstonePlan\\plans\\05_delta-probed-ir-pipeline\\probes\\results_m1\\anharmonic_reference_v14release_v3_2026-11-19\\benzene",
+ "status": "applied",
+ "reason": null,
+ "1_steps_within_tolerance": {
+  "passed": true,
+  "tolerance": {
+   "fraction_of_the_family_bar": 0.3,
+   "cap_cm": 2.0,
+   "rounding_cm": 0.1,
+   "bars_cm": {
+    "CH-oop": 8.38,
+    "other": 3.84,
+    "ring-ip": 3.37,
+    "CH-stretch": 6.21
+   }
+  },
+  "closest_to_its_line": {
+   "difference_cm": 1.7,
+   "of_tolerance": 0.87,
+   "omega_cm": 3240.8,
+   "family": "CH-stretch",
+   "tolerance_cm": 1.96
+  },
+  "bands_beyond": []
+ },
+ "2_no_band_lost": {
+  "passed": true,
+  "stepped": {
+   "run": 28,
+   "reference": 28,
+   "of": 30
+  },
+  "bands_lost": []
+ },
+ "3_degenerate_pairs_equal": {
+  "passed": true,
+  "pairs": 5,
+  "unequal": []
+ },
+ "4_time_and_memory_recorded": {
+  "passed": true,
+  "seconds": 998.8,
+  "peak_memory_mb": 982,
+  "unit": "m08-anharmonic-benzene-adbc4c365b.scope"
+ },
+ "passed": true
+}
