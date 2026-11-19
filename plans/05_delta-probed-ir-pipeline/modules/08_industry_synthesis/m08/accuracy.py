@@ -159,16 +159,21 @@ def _records(paths: list[Path]) -> list[dict]:
     return out
 
 
-def product_error_path(models: tuple[str, ...]) -> Path:
-    """Where the models' product-error record lies: `<stem>_product_error.json` in their folder, beside their evaluation records.
-    Models of several stems or folders are refused: a product-error record is one version's."""
+def version_record_path(models: tuple[str, ...], suffix: str) -> Path:
+    """Where a record of the models' version lies: `<stem><suffix>` in their folder, beside their evaluation records. Models of several
+    stems or folders are refused: such a record is one version's."""
     stems = {_stem_seed(_name(key))[0] for key in models}
     if len(stems) != 1:
-        raise ValueError(f"the models are of {len(stems)} stems ({sorted(stems)}); a product-error record is one version's")
+        raise ValueError(f"the models are of {len(stems)} stems ({sorted(stems)}); a record beside them is one version's")
     folders = {_folder(key) for key in models}
     if len(folders) != 1:
-        raise ValueError(f"the models lie in {len(folders)} folders ({sorted(map(str, folders))}); a product-error record is one version's")
-    return folders.pop() / f"{stems.pop()}{PRODUCT_SUFFIX}"
+        raise ValueError(f"the models lie in {len(folders)} folders ({sorted(map(str, folders))}); a record beside them is one version's")
+    return folders.pop() / f"{stems.pop()}{suffix}"
+
+
+def product_error_path(models: tuple[str, ...]) -> Path:
+    """Where the models' product-error record lies: `<stem>_product_error.json` beside their evaluation records."""
+    return version_record_path(models, PRODUCT_SUFFIX)
 
 
 def product_error_record(models: tuple[str, ...], sha16: dict[str, str] | None = None) -> Path:

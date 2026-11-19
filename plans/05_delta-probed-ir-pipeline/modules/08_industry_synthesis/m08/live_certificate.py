@@ -23,6 +23,7 @@ from pathlib import Path, PureWindowsPath
 import numpy as np
 
 from . import accuracy as A
+from . import invariance as INV
 from . import pipeline as P
 from . import positions as POS
 from . import prices
@@ -94,13 +95,15 @@ def mode_families(r: Result, w_low: np.ndarray) -> list[str]:
     return [f for f, a in zip(families, above, strict=True) if a]
 
 
-def bands(r: Result, accuracy: dict, tolerance: dict[str, dict], licensed: list[str]) -> list[dict]:
+def bands(r: Result, accuracy: dict, tolerance: dict[str, dict], licensed: list[str], withheld: INV.Withheld | None = None) -> list[dict]:
     """One row per corrected mode, sorted by position, paired with the B3LYP mode of largest overlap among all its modes
     (`rungC_intensities.match_modes`, the evaluation's pairing): its family, the B3LYP, baseline and network positions, the height, the seeds'
     range as the record holds it, the error of its family on both hold-outs in the quantity the licence reads (`A.stated_errors`), whether
     that family is licensed — a statement about the harmonic position ω — the position the band is printed at with the anharmonic
     step's Δ_anh and bar where it has one (`POS.band`, from the record's stick), and the laboratory
-    tolerance of the printed position's region. The B3LYP partner is sought among the family rule's modes (`rule_modes`), so a corrected mode whose partner lies
+    tolerance of the printed position's region. Where the molecule's licence is withheld for its invariance spread (`withheld`), no band
+    is licensed and each carries the reason as its `licence_note`; the positions do not change. The B3LYP partner is sought among the
+    family rule's modes (`rule_modes`), so a corrected mode whose partner lies
     under the line of `mode_intensities` (a near-free rotor the network stiffens) keeps its family; it has no baseline, which lists the B3LYP
     spectrum's bands."""
     w_low = RINT.mode_intensities(r.H_low, r.masses, r.apt)[0]
@@ -122,8 +125,9 @@ def bands(r: Result, accuracy: dict, tolerance: dict[str, dict], licensed: list[
         fam, region = families[k], lab_region(float(w_net[j]) if position["nu_cm"] is None else position["nu_cm"])
         rows.append(dict(network_cm=round(float(w_net[j]), 1), km_mol=round(float(k_net[j]), 2), seed_range_cm=sticks[rank[j]]["seed_range_cm"],
                          b3lyp_cm=round(float(w_rule[k]), 1), baseline_cm=baseline[int(listed[k])]["omega_cm"] if above[k] else None,
-                         family=fam, licensed=fam in licensed, error_cm=dict(errors[fam]), lab_region=region,
-                         u_band_cm=tolerance.get(region, {}).get("u_band"), **position))
+                         family=fam, licensed=fam in licensed and withheld is None, error_cm=dict(errors[fam]), lab_region=region,
+                         u_band_cm=tolerance.get(region, {}).get("u_band"), **position)
+                    | ({"licence_note": withheld.note} if withheld else {}))
     return [row for _, row in sorted(zip(rank, rows, strict=True), key=lambda t: t[0])]      # the record's stick order
 
 
@@ -205,10 +209,11 @@ def _cost_line(k: dict) -> str:
             + ", ".join(f"{s} {v} s" for s, v in k["steps_s"].items()))
 
 
-def licence_block(lic: dict) -> dict:
+def licence_block(lic: dict, withheld: INV.Withheld | None = None) -> dict:
     """What a certificate keeps of the licence (`licence.state`): the statement, the rule's source, the licensed families, the quantity
-    it is read on and its caveats."""
-    return {k: lic[k] for k in ("statement", "rule_source", "licensed_families", "quantity", "quantity_name", "caveats")}
+    it is read on and its caveats; and where this molecule's licence is withheld for its invariance spread, why (`invariance.withheld_by_spread`)."""
+    kept = {k: lic[k] for k in ("statement", "rule_source", "licensed_families", "quantity", "quantity_name", "caveats")}
+    return kept | ({"withheld": dict(spread_cm=withheld.spread_cm, note=withheld.note, reason=withheld.reason)} if withheld else {})
 
 
 # design note of 17 Nov 2026, §3, as amended on 18 Nov (TASKS 268: N counts the training pool's entries, and labelled molecules
@@ -262,6 +267,11 @@ def statement(name: str, version: str, n_seeds: int, lic: dict, seen_text: str, 
         HELD_BACK_SENTENCE.format(version=version, reason=made_by.held_back) if made_by.held_back else None]))
 
 
+def with_withheld(text: str, withheld: INV.Withheld | None) -> str:
+    """The statement, followed where the molecule's licence is withheld for its invariance spread by the reason (`invariance.withheld_by_spread`)."""
+    return f"{text} {_sentence(withheld.reason)}" if withheld else text
+
+
 def error_bar_models(adm: dict) -> list[dict]:
     """The registry entries of the networks whose records give the error: the measurement networks beside release networks that ran
     (decision 66), else the models that ran — every record written before the decision, and every run of measurement networks."""
@@ -281,6 +291,11 @@ def certificate(folder: Path, catalog: Catalog) -> dict:
     tolerance = catalog.u_band(listed["name"] if listed else rec["name"])
     version = {m["version"] for m in adm["models"]}.pop()
     lic = licence_state(accuracy)
+    geometry = json.loads((folder / "geometry.json").read_text(encoding="utf-8"))
+    ran_sha16 = {PureWindowsPath(m["path"]).name: m["sha16"] for m in adm["models"]}
+    invariance = INV.load_record(tuple(A.model_key(m["path"]) for m in adm["models"]), ran_sha16)
+    linear_group = INV.has_linear_group(geometry["symbols"], geometry["coords_bohr"])
+    withheld = INV.withheld_by_spread(invariance, lic["line_cm"], linear_group=linear_group)
     seen = S.status(adm["smiles"], S.load(tuple(Path(m["path"]) for m in measured)), listed["id"] if listed else None,
                     S.release_index(ran) if released else None)
     made_by = MadeBy(len(P.train_ids(ran)) if released else None, adm.get("release_held_back"),
@@ -296,9 +311,9 @@ def certificate(folder: Path, catalog: Catalog) -> dict:
         | ({"kind": P.NK.RELEASE, "trained_on_molecules": made_by.release_trained_on, "inner_validation": made_by.inner_validation,
             "measurement_models": measured} if released else {})
         | ({"release_held_back": made_by.held_back} if made_by.held_back else {}),
-        accuracy=accuracy, bands=bands(r, accuracy, tolerance, lic["licensed_families"]),
+        accuracy=accuracy, bands=bands(r, accuracy, tolerance, lic["licensed_families"], withheld),
         tolerance=dict(per_region=tolerance, rule=FAMILY_SOURCE),
-        licence=licence_block(lic) | {"concerns": POS.LICENCE_SCOPE},
+        licence=licence_block(lic, withheld) | {"concerns": POS.LICENCE_SCOPE},
         positions=dict(note=POS.note(summary), cautions=POS.cautions(summary), anharmonic=summary, drawn=POS.DRAWN),
         deliveries=rec.get("deliveries", []), delivery=len(rec.get("deliveries", [])) or None,
         cost=dict(steps_s=rec["seconds"], **prices.price_of_run(sum(rec["seconds"].values()), rec["provenance"]["host"])),
@@ -306,7 +321,7 @@ def certificate(folder: Path, catalog: Catalog) -> dict:
                         certificate_commit=commit_hash(), deck_sha16=rec["deck"]["sha16"], low_level_software=rec["low_level"]["b3lyp"].get("software"),
                         host=rec["provenance"]["host"], note=POS.note(summary),
                         reused_from=rec["reuse"]["source"] if "reuse" in rec and rec["reuse"]["reused"] else None),
-        statement=statement(rec["name"], version, len(r.models), lic, seen["text"], made_by))
+        statement=with_withheld(statement(rec["name"], version, len(r.models), lic, seen["text"], made_by), withheld))
 
 
 def _position_lines(bands: list[dict]) -> list[str]:
@@ -330,13 +345,20 @@ def _band_lines(c: dict) -> list[str]:
         step = "—" if b["delta_anh_cm"] is None else f"{b['delta_anh_cm']:+}"
         bar = "—" if b["delta_anh_cm"] is None else ("not measured" if b["step_bar_cm"] is None else b["step_bar_cm"])
         L.append(f"| {b['printed_cm']} | {b['printed']} | {b['network_cm']} | {step} | {bar} | {b['km_mol']} | {lo}–{hi} | {b['b3lyp_cm']} | "
-                 f"{baseline} | {b['family']} | {'yes' if b['licensed'] else 'no'} | {b['error_cm']['a']} / {b['error_cm']['b']} | "
+                 f"{baseline} | {b['family']} | {_licence_cell(b)} | {b['error_cm']['a']} / {b['error_cm']['b']} | "
                  f"{b['lab_region']} | {b['u_band_cm'] if b['u_band_cm'] is not None else '—'} |")
     caveat = caveat_sentence(c["licence"])
     L += ["", f"*{caveat}*"] if caveat else []
     if c["positions"]["anharmonic"]["status"] == POS.APPLIED:
         L += ["", f"Which position each band is printed at ({POS.LICENCE_SCOPE}):", "", *_position_lines(c["bands"])]
     return L
+
+
+def _licence_cell(band: dict) -> str:
+    """A band's 'ω licensed' cell: yes or no, and where its licence is withheld for the molecule's invariance spread, why."""
+    if band["licensed"]:
+        return "yes"
+    return f"no: {band['licence_note']}" if "licence_note" in band else "no"
 
 
 def _product_lines(a: dict) -> list[str]:
