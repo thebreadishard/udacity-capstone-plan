@@ -10,13 +10,21 @@ import pytest
 HERE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(HERE))
 
+from m08 import pipeline as PIPE  # noqa: E402
 from m08 import positions as POS  # noqa: E402
 from m08 import prices  # noqa: E402
+from m08.accuracy import FIRST_ORDER, HOLDOUTS, LICENCE_LINE_CM, PRODUCT, carried_version, product_error_path  # noqa: E402
 from m08.catalog import Catalog, family  # noqa: E402
 from m08.certify import certificate, to_markdown  # noqa: E402
+from m08.licence import caveat_sentence  # noqa: E402
 from m08.licence import state as licence_state  # noqa: E402
 from m08.officer import Request, cap_of, decide, instruction_in, reachable_within, within_line  # noqa: E402
 from m08.replay import execute_run_order  # noqa: E402
+
+# isort: split
+# probes/, on the path through m08.pipeline
+import network_kind as NK  # noqa: E402
+from promotion_read import FAMILIES, reported  # noqa: E402
 
 
 @pytest.fixture(scope="module")
@@ -37,13 +45,37 @@ def test_family_rule_matches_module_03():
     assert family(673.0).startswith("CH-oop") and family(1600.0).startswith("CC-stretch (6.2") and family(3050.0) == "CH-stretch"
 
 
+def carried_product_record() -> dict:
+    """The product-error record of the registry's carried measurement networks as it lies on disk, read here without m08.accuracy's
+    parsing, so that a test can hold the licence against the record itself; it must be of the carried version and name its files."""
+    keys = tuple(PIPE.MR.checkpoint_key(m, PIPE.MR.OUT) for m in PIPE.carried_models(NK.MEASUREMENT))
+    with open(product_error_path(keys), encoding="utf-8") as f:
+        record = json.load(f)
+    assert record["network_version"] == carried_version() and sorted(record["models"]) == sorted(Path(k).name for k in keys)
+    return record
+
+
+def recorded(record: dict, quantity: str, field: str) -> dict[str, dict[str, float]]:
+    """Per family and hold-out one field of the record's quantity, rounded as the records report it."""
+    return {f: {h: reported(record["holdouts"][h]["families"][f][quantity][field], f) for h in HOLDOUTS} for f in FAMILIES}
+
+
+def named(errors: dict[str, dict[str, float]], families: list[str]) -> str:
+    return ", ".join(f"{f} ({' / '.join(str(v) for v in errors[f].values())})" for f in families)
+
+
 def test_the_licence_follows_the_carried_networks_product_error():
-    """Decision 65 (29 Oct 2026, amended 16 Nov 2026) on v1.3's product-error record; the first-order read-outs beside it."""
-    s = licence_state()
-    assert s["licensed_families"] == ["ring-ip", "CH-stretch", "CH-oop", "other"]
+    """Decision 65 (29 Oct 2026, amended 16 Nov 2026) on the carried version's product-error record; the first-order read-outs beside it."""
+    s, record = licence_state(), carried_product_record()
+    errors = recorded(record, PRODUCT, "rms")
+    licensed = [f for f in FAMILIES if max(errors[f].values()) <= LICENCE_LINE_CM]
+    assert s["errors"] == errors and s["licensed_families"] == licensed
     assert s["rule_source"] == "README.md, decision 65 as amended on 16 Nov 2026"
-    assert "other (2.78 / 2.77); not licensed: none — error of the corrected band positions of the seed-mean correction" in s["statement"]
-    assert "other (3.62 / 3.89); no coupled-cluster licence" in s["statement"]                           # first order, clean (a), TASKS 157
+    unlicensed = named(errors, [f for f in FAMILIES if f not in licensed]) or "none"
+    assert s["statement"].startswith(f"licensed at the DFT proxy: {named(errors, licensed) or 'no family'}; not licensed: {unlicensed} — "
+                                     "error of the corrected band positions of the seed-mean correction")
+    first_order = recorded(record, FIRST_ORDER, "seed_mean")                                           # clean (a), TASKS 157
+    assert s["statement"].endswith(f"{named(first_order, FAMILIES)}; no coupled-cluster licence")
 
 
 def rung_one_parent(cat) -> str:
@@ -101,9 +133,12 @@ def test_certificate_sources_and_evidence(cat):
     # TASKS 211: a catalogue record says which position it prints, in the record and on the page
     assert c["positions"] == POS.CATALOGUE and "**Positions.** Positions are harmonic (ω): a catalogue record carries no anharmonic step" in md
     assert "## Spectral shape (cheap rung; harmonic positions and heights)" in md
-    assert c["statement"].endswith("where it is wider than the tolerance. Licence caveat: other on hold-out (a) rests on 8 molecules: the 95 % "
-                                   "interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie "
-                                   "under it).")
+    # the licence's caveat ends the statement: every licensed family whose interval in the carried record reaches above the line
+    lic, holdouts = licence_state(), carried_product_record()["holdouts"]
+    assert c["statement"].endswith("where it is wider than the tolerance." + (" " + caveat_sentence(lic) if lic["caveats"] else ""))
+    crossing = [(f, h) for f in lic["licensed_families"] for h in HOLDOUTS
+                if reported(holdouts[h]["families"][f][PRODUCT]["interval"][1], f) > LICENCE_LINE_CM]
+    assert len(lic["caveats"]) == len(crossing) and all(f"{f} on hold-out ({h}) rests on" in c["statement"] for f, h in crossing)
 
 
 def test_spectral_shape_heights_only_with_an_apt(cat):
@@ -116,7 +151,7 @@ def test_spectral_shape_heights_only_with_an_apt(cat):
     assert b["n_ir_active"] == 7                                            # a2u + 3 × e1u (degenerate pairs); FD leakage below 0.5 % ignored
     acc = b["accuracy"]
     a = acc["holdouts"]["a"]["shape"]
-    assert acc["version"] == "1.3" and a["n_molecules"] == 8 and a["corrected"]["spectrum_overlap"] > a["cheap"]["spectrum_overlap"]  # clean (a)
+    assert acc["version"] == carried_version() and a["n_molecules"] == 8 and a["corrected"]["spectrum_overlap"] > a["cheap"]["spectrum_overlap"]  # clean (a)
     assert a["corrected"]["intensity_error"] < a["cheap"]["intensity_error"] and acc["coupled_cluster"].startswith("not measured")
     n = certificate(cat.find("naphthalene"), cat)
     assert n["spectral_shape"]["kind"] == "positions only" and "Positions only" in to_markdown(n)
