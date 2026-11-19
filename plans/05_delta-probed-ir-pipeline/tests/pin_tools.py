@@ -95,8 +95,9 @@ def stable(record, volatile: frozenset[str]):
 
 
 # A separator is a run of slashes or backslashes: a recorded path appears with one, two or four backslashes per separator, as it sits in
-# one or two levels of JSON strings.
-PLAN_IN_A_PATH = re.compile(r"[A-Za-z]:[\\/]+.*?05_delta-probed-ir-pipeline[\\/]+")
+# one or two levels of JSON strings. The drive letter stands alone and the span holds no space, quote or second colon, so an earlier
+# 'http:/' or 'line:\n' on the same line cannot stretch the match over real text up to a later plan path.
+PLAN_IN_A_PATH = re.compile(r"(?<![A-Za-z0-9])[A-Za-z]:[\\/]+[^\s\"':]*?05_delta-probed-ir-pipeline[\\/]+")
 
 
 def without_checkout(text: str) -> str:
