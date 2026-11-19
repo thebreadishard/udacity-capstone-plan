@@ -9,6 +9,7 @@ import statistics
 from pathlib import Path
 
 from . import paths
+from .molecule import canonical
 
 HERE = Path(__file__).resolve().parent
 PLAN = HERE.parents[2]                       # plans/05_delta-probed-ir-pipeline
@@ -32,15 +33,6 @@ def family(nu: float) -> str:
         if lo <= nu < hi:
             return lab
     return "?"
-
-
-def canonical(smiles: str | None) -> str | None:
-    if not smiles:
-        return None
-    from rdkit import Chem, RDLogger
-    RDLogger.DisableLog("rdApp.*")
-    m = Chem.MolFromSmiles(smiles)
-    return Chem.MolToSmiles(m) if m is not None else None
 
 
 class Catalog:

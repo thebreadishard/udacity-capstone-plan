@@ -8,7 +8,7 @@ import json
 import sys
 
 from . import paths
-from .catalog import canonical
+from .molecule import canonical
 
 M06 = paths.resolve("modules/06_generative_candidates", must_exist=False)
 MANIFEST = paths.resolve("modules/05_support_predictor/corpus/manifest.csv")
@@ -48,7 +48,7 @@ def draw_candidate(seed: int = 0, n: int = 200, temperature: float = 1.0, max_he
         n_valid += 1
         if m.GetNumHeavyAtoms() > max_heavy or rdMolDescriptors.CalcNumAromaticRings(m) < 2:
             continue
-        c = Chem.MolToSmiles(m)
+        c = canonical(s)
         if c in corpus:
             continue
         return dict(smiles=c, heavy_atoms=m.GetNumHeavyAtoms(), aromatic_rings=rdMolDescriptors.CalcNumAromaticRings(m), draw_index=k, n_drawn=n, n_valid=n_valid,

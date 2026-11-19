@@ -12,8 +12,9 @@ from pydantic import BaseModel, Field
 
 from . import positions as POS
 from . import prices
-from .catalog import PLAN, RUNG_LABELS, Catalog, canonical
+from .catalog import PLAN, RUNG_LABELS, Catalog
 from .licence import state as licence_state
+from .molecule import canonical
 
 sys.path.insert(0, str(PLAN / "modules" / "07_agentic_workflows"))
 from steward.gate import check as gate_check  # noqa: E402
