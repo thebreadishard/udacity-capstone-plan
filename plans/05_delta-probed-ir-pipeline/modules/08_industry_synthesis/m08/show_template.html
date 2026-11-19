@@ -480,6 +480,7 @@ function showResult(m) {
       <div class="legend"><span><i style="border-color:var(--accent)"></i>network (corrected)</span><span><i style="border-color:var(--fg-muted)"></i>B3LYP (input)</span>${m.spectrum.curves.truth ? '<span><i style="border-color:var(--ok);border-top-style:dashed"></i>ωB97X truth</span>' : ""}</div></div>
     <div class="cert fade-in"><div class="facts-row">${truth}<span>seeds agree within <b>${m.seed_spread_cm.toFixed(1)} cm⁻¹</b></span></div>
       <table><thead><tr><th>family</th><th class="num">bands</th><th class="num">error (a)</th><th class="num">error (b)</th><th>licence (≤ ${DATA.licence_line_cm} cm⁻¹)</th></tr></thead><tbody>${fam}</tbody></table>
+      ${m.licence_withheld ? `<div class="facts-row"><span>Not licensed for this molecule: ${esc(m.licence_withheld)}.</span></div>` : ""}
       ${m.licence_caveat ? `<div class="facts-row muted"><span>${esc(m.licence_caveat)}</span></div>` : ""}
       <div class="facts-row muted"><span>Positions: ${esc(m.positions)}</span></div>
       <div class="facts-row muted"><span>pipeline ${esc(m.pipeline_version)}</span><span>${esc(m.network.label)}</span><span>${esc(m.errors_text)}</span></div>

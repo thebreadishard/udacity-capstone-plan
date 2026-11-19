@@ -1,0 +1,42 @@
+{
+ "network_version": "1.4",
+ "rotation": {
+  "with_linear_group_cm": 11.2,
+  "n_with_linear_group": 3,
+  "without_linear_group_cm": 0.0,
+  "n_without_linear_group": 4,
+  "n_trials": 8
+ },
+ "mirror_image": {
+  "with_linear_group_cm": 4.46,
+  "n_with_linear_group": 3,
+  "without_linear_group_cm": 2.67,
+  "n_without_linear_group": 4,
+  "n_trials": 1
+ },
+ "xyz_atom_order": {
+  "with_linear_group_cm": 11.03,
+  "n_with_linear_group": 3,
+  "without_linear_group_cm": 2.85,
+  "n_without_linear_group": 4,
+  "n_trials": 12
+ },
+ "source": "scripts/measure_invariance.py of aromir at 7dc0e12b28074eed26a598c166ff4c86782b33f6, 2026-11-19, on the release networks v1.4 ships (tensor sha256: seed-0 4e82e0f99715bb99ef050410410869e2f68cdbcf57f43398cd0d7febee655a14, seed-1 14059360ed350c1bfaa2ca51bb852fa22eccb6e2644226b2250ccb6652a831aa, seed-2 c6451ca246977bd704392d45911233b8d7ea581bfc33268212b54bc504400b0c): benzonitrile, phenylacetylene and diphenylacetylene with a linear group; benzene, biphenyl, 2-methylnaphthalene and phenol without; stored B3LYP geometries and Hessians of thebreadishard/capstone-data (modules/05_support_predictor/corpus/molecules), the trials of v1.3's record",
+ "provenance": {
+  "aromir_commit": "331c87fc69d7ae9bc115d3846d21d8704aed7f56",
+  "aromir_path": "src/aromir/releases/v1.4/invariance.json",
+  "measured_by": "scripts/measure_invariance.py of aromir at 7dc0e12b28074eed26a598c166ff4c86782b33f6 (the record's source)",
+  "networks": {
+   "E7_rungC_v14s3clean_c00_control_release_model_n1132_seed0.pt": "6f52c9d8570fbcf552574eb4d9c6cc08fb29ed1fc4980d5f8c8b48d42649cbe4",
+   "E7_rungC_v14s3clean_c00_control_release_model_n1132_seed1.pt": "1e820b8755078b9025c9cb2d7e49944a2ed17e39c690c28fa4bd2811d0c4a130",
+   "E7_rungC_v14s3clean_c00_control_release_model_n1132_seed2.pt": "bc4de0b6458e44f20eb334bf4cfee023697e190337481fc56a438395422175d1"
+  },
+  "correspondence": "the record measured aromir's v1.4 release tensors (seed-0/1/2.safetensors, sha256 in its source); aromir's release.json at 331c87f names the capstone checkpoints they were exported from by sha16 (release_checkpoints), and those are the first 16 hex digits of the sha256 of the .pt files named here, module 08's release networks of v1.4 (out/MODELS_STATUS.json: carried since 18 Nov 2026)",
+  "tensor_sha256": {
+   "seed-0": "4e82e0f99715bb99ef050410410869e2f68cdbcf57f43398cd0d7febee655a14",
+   "seed-1": "14059360ed350c1bfaa2ca51bb852fa22eccb6e2644226b2250ccb6652a831aa",
+   "seed-2": "c6451ca246977bd704392d45911233b8d7ea581bfc33268212b54bc504400b0c"
+  },
+  "copied": "fields above 'provenance' copied unchanged from the aromir record (TASKS 288)"
+ }
+}
