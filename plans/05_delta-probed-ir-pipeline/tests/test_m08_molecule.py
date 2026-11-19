@@ -23,7 +23,7 @@ from m08 import seen as S
 PIN_MODEL = DATA / "rungC_cc_pin_model.pt"
 TRAINING = (("C", "CL", "F", "H", "N", "O", "S"), (6, 40))
 
-# The expected strings are aromir's (tests/test_admission.py at aromir commit 1636fde): the product and the pipeline name alike.
+# The expected strings are aromir's (tests/test_admission.py at aromir commit 22016ea): the product and the pipeline name alike.
 MAPPED_PAIRS = [("Cc1ccc(O)cc1Cl", "[CH3:5]c1ccc(O)cc1Cl"), ("c1ccc2ncccc2c1", "c1ccc2[n:1]cccc2c1"),
                 ("N#Cc1ccc(F)cc1", "N#[C:2]c1ccc(F)cc1"), ("c1ccccc1", "[cH:1]1ccccc1")]
 AZIDE_WRITINGS = ("[N-]=[N+]=Nc1ccccc1", "N#[N+][N-]c1ccccc1", "N#[N+]N=c1cccc[cH-]1")
@@ -294,6 +294,43 @@ def test_a_heavily_charged_molecule_gets_one_name_and_finishes(smiles):
     started = time.monotonic()
     names = {M.canonical_of(M.from_smiles(smiles).mol) for _ in range(2)}
     assert len(names) == 1 and time.monotonic() - started < HANG_GUARD_S
+
+
+def _refuse_to_enumerate(*_arguments: object) -> None:
+    msg = "a molecule charged only in nitro groups was enumerated"
+    raise AssertionError(msg)
+
+
+@pytest.mark.parametrize("smiles", ["O=[N+]([O-])c1cccc2c([N+](=O)[O-])cccc12",
+                                    "O=[N+]([O-])c1ccc2ccc3ccc([N+](=O)[O-])c4ccc1c2c34",
+                                    "O=[N+]([O-])c1cc([N+](=O)[O-])c2ccc3c([N+](=O)[O-])ccc4ccc1c2c34",
+                                    "O=[N+]([O-])c1cc([N+](=O)[O-])c2ccc3c([N+](=O)[O-])cc([N+](=O)[O-])c4ccc1c2c34"],
+                         ids=["1,5-dinitronaphthalene", "1,8-dinitropyrene", "1,3,6-trinitropyrene", "1,3,6,8-tetranitropyrene"])
+def test_a_molecule_charged_only_in_nitro_groups_is_not_enumerated(smiles, monkeypatch):
+    """Enumerated, 1,5-dinitronaphthalene gave 208 to 295 structures over ten writings, either side of the cap: the writing decided
+    whether it was named by the enumeration. With the skip every writing gets one name, and no enumeration runs."""
+    expected = M.canonical_of(M.from_smiles(smiles).mol)
+    monkeypatch.setattr(Chem, "ResonanceMolSupplier", _refuse_to_enumerate)
+    writings = Chem.MolToRandomSmilesVect(Chem.MolFromSmiles(smiles), 10, randomSeed=7)
+    assert {M.canonical_of(M.from_smiles(writing).mol) for writing in writings} == {expected}
+
+
+def test_a_nitro_compound_with_another_charge_is_still_enumerated(monkeypatch):
+    """The skip is for charges in nitro groups alone: a nitro azide still goes through the enumeration."""
+    calls = []
+    real = Chem.ResonanceMolSupplier
+    monkeypatch.setattr(Chem, "ResonanceMolSupplier", lambda *a: calls.append(1) or real(*a))
+    M.from_smiles("[N-]=[N+]=Nc1ccc([N+](=O)[O-])cc1")
+    assert calls
+
+
+@pytest.mark.parametrize("smiles", ["O=[N+]([O-])c1ccc(O)cc1", "Nc1ccc([N+](=O)[O-])cc1[N+](=O)[O-]", "O=Cc1ccc([N+](=O)[O-])cc1",
+                                    "O=[N+]([O-])c1ccncc1", "O=[N+]([O-])c1ccc(C=O)o1"])
+def test_a_nitro_compound_is_named_as_the_full_enumeration_names_it(smiles, monkeypatch):
+    with_rule = M.canonical_of(M.from_smiles(smiles).mol)
+    monkeypatch.setattr(M, "NITRO_GROUP", Chem.MolFromSmarts("[#0]"))
+    monkeypatch.setattr(M, "RESONANCE_MAX_STRUCTURES", 20000)
+    assert M.canonical_of(M.from_smiles(smiles).mol) == with_rule
 
 
 @pytest.mark.parametrize("smiles", ["O=[N+]([O-])c1ccccc1", "O=[N+]([O-])c1cccc([N+](=O)[O-])c1", "[O-][n+]1ccccc1",
