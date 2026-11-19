@@ -178,7 +178,10 @@ def is_inside(top: Path, path: Path) -> bool:
     A folder in the worktree that is a junction or symlink into the main checkout would make a create or remove act on the main checkout.
     """
     real_top, real = os.path.normcase(os.path.realpath(top)), os.path.normcase(os.path.realpath(path))
-    return os.path.commonpath([real_top, real]) == real_top
+    try:
+        return os.path.commonpath([real_top, real]) == real_top
+    except ValueError:   # another drive on Windows: certainly not inside
+        return False
 
 
 def _same_file(a: Path, b: Path) -> bool:
@@ -233,6 +236,11 @@ def link(checkouts: Checkouts, dirs: tuple[str, ...]) -> LinkReport:
             report.skipped += 1
         else:
             candidates.append(rel)
+    # Before git sees the paths: on Linux `git check-ignore` stops at a path beyond a symlink with its own error, which would hide ours.
+    for rel in candidates:
+        if not is_inside(checkouts.worktree, checkouts.worktree / rel):
+            raise LinkStopped(f"{checkouts.worktree / rel} resolves outside the worktree (a junction or symlink on its path); "
+                              "nothing created", report)
     ignored = ignored_here(checkouts.worktree, candidates)
     for rel in candidates:
         if rel not in ignored:
