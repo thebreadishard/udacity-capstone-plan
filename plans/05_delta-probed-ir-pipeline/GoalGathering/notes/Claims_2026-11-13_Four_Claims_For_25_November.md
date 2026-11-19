@@ -6,9 +6,9 @@ positions are off by 0.80–2.38 cm⁻¹ rms per mode family, where uncorrected 
 fitted scale factor leaves 2.0–15.3 cm⁻¹ per family (that comparison was read on the earlier v1.1). On four molecules of 36–60 atoms,
 larger than the corpus, the error is still 7.9 cm⁻¹. Accuracy against coupled cluster or experiment is not established.
 
-Sources: the licence table below; the uncorrected 23.37 / 22.93 cm⁻¹ on hold-outs (a) / (b) are lines 28 and 30 of
+Sources: the licence table below; the uncorrected 23.37 / 22.93 cm⁻¹ on test sets (a) / (b) are lines 28 and 30 of
 `modules/05_support_predictor/out/v14/E7_rungC_v14s3clean_c00_control.log` ("zero"); the scale factors are
-`modules/05_support_predictor/out/scale_factor_baseline_2026-10-25.md` (hold-out (a); 3.9–14.6 on (b)); the size test is claim (1).
+`modules/05_support_predictor/out/scale_factor_baseline_2026-10-25.md` (test set (a); 3.9–14.6 on (b)); the size test is claim (1).
 
 TASKS 140. The meeting of Wednesday 25 November is a conversation, not a resource request (decision 63). The user speaks with the
 supervisor, she speaks with me through the chat, and the funding of further expensive calculations is discussed on the day (the user,
@@ -23,16 +23,17 @@ asks for the binding text, point her to decisions 63 (the capstone's end point),
 
 | term | meaning |
 |---|---|
-| hold-out (a) | ten small parent molecules (benzene, phenanthrene, fluorene, …) kept out of training since 19 September |
+| test set (a): unseen molecules | ten small parent molecules (benzene, phenanthrene, fluorene, …) kept out of training since 19 September |
 | (a8) | the eight of those ten never trained on under any name; the other two (2-naphthoic acid, benzonitrile) had a twin in training |
-| hold-out (b) | the substituted molecules of two scaffold cores (fluoranthene, fluorene): 70 kept out of training; the 41 frozen on 8 October are read, 40 of them (see below) |
+| test set (b): unseen scaffolds | the substituted molecules of two scaffold cores (fluoranthene, fluorene): 70 kept out of training; the 41 frozen on 8 October are read, 40 of them (see below) |
 | twin | the same molecule under another id or in another charge state, e.g. benzene's radical cation beside benzene |
+| hold-out | In code and records these are the hold-outs: never trained on in any form — a twin or another charge state included |
 | carried / promoted | the carried version is the network the pipeline uses; a new version is promoted to carried by a registered rule (decision 57) |
-| measurement / release networks | measurement networks train without the hold-outs and give every error bar; release networks train on all labelled molecules and are what ships (decision 66) |
-| combined score | each read-out divided by its line (3 cm⁻¹ per family, 0.25 for the coupling ratio), averaged over hold-outs and read-outs, per seed; lower is better |
+| measurement / release networks | measurement networks train without test sets (a) and (b) and give every error bar; release networks train on all labelled molecules and are what ships (decision 66) |
+| combined score | each read-out divided by its line (3 cm⁻¹ per family, 0.25 for the coupling ratio), averaged over the two test sets and the read-outs, per seed; lower is better |
 | families | CH-stretch (C–H stretches), CH-oop (C–H out-of-plane bends, the strong 11–15 µm bands), ring-ip (ring and in-plane modes), 'other' (the remaining, mostly low skeletal modes) |
 | proxy task | a rehearsal in which ωB97X labels stand in for coupled-cluster anchors, so anchor counts can be measured without paying for CC |
-| q_T | the size test's ratio: the network's coupling error (relative to no correction) on four 36–60-atom molecules, over the same on hold-out (a); ≤ 1.3 carries, ≥ 1.8 is steep |
+| q_T | the size test's ratio: the network's coupling error (relative to no correction) on four 36–60-atom molecules, over the same on test set (a); ≤ 1.3 carries, ≥ 1.8 is steep |
 | arm 0 / arm D | the size test's two trainings: arm 0 without molecules of the target size, arm D with one molecule per target size (34–54 atoms) |
 | aromir | the public Python package that carries the pipeline and the release networks (GitHub) |
 
@@ -48,7 +49,7 @@ asks for the binding text, point her to decisions 63 (the capstone's end point),
   The new rule asks the combined score to improve beyond a Student-t line.
 - **Both changes came after data and both favour v1.4.** On the old rules v1.4 is not promoted: it is worse on (a8) CH-oop by 0.05,
   inside two standard errors (`modules/05_support_predictor/out/v14/read_clean_rule-of-26oct.md`). On the old quantity 'other' on
-  hold-out (b) reads 3.68, above the line of 3 (`modules/05_support_predictor/out/v14/read_clean.md`).
+  test set (b) reads 3.68, above the line of 3 (`modules/05_support_predictor/out/v14/read_clean.md`).
 - **The new rule would have refused v1.3.** v1.3's combined-score difference against its predecessor was −0.095, not below the line of
   −0.103 (`probes/results_m1/promotion_rule_test_2026-11-17/rule_test.txt`).
 - **The new rule's power was estimated at v1.4's own observed effect.** On simulated arms it promotes 72.8 % of improvements that size
@@ -72,7 +73,7 @@ Notes to the table:
 - **The licence rests on few molecules in two cells.** CH-oop on (a) rests on 5 molecules (the other three have no such band); its 95 %
   bootstrap interval over molecules is 0.93–3.2 cm⁻¹ and crosses the line. 'other' on (a) rests on 8 molecules; its interval is
   1.45–3.19 and crosses it too (certificate).
-- **Hold-out (b) is read on 40 of its 41 frozen molecules.** The 41st, A2_2c22216564, has an imaginary mode in its B3LYP label
+- **Test set (b) is read on 40 of its 41 frozen molecules.** The 41st, A2_2c22216564, has an imaginary mode in its B3LYP label
   (−35.6 cm⁻¹, `modules/05_support_predictor/corpus/molecules/A2_2c22216564/analytic_check.json`), and molecules with one are left out
   (`probes/results_m1/low_mode_coverage_2026-11-14/coverage.json`). The 70 kept out of training (training log line 4) include
   molecules of the two scaffolds added after the freeze; those are read apart as (b+), 30 molecules.
@@ -87,14 +88,14 @@ Notes to the table:
 - **Benzene's demo certificate is in-sample.** Its rms of 1.13 cm⁻¹ against ωB97X comes from release networks that trained on benzene
   (two of the three fitted it), so it is not an out-of-sample error (certificate; release checks §5).
 
-**The hold-out lesson.** Benzene's radical cation had been trained beside the held-out neutral benzene, because the twin rule matched
+**The test-set lesson.** Benzene's radical cation had been trained beside the neutral benzene of test set (a), because the twin rule matched
 charge.
 
 - With the cation in training, benzene read 5.37, 2.05 and 1.95 cm⁻¹ on the three seeds (`clean_benzene.txt`, 'data' column).
 - On seed 0, a probe without the whole cation layer (about 50 trained cations, benzene's among them;
   `probes/results_m1/v14_data_read_2026-11-17/cation_twins.txt`) brought benzene from 5.37 to 1.47
   (`probes/results_m1/v14_data_read_2026-11-17/probe_nop3c.txt`).
-- The rule now drops a hold-out molecule's twin in every charge state, and the readers refuse a model that trained one. The clean arm
+- The rule now drops a test-set molecule's twin in every charge state, and the readers refuse a model that trained one. The clean arm
   removed seven twins, benzene's cation among them, and reads benzene at 2.35 on the mean of three seeds (2.63, 1.98, 2.44).
 - That is still worse than v1.3's 1.66. The cation is part of the cause, not all of it.
 

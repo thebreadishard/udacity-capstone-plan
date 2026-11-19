@@ -47,9 +47,12 @@ not directly comparable.
 
 **Symmetry (point group).** How a molecule can be rotated or mirrored onto itself; a symmetric molecule needs fewer calculations.
 
-**Hold-out, leave-one-out, scaffold.** In machine learning a *hold-out* is a set of examples kept away from training to test the model honestly.
-*Leave-one-molecule-out* keeps one molecule out at a time. A *scaffold* is the ring skeleton of a molecule without its side groups; holding out whole
-scaffolds tests whether the model generalises to ring systems it has never seen.
+**Test set, leave-one-out, scaffold.** In machine learning a *test set* is a set of examples kept away from training to test the model honestly.
+A *scaffold* is the ring skeleton of a molecule without its side groups. The network has two test sets: *test set (a): unseen molecules*, ten
+small parent molecules such as benzene and phenanthrene, kept out of training since 19 September 2026; and *test set (b): unseen scaffolds*,
+the substituted molecules of two ring skeletons (fluoranthene and fluorene), which tests whether the model generalises to ring systems it has
+never seen. A *twin* is the same molecule under another name or in another charge state. In code and records these are the hold-outs: never trained on in any form — a twin or another charge state included.
+*Leave-one-molecule-out* keeps one molecule out at a time.
 
 **Ladder, rungs, comparison lines.** The project's own list of test molecules from small to large (the *ladder*, each molecule a *rung*), and the
 published predictions it compares itself against (*lines* A, B, C, …: the NASA library, anharmonic calculations, machine-learning predictions).
