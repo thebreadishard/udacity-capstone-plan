@@ -255,3 +255,18 @@ def test_limit_and_ids_do_not_combine(tmp_path):
         bc.build(REPO, str(tmp_path), limit=5, ids={"A_8448043181"})
     with pytest.raises(ValueError, match="no manifest row"):
         bc.build(REPO, str(tmp_path), ids={"Z_nothing"})
+
+
+def test_a_computed_folder_without_its_hessians_is_an_invariant_break(tmp_path):
+    """Before the split of TASKS 272 the missing Hessian was noted and then loaded anyway, so np.load crashed before the invariant
+    report; now the molecule is reported and no file is written for it."""
+    bc.import_module08(os.path.join(REPO, "plans", "05_delta-probed-ir-pipeline"))
+    mdir = tmp_path / "A_missing"
+    mdir.mkdir()
+    (mdir / "result.json").write_text("{}", encoding="utf-8")
+    sources = bc.ExportSources(manifest=[], manifest_path="", ledger_path="", ledger={}, releases={}, replaced=set(), verdicts={},
+                               screen={}, anchored={}, anchor_level={})
+    row, tally = dict(id="A_missing", rung=0, flags=[]), bc.Tally()
+    bc.export_molecule(row, str(mdir), sources, tally, str(tmp_path / "out"))
+    assert tally.problems == ["A_missing: computed but no b3lyp Hessian", "A_missing: computed but no wb97x Hessian"]
+    assert row["rung"] == 0 and not (tmp_path / "out").exists()
