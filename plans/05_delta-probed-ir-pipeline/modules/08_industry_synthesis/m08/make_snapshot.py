@@ -9,6 +9,7 @@ file the submitted module does not need; a file they open is in the snapshot by 
 
     python -m m08.make_snapshot --dry-run     # what would be copied, with its size
     python -m m08.make_snapshot               # copy, and write snapshot/MANIFEST.json
+    python -m m08.make_snapshot --out DIR     # the scenarios' records go to DIR, not the module's out/ (tests)
 
 The manifest holds every path with its bytes and sha256, the plan's commit and the date, so a reader of the submitted repository
 can tell which state of the project the module was frozen from.
@@ -61,13 +62,15 @@ class Recorder:
             return
 
 
-def run_scenarios(recorder: Recorder) -> int:
-    """Run module 08's scenarios in this process with the recorder watching; returns their exit code."""
+def run_scenarios(recorder: Recorder, out: Path | None = None) -> int:
+    """Run module 08's scenarios in this process with the recorder watching; returns their exit code.
+
+    `out` is where the scenarios write their records; None leaves it to run_scenarios, whose default is the module's out/."""
     sys.path.insert(0, str(MODULE))
     import run_scenarios as scenarios  # imported here, after the path is set, so the hook sees everything it opens
 
     sys.addaudithook(recorder.hook)
-    return scenarios.main(["--no-candidate"])
+    return scenarios.main(["--no-candidate"] + (["--out", str(out)] if out is not None else []))
 
 
 def copy_into(snapshot: Path, recorder: Recorder) -> list[dict]:
@@ -96,12 +99,15 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="Freeze what module 08's scenarios read into snapshot/.")
     ap.add_argument("--dry-run", action="store_true", help="list what would be copied, copy nothing")
     ap.add_argument("--snapshot", type=Path, default=paths.SNAPSHOT)
+    ap.add_argument("--out", type=Path, default=None,
+                    help="where the scenarios write their records (default: the module's out/, which the recorder skips); give a folder "
+                         "outside the plan and the repository, or a record the scenarios read back would enter the snapshot")
     a = ap.parse_args(argv)
     if paths.snapshot_mode():
         raise SystemExit("the builder runs in the plan repository; here the module already reads a snapshot")
 
     recorder = Recorder()
-    code = run_scenarios(recorder)
+    code = run_scenarios(recorder, a.out)
     total = sum((paths.PLAN / r).stat().st_size for r in recorder.plan) + sum((paths.REPO / r).stat().st_size for r in recorder.repo)
     print(f"scenarios exit {code}; {len(recorder.plan)} plan files and {len(recorder.repo)} repository files, {total / 1e6:.1f} MB")
     if a.dry_run:
