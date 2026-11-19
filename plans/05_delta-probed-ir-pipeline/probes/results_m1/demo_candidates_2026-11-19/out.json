@@ -1,0 +1,2873 @@
+{
+ "elements": [
+  "C",
+  "CL",
+  "F",
+  "H",
+  "N",
+  "O",
+  "S"
+ ],
+ "sizes": [
+  8,
+  40
+ ],
+ "n_release_ids": 1132,
+ "fit": {
+  "basis_functions": 102,
+  "seconds": 332,
+  "within_half_hour": true,
+  "half_hour_functions": 172,
+  "exponent": 3.23,
+  "runs": 10,
+  "sizes": [
+   102,
+   162,
+   230,
+   320
+  ],
+  "pyscf": "2.14.0",
+  "other_version": true
+ },
+ "rows": [
+  {
+   "name": "toluene",
+   "smiles": "Cc1ccccc1",
+   "atoms": 15,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 121,
+   "seconds": 576,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_e0830a4b11",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "anisole",
+   "smiles": "COc1ccccc1",
+   "atoms": 16,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 136,
+   "seconds": 841,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_3f48f24c66",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "benzaldehyde",
+   "smiles": "O=Cc1ccccc1",
+   "atoms": 14,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 132,
+   "seconds": 763,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_da3341b60b",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "acetophenone",
+   "smiles": "CC(=O)c1ccccc1",
+   "atoms": 17,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 151,
+   "seconds": 1179,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_33134a8efc",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "phenol",
+   "smiles": "Oc1ccccc1",
+   "atoms": 13,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 117,
+   "seconds": 517,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_3db4fe6829",
+     "B",
+     "done"
+    ],
+    [
+     "P3c_3db4fe6829",
+     "P3c",
+     "pending"
+    ]
+   ],
+   "release": [
+    "B_3db4fe6829"
+   ],
+   "release_cation": [],
+   "meas_trained": [
+    "B_3db4fe6829"
+   ],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "aniline",
+   "smiles": "Nc1ccccc1",
+   "atoms": 14,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 119,
+   "seconds": 546,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_9e83fe5a5d",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "benzoic acid",
+   "smiles": "O=C(O)c1ccccc1",
+   "atoms": 15,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 147,
+   "seconds": 1081,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_aaba64840a",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "o-xylene",
+   "smiles": "Cc1ccccc1C",
+   "atoms": 18,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 140,
+   "seconds": 923,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_3551181f91",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "m-xylene",
+   "smiles": "Cc1cccc(C)c1",
+   "atoms": 18,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 140,
+   "seconds": 923,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_65edb23016",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "p-xylene",
+   "smiles": "Cc1ccc(C)cc1",
+   "atoms": 18,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 140,
+   "seconds": 923,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_07cd55a1e1",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "ethylbenzene",
+   "smiles": "CCc1ccccc1",
+   "atoms": 18,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 140,
+   "seconds": 923,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_5a8607cf49",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "styrene",
+   "smiles": "C=Cc1ccccc1",
+   "atoms": 16,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 136,
+   "seconds": 841,
+   "half_hour": true,
+   "corpus": [
+    [
+     "A_8f6ed7c002",
+     "A",
+     "done"
+    ],
+    [
+     "B_8f6ed7c002",
+     "B",
+     "pending"
+    ],
+    [
+     "P3c_8f6ed7c002",
+     "P3c",
+     "pending"
+    ]
+   ],
+   "release": [
+    "A_8f6ed7c002"
+   ],
+   "release_cation": [],
+   "meas_trained": [
+    "A_8f6ed7c002"
+   ],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "benzonitrile",
+   "smiles": "N#Cc1ccccc1",
+   "atoms": 13,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 130,
+   "seconds": 727,
+   "half_hour": true,
+   "corpus": [
+    [
+     "A_3100da3761",
+     "A",
+     "done"
+    ],
+    [
+     "B_3100da3761",
+     "B",
+     "done"
+    ],
+    [
+     "P3c_3100da3761",
+     "P3c",
+     "pending"
+    ]
+   ],
+   "release": [
+    "A_3100da3761",
+    "B_3100da3761"
+   ],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": [
+    "a",
+    [
+     "A_3100da3761"
+    ]
+   ],
+   "meas_cation": []
+  },
+  {
+   "name": "nitrobenzene",
+   "smiles": "O=[N+]([O-])c1ccccc1",
+   "atoms": 14,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 145,
+   "seconds": 1034,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_c699246cbb",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "benzyl alcohol",
+   "smiles": "OCc1ccccc1",
+   "atoms": 16,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 136,
+   "seconds": 841,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_24703bb682",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "methyl benzoate",
+   "smiles": "COC(=O)c1ccccc1",
+   "atoms": 18,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 166,
+   "seconds": 1601,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_cf0c793a92",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "acetanilide",
+   "smiles": "CC(=O)Nc1ccccc1",
+   "atoms": 19,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 168,
+   "seconds": 1665,
+   "half_hour": true,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "o-cresol",
+   "smiles": "Cc1ccccc1O",
+   "atoms": 16,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 136,
+   "seconds": 841,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_e52731943c",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "p-cresol",
+   "smiles": "Cc1ccc(O)cc1",
+   "atoms": 16,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 136,
+   "seconds": 841,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_188d8de09c",
+     "B",
+     "done"
+    ],
+    [
+     "P3c_188d8de09c",
+     "P3c",
+     "done"
+    ]
+   ],
+   "release": [
+    "B_188d8de09c"
+   ],
+   "release_cation": [],
+   "meas_trained": [
+    "B_188d8de09c"
+   ],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "m-cresol",
+   "smiles": "Cc1cccc(O)c1",
+   "atoms": 16,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 136,
+   "seconds": 841,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_838f1e8ca3",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "catechol",
+   "smiles": "Oc1ccccc1O",
+   "atoms": 14,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 132,
+   "seconds": 763,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_88f0ac486b",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "resorcinol",
+   "smiles": "Oc1cccc(O)c1",
+   "atoms": 14,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 132,
+   "seconds": 763,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_c762672fe7",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "hydroquinone",
+   "smiles": "Oc1ccc(O)cc1",
+   "atoms": 14,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 132,
+   "seconds": 763,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_2e2f0f7872",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "p-toluidine",
+   "smiles": "Cc1ccc(N)cc1",
+   "atoms": 17,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 138,
+   "seconds": 881,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_c66f269f67",
+     "B",
+     "done"
+    ],
+    [
+     "P3c_c66f269f67",
+     "P3c",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "N,N-dimethylaniline",
+   "smiles": "CN(C)c1ccccc1",
+   "atoms": 20,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 157,
+   "seconds": 1337,
+   "half_hour": true,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "salicylaldehyde",
+   "smiles": "O=Cc1ccccc1O",
+   "atoms": 15,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 147,
+   "seconds": 1081,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_00bd5ba845",
+     "B",
+     "done"
+    ],
+    [
+     "P3c_00bd5ba845",
+     "P3c",
+     "pending"
+    ]
+   ],
+   "release": [
+    "B_00bd5ba845"
+   ],
+   "release_cation": [],
+   "meas_trained": [
+    "B_00bd5ba845"
+   ],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "methyl salicylate",
+   "smiles": "COC(=O)c1ccccc1O",
+   "atoms": 19,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 181,
+   "seconds": 2118,
+   "half_hour": false,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "mesitylene",
+   "smiles": "Cc1cc(C)cc(C)c1",
+   "atoms": 21,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 159,
+   "seconds": 1393,
+   "half_hour": true,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "cumene",
+   "smiles": "CC(C)c1ccccc1",
+   "atoms": 21,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 159,
+   "seconds": 1393,
+   "half_hour": true,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "phenylacetylene",
+   "smiles": "C#Cc1ccccc1",
+   "atoms": 14,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 132,
+   "seconds": 763,
+   "half_hour": true,
+   "corpus": [
+    [
+     "A_a848c04a21",
+     "A",
+     "done"
+    ],
+    [
+     "B_a848c04a21",
+     "B",
+     "pending"
+    ],
+    [
+     "P3c_a848c04a21",
+     "P3c",
+     "pending"
+    ]
+   ],
+   "release": [
+    "A_a848c04a21"
+   ],
+   "release_cation": [],
+   "meas_trained": [
+    "A_a848c04a21"
+   ],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "4-hydroxybenzaldehyde",
+   "smiles": "O=Cc1ccc(O)cc1",
+   "atoms": 15,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 147,
+   "seconds": 1081,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_81152bb7c8",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "vanillin",
+   "smiles": "COc1cc(C=O)ccc1O",
+   "atoms": 19,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 181,
+   "seconds": 2118,
+   "half_hour": false,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "paracetamol",
+   "smiles": "CC(=O)Nc1ccc(O)cc1",
+   "atoms": 20,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 183,
+   "seconds": 2195,
+   "half_hour": false,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "aspirin",
+   "smiles": "CC(=O)Oc1ccccc1C(=O)O",
+   "atoms": 21,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 211,
+   "seconds": 3477,
+   "half_hour": false,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "thymol",
+   "smiles": "Cc1ccc(C(C)C)c(O)c1",
+   "atoms": 25,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 193,
+   "seconds": 2607,
+   "half_hour": false,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "eugenol",
+   "smiles": "C=CCc1ccc(O)c(OC)c1",
+   "atoms": 24,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 204,
+   "seconds": 3118,
+   "half_hour": false,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "cinnamaldehyde",
+   "smiles": "O=C/C=C/c1ccccc1",
+   "atoms": 18,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 166,
+   "seconds": 1601,
+   "half_hour": true,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "anthranilic acid",
+   "smiles": "Nc1ccccc1C(=O)O",
+   "atoms": 17,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 164,
+   "seconds": 1540,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_563c201278",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "4-nitrophenol",
+   "smiles": "O=[N+]([O-])c1ccc(O)cc1",
+   "atoms": 15,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 160,
+   "seconds": 1422,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_b1290ad655",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "benzophenone",
+   "smiles": "O=C(c1ccccc1)c1ccccc1",
+   "atoms": 24,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 230,
+   "seconds": 4595,
+   "half_hour": false,
+   "corpus": [
+    [
+     "A_08dde334d8",
+     "A",
+     "done"
+    ],
+    [
+     "P3c_08dde334d8",
+     "P3c",
+     "pending"
+    ]
+   ],
+   "release": [
+    "A_08dde334d8"
+   ],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": [
+    "a",
+    [
+     "A_08dde334d8"
+    ]
+   ],
+   "meas_cation": []
+  },
+  {
+   "name": "diphenyl ether",
+   "smiles": "c1ccc(Oc2ccccc2)cc1",
+   "atoms": 23,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 215,
+   "seconds": 3695,
+   "half_hour": false,
+   "corpus": [
+    [
+     "A_5a75c6c39e",
+     "A",
+     "done"
+    ],
+    [
+     "P3c_5a75c6c39e",
+     "P3c",
+     "pending"
+    ]
+   ],
+   "release": [
+    "A_5a75c6c39e"
+   ],
+   "release_cation": [],
+   "meas_trained": [
+    "A_5a75c6c39e"
+   ],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "2-picoline",
+   "smiles": "Cc1ccccn1",
+   "atoms": 14,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 119,
+   "seconds": 546,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_954284efbd",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "3-picoline",
+   "smiles": "Cc1cccnc1",
+   "atoms": 14,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 119,
+   "seconds": 546,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_98a51e3fe1",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "4-picoline",
+   "smiles": "Cc1ccncc1",
+   "atoms": 14,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 119,
+   "seconds": 546,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_5a63b4134e",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "2,6-lutidine",
+   "smiles": "Cc1cccc(C)n1",
+   "atoms": 17,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 138,
+   "seconds": 881,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_80bc326a7d",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "2-aminopyridine",
+   "smiles": "Nc1ccccn1",
+   "atoms": 13,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 117,
+   "seconds": 517,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_98b9523eac",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "nicotinamide",
+   "smiles": "NC(=O)c1cccnc1",
+   "atoms": 15,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 147,
+   "seconds": 1081,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_9d292a1f45",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "nicotine",
+   "smiles": "CN1CCC[C@H]1c1cccnc1",
+   "atoms": 26,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 208,
+   "seconds": 3320,
+   "half_hour": false,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "pyridine",
+   "smiles": "c1ccncc1",
+   "atoms": 11,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 100,
+   "seconds": 311,
+   "half_hour": true,
+   "corpus": [
+    [
+     "A_6e858b26e5",
+     "A",
+     "done"
+    ],
+    [
+     "P3c_6e858b26e5",
+     "P3c",
+     "done"
+    ]
+   ],
+   "release": [
+    "A_6e858b26e5"
+   ],
+   "release_cation": [
+    "P3c_6e858b26e5"
+   ],
+   "meas_trained": [
+    "A_6e858b26e5"
+   ],
+   "holdout": null,
+   "meas_cation": [
+    "P3c_6e858b26e5"
+   ]
+  },
+  {
+   "name": "pyrimidine",
+   "smiles": "c1cncnc1",
+   "atoms": 10,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 98,
+   "seconds": 292,
+   "half_hour": true,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "pyrazine",
+   "smiles": "c1cnccn1",
+   "atoms": 10,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 98,
+   "seconds": 292,
+   "half_hour": true,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "pyridazine",
+   "smiles": "c1ccnnc1",
+   "atoms": 10,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 98,
+   "seconds": 292,
+   "half_hour": true,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "quinoline",
+   "smiles": "c1ccc2ncccc2c1",
+   "atoms": 17,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 164,
+   "seconds": 1540,
+   "half_hour": true,
+   "corpus": [
+    [
+     "A_ff98e1160d",
+     "A",
+     "done"
+    ],
+    [
+     "P3c_ff98e1160d",
+     "P3c",
+     "done"
+    ]
+   ],
+   "release": [
+    "A_ff98e1160d"
+   ],
+   "release_cation": [
+    "P3c_ff98e1160d"
+   ],
+   "meas_trained": [
+    "A_ff98e1160d"
+   ],
+   "holdout": null,
+   "meas_cation": [
+    "P3c_ff98e1160d"
+   ]
+  },
+  {
+   "name": "isoquinoline",
+   "smiles": "c1ccc2cnccc2c1",
+   "atoms": 17,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 164,
+   "seconds": 1540,
+   "half_hour": true,
+   "corpus": [
+    [
+     "A_d09f8d1ef8",
+     "A",
+     "done"
+    ],
+    [
+     "P3c_d09f8d1ef8",
+     "P3c",
+     "pending"
+    ]
+   ],
+   "release": [
+    "A_d09f8d1ef8"
+   ],
+   "release_cation": [],
+   "meas_trained": [
+    "A_d09f8d1ef8"
+   ],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "quinoxaline",
+   "smiles": "c1ccc2nccnc2c1",
+   "atoms": 16,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 162,
+   "seconds": 1480,
+   "half_hour": true,
+   "corpus": [
+    [
+     "A_7aa232d4e9",
+     "A",
+     "done"
+    ],
+    [
+     "P3c_7aa232d4e9",
+     "P3c",
+     "pending"
+    ]
+   ],
+   "release": [
+    "A_7aa232d4e9"
+   ],
+   "release_cation": [],
+   "meas_trained": [
+    "A_7aa232d4e9"
+   ],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "quinazoline",
+   "smiles": "c1ccc2ncncc2c1",
+   "atoms": 16,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 162,
+   "seconds": 1480,
+   "half_hour": true,
+   "corpus": [
+    [
+     "A_d295f2fa80",
+     "A",
+     "done"
+    ],
+    [
+     "P3c_d295f2fa80",
+     "P3c",
+     "pending"
+    ]
+   ],
+   "release": [
+    "A_d295f2fa80"
+   ],
+   "release_cation": [],
+   "meas_trained": [
+    "A_d295f2fa80"
+   ],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "cinnoline",
+   "smiles": "c1ccc2nnccc2c1",
+   "atoms": 16,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 162,
+   "seconds": 1480,
+   "half_hour": true,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "indole",
+   "smiles": "c1ccc2[nH]ccc2c1",
+   "atoms": 16,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 149,
+   "seconds": 1129,
+   "half_hour": true,
+   "corpus": [
+    [
+     "A_76e053ce6a",
+     "A",
+     "done"
+    ],
+    [
+     "P3c_76e053ce6a",
+     "P3c",
+     "pending"
+    ]
+   ],
+   "release": [
+    "A_76e053ce6a"
+   ],
+   "release_cation": [],
+   "meas_trained": [
+    "A_76e053ce6a"
+   ],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "pyrrole",
+   "smiles": "c1cc[nH]c1",
+   "atoms": 10,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 85,
+   "seconds": 184,
+   "half_hour": true,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "furan",
+   "smiles": "c1ccoc1",
+   "atoms": 9,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 83,
+   "seconds": 170,
+   "half_hour": true,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "thiophene",
+   "smiles": "c1ccsc1",
+   "atoms": 9,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 87,
+   "seconds": 198,
+   "half_hour": true,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "benzofuran",
+   "smiles": "c1ccc2occc2c1",
+   "atoms": 15,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 147,
+   "seconds": 1081,
+   "half_hour": true,
+   "corpus": [
+    [
+     "A_fead28d796",
+     "A",
+     "done"
+    ]
+   ],
+   "release": [
+    "A_fead28d796"
+   ],
+   "release_cation": [],
+   "meas_trained": [
+    "A_fead28d796"
+   ],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "benzothiophene",
+   "smiles": "c1ccc2sccc2c1",
+   "atoms": 15,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 151,
+   "seconds": 1179,
+   "half_hour": true,
+   "corpus": [
+    [
+     "A_9d7c66d274",
+     "A",
+     "done"
+    ]
+   ],
+   "release": [
+    "A_9d7c66d274"
+   ],
+   "release_cation": [],
+   "meas_trained": [
+    "A_9d7c66d274"
+   ],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "benzimidazole",
+   "smiles": "c1ccc2[nH]cnc2c1",
+   "atoms": 15,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 147,
+   "seconds": 1081,
+   "half_hour": true,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "benzoxazole",
+   "smiles": "c1ccc2ocnc2c1",
+   "atoms": 14,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 145,
+   "seconds": 1034,
+   "half_hour": true,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "indazole",
+   "smiles": "c1ccc2[nH]ncc2c1",
+   "atoms": 15,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 147,
+   "seconds": 1081,
+   "half_hour": true,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "carbazole",
+   "smiles": "c1ccc2c(c1)[nH]c1ccccc12",
+   "atoms": 22,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 213,
+   "seconds": 3585,
+   "half_hour": false,
+   "corpus": [
+    [
+     "A_8152ea74fd",
+     "A",
+     "done"
+    ]
+   ],
+   "release": [
+    "A_8152ea74fd"
+   ],
+   "release_cation": [],
+   "meas_trained": [
+    "A_8152ea74fd"
+   ],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "dibenzofuran",
+   "smiles": "c1ccc2c(c1)oc1ccccc12",
+   "atoms": 21,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 211,
+   "seconds": 3477,
+   "half_hour": false,
+   "corpus": [
+    [
+     "A_20db5837c9",
+     "A",
+     "done"
+    ]
+   ],
+   "release": [
+    "A_20db5837c9"
+   ],
+   "release_cation": [],
+   "meas_trained": [
+    "A_20db5837c9"
+   ],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "coumarin",
+   "smiles": "O=c1ccc2ccccc2o1",
+   "atoms": 17,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 177,
+   "seconds": 1970,
+   "half_hour": false,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "caffeine",
+   "smiles": "Cn1c(=O)c2c(ncn2C)n(C)c1=O",
+   "atoms": 24,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 230,
+   "seconds": 4595,
+   "half_hour": false,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "purine",
+   "smiles": "c1ncc2[nH]cnc2n1",
+   "atoms": 13,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 143,
+   "seconds": 989,
+   "half_hour": true,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "adenine",
+   "smiles": "Nc1ncnc2[nH]cnc12",
+   "atoms": 15,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 160,
+   "seconds": 1422,
+   "half_hour": true,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "naphthalene",
+   "smiles": "c1ccc2ccccc2c1",
+   "atoms": 18,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 166,
+   "seconds": 1601,
+   "half_hour": true,
+   "corpus": [
+    [
+     "A_01f3186607",
+     "A",
+     "done"
+    ],
+    [
+     "P3c_01f3186607",
+     "P3c",
+     "done"
+    ]
+   ],
+   "release": [
+    "A_01f3186607"
+   ],
+   "release_cation": [],
+   "meas_trained": [
+    "A_01f3186607"
+   ],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "1-methylnaphthalene",
+   "smiles": "Cc1cccc2ccccc12",
+   "atoms": 21,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 185,
+   "seconds": 2273,
+   "half_hour": false,
+   "corpus": [
+    [
+     "A_ea73419366",
+     "A",
+     "done"
+    ],
+    [
+     "B_ea73419366",
+     "B",
+     "pending"
+    ],
+    [
+     "P3c_ea73419366",
+     "P3c",
+     "pending"
+    ]
+   ],
+   "release": [
+    "A_ea73419366"
+   ],
+   "release_cation": [],
+   "meas_trained": [
+    "A_ea73419366"
+   ],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "2-methylnaphthalene",
+   "smiles": "Cc1ccc2ccccc2c1",
+   "atoms": 21,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 185,
+   "seconds": 2273,
+   "half_hour": false,
+   "corpus": [
+    [
+     "A_69789470db",
+     "A",
+     "done"
+    ],
+    [
+     "B_69789470db",
+     "B",
+     "pending"
+    ],
+    [
+     "P3c_69789470db",
+     "P3c",
+     "pending"
+    ]
+   ],
+   "release": [
+    "A_69789470db"
+   ],
+   "release_cation": [],
+   "meas_trained": [
+    "A_69789470db"
+   ],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "1-naphthol",
+   "smiles": "Oc1cccc2ccccc12",
+   "atoms": 19,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 181,
+   "seconds": 2118,
+   "half_hour": false,
+   "corpus": [
+    [
+     "A_466972291d",
+     "A",
+     "done"
+    ],
+    [
+     "B_466972291d",
+     "B",
+     "pending"
+    ],
+    [
+     "P3c_466972291d",
+     "P3c",
+     "pending"
+    ]
+   ],
+   "release": [
+    "A_466972291d"
+   ],
+   "release_cation": [],
+   "meas_trained": [
+    "A_466972291d"
+   ],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "2-naphthol",
+   "smiles": "Oc1ccc2ccccc2c1",
+   "atoms": 19,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 181,
+   "seconds": 2118,
+   "half_hour": false,
+   "corpus": [
+    [
+     "B_884132846f",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "biphenyl",
+   "smiles": "c1ccc(-c2ccccc2)cc1",
+   "atoms": 22,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 200,
+   "seconds": 2925,
+   "half_hour": false,
+   "corpus": [
+    [
+     "A_fdc27f1bd1",
+     "A",
+     "done"
+    ],
+    [
+     "P3c_fdc27f1bd1",
+     "P3c",
+     "pending"
+    ]
+   ],
+   "release": [
+    "A_fdc27f1bd1"
+   ],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": [
+    "a",
+    [
+     "A_fdc27f1bd1"
+    ]
+   ],
+   "meas_cation": []
+  },
+  {
+   "name": "fluorene",
+   "smiles": "c1ccc2c(c1)Cc1ccccc1-2",
+   "atoms": 23,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 215,
+   "seconds": 3695,
+   "half_hour": false,
+   "corpus": [
+    [
+     "A_e72997e726",
+     "A",
+     "done"
+    ],
+    [
+     "P3c_e72997e726",
+     "P3c",
+     "pending"
+    ]
+   ],
+   "release": [
+    "A_e72997e726"
+   ],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": [
+    "a",
+    [
+     "A_e72997e726"
+    ]
+   ],
+   "meas_cation": []
+  },
+  {
+   "name": "azulene",
+   "smiles": "c1ccc2cccc-2cc1",
+   "atoms": 18,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 166,
+   "seconds": 1601,
+   "half_hour": true,
+   "corpus": [
+    [
+     "A_d9139359ab",
+     "A",
+     "done"
+    ]
+   ],
+   "release": [
+    "A_d9139359ab"
+   ],
+   "release_cation": [],
+   "meas_trained": [
+    "A_d9139359ab"
+   ],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "acenaphthylene",
+   "smiles": "C1=Cc2cccc3cccc1c23",
+   "atoms": 20,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 196,
+   "seconds": 2740,
+   "half_hour": false,
+   "corpus": [
+    [
+     "A_45187bb7c8",
+     "A",
+     "done"
+    ]
+   ],
+   "release": [
+    "A_45187bb7c8"
+   ],
+   "release_cation": [],
+   "meas_trained": [
+    "A_45187bb7c8"
+   ],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "acenaphthene",
+   "smiles": "c1cc2c3c(cccc3c1)CC2",
+   "atoms": 22,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 200,
+   "seconds": 2925,
+   "half_hour": false,
+   "corpus": [
+    [
+     "A_8d1f3c46b0",
+     "A",
+     "done"
+    ]
+   ],
+   "release": [
+    "A_8d1f3c46b0"
+   ],
+   "release_cation": [],
+   "meas_trained": [
+    "A_8d1f3c46b0"
+   ],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "anthracene",
+   "smiles": "c1ccc2cc3ccccc3cc2c1",
+   "atoms": 24,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 230,
+   "seconds": 4595,
+   "half_hour": false,
+   "corpus": [
+    [
+     "A_a1e6ec1862",
+     "A",
+     "done"
+    ],
+    [
+     "P3c_a1e6ec1862",
+     "P3c",
+     "done"
+    ]
+   ],
+   "release": [
+    "A_a1e6ec1862"
+   ],
+   "release_cation": [
+    "P3c_a1e6ec1862"
+   ],
+   "meas_trained": [
+    "A_a1e6ec1862"
+   ],
+   "holdout": null,
+   "meas_cation": [
+    "P3c_a1e6ec1862"
+   ]
+  },
+  {
+   "name": "phenanthrene",
+   "smiles": "c1ccc2c(c1)ccc1ccccc12",
+   "atoms": 24,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 230,
+   "seconds": 4595,
+   "half_hour": false,
+   "corpus": [
+    [
+     "A_541c53d1a5",
+     "A",
+     "done"
+    ],
+    [
+     "P3c_541c53d1a5",
+     "P3c",
+     "done"
+    ]
+   ],
+   "release": [
+    "A_541c53d1a5"
+   ],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": [
+    "a",
+    [
+     "A_541c53d1a5"
+    ]
+   ],
+   "meas_cation": []
+  },
+  {
+   "name": "indene",
+   "smiles": "C1=Cc2ccccc2C1",
+   "atoms": 17,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 151,
+   "seconds": 1179,
+   "half_hour": true,
+   "corpus": [
+    [
+     "A_90df3e4aa9",
+     "A",
+     "done"
+    ],
+    [
+     "P3c_90df3e4aa9",
+     "P3c",
+     "pending"
+    ]
+   ],
+   "release": [
+    "A_90df3e4aa9"
+   ],
+   "release_cation": [],
+   "meas_trained": [
+    "A_90df3e4aa9"
+   ],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "tetralin",
+   "smiles": "c1ccc2c(c1)CCCC2",
+   "atoms": 22,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 174,
+   "seconds": 1865,
+   "half_hour": false,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "chlorobenzene",
+   "smiles": "Clc1ccccc1",
+   "atoms": 12,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 119,
+   "seconds": 546,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_1ed01fda1b",
+     "B",
+     "done"
+    ],
+    [
+     "P3c_1ed01fda1b",
+     "P3c",
+     "pending"
+    ]
+   ],
+   "release": [
+    "B_1ed01fda1b"
+   ],
+   "release_cation": [],
+   "meas_trained": [
+    "B_1ed01fda1b"
+   ],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "fluorobenzene",
+   "smiles": "Fc1ccccc1",
+   "atoms": 12,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 115,
+   "seconds": 489,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_8b12a55d3a",
+     "B",
+     "done"
+    ],
+    [
+     "P3c_8b12a55d3a",
+     "P3c",
+     "done"
+    ]
+   ],
+   "release": [
+    "B_8b12a55d3a"
+   ],
+   "release_cation": [
+    "P3c_8b12a55d3a"
+   ],
+   "meas_trained": [
+    "B_8b12a55d3a"
+   ],
+   "holdout": null,
+   "meas_cation": [
+    "P3c_8b12a55d3a"
+   ]
+  },
+  {
+   "name": "1,2-dichlorobenzene",
+   "smiles": "Clc1ccccc1Cl",
+   "atoms": 12,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 136,
+   "seconds": 841,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_b1858926df",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "4-fluorotoluene",
+   "smiles": "Cc1ccc(F)cc1",
+   "atoms": 15,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 134,
+   "seconds": 801,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_4ab88e3abc",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "benzene",
+   "smiles": "c1ccccc1",
+   "atoms": 12,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 102,
+   "seconds": 332,
+   "half_hour": true,
+   "corpus": [
+    [
+     "A_8448043181",
+     "A",
+     "done"
+    ],
+    [
+     "P3c_8448043181",
+     "P3c",
+     "done"
+    ]
+   ],
+   "release": [
+    "A_8448043181"
+   ],
+   "release_cation": [
+    "P3c_8448043181"
+   ],
+   "meas_trained": [],
+   "holdout": [
+    "a",
+    [
+     "A_8448043181"
+    ]
+   ],
+   "meas_cation": []
+  },
+  {
+   "name": "ibuprofen",
+   "smiles": "CC(C)Cc1ccc(C(C)C(=O)O)cc1",
+   "atoms": 33,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 261,
+   "seconds": 6915,
+   "half_hour": false,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "2-acetylpyridine",
+   "smiles": "CC(=O)c1ccccn1",
+   "atoms": 16,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 149,
+   "seconds": 1129,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_ed5260c2cb",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "4-methylanisole",
+   "smiles": "COc1ccc(C)cc1",
+   "atoms": 19,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 155,
+   "seconds": 1283,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_cb62cc9459",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "phenetole",
+   "smiles": "CCOc1ccccc1",
+   "atoms": 19,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 155,
+   "seconds": 1283,
+   "half_hour": true,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "benzamide",
+   "smiles": "NC(=O)c1ccccc1",
+   "atoms": 16,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 149,
+   "seconds": 1129,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_daaa473345",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "2-methylindole",
+   "smiles": "Cc1cc2ccccc2[nH]1",
+   "atoms": 19,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 168,
+   "seconds": 1665,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_01dbe38ea1",
+     "B",
+     "done"
+    ],
+    [
+     "P3c_01dbe38ea1",
+     "P3c",
+     "pending"
+    ]
+   ],
+   "release": [
+    "B_01dbe38ea1"
+   ],
+   "release_cation": [],
+   "meas_trained": [
+    "B_01dbe38ea1"
+   ],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "3-methylindole (skatole)",
+   "smiles": "Cc1c[nH]c2ccccc12",
+   "atoms": 19,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 168,
+   "seconds": 1665,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_aae1cdcdab",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "8-hydroxyquinoline",
+   "smiles": "Oc1cccc2cccnc12",
+   "atoms": 18,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 179,
+   "seconds": 2043,
+   "half_hour": false,
+   "corpus": [
+    [
+     "B_02b3315726",
+     "B",
+     "done"
+    ],
+    [
+     "P3c_02b3315726",
+     "P3c",
+     "pending"
+    ]
+   ],
+   "release": [
+    "B_02b3315726"
+   ],
+   "release_cation": [],
+   "meas_trained": [
+    "B_02b3315726"
+   ],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "2,2'-bipyridine",
+   "smiles": "c1ccc(-c2ccccn2)nc1",
+   "atoms": 20,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 196,
+   "seconds": 2740,
+   "half_hour": false,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "phenoxazine",
+   "smiles": "c1ccc2c(c1)Nc1ccccc1O2",
+   "atoms": 23,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 228,
+   "seconds": 4467,
+   "half_hour": false,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "xanthene",
+   "smiles": "c1ccc2c(c1)Cc1ccccc1O2",
+   "atoms": 24,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 230,
+   "seconds": 4595,
+   "half_hour": false,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "1,3,5-trifluorobenzene",
+   "smiles": "Fc1cc(F)cc(F)c1",
+   "atoms": 12,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 141,
+   "seconds": 945,
+   "half_hour": true,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "hexafluorobenzene",
+   "smiles": "Fc1c(F)c(F)c(F)c(F)c1F",
+   "atoms": 12,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 180,
+   "seconds": 2081,
+   "half_hour": false,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "2-fluoropyridine",
+   "smiles": "Fc1ccccn1",
+   "atoms": 11,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 113,
+   "seconds": 462,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_7148015d8e",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "thioanisole",
+   "smiles": "CSc1ccccc1",
+   "atoms": 16,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 140,
+   "seconds": 923,
+   "half_hour": true,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "2-methylthiophene",
+   "smiles": "Cc1cccs1",
+   "atoms": 12,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 106,
+   "seconds": 376,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_75cff4ffb1",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "2-methylfuran",
+   "smiles": "Cc1ccco1",
+   "atoms": 12,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 102,
+   "seconds": 332,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_29ee41c012",
+     "B",
+     "done"
+    ]
+   ],
+   "release": [
+    "B_29ee41c012"
+   ],
+   "release_cation": [],
+   "meas_trained": [
+    "B_29ee41c012"
+   ],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "furfural",
+   "smiles": "O=Cc1ccco1",
+   "atoms": 11,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 113,
+   "seconds": 462,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_ae8d6e0581",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "1-methylpyrrole",
+   "smiles": "Cn1cccc1",
+   "atoms": 13,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 104,
+   "seconds": 353,
+   "half_hour": true,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "imidazole",
+   "smiles": "c1c[nH]cn1",
+   "atoms": 9,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 83,
+   "seconds": 170,
+   "half_hour": true,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "1-methylimidazole",
+   "smiles": "Cn1ccnc1",
+   "atoms": 12,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 102,
+   "seconds": 332,
+   "half_hour": true,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "oxazole",
+   "smiles": "c1cocn1",
+   "atoms": 8,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 81,
+   "seconds": 157,
+   "half_hour": true,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "2,6-dimethylphenol",
+   "smiles": "Cc1cccc(C)c1O",
+   "atoms": 19,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 155,
+   "seconds": 1283,
+   "half_hour": true,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "4-ethylphenol",
+   "smiles": "CCc1ccc(O)cc1",
+   "atoms": 19,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 155,
+   "seconds": 1283,
+   "half_hour": true,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "4-methoxyphenol",
+   "smiles": "COc1ccc(O)cc1",
+   "atoms": 17,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 151,
+   "seconds": 1179,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_e4c1b75812",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "p-anisaldehyde",
+   "smiles": "COc1ccc(C=O)cc1",
+   "atoms": 18,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 166,
+   "seconds": 1601,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_a49258eda0",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "4-methylbenzaldehyde",
+   "smiles": "Cc1ccc(C=O)cc1",
+   "atoms": 17,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 151,
+   "seconds": 1179,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_37354e4ae0",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "4-aminobenzoic acid",
+   "smiles": "Nc1ccc(C(=O)O)cc1",
+   "atoms": 17,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 164,
+   "seconds": 1540,
+   "half_hour": true,
+   "corpus": [
+    [
+     "B_3482c22008",
+     "B",
+     "pending"
+    ]
+   ],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "phthalic anhydride",
+   "smiles": "O=C1OC(=O)c2ccccc21",
+   "atoms": 15,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 173,
+   "seconds": 1830,
+   "half_hour": false,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "phthalimide",
+   "smiles": "O=C1NC(=O)c2ccccc21",
+   "atoms": 16,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 175,
+   "seconds": 1899,
+   "half_hour": false,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "benzil",
+   "smiles": "O=C(C(=O)c1ccccc1)c1ccccc1",
+   "atoms": 26,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 260,
+   "seconds": 6829,
+   "half_hour": false,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "trans-stilbene",
+   "smiles": "C(=C\\c1ccccc1)/c1ccccc1",
+   "atoms": 26,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 234,
+   "seconds": 4858,
+   "half_hour": false,
+   "corpus": [
+    [
+     "A_7a57a52879",
+     "A",
+     "done"
+    ],
+    [
+     "P3c_7a57a52879",
+     "P3c",
+     "pending"
+    ]
+   ],
+   "release": [
+    "A_7a57a52879"
+   ],
+   "release_cation": [],
+   "meas_trained": [
+    "A_7a57a52879"
+   ],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "diphenylmethane",
+   "smiles": "c1ccc(Cc2ccccc2)cc1",
+   "atoms": 25,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 219,
+   "seconds": 3922,
+   "half_hour": false,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  },
+  {
+   "name": "1-indanone",
+   "smiles": "O=C1CCc2ccccc21",
+   "atoms": 18,
+   "inside_sizes": true,
+   "gates": [],
+   "nbf": 166,
+   "seconds": 1601,
+   "half_hour": true,
+   "corpus": [],
+   "release": [],
+   "release_cation": [],
+   "meas_trained": [],
+   "holdout": null,
+   "meas_cation": []
+  }
+ ]
+}
