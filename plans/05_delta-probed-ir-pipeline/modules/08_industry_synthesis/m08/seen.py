@@ -30,9 +30,10 @@ TEXT = {
     "catalogue": "in the catalogue ({ids}) but not among the molecules the network trained on",
     "unseen": "not in the catalogue: the network has not seen it",
     # aromir's sentence (certificate.py): an xyz request names its sulfoxide's configuration, the training SMILES leave it open
-    "stereoisomer": "a stereoisomer of it, or the molecule itself written with other stereo labels, is in the network's training set ({ids})",
-    "stereoisomer_held_out": "a stereoisomer of it, or the molecule itself written with other stereo labels, is held out, hold-out "
-                             "({h}) ({ids}): never trained on",
+    "stereoisomer": "the molecule with other or no stereo labels (a stereoisomer, or a configuration this request leaves open) is in the "
+                    "network's training set ({ids})",
+    "stereoisomer_held_out": "the molecule with other or no stereo labels (a stereoisomer, or a configuration this request leaves open) is "
+                             "held out, hold-out ({h}) ({ids}): never trained on",
     "unseen_neutral": "not in the catalogue as a neutral molecule: the network has not seen it as one",
     # decision 66 (design note of 17 Nov 2026, §3): the line for a molecule the release networks trained on
     "release_trained": "in the release networks' training data: the error bars are not an out-of-sample error for this molecule; "
@@ -133,18 +134,29 @@ def status(smiles: str, seen: Seen, listed_id: str | None, release: Seen | None 
     return got | {"cation_trained": cations, "text": f"{head}; {TEXT['cation_trained'].format(ids=', '.join(cations))}"}
 
 
+def only_mirror_images(c: str) -> bool:
+    """Whether the molecule's one stereo element is one tetrahedral centre, so its configurations are a molecule and its mirror image,
+    whose infrared spectra are the same. Every potential stereo element counts, specified or not (`Chem.FindPotentialStereo`, as in
+    RDKit's `Code/GraphMol/Wrap/rough_test.py::testFindPotentialStereo`)."""
+    from rdkit import Chem
+
+    elements = list(Chem.FindPotentialStereo(Chem.MolFromSmiles(c)))
+    return len(elements) == 1 and elements[0].type == Chem.StereoType.Atom_Tetrahedral
+
+
 def covering_key(c: str | None, seen: Seen, release: Seen | None) -> str | None:
-    """The key the molecule is looked up under: its own canonical SMILES when an index holds it; else that SMILES without stereo
-    labels when an index holds that — a row without stereo marks covers every configuration (an xyz sulfoxide names its
-    configuration, the training SMILES leave it open); else the index key with the same FixedH InChIKey (an empty key matches
-    nothing); else its own."""
+    """The key the molecule is looked up under: its own canonical SMILES when an index holds it; else, for a molecule whose only stereo
+    element is one tetrahedral centre (`only_mirror_images`), that SMILES without stereo labels when an index holds that — a row
+    without the mark stands for both mirror images (an xyz sulfoxide names its configuration, the training SMILES leave it open); else
+    the index key with the same FixedH InChIKey (an empty key matches nothing); else its own. A configuration of a molecule with E/Z or
+    two or more centres is not covered by a row without marks: `stereoisomer_keys` names it."""
     if c is None:
         return None
     indexes = [seen.trained, seen.holdout, seen.cations] + ([release.trained, release.cations] if release is not None else [])
     if any(c in index for index in indexes):
         return c
     plain = without_stereo(c)
-    if any(plain in index for index in indexes):
+    if plain != c and only_mirror_images(c) and any(plain in index for index in indexes):
         return plain
     if (key := fixed_h_key(c)) is None:
         return c
@@ -152,15 +164,17 @@ def covering_key(c: str | None, seen: Seen, release: Seen | None) -> str | None:
 
 
 def stereoisomer_keys(c: str | None, keys) -> list[str]:
-    """The keys that are `c` with other stereo labels, both sides specifying stereo (a stereo-free key is `covering_key`'s)."""
-    if c is None or (plain := without_stereo(c)) == c:
+    """The keys that are `c` with other or no stereo labels, or with labels where `c` has none (the mirror-image case is
+    `covering_key`'s, which has already replaced `c` by the key it matches)."""
+    if c is None:
         return []
-    return sorted(k for k in keys if k not in (c, plain) and without_stereo(k) == plain)
+    plain = without_stereo(c)
+    return sorted(k for k in keys if k != c and without_stereo(k) == plain)
 
 
 def role_of(c: str | None, seen: Seen, listed_id: str | None, release: Seen | None) -> dict:
     """The role of the molecule of canonical SMILES `c` (`covering_key`), with its ids and sentence (`status`, without the cation clause).
-    A molecule found under no key of its own but trained on, or held out, as a stereoisomer — both sides naming the stereo — says so."""
+    A molecule found under no key of its own but trained on, or held out, with other or no stereo labels says so: never 'unseen'."""
     if release is not None and c in release.trained:
         return {"role": "release_trained", "ids": release.trained[c], "text": TEXT["release_trained"]}
     if c in seen.trained and c in seen.holdout:

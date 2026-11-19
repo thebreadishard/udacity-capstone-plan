@@ -109,6 +109,26 @@ def test_a_diastereomer_of_a_trained_or_held_out_molecule_is_a_stereoisomer():
     assert (held["role"], held["ids"]) == ("stereoisomer_held_out", ["A_one"]) and "hold-out (a)" in held["text"]
 
 
+@pytest.mark.parametrize(("request_smiles", "trained"), [
+    ("C(=Cc1ccccc1)c1ccccc1", "C(=C\\c1ccccc1)/c1ccccc1"),         # plain stilbene against the trained trans-stilbene
+    ("CC(N)C(C)Cl", "C[C@H](N)[C@H](C)Cl"),                           # no labels against two labelled centres
+    ("C[C@H](O)[C@@H](C)Cl", "CC(O)C(C)Cl"),                          # two centres against a row without labels
+], ids=["stilbene", "unlabelled request", "two centres"])
+def test_a_configuration_that_is_not_a_mirror_image_is_a_stereoisomer_never_unseen(request_smiles, trained):
+    seen = S.build({"A_one"}, {"a": {"A_two"}, "b": set()}, {"A_one": trained, "A_two": "c1ccccc1"})
+    got = S.status(request_smiles, seen, None)
+    assert (got["role"], got["ids"]) == ("stereoisomer", ["A_one"])
+    assert S.status(request_smiles, seen, None, release=seen)["role"] == "stereoisomer"
+    held = S.status(request_smiles, S.build(set(), {"a": {"A_one"}, "b": set()}, {"A_one": trained}), None)
+    assert (held["role"], held["ids"]) == ("stereoisomer_held_out", ["A_one"])
+
+
+def test_only_one_tetrahedral_centre_counts_as_mirror_images():
+    assert S.only_mirror_images("C[S@+]([O-])c1ccccc1") and S.only_mirror_images("C[C@H](O)c1ccccc1")
+    assert not S.only_mirror_images("C[C@H](O)[C@@H](C)Cl") and not S.only_mirror_images("C(=C\\c1ccccc1)/c1ccccc1")
+
+
+
 def test_without_stereo_refuses_a_string_that_is_no_smiles():
     with pytest.raises(ValueError, match="does not parse"):
         M.without_stereo("c1ccc")
