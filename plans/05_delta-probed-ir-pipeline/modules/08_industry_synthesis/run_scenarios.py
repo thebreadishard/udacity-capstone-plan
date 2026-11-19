@@ -2,7 +2,7 @@
 """Runs the pre-registered scenarios of module 08 (PRE_REGISTRATION.md §5) end to end from repository data and writes the records:
 `out/scenario_results_<date>.json`, the certificates (`out/certificates/`), the request ledger (`out/requests_ledger.csv`) and the cost-honesty
 check (S7). S5 (catalogue consistency) runs the export's own builder when `--with-catalog` is given (RDKit over 11,321 rows, ≈ a minute).
-Usage: python run_scenarios.py [--with-catalog] [--no-candidate]"""
+Usage: python run_scenarios.py [--with-catalog] [--no-candidate] [--out DIR]"""
 import argparse
 import csv
 import json
@@ -131,18 +131,20 @@ def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--with-catalog", action="store_true", help="also run S5: website/export/build_catalog.py (≈ a minute)")
     ap.add_argument("--no-candidate", action="store_true", help="S3 with a fixed SMILES instead of a fresh module-06 draw (tests)")
+    ap.add_argument("--out", type=Path, default=OUT, help="folder for the records (default: the module's out/; tests give a temporary one)")
     a = ap.parse_args(argv)
+    out = a.out
     S = json.load(open(HERE / "scenarios" / "scenarios.json", encoding="utf-8"))
     cat = Catalog()
-    OUT.mkdir(exist_ok=True); (OUT / "certificates").mkdir(exist_ok=True)
+    (out / "certificates").mkdir(parents=True, exist_ok=True)
     results = []; certs = []; ledger_rows = []
     for sc in S["scenarios"]:
-        result, ledger_row, cert = run_one(sc, cat, OUT, a.no_candidate)
+        result, ledger_row, cert = run_one(sc, cat, out, a.no_candidate)
         results.append(result)
         ledger_rows.append(ledger_row)
         if cert is not None:
             certs.append(cert)
-    with open(OUT / "requests_ledger.csv", "a", encoding="utf-8", newline="") as fh:
+    with open(out / "requests_ledger.csv", "a", encoding="utf-8", newline="") as fh:
         w = csv.DictWriter(fh, fieldnames=list(ledger_rows[0].keys()))
         if fh.tell() == 0:
             w.writeheader()
@@ -163,7 +165,7 @@ def main(argv=None) -> int:
     mech["S6"] = dict(status="not run in this build: needs the built site and axe (website backlog rows 8–9)")
     rec = dict(date=time.strftime("%Y-%m-%d %H:%M"), frozen=S["frozen"], n_pass=sum(r["passed"] for r in results), n_scenarios=len(results), results=results, mechanical=mech,
                licence=cert["provenance"]["licence"] if certs else None, provenance=provenance())
-    p = OUT / f"scenario_results_{time.strftime('%Y-%m-%d')}.json"
+    p = out / f"scenario_results_{time.strftime('%Y-%m-%d')}.json"
     json.dump(rec, open(p, "w", encoding="utf-8"), indent=1, ensure_ascii=False)
     print(f"{rec['n_pass']}/{rec['n_scenarios']} scenarios pass; written {under_module(p)}")
     return 0 if rec["n_pass"] == rec["n_scenarios"] else 1

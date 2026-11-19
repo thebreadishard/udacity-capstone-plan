@@ -255,10 +255,8 @@
      "path": "probes/results_vpt2/benzene_benchmark_2026-09-22.md"
     }
    ],
-   "export_built_utc": "2026-11-18T21:56:06Z",
    "export_sources_sha256": {
-    "ledger": "273c8e3c9ab3dc59d50aa3908178b50e56455c7a11ac033fa105ceddd756bf72",
-    "manifest": "48dd5b7416592331bb0d858f7b083b4c70ee5f886d545d6a58e424ab41ff2577"
+    "ledger": "273c8e3c9ab3dc59d50aa3908178b50e56455c7a11ac033fa105ceddd756bf72"
    },
    "family_rule": "modules/03_lab_scoreboard/build_lab_tables.py FAMILY_RULE (12 Sep 2026)",
    "licence": {
@@ -1057,10 +1055,8 @@
      "path": "probes/results_m1/M3_TZ_MODE22_READING_2026-09-23.md"
     }
    ],
-   "export_built_utc": "2026-11-18T21:56:06Z",
    "export_sources_sha256": {
-    "ledger": "273c8e3c9ab3dc59d50aa3908178b50e56455c7a11ac033fa105ceddd756bf72",
-    "manifest": "48dd5b7416592331bb0d858f7b083b4c70ee5f886d545d6a58e424ab41ff2577"
+    "ledger": "273c8e3c9ab3dc59d50aa3908178b50e56455c7a11ac033fa105ceddd756bf72"
    },
    "family_rule": "modules/03_lab_scoreboard/build_lab_tables.py FAMILY_RULE (12 Sep 2026)",
    "licence": {
