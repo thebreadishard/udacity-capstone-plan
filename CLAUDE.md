@@ -66,6 +66,11 @@ before the commit — ruff's project set is the floor, not the bar:
 - **Comments** say why, not what; a date or incident only where it explains a guard. History belongs in git and the ledger.
 - **Tests**: a test for every switch; a refactor of code a run uses starts with a regression test that pins the current output, on a
   branch in its own worktree (the laptop's queued chains run from this checkout).
+- **Worktree data**: from plans/05_delta-probed-ir-pipeline, `python tools/worktree_data.py link <worktree>` gives a worktree the main
+  checkout's git-ignored data by hard links (since 19 November 2026; same drive; `status` counts the shared files per folder,
+  `unlink` removes exactly those links). A linked file *is* the main checkout's file, so a write onto its name changes the original;
+  only a temp file moved over the name (`os.replace`) breaks the link. A test writes its output to tmp_path, never into a default
+  folder; a folder that tests do write into goes into the tool's `EXCLUDED_DIRS` (now module 08's whole folder).
 - Check (since 27 October 2026, the user: one config, the touched lines): `tools/ruff_gate.py` applies pyproject.toml's ruff set to every
   line written or changed, and to the whole function around such a line for the function-size rules; a new file is checked whole. It runs
   by itself after every Edit/Write (the hook acts), in pre-commit on the staged lines and in CI on the pushed commits; by hand
