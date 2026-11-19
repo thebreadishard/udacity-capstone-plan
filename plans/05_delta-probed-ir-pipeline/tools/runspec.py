@@ -19,11 +19,22 @@ A run is a spec, probes/runspecs/<name>.json (committed: the launch record), and
             appended. The watch gives a resumable run RESUME_GRACE before it reports it gone, so a restart does not wake the session.
             With a fail_regex a run that left a non-zero exit file but neither its end nor its failure line counts as interrupted (a
             restart killed it after its wrapper wrote the exit file, TASKS 83) and is resumed the same way.
+  stop      ends a running run's process tree and holds it (TASKS 251; on 16 Nov v14_stage1 was paused with taskkill by hand, which left it
+            'running': counted against the memory budget and due for the resume task). Laptop: taskkill /T /F from the Windows process of
+            the pid file's bash (the whole Windows tree, wsl.exe included), then every WSL process that carries the run's RUNSPEC_RUN tag,
+            which the launch exports into WSL through WSLENV — a process group at a time where the group's leader carries it, TERM and
+            then KILL. Server: the run's process group (remote_launch.sh starts it with setsid), TERM and then KILL. Only when nothing of
+            the run is left does it append its stop line to the log and write 143 to the exit file. The state becomes 'stopped': resume
+            leaves it, the check reports it once as 'MARKER run <name> stopped by hand' (a deliberate stop, never an ANOMALY), and only a
+            fresh launch arms it again. A run that ended by itself is not stopped: its exit code stays the record. A stop that does not
+            finish leaves the run 'stopping': held from resume, refused by launch, an ANOMALY in the check after STOP_STALE, and stop
+            again tries again.
 
     python tools/runspec.py validate probes/runspecs/<name>.json
     python tools/runspec.py launch probes/runspecs/<name>.json
     python tools/runspec.py check [--peek]      (--peek: the same lines, the state not saved; for a look by hand — the watch owns the state)
     python tools/runspec.py resume [--dry-run]
+    python tools/runspec.py stop probes/runspecs/<name>.json [--reason TEXT]
     python tools/runspec.py list
 
 Regexes are POSIX ERE, matched by grep -E where the log lives; Python's \\d, \\s, \\w, \\b and (?...) are refused because grep -E does not
@@ -63,6 +74,10 @@ INTERRUPTED_MIN_LIFE_S = 120           # a run that died sooner is a start-up fa
 LAPTOP_RUN_MEMORY_GB = 13.0
 FREE_COMMIT_MARGIN_GB = 4.0     # a second laptop run must leave this much committable beside its peak (20-21 Oct: 3.5-3.7 GB was not enough)
 RUN_ENV = "export PYTHONUNBUFFERED=1; "  # a print to a file is block-buffered otherwise: 18-19 Oct, an optimisation's lines sat in the buffer for hours
+STOP_EXIT = 143                 # 128 + SIGTERM in the exit file of a stopped run; the state, not the code, says the stop was deliberate
+STOP_WAIT_S = 15                # how long a run's processes may take to go after TERM before they get KILL
+STOP_STALE = timedelta(minutes=15)   # a stop takes a minute or two; one still 'stopping' after this did not finish
+RUN_TAG = "RUNSPEC_RUN"         # set to the run's name in every process of a laptop run, WSL ones included: how the stop finds them
 _NOT_ERE = re.compile(r"\\[dDsSwWbB]|\(\?")
 
 
@@ -168,7 +183,7 @@ def laptop_log(spec: RunSpec) -> Path:
 @dataclass(frozen=True)
 class RunState:
     started_at: datetime
-    status: str = "running"                 # running | ended
+    status: str = "running"                 # running | stopping (the stop at work) | stopped | ended
     phase_started_at: datetime | None = None  # when the progress gap began to count (the launch, or start_regex's first line)
     progress_count: int = 0
     progress_seen_at: datetime | None = None  # the last check at which the count (or the heartbeat's size) changed
@@ -176,14 +191,22 @@ class RunState:
     unreachable: int = 0
     gone_seen_at: datetime | None = None      # a resumable run first seen gone (cleared when it is alive again)
     relaunches: int = 0
+    stopped_at: datetime | None = None
+    stop_reported: bool = False               # the check has reported the stop once
 
     def to_json(self) -> str:
-        return json.dumps({k: v.isoformat() if isinstance(v, datetime) else v for k, v in asdict(self).items()}, indent=1)
+        """The stop's two fields are written only once a stop set them: the file of a run nobody stopped keeps the keys the reader
+        from before the stop command knows, so that reader still loads it after a rollback (`cls(**raw)` refuses an unknown key)."""
+        raw = {k: v for k, v in asdict(self).items() if not (k in _STOP_FIELDS and v == _STOP_FIELDS[k])}
+        return json.dumps({k: v.isoformat() if isinstance(v, datetime) else v for k, v in raw.items()}, indent=1)
 
     @classmethod
     def from_json(cls, text: str) -> RunState:
         raw = json.loads(text)
         return cls(**{k: datetime.fromisoformat(v) if k.endswith("_at") and v else v for k, v in raw.items()})
+
+
+_STOP_FIELDS = {"stopped_at": None, "stop_reported": False}   # with their defaults, which to_json leaves out
 
 
 @dataclass(frozen=True)
@@ -337,10 +360,10 @@ class Shell:
     def __init__(self, bash: str | None = None):
         self.bash = bash or shutil.which("bash") or "bash"
 
-    def _run(self, args: list[str], timeout: float = 120, cwd: Path = ROOT) -> subprocess.CompletedProcess:
+    def _run(self, args: list[str], timeout: float = 120, cwd: Path | None = None) -> subprocess.CompletedProcess:
         # stdin from /dev/null: the scheduled resume task has no console, and inheriting its invalid stdin handle raised WinError 6 (16 Oct).
         # UTF-8 explicitly: Windows' default code page failed on a dry run's φ after the job had started, so no state was saved (28 Oct)
-        return subprocess.run(args, cwd=cwd, stdin=subprocess.DEVNULL, capture_output=True, text=True, encoding="utf-8", errors="replace",
+        return subprocess.run(args, cwd=cwd or ROOT, stdin=subprocess.DEVNULL, capture_output=True, text=True, encoding="utf-8", errors="replace",
                               timeout=timeout, check=False)
 
     def host_row(self, host: str) -> tuple[str, str] | None:
@@ -373,7 +396,8 @@ class Shell:
 
     def launch_laptop(self, spec: RunSpec, append: bool = False) -> tuple[int, str]:
         n = shlex.quote(spec.name)
-        env = RUN_ENV + (f"export OMP_NUM_THREADS={spec.threads} MKL_NUM_THREADS={spec.threads} OPENBLAS_NUM_THREADS={spec.threads}; "
+        tag = f'export {RUN_TAG}={n} WSLENV="${{WSLENV:+$WSLENV:}}{RUN_TAG}"; '   # WSLENV carries the tag into every wsl.exe below
+        env = RUN_ENV + tag + (f"export OMP_NUM_THREADS={spec.threads} MKL_NUM_THREADS={spec.threads} OPENBLAS_NUM_THREADS={spec.threads}; "
                          if spec.threads else "")
         # The job writes into a pipe and one `cat` appends to the log, so no process of the job holds the log's own handle.
         # On 14 Nov 2026 two runs lost the first kilobytes of their logs, and probes/log_append_smoke.sh reproduces it: with a
@@ -488,12 +512,15 @@ def measure_free_commit_gb() -> float | None:
     return free_commit_gb()
 
 
+_HOLDS_THE_LAPTOP = ("running", "stopping")   # a stop that has not finished may have left processes: they keep the memory and the log
+
+
 def laptop_runs_in_progress(name: str, spec_dir: Path, state_dir: Path) -> tuple[float, list[str]]:
     """(the stated peaks of the laptop runs past their start line, other than `name`; those that state none or do not load)."""
     others, unknown = 0.0, []
     for path in sorted(spec_dir.glob("*.json")):
         state = load_state(path.stem, state_dir)
-        if path.stem == name or state is None or state.status != "running" or state.phase_started_at is None:
+        if path.stem == name or state is None or state.status not in _HOLDS_THE_LAPTOP or state.phase_started_at is None:
             continue
         try:
             other = load_spec(path)
@@ -514,7 +541,7 @@ def running_laptop_logs(spec_dir: Path = SPEC_DIR, state_dir: Path = STATE_DIR) 
     logs = []
     for path in sorted(spec_dir.glob("*.json")):
         state = load_state(path.stem, state_dir)
-        if state is not None and state.status == "running" and (spec := load_spec(path)).host == LAPTOP:
+        if state is not None and state.status in _HOLDS_THE_LAPTOP and (spec := load_spec(path)).host == LAPTOP:
             logs.append(laptop_log(spec))
     return logs
 
@@ -580,6 +607,8 @@ def launch(spec_path: Path, shell: Shell, now: datetime, state_dir: Path = STATE
     old = load_state(spec.name, state_dir)
     if old is not None and old.status == "running":
         raise LaunchRefused(f"run {spec.name} is already running (launched {old.started_at:%d %b %H:%M})")
+    if old is not None and old.status == "stopping":
+        raise LaunchRefused(f"a stop of {spec.name} began {old.stopped_at:%d %b %H:%M} and did not finish: run `runspec.py stop` again first")
     problems = preflight(spec, shell) + memory_problems(spec, spec_path.parent, state_dir)
     if problems:
         raise LaunchRefused("; ".join(problems))
@@ -630,7 +659,7 @@ def resume(shell: Shell, now: datetime, spec_dir: Path = SPEC_DIR, state_dir: Pa
         if reason is None:
             continue
         time.sleep(second_look)
-        if _resume_reason(spec, shell) is None:
+        if _resume_reason(spec, shell) is None or not still_running(spec.name, state_dir):   # a stop in the 30 s holds it
             continue
         if dry:
             lines.append(f"{spec.name}: {reason} - would relaunch: {spec.command}")
@@ -648,6 +677,163 @@ def resume(shell: Shell, now: datetime, spec_dir: Path = SPEC_DIR, state_dir: Pa
     return lines
 
 
+# ---------------------------------------------------------------- stop
+
+class StopRefused(Exception):
+    pass
+
+
+def still_running(name: str, state_dir: Path) -> bool:
+    """The state on disk says running now: a stop that came while the run was being looked at wins over what the look saw."""
+    latest = load_state(name, state_dir)
+    return latest is not None and latest.status == "running"
+
+
+def _key_values(out: str) -> dict[str, str]:
+    return {key: value.strip() for key, _, value in (line.partition("=") for line in out.splitlines()) if key}
+
+
+def wrapper_pattern(spec: RunSpec) -> str:
+    """ERE of the run's own wrapper in a command line: launch_outside_app.sh's launch/<name>_<date>_<time>.sh on the laptop,
+    remote_launch.sh's <name>.cmd.sh on a server. Anchored on both sides of the name, so chain35 is not chain35_read."""
+    if spec.host == LAPTOP:
+        return r"launch[\\/]" + spec.name + r"_[0-9]{8}_[0-9]{6}\.sh"
+    return "(^|[/'\"])" + spec.name + r"\.cmd\.sh"
+
+
+def kill_script(spec: RunSpec) -> str:
+    """Shell lines that end the tree behind <name>.pid where the run lives; they print was_alive= (before) and alive= (after).
+    The pid counts as the run only when its command line names this run's own wrapper - launch_outside_app.sh's launch/<name>_<time>.sh
+    on the laptop, remote_launch.sh's <name>.cmd.sh on a server: Git Bash numbers its processes anew after a restart, so a pid file from
+    before one can name the watch's bash or another run, and a tree kill there would take that. Such a pid is printed as stale_pid=
+    and left alone."""
+    q = shlex.quote
+    wrapper = q(wrapper_pattern(spec))
+    if spec.host == LAPTOP:   # the pid is Git Bash's; /T from its Windows process takes the Windows tree, python and wsl.exe included
+        end = 'w=$(cat /proc/"$p"/winpid 2>/dev/null); [ -n "$w" ] && MSYS2_ARG_CONV_EXCL="*" taskkill /PID "$w" /T /F > /dev/null 2>&1'
+        alive = 'kill -0 "$p" 2>/dev/null'
+    else:                     # remote_launch.sh starts the job with setsid: its pid leads the run's own process group
+        end = (f'kill -TERM -- -"$p" 2>/dev/null; for i in $(seq {2 * STOP_WAIT_S}); do kill -0 -- -"$p" 2>/dev/null || break; '
+               'sleep 0.5; done; kill -KILL -- -"$p" 2>/dev/null')
+        alive = 'kill -0 -- -"$p" 2>/dev/null'
+    lines = [f"cd {q(spec.workdir)} || exit 1",
+             f"p=$(cat {q(spec.name + '.pid')} 2>/dev/null)",
+             f"""mine=0; [ -n "$p" ] && {{ tr '\\0' ' ' < /proc/"$p"/cmdline; }} 2>/dev/null | grep -qE {wrapper} && mine=1""",
+             '[ "$mine" = 0 ] && [ -n "$p" ] && kill -0 "$p" 2>/dev/null && echo "stale_pid=$p"',
+             f'alive() {{ [ "$mine" = 1 ] && {alive}; }}',
+             f"if alive; then echo was_alive=1; {end}; else echo was_alive=0; fi",
+             "for i in $(seq 20); do alive || break; sleep 0.5; done",
+             "if alive; then echo alive=1; else echo alive=0; fi"]
+    return "\n".join(lines) + "\n"
+
+
+# Run inside WSL with "RUNSPEC_RUN=<name>" and STOP_WAIT_S: TERM to every process that carries the tag (to its whole process group when it
+# leads one: `wsl -e` gives each command its own session), KILL to what is left after the wait; prints wsl_tagged= and wsl_left=.
+_WSL_STOP = r"""tag=$1; half_seconds=$(( $2 * 2 ))
+tagged() {
+  for e in /proc/[0-9]*/environ; do
+    p=${e#/proc/}; p=${p%/environ}
+    [ "$p" != "$$" ] && tr '\0' '\n' < "$e" 2>/dev/null | grep -qxF -- "$tag" && echo "$p"
+  done
+}
+signal() {
+  for p in $(tagged); do
+    g=$(ps -o pgid= -p "$p" | tr -d ' ')
+    if [ "$g" = "$p" ]; then kill -"$1" -- -"$g"; else kill -"$1" "$p"; fi
+  done 2>/dev/null
+}
+echo "wsl_tagged=$(tagged | wc -l)"
+signal TERM
+for i in $(seq "$half_seconds"); do [ -z "$(tagged)" ] && break; sleep 0.5; done
+[ -n "$(tagged)" ] && { signal KILL; sleep 1; }
+echo "wsl_left=$(tagged | wc -l)"
+"""
+
+
+def wsl_stop_script(name: str) -> str:
+    """Laptop shell lines that end the run's WSL processes; a WSL that is not running is not started for the look."""
+    q = shlex.quote
+    return ("if [ -n \"$(wsl.exe --list --running --quiet 2>/dev/null | tr -d '\\0\\r[:space:]')\" ]; then "
+            f"MSYS_NO_PATHCONV=1 wsl.exe -e bash -c {q(_WSL_STOP)} wsl_stop {q(f'{RUN_TAG}={name}')} {STOP_WAIT_S}; "
+            "else echo wsl=off; echo wsl_left=0; fi\n")
+
+
+def stop_line(spec: RunSpec, now: datetime, reason: str) -> str:
+    return f"=== runspec stop: {spec.name} stopped by hand {now:%Y-%m-%d %H:%M:%S}, exit {STOP_EXIT}" + (f": {reason}" if reason else "")
+
+
+def _refuse_unstoppable(spec: RunSpec, shell: Shell, retry: bool) -> None:
+    """A run whose host or folder cannot be read is not stopped blind; one that ended by itself keeps its own exit code (on a retry the
+    exit file may be the first stop's own)."""
+    obs = observe(spec, shell)
+    if obs.host_gone or obs.wrong_machine or not obs.reachable or obs.workdir_missing:
+        raise StopRefused(f"run {spec.name}: its host {spec.host} or its workdir cannot be read - see `check --peek`")
+    if not retry and obs.exit_code is not None and not obs.alive and not interrupted(spec, obs):
+        raise StopRefused(f"run {spec.name} has ended by itself (exit {obs.exit_code}); the check reports it")
+
+
+def _end_tree(spec: RunSpec, shell: Shell) -> tuple[list[str], list[str]]:
+    """Ends the run's processes: (what the caller should know about how it went, what is left of them - empty when nothing is)."""
+    rc, out = shell.run(spec.host, kill_script(spec), timeout=4 * STOP_WAIT_S + 60)
+    seen = _key_values(out)
+    left = [] if seen.get("alive") == "0" else [f"the tree behind {spec.name}.pid is still alive after the kill (rc {rc})"]
+    notes = []
+    if "stale_pid" in seen:
+        notes.append(f"(process {seen['stale_pid']} of {spec.name}.pid is not this run's launch wrapper and was left alone: the pid file "
+                     "is from before a restart)")
+    if seen.get("was_alive") != "1":
+        notes.append("(no process of it was alive: the stop holds a run that had gone)")
+    if spec.host == LAPTOP:
+        _, out = shell.run(LAPTOP, wsl_stop_script(spec.name), timeout=4 * STOP_WAIT_S + 60)
+        wsl = _key_values(out)
+        if wsl.get("wsl_left", "unknown") != "0":
+            left.append(f"WSL processes tagged {RUN_TAG}={spec.name} left: {wsl.get('wsl_left', 'unknown')}")
+        elif wsl.get("wsl_tagged") == "0":
+            notes.append(f"(WSL runs and no process in it carries {RUN_TAG}={spec.name}: the WSL processes of a run launched before the "
+                         "tag existed, 19 Nov 2026, cannot be swept - look with `wsl.exe -e ps -ef`)")
+    return notes, left
+
+
+def _record_stop(spec: RunSpec, shell: Shell, line: str) -> None:
+    q = shlex.quote
+    _, out = shell.run(spec.host, f"cd {q(spec.workdir)} && printf '%s\\n' {q(line)} >> {q(spec.name + '.log')} && "
+                                  f"echo {STOP_EXIT} > {q(spec.name + '.exit')} && echo recorded=1\n")
+    if _key_values(out).get("recorded") != "1":
+        raise StopRefused(f"the processes of {spec.name} are gone, but its stop line and exit file could not be written")
+
+
+def stop(spec_path: Path, shell: Shell, now: datetime, state_dir: Path = STATE_DIR, reason: str = "") -> str:
+    """Ends a running run (or finishes a stop that did not) and holds it until its next launch; returns the stop line. Past the first
+    look the state is 'stopping', and a failure leaves it so: the run stays held from resume and the check reports it after STOP_STALE."""
+    spec = load_spec(spec_path)
+    if spec_path.stem != spec.name:
+        raise StopRefused(f"the spec file is named {spec_path.name} but the run is {spec.name}")
+    old = load_state(spec.name, state_dir)
+    if old is None or old.status not in ("running", "stopping"):
+        raise StopRefused(f"run {spec.name} is not running ({'never launched' if old is None else old.status})")
+    _refuse_unstoppable(spec, shell, retry=old.status == "stopping")
+    save_state(spec.name, replace(old, status="stopping", stopped_at=now), state_dir)   # first: a check or resume meanwhile leaves it
+    notes, left = _end_tree(spec, shell)
+    if left:
+        raise StopRefused("; ".join(left) + " - the run stays 'stopping'; `runspec.py stop` again tries again")
+    line = stop_line(spec, now, reason)
+    _record_stop(spec, shell, line)
+    save_state(spec.name, replace(old, status="stopped", stopped_at=now), state_dir)
+    return "\n".join([line, *notes])
+
+
+def held(name: str, state: RunState, now: datetime, state_dir: Path, peek: bool) -> str | None:
+    """The check's line for a run a stop holds: one MARKER when it is stopped (with peek it stays for the watch), an ANOMALY while a
+    stop has not finished for STOP_STALE; None otherwise."""
+    if state.status == "stopped" and not state.stop_reported:
+        if not peek:
+            save_state(name, replace(state, stop_reported=True), state_dir)
+        return f"MARKER run {name} stopped by hand {state.stopped_at:%d %b %H:%M} (launched {state.started_at:%d %b %H:%M})"
+    if state.status == "stopping" and now - state.stopped_at > STOP_STALE:
+        return f"ANOMALY run {name}: a stop began {state.stopped_at:%d %b %H:%M} and did not finish - `runspec.py stop` it again"
+    return None
+
+
 # ---------------------------------------------------------------- check
 
 def check(shell: Shell, now: datetime, spec_dir: Path = SPEC_DIR, state_dir: Path = STATE_DIR, peek: bool = False) -> list[str]:
@@ -656,6 +842,11 @@ def check(shell: Shell, now: datetime, spec_dir: Path = SPEC_DIR, state_dir: Pat
     lines, quiet = [], []
     for path in sorted(spec_dir.glob("*.json")):
         state = load_state(path.stem, state_dir)
+        line = None if state is None else held(path.stem, state, now, state_dir, peek)
+        if line is not None or (state is not None and state.status == "stopping"):
+            lines += [line] if line else []
+            quiet.append(f"{path.stem} {state.status}")
+            continue
         if state is None or state.status != "running":
             continue
         try:
@@ -663,6 +854,8 @@ def check(shell: Shell, now: datetime, spec_dir: Path = SPEC_DIR, state_dir: Pat
             events, state = assess(spec, state, observe(spec, shell), now)
         except (ValidationError, OSError, subprocess.SubprocessError, ValueError) as e:
             lines.append(f"ANOMALY run {path.stem}: the check failed: {type(e).__name__}: {str(e).splitlines()[0][:MARKER_WIDTH]}")
+            continue
+        if not still_running(spec.name, state_dir):         # stopped while it was looked at: the stop is reported at the next check
             continue
         if not peek:
             save_state(spec.name, state, state_dir)
@@ -705,6 +898,15 @@ def _cmd_resume(a: argparse.Namespace, shell: Shell) -> int:
     return 0
 
 
+def _cmd_stop(a: argparse.Namespace, shell: Shell) -> int:
+    try:
+        print(stop(a.spec, shell, _now(), reason=a.reason))
+    except (StopRefused, ValidationError) as e:
+        print(f"NOT stopped: {e}")
+        return 1
+    return 0
+
+
 def _cmd_list(_: argparse.Namespace, __: Shell) -> int:
     for path in sorted(SPEC_DIR.glob("*.json")):
         state = load_state(path.stem)
@@ -723,8 +925,12 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("check").add_argument("--peek", action="store_true", help="do not save the state (a look by hand)")
     sub.add_parser("resume").add_argument("--dry-run", action="store_true")
     sub.add_parser("list")
+    stopper = sub.add_parser("stop", help="end a running run's process tree and hold it until its next launch")
+    stopper.add_argument("spec", type=Path)
+    stopper.add_argument("--reason", default="", help="why, appended to the stop line in the run's log")
     a = ap.parse_args(argv)
-    commands = {"validate": _cmd_validate, "launch": _cmd_launch, "check": _cmd_check, "resume": _cmd_resume, "list": _cmd_list}
+    commands = {"validate": _cmd_validate, "launch": _cmd_launch, "check": _cmd_check, "resume": _cmd_resume, "list": _cmd_list,
+                "stop": _cmd_stop}
     return commands[a.cmd](a, Shell())
 
 
