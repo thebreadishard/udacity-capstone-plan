@@ -127,7 +127,7 @@ def run_one(sc: dict, cat: Catalog, out: Path, fixed_candidate: bool) -> tuple[d
     return result, ledger_row, cert
 
 
-def main(argv=None) -> int:
+def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--with-catalog", action="store_true", help="also run S5: website/export/build_catalog.py (≈ a minute)")
     ap.add_argument("--no-candidate", action="store_true", help="S3 with a fixed SMILES instead of a fresh module-06 draw (tests)")
