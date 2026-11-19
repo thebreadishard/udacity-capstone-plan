@@ -12,7 +12,7 @@ Each step is one function on existing code:
    and its APT;
 4. `correction` — the carried ΔH network's seeds through `m05/rungC_infer.py`: their mean ΔH and each seed's;
 5. `spectra` — `m08.spectrum.series` on H_low + ΔH with the B3LYP APT, each seed's positions beside it, and as the baseline only the
-   B3LYP spectrum with PAHdb's factor per region (`probes/scale_factor_baseline.py`);
+   B3LYP spectrum with PAHdb's 6-31G* factor per region (Bauschlicher et al. 2018, Table 2; `probes/scale_factor_baseline.py`);
 6. `anharmonic.step` (`m08/anharmonic.py`, TASKS 211; asked for with --anharmonic-minutes) — each band's anharmonic position ν = ω + Δ_anh
    beside its harmonic ω: the registered model x2* on the molecule's GFN2-xTB quartic force field (computed in WSL under
    `probes/wsl_capped.sh`), carried from the B3LYP modes to the corrected bands by mode overlap. A band the step cannot serve keeps ω
@@ -75,11 +75,12 @@ from apt import CPHF_BOUND, SUM_RULE_LIMIT  # noqa: E402
 from learning_curve_layerA import normal_modes  # noqa: E402
 from rungC_equivariant import Z_OF  # noqa: E402
 from rungC_intensities import mode_intensities  # noqa: E402
-from scale_factor_baseline import PAHDB_FACTORS, pahdb_region  # noqa: E402
+from scale_factor_baseline import PAHDB_FACTORS, TABLE2_REGION_EDGES, pahdb_scaled  # noqa: E402
 
 from dpir.provenance import git_state, provenance  # noqa: E402
 
-PIPELINE_VERSION = "0.12"              # modules/PIPELINE.md
+BASELINE_BASIS = "6-31G*"              # the basis of the B3LYP Hessian (deck v1), so the row of PAHdb's factors the baseline takes
+PIPELINE_VERSION = "0.13"              # modules/PIPELINE.md
 NETWORK = "ΔH-network"
 CORPUS_ROOT = M05 / "corpus"
 CORPUS = CORPUS_ROOT / "molecules"
@@ -573,10 +574,9 @@ def save_correction(d: Path, dH: np.ndarray, dH_seeds: list[np.ndarray], models:
 
 
 def scaled_baseline(sticks: list[dict]) -> list[dict]:
-    """The B3LYP sticks with PAHdb's factor of each stick's region: the baseline beside the network, never in its place."""
-    w = np.array([s["omega_cm"] for s in sticks])
-    f = np.array(PAHDB_FACTORS)[pahdb_region({"freq": w})]
-    return [dict(s, omega_cm=round(float(x), 1)) for s, x in zip(sticks, f * w, strict=True)]
+    """The B3LYP sticks with PAHdb's 6-31G* factor of each stick's region: the baseline beside the network, never in its place."""
+    scaled = pahdb_scaled(np.array([s["omega_cm"] for s in sticks]), BASELINE_BASIS, TABLE2_REGION_EDGES)
+    return [dict(s, omega_cm=round(float(x), 1)) for s, x in zip(sticks, scaled, strict=True)]
 
 
 def seed_ranges(H_low: np.ndarray, masses: np.ndarray, dH: np.ndarray, dH_seeds: list[np.ndarray]) -> list[list[float]]:
@@ -607,7 +607,8 @@ def spectra(d: Path, dH: np.ndarray, dH_seeds: list[np.ndarray]) -> dict:
         stick["seed_range_cm"] = span
     b3lyp = series(hessian, masses, apt)
     baseline = dict(b3lyp, sticks=scaled_baseline(b3lyp["sticks"]),
-                    label=f"baseline only: B3LYP/6-31G* scaled by PAHdb's factors {list(PAHDB_FACTORS)} per region (probes/scale_factor_baseline.py)")
+                    label=f"baseline only: B3LYP/6-31G* scaled by PAHdb's {BASELINE_BASIS} factors {list(PAHDB_FACTORS[BASELINE_BASIS])} per region "
+                          "(Bauschlicher et al. 2018, Table 2; probes/scale_factor_baseline.py)")
     return {"network": net, "baseline": baseline}
 
 

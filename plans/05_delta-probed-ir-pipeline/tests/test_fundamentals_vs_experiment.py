@@ -112,3 +112,32 @@ def test_a_mixed_pair_is_resolved_one_to_one_from_the_vectors():
     mixed[:, i], mixed[:, j] = c * V[:, i] + s * V[:, j], -s * V[:, i] + c * V[:, j]
     chosen, note = F.resolve_mixed(mixed, [i, j], ["A1g", "B1u"], symbols, coords)
     assert chosen == {i: "A1g", j: "B1u"} and "A1g 0.75" in note
+
+
+def test_the_factor_row_defaults_to_the_registered_4_31g_and_refuses_another():
+    assert F.arguments([]).factors == "4-31G" and F.arguments(["--factors", "6-31G*"]).factors == "6-31G*"
+    with pytest.raises(SystemExit):
+        F.arguments(["--factors", "3-21G"])
+
+
+def test_the_report_names_the_factor_row():
+    row = {"irrep": "A1g", "family": "ring-ip", "nu_exp": 993.0, "omega_exp": None, "omega_cc": 1000.0, "d_cc": 7.0, "d_b3_pahdb": -3.0,
+           "crossing": False, "family_mixed": False}
+    stats = {"b3lyp_pahdb_minus_exp": F.stats({"ring-ip": [-3.0]})}
+    for factor_row in ("4-31G", "6-31G*"):
+        text = "\n".join(F.stats_table("benzene", {"pahdb_factor_row": factor_row, "stats": stats})
+                         + F.mode_table({"pahdb_factor_row": factor_row, "modes": [row]}))
+        assert f"our B3LYP/6-31G* × PAHdb's {factor_row} factors − exp." in text and f"B3LYP×PAHdb {factor_row} − ν" in text
+    assert "as registered" in F.factor_row_note("4-31G") and "added after it (TASKS 247)" in F.factor_row_note("6-31G*")
+
+
+def test_the_factor_row_reaches_the_scaled_b3lyp_positions(monkeypatch):
+    """read_molecule on the frozen corpus's benzene with both rows: each scaled B3LYP position moves by its region's factor ratio."""
+    from pin_tools import PIN_CORPUS
+    monkeypatch.setattr(F, "MOLECULES", PIN_CORPUS / "molecules")
+    benzene = F.MOLECULES_READ[0]
+    mai = ("C1M000001", np.linspace(400.0, 3100.0, 30), np.full(30, 0.96))
+    rows = {r: F.read_molecule(benzene, mai, r)["modes"] for r in ("4-31G", "6-31G*")}
+    ratio = np.array([b["omega_b3_pahdb"] / a["omega_b3_pahdb"] for a, b in zip(rows["4-31G"], rows["6-31G*"], strict=True)])
+    expected = {round(0.979 / 0.956, 9), round(0.969 / 0.952, 9), 1.0}
+    assert set(np.round(ratio, 9)) == expected

@@ -27,6 +27,27 @@ def corpus(factor_of_family: dict[str, float]) -> dict:
     return mols
 
 
+def test_the_pahdb_factor_rows_are_bauschlicher_2018_table_2():
+    """The 6-31G* row is our basis's; the 4-31G row (Mai's) once stood in its place in the product's baseline (TASKS 247)."""
+    assert S.PAHDB_FACTORS == {"6-31G*": (0.979, 0.969, 0.960), "4-31G": (0.956, 0.952, 0.960)}
+
+
+def test_pahdb_scaling_takes_the_row_of_the_basis_and_refuses_an_unknown_one():
+    w = np.array([800.0, 1600.0, 3000.0])
+    assert S.pahdb_scaled(w, "6-31G*", S.TABLE2_REGION_EDGES) == pytest.approx([800 * 0.979, 1600 * 0.969, 3000 * 0.960])
+    assert S.pahdb_scaled(w, "4-31G", S.PAHDB_REGION_EDGES) == pytest.approx([800 * 0.956, 1600 * 0.952, 3000 * 0.960])
+    with pytest.raises(ValueError, match="no PAHdb factor row for the basis '3-21G'"):
+        S.pahdb_scaled(w, "3-21G", S.TABLE2_REGION_EDGES)
+
+
+def test_table_2s_lower_edge_is_9_um_and_the_registered_grouping_keeps_1111():
+    """A band at 1111.05 cm⁻¹ lies below Table 2's 10000/9: the low region's factor there, the middle one in the registered grouping."""
+    w = np.array([1111.05])
+    assert S.TABLE2_REGION_EDGES == (10000 / 9, 2500.0) and S.PAHDB_REGION_EDGES == (1111.0, 2500.0)
+    assert S.pahdb_scaled(w, "6-31G*", S.TABLE2_REGION_EDGES) == pytest.approx([1111.05 * 0.979])
+    assert S.pahdb_scaled(w, "6-31G*", S.PAHDB_REGION_EDGES) == pytest.approx([1111.05 * 0.969])
+
+
 def test_the_regions_have_the_pahdb_edges():
     m = {"freq": np.array([1110.9, 1111.0, 2499.9, 2500.0, 2500.1])}
     assert S.pahdb_region(m).tolist() == [0, 1, 1, 1, 2]

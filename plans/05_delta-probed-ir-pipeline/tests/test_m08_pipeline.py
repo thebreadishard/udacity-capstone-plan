@@ -272,9 +272,11 @@ def test_wsl_paths():
         P.wsl_path("relative\\x")
 
 
-def test_the_baseline_scales_each_region_by_pahdbs_factor():
+def test_the_baseline_scales_each_region_by_pahdbs_6_31gs_factor():
+    """Our Hessians are B3LYP/6-31G*: the baseline takes PAHdb's 6-31G* row, not the 4-31G one (0.956, 0.952; TASKS 247)."""
     sticks = [dict(omega_cm=w, km_mol=1.0) for w in (800.0, 1600.0, 3000.0)]
-    assert [s["omega_cm"] for s in P.scaled_baseline(sticks)] == [round(800 * 0.956, 1), round(1600 * 0.952, 1), round(3000 * 0.960, 1)]
+    assert [s["omega_cm"] for s in P.scaled_baseline(sticks)] == [round(800 * 0.979, 1), round(1600 * 0.969, 1), round(3000 * 0.960, 1)]
+    assert P.scaled_baseline([dict(omega_cm=1111.05, km_mol=1.0)])[0]["omega_cm"] == round(1111.05 * 0.979, 1)   # below Table 2's 10000/9
 
 
 @pytest.fixture
@@ -292,6 +294,7 @@ def test_the_correction_is_the_seeds_mean_and_each_seeds_range(benzene):
     sticks = out["network"]["sticks"]
     assert len(sticks) == 30 and all(s["seed_range_cm"] == [s["omega_cm"]] * 2 for s in sticks)
     assert out["baseline"]["sticks"] != sticks and "baseline only" in out["baseline"]["label"]
+    assert "PAHdb's 6-31G* factors [0.979, 0.969, 0.96]" in out["baseline"]["label"]
 
 
 def test_a_zero_correction_gives_the_b3lyp_spectrum(benzene):

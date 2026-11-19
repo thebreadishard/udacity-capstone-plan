@@ -27,8 +27,18 @@ from chain41_read import family_rms  # noqa: E402  (the seed mean of the records
 from learning_curve_layerA import FAMILIES  # noqa: E402
 from rungC_train import load_corpus  # noqa: E402
 
-PAHDB_REGION_EDGES = (1111.0, 2500.0)   # cm⁻¹; Bauschlicher et al. 2018's regions as Mai et al. 2026 apply them (reading note of 25 Oct 2026)
-PAHDB_FACTORS = (0.956, 0.952, 0.960)   # the factors of those regions, indexed by pahdb_region (below 1111, 1111–2500, above 2500)
+Edges = tuple[float, float]
+PAHDB_REGION_EDGES: Edges = (1111.0, 2500.0)   # cm⁻¹; Bauschlicher et al. 2018's regions as Mai et al. 2026 apply them (reading note of
+#                                              25 Oct 2026): the grouping readings 1–3 were registered and read with
+TABLE2_REGION_EDGES: Edges = (10000 / 9, 2500.0)   # cm⁻¹; Bauschlicher et al. 2018, Table 2 (9 and 4 µm), as aromir applies them: the
+#                                                  product's baseline, so a band at 1111.05 takes the low region's factor there too
+# PAHdb's scale factors of those regions (indexed by region_index with the caller's edges: low, middle, high), one row per basis, from
+# Bauschlicher, Ricca, Boersma & Allamandola 2018 (ApJS 234, 32), Table 2. Our Hessians are B3LYP/6-31G*, so the 6-31G* row is the
+# product's baseline (module 02 reads 0.9794 / 0.9691 / 0.9597 off the database's own 6-31G* species). The 4-31G row is the one Mai
+# et al. 2026 applied to their B3LYP/4-31G spectra; it scales ours only where a reading applies their factors on purpose (readings 2
+# and 3 of the 25 Oct 2026 pre-registration), since on a 6-31G* Hessian it leaves the bands 13–17 cm⁻¹ low. Either row is a
+# comparison baseline, never a training input or an option of the product.
+PAHDB_FACTORS: dict[str, tuple[float, float, float]] = {"6-31G*": (0.979, 0.969, 0.960), "4-31G": (0.956, 0.952, 0.960)}
 CARRIED_RECORDS = tuple(M05 / "out" / f"E7_rungC_chain34_eval_analytic_2026-10-05_seed{s}.json" for s in range(3))   # decision 57
 HOLDOUTS = ("a", "b")
 OUT = M05 / "out" / "scale_factor_baseline_2026-10-25"
@@ -41,16 +51,29 @@ def one_group(m: dict) -> np.ndarray:
     return np.zeros(len(m["freq"]), dtype=int)
 
 
+def region_index(freq: np.ndarray, edges: Edges) -> np.ndarray:
+    """Return 0 below the lower edge, 1 between the edges (both included), 2 above the upper edge, per frequency in cm⁻¹."""
+    w = np.asarray(freq, float)
+    low, high = edges
+    return np.where(w < low, 0, np.where(w > high, 2, 1))
+
+
 def pahdb_region(m: dict) -> np.ndarray:
     """S3: 0 below 1111, 1 for 1111–2500 (both edges included), 2 above 2500 cm⁻¹ of the B3LYP harmonic frequency."""
-    w = np.asarray(m["freq"], float)
-    low, high = PAHDB_REGION_EDGES
-    return np.where(w < low, 0, np.where(w > high, 2, 1))
+    return region_index(m["freq"], PAHDB_REGION_EDGES)
 
 
 def family_group(m: dict) -> np.ndarray:
     """SF: the index of the mode's family in FAMILIES."""
     return np.array([FAMILIES.index(f) for f in m["family"]])
+
+
+def pahdb_scaled(freq: np.ndarray, basis: str, edges: Edges) -> np.ndarray:
+    """Return the frequencies times PAHdb's factor of their region (cut at `edges`) in the row of `basis`, a key of PAHDB_FACTORS."""
+    if basis not in PAHDB_FACTORS:
+        raise ValueError(f"no PAHdb factor row for the basis {basis!r}; the rows are {', '.join(PAHDB_FACTORS)}")
+    w = np.asarray(freq, float)
+    return np.array(PAHDB_FACTORS[basis])[region_index(w, edges)] * w
 
 
 BASELINES: dict[str, GroupOf] = {"S1": one_group, "S3": pahdb_region, "SF": family_group}

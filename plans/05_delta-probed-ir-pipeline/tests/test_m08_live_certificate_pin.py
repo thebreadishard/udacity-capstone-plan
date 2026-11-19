@@ -2,11 +2,11 @@
 
 `tests/data/m08_live_certificate_pin.json` holds the certificate `tests/live_certificate_pin.build` gives with master's `m08` of
 17 Nov 2026 (7ed3058e, the last commit before the release networks' branch), rewritten for the wording changes of the demo review
-of 18 Nov (the hold-out descriptions, the read-outs' definition, the coupled-cluster note, the caveat once; the commit is in the
-file): v1.3's tracked records, the frozen corpus's benzene, a zero correction. This checkout must give the same record, key for
-key, and the same page, byte for byte. It replaces a comparison made by hand (two sha256 in a commit message). Numbers come out of
-an eigensolver, so the pin holds in the environment it was written in (recorded in it): elsewhere it skips in CI and fails locally,
-as the trainer's pin does.
+of 18 Nov (the hold-out descriptions, the read-outs' definition, the coupled-cluster note, the caveat once) and for the baseline
+column on PAHdb's 6-31G* factors of 19 Nov (TASKS 247; the commit is in the file): v1.3's tracked records, the frozen corpus's
+benzene, a zero correction. This checkout must give the same record, key for key, and the same page, byte for byte. It replaces a
+comparison made by hand (two sha256 in a commit message). Numbers come out of an eigensolver, so the pin holds in the environment it
+was written in (recorded in it): elsewhere it skips in CI and fails locally, as the trainer's pin does.
 
     python tests/test_m08_live_certificate_pin.py --write-golden [PLAN FOLDER OF THE CHECKOUT WHOSE m08 WRITES IT]   # after a deliberate change
 """
