@@ -20,7 +20,7 @@ from . import live_certificate as LC
 from . import paths
 from . import pipeline as P
 from . import positions as POS
-from .licence import caveat_sentence
+from .licence import OWN_SPREAD_CONDITION, caveat_sentence
 from .spectrum import broadened
 
 # isort: split
@@ -116,17 +116,16 @@ def svg_spectrum(grid: np.ndarray, curves: dict[str, np.ndarray], label: str) ->
 
 def family_rows(bands: list[dict], errors: dict[str, dict[str, float]]) -> list[dict]:
     """Per family the certificate's band count and licence, with the network's error on hold-outs (a) and (b) in the quantity the
-    certificate states (`errors`: `accuracy.stated_errors`)."""
+    certificate states (`errors`: `accuracy.stated_errors`). The licence is each band's, so a family says how many of its bands are
+    licensed: `licensed` is whether all are, `licence` the words for it (`live_certificate.licence_words`)."""
     rows = []
     for fam in FAMILY_ORDER:
         mine = [b for b in bands if b["family"] == fam]
         if not mine:
             continue
-        licensed = {b["licensed"] for b in mine}
-        if len(licensed) != 1:
-            raise ValueError(f"family {fam}: bands disagree on the licence")
-        rows.append({"family": fam, "bands": len(mine), "licensed": licensed.pop(),
-                     "error_a": errors[fam]["a"], "error_b": errors[fam]["b"]})
+        n_licensed = sum(b["licensed"] for b in mine)
+        rows.append({"family": fam, "bands": len(mine), "licensed": n_licensed == len(mine), "n_licensed": n_licensed,
+                     "licence": LC.licence_words(n_licensed, len(mine)), "error_a": errors[fam]["a"], "error_b": errors[fam]["b"]})
     if sum(r["bands"] for r in rows) != len(bands):
         raise ValueError("a band's family is outside " + ", ".join(FAMILY_ORDER))
     return rows
@@ -138,6 +137,11 @@ def _e(x: object) -> str:
 
 def _chip(licensed: bool) -> str:
     return '<span class="chip ok">licensed</span>' if licensed else '<span class="chip no">not licensed</span>'
+
+
+def _family_chip(row: dict) -> str:
+    """A family's licence on this molecule (`family_rows`): green only where every band of it is licensed."""
+    return f'<span class="chip {"ok" if row["licensed"] else "no"}">{_e(row["licence"])}</span>'
 
 
 def _minutes(seconds: float) -> str:
@@ -170,7 +174,7 @@ def _family_table(p: Panel) -> str:
     head += "<th class=num>this molecule: network / B3LYP</th>" if truth else ""
     body = []
     for r in rows:
-        cells = (f'<td>{_e(r["family"])}</td><td class=num>{r["bands"]}</td><td>{_chip(r["licensed"])}</td>'
+        cells = (f'<td>{_e(r["family"])}</td><td class=num>{r["bands"]}</td><td>{_family_chip(r)}</td>'
                  f'<td class=num>{r["error_a"]:.2f} / {r["error_b"]:.2f}</td>')
         if truth:
             f = truth[r["family"]]
@@ -241,7 +245,8 @@ def licence_section(cert: dict) -> str:
     shape = h["a"]["shape"]
     return (f'<section><h2>How well the network is known</h2><p>{_e(cert["network"]["name"])} v{_e(cert["network"]["version"])} predicts '
             f'{_e(cert["network"]["predicts"])}. A family is licensed where its error stays within 3 cm⁻¹ on both hold-outs '
-            f'({_e(cert["licence"]["rule_source"])}).</p><div class="scroll"><table><thead><tr><th>family</th>'
+            f'({_e(cert["licence"]["rule_source"])}), and a band of it only where its '
+            f'{_e(OWN_SPREAD_CONDITION.format(tried=""))}.</p><div class="scroll"><table><thead><tr><th>family</th>'
             f'<th class=num>hold-out (a), {h["a"]["n_molecules"]} molecules</th><th class=num>hold-out (b), {h["b"]["n_molecules"]} molecules</th>'
             f'<th>licence</th></tr></thead><tbody>{rows}</tbody></table></div><p class="muted small">'
             f'{_e(A.QUANTITY_NAMES[quantity].capitalize())}, rms in cm⁻¹. Spectrum overlap on hold-out (a): {shape["cheap"]["spectrum_overlap"]} uncorrected, '

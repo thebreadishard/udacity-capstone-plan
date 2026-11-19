@@ -249,7 +249,10 @@ def test_the_live_certificate_agrees_with_benzenes_export_certificate(cat):
     assert "not measured for this network version" in page and "| other | 3.62 (" in page          # first order, clean (a), TASKS 157
     assert "| other | 2.78 (95 % interval over molecules 1.68–3.76; 156 bands) | 2.77 (" in page    # the product's error, the licence's
     assert live["licence"]["licensed_families"] == ["ring-ip", "CH-stretch", "CH-oop", "other"] and live["licence"]["quantity"] == "product"
-    assert all(b["licensed"] and max(b["error_cm"].values()) <= 3.0 for b in live["bands"])
+    assert all(max(b["error_cm"].values()) <= 3.0 for b in live["bands"])
+    # this result is of pipeline 0.1: it holds no measurement of its own spread, so no band of it is licensed until one is made
+    assert not any(b["licensed"] for b in live["bands"]) and {b["licence_note"] for b in live["bands"]} == {LC.UNCHECKED}
+    assert live["own_spread"]["not_measured_because"].startswith("the result holds no own_spread.json")
 
 
 CHEAP = {"eur_ex_vat": 0.24}

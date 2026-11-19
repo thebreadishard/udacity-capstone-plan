@@ -14,6 +14,8 @@ Each step is one function on existing code:
 4. `correction` — the carried ΔH network's seeds through `m05/rungC_infer.py`: their mean ΔH and each seed's;
 5. `spectra` — `m08.spectrum.series` on H_low + ΔH with the B3LYP APT, each seed's positions beside it, and as the baseline only the
    B3LYP spectrum with PAHdb's 6-31G* factor per region (Bauschlicher et al. 2018, Table 2; `probes/scale_factor_baseline.py`);
+   then `measure_own_spread` (`m08/own_spread.py`, aromir's rule): the networks correct the molecule again turned, mirrored and
+   listed in other atom orders, and a band is licensed only where its own position stayed within the licence line of the printed one;
 6. `anharmonic.step` (`m08/anharmonic.py`, TASKS 211; asked for with --anharmonic-minutes) — each band's anharmonic position ν = ω + Δ_anh
    beside its harmonic ω: the registered model x2* on the molecule's GFN2-xTB quartic force field (computed in WSL under
    `probes/wsl_capped.sh`), carried from the B3LYP modes to the corrected bands by mode overlap. A band the step cannot serve keeps ω
@@ -56,6 +58,7 @@ import time
 from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path, PureWindowsPath
+from typing import Any
 
 import numpy as np
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
@@ -85,7 +88,7 @@ from scale_factor_baseline import PAHDB_FACTORS, TABLE2_REGION_EDGES, pahdb_scal
 from dpir.provenance import git_state, provenance  # noqa: E402
 
 BASELINE_BASIS = "6-31G*"              # the basis of the B3LYP Hessian (deck v1), so the row of PAHdb's factors the baseline takes
-PIPELINE_VERSION = "0.14"              # modules/PIPELINE.md
+PIPELINE_VERSION = "0.15"              # modules/PIPELINE.md
 NETWORK = "ΔH-network"
 CORPUS_ROOT = M05 / "corpus"
 CORPUS = CORPUS_ROOT / "molecules"
@@ -587,14 +590,37 @@ def low_level_files(cfg: PipelineConfig, seconds: dict[str, float], progress: Pr
     return psi4, check, reused
 
 
-def correction(models: tuple[Path, ...], d: Path) -> tuple[np.ndarray, list[np.ndarray]]:
-    """Step 4: the seeds' mean ΔH and each seed's (Cartesian, hartree/bohr², the low level's frame)."""
-    per_seed = []
+def load_networks(models: tuple[Path, ...]) -> list[tuple[Any, Any]]:
+    """Each seed's network with the settings its input tensors are built under. The own-spread check loads them once for all its
+    presentations; the pipeline loads them for step 4 and again for that check (`correction`, `measure_own_spread`)."""
+    loaded = []
     for p in models:
         model, ck = RT.load_hybrid_model(p)
-        t = RI.input_tensors_of(d, RT.tensor_config(ck))
-        per_seed.append(RI.delta_H(model, t).numpy().astype(float))
+        loaded.append((model, RT.tensor_config(ck)))
+    return loaded
+
+
+def seed_corrections(networks: list[tuple[Any, Any]], d: Path) -> list[np.ndarray]:
+    """Each seed's ΔH (Cartesian, hartree/bohr², the low level's frame) for the molecule of folder `d`: its geometry.json and its
+    low-level Hessian, as `rungC_infer` reads them."""
+    return [RI.delta_H(model, RI.input_tensors_of(d, settings)).numpy().astype(float) for model, settings in networks]
+
+
+def correction(models: tuple[Path, ...], d: Path) -> tuple[np.ndarray, list[np.ndarray]]:
+    """Step 4: the seeds' mean ΔH and each seed's (Cartesian, hartree/bohr², the low level's frame)."""
+    per_seed = seed_corrections(load_networks(models), d)
     return np.mean(per_seed, axis=0), per_seed
+
+
+def measure_own_spread(models: tuple[Path, ...], d: Path, smiles: str) -> float:
+    """The licence's measurement on this molecule (`m08/own_spread.py`): the networks correct it again turned, mirrored and listed in
+    other atom orders, and how far each band lay from the saved correction's is written beside it for the certificate. Returns its
+    seconds."""
+    from . import own_spread as OS  # that module imports this one
+
+    t = time.time()
+    OS.measure_result(models, d, smiles)
+    return round(time.time() - t, 1)
 
 
 def save_correction(d: Path, dH: np.ndarray, dH_seeds: list[np.ndarray], models: tuple[Path, ...]) -> None:
@@ -786,6 +812,7 @@ def _steps(cfg: PipelineConfig, deliver: Deliver | None, started: list[Progress]
     progress.start("spectrum")
     out = AN.first_delivery(step6, spectra(d, dH, dH_seeds))
     seconds["correction_and_spectra"] = round(time.time() - t, 1)
+    seconds["own_spread"] = measure_own_spread(cfg.models, d, adm.smiles)   # before the first delivery: its certificate reads it
     progress.done("spectrum")                                # the six stations are the first delivery's; step 6 has none of its own
     rec = {"pipeline_version": PIPELINE_VERSION, "name": cfg.name,
            "input": {"smiles": cfg.smiles, "xyz": cfg.xyz, "xyz_atom_order": xyz_order(cfg) if cfg.xyz is not None else None},

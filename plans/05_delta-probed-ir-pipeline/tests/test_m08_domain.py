@@ -11,11 +11,10 @@ from pathlib import Path
 import pytest
 
 from pin_tools import DATA, PLAN
-from test_m08_linear_licence import NoCatalog, benzene_folder, v14_release  # noqa: F401  the fixture is used by name
+from test_m08_own_spread import CONDITION, NoCatalog, benzene_folder, v14_release  # noqa: F401  the fixture is used by name
 
 sys.path.insert(0, str(PLAN / "modules" / "08_industry_synthesis"))
 from m08 import domain as DOMAIN
-from m08 import invariance as INV
 from m08 import live_certificate as LC
 from m08 import pipeline as P
 from m08 import seen as S
@@ -123,7 +122,7 @@ def test_check_only_says_why_no_band_will_be_licensed(tmp_path, pin_admission, m
     assert all(f"[pipeline] outside the training chemistry, so no band of it will be licensed: {c}\n" in out for c in caveats)
 
 
-def test_a_molecule_outside_the_training_chemistry_is_printed_and_not_licensed(tmp_path, v14_release):  # noqa: F811  the fixture imported from test_m08_linear_licence
+def test_a_molecule_outside_the_training_chemistry_is_printed_and_not_licensed(tmp_path, v14_release):  # noqa: F811  the fixture imported from test_m08_own_spread
     plain = LC.certificate(benzene_folder(tmp_path / "plain", v14_release, 3), NoCatalog())
     c = LC.certificate(benzene_folder(tmp_path / "out", v14_release | {"outside_training_chemistry": [ZWITTERION_CAVEAT]}, 3), NoCatalog())
     n = len(c["bands"])
@@ -134,10 +133,12 @@ def test_a_molecule_outside_the_training_chemistry_is_printed_and_not_licensed(t
     unchanged = ("network_cm", "printed_cm", "b3lyp_cm", "baseline_cm", "km_mol", "seed_range_cm", "family")
     assert [{k: b[k] for k in unchanged} for b in c["bands"]] == [{k: b[k] for k in unchanged} for b in plain["bands"]]
     families = ", ".join(c["licence"]["licensed_families"])
-    said = (f"0 of {n} bands are licensed: the version's harmonic positions ω are licensed for {families} (decision 65), and for this "
-            f"molecule that licence is withheld — {reason} — each band marked; at ")
-    assert c["statement"] == plain["statement"].replace(
-        f"harmonic positions ω are licensed for {families} (decision 65), each band marked; at ", said)
+    own = f"where a band's {CONDITION.format(n='10 ')}"
+    said = (f"0 of {n} bands are licensed: the version's harmonic positions ω are licensed for {families} (decision 65) {own}, and for "
+            f"this molecule that licence is withheld — {reason} — each band marked; at ")
+    assert said in c["statement"] and c["statement"] == plain["statement"].replace(
+        f"the harmonic positions ω are licensed for {families} (decision 65) {own}, each band marked; at ", said)
+    assert f"; 0 of {n} bands are licensed: " in c["statement"]                      # aromir's count opens the clause
     page = LC.to_markdown(c)
     assert f"- Outside the training chemistry: {ZWITTERION_CAVEAT}: no band is licensed.\n" in page
     assert f"| no: {DOMAIN.OUTSIDE_CHEMISTRY} |" in page
@@ -145,15 +146,19 @@ def test_a_molecule_outside_the_training_chemistry_is_printed_and_not_licensed(t
     assert LC.withheld_reason(c["licence"]) == reason
 
 
-def test_the_spread_goes_first_where_both_withhold(tmp_path, v14_release, monkeypatch):  # noqa: F811  the fixture imported from test_m08_linear_licence
-    monkeypatch.setattr(INV, "has_linear_group", lambda symbols, coords: True)
-    c = LC.certificate(benzene_folder(tmp_path, v14_release | {"outside_training_chemistry": [ZWITTERION_CAVEAT]}, 3), NoCatalog())
+def test_the_spread_goes_first_where_both_withhold(tmp_path, v14_release):  # noqa: F811  the imported fixture
+    admission = v14_release | {"outside_training_chemistry": [ZWITTERION_CAVEAT]}
+    c = LC.certificate(benzene_folder(tmp_path / "unmeasured", admission, 3, None), NoCatalog())
     assert {b["licence_note"] for b in c["bands"]} == {c["licence"]["withheld"]["note"]}
+    moved = LC.certificate(benzene_folder(tmp_path / "moved", admission, 3, 3.01), NoCatalog())
+    assert {b["licence_note"] for b in moved["bands"]} == {"its position moved by 3.01 cm⁻¹ under rotation 1 of this molecule, more than "
+                                                           "the licence line"}
+    assert LC.withheld_reason(moved["licence"]) == f"{DOMAIN.OUTSIDE_CHEMISTRY}: {ZWITTERION_CAVEAT}"
     assert LC.withheld_reason(c["licence"]) == c["licence"]["withheld"]["reason"]
     assert f"- Outside the training chemistry: {ZWITTERION_CAVEAT}: no band is licensed." in LC.to_markdown(c)
 
 
-def test_a_benzene_certificate_says_nothing_of_the_training_chemistry(tmp_path, v14_release):  # noqa: F811  the fixture imported from test_m08_linear_licence
+def test_a_benzene_certificate_says_nothing_of_the_training_chemistry(tmp_path, v14_release):  # noqa: F811  the fixture imported from test_m08_own_spread
     c = LC.certificate(benzene_folder(tmp_path, v14_release, 3), NoCatalog())
     assert "outside_training_chemistry" not in c["licence"] and LC.withheld_reason(c["licence"]) is None
     assert "Outside the training chemistry" not in LC.to_markdown(c)

@@ -16,17 +16,20 @@ import pytest
 
 torch = pytest.importorskip("torch")
 from pin_tools import PIN_CORPUS, PLAN, require_frozen_corpus  # noqa: E402
+from test_m08_own_spread import CONDITION, OWN_SPREAD, UNMOVED  # noqa: E402
 
 sys.path.insert(0, str(PLAN / "modules" / "08_industry_synthesis"))
 from m08 import accuracy as A  # noqa: E402
 from m08 import live_certificate as LC  # noqa: E402
+from m08 import own_spread as OS  # noqa: E402
 from m08 import pipeline as P  # noqa: E402
 from m08 import seen as S  # noqa: E402
 
 NK = P.NK
 BENZENE = "A_8448043181"
 V13 = tuple(f"E7_rungC_chain35_analytic_model_n750_seed{s}.pt" for s in range(3))
-LIC = {"quantity_name": "error of the corrected band positions of the seed-mean correction", "licensed_families": ["ring-ip"], "caveats": []}
+LIC = {"quantity_name": "error of the corrected band positions of the seed-mean correction", "licensed_families": ["ring-ip"],
+       "caveats": []} | OWN_SPREAD
 ADMISSION_KEYS = {"smiles", "formula", "elements", "n_atoms", "training_elements", "training_atoms", "models", "inside_training_sizes"}
 
 
@@ -128,11 +131,16 @@ def test_release_networks_without_a_passed_record_or_against_their_checkpoints_a
 
 
 def test_the_statement_without_release_networks_is_word_for_word_what_it_was():
-    """The sentence as `statement` built it before decision 66, written out here."""
+    """The sentence as `statement` built it before decision 66, written out here, with the licence's condition on a band's own spread
+    and what its measurement found (pipeline 0.15)."""
     old = (f"benzene: the infrared spectrum of {P.NETWORK} v1.3 (3 seeds) — B3LYP/6-31G* corrected "
            f"toward {A.HIGHER_LEVEL.split(' (')[0]} — with the {LIC['quantity_name']} measured on molecules the network never saw; the "
-           f"harmonic positions ω are licensed for ring-ip (decision 65), each band marked; at "
-           f"the coupled-cluster level {A.CC_NOTE}. The scaled B3LYP spectrum is shown as the baseline only. This molecule and the "
+           f"harmonic positions ω are licensed for ring-ip (decision 65) where a band's {CONDITION.format(n='10 ')}, each band marked; at "
+           f"the coupled-cluster level {A.CC_NOTE}. Each band's own spread was measured for this molecule: the networks corrected it "
+           "again in 10 other presentations (8 rotations, 2 mirror images), and a band's spread is the furthest its position lay from the printed one in "
+           "any of them: its distance from the printed presentation, not the range between presentations. The largest is 0.00 cm⁻¹, "
+           "under rotation 1, and no band moved by more than the licence line. "
+           f"The scaled B3LYP spectrum is shown as the baseline only. This molecule and the "
            f"ΔH network: held out.")
     assert LC.statement("benzene", "1.3", 3, LIC, "held out") == old == LC.statement("benzene", "1.3", 3, LIC, "held out", LC.MadeBy())
 
@@ -210,6 +218,7 @@ def result_folder(tmp_path: Path, ran: tuple[str, ...], admission: dict) -> Path
     shutil.copytree(PIN_CORPUS / "molecules" / BENZENE, d)
     zero = np.zeros((36, 36))
     P.save_correction(d, zero, [zero] * len(ran), tuple(Path(n) for n in ran))
+    OS.save(d, UNMOVED.measured, 0.0)                                       # the own spread of networks that move no band
     P.write_json(d / "pipeline.json", {"pipeline_version": P.PIPELINE_VERSION, "name": "benzene", "spectra": P.spectra(d, zero, [zero] * len(ran)),
                                        "admission": {"smiles": "c1ccccc1", "formula": "C6H6", "n_atoms": 12, "elements": ["C", "H"],
                                                      "training_atoms": [6, 40], "inside_training_sizes": True} | admission,

@@ -56,8 +56,8 @@ def test_family_rows_count_bands_and_keep_the_order():
 
 
 def test_family_rows_refuse_a_split_licence_and_an_unknown_family():
-    with pytest.raises(ValueError, match="disagree"):
-        D.family_rows([{"family": "CH-oop", "licensed": True}, {"family": "CH-oop", "licensed": False}], READ)
+    (mixed,) = D.family_rows([{"family": "CH-oop", "licensed": True}, {"family": "CH-oop", "licensed": False}], READ)
+    assert (mixed["licensed"], mixed["n_licensed"], mixed["licence"]) == (False, 1, "1 of 2 licensed")     # a band's licence is its own
     with pytest.raises(ValueError, match="outside"):
         D.family_rows([{"family": "CO-stretch", "licensed": True}], READ)
 

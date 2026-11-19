@@ -14,6 +14,7 @@ import pytest
 from pin_tools import PLAN
 from test_m08_anharmonic import APPLIED, artefact, request, spectra_of, stepped  # noqa: F401  artefact is a fixture
 from test_m08_live_certificate import ZERO, accuracy, record, result  # noqa: F401  accuracy and result are fixtures
+from test_m08_own_spread import OWN_SPREAD, UNMOVED
 
 sys.path.insert(0, str(PLAN / "modules" / "08_industry_synthesis"))
 from m08 import anharmonic as AN
@@ -38,7 +39,7 @@ def certificate_of(rows: list[dict], summary: dict, note: str = "a note") -> dic
 
 def test_the_certificate_prints_nu_beside_omega_and_keeps_the_licence_on_omega(result, accuracy, artefact, monkeypatch):  # noqa: F811
     out = stepped(result, artefact, monkeypatch)
-    rows = LC.bands(LC.load_result(result), accuracy, {}, ["ring-ip", "CH-stretch"])
+    rows = LC.bands(LC.load_result(result), accuracy, {}, ["ring-ip", "CH-stretch"], UNMOVED)
     sticks = out["network"]["sticks"]
     assert [b["network_cm"] for b in rows] == [s["omega_cm"] for s in sticks] and [b["nu_cm"] for b in rows] == [s["nu_cm"] for s in sticks]
     assert all(b["printed_cm"] == (b["nu_cm"] if b["nu_cm"] is not None else b["network_cm"]) for b in rows)
@@ -51,7 +52,7 @@ def test_the_certificate_prints_nu_beside_omega_and_keeps_the_licence_on_omega(r
     text = "\n".join(lines)
     assert lines[0].startswith(f"| best estimate (cm⁻¹) | printed | harmonic ω, network | Δ_anh | {POS.BAR_HEADER} |")
     assert "± of Δ_anh, against its VPT2 label" in lines[0] and "± of ν" not in text               # the bar is the step's, not ν's
-    assert "| ω licensed | error of ω on (a) / (b), cm⁻¹ |" in lines[0]
+    assert "| ω licensed | own spread of ω (cm⁻¹), under | error of ω on (a) / (b), cm⁻¹ |" in lines[0]
     first = next(b for b in rows if b["nu_cm"] is not None and b["step_bar_cm"] is not None)
     assert f"| {first['nu_cm']} | anharmonic ν | {first['network_cm']} | {first['delta_anh_cm']:+} | {first['step_bar_cm']} |" in text
     assert f"Which position each band is printed at ({POS.LICENCE_SCOPE}):" in text
@@ -88,7 +89,7 @@ def test_the_certificate_says_once_what_nus_error_is_and_what_the_bars_rest_on(r
 
 def test_each_model_states_for_itself_whether_it_has_seen_the_molecule():
     """The statement's 'held out… never trained on' is the ΔH network's; the anharmonic model's line stands beside it."""
-    lic = {"quantity_name": "error", "licensed_families": ["ring-ip"], "caveats": []}
+    lic = {"quantity_name": "error", "licensed_families": ["ring-ip"], "caveats": []} | OWN_SPREAD
     s = LC.statement("x", "1.3", 3, lic, "held out: never trained on")
     assert s.endswith("This molecule and the ΔH network: held out: never trained on.")
     assert "the harmonic positions ω are licensed for ring-ip (decision 65)" in s and "harmonic infrared spectrum" not in s
@@ -101,7 +102,7 @@ def test_the_first_delivery_is_a_complete_harmonic_certificate_that_says_what_wi
     rec = json.loads((result / "pipeline.json").read_text(encoding="utf-8"))
     out = AN.first_delivery(request(result, artefact), spectra_of(result))
     P.write_json(result / "pipeline.json", rec | {"spectra": out})
-    rows = LC.bands(LC.load_result(result), accuracy, {}, [])
+    rows = LC.bands(LC.load_result(result), accuracy, {}, [], UNMOVED)
     assert len(rows) == 30 and all(b["printed"] == POS.HARMONIC and b["no_step_reason"] == POS.RUNNING and b["nu_cm"] is None for b in rows)
     cert = certificate_of(rows, out["anharmonic"], out["note"])
     assert cert["positions"]["cautions"] == {} and LC._band_lines(cert)[-1].startswith("| ")
@@ -176,7 +177,7 @@ def test_the_live_show_has_the_result_at_the_first_delivery_and_asks_again_at_th
 
 def test_a_result_without_the_step_is_one_sentence_not_a_line_per_band(result, accuracy):  # noqa: F811
     record(result, ZERO, [ZERO])                                   # a record as a pipeline before 0.11 wrote it: no anharmonic block
-    rows = LC.bands(LC.load_result(result), accuracy, {}, [])
+    rows = LC.bands(LC.load_result(result), accuracy, {}, [], UNMOVED)
     assert all(b["printed"] == POS.HARMONIC and b["printed_cm"] == b["network_cm"] and b["no_step_reason"] == POS.NOT_APPLIED for b in rows)
     lines = LC._band_lines(certificate_of(rows, POS.summary_of({})))
     assert lines[-1].startswith("| ") and all("| harmonic ω |" in line and "| — | — |" in line for line in lines[2:])

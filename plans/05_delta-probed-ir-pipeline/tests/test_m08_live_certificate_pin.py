@@ -2,11 +2,13 @@
 
 `tests/data/m08_live_certificate_pin.json` holds the certificate `tests/live_certificate_pin.build` gives with master's `m08` of
 17 Nov 2026 (7ed3058e, the last commit before the release networks' branch), rewritten for the wording changes of the demo review
-of 18 Nov (the hold-out descriptions, the read-outs' definition, the coupled-cluster note, the caveat once) and for the baseline
-column on PAHdb's 6-31G* factors of 19 Nov (TASKS 247; the commit is in the file): v1.3's tracked records, the frozen corpus's
-benzene, a zero correction. This checkout must give the same record, key for key, and the same page, byte for byte. It replaces a
-comparison made by hand (two sha256 in a commit message). Numbers come out of an eigensolver, so the pin holds in the environment it
-was written in (recorded in it): elsewhere it skips in CI and fails locally, as the trainer's pin does.
+of 18 Nov (the hold-out descriptions, the read-outs' definition, the coupled-cluster note, the caveat once), for the baseline
+column on PAHdb's 6-31G* factors of 19 Nov (TASKS 247) and for the licence by a molecule's own spread of pipeline 0.15 (the pinned
+result holds no measurement of it, so no band is licensed and the record and the page say why; the commit is in the file): v1.3's
+tracked records, the frozen corpus's benzene, a zero correction. This checkout must give the same record, key for key, and the
+same page, byte for byte. It replaces a comparison made by hand (two sha256 in a commit message). Numbers come out of an
+eigensolver, so the pin holds in the environment it was written in (recorded in it): elsewhere it skips in CI and fails locally, as
+the trainer's pin does.
 
     python tests/test_m08_live_certificate_pin.py --write-golden [PLAN FOLDER OF THE CHECKOUT WHOSE m08 WRITES IT]   # after a deliberate change
 """
@@ -48,6 +50,7 @@ def test_a_measurement_certificate_is_the_pinned_record_and_page(tmp_path, monke
     assert got["page"] == golden["page"]
     assert "measured on molecules the network never saw" in got["record"]["statement"] and "release" not in got["page"]
     assert got["record"]["molecule"]["seen"]["role"] == "a" and set(got["record"]["network"]) == {"name", "version", "models", "predicts"}
+    assert not any(b["licensed"] for b in got["record"]["bands"]) and got["record"]["own_spread"]["presentations"] == []
 
 
 if __name__ == "__main__":
