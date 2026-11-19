@@ -1,0 +1,28 @@
+A_78896cfe24: rotation 0.000  mirror 9.951  listings 9.998
+A_0674939e7f: rotation 0.000  mirror 1.657  listings 2.454
+A_5a75c6c39e: rotation 0.000  mirror 1.002  listings 1.403
+Traceback (most recent call last):
+  File "/mnt/c/Users/thebr/AppData/Local/Temp/claude/6e282d7a6878e314/a98f6ae6-a06a-4b5a-ac48-06ddd4d42d17/scratchpad/aromir_fix/src/aromir/admission.py", line 103, in parse_xyz
+    rdDetermineBonds.DetermineBonds(molecule, charge=0)
+ValueError: Final molecular charge (0) does not match input (-1); could not find valid bond ordering
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mnt/c/Users/thebr/AppData/Local/Temp/claude/6e282d7a6878e314/a98f6ae6-a06a-4b5a-ac48-06ddd4d42d17/scratchpad/frame_audit/spreads_ids.py", line 23, in <module>
+    found = MI.spreads(loaded, MI.stored_molecule(corpus / mid), rng, Path(scratch))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/c/Users/thebr/AppData/Local/Temp/claude/6e282d7a6878e314/a98f6ae6-a06a-4b5a-ac48-06ddd4d42d17/scratchpad/aromir_fix/scripts/measure_invariance.py", line 168, in spreads
+    orders = listed_orders(molecule, rng, scratch)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/c/Users/thebr/AppData/Local/Temp/claude/6e282d7a6878e314/a98f6ae6-a06a-4b5a-ac48-06ddd4d42d17/scratchpad/aromir_fix/scripts/measure_invariance.py", line 149, in listed_orders
+    canonical = geo.canonical_order(admission.read(path).molecule)
+                                    ^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/c/Users/thebr/AppData/Local/Temp/claude/6e282d7a6878e314/a98f6ae6-a06a-4b5a-ac48-06ddd4d42d17/scratchpad/aromir_fix/src/aromir/admission.py", line 343, in read
+    molecule = parse_xyz(source) if isinstance(source, Path) else parse_smiles(source)
+               ^^^^^^^^^^^^^^^^^
+  File "/mnt/c/Users/thebr/AppData/Local/Temp/claude/6e282d7a6878e314/a98f6ae6-a06a-4b5a-ac48-06ddd4d42d17/scratchpad/aromir_fix/src/aromir/admission.py", line 105, in parse_xyz
+    raise RefusedError([f"{path}: no neutral bonding pattern fits the geometry"]) from error
+aromir.errors.RefusedError: /tmp/tmpjnxwgawb/listing.xyz: no neutral bonding pattern fits the geometry
+Command exited with non-zero status 1
+RSS 405084 kB wall 18.97 s

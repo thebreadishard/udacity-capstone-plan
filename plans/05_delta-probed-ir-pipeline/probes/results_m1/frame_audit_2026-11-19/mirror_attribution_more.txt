@@ -1,0 +1,9 @@
+release /mnt/c/Users/thebr/AppData/Local/Temp/claude/6e282d7a6878e314/a98f6ae6-a06a-4b5a-ac48-06ddd4d42d17/scratchpad/aromir_fix/src/aromir/releases/v1.4; inputs pattern='f' primitives=PrimitiveSettings(angle_choice='geometric', dihedral_encoding='raw') parity=False
+A_0674939e7f           full  1.657  ideal  0.000  value  3.282  gauge  1.858  rotation  0.000
+A_5a75c6c39e           full  1.002  ideal  0.000  value  2.368  gauge  3.008  rotation  0.000
+A_b90527ca2d           full  0.984  ideal  0.000  value  0.987  gauge  0.005  rotation  0.000
+A_7a57a52879           full  0.337  ideal  0.000  value  0.337  gauge  0.001  rotation  0.000
+A_78896cfe24           full  9.951  ideal  0.000  value  0.183  gauge 10.078  rotation  0.000
+B_00bee51dac           full  0.747  ideal  0.000  value  0.752  gauge  0.334  rotation  0.000
+A_69789470db           full  0.340  ideal  0.000  value  0.337  gauge  0.056  rotation  0.000
+RSS 418260 kB wall 13.12 s

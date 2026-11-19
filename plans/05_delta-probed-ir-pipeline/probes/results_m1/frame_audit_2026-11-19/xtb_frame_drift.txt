@@ -1,0 +1,14 @@
+41 xtb minima with their B3LYP reference; angle of the best rigid rotation G -> X (deg), mass-weighted rms displacement before / after removing it (bohr)
+   0.2292  0.0521 / 0.0497  probes\results_m1\s2_xtb_2026-10-18\xtb\B_410ac0fb2f\X\refstub\ref.json
+   0.1987  0.0420 / 0.0397  probes\results_m1\s2_xtb_2026-10-18\xtb\B_78f8233b4c\X\refstub\ref.json
+   0.1748  0.0371 / 0.0356  probes\results_m1\s2b_xtb_2026-11-02\xtb\B_052693bd01\X\refstub\ref.json
+   0.0448  0.0321 / 0.0320  probes\results_m1\s2b_xtb_2026-11-02\xtb\A_ff98e1160d\X\refstub\ref.json
+   0.0345  0.0453 / 0.0452  probes\results_m1\s2_xtb_2026-10-18\xtb\B_a41f4cff9d\X\refstub\ref.json
+   0.0317  0.0443 / 0.0442  probes\results_m1\s2b_xtb_2026-11-02\xtb\P3_1e34c6eeef\X\refstub\ref.json
+   0.0302  0.0376 / 0.0376  probes\results_m1\s2b_xtb_2026-11-02\xtb\P3_0bb6c41350\X\refstub\ref.json
+   0.0264  0.0416 / 0.0416  probes\results_m1\s2b_xtb_2026-11-02\xtb\P3_1ba8fe779a\X\refstub\ref.json
+   0.0225  0.0409 / 0.0408  probes\results_m1\s2b_xtb_2026-11-02\xtb\P3_d2345d9fcf\X\refstub\ref.json
+   0.0208  0.0324 / 0.0323  probes\results_m1\s2b_xtb_2026-11-02\xtb\A_fead28d796\X\refstub\ref.json
+   0.0185  0.0328 / 0.0328  probes\results_m1\s2_xtb_2026-10-18\xtb\A_d295f2fa80\X\refstub\ref.json
+   0.0144  0.0360 / 0.0360  probes\results_m1\s2b_xtb_2026-11-02\xtb\A_aa22880426\X\refstub\ref.json
+median 0.0029 deg, max 0.2292 deg, > 1 deg: 0

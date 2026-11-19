@@ -1,0 +1,5 @@
+1240 geometries; planar 557, non-planar 683
+  relative gap of the two largest moments < 0.01: planar 0, non-planar 1
+  relative gap of the two largest moments < 0.05: planar 0, non-planar 1
+  relative gap of the two largest moments < 0.1: planar 2, non-planar 17
+smallest gaps: A_014f8519af 0.0000, B_03be9910c7 0.0516, B_00bee51dac 0.0576, A_5a75c6c39e 0.0621, B_2a36ca9ac1 0.0771, B_b27d511b09 0.0812, B_1e9434eced 0.0830, B_1f9cad6c8c 0.0838

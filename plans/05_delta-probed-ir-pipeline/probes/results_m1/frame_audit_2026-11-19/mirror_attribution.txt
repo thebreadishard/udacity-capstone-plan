@@ -1,0 +1,10 @@
+release /mnt/c/Users/thebr/AppData/Local/Temp/claude/6e282d7a6878e314/a98f6ae6-a06a-4b5a-ac48-06ddd4d42d17/scratchpad/aromir_fix/src/aromir/releases/v1.4; inputs pattern='f' primitives=PrimitiveSettings(angle_choice='geometric', dihedral_encoding='raw') parity=False
+benzene                full  0.084  ideal  0.000  value  0.084  gauge  0.000  rotation  0.000
+benzonitrile           full  0.244  ideal  0.000  value  0.184  gauge  0.075  rotation  2.415
+diphenylacetylene      full  4.457  ideal  0.000  value  0.385  gauge  4.974  rotation  4.026
+biphenyl               full  2.669  ideal  0.000  value  2.430  gauge  2.638  rotation  0.000
+2-methylnaphthalene    full  0.340  ideal  0.000  value  0.337  gauge  0.056  rotation  0.000
+phenol                 full  0.180  ideal  0.000  value  0.180  gauge  0.000  rotation  0.000
+2-F-benzotrifluoride   full  0.233  ideal  0.000  value  0.257  gauge  0.093  rotation  0.000
+nitrophenanthrene      full  0.758  ideal  0.000  value  0.758  gauge  0.014  rotation  0.000
+RSS 404896 kB wall 15.77 s
