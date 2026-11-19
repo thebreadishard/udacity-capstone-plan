@@ -192,7 +192,9 @@ def test_the_optimisation_job_is_deck_v1_without_hessians(tmp_path, monkeypatch)
     def fake_run(argv, log, what):
         seen["argv"] = argv
         (cfg.folder / "result.json").write_text(json.dumps({"status": "done", "e_opt": -1.0}), encoding="utf-8")
-        (cfg.folder / "geometry.json").write_text("{}", encoding="utf-8")
+        atoms, _ = P.start_geometry(cfg)
+        geometry = {"symbols": [a[0] for a in atoms], "coords_bohr": [[x / P.R.BOHR_ANGSTROM for x in a[1:]] for a in atoms]}
+        (cfg.folder / "geometry.json").write_text(json.dumps(geometry), encoding="utf-8")
         return 0
 
     monkeypatch.setattr(P, "_run", fake_run)

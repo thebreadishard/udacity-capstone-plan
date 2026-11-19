@@ -176,7 +176,7 @@ def test_an_unparsable_or_empty_smiles_has_no_canonical_form():
 
 @pytest.mark.parametrize("smiles", XYZ_CASES)
 def test_an_xyz_file_gets_the_name_and_the_atom_order_of_its_smiles(tmp_path, pin_registry, smiles):
-    """aromir's six cases, nitro left out: RDKit's bond perception refuses some atom listings of nitrobenzene, outside TASKS 278."""
+    """aromir's six cases; nitro compounds over twenty listings are `test_m08_xyz_listings.py`'s (TASKS 284)."""
     by_smiles = P.admit(config(tmp_path, smiles=smiles))
     made, _ = P.start_geometry(config(tmp_path, smiles=smiles))
     ref_graph = bond_graph(made)
@@ -191,20 +191,6 @@ def test_an_xyz_sulfoxide_keeps_the_configuration_of_its_geometry(tmp_path, pin_
     made, _ = P.start_geometry(config(tmp_path, smiles="CS(=O)c1ccccc1"))
     from_xyz = P.admit(config(tmp_path, smiles=None, xyz=listed_xyz(tmp_path / "s.xyz", made, 0)))
     assert from_xyz.smiles in {"C[S@+]([O-])c1ccccc1", "C[S@@+]([O-])c1ccccc1"}
-
-
-def test_an_xyz_file_without_a_bonding_pattern_is_refused(tmp_path, pin_registry, monkeypatch):
-    from rdkit.Chem import rdDetermineBonds
-
-    def never(mol, charge):
-        raise ValueError("could not find valid bond ordering")
-
-    made, _ = P.start_geometry(config(tmp_path))
-    xyz = listed_xyz(tmp_path / "r.xyz", made, 0)
-    monkeypatch.setattr(rdDetermineBonds, "DetermineBonds", never)
-    assert M.from_xyz(xyz, 0) is None
-    with pytest.raises(P.Refused, match="does not parse"):
-        P.admit(config(tmp_path, smiles=None, xyz=xyz))
 
 
 def test_the_corpus_folders_are_matched_by_the_standard_form(tmp_path):

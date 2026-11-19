@@ -101,6 +101,12 @@ def release_index(models: tuple[Path, ...]) -> Seen:
     return build(P.train_ids(models), {}, *manifest_smiles())
 
 
+def trained_smiles(models: tuple[Path, ...]) -> tuple[str, ...]:
+    """The canonical SMILES of the neutral molecules the models fitted or stopped on, of either kind: the training list the domain
+    caveat reads (`m08.domain`, TASKS 279). A cation row is not its parent and adds nothing."""
+    return tuple(sorted(build(P.train_ids(models), {}, *manifest_smiles()).trained))
+
+
 def load(models: tuple[Path, ...]) -> Seen:
     """The index for the measurement networks whose records give the error: the models that ran, or — when release networks ran —
     their version's measurement networks."""

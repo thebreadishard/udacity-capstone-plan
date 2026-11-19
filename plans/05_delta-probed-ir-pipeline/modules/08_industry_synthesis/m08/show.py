@@ -279,7 +279,7 @@ def molecule(folder: Path) -> dict:
             "route": "reused" if reused(rec) else "computed", "pipeline_version": rec["pipeline_version"], "network": network,
             "stations": stations(rec), "real_time": real_time(rec), "spectrum": spectrum(r, cert), "families": families(cert["bands"]),
             "error_quantity": quantity, "errors_text": errors_text(quantity, network), "licence_caveat": caveat_sentence(cert["licence"]),
-            **({"licence_withheld": cert["licence"]["withheld"]["reason"]} if "withheld" in cert["licence"] else {}),
+            **({"licence_withheld": reason} if (reason := LC.withheld_reason(cert["licence"])) is not None else {}),
             "positions": f"{POS.DRAWN}; {POS.of_certificate(cert)}",
             "truth": {"rms_cm": truth["rms_by_rank_cm"], "overlap": truth["overlap"]} if truth else None,
             "seed_spread_cm": max(b["seed_range_cm"][1] - b["seed_range_cm"][0] for b in cert["bands"])}
