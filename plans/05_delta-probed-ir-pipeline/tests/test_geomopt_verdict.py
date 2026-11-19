@@ -3,6 +3,7 @@ and passes the run's settings through; an unconverged one raises with the criter
 re-optimisation at the label settings goes through it; and no probe calls pyscf's solver (`optimize` drops the verdict) outside the helper."""
 from __future__ import annotations
 
+import ast
 import importlib.util
 import re
 import sys
@@ -68,12 +69,31 @@ def test_no_criteria_given_names_geometric_defaults() -> None:
     assert GV.criteria_text({"constraints": "c.txt"}) == "geomeTRIC's default criteria"
 
 
-SOLVER_CALL = re.compile(r"geometric_solver\.(optimize|kernel)\(|geometric_solver import[^\n]*\b(optimize|kernel)\b")
 OWN_SOLVER_CALL = {"geomopt_verdict.py": "the helper itself"}
 
 
+def imports_geomopt(source: str) -> bool:
+    """Whether a script imports anything from pyscf.geomopt (any alias, any form): read from its syntax tree, so comments and
+    docstrings that name the solver do not count and an aliased module does."""
+    for node in ast.walk(ast.parse(source)):
+        if isinstance(node, ast.ImportFrom) and node.module and (node.module.startswith("pyscf.geomopt")
+                                                                 or (node.module == "pyscf" and any(a.name == "geomopt" for a in node.names))):
+            return True
+        if isinstance(node, ast.Import) and any(a.name.startswith("pyscf.geomopt") for a in node.names):
+            return True
+    return False
+
+
+def test_the_guard_reads_imports_not_text() -> None:
+    assert imports_geomopt("from pyscf.geomopt import geometric_solver as gs\ngs.optimize(mf)")
+    assert imports_geomopt("from pyscf.geomopt.geometric_solver import (\n    kernel,\n)")
+    assert imports_geomopt("import pyscf.geomopt.geometric_solver")
+    assert imports_geomopt("from pyscf import geomopt")
+    assert not imports_geomopt('"""geometric_solver.kernel( is named here only"""\n# geometric_solver.optimize(\nx = 1')
+
+
 def test_no_probe_calls_the_solver_outside_the_helper() -> None:
-    callers = {p.name for p in PROBES.glob("*.py") if SOLVER_CALL.search(p.read_text(encoding="utf-8"))}
+    callers = {p.name for p in PROBES.glob("*.py") if imports_geomopt(p.read_text(encoding="utf-8"))}
     assert callers == set(OWN_SOLVER_CALL)
 
 
