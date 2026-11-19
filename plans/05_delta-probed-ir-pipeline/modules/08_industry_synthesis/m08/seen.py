@@ -30,6 +30,8 @@ TEXT = {
     "unseen": "not in the catalogue: the network has not seen it",
     # aromir's sentence (certificate.py): an xyz request names its sulfoxide's configuration, the training SMILES leave it open
     "stereoisomer": "a stereoisomer of it, or the molecule itself written with other stereo labels, is in the network's training set ({ids})",
+    "stereoisomer_held_out": "a stereoisomer of it, or the molecule itself written with other stereo labels, is held out, hold-out "
+                             "({h}) ({ids}): never trained on",
     "unseen_neutral": "not in the catalogue as a neutral molecule: the network has not seen it as one",
     # decision 66 (design note of 17 Nov 2026, §3): the line for a molecule the release networks trained on
     "release_trained": "in the release networks' training data: the error bars are not an out-of-sample error for this molecule; "
@@ -117,7 +119,7 @@ def status(smiles: str, seen: Seen, listed_id: str | None, release: Seen | None 
     itself, keeps its role and gains `cation_trained` and a clause saying so: networks that fitted the molecule's own answer are not
     what the cation test measured. For every other molecule the record is as it was. Release networks that lack a molecule the
     measurement networks trained on are refused: decision 66's release set holds the measurement set."""
-    c = canonical(smiles)
+    c = covering_key(canonical(smiles), seen, release)
     if release is not None and c in seen.trained and c not in release.trained:
         raise ValueError(f"{smiles}: the measurement networks trained on it ({', '.join(seen.trained[c])}) and the release networks did "
                          "not; a release set holds its measurement set (decision 66)")
@@ -130,17 +132,29 @@ def status(smiles: str, seen: Seen, listed_id: str | None, release: Seen | None 
     return got | {"cation_trained": cations, "text": f"{head}; {TEXT['cation_trained'].format(ids=', '.join(cations))}"}
 
 
-def stereoisomer_ids(c: str | None, trained: dict[str, list[str]]) -> list[str]:
-    """The ids trained under another canonical SMILES that is `c` without, or with other, stereo labels."""
+def covering_key(c: str | None, seen: Seen, release: Seen | None) -> str | None:
+    """The key the molecule is looked up under: its own canonical SMILES when an index holds it, else that SMILES without stereo
+    labels when an index holds that — a row without stereo marks covers every configuration (an xyz sulfoxide names its
+    configuration, the training SMILES leave it open)."""
     if c is None:
-        return []
+        return None
+    indexes = [seen.trained, seen.holdout, seen.cations] + ([release.trained, release.cations] if release is not None else [])
+    if any(c in index for index in indexes):
+        return c
     plain = without_stereo(c)
-    return sorted(i for k, ids in trained.items() if k != c and without_stereo(k) == plain for i in ids)
+    return plain if any(plain in index for index in indexes) else c
+
+
+def stereoisomer_keys(c: str | None, keys) -> list[str]:
+    """The keys that are `c` with other stereo labels, both sides specifying stereo (a stereo-free key is `covering_key`'s)."""
+    if c is None or (plain := without_stereo(c)) == c:
+        return []
+    return sorted(k for k in keys if k not in (c, plain) and without_stereo(k) == plain)
 
 
 def role_of(c: str | None, seen: Seen, listed_id: str | None, release: Seen | None) -> dict:
-    """The role of the molecule of canonical SMILES `c`, with its ids and sentence (`status`, without the cation clause). A molecule found
-    under none of its own keys but trained on as a stereoisomer — the networks that made the spectrum — says so."""
+    """The role of the molecule of canonical SMILES `c` (`covering_key`), with its ids and sentence (`status`, without the cation clause).
+    A molecule found under no key of its own but trained on, or held out, as a stereoisomer — both sides naming the stereo — says so."""
     if release is not None and c in release.trained:
         return {"role": "release_trained", "ids": release.trained[c], "text": TEXT["release_trained"]}
     if c in seen.trained and c in seen.holdout:
@@ -152,8 +166,12 @@ def role_of(c: str | None, seen: Seen, listed_id: str | None, release: Seen | No
         role, ids = "trained", seen.trained[c]
     elif c in seen.holdout:
         role, ids = seen.holdout[c]
-    elif stereo := stereoisomer_ids(c, (seen if release is None else release).trained):
-        role, ids = "stereoisomer", stereo
+    elif stereo := stereoisomer_keys(c, (trained := (seen if release is None else release).trained)):
+        role, ids = "stereoisomer", sorted(i for k in stereo for i in trained[k])
+    elif stereo := stereoisomer_keys(c, seen.holdout):
+        h = seen.holdout[stereo[0]][0]
+        ids = sorted(i for k in stereo for i in seen.holdout[k][1])
+        return {"role": "stereoisomer_held_out", "ids": ids, "text": TEXT["stereoisomer_held_out"].format(h=h, ids=", ".join(ids))}
     elif listed_id is not None:
         role, ids = "catalogue", [listed_id]
     else:

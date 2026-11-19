@@ -85,13 +85,32 @@ def test_the_seen_index_standardises_the_training_smiles_on_load():
     assert S.status("O=[N+]([O-])c1ccccc1", seen, None)["role"] == "trained"
 
 
-def test_a_stereoisomer_of_a_trained_molecule_says_so_and_names_the_ids():
+def test_a_stereo_free_trained_row_covers_every_configuration(tmp_path, pin_registry):
+    """The xyz sulfoxide names its configuration; the training row leaves it open, so the molecule is trained, also for release."""
+    made, _ = P.start_geometry(config(tmp_path, smiles="CS(=O)c1ccccc1"))
+    from_xyz = P.admit(config(tmp_path, smiles=None, xyz=listed_xyz(tmp_path / "s.xyz", made, 0))).smiles
+    assert "@" in from_xyz
     seen = S.build({"A_sox"}, {"a": {"A_benz"}}, {"A_sox": "CS(=O)c1ccccc1", "A_benz": "c1ccccc1"})
-    got = S.status("C[S@+]([O-])c1ccccc1", seen, None)
-    assert (got["role"], got["ids"]) == ("stereoisomer", ["A_sox"]) and "A_sox" in got["text"]
-    assert S.status("CS(=O)c1ccccc1", seen, None)["role"] == "trained"
-    assert S.status("c1ccccc1", seen, None)["role"] == "a"                        # its own key first
+    got = S.status(from_xyz, seen, None)
+    assert (got["role"], got["ids"]) == ("trained", ["A_sox"])
+    assert S.status(from_xyz, seen, None, release=seen)["role"] == "release_trained"
+    assert S.status("c1ccccc1", seen, None)["role"] == "a"
     assert S.status("CC(O)c1ccccc1", seen, None)["role"] == "unseen"
+
+
+def test_a_diastereomer_of_a_trained_or_held_out_molecule_is_a_stereoisomer():
+    trained, other = "C[C@H](O)[C@H](C)c1ccccc1", "C[C@H](O)[C@@H](C)c1ccccc1"
+    seen = S.build({"A_one"}, {}, {"A_one": trained})
+    got = S.status(other, seen, None)
+    assert (got["role"], got["ids"]) == ("stereoisomer", ["A_one"]) and "A_one" in got["text"]
+    assert S.status(trained, seen, None)["role"] == "trained"
+    held = S.status(other, S.build(set(), {"a": {"A_one"}, "b": set()}, {"A_one": trained}), None)
+    assert (held["role"], held["ids"]) == ("stereoisomer_held_out", ["A_one"]) and "hold-out (a)" in held["text"]
+
+
+def test_without_stereo_refuses_a_string_that_is_no_smiles():
+    with pytest.raises(ValueError, match="does not parse"):
+        M.without_stereo("c1ccc")
 
 
 @pytest.mark.parametrize("writing", AZIDE_WRITINGS)
@@ -123,9 +142,9 @@ def test_a_molecule_without_formal_charges_takes_no_resonance_pass(monkeypatch):
         raise AssertionError("called")
 
     monkeypatch.setattr(M, "_one_resonance_structure", refuse)
-    assert M.canonical("Oc1ccccc1") == "Oc1ccccc1"
+    assert M.canonical_of(M.from_smiles("Oc1ccccc1").mol) == "Oc1ccccc1"        # from_smiles: `canonical` is cached
     with pytest.raises(AssertionError, match="called"):
-        M.canonical("[O-][n+]1ccccc1")
+        M.from_smiles("[O-][n+]1ccccc1")
 
 
 def test_an_unparsable_or_empty_smiles_has_no_canonical_form():

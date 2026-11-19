@@ -25,10 +25,11 @@ xyz request says which, as aromir's does. The 'seen' look-up (`m08.seen`) then m
 from __future__ import annotations
 
 from dataclasses import dataclass
+from functools import cache
 from pathlib import Path
 from typing import Final
 
-from rdkit import Chem, RDLogger
+from rdkit import Chem, rdBase
 from rdkit.Chem import rdDetermineBonds
 from rdkit.Chem.MolStandardize import rdMolStandardize
 
@@ -106,8 +107,8 @@ def from_smiles(smiles: str | None) -> Standardised | None:
     """A SMILES as the pipeline's molecule, with explicit hydrogens; None when it is empty or does not parse."""
     if not smiles:
         return None
-    RDLogger.DisableLog("rdApp.*")
-    mol = Chem.MolFromSmiles(smiles)
+    with rdBase.BlockLogs():           # an unparsable request is answered by None, not by RDKit's log (rough_test.py::test_blocklogs)
+        mol = Chem.MolFromSmiles(smiles)
     return None if mol is None else standard_molecule(Chem.AddHs(mol))
 
 
@@ -124,6 +125,7 @@ def from_xyz(path: Path, charge: int) -> Standardised | None:
     return standard_molecule(mol)
 
 
+@cache
 def canonical(smiles: str | None) -> str | None:
     """The canonical SMILES of the pipeline's molecule — the one key every look-up compares — or None when the SMILES does not parse."""
     got = from_smiles(smiles)
@@ -132,4 +134,7 @@ def canonical(smiles: str | None) -> str | None:
 
 def without_stereo(smiles: str) -> str:
     """A canonical SMILES without its stereo labels."""
-    return Chem.MolToSmiles(Chem.MolFromSmiles(smiles), isomericSmiles=False)
+    mol = Chem.MolFromSmiles(smiles)
+    if mol is None:
+        raise ValueError(f"{smiles!r} does not parse as a SMILES")
+    return Chem.MolToSmiles(mol, isomericSmiles=False)
