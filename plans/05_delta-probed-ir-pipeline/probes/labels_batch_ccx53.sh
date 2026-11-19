@@ -9,7 +9,9 @@
 #      pyscf's UKS CPHF does not keep to max_memory (pyscf#3530), so a cap is what keeps one molecule from starving the other lanes.
 # Job files: <batch>/molecules/<id>/job.json (probes/rung4_jobs.py); worker.log and labels.log beside them. Markers '=== (<TAG>) …' and one
 # line per molecule on stdout; the run exits non-zero when a molecule failed. Restartable: a folder whose result.json says "done" is not
-# optimised again, one with both analytic Hessians is not labelled again.
+# optimised again, one with both analytic Hessians is not labelled again. A molecule with a soft mode on the 2.14 pyscf is logged DEFERRED
+# to qc215 and counted with the failures (TASKS 226): analytic_hessians.py exits DEFERRED_RC and leaves its Hessians pending, which is not
+# a label, so a rerun with QC05 set to the 2.15 environment and LABEL_ARGS with --reuse-existing finishes it.
 # Settings (environment, checked before the wait): CODE (the workers' folder) /root/labels, QC and QC05 (the psi4 and pyscf pythons), QC_TMP,
 #   LANES 4, THREADS 8, WAIT_COUNT 1, WAIT_S 900, LABEL_ARGS (e.g. '--charge 1 --spin 1 --max-memory 24000 --reuse-existing'), CAP_MB (none),
 #   CAPPED and OOM_CHECK (beside this script), IDS_FILE ids.txt (relative to the batch: two batches of one folder share its molecules).
@@ -39,7 +41,14 @@ if [ -n "$CAP_MB" ]; then
   for b in "$CAPPED" "$OOM_CHECK"; do [ -f "$b" ] || { mark "STOPPED: $b missing (CAP_MB is set)"; exit 1; }; done
 fi
 optimised() { [ -f "molecules/$1/result.json" ] && grep -q '"status": "done"' "molecules/$1/result.json"; }
-labelled() { [ -f "molecules/$1/hessian_b3lyp_analytic.npz" ] && [ -f "molecules/$1/hessian_wb97x_analytic.npz" ]; }
+DEFERRED_RC=4                           # analytic_hessians.EXIT_SOFT_MODE_DEFERRED
+pending() { grep -qa 'low_mode_pending.npy' "$1"; }   # the npz's member names are stored uncompressed
+labelled() {
+  local f
+  for f in "molecules/$1/hessian_b3lyp_analytic.npz" "molecules/$1/hessian_wb97x_analytic.npz"; do
+    [ -f "$f" ] && ! pending "$f" || return 1
+  done
+}
 met() { grep -lE "$WAIT_RE" $WAIT_LOG 2>/dev/null | wc -l; }   # WAIT_LOG unquoted: it may be a glob of several logs
 [ -f "$IDS_FILE" ] || { mark "STOPPED: no ids file $IDS_FILE in $BATCH"; exit 1; }
 mapfile -t IDS < <(grep -v '^#' "$IDS_FILE" | cut -f1 | tr -d '\r' | sed '/^$/d')
@@ -68,26 +77,31 @@ opt() {
   fi
 }
 label() {
-  local id=$1 d=$BATCH/molecules/$1 t0 cmd extra
+  local id=$1 d=$BATCH/molecules/$1 t0 cmd extra rc
   if labelled "$id"; then echo "  $id labelled already"; return 0; fi
   [ -f "$d/geometry.json" ] || { echo "  $id LABELS SKIPPED (no optimised geometry)"; echo "$id skipped" >> "$STATUS"; return 1; }
   read -ra extra <<< "$LABEL_ARGS"
-  cmd=("$QC05" analytic_hessians.py "$d" --threads "$THREADS" "${extra[@]}")
+  cmd=("$QC05" analytic_hessians.py "$d" --threads "$THREADS" --lane "labels_batch_ccx53.sh $TAG" "${extra[@]}")
   if [ -n "$CAP_MB" ]; then
     cmd=(env CAP_SCOPE=system bash "$CAPPED" "$CAP_MB" -- /usr/bin/time -f "($TAG) $id max RSS %M kB, wall %e s" "${cmd[@]}")
   fi
   echo "  $id labels started $(date '+%F %T')"
   t0=$(date +%s)
-  if (cd "$CODE" && OMP_NUM_THREADS=$THREADS "${cmd[@]}" >> "$d/labels.log" 2>&1); then
+  (cd "$CODE" && OMP_NUM_THREADS=$THREADS "${cmd[@]}" >> "$d/labels.log" 2>&1)
+  rc=$?
+  if [ "$rc" = 0 ]; then
     echo "  $id labelled $(( $(date +%s) - t0 )) s${CAP_MB:+ - $(grep -a "($TAG) $id max RSS" "$d/labels.log" | tail -n 1)}"
+  elif [ "$rc" = "$DEFERRED_RC" ]; then
+    echo "  $id DEFERRED to qc215 $(( $(date +%s) - t0 )) s: a soft mode this pyscf cannot repair (molecules/$id/labels.log)"
+    echo "$id deferred to qc215" >> "$STATUS"
   elif [ -n "$CAP_MB" ] && OOM_TAG=$TAG OOM_JOURNAL=system bash "$OOM_CHECK" "$id" >> "$d/labels.log" 2>&1; then
     echo "  $id KILLED at the cap of $CAP_MB MB $(( $(date +%s) - t0 )) s (molecules/$id/labels.log)"; echo "$id killed at the cap" >> "$STATUS"
   else
     echo "  $id LABELS FAILED $(( $(date +%s) - t0 )) s (molecules/$id/labels.log)"; echo "$id failed" >> "$STATUS"
   fi
 }
-export -f opt label optimised labelled
-export QC QC05 BATCH CODE THREADS LABEL_ARGS CAP_MB CAPPED OOM_CHECK TAG STATUS
+export -f opt label optimised labelled pending
+export QC QC05 BATCH CODE THREADS LABEL_ARGS CAP_MB CAPPED OOM_CHECK TAG STATUS DEFERRED_RC
 mark "optimisations"
 printf '%s\n' "${IDS[@]}" | xargs -P "$LANES" -I{} bash -c 'opt {}'
 mark "labels"

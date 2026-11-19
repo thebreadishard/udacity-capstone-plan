@@ -21,7 +21,7 @@ def _stub(path: Path, body: str) -> str:
     return path.as_posix()
 
 
-def _setup(tmp_path, ids=(A, B), optimised=(B,), fail: str = "", ready: bool = True) -> dict:
+def _setup(tmp_path, ids=(A, B), optimised=(B,), fail: str = "", ready: bool = True, defer: str = "") -> dict:
     batch = tmp_path / "batch"
     for i in ids:
         (batch / "molecules" / i).mkdir(parents=True)
@@ -36,9 +36,9 @@ def _setup(tmp_path, ids=(A, B), optimised=(B,), fail: str = "", ready: bool = T
         (code / name).write_text("", encoding="utf-8")
     # psi4 stand-in: '<worker> molecules/<id>/job.json' -> a finished result and an optimised geometry
     qc = _stub(tmp_path / "qc.sh", 'd=$(dirname "$2"); echo \'{"status": "done"}\' > "$d/result.json"; echo "{}" > "$d/geometry.json"\n')
-    # pyscf stand-in: 'analytic_hessians.py <dir> ...' -> both Hessians, or a failure for the named id
+    # pyscf stand-in: 'analytic_hessians.py <dir> ...' -> both Hessians, a failure, or a soft-mode deferral (exit 4) for the named ids
     qc05 = _stub(tmp_path / "qc05.sh", f'echo "$*" >> "{(tmp_path / "qc05_args.log").as_posix()}"\n'
-                                       f'd=$2; case "$(basename "$d")" in {fail or "none"}) exit 1 ;; esac\n'
+                                       f'd=$2; case "$(basename "$d")" in {fail or "none"}) exit 1 ;; {defer or "none"}) exit 4 ;; esac\n'
                                        'touch "$d/hessian_b3lyp_analytic.npz" "$d/hessian_wb97x_analytic.npz"\n')
     (tmp_path / "wait.log").write_text("READY\n" if ready else "busy\n", encoding="utf-8", newline="\n")
     return dict(os.environ, QC=qc, QC05=qc05, CODE=code.as_posix(), QC_TMP=(tmp_path / "qc_tmp").as_posix(), WAIT_S="1")
@@ -116,7 +116,8 @@ def test_lanes_threads_and_label_arguments_reach_the_worker(tmp_path):
     res = _run(tmp_path, env)
     assert "2 lanes × 3 threads" in res.stdout and "label arguments '--charge 1 --spin 1 --reuse-existing'" in res.stdout
     calls = (tmp_path / "qc05_args.log").read_text(encoding="utf-8").splitlines()
-    assert len(calls) == 2 and all(c.endswith("--threads 3 --charge 1 --spin 1 --reuse-existing") for c in calls)
+    assert len(calls) == 2 and all(c.endswith("--threads 3 --lane labels_batch_ccx53.sh T --charge 1 --spin 1 --reuse-existing")
+                                   for c in calls)
 
 
 def test_it_waits_for_every_log_of_the_glob(tmp_path):
@@ -186,3 +187,21 @@ def test_an_ids_file_picks_its_molecules_from_a_shared_folder(tmp_path):
 def test_a_missing_ids_file_is_refused(tmp_path):
     res = _run(tmp_path, _setup(tmp_path) | {"IDS_FILE": "nowhere.txt"})
     assert res.returncode != 0 and "=== (T) STOPPED: no ids file nowhere.txt" in res.stdout
+
+
+def test_a_soft_mode_deferral_is_named_counted_and_the_others_go_on(tmp_path):
+    """TASKS 226: analytic_hessians.py exits 4 for a soft mode its pyscf cannot repair; the batch says where it goes."""
+    res = _run(tmp_path, _setup(tmp_path, optimised=(A, B), defer=A))
+    assert f"  {A} DEFERRED to qc215 " in res.stdout and f"  {B} labelled " in res.stdout
+    assert f"  {A} LABELS FAILED" not in res.stdout and "=== (T) all done: 1 failures or skips" in res.stdout and res.returncode != 0
+    assert f"{A} deferred to qc215" in (tmp_path / "batch" / "status_T.log").read_text(encoding="utf-8")
+
+
+def test_a_pending_hessian_file_is_not_a_label(tmp_path):
+    """A file written before its low-mode repair (the npz member low_mode_pending.npy) is labelled again, not skipped."""
+    env = _setup(tmp_path)
+    folder = tmp_path / "batch" / "molecules" / B
+    (folder / "hessian_b3lyp_analytic.npz").write_bytes(b"PK..low_mode_pending.npy..")
+    (folder / "hessian_wb97x_analytic.npz").write_bytes(b"")
+    res = _run(tmp_path, env)
+    assert f"  {B} labelled already" not in res.stdout and f"  {B} labelled " in res.stdout
