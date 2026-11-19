@@ -5,19 +5,20 @@ from __future__ import annotations
 import os
 import subprocess
 import sys
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
 import worktree_data as WD
 
+REPO = Path(__file__).resolve().parents[3]
 DATA = "data/run1"
 EXCLUDED = f"{WD.EXCLUDED_DIRS[0][0]}/out"
 
 
 def _git(cwd: Path, *args: str) -> str:
-    return subprocess.run(["git", "-C", str(cwd), *args], capture_output=True, check=True, text=True).stdout
+    return subprocess.run(["git", "-C", str(cwd), *args], capture_output=True, check=True, text=True, env=WD.git_env()).stdout
 
 
 def _write(path: Path, text: str) -> None:
@@ -31,8 +32,8 @@ def repo(tmp_path: Path) -> WD.Checkouts:
     main = tmp_path / "main"
     main.mkdir()
     _git(main, "init", "-q", "-b", "master")
-    _git(main, "config", "user.email", "t@example.invalid")
-    _git(main, "config", "user.name", "t")
+    for key, value in (("user.email", "t@example.invalid"), ("user.name", "t"), ("commit.gpgsign", "false")):
+        _git(main, "config", key, value)
     _write(main / ".gitignore", "data/\n__pycache__/\n**/out/\n")
     _write(main / "tracked.txt", "tracked\n")
     _git(main, "add", ".gitignore", "tracked.txt")
@@ -50,16 +51,23 @@ def _found(repo: WD.Checkouts) -> WD.Checkouts:
     return WD.find_checkouts(repo.worktree, WD.repository_of(repo.main))
 
 
+def _folder_link(link: Path, target: Path) -> None:
+    """A junction on Windows (what a user's mklink /J makes, and what os.walk enters), a symlink elsewhere."""
+    if sys.platform == "win32":
+        subprocess.run(["cmd", "/c", "mklink", "/J", str(link), str(target)], capture_output=True, check=True)
+    else:
+        os.symlink(target, link, target_is_directory=True)
+
+
 def test_find_checkouts_reads_the_main_checkout_from_git(repo):
     assert _found(repo) == repo
 
 
 def test_link_counts_and_skip_rules(repo):
     report = WD.link(_found(repo), ("data",))
-    assert (report.linked, report.already, report.skipped, report.refused) == (2, 0, 1, [])   # the cache is skipped
+    assert (report.linked, report.already, report.skipped, report.refused, report.not_ignored) == (2, 0, 1, [], [])   # the cache is skipped
     assert (repo.worktree / DATA / "deep" / "b.npz").read_text(encoding="utf-8") == "B"
     assert not (repo.worktree / DATA / "__pycache__").exists()
-    assert report.not_ignored == []
 
 
 def test_excluded_folder_is_skipped_inside_a_requested_parent(repo):
@@ -80,8 +88,33 @@ def test_a_different_existing_file_is_refused_not_overwritten(repo):
     report = WD.link(_found(repo), ("data",))
     assert report.refused == [f"{DATA}/a.json"]
     assert report.linked == 1
+    assert not report.clean
     assert (repo.worktree / DATA / "a.json").read_text(encoding="utf-8") == "the worktree's own"
     assert (repo.main / DATA / "a.json").read_text(encoding="utf-8") == "A"
+
+
+def test_a_file_the_branch_does_not_ignore_is_not_linked(repo):
+    _write(repo.worktree / ".gitignore", "__pycache__/\n**/out/\n")             # the branch no longer ignores data/
+    report = WD.link(_found(repo), ("data",))
+    assert report.not_ignored == [f"{DATA}/a.json", f"{DATA}/deep/b.npz"]
+    assert report.linked == 0
+    assert not report.clean
+    assert not (repo.worktree / DATA).exists()
+
+
+def test_a_failure_partway_reports_what_was_linked(repo, monkeypatch):
+    real_link, calls = os.link, []
+
+    def fail_second(src, dst):
+        calls.append(dst)
+        if len(calls) == 2:
+            raise OSError("too many links")
+        real_link(src, dst)
+
+    monkeypatch.setattr(WD.os, "link", fail_second)
+    with pytest.raises(WD.LinkStopped, match="too many links") as stopped:
+        WD.link(_found(repo), ("data",))
+    assert stopped.value.report.linked == 1
 
 
 def test_the_main_checkout_is_refused(repo):
@@ -118,8 +151,16 @@ def test_folders_are_normalised():
     assert WD.validate_dirs(["website\\export\\out", "data/"]) == ("website/export/out", "data")
 
 
-def test_default_folders_link_nothing_that_is_excluded():
-    assert WD.validate_dirs([d for d, _ in WD.DEFAULT_DIRS])
+def test_default_folders_are_distinct_reasoned_and_where_the_repository_has_them():
+    """Each default is already normal, has a reason, neither nests in another nor touches an excluded folder, and its parent is a folder
+    of this repository (the layout only; no data is read), so a renamed module shows here instead of as a silent zero-file link."""
+    names = [d for d, _ in WD.DEFAULT_DIRS]
+    assert WD.validate_dirs(names) == tuple(names)
+    assert all(reason.strip() for _, reason in WD.DEFAULT_DIRS)
+    for a in names:
+        assert not any(a != b and PurePosixPath(a).is_relative_to(b) for b in names), a
+        assert not any(PurePosixPath(excluded).is_relative_to(a) for excluded, _ in WD.EXCLUDED_DIRS), a
+        assert (REPO / a).parent.is_dir(), a
 
 
 def test_status_counts_only_links_to_the_main_checkout(repo):
@@ -150,6 +191,25 @@ def test_a_same_named_file_that_is_not_the_link_survives_unlink(repo):
     assert (repo.worktree / DATA / "a.json").exists()
 
 
+def test_a_folder_junction_into_the_main_checkout_is_never_entered(repo):
+    """A worktree folder that is a junction to the main's folder: unlink must not delete the main's names, link must not create there."""
+    checkouts = _found(repo)
+    _folder_link(repo.worktree / "data", repo.main / "data")
+    try:
+        assert WD.status(checkouts) == {}
+        assert WD.unlink(checkouts) == 0
+        assert (repo.main / DATA / "a.json").read_text(encoding="utf-8") == "A"
+        assert (repo.main / DATA / "deep").is_dir()
+        with pytest.raises(WD.LinkStopped, match="resolves outside the worktree"):
+            WD.link(checkouts, ("data",))
+        assert sorted(p.name for p in (repo.main / DATA).iterdir()) == ["__pycache__", "a.json", "deep"]
+    finally:
+        if sys.platform == "win32":
+            os.rmdir(repo.worktree / "data")                                   # removes the junction, not the main's folder
+        else:
+            os.unlink(repo.worktree / "data")
+
+
 def test_writing_into_a_link_writes_the_main_checkouts_original(repo):
     """The hazard the tool's summary warns about: an in-place write goes through; a replace only breaks the link."""
     checkouts = _found(repo)
@@ -161,12 +221,6 @@ def test_writing_into_a_link_writes_the_main_checkouts_original(repo):
     tmp.write_text("replaced", encoding="utf-8")
     os.replace(tmp, repo.worktree / DATA / "deep" / "b.npz")
     assert (repo.main / DATA / "deep" / "b.npz").read_text(encoding="utf-8") == "B"
-
-
-def test_a_link_the_branch_does_not_ignore_is_reported(repo):
-    _write(repo.worktree / ".gitignore", "__pycache__/\n**/out/\n")             # the branch no longer ignores data/
-    report = WD.link(_found(repo), ("data",))
-    assert report.not_ignored == [f"{DATA}/a.json", f"{DATA}/deep/b.npz"]
 
 
 def test_worktree_remove_with_links_present_keeps_the_main_checkouts_data(repo):

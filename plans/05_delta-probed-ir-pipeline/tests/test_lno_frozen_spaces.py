@@ -54,7 +54,7 @@ def test_store_roundtrip(tmp_path):
 
 
 @pytest.mark.slow
-def test_water_replay_reproduces_reference_and_runs_displaced():
+def test_water_replay_reproduces_reference_and_runs_displaced(tmp_path):
     pytest.importorskip("pyscf")
     pytest.importorskip("pyscf.lno")
     import l2_lno_price as L2
@@ -63,8 +63,7 @@ def test_water_replay_reproduces_reference_and_runs_displaced():
     L2.TIER = "t0"
     sym = ["O", "H", "H"]
     x0 = np.array([[0.0, 0.0, 0.2217], [0.0, 1.4309, -0.8867], [0.0, -1.4309, -0.8867]])   # bohr, the water of the gate-1 acceptance test
-    out = str(HERE / "probes" / "results_m1" / "lno_frozen_spaces_water_test")
-    os.makedirs(out, exist_ok=True)
+    out = str(tmp_path)          # l2.log is appended to: never a folder that tools/worktree_data.py may link to the main checkout
     store = {}
     ref = L2.point(sym, x0, "cc-pvdz", "tight", 1, 2000, out, "ref_capture", spaces={"mode": "capture", "store": store})
     assert len(store["frags"]) == 4 and store["lo_coeff"].shape[1] == 4
