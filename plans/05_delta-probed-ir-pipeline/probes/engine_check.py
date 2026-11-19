@@ -118,9 +118,9 @@ def optimise(folder: Path, threads: int, max_memory: int) -> None:
     sys.path[:0] = [str(M05 / "corpus"), str(PLAN / "probes")]
     import analytic_hessians as AH
     import numpy as np
+    from geomopt_verdict import converged_geometry
     from library_log import PYSCF_LOG_NAME
     from pyscf import lib
-    from pyscf.geomopt import geometric_solver
 
     if (folder / "geometry.json").exists():
         raise SystemExit(f"{folder}: geometry.json exists; an optimised folder is never redone")
@@ -138,14 +138,7 @@ def optimise(folder: Path, threads: int, max_memory: int) -> None:
             steps.append(round(time.time() - t0, 1))
             energies.append(float(env["energy"]))
 
-        # `kernel` returns (converged, mol); `optimize` is `kernel(...)[1]` and returns the last geometry either way, and
-        # assert_convergence covers the SCF only. Upstream's use of the returned pair: pyscf/geomopt/test/test_geometric_solver.py
-        # (test_optimize_with_hessian), `conv, mol_eq = geometric_solver.kernel(mf, hessian=True)`. That file is in pyscf's
-        # repository, not in the wheel, and it passes `hessian=True`, not the keyword arguments passed here.
-        converged, mol_eq = geometric_solver.kernel(mf, assert_convergence=True, callback=on_step, **CONVERGENCE)
-        if not converged:
-            raise RuntimeError(f"{folder}: geomeTRIC did not converge to {CONVERGENCE['convergence_set']} within "
-                               f"{CONVERGENCE['maxsteps']} steps ({len(steps)} gradient calls); no geometry is written")
+        mol_eq = converged_geometry(mf, str(folder), callback=on_step, **CONVERGENCE)
         mf_eq, e_opt = AH.labels_scf(AH.labels_mol({"symbols": start["symbols"], "coords_bohr": mol_eq.atom_coords().tolist()}, log,
                                                    max_memory=max_memory), "b3lyp", GRID)
         g = mf_eq.nuc_grad_method().kernel()
@@ -156,7 +149,7 @@ def optimise(folder: Path, threads: int, max_memory: int) -> None:
                                         "optimisation": {"engine": "geomeTRIC via pyscf.geomopt.geometric_solver.kernel", **CONVERGENCE,
                                                          "functional": "b3lyp", "basis": "6-31g* (Cartesian d)", "grid": list(GRID),
                                                          "steps": len(steps), "seconds": seconds, "e_opt": float(e_opt),
-                                                         "max_force_au": float(np.abs(g).max()), **convergence_record(converged, g, energies),
+                                                         "max_force_au": float(np.abs(g).max()), **convergence_record(True, g, energies),
                                                          "start": start["source"]}})
     print(f"[engine check] {start['id']} optimised: {len(steps)} steps, {seconds} s, max |force| {np.abs(g).max():.1e} E_h/bohr", flush=True)
 

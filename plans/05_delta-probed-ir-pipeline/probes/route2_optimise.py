@@ -11,8 +11,8 @@ import os
 import time
 
 import numpy as np
+from geomopt_verdict import converged_geometry
 from pyscf import dft, gto, lib
-from pyscf.geomopt.geometric_solver import optimize
 
 
 def main():
@@ -25,10 +25,11 @@ def main():
     ap.add_argument("--grid", default="99,590")
     a = ap.parse_args()
     lib.num_threads(a.threads)
-    s = json.load(open(a.stagea))
+    with open(a.stagea) as fh:
+        s = json.load(fh)
     symbols, coords = s["symbols"], np.array(s["coords_bohr"])
     rad, ang = (int(x) for x in a.grid.split(","))
-    mol = gto.M(atom=[(sy, tuple(c)) for sy, c in zip(symbols, coords)], unit="Bohr", basis=a.basis, symmetry=False, verbose=0, max_memory=24000)
+    mol = gto.M(atom=[(sy, tuple(c)) for sy, c in zip(symbols, coords, strict=True)], unit="Bohr", basis=a.basis, symmetry=False, verbose=0, max_memory=24000)
     mf = dft.RKS(mol)
     mf.xc = a.xc
     mf.grids.atom_grid = (rad, ang)
@@ -37,7 +38,8 @@ def main():
     mf.conv_tol_grad = 1e-8
     t0 = time.time()
     # tight convergence: the quartic force field is built by finite differences around this point
-    mol_eq = optimize(mf, maxsteps=100, convergence_energy=1e-7, convergence_grms=1e-5, convergence_gmax=2e-5, convergence_drms=1e-4, convergence_dmax=2e-4)
+    mol_eq = converged_geometry(mf, a.stagea, maxsteps=100, convergence_energy=1e-7, convergence_grms=1e-5, convergence_gmax=2e-5,
+                                convergence_drms=1e-4, convergence_dmax=2e-4)
     x = mol_eq.atom_coords()  # bohr
     mf2 = dft.RKS(mol_eq)
     mf2.xc = a.xc
@@ -49,11 +51,16 @@ def main():
     g = mf2.nuc_grad_method().kernel()
     os.makedirs(a.out_dir, exist_ok=True)
     rec = {"driver": "hessian", "molecule": {"symbols": list(symbols), "geometry": x.tolist()},
-           "model": {"method": a.xc, "basis": a.basis}, "keywords": {"grid": [rad, ang], "optimiser": "geomeTRIC via pyscf.geomopt", "e_opt": float(e), "max_force_au": float(np.abs(g).max())},
+           "model": {"method": a.xc, "basis": a.basis},
+           "keywords": {"grid": [rad, ang], "optimiser": "geomeTRIC via pyscf.geomopt", "e_opt": float(e), "max_force_au": float(np.abs(g).max())},
            "note": "reference stub for route 2; return_result (the analytic Hessian) is added by pyscf_hessians_for_qff.py"}
-    json.dump(rec, open(os.path.join(a.out_dir, "reference.json"), "w"))
+    target = os.path.join(a.out_dir, "reference.json")
+    with open(target + ".tmp", "w") as fh:
+        json.dump(rec, fh)
+    os.replace(target + ".tmp", target)
     shift = np.linalg.norm(x - coords, axis=1)
-    print(f"optimised in {time.time() - t0:.0f} s: E = {e:.9f}, max |force| {np.abs(g).max():.2e} E_h/bohr, atoms moved by at most {shift.max() * 0.529177:.4f} Å from the start; wrote {a.out_dir}/reference.json")
+    print(f"optimised in {time.time() - t0:.0f} s: E = {e:.9f}, max |force| {np.abs(g).max():.2e} E_h/bohr, "
+          f"atoms moved by at most {shift.max() * 0.529177:.4f} Å from the start; wrote {target}")
 
 
 if __name__ == "__main__":

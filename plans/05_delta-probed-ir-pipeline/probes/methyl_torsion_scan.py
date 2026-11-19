@@ -3,9 +3,10 @@
 ernaast').
 
 Point k sets the dihedral H6–C0–C1–C2 to τ₀ + 10° k and optimises everything else (geomeTRIC through pyscf, `$set dihedral 7 1 2 3 <τ>`;
-upstream: geomeTRIC `tests/test_prepare.py` for the constraint syntax, pyscf `geomopt/geometric_solver.py` `optimize(..., constraints=)`),
-from the reference with its top turned rigidly by 10° k. The energy at the optimised geometry is then taken with the Hessian runs' RKS. A
-point whose dihedral moved more than 0.05° stops the run. One json per point; a point already written is skipped.
+upstream: geomeTRIC `tests/test_prepare.py` for the constraint syntax, pyscf `geomopt/geometric_solver.py` `kernel(..., constraints=)`,
+through `geomopt_verdict`), from the reference with its top turned rigidly by 10° k. The energy at the optimised geometry is then taken
+with the Hessian runs' RKS. A point geomeTRIC did not converge, or whose dihedral moved more than 0.05°, stops the run. One json per
+point; a point already written is skipped.
 
     python probes/methyl_torsion_scan.py <out_dir> --lane 0 --lanes 4 [--threads 3] [--smoke]
 """
@@ -26,17 +27,18 @@ CONVERGENCE = "GAU_TIGHT"  # geomeTRIC's set: gradient rms 1e-5 Eh/bohr, so the 
 
 def constrained_minimum(symbols: list[str], x: np.ndarray, target_deg: float, threads: int, work: Path, lib_log) -> np.ndarray:
     """The geometry (bohr) that minimises the energy with the torsion held at target_deg."""
+    from geomopt_verdict import converged_geometry
     from library_log import pyscf_mole
     from methyl_rotor_grid import BASIS, CONV, GRID, XC
     from pyscf import lib
-    from pyscf.geomopt.geometric_solver import optimize
     from pyscf_hessians_for_qff import rks_setup
     lib.num_threads(threads)
     con = work / "constraints.txt"
     i, j, k, m = (TOP[0] + 1, METHYL_C + 1, RING_C + 1, RING_NEXT + 1)
     con.write_text(f"$set\ndihedral {i} {j} {k} {m} {target_deg:.6f}\n$end\n", encoding="utf-8")
     mol = pyscf_mole(lib_log, atom=[(s, tuple(r)) for s, r in zip(symbols, x, strict=True)], unit="Bohr", basis=BASIS, symmetry=False)
-    mol_eq = optimize(rks_setup(mol, XC, GRID, CONV), constraints=str(con), maxsteps=200, convergence_set=CONVERGENCE)
+    mol_eq = converged_geometry(rks_setup(mol, XC, GRID, CONV), f"torsion {target_deg:.3f} deg", constraints=str(con), maxsteps=200,
+                                convergence_set=CONVERGENCE)
     return np.asarray(mol_eq.atom_coords(unit="Bohr"))
 
 
