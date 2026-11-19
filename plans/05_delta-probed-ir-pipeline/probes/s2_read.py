@@ -35,6 +35,7 @@ from scipy.optimize import curve_fit
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, "..", "src"))
+import json_records  # noqa: E402
 from e8_cc_locality import families, mode_shares  # noqa: E402
 
 from dpir.vpt2_domain import marked_modes, marked_to_drop, mode_domains  # noqa: E402
@@ -437,10 +438,10 @@ def main():
     res = {"registration": "PreRegistration_2026-10-14_S2_Anharmonic_Shift.md (+ amendment 1)", "window": window_record(options.window),
            "window_name": a.window, "ridge": RIDGE,
            "molecules": used, "excluded": excluded, "scaffolds": len(by_scaf), "curve": rows, "verdict": verdict(rows)}
-    os.makedirs(a.out, exist_ok=True)
-    write_atomic(os.path.join(a.out, "s2_read.json"), json.dumps(res, indent=1))
     if a.gvpt2_dir or a.scope != "all":
         res["amendment_2"] = {"labels": "GVPT2" if a.gvpt2_dir else "DVPT2 (stored)", "scope": a.scope}
+    os.makedirs(a.out, exist_ok=True)
+    json_records.write(os.path.join(a.out, "s2_read.json"), res)
     variant = f" — labels {res['amendment_2']['labels']}, scope {a.scope}" if "amendment_2" in res else ""
     lines = [f"# S2 read — {len(used)} molecules in {len(by_scaf)} scaffolds, excluded {len(excluded)}{variant}", "",
              "| k (training scaffolds) | (b) rms ± SE | (c) rms ± SE | unseen-family modes |", "|---|---|---|---|"]

@@ -10,7 +10,6 @@ sees and generalises poorly, which more data does lower. Also per molecule, the 
 is spread or sits in a few molecules.
 """
 import argparse
-import json
 import os
 import sys
 
@@ -18,6 +17,7 @@ import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
+import json_records  # noqa: E402
 from s2_read import (  # noqa: E402
     FAMILIES,
     SCOPES,
@@ -104,7 +104,7 @@ def main() -> int:
     lines += ["", "| molecule | ω (cm⁻¹) | family | Δ_anh | (b) predicts | h |", "|---|---|---|---|---|---|"]
     lines += [f"| {r['id']} | {r['omega']:.0f} | {r['family']} | {r['delta']:.1f} | {r['pred_b']:.1f} | {r['h']:.2f} |" for r in res["largest_errors"]]
     os.makedirs(a.out, exist_ok=True)
-    write_atomic(os.path.join(a.out, "s2_diagnose.json"), json.dumps(res, indent=1))
+    json_records.write(os.path.join(a.out, "s2_diagnose.json"), res)
     write_atomic(os.path.join(a.out, "s2_diagnose.md"), "\n".join(lines) + "\n")
     print("\n".join(lines))
     return 0

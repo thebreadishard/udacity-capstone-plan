@@ -27,6 +27,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(HERE.parent / "modules" / "05_support_predictor" / "corpus"))
 import apt_l4_diag as D  # noqa: E402
+import json_records  # noqa: E402
 from apt import SUM_RULE_LIMIT, intensities, sum_rule  # noqa: E402
 
 FIELDS = ("1e-3", "2e-3")
@@ -116,7 +117,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--dir", type=Path, default=DEFAULT_DIR)
     a = ap.parse_args(argv)
     rows = {i: read_molecule(a.dir / i) for i in ids(a.dir)}
-    (a.dir / "l5_apt_field_read.json").write_text(json.dumps(rows, indent=1), encoding="utf-8")
+    json_records.write(a.dir / "l5_apt_field_read.json", rows)
     text = report(rows)
     (a.dir / "l5_apt_field_read.md").write_text(text, encoding="utf-8")
     print(text)

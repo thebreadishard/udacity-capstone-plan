@@ -12,14 +12,16 @@ Target: log10(|Δ_ij| + 1e-8). Model: an MLP (2 × 128, SiLU, AdamW, early stopp
 The evaluation harness (`run_simulation.py`) loads the weights and scores the evaluation molecules; the scorer never sees them."""
 from __future__ import annotations
 
-import json
 import sys
 from pathlib import Path
 
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from pp import core as C  # noqa: E402
+sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "probes"))
+import json_records
+
+from pp import core as C
 
 ELEM = ("C", "H", "N", "O")
 BAND_CM = 200.0
@@ -131,7 +133,7 @@ def fit_from_exports(export_dir: Path, out_prefix: Path, seed: int = 0, log=prin
     info = s.fit(X, y, Xv, yv, log=log)
     s.save(out_prefix)
     info.update(n_train_pairs=int(len(X)), n_val_pairs=int(len(Xv)), molecules=used, seed=seed)
-    json.dump(info, open(str(out_prefix) + f"_seed{seed}.json", "w"), indent=1)
+    json_records.write(str(out_prefix) + f"_seed{seed}.json", info)
     return info
 
 

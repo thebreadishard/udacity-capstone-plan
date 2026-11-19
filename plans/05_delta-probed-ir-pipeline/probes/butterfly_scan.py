@@ -23,7 +23,6 @@ import argparse
 import json
 import os
 import sys
-import tempfile
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -42,6 +41,7 @@ from analytic_hessians import (  # noqa: E402  (the corpus code lives in the mod
     software,
 )
 from constants import HARTREE2CM  # noqa: E402
+from json_records import write as write_json  # noqa: E402  (re-exported: the scans import it from here)
 from library_log import PYSCF_LOG_NAME  # noqa: E402
 from pyscf import lib  # noqa: E402
 from vibrations import signed_cm  # noqa: E402
@@ -113,14 +113,6 @@ def verdict(energies: dict[tuple[int, int], dict[float, float]]) -> tuple[str, f
     if all(dE[g][1.0] < -noise for g in grids):
         return "DOUBLE WELL", noise
     return "UNDECIDED", noise
-
-
-def write_json(path: Path, record: dict) -> None:
-    """A JSON record through a temp file in the same folder, moved over the target."""
-    fd, tmp = tempfile.mkstemp(dir=path.parent, suffix=".tmp")
-    with os.fdopen(fd, "w", encoding="utf-8") as fh:
-        json.dump(record, fh, indent=1)
-    os.replace(tmp, path)
 
 
 def point_energy(geometry: dict, coords: np.ndarray, cfg: ScanConfig, grid: tuple[int, int], dm0: Any, lib_log: TextIO) -> tuple[float, Any]:
