@@ -13,7 +13,8 @@ a default folder is a bug in the test: its output belongs in tmp_path.
     python tools/worktree_data.py unlink <worktree>                   # removes exactly those links, never anything else
 
 The main checkout is read from git (the worktree's common git directory), never from a path written here. Both checkouts must be on one
-volume: a hard link cannot cross volumes.
+volume: a hard link cannot cross volumes. Every file-system call goes through os_path(), so a worktree with a long name works on Windows
+where its deepest files pass MAX_PATH.
 """
 
 from __future__ import annotations
@@ -44,6 +45,7 @@ SKIPPED_PARTS = frozenset({"__pycache__", ".ruff_cache", ".pytest_cache"})   # c
 _NAMES_A_REPOSITORY = ("GIT_DIR", "GIT_WORK_TREE", "GIT_COMMON_DIR", "GIT_INDEX_FILE", "GIT_PREFIX")   # as review_gate.py: ask the checkout itself
 GIT_TIMEOUT_S = 300
 SHOWN = 20
+_EXTENDED_PREFIX = "\\\\?\\"
 
 
 class WorktreeDataError(RuntimeError):
@@ -172,20 +174,38 @@ def ignored_here(checkout: Path, rels: list[str]) -> set[str]:
     return {rel for rel in out.split("\0") if rel}
 
 
-def is_inside(top: Path, path: Path) -> bool:
+def os_path(path: Path | str) -> str:
+    r"""Return the form of `path` that this tool hands to the OS: on Windows the extended-length form, elsewhere the path unchanged.
+
+    Windows refuses a path past MAX_PATH (260 characters) unless it carries the \\?\ prefix or long paths are enabled machine-wide; a
+    worktree with a long folder name pushes a deeply nested results file past it (WinError 3 on os.link). The prefix switches off Windows'
+    own parsing, so the path behind it must be absolute with backslashes. Messages keep the plain path.
+    """
+    if sys.platform != "win32":
+        return os.fspath(path)
+    full = os.path.abspath(path)
+    if full.startswith(_EXTENDED_PREFIX):
+        return full
+    if full.startswith("\\\\"):   # a UNC path \\server\share\... takes the \\?\UNC\ form
+        return f"{_EXTENDED_PREFIX}UNC\\{full[2:]}"
+    return _EXTENDED_PREFIX + full
+
+
+def is_inside(top: Path | str, path: Path | str) -> bool:
     """Whether `path`, with every junction and symlink on the way resolved, lies under `top` (resolved the same way).
 
     A folder in the worktree that is a junction or symlink into the main checkout would make a create or remove act on the main checkout.
+    Both sides go through os_path(): realpath keeps the prefix of a prefixed path, so the two compare in the same form.
     """
-    real_top, real = os.path.normcase(os.path.realpath(top)), os.path.normcase(os.path.realpath(path))
+    real_top, real = (os.path.normcase(os.path.realpath(os_path(p))) for p in (top, path))
     try:
         return os.path.commonpath([real_top, real]) == real_top
     except ValueError:   # another drive on Windows: certainly not inside
         return False
 
 
-def _same_file(a: Path, b: Path) -> bool:
-    sa, sb = os.lstat(a), os.lstat(b)
+def _same_file(a: Path | str, b: Path | str) -> bool:
+    sa, sb = os.lstat(os_path(a)), os.lstat(os_path(b))
     return (sa.st_ino, sa.st_dev) == (sb.st_ino, sb.st_dev)
 
 
@@ -196,15 +216,16 @@ def _link_one(checkouts: Checkouts, rel: str) -> str:
     is refused before anything is created.
     """
     src, dst = checkouts.main / rel, checkouts.worktree / rel
-    if src.is_symlink() or not src.is_file():
+    src_os, dst_os = os_path(src), os_path(dst)
+    if os.path.islink(src_os) or not os.path.isfile(src_os):
         return "skipped"
     if not is_inside(checkouts.worktree, dst):
         raise WorktreeDataError(f"{dst} resolves outside the worktree (a junction or symlink on its path); nothing created there")
-    if os.path.lexists(dst):
-        return "already" if _same_file(src, dst) else "refused"
+    if os.path.lexists(dst_os):
+        return "already" if _same_file(src_os, dst_os) else "refused"
     try:
-        dst.parent.mkdir(parents=True, exist_ok=True)
-        os.link(src, dst)
+        os.makedirs(os.path.dirname(dst_os), exist_ok=True)
+        os.link(src_os, dst_os)
     except OSError as exc:
         raise WorktreeDataError(f"could not link {src} to {dst}: {exc}") from exc
     return "linked"
@@ -254,7 +275,7 @@ def link(checkouts: Checkouts, dirs: tuple[str, ...]) -> LinkReport:
 
 
 def _is_link_to_main(checkouts: Checkouts, rel: str) -> bool:
-    mine, theirs = checkouts.worktree / rel, checkouts.main / rel
+    mine, theirs = os_path(checkouts.worktree / rel), os_path(checkouts.main / rel)
     return os.path.isfile(mine) and os.path.lexists(theirs) and _same_file(mine, theirs)
 
 
@@ -269,12 +290,13 @@ def shared_files(checkouts: Checkouts) -> Iterator[str]:
     other file of the main checkout. Junctions and symlinked folders are not entered (Python 3.14's os.walk enters junctions), and a file
     whose real path leaves the worktree is never counted.
     """
-    for root, dirnames, filenames in os.walk(checkouts.worktree):
+    top = os_path(checkouts.worktree)
+    for root, dirnames, filenames in os.walk(top):
         dirnames[:] = [d for d in dirnames if d != ".git" and not _is_reparse(os.path.join(root, d))]
         for name in filenames:
-            path = Path(root) / name
-            rel = path.relative_to(checkouts.worktree).as_posix()
-            if (name != ".git" and not path.is_symlink() and is_inside(checkouts.worktree, path) and _is_link_to_main(checkouts, rel)
+            path = os.path.join(root, name)
+            rel = Path(os.path.relpath(path, top)).as_posix()
+            if (name != ".git" and not os.path.islink(path) and is_inside(top, path) and _is_link_to_main(checkouts, rel)
                     and os.stat(path).st_nlink > 1):
                 yield rel
 
@@ -305,7 +327,7 @@ def unlink(checkouts: Checkouts) -> int:
         path = checkouts.worktree / rel
         if not is_inside(checkouts.worktree, path):
             raise WorktreeDataError(f"{path} resolves outside the worktree; not removed")
-        os.remove(path)
+        os.remove(os_path(path))
     _prune_empty_parents(checkouts.worktree, removed)
     return len(removed)
 
@@ -314,8 +336,14 @@ def _prune_empty_parents(top: Path, removed: list[str]) -> None:
     """Remove the folders left empty by unlink(), deepest first; git keeps no empty folders, so none of them was the branch's."""
     parents = {parent for rel in removed for parent in (top / rel).parents if parent != top and top in parent.parents}
     for folder in sorted(parents, key=lambda p: len(p.parts), reverse=True):
-        if folder.is_dir() and not _is_reparse(str(folder)) and is_inside(top, folder) and not any(folder.iterdir()):
-            folder.rmdir()
+        folder_os = os_path(folder)
+        if os.path.isdir(folder_os) and not _is_reparse(folder_os) and is_inside(top, folder_os) and _is_empty(folder_os):
+            os.rmdir(folder_os)
+
+
+def _is_empty(folder: str) -> bool:
+    with os.scandir(folder) as entries:
+        return next(entries, None) is None
 
 
 def _print_link_report(report: LinkReport, checkouts: Checkouts) -> None:
