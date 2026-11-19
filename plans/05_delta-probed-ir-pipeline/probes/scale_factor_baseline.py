@@ -32,7 +32,7 @@ PAHDB_REGION_EDGES: Edges = (1111.0, 2500.0)   # cm⁻¹; Bauschlicher et al. 20
 #                                              25 Oct 2026): the grouping readings 1–3 were registered and read with
 TABLE2_REGION_EDGES: Edges = (10000 / 9, 2500.0)   # cm⁻¹; Bauschlicher et al. 2018, Table 2 (9 and 4 µm), as aromir applies them: the
 #                                                  product's baseline, so a band at 1111.05 takes the low region's factor there too
-# PAHdb's scale factors of those regions (indexed by pahdb_region: below 1111, 1111–2500, above 2500 cm⁻¹), one row per basis, from
+# PAHdb's scale factors of those regions (indexed by region_index with the caller's edges: low, middle, high), one row per basis, from
 # Bauschlicher, Ricca, Boersma & Allamandola 2018 (ApJS 234, 32), Table 2. Our Hessians are B3LYP/6-31G*, so the 6-31G* row is the
 # product's baseline (module 02 reads 0.9794 / 0.9691 / 0.9597 off the database's own 6-31G* species). The 4-31G row is the one Mai
 # et al. 2026 applied to their B3LYP/4-31G spectra; it scales ours only where a reading applies their factors on purpose (readings 2
