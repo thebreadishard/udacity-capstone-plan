@@ -52,3 +52,16 @@ def test_the_report_names_the_factor_row():
         res = {"candidates": 1, "matched": ["A_x"], "left_out": {}, "pairs_beyond_warn": 0, "pahdb_factor_row": factor_row,
                "unscaled_minus_our_b3lyp": one, "scaled_minus_our_b3lyp_pahdb": one}
         assert f"| their scaled − our B3LYP/6-31G* × PAHdb's {factor_row} factors |" in "\n".join(M.report(res))
+
+
+def test_the_factor_row_reaches_the_scaled_differences():
+    """differences on the frozen corpus's benzene with both rows. Their frequencies are set to zero, so the teacher difference is minus
+    our B3LYP position and the product difference minus our scaled one: their ratio is the factor each mode took."""
+    from pin_tools import PIN_CORPUS
+    table = np.column_stack([np.zeros(30), np.ones(30), np.ones(30)])
+    factor = {}
+    for row in ("4-31G", "6-31G*"):
+        teacher, product, _ = M.differences(PIN_CORPUS / "molecules" / "A_8448043181", table, row)
+        factor[row] = np.concatenate([np.array(product[f]) / np.array(teacher[f]) for f in teacher])
+    assert set(np.round(factor["4-31G"], 9)) == {0.956, 0.952, 0.96} and set(np.round(factor["6-31G*"], 9)) == {0.979, 0.969, 0.96}
+    assert set(np.round(factor["6-31G*"] / factor["4-31G"], 9)) == {round(0.979 / 0.956, 9), round(0.969 / 0.952, 9), 1.0}

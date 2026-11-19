@@ -39,7 +39,7 @@ from fundamentals_vs_experiment import (  # noqa: E402
     xyz_block,
 )
 from learning_curve_layerA import molecule_features, normal_modes  # noqa: E402
-from scale_factor_baseline import PAHDB_FACTORS, pahdb_scaled  # noqa: E402
+from scale_factor_baseline import PAHDB_FACTORS, PAHDB_REGION_EDGES, pahdb_scaled  # noqa: E402
 
 MANIFEST = M05 / "corpus" / "manifest.csv"
 OUT = M05 / "out" / "mai_teacher_overlap_2026-10-25"
@@ -104,7 +104,7 @@ def differences(mol_dir: Path, table: np.ndarray, factor_row: str) -> tuple[dict
     unscaled = table[:, 0] / table[:, 2]
     order = np.argsort(unscaled)
     scaled, unscaled = table[order, 0], unscaled[order]
-    ours_scaled = pahdb_scaled(f_b3, factor_row)
+    ours_scaled = pahdb_scaled(f_b3, factor_row, PAHDB_REGION_EDGES)
     teacher: dict[str, list[float]] = {}
     product: dict[str, list[float]] = {}
     for fam, u, s, w, ws in zip(family, unscaled, scaled, f_b3, ours_scaled, strict=True):

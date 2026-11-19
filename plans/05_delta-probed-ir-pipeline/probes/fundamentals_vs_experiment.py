@@ -35,7 +35,7 @@ import anchor_registry as AR  # noqa: E402  (module 05's code is not a package)
 from dryrun_symmetry_prior import CLASSES, D6H, apply_op, assign_irreps, atom_permutation, d6h_operations  # noqa: E402
 from e8_symmetry import BOHR, point_group_ops  # noqa: E402
 from learning_curve_layerA import FAMILIES, molecule_features, normal_modes  # noqa: E402
-from scale_factor_baseline import PAHDB_FACTORS, pahdb_scaled  # noqa: E402
+from scale_factor_baseline import PAHDB_FACTORS, PAHDB_REGION_EDGES, pahdb_scaled  # noqa: E402
 
 MOLECULES = M05 / "corpus" / "molecules"
 MAI_ZIP = M05 / "data" / "external_mai2026" / "IR_COMPAS.zip"
@@ -306,7 +306,7 @@ def read_molecule(mol: Molecule, mai: MaiSpectrum, factor_row: str) -> dict:
     p_b3 = pair_by_irrep(groups(f_b3, labels_b3), exp)
     p_cc = pair_by_irrep(groups(f_cc, labels_cc), exp)
     cc_of = {id(e): (gc, flag) for gc, e, flag in p_cc}
-    scaled_b3 = pahdb_scaled(f_b3, factor_row)
+    scaled_b3 = pahdb_scaled(f_b3, factor_row, PAHDB_REGION_EDGES)
     entry_mai, s_mai, factor_mai = mai
     order = np.argsort(s_mai / factor_mai)
     s_mai, u_mai = s_mai[order], (s_mai / factor_mai)[order]

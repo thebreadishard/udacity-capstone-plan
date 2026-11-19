@@ -276,6 +276,7 @@ def test_the_baseline_scales_each_region_by_pahdbs_6_31gs_factor():
     """Our Hessians are B3LYP/6-31G*: the baseline takes PAHdb's 6-31G* row, not the 4-31G one (0.956, 0.952; TASKS 247)."""
     sticks = [dict(omega_cm=w, km_mol=1.0) for w in (800.0, 1600.0, 3000.0)]
     assert [s["omega_cm"] for s in P.scaled_baseline(sticks)] == [round(800 * 0.979, 1), round(1600 * 0.969, 1), round(3000 * 0.960, 1)]
+    assert P.scaled_baseline([dict(omega_cm=1111.05, km_mol=1.0)])[0]["omega_cm"] == round(1111.05 * 0.979, 1)   # below Table 2's 10000/9
 
 
 @pytest.fixture

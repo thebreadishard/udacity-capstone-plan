@@ -75,7 +75,7 @@ from apt import CPHF_BOUND, SUM_RULE_LIMIT  # noqa: E402
 from learning_curve_layerA import normal_modes  # noqa: E402
 from rungC_equivariant import Z_OF  # noqa: E402
 from rungC_intensities import mode_intensities  # noqa: E402
-from scale_factor_baseline import PAHDB_FACTORS, pahdb_scaled  # noqa: E402
+from scale_factor_baseline import PAHDB_FACTORS, TABLE2_REGION_EDGES, pahdb_scaled  # noqa: E402
 
 from dpir.provenance import git_state, provenance  # noqa: E402
 
@@ -575,7 +575,7 @@ def save_correction(d: Path, dH: np.ndarray, dH_seeds: list[np.ndarray], models:
 
 def scaled_baseline(sticks: list[dict]) -> list[dict]:
     """The B3LYP sticks with PAHdb's 6-31G* factor of each stick's region: the baseline beside the network, never in its place."""
-    scaled = pahdb_scaled(np.array([s["omega_cm"] for s in sticks]), BASELINE_BASIS)
+    scaled = pahdb_scaled(np.array([s["omega_cm"] for s in sticks]), BASELINE_BASIS, TABLE2_REGION_EDGES)
     return [dict(s, omega_cm=round(float(x), 1)) for s, x in zip(sticks, scaled, strict=True)]
 
 
