@@ -107,8 +107,8 @@ def bands(r: Result, accuracy: dict, tolerance: dict[str, dict], licensed: list[
     that family is licensed — a statement about the harmonic position ω — the position the band is printed at with the anharmonic
     step's Δ_anh and bar where it has one (`POS.band`, from the record's stick), and the laboratory
     tolerance of the printed position's region. Where the molecule's licence is withheld for its invariance spread (`withheld`), no band
-    is licensed and each carries the reason as its `licence_note`; the positions do not change. A molecule outside the training chemistry
-    (`outside_domain`, `domain.OUTSIDE_CHEMISTRY`, aromir's order: after the spread) is not licensed either. The B3LYP partner is sought among the
+    is licensed and each carries the reason as its `licence_note`; the positions do not change. A molecule outside the training sizes or
+    chemistry (`outside_domain`, `domain.domain_note`; aromir's order: after the spread) is not licensed either. The B3LYP partner is sought among the
     family rule's modes (`rule_modes`), so a corrected mode whose partner lies
     under the line of `mode_intensities` (a near-free rotor the network stiffens) keeps its family; it has no baseline, which lists the B3LYP
     spectrum's bands."""
@@ -216,14 +216,21 @@ def _cost_line(k: dict) -> str:
             + ", ".join(f"{s} {v} s" for s, v in k["steps_s"].items()))
 
 
-def licence_block(lic: dict, withheld: INV.Withheld | None = None, n_bands: int = 0, outside: tuple[str, ...] = ()) -> dict:
+WITHHOLDING = ("withheld", "outside_training_sizes", "outside_training_chemistry")
+"""The licence block's entries that withhold every band, in aromir's order: the invariance spread, the training sizes, the chemistry."""
+
+
+def licence_block(lic: dict, withheld: INV.Withheld | None = None, n_bands: int = 0, outside: tuple[str, ...] = (), *,
+                  inside_training_sizes: bool = True) -> dict:
     """What a certificate keeps of the licence (`licence.state`): the statement, the rule's source, the licensed families, the quantity
     it is read on and its caveats; where this molecule's licence is withheld for its invariance spread (`invariance.withheld_by_spread`),
-    why, and how many bands it withholds; and where the molecule is outside the training chemistry (`outside`, `domain`), the
-    sentences that say so, and again the bands."""
+    why, and how many bands it withholds; where the molecule is outside the training sizes, aromir's sentence; and where it is outside
+    the training chemistry (`outside`, `domain`), the sentences that say so, and again the bands."""
     kept = {k: lic[k] for k in ("statement", "rule_source", "licensed_families", "quantity", "quantity_name", "caveats")}
     if withheld is not None:
         kept |= {"withheld": dict(spread_cm=withheld.spread_cm, note=withheld.note, reason=withheld.reason, n_bands=n_bands)}
+    if not inside_training_sizes:
+        kept |= {"outside_training_sizes": dict(note=DOMAIN.OUTSIDE_SIZES, n_bands=n_bands, reason=DOMAIN.OUTSIDE_SIZES)}
     if outside:
         kept |= {"outside_training_chemistry": dict(note=DOMAIN.OUTSIDE_CHEMISTRY, caveats=list(outside), n_bands=n_bands,
                                                     reason=f"{DOMAIN.OUTSIDE_CHEMISTRY}: {'; '.join(outside)}")}
@@ -232,8 +239,8 @@ def licence_block(lic: dict, withheld: INV.Withheld | None = None, n_bands: int 
 
 def withheld_reason(licence: dict) -> str | None:
     """Why no band of the molecule is licensed, as the certificate's licence block says it (`licence_block`): the invariance spread
-    first, as in the bands' notes; None when its bands may be licensed."""
-    for key in ("withheld", "outside_training_chemistry"):
+    first, then the training sizes, as in the bands' notes (`WITHHOLDING`); None when its bands may be licensed."""
+    for key in WITHHOLDING:
         if key in licence:
             return licence[key]["reason"]
     return None
@@ -276,7 +283,7 @@ def statement(name: str, version: str, n_seeds: int, lic: dict, seen_text: str, 
     licence is a statement about — the harmonic position ω; which position each band is printed at is the paragraph after it
     (`positions.note`). When release networks made the spectrum, design note §3's sentence stands in place of 'with the error
     measured on molecules the network never saw', and the error is named as the measurement networks'. Where the licence block says the
-    molecule's licence is withheld (`licence_block`: its spread, or the training chemistry), the opening says that none of its bands is
+    molecule's licence is withheld (`licence_block`: its spread, the training sizes or chemistry), the opening says that none of its bands is
     licensed and why."""
     opening = f"{name}: the infrared spectrum of {P.NETWORK} v{version} ({n_seeds} seeds) — B3LYP/6-31G* corrected toward {A.HIGHER_LEVEL_NAME}"
     if made_by.release_trained_on is None:
@@ -287,7 +294,7 @@ def statement(name: str, version: str, n_seeds: int, lic: dict, seen_text: str, 
     families = ", ".join(lic["licensed_families"]) or "no family"
     licensed = f"harmonic positions ω are licensed for {families} (decision 65), each band marked"
     if (reason := withheld_reason(lic)) is not None:
-        held = lic.get("withheld") or lic["outside_training_chemistry"]
+        held = next(lic[key] for key in WITHHOLDING if key in lic)
         licensed = (f"0 of {held['n_bands']} bands are licensed: the version's harmonic positions ω are licensed for {families} "
                     f"(decision 65), and for this molecule that licence is withheld — {reason} — each band marked")
     return " ".join(filter(None, [
@@ -325,8 +332,10 @@ def certificate(folder: Path, catalog: Catalog) -> dict:
     made_by = MadeBy(len(P.train_ids(ran)) if released else None, adm.get("release_held_back"),
                      P.inner_validation_share(ran) if released else 0.0)
     outside = tuple(adm.get("outside_training_chemistry", ()))       # a record written before TASKS 279 has none
-    rows = bands(r, accuracy, tolerance, lic["licensed_families"], withheld, outside_domain=DOMAIN.OUTSIDE_CHEMISTRY if outside else "")
-    block = licence_block(lic, withheld, len(rows), outside)
+    inside = adm["inside_training_sizes"]
+    rows = bands(r, accuracy, tolerance, lic["licensed_families"], withheld,
+                 outside_domain=DOMAIN.domain_note(inside_training_sizes=inside, outside_chemistry=outside))
+    block = licence_block(lic, withheld, len(rows), outside, inside_training_sizes=inside)
     truth = S.truth_beside(listed["id"], rec["spectra"]["network"]["sticks"]) if listed else None
     summary = POS.summary_of(rec["spectra"])
     return dict(
@@ -492,7 +501,7 @@ def to_markdown(c: dict) -> str:
     L = [f"# Certificate — {m['name']} · pipeline {c['pipeline_version']} · {c['date']}", "", *mark, c["statement"], "",
          *_position_paragraphs(c), "## Molecule", "",
          f"- {m['smiles']}, {m['formula']}, {m['n_atoms']} atoms ({', '.join(m['elements'])}); the network's training set spans "
-         f"{m['training_atoms'][0]}–{m['training_atoms'][1]} atoms: {'inside' if m['inside_training_sizes'] else 'OUTSIDE'}",
+         f"{m['training_atoms'][0]}–{m['training_atoms'][1]} atoms: {'inside' if m['inside_training_sizes'] else 'OUTSIDE: no band is licensed'}",
          *(f"- Outside the training chemistry: {caveat}: no band is licensed."              # aromir's line
            for caveat in c["licence"].get("outside_training_chemistry", {}).get("caveats", [])),
          _catalogue_line(listed),

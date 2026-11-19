@@ -22,8 +22,19 @@ from typing import Any, Final
 
 from rdkit import Chem
 
+OUTSIDE_SIZES: Final = "the molecule is outside the training sizes"
+"""aromir's `certificate.OUTSIDE_SIZES`, word for word: each band's licence note for a molecule outside the training sizes."""
 OUTSIDE_CHEMISTRY: Final = "the molecule holds chemistry no training molecule does"
 """aromir's `certificate.OUTSIDE_CHEMISTRY`, word for word: each band's licence note for a molecule outside the training chemistry."""
+
+
+def domain_note(*, inside_training_sizes: bool, outside_chemistry: tuple[str, ...]) -> str:
+    """Say why a molecule lies outside the training domain; "" when inside (aromir's `certificate.domain_note`: the sizes first)."""
+    if not inside_training_sizes:
+        return OUTSIDE_SIZES
+    if outside_chemistry:
+        return OUTSIDE_CHEMISTRY
+    return ""
 
 ChargeSite = tuple[str, int, bool, int, tuple[tuple[str, int, str], ...]]
 """A charged atom's kind: its element, formal charge, aromaticity and hydrogens, and each

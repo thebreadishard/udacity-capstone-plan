@@ -85,7 +85,7 @@ from scale_factor_baseline import PAHDB_FACTORS, TABLE2_REGION_EDGES, pahdb_scal
 from dpir.provenance import git_state, provenance  # noqa: E402
 
 BASELINE_BASIS = "6-31G*"              # the basis of the B3LYP Hessian (deck v1), so the row of PAHdb's factors the baseline takes
-PIPELINE_VERSION = "0.13"              # modules/PIPELINE.md
+PIPELINE_VERSION = "0.14"              # modules/PIPELINE.md
 NETWORK = "ΔH-network"
 CORPUS_ROOT = M05 / "corpus"
 CORPUS = CORPUS_ROOT / "molecules"

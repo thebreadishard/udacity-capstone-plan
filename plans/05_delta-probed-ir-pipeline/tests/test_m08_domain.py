@@ -24,6 +24,10 @@ PIN_MODEL = DATA / "rungC_cc_pin_model.pt"
 ZWITTERION = "[NH3+]c1ccccc1C(=O)[O-]"
 ZWITTERION_CAVEAT = ("charge separation of a kind no training molecule holds: C[O-], c[NH3+] (the charged atoms of the training "
                      "molecules: [n+][O-], c[N+](=O)[O-], c[n+]([O-])c)")       # aromir's, against v1.4's list
+DEMO_CANDIDATES = {"pyrazine": "c1cnccn1", "pyrimidine": "c1cncnc1", "thiophene": "c1ccsc1", "1,3,5-trifluorobenzene": "Fc1cc(F)cc(F)c1",
+                   "benzoxazole": "c1ccc2ocnc2c1", "benzimidazole": "c1ccc2[nH]cnc2c1", "2,6-dimethylphenol": "Cc1cccc(C)c1O",
+                   "N,N-dimethylaniline": "CN(C)c1ccccc1"}
+"""TASKS 271's eight demo candidates."""
 NITRO_LIST = ("O=[N+]([O-])c1ccccc1", "[O-][n+]1ccccc1", "c1ccc2ccccc2c1", "c1ccc2cccc2cc1", "c1ccc2c(c1)-c1ccccc1-2", "c1ccoc1")
 """A training list of aromir's three kinds of charged atom and rings of 4 to 7 aromatic atoms."""
 
@@ -153,3 +157,30 @@ def test_a_benzene_certificate_says_nothing_of_the_training_chemistry(tmp_path, 
     c = LC.certificate(benzene_folder(tmp_path, v14_release, 3), NoCatalog())
     assert "outside_training_chemistry" not in c["licence"] and LC.withheld_reason(c["licence"]) is None
     assert "Outside the training chemistry" not in LC.to_markdown(c)
+
+
+def test_a_molecule_outside_the_training_sizes_is_printed_and_not_licensed(tmp_path, v14_release):  # noqa: F811  the imported fixture
+    plain = LC.certificate(benzene_folder(tmp_path / "plain", v14_release, 3), NoCatalog())
+    c = LC.certificate(benzene_folder(tmp_path / "out", v14_release | {"inside_training_sizes": False}, 3), NoCatalog())
+    n = len(c["bands"])
+    assert c["licence"]["outside_training_sizes"] == {"note": DOMAIN.OUTSIDE_SIZES, "n_bands": n, "reason": DOMAIN.OUTSIDE_SIZES}
+    assert not any(b["licensed"] for b in c["bands"]) and {b["licence_note"] for b in c["bands"]} == {DOMAIN.OUTSIDE_SIZES}
+    assert [b["network_cm"] for b in c["bands"]] == [b["network_cm"] for b in plain["bands"]]
+    assert f"licence is withheld — {DOMAIN.OUTSIDE_SIZES} — each band marked; at " in c["statement"]
+    page = LC.to_markdown(c)
+    assert "atoms: OUTSIDE: no band is licensed\n" in page and f"| no: {DOMAIN.OUTSIDE_SIZES} |" in page
+
+
+def test_the_sizes_go_before_the_chemistry(tmp_path, v14_release):  # noqa: F811  the imported fixture
+    admission = v14_release | {"inside_training_sizes": False, "outside_training_chemistry": [ZWITTERION_CAVEAT]}
+    c = LC.certificate(benzene_folder(tmp_path, admission, 3), NoCatalog())
+    assert {b["licence_note"] for b in c["bands"]} == {DOMAIN.OUTSIDE_SIZES} and LC.withheld_reason(c["licence"]) == DOMAIN.OUTSIDE_SIZES
+    assert f"- Outside the training chemistry: {ZWITTERION_CAVEAT}: no band is licensed." in LC.to_markdown(c)
+
+
+def test_the_demo_candidates_are_inside_the_release_networks_training_sizes():
+    low, high = P.training_set(carried(P.NK.RELEASE))[1]
+    from rdkit import Chem
+
+    sizes = {name: Chem.AddHs(Chem.MolFromSmiles(s)).GetNumAtoms() for name, s in DEMO_CANDIDATES.items()}
+    assert (low, high) == (8, 40) and all(low <= n <= high for n in sizes.values()), sizes
