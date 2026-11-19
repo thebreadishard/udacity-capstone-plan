@@ -7,7 +7,7 @@ import type { Band } from '../lib/bands';
 const { name, bands, acc, licence, networks = null, levelName = '', nAtoms = 0, lead = false, chart = true } =
   Astro.props as { name: string; bands: Band[]; acc: any; licence?: any; networks?: any; levelName?: string; nAtoms?: number; lead?: boolean; chart?: boolean };
 // Reader text says 'test set' for the hold-outs (the user, 17 Nov 2026, TASKS 261); the export keeps the keys a and b.
-const holdoutLabel: Record<string, string> = { a: 'test set (a): unseen simple aromatics (layer A)', b: 'test set (b): molecules of unseen scaffolds' };
+const holdoutLabel: Record<string, string> = { a: 'test set (a): unseen simple aromatics (layer A)', b: 'test set (b): molecules of held-out scaffolds' };
 const families: string[] = acc ? Object.keys(acc.holdouts.a.product) : [];
 const licensed: string[] = licence ? licence.licensed_families : [];
 const line: number = licence ? licence.line_cm : 0;
