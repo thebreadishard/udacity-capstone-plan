@@ -2,6 +2,8 @@
 # labels_lane.sh <lane id> <id list> — runs ON the labels server (registration 1 of Design_2026-10-05_Analytic_Labels_and_Stepping_Stone.md): one lane
 # of analytic B3LYP + ωB97X Hessians (`analytic_hessians.py`, 8 threads) over its list of corpus ids, one molecule per call so that a failure costs one
 # molecule, skipping ids whose analytic ωB97X file already exists (restartable). One status line per molecule to the lane log; "LANE <n> DONE" at the end.
+# A molecule with a soft mode on this pyscf (2.14) is deferred, not failed (TASKS 226): analytic_hessians.py exits DEFERRED_RC, its Hessians stay
+# pending, and a rerun with the 2.15 environment and --reuse-existing finishes it. A pending file is not a label, so it is not skipped.
 #   setsid nohup bash /root/labels/labels_lane.sh 0 /root/labels/ids_0.txt > /root/labels/lane_0.log 2>&1 < /dev/null &
 set -u
 # no-set-e: a molecule that fails is logged and the lane continues
@@ -10,20 +12,29 @@ PY=/root/miniforge3/envs/qc05/bin/python
 cd /root/labels || exit 1
 export OMP_NUM_THREADS=8 PYSCF_TMPDIR=/root/qc_tmp TMPDIR=/root/qc_tmp
 mkdir -p /root/qc_tmp
-n=0; ok=0; fail=0; skip=0
+DEFERRED_RC=4                           # analytic_hessians.EXIT_SOFT_MODE_DEFERRED
+pending() { grep -qa 'low_mode_pending.npy' "$1"; }   # the npz's member names are stored uncompressed
+deferred_too() { tail -c +$(( $2 + 1 )) "$1" 2> /dev/null | grep -q 'SOFT MODE DEFERRED'; }   # <log> <its size before the call>
+n=0; ok=0; fail=0; skip=0; deferred=0
 while read -r id; do
   [ -z "$id" ] && continue
   n=$((n + 1))
-  if [ -f "molecules/$id/hessian_wb97x_analytic.npz" ] && [ -f "molecules/$id/hessian_b3lyp_analytic.npz" ]; then
+  if [ -f "molecules/$id/hessian_wb97x_analytic.npz" ] && [ -f "molecules/$id/hessian_b3lyp_analytic.npz" ] \
+     && ! pending "molecules/$id/hessian_wb97x_analytic.npz" && ! pending "molecules/$id/hessian_b3lyp_analytic.npz"; then
     skip=$((skip + 1)); echo "[$(date '+%F %T')] lane $LANE $id skipped (analytic files exist)"; continue
   fi
-  t0=$(date +%s)
+  t0=$(date +%s); before=$(wc -c 2> /dev/null < "lane_${LANE}_molecules.log" || echo 0)
   # stdin from /dev/null: a command inside 'while read … < LIST' that reads stdin eats the list (the five-ring runner, 10 Oct 2026); the copies
   # running on the labels server since 8 Oct lack it and are left as they are (a running bash script is not edited) — pyscf does not read stdin
-  if $PY analytic_hessians.py "molecules/$id" --threads 8 >> "lane_${LANE}_molecules.log" 2>&1 < /dev/null; then
+  $PY analytic_hessians.py "molecules/$id" --threads 8 --lane "labels_lane.sh $LANE" >> "lane_${LANE}_molecules.log" 2>&1 < /dev/null
+  rc=$?
+  if [ "$rc" = 0 ]; then
     ok=$((ok + 1)); echo "[$(date '+%F %T')] lane $LANE $id ok $(( $(date +%s) - t0 )) s ($ok ok, $fail failed, $skip skipped of $n)"
+  elif [ "$rc" = "$DEFERRED_RC" ]; then
+    deferred=$((deferred + 1)); echo "[$(date '+%F %T')] lane $LANE $id deferred to qc215 (a soft mode; pyscf 2.15 repairs it) — see lane_${LANE}_molecules.log"
   else
-    fail=$((fail + 1)); echo "[$(date '+%F %T')] lane $LANE $id FAILED $(( $(date +%s) - t0 )) s — see lane_${LANE}_molecules.log"
+    also=""; deferred_too "lane_${LANE}_molecules.log" "$before" && also=" (and deferred to qc215: a soft mode)"
+    fail=$((fail + 1)); echo "[$(date '+%F %T')] lane $LANE $id FAILED $(( $(date +%s) - t0 )) s$also — see lane_${LANE}_molecules.log"
   fi
 done < "$LIST"
-echo "[$(date '+%F %T')] LANE $LANE DONE: $ok ok, $fail failed, $skip skipped of $n"
+echo "[$(date '+%F %T')] LANE $LANE DONE: $ok ok, $fail failed, $skip skipped, $deferred deferred to qc215 of $n"
