@@ -1,6 +1,7 @@
 """TASKS 111, reading 3 of the pre-registration `GoalGathering/notes/PreRegistration_2026-10-25_Scale_Factor_Residuals.md`: benzene and
 naphthalene mode by mode against experiment — Mai et al. 2026's scaled frequencies, our carried coupled-cluster anchors (harmonic) and our
-B3LYP/6-31G* with the PAHdb factors.
+B3LYP/6-31G* with PAHdb's factors: by default Mai's own, the 4-31G row, as registered (to separate their factors from their basis and
+learned potential); `--factors 6-31G*` reads our basis's own row, the product's baseline.
 
 Mode identity as registered: irreducible representations from the mode vectors (benzene D6h through `dryrun_symmetry_prior.assign_irreps`,
 naphthalene D2h from the characters under `e8_symmetry.point_group_ops`, Martin's axes fixed from the structure), computed and experimental
@@ -9,7 +10,7 @@ list flagged. Mai's modes, which carry no vectors, take the irrep and family of 
 `learning_curve_layerA.molecule_features` on our analytic B3LYP Hessian. Mai's data are CC BY-NC-SA 4.0, so only statistics of them are
 written, never their frequencies.
 
-    python probes/fundamentals_vs_experiment.py [--mai …/IR_COMPAS.zip] [--out …/out/fundamentals_vs_experiment_2026-10-25]
+    python probes/fundamentals_vs_experiment.py [--mai …/IR_COMPAS.zip] [--factors 4-31G|6-31G*] [--out …/out/fundamentals_vs_experiment_2026-10-25]
 """
 from __future__ import annotations
 
@@ -34,7 +35,7 @@ import anchor_registry as AR  # noqa: E402  (module 05's code is not a package)
 from dryrun_symmetry_prior import CLASSES, D6H, apply_op, assign_irreps, atom_permutation, d6h_operations  # noqa: E402
 from e8_symmetry import BOHR, point_group_ops  # noqa: E402
 from learning_curve_layerA import FAMILIES, molecule_features, normal_modes  # noqa: E402
-from scale_factor_baseline import PAHDB_FACTORS, pahdb_region  # noqa: E402
+from scale_factor_baseline import PAHDB_FACTORS, pahdb_scaled  # noqa: E402
 
 MOLECULES = M05 / "corpus" / "molecules"
 MAI_ZIP = M05 / "data" / "external_mai2026" / "IR_COMPAS.zip"
@@ -46,6 +47,7 @@ DEGENERATE_CM = 0.5         # two modes of one degenerate irrep closer than this
 MAI_PAIR_WARN_CM = 50.0     # registered: a Mai–B3LYP pair farther apart is counted and reported
 MAI_DUPLICATE_CM = 1.0      # two entries of one molecule (naphthalene: COMPAS-1 and COMPAS-2) must agree this well to be one
 GEOMETRY_TOL_BOHR = 1e-6
+REGISTERED_FACTOR_ROW = "4-31G"   # readings 2 and 3 scale our B3LYP with the factors Mai applied to theirs
 D6H_ATOM_TOL = 0.05          # the tolerance assign_irreps maps atoms with
 CHARACTER_TOL = 0.1          # a non-degenerate mode's character is ±1; farther off, the mode mixes species
 D2H_SPECIES = {"Ag": 9, "Au": 4, "B1g": 3, "B1u": 8, "B2g": 4, "B2u": 8, "B3g": 8, "B3u": 4}   # naphthalene, Martin's labelling
@@ -283,7 +285,7 @@ def our_skeleton(mol: Molecule) -> str:
     return skeleton(xyz_block(g["symbols"], np.asarray(g["coords_bohr"])))
 
 
-def read_molecule(mol: Molecule, mai: MaiSpectrum) -> dict:
+def read_molecule(mol: Molecule, mai: MaiSpectrum, factor_row: str) -> dict:
     d = MOLECULES / mol.mol_id
     g = json.loads((d / "geometry.json").read_text(encoding="utf-8"))
     symbols, coords, masses = g["symbols"], np.asarray(g["coords_bohr"]), np.asarray(g["masses_amu"])
@@ -304,7 +306,7 @@ def read_molecule(mol: Molecule, mai: MaiSpectrum) -> dict:
     p_b3 = pair_by_irrep(groups(f_b3, labels_b3), exp)
     p_cc = pair_by_irrep(groups(f_cc, labels_cc), exp)
     cc_of = {id(e): (gc, flag) for gc, e, flag in p_cc}
-    scaled_b3 = np.array([PAHDB_FACTORS[r] for r in pahdb_region({"freq": f_b3})]) * f_b3
+    scaled_b3 = pahdb_scaled(f_b3, factor_row)
     entry_mai, s_mai, factor_mai = mai
     order = np.argsort(s_mai / factor_mai)
     s_mai, u_mai = s_mai[order], (s_mai / factor_mai)[order]
@@ -321,7 +323,7 @@ def read_molecule(mol: Molecule, mai: MaiSpectrum) -> dict:
                      "overlap_cc_b3": subspace_overlap(V_cc, gc.idx, V_b3, gb.idx), "family_mixed": len({family[i] for i in idx}) > 1})
     comparisons = {"mai_scaled_minus_exp": "_d_mai", "b3lyp_pahdb_minus_exp": "d_b3_pahdb", "cc_harmonic_minus_exp": "d_cc",
                    "cc_harmonic_minus_exp_harmonic": "d_cc_harmonic"}
-    out = {"anchor": {k: entry[k] for k in ("path", "level", "tier")}, "mai_entry": entry_mai,
+    out = {"anchor": {k: entry[k] for k in ("path", "level", "tier")}, "mai_entry": entry_mai, "pahdb_factor_row": factor_row,
            "mai_pairs_over_warn": int(np.sum(np.abs(u_mai - f_b3) > MAI_PAIR_WARN_CM)), "mai_max_pair_cm": float(np.abs(u_mai - f_b3).max()),
            "stats": {name: stats(collect(rows, key)) for name, key in comparisons.items() if collect(rows, key)},
            "min_overlap_cc_b3": min(r["overlap_cc_b3"] for r in rows), "crossings": sum(r["crossing"] for r in rows),
@@ -336,8 +338,17 @@ MOLECULES_READ = (Molecule("benzene", "A_8448043181", "C6H6", d6h_irreps, benzen
 
 # ------------------------------------------------------------------------------------------------- report
 
+def factor_row_note(factor_row: str) -> str:
+    """Return the sentence naming the PAHdb factor row our B3LYP was scaled with, and whether the registration names it."""
+    if factor_row == REGISTERED_FACTOR_ROW:
+        return f"Our B3LYP is scaled with PAHdb's {factor_row} factors (Bauschlicher et al. 2018, Table 2), Mai's own, as registered."
+    return (f"Our B3LYP is scaled with PAHdb's {factor_row} factors (Bauschlicher et al. 2018, Table 2); the registration names the "
+            f"{REGISTERED_FACTOR_ROW} row (Mai's own), so this reading was added after it (TASKS 247).")
+
+
 def stats_table(name: str, res: dict) -> list[str]:
-    labels = {"mai_scaled_minus_exp": "Mai 2026 scaled − exp. fundamental", "b3lyp_pahdb_minus_exp": "our B3LYP/6-31G* × PAHdb factors − exp.",
+    labels = {"mai_scaled_minus_exp": "Mai 2026 scaled − exp. fundamental",
+              "b3lyp_pahdb_minus_exp": f"our B3LYP/6-31G* × PAHdb's {res['pahdb_factor_row']} factors − exp.",
               "cc_harmonic_minus_exp": "our CC harmonic − exp. fundamental", "cc_harmonic_minus_exp_harmonic": "our CC harmonic − exp. harmonic (Miani)"}
     lines = [f"### {name}: mean / rms (cm⁻¹) per family", "", "| comparison | " + " | ".join(f"{f} (n)" for f in (*FAMILIES, "all")) + " |",
              "|---|" + "---|" * (len(FAMILIES) + 1)]
@@ -349,7 +360,8 @@ def stats_table(name: str, res: dict) -> list[str]:
 
 
 def mode_table(res: dict) -> list[str]:
-    lines = ["| irrep | family | exp. ν | CC ω | CC − ν | B3LYP×PAHdb − ν | exp. ω | CC − ω_exp | flag |", "|---|---|---|---|---|---|---|---|---|"]
+    lines = [f"| irrep | family | exp. ν | CC ω | CC − ν | B3LYP×PAHdb {res['pahdb_factor_row']} − ν | exp. ω | CC − ω_exp | flag |",
+             "|---|---|---|---|---|---|---|---|---|"]
     for r in sorted(res["modes"], key=lambda r: r["nu_exp"]):
         harm = f"{r['omega_exp']:.0f} | {r['d_cc_harmonic']:+.1f}" if r["omega_exp"] is not None else "— | —"
         flag = ", ".join(x for x, on in (("crossing?", r["crossing"]), ("families mixed", r["family_mixed"])) if on)
@@ -371,21 +383,28 @@ def report(res: dict) -> list[str]:
              "Pre-registration: `GoalGathering/notes/PreRegistration_2026-10-25_Scale_Factor_Residuals.md`. Experiment: benzene Goodman et al. 1991 "
              "and Miani et al. 2000 (`probes/data/benzene_benchmark_goodman1991_miani2000.json`); naphthalene Martin, El-Yazal & François 1996 via "
              "NIST CCCBDB (`probes/data/naphthalene_fundamentals_martin1996.json`). Mai et al. 2026 enter as statistics only (CC BY-NC-SA 4.0). "
-             "Our CC anchors are Hessians at the B3LYP/6-31G* geometry of the corpus, the project's convention.", ""]
+             "Our CC anchors are Hessians at the B3LYP/6-31G* geometry of the corpus, the project's convention. "
+             + factor_row_note(next(iter(res.values()))["pahdb_factor_row"]), ""]
     for name, r in res.items():
         lines += molecule_section(name, r)
     return lines
 
 
-def main(argv: list[str] | None = None) -> int:
+def arguments(argv: list[str] | None) -> argparse.Namespace:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--mai", type=Path, default=MAI_ZIP)
+    ap.add_argument("--factors", choices=list(PAHDB_FACTORS), default=REGISTERED_FACTOR_ROW,
+                    help="the basis row of PAHdb's factors our B3LYP is scaled with (registered: Mai's, 4-31G)")
     ap.add_argument("--out", type=Path, default=OUT, help="output prefix: <out>.json and <out>.md")
-    a = ap.parse_args(argv)
+    return ap.parse_args(argv)
+
+
+def main(argv: list[str] | None = None) -> int:
+    a = arguments(argv)
     if not a.mai.exists():
         raise SystemExit(f"{a.mai}: Mai et al. 2026's archive is not here (it is kept outside git; TASKS 108)")
     mai = mai_spectra(a.mai, {m.formula: our_skeleton(m) for m in MOLECULES_READ})
-    res = {m.name: read_molecule(m, mai[m.formula]) for m in MOLECULES_READ}
+    res = {m.name: read_molecule(m, mai[m.formula], a.factors) for m in MOLECULES_READ}
     lines = report(res)
     for path, text in ((a.out.with_suffix(".json"), json.dumps(res, indent=1)), (a.out.with_suffix(".md"), "\n".join(lines) + "\n")):
         tmp = path.with_suffix(path.suffix + ".tmp")

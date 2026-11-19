@@ -1,13 +1,14 @@
 """TASKS 112, reading 2 of the pre-registration `GoalGathering/notes/PreRegistration_2026-10-25_Scale_Factor_Residuals.md`: Mai et al. 2026's
 teacher on our molecules — their unscaled frequencies (B3LYP/4-31G through a learned potential) against our analytic B3LYP/6-31G*, and their
-scaled ones against our B3LYP/6-31G* with the same PAHdb factors, per mode family.
+scaled ones against our B3LYP/6-31G* with PAHdb's factors, per mode family: by default the same factors as theirs, the 4-31G row, as
+registered; `--factors 6-31G*` scales ours with our basis's own row, the product's baseline.
 
 Our side: the neutral corpus molecules whose skeleton is carbon only and whose folder holds both analytic Hessians. Their side: the neutral entry
 with the same formula and the same skeleton (RDKit bonds from each geometry, `fundamentals_vs_experiment.skeleton`); duplicates of one molecule
 count once when their scaled frequencies agree within MAI_DUPLICATE_CM, and a disagreeing duplicate is left out by name (decided before the
 read). Modes are paired by sorted order and take our mode's family. Their data are CC BY-NC-SA 4.0: only statistics are written.
 
-    python probes/mai_teacher_overlap.py [--mai …/IR_COMPAS.zip] [--out …/out/mai_teacher_overlap_2026-10-25]
+    python probes/mai_teacher_overlap.py [--mai …/IR_COMPAS.zip] [--factors 4-31G|6-31G*] [--out …/out/mai_teacher_overlap_2026-10-25]
 """
 from __future__ import annotations
 
@@ -25,9 +26,20 @@ from rdkit import Chem
 PLAN = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PLAN / "modules" / "05_support_predictor" / "m05"))
 from anchor_plan import CATION_LAYERS  # noqa: E402  (probes/ is this script's own folder)
-from fundamentals_vs_experiment import M05, MAI_DUPLICATE_CM, MAI_PAIR_WARN_CM, MAI_ZIP, MOLECULES, skeleton, stats, xyz_block  # noqa: E402
+from fundamentals_vs_experiment import (  # noqa: E402
+    M05,
+    MAI_DUPLICATE_CM,
+    MAI_PAIR_WARN_CM,
+    MAI_ZIP,
+    MOLECULES,
+    REGISTERED_FACTOR_ROW,
+    factor_row_note,
+    skeleton,
+    stats,
+    xyz_block,
+)
 from learning_curve_layerA import molecule_features, normal_modes  # noqa: E402
-from scale_factor_baseline import PAHDB_FACTORS, pahdb_region  # noqa: E402
+from scale_factor_baseline import PAHDB_FACTORS, pahdb_scaled  # noqa: E402
 
 MANIFEST = M05 / "corpus" / "manifest.csv"
 OUT = M05 / "out" / "mai_teacher_overlap_2026-10-25"
@@ -79,8 +91,9 @@ def match(zip_path: Path, ours: dict[str, dict]) -> tuple[dict[str, np.ndarray],
     return tables, left_out
 
 
-def differences(mol_dir: Path, table: np.ndarray) -> tuple[dict[str, list[float]], dict[str, list[float]], int]:
-    """Per family, their unscaled − our B3LYP and their scaled − our B3LYP × PAHdb, paired by sorted order; and the pairs beyond the warning."""
+def differences(mol_dir: Path, table: np.ndarray, factor_row: str) -> tuple[dict[str, list[float]], dict[str, list[float]], int]:
+    """Per family, their unscaled − our B3LYP and their scaled − our B3LYP × PAHdb's `factor_row` factors, paired by sorted order; and
+    the pairs beyond the warning."""
     g = json.loads((mol_dir / "geometry.json").read_text(encoding="utf-8"))
     h_b3 = np.load(mol_dir / "hessian_b3lyp_analytic.npz")["H_projected"]
     h_wb = np.load(mol_dir / "hessian_wb97x_analytic.npz")["H_projected"]
@@ -91,7 +104,7 @@ def differences(mol_dir: Path, table: np.ndarray) -> tuple[dict[str, list[float]
     unscaled = table[:, 0] / table[:, 2]
     order = np.argsort(unscaled)
     scaled, unscaled = table[order, 0], unscaled[order]
-    ours_scaled = np.array([PAHDB_FACTORS[r] for r in pahdb_region({"freq": f_b3})]) * f_b3
+    ours_scaled = pahdb_scaled(f_b3, factor_row)
     teacher: dict[str, list[float]] = {}
     product: dict[str, list[float]] = {}
     for fam, u, s, w, ws in zip(family, unscaled, scaled, f_b3, ours_scaled, strict=True):
@@ -100,20 +113,20 @@ def differences(mol_dir: Path, table: np.ndarray) -> tuple[dict[str, list[float]
     return teacher, product, int(np.sum(np.abs(unscaled - f_b3) > MAI_PAIR_WARN_CM))
 
 
-def read(zip_path: Path, manifest: Path, molecules: Path) -> dict:
+def read(zip_path: Path, manifest: Path, molecules: Path, factor_row: str) -> dict:
     ours = our_molecules(manifest, molecules)
     tables, left_out = match(zip_path, ours)
     teacher: dict[str, list[float]] = {}
     product: dict[str, list[float]] = {}
     beyond = 0
     for i in sorted(tables):
-        t, p, b = differences(molecules / i, tables[i])
+        t, p, b = differences(molecules / i, tables[i], factor_row)
         for fam, v in t.items():
             teacher.setdefault(fam, []).extend(v)
         for fam, v in p.items():
             product.setdefault(fam, []).extend(v)
         beyond += b
-    return {"candidates": len(ours), "matched": sorted(tables), "left_out": left_out, "pairs_beyond_warn": beyond,
+    return {"candidates": len(ours), "matched": sorted(tables), "left_out": left_out, "pairs_beyond_warn": beyond, "pahdb_factor_row": factor_row,
             "unscaled_minus_our_b3lyp": stats(teacher), "scaled_minus_our_b3lyp_pahdb": stats(product)}
 
 
@@ -123,23 +136,30 @@ def report(res: dict) -> list[str]:
              "Pre-registration: `GoalGathering/notes/PreRegistration_2026-10-25_Scale_Factor_Residuals.md`. Statistics only (their data are CC BY-NC-SA 4.0). "
              f"{res['candidates']} of our neutral carbon-skeleton molecules with both analytic labels; {len(res['matched'])} found in their neutral set "
              f"by formula and skeleton; left out: {res['left_out'] or 'none'}. Modes paired by sorted order: {res['pairs_beyond_warn']} pairs more than "
-             f"{MAI_PAIR_WARN_CM:.0f} cm⁻¹ apart.", "", "| mean / rms (cm⁻¹), modes | " + " | ".join(fams) + " |", "|---|" + "---|" * len(fams)]
+             f"{MAI_PAIR_WARN_CM:.0f} cm⁻¹ apart. {factor_row_note(res['pahdb_factor_row'])}", "",
+             "| mean / rms (cm⁻¹), modes | " + " | ".join(fams) + " |", "|---|" + "---|" * len(fams)]
     for key, label in (("unscaled_minus_our_b3lyp", "their unscaled − our B3LYP/6-31G*"),
-                       ("scaled_minus_our_b3lyp_pahdb", "their scaled − our B3LYP/6-31G* × the same factors")):
+                       ("scaled_minus_our_b3lyp_pahdb", f"their scaled − our B3LYP/6-31G* × PAHdb's {res['pahdb_factor_row']} factors")):
         cells = [f"{v['mean']:+.1f} / {v['rms']:.1f} ({v['n']})" if v["n"] else "—" for v in res[key].values()]
         lines.append(f"| {label} | " + " | ".join(cells) + " |")
     lines += ["", "Matched: " + ", ".join(res["matched"]) + "."]
     return lines
 
 
-def main(argv: list[str] | None = None) -> int:
+def arguments(argv: list[str] | None) -> argparse.Namespace:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--mai", type=Path, default=MAI_ZIP)
+    ap.add_argument("--factors", choices=list(PAHDB_FACTORS), default=REGISTERED_FACTOR_ROW,
+                    help="the basis row of PAHdb's factors our B3LYP is scaled with (registered: theirs, 4-31G)")
     ap.add_argument("--out", type=Path, default=OUT, help="output prefix: <out>.json and <out>.md")
-    a = ap.parse_args(argv)
+    return ap.parse_args(argv)
+
+
+def main(argv: list[str] | None = None) -> int:
+    a = arguments(argv)
     if not a.mai.exists():
         raise SystemExit(f"{a.mai}: Mai et al. 2026's archive is not here (it is kept outside git; TASKS 108)")
-    res = read(a.mai, MANIFEST, MOLECULES)
+    res = read(a.mai, MANIFEST, MOLECULES, a.factors)
     lines = report(res)
     for path, text in ((a.out.with_suffix(".json"), json.dumps(res, indent=1)), (a.out.with_suffix(".md"), "\n".join(lines) + "\n")):
         tmp = path.with_suffix(path.suffix + ".tmp")

@@ -28,7 +28,13 @@ from learning_curve_layerA import FAMILIES  # noqa: E402
 from rungC_train import load_corpus  # noqa: E402
 
 PAHDB_REGION_EDGES = (1111.0, 2500.0)   # cm⁻¹; Bauschlicher et al. 2018's regions as Mai et al. 2026 apply them (reading note of 25 Oct 2026)
-PAHDB_FACTORS = (0.956, 0.952, 0.960)   # the factors of those regions, indexed by pahdb_region (below 1111, 1111–2500, above 2500)
+# PAHdb's scale factors of those regions (indexed by pahdb_region: below 1111, 1111–2500, above 2500 cm⁻¹), one row per basis, from
+# Bauschlicher, Ricca, Boersma & Allamandola 2018 (ApJS 234, 32), Table 2. Our Hessians are B3LYP/6-31G*, so the 6-31G* row is the
+# product's baseline (module 02 reads 0.9794 / 0.9691 / 0.9597 off the database's own 6-31G* species). The 4-31G row is the one Mai
+# et al. 2026 applied to their B3LYP/4-31G spectra; it scales ours only where a reading applies their factors on purpose (readings 2
+# and 3 of the 25 Oct 2026 pre-registration), since on a 6-31G* Hessian it leaves the bands 13–17 cm⁻¹ low. Either row is a
+# comparison baseline, never a training input or an option of the product.
+PAHDB_FACTORS: dict[str, tuple[float, float, float]] = {"6-31G*": (0.979, 0.969, 0.960), "4-31G": (0.956, 0.952, 0.960)}
 CARRIED_RECORDS = tuple(M05 / "out" / f"E7_rungC_chain34_eval_analytic_2026-10-05_seed{s}.json" for s in range(3))   # decision 57
 HOLDOUTS = ("a", "b")
 OUT = M05 / "out" / "scale_factor_baseline_2026-10-25"
@@ -51,6 +57,14 @@ def pahdb_region(m: dict) -> np.ndarray:
 def family_group(m: dict) -> np.ndarray:
     """SF: the index of the mode's family in FAMILIES."""
     return np.array([FAMILIES.index(f) for f in m["family"]])
+
+
+def pahdb_scaled(freq: np.ndarray, basis: str) -> np.ndarray:
+    """Return the frequencies times PAHdb's factor of their region in the row of `basis`, a key of PAHDB_FACTORS."""
+    if basis not in PAHDB_FACTORS:
+        raise ValueError(f"no PAHdb factor row for the basis {basis!r}; the rows are {', '.join(PAHDB_FACTORS)}")
+    w = np.asarray(freq, float)
+    return np.array(PAHDB_FACTORS[basis])[pahdb_region({"freq": w})] * w
 
 
 BASELINES: dict[str, GroupOf] = {"S1": one_group, "S3": pahdb_region, "SF": family_group}

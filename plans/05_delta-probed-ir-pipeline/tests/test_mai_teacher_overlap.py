@@ -38,3 +38,17 @@ def test_the_statistics_pool_modes_per_family():
     out = M.stats({"CH-stretch": [2.0, -2.0], "other": [1.0]})
     assert out["CH-stretch"]["rms"] == pytest.approx(2.0) and out["all"]["n"] == 3 and out["all"]["mean"] == pytest.approx(1 / 3)
     assert np.isclose(out["other"]["mean"], 1.0)
+
+
+def test_the_factor_row_defaults_to_the_registered_4_31g_and_refuses_another():
+    assert M.arguments([]).factors == "4-31G" and M.arguments(["--factors", "6-31G*"]).factors == "6-31G*"
+    with pytest.raises(SystemExit):
+        M.arguments(["--factors", "3-21G"])
+
+
+def test_the_report_names_the_factor_row():
+    one = M.stats({"CH-stretch": [1.0]})
+    for factor_row in ("4-31G", "6-31G*"):
+        res = {"candidates": 1, "matched": ["A_x"], "left_out": {}, "pairs_beyond_warn": 0, "pahdb_factor_row": factor_row,
+               "unscaled_minus_our_b3lyp": one, "scaled_minus_our_b3lyp_pahdb": one}
+        assert f"| their scaled − our B3LYP/6-31G* × PAHdb's {factor_row} factors |" in "\n".join(M.report(res))
