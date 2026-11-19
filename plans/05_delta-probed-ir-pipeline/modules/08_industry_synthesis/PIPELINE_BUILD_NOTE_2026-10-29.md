@@ -55,3 +55,5 @@ One line per action item: what, why (the evidence that asks for it), the TASKS r
 - v1.4 if chain 44 carries it (TASKS 129); the reach beyond ≈ 40 atoms (chain 42, TASKS 49);
 - the CC anchors' fine-tune, after November's anchor decision ('Waiting'; TASKS 82, 145);
 - the laptop's Hessian time for large molecules; promotion into `src/dpir` and the product repository (TASKS 73).
+
+19 Nov, 08:1x 2026 (TASKS 247, pipeline 0.13): 'PAHdb's factor' above was the 4-31G row; the baseline now uses the 6-31G* row (0.979 / 0.969 / 0.960) on Table 2's region edges (10000/9 and 2500 cm⁻¹), the basis of our Hessians.

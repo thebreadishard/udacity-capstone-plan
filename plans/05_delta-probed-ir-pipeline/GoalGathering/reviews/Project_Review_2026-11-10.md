@@ -314,3 +314,4 @@ whichever run has no date, and the cation fill has none.
 - The two cold readers' full reports are in the session's scratchpad, outside the repository; this file carries their findings, not
   their full text.
 - Nothing was corrected. Every finding above is open.
+- A1-14, 19 Nov, 08:1x (TASKS 247, merge 2f923471): the baseline shown now uses PAHdb's 6-31G* factors (0.979 / 0.969 / 0.960, Bauschlicher et al. 2018, Table 2); until pipeline 0.13 it used the 4-31G row. The point that it is not the opponent named (PAHdb's own B3LYP/4-31G spectra) stands.
