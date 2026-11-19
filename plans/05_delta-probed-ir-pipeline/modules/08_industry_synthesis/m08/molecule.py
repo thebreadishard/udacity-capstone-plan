@@ -3,7 +3,7 @@ SMILES — the admission, the start geometry and the atom order the network read
 goes through `standard_molecule`, so two writings of one molecule, or its SMILES and its xyz file, reach one canonical SMILES and one
 atom order (aromir audit of 19 Nov 2026, F1 and F2).
 
-The standardisation is aromir's, ported verbatim (`src/aromir/admission.py` at aromir commit 1636fde: `standardised`, `_composition`,
+The standardisation is aromir's, ported verbatim (`src/aromir/admission.py` at aromir commit 22016ea: `standardised`, `_composition`,
 `_structure`, `_n_aromatic`, `_preference`, `_charge_placement`, `_canonical`, `_resonance_candidates`, `_set_structure`,
 `_one_resonance_structure`, `fixed_h_key`), with the same constants, step order, ranking and guards, so that the product and the
 capstone pipeline name every molecule alike. Change it there first and port it again. The upstream RDKit tests each call follows are
@@ -50,7 +50,7 @@ def canonical_of(mol: Chem.Mol) -> str:
     return Chem.MolToSmiles(without_hydrogens(mol))
 
 
-# ---------------------------------------------------------------------------------------------------- aromir 1636fde, verbatim
+# ---------------------------------------------------------------------------------------------------- aromir 22016ea, verbatim
 _NORMALIZER: Final = rdMolStandardize.Normalizer()
 """RDKit's Normalizer with its default (MolVS) transforms, built once."""
 
@@ -69,6 +69,15 @@ RESONANCE_MAX_CHARGED_ATOMS: Final = 8
 """The most charged atoms a molecule may have to be enumerated; one with more keeps its own
 structure. Twice the most in any entry of the shipped training lists (4, a dinitro
 compound); octanitronaphthalene (16) took 6 s to reach the structure cap."""
+
+NITRO_GROUP: Final = Chem.MolFromSmarts("[N+X3](=O)[O-]")
+"""A nitro group as the Normalizer writes it. A molecule charged only in such groups is not
+enumerated: no structure has fewer charged atoms (the nitrogen needs its positive charge for
+its four bonds), one that moves a charge into the ring ranks worse (``_preference``), and the
+group's two structures share one canonical SMILES, so the molecule's own structure is the
+one chosen. Enumerated, nitro groups conjugated with a ring multiply the structures with
+the writing deciding how many RDKit finds: 208 to 295 for 1,5-dinitronaphthalene over ten
+writings, 1846 to 3041 for 1,8-dinitropyrene, 5924 to 9897 for 1,3,6-trinitropyrene."""
 
 Composition = tuple[str, tuple[int, ...], tuple[int, ...]]
 """The formula and each atom's hydrogens and unpaired electrons: what no step may change."""
@@ -132,14 +141,18 @@ def _resonance_candidates(molecule: Chem.Mol) -> list[Chem.Mol]:
     A structure qualifies when it sanitises, keeps the formula and every atom's hydrogens
     and unpaired electrons, and keeps at least as many aromatic atoms as the molecule
     (a betaine is not swapped for its quinoid form). A molecule with more than
-    ``RESONANCE_MAX_CHARGED_ATOMS`` charged atoms is not enumerated, and an enumeration
+    ``RESONANCE_MAX_CHARGED_ATOMS`` charged atoms is not enumerated, nor one charged only in
+    nitro groups (``NITRO_GROUP``), and an enumeration
     that finds nothing or reaches ``RESONANCE_MAX_STRUCTURES`` (the choice would depend on
     which ones it found) keeps the molecule as it is: both bounds are counts, so the
     result does not depend on the machine. The supplier is built as in RDKit's
     ``Code/GraphMol/Wrap/rough_test.py`` (its resonance supplier tests).
     """
-    n_charged = sum(atom.GetFormalCharge() != 0 for atom in molecule.GetAtoms())
-    if n_charged > RESONANCE_MAX_CHARGED_ATOMS:
+    charged = {atom.GetIdx() for atom in molecule.GetAtoms() if atom.GetFormalCharge()}
+    if len(charged) > RESONANCE_MAX_CHARGED_ATOMS:
+        return []
+    in_nitro = {index for match in molecule.GetSubstructMatches(NITRO_GROUP) for index in match}
+    if charged <= in_nitro:
         return []
     supplier = Chem.ResonanceMolSupplier(molecule, RESONANCE_FLAGS, RESONANCE_MAX_STRUCTURES)
     supplier.Enumerate()
