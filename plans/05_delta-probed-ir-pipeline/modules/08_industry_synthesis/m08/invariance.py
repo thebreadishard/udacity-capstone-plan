@@ -87,10 +87,21 @@ def load_record(models: tuple[str, ...], sha16: dict[str, str]) -> dict | None:
     names = {PureWindowsPath(key).name for key in models}
     if names != set(measured):
         raise ValueError(f"{path.name} measured {sorted(measured)}, and {sorted(names)} ran")
+    unhashed = sorted(n for n in names if not sha16.get(n))
+    if unhashed:
+        raise ValueError(f"no hash is given for {unhashed}: {path.name} cannot be checked against the files that ran")
     differ = sorted(n for n in names if not measured[n].startswith(sha16[n]))
     if differ:
         raise ValueError(f"{path.name} measured other files under the names {differ}")
     return record
+
+
+def product_withheld(symbols: list[str], coords_bohr: np.ndarray) -> Withheld | None:
+    """The verdict of the networks the pipeline runs — the carried version's release networks (decision 66) — for a molecule's group:
+    their invariance record, checked against the files' hashes, against the licence line."""
+    models = A.P.carried_models(A.NK.RELEASE)
+    record = load_record(tuple(A.model_key(p) for p in models), {p.name: A.P.sha16(p) for p in models})
+    return withheld_by_spread(record, A.LICENCE_LINE_CM, linear_group=has_linear_group(symbols, coords_bohr))
 
 
 def group_spread(record: dict | None, *, linear_group: bool) -> GroupSpread:

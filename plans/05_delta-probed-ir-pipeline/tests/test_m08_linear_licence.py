@@ -155,6 +155,9 @@ def test_a_record_of_other_networks_is_refused():
         INV.load_record(keys, right | {RELEASE[0]: "0" * 16})
     with pytest.raises(ValueError, match="ran"):
         INV.load_record(keys[:2], right)
+    for given in ({**right, RELEASE[1]: ""}, {n: h for n, h in right.items() if n != RELEASE[2]}):
+        with pytest.raises(ValueError, match="no hash is given"):
+            INV.load_record(keys, given)
 
 
 class NoCatalog:
@@ -211,12 +214,20 @@ def test_a_linear_group_under_v14s_release_networks_is_withheld_with_its_record(
     c = LC.certificate(benzene_folder(tmp_path / "linear", v14_release, 3), NoCatalog())
     note = TOO_HIGH_NOTE.replace("3.01", "11.20")
     reason = TOO_HIGH_REASON.replace("3.01", "11.20")
-    assert c["licence"]["withheld"] == {"spread_cm": 11.2, "note": note, "reason": reason}
-    assert c["statement"] == f"{plain['statement']} {reason[0].upper()}{reason[1:]}."
+    n = len(c["bands"])
+    assert c["licence"]["withheld"] == {"spread_cm": 11.2, "note": note, "reason": reason, "n_bands": n}
+    families = ", ".join(c["licence"]["licensed_families"])
+    said = (f"0 of {n} bands are licensed: the version's harmonic positions ω are licensed for {families} (decision 65), and for this "
+            f"molecule that licence is withheld — {reason} — each band marked; at ")
+    assert said in c["statement"] and c["statement"] == plain["statement"].replace(
+        f"harmonic positions ω are licensed for {families} (decision 65), each band marked; at ", said)
+    page = LC.to_markdown(c)
+    assert f"*Licence:* {c['licence']['statement']} ({c['licence']['rule_source']}). For this molecule it is withheld: " \
+           f"{reason[0].upper()}{reason[1:]}." in page
     assert not any(b["licensed"] for b in c["bands"]) and all(b["licence_note"] == note for b in c["bands"])
     unchanged = ("network_cm", "printed_cm", "b3lyp_cm", "baseline_cm", "km_mol", "seed_range_cm", "family")
     assert [{k: b[k] for k in unchanged} for b in c["bands"]] == [{k: b[k] for k in unchanged} for b in plain["bands"]]
-    assert f"| no: {note} |" in LC.to_markdown(c)
+    assert f"| no: {note} |" in page
 
 
 def test_a_linear_group_of_a_version_without_a_record_is_not_measured(tmp_path, monkeypatch):
@@ -225,8 +236,9 @@ def test_a_linear_group_of_a_version_without_a_record_is_not_measured(tmp_path, 
     monkeypatch.setattr(P, "train_ids", lambda models: set())
     monkeypatch.setattr(INV, "has_linear_group", lambda symbols, coords: True)
     c = LC.certificate(benzene_folder(tmp_path, {"models": entries(V13, hashes, "1.3")}, 3), NoCatalog())
-    assert c["licence"]["withheld"] == {"spread_cm": None, "note": NOT_MEASURED_NOTE, "reason": NOT_MEASURED_REASON}
-    assert not any(b["licensed"] for b in c["bands"]) and c["statement"].endswith(f"{NOT_MEASURED_REASON[0].upper()}{NOT_MEASURED_REASON[1:]}.")
+    assert c["licence"]["withheld"] == {"spread_cm": None, "note": NOT_MEASURED_NOTE, "reason": NOT_MEASURED_REASON,
+                                        "n_bands": len(c["bands"])}
+    assert not any(b["licensed"] for b in c["bands"]) and f"licence is withheld — {NOT_MEASURED_REASON} — each band marked" in c["statement"]
 
 
 @pytest.mark.parametrize("value", [3.0, 3.01])
@@ -240,3 +252,53 @@ def test_the_switch_at_the_line_on_the_certificates_bands(tmp_path, v14_release,
     else:
         assert not any(b["licensed"] for b in c["bands"]) and {b["licence_note"] for b in c["bands"]} == {TOO_HIGH_NOTE}
         assert [b["network_cm"] for b in c["bands"]] == [b["network_cm"] for b in plain["bands"]]
+
+
+def test_a_benzene_certificate_has_no_withheld_line_on_its_page(tmp_path, v14_release):
+    page = LC.to_markdown(LC.certificate(benzene_folder(tmp_path, v14_release, 3), NoCatalog()))
+    assert "*Licence:* " in page and "For this molecule it is withheld" not in page and "0 of " not in page
+
+
+def test_the_certificate_reads_the_geometry_from_the_result(tmp_path, v14_release, monkeypatch):
+    d = benzene_folder(tmp_path, v14_release, 3)
+    r = LC.load_result(d)
+    symbols, x = geometry(BENZENE)
+    assert r.symbols == tuple(symbols) and np.array_equal(r.coords_bohr, x)
+    seen = []
+    monkeypatch.setattr(INV, "has_linear_group", lambda s, c: seen.append((s, c)) or False)
+    LC.certificate(d, NoCatalog())
+    assert seen[0][0] == symbols and seen[0][1] is not None
+
+
+def test_the_show_page_prints_the_reason_beside_its_family_table():
+    template = (PLAN / "modules" / "08_industry_synthesis" / "m08" / "show_template.html").read_text(encoding="utf-8")
+    assert "m.licence_withheld ?" in template and "Not licensed for this molecule: ${esc(m.licence_withheld)}" in template
+
+
+def test_the_show_card_carries_the_reason_only_when_withheld(tmp_path, v14_release, monkeypatch):
+    from m08 import show
+    d = benzene_folder(tmp_path, v14_release, 3)
+    monkeypatch.setattr(INV, "has_linear_group", lambda symbols, coords: True)
+    rec = json.loads((d / "pipeline.json").read_text(encoding="utf-8"))
+    seconds = {"optimise": 5.0, "low_level": 60.0, "correction_and_spectra": 2.0}
+    P.write_json(d / "pipeline.json", rec | {"reuse": {"reused": False, "source": None}, "seconds": seconds})
+    LC.write(LC.certificate(d, NoCatalog()), d)
+    card = show.molecule(d)
+    assert card["licence_withheld"] == TOO_HIGH_REASON.replace("3.01", "11.20")
+
+
+def test_the_catalogue_certificate_qualifies_its_sentence_for_a_withheld_molecule(monkeypatch):
+    from m08 import certify
+    from m08.catalog import Catalog
+    try:
+        cat = Catalog()
+    except FileNotFoundError:
+        pytest.skip("the website export is not on this machine")
+    row = cat.find("B_18c473d7dd")                                 # naphthalene+F+CN
+    if row is None or cat.molecule(row["id"]) is None:
+        pytest.skip("the export does not list naphthalene+F+CN")
+    record = json.loads(INV.record_path(tuple(f"v14/{n}" for n in RELEASE)).read_text(encoding="utf-8"))
+    monkeypatch.setattr(INV, "load_record", lambda models, sha16: record)        # the checkpoints are not in git
+    c = certify.certificate(row, cat)
+    reason = TOO_HIGH_REASON.replace("3.01", "11.20")
+    assert f"decision 65), though for this molecule no band of it would be licensed: {reason}; the anchor coverage" in c["statement"]
