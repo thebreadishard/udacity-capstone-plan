@@ -15,17 +15,22 @@ An xyz file's bonds are perceived as aromir's are, ported verbatim from `src/aro
 order, so that every listing of one geometry reads as one molecule. The one change is that the charge is passed on (aromir's is 0, as
 the pipeline's admission still requires).
 
+An optimised geometry's bonds are compared with the admitted SMILES's by aromir's `changed_bonds` (`src/aromir/geometry.py` at
+aromir commit 52cf119, ported verbatim but for its arguments: module 08 has no Geometry class, and psi4 writes 'CL'; TASKS 279).
+
 A mapped SMILES is accepted: the map numbers are cleared and the admission says so (`ATOM_MAPS_CLEARED`). A sulfoxide's sulfur is a
 stereocentre: a SMILES without the mark leaves it open, a geometry has one configuration, and the name of an xyz request says which, as
 aromir's does; the 'seen' look-up (`m08.seen`) lets a training row without stereo marks cover every configuration.
 """
 from __future__ import annotations
 
+from collections.abc import Sequence
 from dataclasses import dataclass
 from functools import cache
 from pathlib import Path
 from typing import Any, Final
 
+import numpy as np
 from rdkit import Chem, rdBase
 from rdkit.Chem import rdDetermineBonds
 from rdkit.Chem.MolStandardize import rdMolStandardize
@@ -434,6 +439,67 @@ def from_xyz(path: Path, charge: int) -> Standardised | None:
         return None
     bonded = _bond_orders(mol, charge)
     return None if bonded is None else standard_molecule(bonded)
+
+
+# ---------------------------------------------------------------------------------------------------- aromir 52cf119 geometry.py, verbatim
+def _pairs(molecule: Chem.Mol) -> set[tuple[int, int]]:
+    pairs = set()
+    for bond in molecule.GetBonds():
+        first, second = sorted((bond.GetBeginAtomIdx(), bond.GetEndAtomIdx()))
+        pairs.add((first, second))
+    return pairs
+
+
+def changed_bonds(admitted_smiles: str, symbols: Sequence[str], coords_angstrom: np.ndarray) -> list[str]:
+    """Name the bonds a geometry in the canonical order has formed or broken.
+
+    The admitted molecule's bonds are read from its canonical SMILES, whose atoms with
+    their hydrogens added are in the canonical order (``start_geometry``); the
+    geometry's are perceived from its interatomic distances with RDKit's
+    ``DetermineConnectivity``, called as in RDKit's
+    ``Code/GraphMol/DetermineBonds/Wrap/testDetermineBonds.py`` (``testCtDConnectivity``,
+    which compares the bonds so perceived on a geometry with those of its SMILES). An
+    optimisation that moved a proton, opened a ring or joined two atoms has computed
+    another molecule than the one admitted.
+
+    The contacts are judged against the SMILES's bonds, which are known here: a contact
+    that is no bond of the SMILES is not called a bond formed when its two atoms share two
+    neighbours in the SMILES, as the diagonals of a biphenylene's four-membered ring
+    (1.969 to 1.973 Å in the force-field geometries of v1.4's training biphenylenes,
+    against 1.97 Å for two carbons) or the bridgeheads of a bicyclo[1.1.1]pentane do. A bond
+    of the SMILES is kept whatever its neighbours.
+
+    Raises:
+        ValueError: The geometry's atoms are not the SMILES's, in its order.
+    """
+    admitted = Chem.AddHs(Chem.MolFromSmiles(admitted_smiles))
+    elements = tuple(symbol.capitalize() for symbol in symbols)  # psi4's geometry files write 'CL'
+    if tuple(atom.GetSymbol() for atom in admitted.GetAtoms()) != elements:
+        msg = f"the geometry's atoms {elements} are not those of {admitted_smiles}"
+        raise ValueError(msg)
+    rows = [
+        f"{s} {x:.10f} {y:.10f} {z:.10f}"
+        for s, (x, y, z) in zip(elements, coords_angstrom, strict=True)
+    ]
+    perceived = Chem.MolFromXYZBlock("\n".join([str(len(elements)), "", *rows]) + "\n")
+    rdDetermineBonds.DetermineConnectivity(perceived)
+    expected, found = _pairs(admitted), _pairs(perceived)
+    neighbours = [
+        {neighbour.GetIdx() for neighbour in atom.GetNeighbors()} for atom in admitted.GetAtoms()
+    ]
+    formed = [
+        (first, second)
+        for first, second in sorted(found - expected)
+        if len(neighbours[first] & neighbours[second]) < 2
+    ]
+
+    def named(pair: tuple[int, int]) -> str:
+        return "–".join(f"{elements[k]}{k + 1}" for k in pair)
+
+    return [f"the bond {named(pair)} broke" for pair in sorted(expected - found)] + [
+        f"a bond {named(pair)} formed" for pair in formed
+    ]
+# ---------------------------------------------------------------------------------------------------- end of the port
 
 
 @cache

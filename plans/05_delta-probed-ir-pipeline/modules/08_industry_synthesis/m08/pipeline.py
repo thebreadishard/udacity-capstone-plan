@@ -8,6 +8,7 @@ Each step is one function on existing code:
    then `from_corpus` (`m08/reuse.py`, TASKS 150): a molecule the corpus computed at these settings takes its optimised geometry,
    Hessian and APT from there, in the canonical atom order, and skips steps 2–3; the record says which folder, or why not;
 2. `optimise` — `corpus/psi4_worker.py` with deck v1 and "hessians": false, in the Windows conda env `qc` (psi4 1.11, the deck's engine);
+   an optimised geometry whose bonds are not the admitted molecule's is refused here, before the Hessian (`same_molecule`, TASKS 279);
 3. `low_level` — `corpus/analytic_hessians.py --functionals b3lyp` in WSL pyscf under `probes/wsl_capped.sh`: the analytic B3LYP Hessian
    and its APT;
 4. `correction` — the carried ΔH network's seeds through `m05/rungC_infer.py`: their mean ΔH and each seed's;
@@ -106,6 +107,10 @@ class Refused(Exception):
     def __init__(self, reasons: list[str]) -> None:
         super().__init__("; ".join(reasons))
         self.reasons = reasons
+
+
+class AnotherMolecule(RuntimeError):
+    """The optimisation formed or broke a bond: its minimum is not the molecule admitted (aromir's `AnotherMoleculeError`)."""
 
 
 def carried_models(kind: str) -> tuple[Path, ...]:
@@ -471,7 +476,29 @@ def optimise(cfg: PipelineConfig, xyz: list[list], opt_options: dict | None) -> 
     res = json.loads((d / "result.json").read_text(encoding="utf-8")) if (d / "result.json").is_file() else {}
     if rc != 0 or res.get("status") != "done" or not (d / "geometry.json").is_file():
         raise RuntimeError(f"the optimisation failed (exit {rc}): {res.get('error', 'no result.json')[-800:]}")
+    same_molecule(cfg)
     return res
+
+
+def same_molecule(cfg: PipelineConfig) -> None:
+    """Refuse an optimised geometry whose bonds are not the admitted molecule's (`molecule.changed_bonds`), with aromir's message
+    (`pipeline._same_molecule` at 52cf119); the geometry stays in the folder. A request admitted gives the same canonical SMILES here.
+
+    Raises:
+        AnotherMolecule: A bond formed or broke in the optimisation.
+    """
+    got = rdkit_molecule(cfg)
+    if got is None:
+        raise ValueError(f"the input ({cfg.smiles or cfg.xyz}) does not parse as a molecule, though it was admitted")
+    smiles = M.canonical_of(got.mol)
+    path = cfg.folder / "geometry.json"
+    geometry = json.loads(path.read_text(encoding="utf-8"))
+    changes = M.changed_bonds(smiles, geometry["symbols"], np.asarray(geometry["coords_bohr"], float) * R.BOHR_ANGSTROM)
+    if changes:
+        raise AnotherMolecule(
+            f"the optimised geometry is another molecule than {smiles}: {'; '.join(changes)} "
+            "(atoms numbered in the canonical order). Its spectrum would be named after a "
+            f"molecule it is not. The geometry is kept in {path}")
 
 
 def wsl_path(p: Path) -> str:
