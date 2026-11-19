@@ -35,7 +35,9 @@ the pipeline starts a GFN2-xTB force field unless its command names a budget (th
 and a certificate without the step says in one line that the step exists, was not run, and how it is switched on.
 
 Every refusal — the charge state, a radical, no aromatic ring, more than one molecule, an element the carried models never saw, a model
-that is not carried, an output folder in use — comes before step 1, and so does the reading of the anharmonic step's artefact. The record
+that is not carried, an output folder in use — comes before step 1, and so does the reading of the anharmonic step's artefact. A molecule
+with a kind of charged atom or a size of aromatic ring the networks' training molecules lack is admitted with that caveat
+(`m08.domain`, TASKS 279): its positions are printed and no band of it is licensed. The record
 says of every band which position it prints (`m08/positions.py`). A run that stops — refused, failed or interrupted — says so in its
 `progress.json` with the reason (a refusal at admission writes one in the folder made for it), so the live show does not wait on it.
 
@@ -58,6 +60,7 @@ from pathlib import Path, PureWindowsPath
 import numpy as np
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
+from . import domain as DOMAIN
 from . import molecule as M
 from . import reuse as R
 from .catalog import PLAN, Catalog
@@ -254,12 +257,15 @@ class Admission:
     measurement_models: tuple[dict, ...] = ()
     release_held_back: str | None = None
     input_changes: tuple[str, ...] = ()
+    outside_training_chemistry: tuple[str, ...] = ()
 
     def record(self) -> dict:
-        """The admission as pipeline.json holds it. The two fields of decision 66, and what reading the input changed (`m08.molecule`:
-        atom maps cleared), are written only when they say something, so a run of measurement networks on a plainly written molecule
-        writes the record it always wrote."""
-        kept = {k: v for k, v in vars(self).items() if k not in ("measurement_models", "release_held_back", "input_changes") or v}
+        """The admission as pipeline.json holds it. The two fields of decision 66, what reading the input changed (`m08.molecule`:
+        atom maps cleared) and what the molecule holds that no training molecule does (`m08.domain`) are written only when they say
+        something, so a run of measurement networks on a plainly written molecule inside the training chemistry writes the record it
+        always wrote."""
+        optional = ("measurement_models", "release_held_back", "input_changes", "outside_training_chemistry")
+        kept = {k: v for k, v in vars(self).items() if k not in optional or v}
         return kept | {"inside_training_sizes": self.inside_training_sizes}
 
     @property
@@ -401,8 +407,12 @@ def admit(cfg: PipelineConfig) -> Admission:
         raise Refused(reasons)
     from rdkit.Chem.rdMolDescriptors import CalcMolFormula
 
-    return Admission(M.canonical_of(m), CalcMolFormula(m), elements, m.GetNumAtoms(), training_elements, training_atoms,
-                     admitted.entries, admitted.measurement, admitted.held_back, got.notes)
+    from . import seen as S  # that module imports this one
+
+    smiles = M.canonical_of(m)
+    return Admission(smiles, CalcMolFormula(m), elements, m.GetNumAtoms(), training_elements, training_atoms,
+                     admitted.entries, admitted.measurement, admitted.held_back, got.notes,
+                     DOMAIN.outside_training_chemistry(smiles, S.trained_smiles(cfg.models)))
 
 
 def canonical_smiles(smiles: str) -> str:
@@ -851,6 +861,8 @@ def main(argv: list[str] | None = None) -> int:
             adm = admit(cfg)
             print(f"[pipeline] admitted: {cfg.name}, {adm.n_atoms} atoms ({', '.join(adm.elements)}); models "
                   f"{', '.join(Path(m['path']).name for m in adm.models)}; training sizes {adm.training_atoms}", flush=True)
+            for caveat in adm.outside_training_chemistry:          # aromir's cli sentence
+                print(f"[pipeline] outside the training chemistry, so no band of it will be licensed: {caveat}", flush=True)
             print(f"[pipeline] {announce(adm.smiles, cfg.threads, step3_pyscf(cfg))}", flush=True)
             return 0
         catalog = Catalog()             # the certificate's catalogue and tolerances: read before any computation
