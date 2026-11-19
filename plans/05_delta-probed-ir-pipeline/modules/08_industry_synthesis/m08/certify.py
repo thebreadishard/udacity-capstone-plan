@@ -15,7 +15,7 @@ from . import positions as POS
 from . import spectrum as shape_mod
 from .catalog import FAMILY_SOURCE, PLAN, REPO, RUNG_LABELS, Catalog, family
 from .accuracy import APT_OPEN, carried_accuracy
-from .licence import caveat_sentence
+from .licence import OWN_SPREAD_CONDITION, caveat_sentence
 from .licence import state as licence_state
 from .pipeline import NETWORK
 from .replay import replay_run
@@ -177,7 +177,8 @@ def certificate(row: dict, catalog: Catalog) -> dict:
                 cost_record=cost, provenance=prov, positions=POS.CATALOGUE,
                 statement=(f"{row['name']}: rung {rung} ({RUNG_LABELS[rung]}). The cheap-level spectrum is served with the laboratory tolerance per family; no predicted "
                            "correction is shown in this record — the pipeline serves it for the licensed families ("
-                           + ", ".join(lic["licensed_families"]) + "; decision 65)"
+                           + ", ".join(lic["licensed_families"]) + "; decision 65), a band only where its "
+                           + OWN_SPREAD_CONDITION.format(tried="")
                            + "; the anchor coverage lists what coupled-cluster evidence exists "
                            "and where it is wider than the tolerance." + (" " + caveat_sentence(lic) if lic["caveats"] else "")))
 

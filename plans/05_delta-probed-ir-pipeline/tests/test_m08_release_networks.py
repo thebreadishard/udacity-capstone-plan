@@ -135,9 +135,9 @@ def test_the_statement_without_release_networks_is_word_for_word_what_it_was():
     and what its measurement found (pipeline 0.15)."""
     old = (f"benzene: the infrared spectrum of {P.NETWORK} v1.3 (3 seeds) — B3LYP/6-31G* corrected "
            f"toward {A.HIGHER_LEVEL.split(' (')[0]} — with the {LIC['quantity_name']} measured on molecules the network never saw; the "
-           f"harmonic positions ω are licensed for ring-ip (decision 65) where a band's {CONDITION.format(n='1 ')}, each band marked; at "
+           f"harmonic positions ω are licensed for ring-ip (decision 65) where a band's {CONDITION.format(n='10 ')}, each band marked; at "
            f"the coupled-cluster level {A.CC_NOTE}. Each band's own spread was measured for this molecule: the networks corrected it "
-           "again in 1 other presentations (1 rotation), and a band's spread is the furthest its position lay from the printed one in "
+           "again in 10 other presentations (8 rotations, 2 mirror images), and a band's spread is the furthest its position lay from the printed one in "
            "any of them: its distance from the printed presentation, not the range between presentations. The largest is 0.00 cm⁻¹, "
            "under rotation 1, and no band moved by more than the licence line. "
            f"The scaled B3LYP spectrum is shown as the baseline only. This molecule and the "
@@ -218,7 +218,7 @@ def result_folder(tmp_path: Path, ran: tuple[str, ...], admission: dict) -> Path
     shutil.copytree(PIN_CORPUS / "molecules" / BENZENE, d)
     zero = np.zeros((36, 36))
     P.save_correction(d, zero, [zero] * len(ran), tuple(Path(n) for n in ran))
-    OS.save(d, UNMOVED, 0.0)                                       # the own spread of networks that move no band
+    OS.save(d, UNMOVED.measured, 0.0)                                       # the own spread of networks that move no band
     P.write_json(d / "pipeline.json", {"pipeline_version": P.PIPELINE_VERSION, "name": "benzene", "spectra": P.spectra(d, zero, [zero] * len(ran)),
                                        "admission": {"smiles": "c1ccccc1", "formula": "C6H6", "n_atoms": 12, "elements": ["C", "H"],
                                                      "training_atoms": [6, 40], "inside_training_sizes": True} | admission,

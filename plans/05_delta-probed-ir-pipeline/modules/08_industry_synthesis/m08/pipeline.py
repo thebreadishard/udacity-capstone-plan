@@ -591,7 +591,8 @@ def low_level_files(cfg: PipelineConfig, seconds: dict[str, float], progress: Pr
 
 
 def load_networks(models: tuple[Path, ...]) -> list[tuple[Any, Any]]:
-    """Each seed's network with the settings its input tensors are built under, loaded once for every molecule it corrects."""
+    """Each seed's network with the settings its input tensors are built under. The own-spread check loads them once for all its
+    presentations; the pipeline loads them for step 4 and again for that check (`correction`, `measure_own_spread`)."""
     loaded = []
     for p in models:
         model, ck = RT.load_hybrid_model(p)

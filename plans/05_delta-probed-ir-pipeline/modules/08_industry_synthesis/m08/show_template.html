@@ -471,7 +471,7 @@ function spectrumSVG(sp) {
 }
 function showResult(m) {
   const fam = m.families.map((f) => `<tr><td>${esc(f.family)}</td><td class="num">${f.bands}</td><td class="num">${f.error_a.toFixed(2)}</td><td class="num">${f.error_b.toFixed(2)}</td>
-    <td><span class="lic ${f.licensed ? "yes" : "no"}">${f.licensed ? "licensed" : "not licensed"}</span></td></tr>`).join("");
+    <td><span class="lic ${f.licensed ? "yes" : "no"}">${esc(f.licence)}</span></td></tr>`).join("");
   /* the truth's rms needs equal band counts and its overlap an APT in the corpus folder: either may be missing */
   const truth = !m.truth ? `<span class="muted">no ωB97X truth: the corpus holds no ωB97X Hessian of this molecule</span>`
     : (m.truth.rms_cm !== null ? `<span>against ωB97X <b>${m.truth.rms_cm.toFixed(2)} cm⁻¹</b> rms</span>` : `<span class="muted">against ωB97X: band counts differ, no rms</span>`)

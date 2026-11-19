@@ -35,7 +35,7 @@ from . import seen as S
 from .catalog import FAMILY_SOURCE, Catalog
 from .catalog import family as lab_region
 from .certify import commit_hash
-from .licence import caveat_sentence
+from .licence import OWN_SPREAD_CONDITION, caveat_sentence
 from .licence import state as licence_state
 from .spectrum import cheap_apt, vib_min_cm
 
@@ -149,27 +149,46 @@ def licence_note(band: BandState, outside_domain: str) -> str:
     return next((note for failed, note in conditions if failed), "")
 
 
-def band_spreads(r: Result, w_net: np.ndarray, spread: OS.Measurement) -> list[tuple[float | None, str]]:
-    """Each listed corrected band's own spread, unrounded, and the presentation that gave it, in the order of `w_net`; (None, "") for
-    every band where the check did not run. The check measures all 3N−6 modes of H_low + ΔH (`own_spread.modes_of`); the spectrum lists
-    those above the line of `mode_intensities`, which must be `w_net`."""
-    if not spread.spread_cm:
-        return [(None, "")] * len(w_net)
+@dataclass(frozen=True)
+class Spreads:
+    """A molecule's own spread as the certificate reads it: the measurement, and its modes sorted into the bands the spectrum lists and
+    the modes under the spectrum's line. `listed` holds each listed band's spread, unrounded, with the presentation that gave it, in
+    the spectrum's order — (None, "") for every band where the check did not run; `unlisted` the same for the modes that are no bands."""
+
+    measured: OS.Measurement
+    listed: tuple[tuple[float | None, str], ...]
+    unlisted: tuple[tuple[float, str], ...] = ()
+
+
+def spreads_of(r: Result, measured: OS.Measurement) -> Spreads:
+    """A result's measurement sorted into listed bands and other modes. The check measures all 3N−6 modes of H_low + ΔH
+    (`own_spread.modes_of`); the spectrum lists those above the line of `mode_intensities`."""
+    w_net = RINT.mode_intensities(r.H_low + r.dH, r.masses, r.apt)[0]
+    if not measured.spread_cm:
+        return Spreads(measured, ((None, ""),) * len(w_net))
     w_all = OS.modes_of(r.H_low + r.dH, r.masses).wavenumbers
     above = np.abs(w_all) > vib_min_cm()
     if above.sum() != len(w_net) or np.abs(w_all[above] - w_net).max() > SAME_MODE_CM:
         raise RuntimeError(f"{r.folder.name}: the modes the own spread was measured on are not the spectrum's")
-    return [(spread.spread_cm[k], spread.change[k]) for k in np.flatnonzero(above)]
+    pairs = list(zip(measured.spread_cm, measured.change, strict=True))
+    return Spreads(measured, tuple(pairs[k] for k in np.flatnonzero(above)), tuple(pairs[k] for k in np.flatnonzero(~above)))
 
 
-def bands(r: Result, accuracy: dict, tolerance: dict[str, dict], licensed: list[str], spread: OS.Measurement, *,
+def licence_words(n_licensed: int, n_bands: int) -> str:
+    """How a page says the licence of a family's bands on one molecule: all, none, or how many of them."""
+    if n_licensed == n_bands:
+        return "licensed"
+    return "not licensed" if n_licensed == 0 else f"{n_licensed} of {n_bands} licensed"
+
+
+def bands(r: Result, accuracy: dict, tolerance: dict[str, dict], licensed: list[str], spread: Spreads, *,
           outside_domain: str = "") -> list[dict]:
     """One row per corrected mode, sorted by position, paired with the B3LYP mode of largest overlap among all its modes
     (`rungC_intensities.match_modes`, the evaluation's pairing): its family, the B3LYP, baseline and network positions, the height, the seeds'
     range as the record holds it, the error of its family on both hold-outs in the quantity the licence reads (`A.stated_errors`), whether
     that family is licensed — a statement about the harmonic position ω — the position the band is printed at with the anharmonic
     step's Δ_anh and bar where it has one (`POS.band`, from the record's stick), and the laboratory
-    tolerance of the printed position's region. A band whose own spread (`spread`, `own_spread`) lies beyond the licence line, unrounded,
+    tolerance of the printed position's region. A band whose own spread (`spread`, `spreads_of`) lies beyond the licence line, unrounded,
     is not licensed and carries the reason as its `licence_note`, and so does every band where the spread could not be measured; the
     positions do not change, and each row keeps its spread as it is printed (`own_spread.stated`) with the presentation that gave it.
     A molecule outside the training sizes or
@@ -190,7 +209,9 @@ def bands(r: Result, accuracy: dict, tolerance: dict[str, dict], licensed: list[
     rank = np.argsort(np.argsort(w_net))
     _, errors = A.stated_errors(accuracy)
     summary = POS.summary_of(r.record["spectra"])
-    spreads = band_spreads(r, w_net, spread)
+    spreads = spread.listed
+    if len(spreads) != len(w_net):
+        raise RuntimeError(f"{r.folder.name}: {len(spreads)} own spreads for the spectrum's {len(w_net)} bands")
     rows = []
     for j, k in enumerate(RINT.match_modes(L_net, V_rule)):
         own, change = spreads[j]
@@ -290,12 +311,25 @@ WITHHOLDING = ("withheld", "outside_training_sizes", "outside_training_chemistry
 sizes, the chemistry. (A certificate of pipeline 0.14 holds under 'withheld' the rule by the molecule's group, TASKS 288.)"""
 
 
-def own_spread_text(spread: OS.Measurement, line: float) -> str:
-    """Say how the licence read the molecule's own spread, and what it found (aromir's `_own_spread_text`, word for word)."""
+def _unlisted_text(unlisted: tuple[tuple[float, str], ...], line: float) -> str:
+    """Say that a mode the spectrum does not list moved by more than the line; "" when none did. Such a mode is no band of the table,
+    so it is counted apart from the bands (aromir lists every mode and has no such sentence)."""
+    beyond = [pair for pair in unlisted if pair[0] > line]
+    if not beyond:
+        return ""
+    largest, change = max(beyond, key=lambda pair: pair[0])
+    return (f" {len(beyond)} mode(s) under the spectrum's line of {vib_min_cm():g} cm⁻¹, which the table does not list as bands, moved "
+            f"by more than the licence line: by up to {OS.stated(largest, line)} cm⁻¹, under {change}.")
+
+
+def own_spread_text(spreads: Spreads, line: float) -> str:
+    """Say how the licence read the molecule's own spread, and what it found (aromir's `_own_spread_text`, word for word), over the
+    bands the table lists; a mode under the spectrum's line that moved beyond the licence line gets a sentence of its own."""
+    spread = spreads.measured
     if not spread.spread_cm:
         return _sentence(UNMEASURED.format(refusal=spread.refusal))
-    largest, change = spread.largest
-    n_beyond = sum(value > line for value in spread.spread_cm)
+    largest, change = max(spreads.listed, key=lambda pair: pair[0])
+    n_beyond = sum(value > line for value, _ in spreads.listed)
     verdict = (f"{n_beyond} band(s) moved by more than the licence line, so none of them is licensed; {STILL_PRINTED}"
                if n_beyond else "no band moved by more than the licence line")
     return ("Each band's own spread was measured for this molecule: the networks corrected it "
@@ -303,10 +337,10 @@ def own_spread_text(spread: OS.Measurement, line: float) -> str:
             f"({OS.describe(spread.record['counts'])}), and a band's spread is the furthest its "
             "position lay from the printed one in any of them: its distance from the printed "
             "presentation, not the range between presentations. The largest is "
-            f"{OS.stated(largest, line)} cm⁻¹, under {change}, and {verdict}.")
+            f"{OS.stated(largest, line)} cm⁻¹, under {change}, and {verdict}.{_unlisted_text(spreads.unlisted, line)}")
 
 
-def licence_block(lic: dict, spread: OS.Measurement, n_bands: int = 0, outside: tuple[str, ...] = (), *,
+def licence_block(lic: dict, spreads: Spreads, n_bands: int = 0, outside: tuple[str, ...] = (), *,
                   inside_training_sizes: bool = True) -> dict:
     """What a certificate keeps of the licence (`licence.state`): the statement, the rule's source, the licensed families, the quantity
     it is read on and its caveats; how the licence read this molecule's own spread (`own_spread_text`) and in how many presentations;
@@ -314,7 +348,8 @@ def licence_block(lic: dict, spread: OS.Measurement, n_bands: int = 0, outside: 
     outside the training sizes, aromir's sentence; and where it is outside
     the training chemistry (`outside`, `domain`), the sentences that say so, and again the bands."""
     kept = {k: lic[k] for k in ("statement", "rule_source", "licensed_families", "quantity", "quantity_name", "caveats")}
-    kept |= {"own_spread": dict(n_presentations=spread.n_tried, text=own_spread_text(spread, A.LICENCE_LINE_CM))}
+    spread = spreads.measured
+    kept |= {"own_spread": dict(n_presentations=spread.n_tried, text=own_spread_text(spreads, A.LICENCE_LINE_CM))}
     if spread.refusal:
         kept |= {"withheld": dict(note=UNCHECKED, reason=UNMEASURED.format(refusal=spread.refusal), n_bands=n_bands)}
     if not inside_training_sizes:
@@ -384,8 +419,7 @@ def statement(name: str, version: str, n_seeds: int, lic: dict, seen_text: str, 
     families = ", ".join(lic["licensed_families"]) or "no family"
     own = lic["own_spread"]
     tried = f"{own['n_presentations']} " if own["n_presentations"] else ""
-    condition = (f"where a band's own position moved by no more than the licence line in the {tried}presentations tried (this "
-                 "molecule turned, mirrored or listed in another atom order)")          # aromir's statement, word for word from 'own position'
+    condition = f"where a band's {OWN_SPREAD_CONDITION.format(tried=tried)}"
     licensed = f"the harmonic positions ω are licensed for {families} (decision 65) {condition}, each band marked"
     if (reason := withheld_reason(lic)) is not None:
         held = next(lic[key] for key in WITHHOLDING if key in lic)
@@ -418,7 +452,7 @@ def certificate(folder: Path, catalog: Catalog) -> dict:
     tolerance = catalog.u_band(listed["name"] if listed else rec["name"])
     version = {m["version"] for m in adm["models"]}.pop()
     lic = licence_state(accuracy)
-    spread = OS.of_result(folder)
+    spread = spreads_of(r, OS.of_result(folder))
     seen = S.status(adm["smiles"], S.load(tuple(Path(m["path"]) for m in measured)), listed["id"] if listed else None,
                     S.release_index(ran) if released else None)
     made_by = MadeBy(len(P.train_ids(ran)) if released else None, adm.get("release_held_back"),
@@ -441,7 +475,7 @@ def certificate(folder: Path, catalog: Catalog) -> dict:
         | ({"release_held_back": made_by.held_back} if made_by.held_back else {}),
         accuracy=accuracy, bands=rows,
         tolerance=dict(per_region=tolerance, rule=FAMILY_SOURCE),
-        licence=block | {"concerns": POS.LICENCE_SCOPE}, own_spread=dict(spread.record),
+        licence=block | {"concerns": POS.LICENCE_SCOPE}, own_spread=dict(spread.measured.record),
         positions=dict(note=POS.note(summary), cautions=POS.cautions(summary), anharmonic=summary, drawn=POS.DRAWN),
         deliveries=rec.get("deliveries", []), delivery=len(rec.get("deliveries", [])) or None,
         cost=dict(steps_s=rec["seconds"], **prices.price_of_run(sum(rec["seconds"].values()), rec["provenance"]["host"])),

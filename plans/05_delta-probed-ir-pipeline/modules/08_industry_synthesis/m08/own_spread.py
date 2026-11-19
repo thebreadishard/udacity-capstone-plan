@@ -464,17 +464,31 @@ def stated(spread_cm: float, line_cm: float) -> str:
     return repr(spread_cm)
 
 
-def _refusal_record(reason: str) -> dict[str, Any]:
-    """Return the record of a check that did not run, in the shape of one that did."""
+N_MIRROR_IMAGES: Final = 2
+"""The mirror image and the mirror image of one more rotation (``changes``)."""
+
+
+def _rule() -> dict[str, Any]:
+    """Return the constants a measurement is made under: a record made under others is another rule's."""
     return {
         "seed": SEED,
-        "rdkit": rdkit.__version__,
+        "rotations": N_ROTATIONS,
+        "listings": N_LISTINGS,
+        "swaps": N_SWAPS,
+        "hydrogen_swaps": N_HYDROGEN_SWAPS,
         "max_symmetries": MAX_SYMMETRIES,
+        "paired_overlap": PAIRED_OVERLAP,
+        "mixing_share": MIXING_SHARE,
+    }
+
+
+def _refusal_record(reason: str) -> dict[str, Any]:
+    """Return the record of a check that did not run, in the shape of one that did."""
+    return _rule() | {
+        "rdkit": rdkit.__version__,
         "skeleton_symmetries": None,
         "equivalent_orders": None,
         "symmetries_capped": None,
-        "paired_overlap": PAIRED_OVERLAP,
-        "mixing_share": MIXING_SHARE,
         "counts": dict.fromkeys(COUNTED, 0),
         "presentations": [],
         "not_measured_because": reason,
@@ -506,19 +520,6 @@ class Measurement:
     def n_tried(self) -> int:
         """How many presentations were tried."""
         return len(self.record["presentations"])
-
-    @property
-    def largest(self) -> tuple[float, str]:
-        """The largest spread of any mode and the presentation that gave it.
-
-        Raises:
-            ValueError: The check did not run, so nothing was measured.
-        """
-        if not self.spread_cm:
-            msg = f"no spread was measured: {self.refusal}"
-            raise ValueError(msg)
-        k = int(np.argmax(self.spread_cm))
-        return self.spread_cm[k], self.change[k]
 
 
 def not_measured(reason: str) -> Measurement:
@@ -622,9 +623,20 @@ def band_shifts(modes: Modes, printed: Modes) -> FloatArray:
 
 
 def corrected_modes(networks: Corrector, molecule: Molecule, hessian: FloatArray, change: Change) -> Modes:
-    """Return the modes of the low-level Hessian with the changed molecule's correction."""
+    """Return the modes of the low-level Hessian with the changed molecule's correction.
+
+    Raises:
+        ValueError: The networks' answer or the modes it gives are not finite: no band can be paired with them.
+    """
     answer = networks(*change.apply(molecule, hessian))
-    return modes_of(hessian + change.undo(answer), molecule.masses_amu)
+    if not np.isfinite(answer).all():
+        msg = "the correction is not finite"
+        raise ValueError(msg)
+    modes = modes_of(hessian + change.undo(answer), molecule.masses_amu)
+    if not (np.isfinite(modes.wavenumbers).all() and np.isfinite(modes.vectors).all()):
+        msg = "the corrected modes are not finite"
+        raise ValueError(msg)
+    return modes
 
 
 def measure(networks: Corrector, smiles: str, molecule: Molecule, hessian: FloatArray, correction: FloatArray) -> OwnSpread:
@@ -706,13 +718,39 @@ def measure_result(models: tuple[Path, ...], folder: Path, smiles: str) -> Path:
     return save(folder, found.measurement(), round(time.time() - started, 1))
 
 
+def _other_rule(stored: dict[str, Any], n_modes: int) -> list[str]:
+    """Name what makes a stored measurement another rule's, or not a whole one: such a record is measured again, not read."""
+    record, spreads, changes_ = stored["record"], stored["spread_cm"], stored["change"]
+    reasons = [f"{key} is {record.get(key)!r}, the rule's is {value!r}" for key, value in _rule().items() if record.get(key) != value]
+    made, counts = record["presentations"], record["counts"]
+    if len(changes_) != len(spreads):
+        reasons.append(f"{len(changes_)} presentations named for {len(spreads)} spreads")
+    if record["not_measured_because"]:
+        if spreads or made:
+            reasons.append("it names a refusal and holds spreads or presentations")
+        return reasons
+    if len(spreads) != n_modes:
+        reasons.append(f"{len(spreads)} spreads for {n_modes} modes")
+    if not made or len(made) != sum(counts.values()):
+        reasons.append(f"{len(made)} presentations where its counts give {sum(counts.values())}")
+    if (counts["rotation"], counts["mirror image"]) != (N_ROTATIONS, N_MIRROR_IMAGES):
+        reasons.append(f"{counts['rotation']} rotations and {counts['mirror image']} mirror images, the rule's are "
+                       f"{N_ROTATIONS} and {N_MIRROR_IMAGES}")
+    unknown = sorted(set(changes_) - {tried["name"] for tried in made})
+    if unknown:
+        reasons.append(f"spreads under presentations it does not hold: {unknown}")
+    return reasons
+
+
 def of_result(folder: Path) -> Measurement:
     """Return the own spread a result folder holds, for the certificate.
 
     A folder without one — a result of a pipeline before 0.15 — is not measured, and the reason says how to measure it.
+    The licence line is not among the constants compared: a spread is stored unrounded and no line enters its measurement.
 
     Raises:
-        RuntimeError: The stored measurement is of other models or of another correction than the folder's.
+        RuntimeError: The stored measurement is of other models or of another correction than the folder's, or was not made
+            under this module's constants (``_other_rule``).
     """
     path = folder / FILE
     if not path.is_file():
@@ -727,8 +765,9 @@ def of_result(folder: Path) -> Measurement:
     if measured.shape != printed.shape or np.abs(measured - printed).max() > SAME_SPECTRUM_CM:
         msg = f"{path}: measured from other printed positions than {P.CORRECTION} gives"
         raise RuntimeError(msg)
-    if stored["spread_cm"] and len(stored["spread_cm"]) != len(printed):
-        msg = f"{path}: {len(stored['spread_cm'])} spreads for {len(printed)} modes"
+    reasons = _other_rule(stored, len(printed))
+    if reasons:
+        msg = f"{path}: not a measurement under this rule ({'; '.join(reasons)}); measure the result again"
         raise RuntimeError(msg)
     return Measurement(tuple(float(x) for x in stored["spread_cm"]), tuple(stored["change"]), stored["record"])
 

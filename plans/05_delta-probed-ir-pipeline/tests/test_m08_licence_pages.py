@@ -44,7 +44,7 @@ def amended(stored) -> dict:
     lic = licence.state(acc)
     _, errors = A.stated_errors(acc)
     cert = copy.deepcopy(stored)
-    cert["accuracy"], cert["licence"], cert["own_spread"] = acc, LC.licence_block(lic, UNMOVED), dict(UNMOVED.record)
+    cert["accuracy"], cert["licence"], cert["own_spread"] = acc, LC.licence_block(lic, UNMOVED), dict(UNMOVED.measured.record)
     for band in cert["bands"]:
         band["licensed"], band["error_cm"] = band["family"] in lic["licensed_families"], dict(errors[band["family"]])
         band["own_spread_cm"], band["own_spread_change"] = 0.0, "rotation 1"       # as networks that move no band would leave it

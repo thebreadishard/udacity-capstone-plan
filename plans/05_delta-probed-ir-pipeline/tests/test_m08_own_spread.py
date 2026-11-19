@@ -231,12 +231,15 @@ class StandIn:
     answer: str
     fails_at: int = 0
     failure: type[Exception] = RuntimeError
+    nan_at: int = 0
     calls: int = 0
 
     def __call__(self, molecule: OS.Molecule, hessian: np.ndarray) -> np.ndarray:
         self.calls += 1
         if self.calls == self.fails_at:
             raise self.failure("the internal coordinates could not be built")
+        if self.calls == self.nan_at:
+            return np.full_like(hessian, np.nan)
         # The other answer is stiffer along the laboratory's z axis: no rotation leaves it alone.
         laboratory_z = np.kron(np.eye(molecule.n_atoms), np.diag([0.0, 0.0, 1.0]))
         return np.asarray(0.01 * hessian if self.answer == "scaled" else 0.02 * laboratory_z)
@@ -264,13 +267,20 @@ def test_networks_tied_to_the_laboratory_axes_move_bands_under_a_rotation_only()
     assert moving and {kinds[name] for name in moving} <= {"rotation", "mirror image"} and "the mirror image" not in moving
 
 
-def test_a_presentation_the_networks_cannot_correct_withholds_the_licence_by_name():
-    found = measured(StandIn("scaled", fails_at=3)).measurement()
+@pytest.mark.parametrize("failure", OS.UNBUILT)
+def test_a_presentation_the_networks_cannot_correct_withholds_the_licence_by_name(failure):
+    found = measured(StandIn("scaled", fails_at=3, failure=failure)).measurement()
+    assert found.spread_cm == () and found.change == () and found.n_tried == 0
+    assert found.refusal == (f"the networks could not correct the molecule given as rotation 3: {failure.__name__}: the internal "
+                             "coordinates could not be built")
+    assert (ValueError, ArithmeticError, RuntimeError) == OS.UNBUILT
+
+
+def test_a_correction_that_is_not_finite_is_a_refusal_by_name_not_a_crash():
+    found = measured(StandIn("scaled", nan_at=9)).measurement()
     assert found.spread_cm == () and found.n_tried == 0
-    assert found.refusal == ("the networks could not correct the molecule given as rotation 3: RuntimeError: the internal coordinates "
-                             "could not be built")
-    with pytest.raises(ValueError, match="no spread was measured"):
-        _ = found.largest
+    assert found.refusal == ("the networks could not correct the molecule given as the mirror image: ValueError: the correction is not "
+                             "finite")
 
 
 def test_a_defect_in_the_check_is_raised_not_turned_into_a_refusal():
@@ -315,23 +325,29 @@ class NoCatalog:
         return {}
 
 
-def uniform(n_modes: int, spread_cm: float) -> OS.Measurement:
-    """The own spread of a molecule whose every band moved alike under one rotation (aromir's `support.uniform_spread`)."""
-    turn = OS.Change("rotation 1", "rotation", np.eye(3), ())
-    return OS.OwnSpread(spread_cm=(spread_cm,) * n_modes, change=(turn.name,) * n_modes, tried=(turn,), symmetries=None,
+def with_spreads(spreads: list[float]) -> OS.Measurement:
+    """A measurement of given spreads, each under 'rotation 1', of a molecule without symmetry: the rule's rotations and mirror images
+    and nothing else were tried."""
+    tried = tuple(OS.Change(f"rotation {k + 1}", "rotation", np.eye(3), ()) for k in range(OS.N_ROTATIONS))
+    tried += (OS.Change("the mirror image", "mirror image", OS.MIRROR, ()), OS.Change("the mirror image, rotated", "mirror image", OS.MIRROR, ()))
+    return OS.OwnSpread(spread_cm=tuple(spreads), change=("rotation 1",) * len(spreads), tried=tried, symmetries=None,
                         refusal="").measurement()
 
 
-UNMOVED = uniform(30, 0.0)
+def uniform(n_modes: int, spread_cm: float) -> OS.Measurement:
+    """The own spread of a molecule whose every band moved alike under one rotation (aromir's `support.uniform_spread`)."""
+    return with_spreads([spread_cm] * n_modes)
+
+
+def every_mode_a_band(measured: OS.Measurement) -> LC.Spreads:
+    """A measurement as the certificate reads it for a molecule whose every mode is a band of the spectrum."""
+    return LC.Spreads(measured, tuple(zip(measured.spread_cm, measured.change, strict=True)))
+
+
+UNMOVED = every_mode_a_band(uniform(30, 0.0))
 """Benzene's own spread under networks that move no band."""
-OWN_SPREAD = {"own_spread": {"n_presentations": UNMOVED.n_tried, "text": LC.own_spread_text(UNMOVED, LINE)}}
+OWN_SPREAD = {"own_spread": {"n_presentations": UNMOVED.measured.n_tried, "text": LC.own_spread_text(UNMOVED, LINE)}}
 """What a licence block says of that spread (`LC.licence_block`), for a statement built from a made-up block."""
-
-
-def with_spreads(spreads: list[float]) -> OS.Measurement:
-    """A measurement of given spreads, each under 'rotation 1'."""
-    even = uniform(len(spreads), 0.0)
-    return OS.Measurement(tuple(spreads), even.change, even.record)
 
 
 def benzene_folder(tmp_path: Path, admission: dict, n_models: int, spread_cm: float | None = 0.0) -> Path:
@@ -349,7 +365,7 @@ def benzene_folder(tmp_path: Path, admission: dict, n_models: int, spread_cm: fl
                                        "seconds": {"low_level": 60.0}, "provenance": {"host": "laptop", "commit": "0" * 40, "dirty": False},
                                        "deck": {"sha16": "d" * 16}, "low_level": {"b3lyp": {"software": {"pyscf": "2.15.0"}}}})
     if spread_cm is not None:
-        OS.save(d, UNMOVED if spread_cm == 0.0 else uniform(30, spread_cm), 0.0)
+        OS.save(d, uniform(30, spread_cm), 0.0)
     return d
 
 
@@ -407,14 +423,14 @@ def test_one_band_beyond_the_line_loses_its_licence_and_the_others_keep_theirs(t
     assert c["bands"][7]["licence_note"] == moved_note("5.16") and c["bands"][7]["own_spread_cm"] == 5.16
     assert sum("licence_note" in b for b in c["bands"]) == 1 and "withheld" not in c["licence"]
     families = ", ".join(c["licence"]["licensed_families"])
-    assert (f"harmonic positions ω are licensed for {families} (decision 65) where a band's {CONDITION.format(n='1 ')}, each band "
+    assert (f"harmonic positions ω are licensed for {families} (decision 65) where a band's {CONDITION.format(n='10 ')}, each band "
             "marked; at ") in c["statement"]
-    assert ("Each band's own spread was measured for this molecule: the networks corrected it again in 1 other presentations "
-            "(1 rotation), and a band's spread is the furthest its position lay from the printed one in any of them: its distance from "
+    assert ("Each band's own spread was measured for this molecule: the networks corrected it again in 10 other presentations "
+            "(8 rotations, 2 mirror images), and a band's spread is the furthest its position lay from the printed one in any of them: its distance from "
             "the printed presentation, not the range between presentations. The largest is 5.16 cm⁻¹, under rotation 1, and 1 band(s) "
             "moved by more than the licence line, so none of them is licensed; the corrected positions are still printed. The scaled "
             "B3LYP spectrum is shown as the baseline only.") in c["statement"]
-    assert c["licence"]["own_spread"]["n_presentations"] == 1
+    assert c["licence"]["own_spread"]["n_presentations"] == 10
 
 
 def test_a_molecule_whose_bands_stay_within_the_line_says_so(tmp_path, v14_release):
@@ -487,8 +503,47 @@ def test_a_measurement_of_another_correction_is_refused(tmp_path, v14_release):
     with pytest.raises(RuntimeError, match="other printed positions"):
         LC.certificate(d, NoCatalog())
     (d / OS.FILE).write_text(json.dumps(stored | {"spread_cm": stored["spread_cm"][:5]}), encoding="utf-8")
-    with pytest.raises(RuntimeError, match="5 spreads for 30 modes"):
+    with pytest.raises(RuntimeError, match="30 presentations named for 5 spreads; 5 spreads for 30 modes"):
         LC.certificate(d, NoCatalog())
+
+
+OTHER_RULE = {"seed": 99, "rotations": 3, "listings": 0, "swaps": 6, "hydrogen_swaps": 0, "max_symmetries": 10, "paired_overlap": 0.5,
+              "mixing_share": 0.2}
+
+
+@pytest.mark.parametrize("key", list(OTHER_RULE))
+def test_a_measurement_made_under_other_constants_is_refused_not_read(tmp_path, v14_release, key):
+    d = benzene_folder(tmp_path, v14_release, 3, 0.5)
+    stored = json.loads((d / OS.FILE).read_text(encoding="utf-8"))
+    assert stored["record"][key] == OS._rule()[key] != OTHER_RULE[key]
+    (d / OS.FILE).write_text(json.dumps(stored | {"record": stored["record"] | {key: OTHER_RULE[key]}}), encoding="utf-8")
+    with pytest.raises(RuntimeError, match=f"not a measurement under this rule \\({key} is .*measure the result again"):
+        LC.certificate(d, NoCatalog())
+    without = {k: v for k, v in stored["record"].items() if k != key}                 # a record that does not name the constant
+    (d / OS.FILE).write_text(json.dumps(stored | {"record": without}), encoding="utf-8")
+    with pytest.raises(RuntimeError, match=f"{key} is None"):
+        OS.of_result(d)
+
+
+def test_a_measurement_that_is_not_whole_is_refused(tmp_path, v14_release):
+    d = benzene_folder(tmp_path, v14_release, 3, 0.5)
+    stored = json.loads((d / OS.FILE).read_text(encoding="utf-8"))
+    record = stored["record"]
+
+    def refused(changed: dict, match: str) -> None:
+        (d / OS.FILE).write_text(json.dumps(stored | changed), encoding="utf-8")
+        with pytest.raises(RuntimeError, match=match):
+            OS.of_result(d)
+
+    refused({"record": record | {"presentations": []}}, "0 presentations where its counts give 10")       # the reviewer's record
+    refused({"record": record | {"presentations": record["presentations"][:4]}}, "4 presentations where its counts give 10")
+    refused({"record": record | {"counts": record["counts"] | {"rotation": 7}, "presentations": record["presentations"][1:]}},
+            "7 rotations and 2 mirror images, the rule's are 8 and 2")
+    refused({"change": stored["change"][:29]}, "29 presentations named for 30 spreads")
+    refused({"change": ["rotation 11"] * 30}, "presentations it does not hold")
+    refused({"record": record | {"not_measured_because": "it failed"}}, "names a refusal and holds spreads")
+    (d / OS.FILE).write_text(json.dumps(stored), encoding="utf-8")
+    assert OS.of_result(d).spread_cm == (0.5,) * 30
 
 
 def test_the_certificate_keeps_the_record_of_the_check(tmp_path, v14_release):
@@ -549,6 +604,61 @@ def test_the_show_card_carries_the_reason_only_when_the_molecule_is_withheld(tmp
         assert "licence_withheld" not in card
 
 
+MIXED = [0.5] * 7 + [5.16] + [0.5] * 22
+"""Benzene with one band beyond the line: its family has licensed bands and one that is not."""
+
+
+def shown(d: Path) -> tuple[dict, dict]:
+    """A folder's certificate written beside it, and the show page's card of it."""
+    from m08 import show
+    rec = json.loads((d / "pipeline.json").read_text(encoding="utf-8"))
+    seconds = {"optimise": 5.0, "low_level": 60.0, "correction_and_spectra": 2.0, "own_spread": 8.0}
+    P.write_json(d / "pipeline.json", rec | {"reuse": {"reused": False, "source": None}, "seconds": seconds})
+    c = LC.certificate(d, NoCatalog())
+    LC.write(c, d)
+    return c, show.molecule(d)
+
+
+def test_a_family_with_one_band_beyond_the_line_says_how_many_are_licensed_on_the_show_and_demo_pages(tmp_path, v14_release):
+    from m08 import demo_page as D
+    d = benzene_folder(tmp_path, v14_release, 3)
+    OS.save(d, with_spreads(MIXED), 0.0)
+    c, card = shown(d)
+    family = c["bands"][7]["family"]
+    n = sum(b["family"] == family for b in c["bands"])
+    rows = {row["family"]: row for row in card["families"]}
+    assert (rows[family]["licensed"], rows[family]["n_licensed"], rows[family]["licence"]) == (False, n - 1, f"{n - 1} of {n} licensed")
+    assert all((row["licensed"], row["licence"]) == (True, "licensed") for name, row in rows.items() if name != family)
+    assert (rows[family]["error_a"], rows[family]["error_b"]) == (c["bands"][7]["error_cm"]["a"], c["bands"][7]["error_cm"]["b"])
+    _, errors = A.stated_errors(c["accuracy"])
+    demo = {row["family"]: row for row in D.family_rows(c["bands"], errors)}
+    assert {name: (row["licensed"], row["n_licensed"], row["licence"]) for name, row in demo.items()} == {
+        name: (row["licensed"], row["n_licensed"], row["licence"]) for name, row in rows.items()}
+    table = D._family_table(D.Panel(demo=None, record={}, certificate=c, vs_corpus=None, grid=np.zeros(1), curves={}))
+    assert f'<span class="chip no">{n - 1} of {n} licensed</span>' in table
+    assert table.count('<span class="chip ok">licensed</span>') == len(rows) - 1
+    from m08 import show
+    assert card["stations"][4]["time"] == f"{show.duration(10.0)} with the spectrum"      # the correction's 2 s and the own spread's 8 s
+
+
+@pytest.mark.parametrize(("spread_cm", "words", "all_licensed"), [(0.5, "licensed", True), (3.01, "not licensed", False)])
+def test_a_family_licensed_or_unlicensed_as_a_whole_reads_as_before(tmp_path, v14_release, spread_cm, words, all_licensed):
+    from m08 import demo_page as D
+    c, card = shown(benzene_folder(tmp_path, v14_release, 3, spread_cm))
+    assert all((row["licensed"], row["licence"]) == (all_licensed, words) for row in card["families"])
+    assert all(row["n_licensed"] == (row["bands"] if all_licensed else 0) for row in card["families"])
+    _, errors = A.stated_errors(c["accuracy"])
+    assert all((row["licensed"], row["licence"]) == (all_licensed, words) for row in D.family_rows(c["bands"], errors))
+
+
+def test_the_show_page_refuses_bands_that_disagree_on_their_familys_error(tmp_path, v14_release):
+    from m08 import show
+    c = LC.certificate(benzene_folder(tmp_path, v14_release, 3), NoCatalog())
+    c["bands"][0]["error_cm"] = {"a": 9.0, "b": 9.0}
+    with pytest.raises(ValueError, match="disagree on the family's error"):
+        show.families(c["bands"])
+
+
 # ----------------------------------------------------------------------------------------------------- the networks, through step 4
 def test_the_pipelines_step_measures_benzene_with_the_networks_that_corrected_it(tmp_path):
     require_frozen_corpus()
@@ -571,6 +681,22 @@ def test_the_pipelines_step_measures_benzene_with_the_networks_that_corrected_it
     assert {k: v for k, v in again.items() if k != "seconds"} == {k: v for k, v in json.loads(first).items() if k != "seconds"}
     with pytest.raises(RuntimeError, match="names the models"):
         OS.measure_result((PIN_MODEL,), d, "c1ccccc1")
+
+
+def test_the_split_of_step_4_gives_the_release_networks_correction_as_before():
+    """`P.correction` is `seed_corrections(load_networks(...))` since 0.15: the same ΔH as each seed's operations done one by one."""
+    require_frozen_corpus()
+    models = tuple(A.M05_OUT / "v14" / n for n in RELEASE)
+    if not all(p.is_file() for p in models):
+        pytest.skip("v1.4's release checkpoints are not on this machine")
+    folder = PIN_CORPUS / "molecules" / BENZENE
+    direct = []
+    for path in models:
+        model, checkpoint = P.RT.load_hybrid_model(path)
+        direct.append(P.RI.delta_H(model, P.RI.input_tensors_of(folder, P.RT.tensor_config(checkpoint))).numpy().astype(float))
+    mean, seeds = P.correction(models, folder)
+    assert len(seeds) == 3 and all(np.array_equal(a, b) for a, b in zip(seeds, direct, strict=True))
+    assert np.array_equal(mean, np.mean(direct, axis=0)) and np.abs(mean).max() > 0
 
 
 RING_FLIP = (0, 1, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 15, 17, 16, 26, 25, 24, 23, 22, 21, 20, 19, 18)
@@ -606,7 +732,8 @@ def test_the_port_gives_aromirs_spread_on_a_stored_molecule_with_v14s_release_ne
     P.save_correction(tmp_path, dH, seeds, models)
     P.measure_own_spread(models, tmp_path, canonical)
     found = OS.of_result(tmp_path)
-    value, change = found.largest
+    worst = int(np.argmax(found.spread_cm))
+    value, change = found.spread_cm[worst], found.change[worst]
     assert value == pytest.approx(largest_cm, abs=PIN_CM)
     assert len(found.spread_cm) == n_bands and sum(x > LINE for x in found.spread_cm) == n_beyond
     assert (np.abs(OS.modes_of(hessian + dH, molecule.masses_amu).wavenumbers) > vib_min_cm()).all()    # every mode is a band of the spectrum

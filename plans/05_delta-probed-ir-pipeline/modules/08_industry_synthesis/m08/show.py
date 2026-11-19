@@ -164,6 +164,12 @@ def errors_text(quantity: str, network: dict) -> str:
     return f"errors: the {quantity}, on molecules the network never saw (cm⁻¹)"
 
 
+def network_seconds(sec: dict) -> float:
+    """The seconds of the network's station: the correction with the spectrum, and since pipeline 0.15 the own-spread measurement
+    the certificate's licences rest on (a record before it has none)."""
+    return sec["correction_and_spectra"] + sec.get("own_spread", 0.0)
+
+
 def stations(rec: dict) -> list[dict]:
     """The six stations with each one's recorded time: the laptop's for a computed step, the corpus record's for a reused one."""
     sec = rec["seconds"]
@@ -172,7 +178,7 @@ def stations(rec: dict) -> list[dict]:
     times = ["checked before any computation", "with the optimisation",
              f"from the corpus · {duration(corpus['optimise'])}" if from_corpus else f"{duration(sec['optimise'])} on the laptop",
              corpus_low_level_text(rec) if from_corpus else f"{duration(sec['low_level'])} on the laptop",
-             f"{duration(sec['correction_and_spectra'])} with the spectrum", "certified"]
+             f"{duration(network_seconds(sec))} with the spectrum", "certified"]
     adm = rec["admission"]
     software = low_level_software(rec)
     network = network_of(rec)
@@ -194,7 +200,7 @@ def real_time(rec: dict) -> str:
     """The run's total real time from its record: the laptop's seconds, and for a reused run the corpus's for steps 3–4 beside them."""
     sec = rec["seconds"]
     if reused(rec):
-        lead = f"Real time: {duration(sec['reuse'] + sec['correction_and_spectra'])} on the laptop, steps 3–4 from the corpus"
+        lead = f"Real time: {duration(sec['reuse'] + network_seconds(sec))} on the laptop, steps 3–4 from the corpus"
         hessian, apt = corpus_low_level_seconds(rec)
         if hessian is None:
             return f"{lead} (their time is not recorded)"
@@ -227,18 +233,21 @@ def spectrum(r: LC.Result, cert: dict) -> dict:
 
 def families(bands: list[dict]) -> list[dict]:
     """Per family the certificate's band count, licence and the network's error on hold-outs (a) and (b), in the quantity the
-    certificate's bands carry (`molecule` names it: `error_quantity`)."""
+    certificate's bands carry (`molecule` names it: `error_quantity`). The error is the family's, so its bands must agree on it; the
+    licence is each band's (its own spread, a flat coordinate), so a family says how many of its bands are licensed: `licensed` is
+    whether all are, `licence` the words for it (`live_certificate.licence_words`)."""
     rows = []
     for fam in FAMILY_ORDER:
         mine = [b for b in bands if b["family"] == fam]
         if not mine:
             continue
         errors = {(b["error_cm"]["a"], b["error_cm"]["b"]) for b in mine}
-        licensed = {b["licensed"] for b in mine}
-        if len(errors) != 1 or len(licensed) != 1:
-            raise ValueError(f"{fam}: the certificate's bands disagree on the family's error or licence")
+        if len(errors) != 1:
+            raise ValueError(f"{fam}: the certificate's bands disagree on the family's error")
         (a, b), = errors
-        rows.append({"family": fam, "bands": len(mine), "error_a": a, "error_b": b, "licensed": licensed.pop()})
+        n_licensed = sum(b["licensed"] for b in mine)
+        rows.append({"family": fam, "bands": len(mine), "error_a": a, "error_b": b, "licensed": n_licensed == len(mine),
+                     "n_licensed": n_licensed, "licence": LC.licence_words(n_licensed, len(mine))})
     return rows
 
 

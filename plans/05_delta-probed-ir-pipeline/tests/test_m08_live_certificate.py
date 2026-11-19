@@ -13,7 +13,7 @@ import numpy as np
 import pytest
 
 from pin_tools import DATA, PIN_CORPUS, PLAN, require_frozen_corpus
-from test_m08_own_spread import UNMOVED
+from test_m08_own_spread import UNMOVED, with_spreads
 
 sys.path.insert(0, str(PLAN / "modules" / "08_industry_synthesis"))
 from m08 import accuracy as A
@@ -208,6 +208,30 @@ def test_a_mode_lifted_over_the_line_keeps_its_partner(result, accuracy):
     assert ("| ω licensed | own spread of ω (cm⁻¹), under | error of the corrected band positions of the seed-mean correction of ω on "
             "(a) / (b), cm⁻¹ |") in lines[0]
     assert all("| no | 0.00, rotation 1 |" in line for line in lines[2:])
+
+
+def test_a_mode_under_the_spectrums_line_is_not_counted_among_the_bands(result, accuracy):
+    """A mode at 10 cm⁻¹ is measured with the others and is no band of the table: the statement's count and largest are the listed
+    bands', and one sentence of its own says that it moved."""
+    masses = np.asarray(json.loads((result / "geometry.json").read_text(encoding="utf-8"))["masses_amu"], float)
+    hessian = result / P.RI.LOW_HESSIAN
+    with np.load(hessian) as z:
+        arrays = {k: z[k] for k in z.files}
+    np.savez(hessian, **(arrays | {"H_projected": with_mode_at(arrays["H_projected"], masses, 0, 10.0)}))
+    record(result, ZERO, [ZERO])
+    r = LC.load_result(result)
+    spreads = LC.spreads_of(r, with_spreads([7.5] + [0.5] * 29))
+    assert len(spreads.listed) == 29 and spreads.unlisted == ((7.5, "rotation 1"),)
+    rows = LC.bands(r, accuracy, {}, ["ring-ip", "CH-stretch", "CH-oop", "other"], spreads)
+    assert len(rows) == 29 and all(b["licensed"] and b["own_spread_cm"] == 0.5 for b in rows)
+    text = LC.own_spread_text(spreads, 3.0)
+    assert "The largest is 0.50 cm⁻¹, under rotation 1, and no band moved by more than the licence line." in text
+    assert text.endswith(" 1 mode(s) under the spectrum's line of 20 cm⁻¹, which the table does not list as bands, moved by more than the "
+                         "licence line: by up to 7.50 cm⁻¹, under rotation 1.")
+    quiet = LC.own_spread_text(LC.spreads_of(r, with_spreads([2.5] + [0.5] * 29)), 3.0)
+    assert quiet.endswith("no band moved by more than the licence line.") and "0.50 cm⁻¹" in quiet
+    with pytest.raises(RuntimeError, match="30 own spreads for the spectrum's 29 bands"):
+        LC.bands(r, accuracy, {}, [], UNMOVED)
 
 
 def test_a_record_that_is_not_its_correction_is_refused(result, accuracy):

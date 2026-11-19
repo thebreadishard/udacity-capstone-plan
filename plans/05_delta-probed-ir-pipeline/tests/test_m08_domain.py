@@ -133,7 +133,7 @@ def test_a_molecule_outside_the_training_chemistry_is_printed_and_not_licensed(t
     unchanged = ("network_cm", "printed_cm", "b3lyp_cm", "baseline_cm", "km_mol", "seed_range_cm", "family")
     assert [{k: b[k] for k in unchanged} for b in c["bands"]] == [{k: b[k] for k in unchanged} for b in plain["bands"]]
     families = ", ".join(c["licence"]["licensed_families"])
-    own = f"where a band's {CONDITION.format(n='1 ')}"
+    own = f"where a band's {CONDITION.format(n='10 ')}"
     said = (f"0 of {n} bands are licensed: the version's harmonic positions ω are licensed for {families} (decision 65) {own}, and for "
             f"this molecule that licence is withheld — {reason} — each band marked; at ")
     assert said in c["statement"] and c["statement"] == plain["statement"].replace(

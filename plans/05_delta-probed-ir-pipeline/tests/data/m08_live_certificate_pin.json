@@ -1288,14 +1288,18 @@
     "swap": 0
    },
    "equivalent_orders": null,
+   "hydrogen_swaps": 6,
+   "listings": 4,
    "max_symmetries": 1000,
    "mixing_share": 0.1,
    "not_measured_because": "the result holds no own_spread.json: the pipeline writes it since 0.15, and python -m m08.own_spread measures an earlier result",
    "paired_overlap": 0.7,
    "presentations": [],
    "rdkit": "2026.03.6",
+   "rotations": 8,
    "seed": 7,
    "skeleton_symmetries": null,
+   "swaps": 12,
    "symmetries_capped": null
   },
   "pipeline_version": "pin",
@@ -1327,5 +1331,5 @@
    "rule": "modules/03_lab_scoreboard/build_lab_tables.py FAMILY_RULE (12 Sep 2026)"
   }
  },
- "written_by_m08_at_commit": "a4160a17"
+ "written_by_m08_at_commit": "ba106c3e"
 }

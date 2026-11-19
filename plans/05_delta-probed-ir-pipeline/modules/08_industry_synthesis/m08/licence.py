@@ -28,6 +28,10 @@ RULE = (f"decision 65 (29 Oct 2026, amended {AMENDED}): a mode family is license
         "corrected positions are printed either way. It replaces the rule by a molecule's group of 19 Nov 2026 (TASKS 288), whose "
         "measurement — the release's invariance record, <stem>_invariance.json beside the release networks — describes the network "
         "and decides no licence")
+OWN_SPREAD_CONDITION = ("own position moved by no more than the licence line in the {tried}presentations tried (this molecule turned, "
+                        "mirrored or listed in another atom order)")
+"""aromir's statement (`certificate._statement` at bb8eb62), word for word: the licence's condition on a band's own spread. `tried` is
+the number of presentations with a space after it, or empty where none is known."""
 RULE_SOURCE = f"README.md, decision 65 as amended on {AMENDED}"
 
 
