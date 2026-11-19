@@ -195,12 +195,18 @@ class RunState:
     stop_reported: bool = False               # the check has reported the stop once
 
     def to_json(self) -> str:
-        return json.dumps({k: v.isoformat() if isinstance(v, datetime) else v for k, v in asdict(self).items()}, indent=1)
+        """The stop's two fields are written only once a stop set them: the file of a run nobody stopped keeps the keys the reader
+        from before the stop command knows, so that reader still loads it after a rollback (`cls(**raw)` refuses an unknown key)."""
+        raw = {k: v for k, v in asdict(self).items() if not (k in _STOP_FIELDS and v == _STOP_FIELDS[k])}
+        return json.dumps({k: v.isoformat() if isinstance(v, datetime) else v for k, v in raw.items()}, indent=1)
 
     @classmethod
     def from_json(cls, text: str) -> RunState:
         raw = json.loads(text)
         return cls(**{k: datetime.fromisoformat(v) if k.endswith("_at") and v else v for k, v in raw.items()})
+
+
+_STOP_FIELDS = {"stopped_at": None, "stop_reported": False}   # with their defaults, which to_json leaves out
 
 
 @dataclass(frozen=True)
@@ -506,12 +512,15 @@ def measure_free_commit_gb() -> float | None:
     return free_commit_gb()
 
 
+_HOLDS_THE_LAPTOP = ("running", "stopping")   # a stop that has not finished may have left processes: they keep the memory and the log
+
+
 def laptop_runs_in_progress(name: str, spec_dir: Path, state_dir: Path) -> tuple[float, list[str]]:
     """(the stated peaks of the laptop runs past their start line, other than `name`; those that state none or do not load)."""
     others, unknown = 0.0, []
     for path in sorted(spec_dir.glob("*.json")):
         state = load_state(path.stem, state_dir)
-        if path.stem == name or state is None or state.status != "running" or state.phase_started_at is None:
+        if path.stem == name or state is None or state.status not in _HOLDS_THE_LAPTOP or state.phase_started_at is None:
             continue
         try:
             other = load_spec(path)
@@ -532,7 +541,7 @@ def running_laptop_logs(spec_dir: Path = SPEC_DIR, state_dir: Path = STATE_DIR) 
     logs = []
     for path in sorted(spec_dir.glob("*.json")):
         state = load_state(path.stem, state_dir)
-        if state is not None and state.status == "running" and (spec := load_spec(path)).host == LAPTOP:
+        if state is not None and state.status in _HOLDS_THE_LAPTOP and (spec := load_spec(path)).host == LAPTOP:
             logs.append(laptop_log(spec))
     return logs
 
@@ -685,8 +694,13 @@ def _key_values(out: str) -> dict[str, str]:
 
 
 def kill_script(spec: RunSpec) -> str:
-    """Shell lines that end the tree behind <name>.pid where the run lives; they print was_alive= (before) and alive= (after)."""
+    """Shell lines that end the tree behind <name>.pid where the run lives; they print was_alive= (before) and alive= (after).
+    The pid counts as the run only when its command line names this run's own wrapper - launch_outside_app.sh's launch/<name>_<time>.sh
+    on the laptop, remote_launch.sh's <name>.cmd.sh on a server: Git Bash numbers its processes anew after a restart, so a pid file from
+    before one can name the watch's bash or another run, and a tree kill there would take that. Such a pid is printed as stale_pid=
+    and left alone."""
     q = shlex.quote
+    wrapper = q(r"launch[\\/]" + spec.name + "_") if spec.host == LAPTOP else q(spec.name + r"\.cmd\.sh")
     if spec.host == LAPTOP:   # the pid is Git Bash's; /T from its Windows process takes the Windows tree, python and wsl.exe included
         end = 'w=$(cat /proc/"$p"/winpid 2>/dev/null); [ -n "$w" ] && MSYS2_ARG_CONV_EXCL="*" taskkill /PID "$w" /T /F > /dev/null 2>&1'
         alive = 'kill -0 "$p" 2>/dev/null'
@@ -696,9 +710,12 @@ def kill_script(spec: RunSpec) -> str:
         alive = 'kill -0 -- -"$p" 2>/dev/null'
     lines = [f"cd {q(spec.workdir)} || exit 1",
              f"p=$(cat {q(spec.name + '.pid')} 2>/dev/null)",
-             f'if [ -n "$p" ] && {alive}; then echo was_alive=1; {end}; else echo was_alive=0; fi',
-             f'for i in $(seq 20); do {{ [ -n "$p" ] && {alive}; }} || break; sleep 0.5; done',
-             f'if [ -n "$p" ] && {alive}; then echo alive=1; else echo alive=0; fi']
+             f"""mine=0; [ -n "$p" ] && {{ tr '\\0' ' ' < /proc/"$p"/cmdline; }} 2>/dev/null | grep -qE {wrapper} && mine=1""",
+             '[ "$mine" = 0 ] && [ -n "$p" ] && kill -0 "$p" 2>/dev/null && echo "stale_pid=$p"',
+             f'alive() {{ [ "$mine" = 1 ] && {alive}; }}',
+             f"if alive; then echo was_alive=1; {end}; else echo was_alive=0; fi",
+             "for i in $(seq 20); do alive || break; sleep 0.5; done",
+             "if alive; then echo alive=1; else echo alive=0; fi"]
     return "\n".join(lines) + "\n"
 
 
@@ -730,7 +747,7 @@ def wsl_stop_script(name: str) -> str:
     q = shlex.quote
     return ("if [ -n \"$(wsl.exe --list --running --quiet 2>/dev/null | tr -d '\\0\\r[:space:]')\" ]; then "
             f"MSYS_NO_PATHCONV=1 wsl.exe -e bash -c {q(_WSL_STOP)} wsl_stop {q(f'{RUN_TAG}={name}')} {STOP_WAIT_S}; "
-            "else echo wsl_tagged=0; echo wsl_left=0; fi\n")
+            "else echo wsl=off; echo wsl_left=0; fi\n")
 
 
 def stop_line(spec: RunSpec, now: datetime, reason: str) -> str:
@@ -747,17 +764,26 @@ def _refuse_unstoppable(spec: RunSpec, shell: Shell, retry: bool) -> None:
         raise StopRefused(f"run {spec.name} has ended by itself (exit {obs.exit_code}); the check reports it")
 
 
-def _end_tree(spec: RunSpec, shell: Shell) -> tuple[bool, list[str]]:
-    """Ends the run's processes: (whether the pid file's process was alive, what is left of them - empty when nothing is)."""
+def _end_tree(spec: RunSpec, shell: Shell) -> tuple[list[str], list[str]]:
+    """Ends the run's processes: (what the caller should know about how it went, what is left of them - empty when nothing is)."""
     rc, out = shell.run(spec.host, kill_script(spec), timeout=4 * STOP_WAIT_S + 60)
     seen = _key_values(out)
     left = [] if seen.get("alive") == "0" else [f"the tree behind {spec.name}.pid is still alive after the kill (rc {rc})"]
+    notes = []
+    if "stale_pid" in seen:
+        notes.append(f"(process {seen['stale_pid']} of {spec.name}.pid is not this run's launch wrapper and was left alone: the pid file "
+                     "is from before a restart)")
+    if seen.get("was_alive") != "1":
+        notes.append("(no process of it was alive: the stop holds a run that had gone)")
     if spec.host == LAPTOP:
         _, out = shell.run(LAPTOP, wsl_stop_script(spec.name), timeout=4 * STOP_WAIT_S + 60)
-        wsl_left = _key_values(out).get("wsl_left", "unknown")
-        if wsl_left != "0":
-            left.append(f"WSL processes tagged {RUN_TAG}={spec.name} left: {wsl_left}")
-    return seen.get("was_alive") == "1", left
+        wsl = _key_values(out)
+        if wsl.get("wsl_left", "unknown") != "0":
+            left.append(f"WSL processes tagged {RUN_TAG}={spec.name} left: {wsl.get('wsl_left', 'unknown')}")
+        elif wsl.get("wsl_tagged") == "0":
+            notes.append(f"(WSL runs and no process in it carries {RUN_TAG}={spec.name}: the WSL processes of a run launched before the "
+                         "tag existed, 19 Nov 2026, cannot be swept - look with `wsl.exe -e ps -ef`)")
+    return notes, left
 
 
 def _record_stop(spec: RunSpec, shell: Shell, line: str) -> None:
@@ -779,13 +805,13 @@ def stop(spec_path: Path, shell: Shell, now: datetime, state_dir: Path = STATE_D
         raise StopRefused(f"run {spec.name} is not running ({'never launched' if old is None else old.status})")
     _refuse_unstoppable(spec, shell, retry=old.status == "stopping")
     save_state(spec.name, replace(old, status="stopping", stopped_at=now), state_dir)   # first: a check or resume meanwhile leaves it
-    was_alive, left = _end_tree(spec, shell)
+    notes, left = _end_tree(spec, shell)
     if left:
         raise StopRefused("; ".join(left) + " - the run stays 'stopping'; `runspec.py stop` again tries again")
     line = stop_line(spec, now, reason)
     _record_stop(spec, shell, line)
     save_state(spec.name, replace(old, status="stopped", stopped_at=now), state_dir)
-    return line if was_alive else f"{line}\n(no process of it was alive: the stop holds a run that had gone)"
+    return "\n".join([line, *notes])
 
 
 def held(name: str, state: RunState, now: datetime, state_dir: Path, peek: bool) -> str | None:

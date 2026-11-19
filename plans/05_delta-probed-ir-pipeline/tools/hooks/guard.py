@@ -283,10 +283,25 @@ _WRAPPERS = ("remote_launch.sh", "launch_outside_app.sh")
 _COMPUTE = ("python", "python3", "python.exe", "psi4", "wsl", "wsl.exe")
 
 
+_LOOP_WORDS = ("until", "while", "do", "if", "then", "!")
+_LOOP_ENDS = ("done", "fi")
+_HIDES_COMMANDS = ("`", "$(", "{", "|")       # behind these a command can sit that commands() does not list
+
+
 def _door_launch(words: list[str]) -> bool:
-    """`python tools/runspec.py launch <spec>`: a call at the door, which returns once the run has started."""
+    """`python tools/runspec.py launch <spec>`, the door itself and no other file of that name: it returns once the run has started."""
     args = [w for w in words[1:] if not w.startswith("-")]
-    return len(args) >= 2 and _name(args[0]) == "runspec.py" and args[1] == "launch"
+    return (_name(words[0]) in ("python", "python3", "py") and len(args) >= 2
+            and ("/" + args[0].replace("\\", "/")).endswith("/tools/runspec.py") and args[1] == "launch")
+
+
+def _door_retry(command: str, cmds: list[list[str]]) -> bool:
+    """Every command of the call is a launch at the door or a sleep between two tries, and nothing in its text can hide another."""
+    if any(mark in command for mark in _HIDES_COMMANDS):
+        return False
+    bare = [w[next((k for k, word in enumerate(w) if word not in _LOOP_WORDS), len(w)):] for w in cmds]
+    bare = [w for w in bare if w and w[0] not in _LOOP_ENDS]
+    return any(_door_launch(w) for w in bare) and all(_door_launch(w) or w[0] == "sleep" for w in bare)
 
 
 def long_job_past_the_door(c: Call) -> str | None:
@@ -298,8 +313,7 @@ def long_job_past_the_door(c: Call) -> str | None:
             return f"a detached job or a direct launch wrapper: {door}. The #2702 repro ran 37 h without a progress line, started by hand."
     compute = [w for w in cmds if _name(w[0]) in _COMPUTE]
     # a loop that retries the door until the budget lets the run in computes nothing itself (16 Nov 2026: refused, TASKS 251)
-    door_retry = bool(compute) and all(_door_launch(w) for w in compute)
-    harmless = door_retry or any("watch.sh" in " ".join(w) or "pytest" in w for w in cmds)
+    harmless = _door_retry(c.command, cmds) or any("watch.sh" in " ".join(w) or "pytest" in w for w in cmds)
     if c.input.get("run_in_background") and compute and not harmless:
         return f"a computation in the background of this session: {door}."
     return None

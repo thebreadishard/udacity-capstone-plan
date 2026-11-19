@@ -117,8 +117,16 @@ def test_commit_over_live_log_passes_when_no_live_log_is_tracked():
     (bash("until grep -q done x.log; do sleep 120; done; cut -c1-80 x.log", run_in_background=True), False),
     (bash("python -m pytest -q tests", run_in_background=True), False),
     # TASKS 251: a loop that retries the door until the budget lets the run in is not a computation; anything else beside it is
-    (bash("until python tools/runspec.py launch probes/runspecs/v14.json; do sleep 600; done", run_in_background=True), False),
-    (bash("until python -u tools/runspec.py launch probes/runspecs/v14.json; do sleep 600; done", run_in_background=True), False),
+    (bash("python tools/runspec.py launch probes/runspecs/v14.json", run_in_background=True), False),
+    (bash("python tools/runspec.py launch probes/runspecs/a.json; python -u tools/runspec.py launch probes/runspecs/b.json",
+          run_in_background=True), False),
+    (bash("python tools/runspec.py launch probes/runspecs/v14.json && sleep 5", run_in_background=True), False),
+    (bash("python scratch/runspec.py launch probes/runspecs/v14.json", run_in_background=True), True),      # not the door
+    (bash("python tools/runspec.py launch probes/runspecs/v14.json; bash heavy.sh", run_in_background=True), True),
+    (bash("python tools/runspec.py launch `python heavy.py`", run_in_background=True), True),
+    (bash("python tools/runspec.py launch $(python heavy.py)", run_in_background=True), True),
+    (bash("python tools/runspec.py launch probes/runspecs/v14.json | xargs python", run_in_background=True), True),
+    (bash("{ python tools/runspec.py launch probes/runspecs/v14.json; python heavy.py; }", run_in_background=True), True),
     (bash("until python tools/runspec.py launch probes/runspecs/v14.json; do sleep 600; done; python probes/s2_read.py",
           run_in_background=True), True),
     (bash("python tools/runspec.py check", run_in_background=True), True),

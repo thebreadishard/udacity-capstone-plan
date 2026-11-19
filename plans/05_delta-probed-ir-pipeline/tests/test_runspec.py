@@ -566,7 +566,7 @@ def test_the_probe_reads_the_failure_line_and_the_lifetime(tmp_path):
 class StopShell(FakeShell):
     """The stand-in for the stop's three steps: the kill where the run lives, the WSL sweep, the stop line and exit file."""
 
-    def __init__(self, probe_out="exit=\nalive=1\nprogress=0\n", kill_out="was_alive=1\nalive=0\n", wsl_out="wsl_tagged=0\nwsl_left=0\n",
+    def __init__(self, probe_out="exit=\nalive=1\nprogress=0\n", kill_out="was_alive=1\nalive=0\n", wsl_out="wsl=off\nwsl_left=0\n",
                  recorded="recorded=1\n"):
         super().__init__(probe_out=probe_out)
         self.kill_out, self.wsl_out, self.recorded = kill_out, wsl_out, recorded
@@ -610,6 +610,7 @@ def test_a_server_stop_ends_the_process_group_and_sweeps_no_wsl(tmp_path):
     R.stop(p, sh, T0, state)
     kill = next(s for s in sh.scripts if "was_alive" in s)
     assert 'kill -TERM -- -"$p"' in kill and 'kill -KILL -- -"$p"' in kill and "taskkill" not in kill
+    assert "/proc/\"$p\"/cmdline" in kill and "grep -qE 'demo\\.cmd\\.sh'" in kill          # remote_launch.sh's wrapper of this run
     assert not any("wsl.exe" in s for s in sh.scripts)
 
 
@@ -622,6 +623,7 @@ def test_a_laptop_stop_kills_the_windows_tree_then_the_tagged_wsl_processes(tmp_
     kill, wsl = next(s for s in sh.scripts if "was_alive" in s), next(s for s in sh.scripts if "wsl.exe" in s)
     assert sh.scripts.index(kill) < sh.scripts.index(wsl)
     assert 'taskkill /PID "$w" /T /F' in kill and "/proc/\"$p\"/winpid" in kill
+    assert "/proc/\"$p\"/cmdline" in kill and "grep -qE 'launch[\\\\/]demo_'" in kill      # only this run's own wrapper is killed
     assert "RUNSPEC_RUN=demo" in wsl and "--list --running" in wsl
 
 
@@ -653,6 +655,8 @@ def test_a_stop_that_does_not_finish_holds_the_run_and_is_reported(tmp_path, mak
     with pytest.raises(R.StopRefused, match=re.escape(words)):
         R.stop(p, make(), T0, state)
     assert R.load_state("demo", state) == run_state(status="stopping", stopped_at=T0)
+    assert R.laptop_runs_in_progress("other", specs, state) == (4.0, [])                    # what is left still holds its memory
+    assert R.running_laptop_logs(specs, state) == [R.laptop_log(spec(resumable=True))]      # and its log
     gone = StopShell(probe_out="exit=\nalive=0\nprogress=0\n")
     assert R.resume(gone, T0, specs, state, second_look=0) == [] and gone.launched == []
     with pytest.raises(R.LaunchRefused, match="did not finish"):
@@ -772,7 +776,7 @@ def test_stop_ends_a_real_laptop_tree_and_a_launch_arms_it_again(real_run):
         assert _wait_for(lambda: (root / "w" / "child.pid").exists() and "progress tick" in (root / "w" / f"{name}.log").read_text())
         child = int((root / "w" / "child.pid").read_text())
         bash_pid = (root / "w" / f"{name}.pid").read_text().strip()
-        line = R.stop(p, sh, R._now(), state, reason=f"test stop {launch}")
+        line = R.stop(p, sh, R._now(), state, reason=f"test stop {launch}").splitlines()[0]     # a note on WSL may follow it
         assert not _windows_pid_alive(child)                                   # the tree, not only the wrapper
         assert subprocess.run([BASH, "-c", f"kill -0 {bash_pid}"], check=False).returncode != 0
         assert (root / "w" / f"{name}.exit").read_text().strip() == "143"
@@ -807,3 +811,60 @@ def test_stop_ends_the_wsl_processes_of_a_real_laptop_run(real_run):
     R.stop(p, sh, R._now(), state)
     assert _wsl_tagged(name) == 0
     assert R.load_state(name, state).status == "stopped"
+# ---------------------------------------------------------------- the review of the stop (19 Nov 2026)
+
+def test_the_state_of_a_run_nobody_stopped_keeps_the_keys_of_the_reader_before_the_stop():
+    """The watch's check rewrites a live run's state file; after a rollback the earlier reader (`cls(**raw)`) must still load it."""
+    before_the_stop = {"started_at", "status", "phase_started_at", "progress_count", "progress_seen_at", "heartbeat_bytes", "unreachable",
+                       "gone_seen_at", "relaunches"}
+    assert set(R.json.loads(run_state(progress_count=3).to_json())) == before_the_stop
+    stopped = run_state(status="stopped", stopped_at=T0, stop_reported=True)
+    assert set(R.json.loads(stopped.to_json())) == before_the_stop | {"stopped_at", "stop_reported"}
+    assert R.RunState.from_json(stopped.to_json()) == stopped
+
+
+@pytest.mark.parametrize("wsl_out, note", [
+    ("wsl=off\nwsl_left=0\n", None),
+    ("wsl_tagged=3\nwsl_left=0\n", None),
+    ("wsl_tagged=0\nwsl_left=0\n", "cannot be swept"),                  # WSL runs, nothing tagged: a run from before the tag?
+])
+def test_a_stop_says_when_it_could_not_have_seen_the_runs_wsl_processes(tmp_path, wsl_out, note):
+    specs, state = tmp_path / "specs", tmp_path / "state"
+    p = write_spec(specs, spec())
+    R.save_state("demo", run_state(), state)
+    out = R.stop(p, StopShell(wsl_out=wsl_out), T0, state)
+    assert ("cannot be swept" in out) is (note is not None) and R.load_state("demo", state).status == "stopped"
+
+
+def test_a_stale_pid_is_named_and_not_killed(tmp_path):
+    specs, state = tmp_path / "specs", tmp_path / "state"
+    p = write_spec(specs, spec())
+    R.save_state("demo", run_state(), state)
+    out = R.stop(p, StopShell(kill_out="stale_pid=4711\nwas_alive=0\nalive=0\n"), T0, state)
+    assert "process 4711 of demo.pid is not this run's launch wrapper and was left alone" in out
+    assert "no process of it was alive" in out
+
+
+@real_windows
+def test_a_pid_file_naming_an_unrelated_live_process_kills_nothing(real_run):
+    """After a restart Git Bash numbers its processes anew: the pid in an old pid file can be anyone's. Here it is a bystander's."""
+    root, name = real_run
+    specs, state = root / "specs", root / "state"
+    p = write_spec(specs, spec(name=name, workdir="w", command="python sleeper.py", sources=[{"local": "w/sleeper.py"}]))
+    bystander = subprocess.Popen([BASH, "-c", "echo $$ > bystander.pid; sleep 120; true"], cwd=root / "w")
+    pid = ""
+    try:
+        assert _wait_for(lambda: (root / "w" / "bystander.pid").exists() and (root / "w" / "bystander.pid").read_text().strip())
+        pid = (root / "w" / "bystander.pid").read_text().strip()
+        (root / "w" / f"{name}.pid").write_text(pid + "\n", encoding="utf-8")
+        R.save_state(name, run_state(), state)
+        out = R.stop(p, _NoGitShell(), R._now(), state)
+        assert f"process {pid} of {name}.pid is not this run's launch wrapper and was left alone" in out
+        assert subprocess.run([BASH, "-c", f"kill -0 {pid}"], check=False).returncode == 0 and bystander.poll() is None
+        assert R.load_state(name, state).status == "stopped" and (root / "w" / f"{name}.exit").read_text().strip() == "143"
+    finally:
+        if pid:
+            subprocess.run([BASH, "-c", f"kill $(ps -ef | awk '$3 == {pid} {{print $2}}') {pid}"], check=False, capture_output=True)
+        else:
+            bystander.kill()
+        bystander.wait(timeout=30)
