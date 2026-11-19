@@ -12,7 +12,6 @@ predicts the held-out scaffold's modes of that family. The pooled outer rms per 
 information only, the plain leave-one-scaffold-out rms of every configuration (choosing the best of these would flatter it).
 """
 import argparse
-import json
 import os
 import sys
 import warnings
@@ -23,6 +22,7 @@ import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
+import json_records  # noqa: E402
 from s2_read import (  # noqa: E402
     FAMILIES,
     LINE_LICENSE,
@@ -255,7 +255,7 @@ def main() -> int:
               + f" | {v.get('best_epoch_max', '')}{' CAP — re-run (decision 51)' if v.get('cap_hit') else ''} |"
               for name, v in landscape.items()]
     os.makedirs(a.out, exist_ok=True)
-    write_atomic(os.path.join(a.out, "s2_search.json"), json.dumps(res, indent=1))
+    json_records.write(os.path.join(a.out, "s2_search.json"), res)
     write_atomic(os.path.join(a.out, "s2_search.md"), "\n".join(lines) + "\n")
     print("\n".join(lines[:6 + len(result)]))
     return 0

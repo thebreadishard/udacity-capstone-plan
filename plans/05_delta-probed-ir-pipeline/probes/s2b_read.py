@@ -32,6 +32,7 @@ import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
+import json_records  # noqa: E402
 from s2_read import (  # noqa: E402
     FAMILIES,
     LINE_LICENSE,
@@ -299,7 +300,7 @@ def main() -> int:
             raise SystemExit(f"scope {scope}: {len(by_scaf)} scaffold(s) with xtb partners — no leave-one-scaffold-out read")
         res["scopes"][scope] = {"counts": counts, "scaffolds": len(by_scaf), "size": size, "read": read_scope(by_scaf, plan)}
     os.makedirs(a.out, exist_ok=True)
-    write_atomic(os.path.join(a.out, "s2b_read.json"), json.dumps(res, indent=1, default=float))
+    json_records.write(os.path.join(a.out, "s2b_read.json"), res, default=float)
     lines = report(res)
     write_atomic(os.path.join(a.out, "s2b_read.md"), "\n".join(lines) + "\n")
     print("\n".join(lines))

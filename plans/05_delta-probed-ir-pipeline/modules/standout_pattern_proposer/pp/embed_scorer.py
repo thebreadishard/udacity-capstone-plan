@@ -10,7 +10,6 @@ seeds 0–2; the evaluation molecules are never loaded. Own torch code; CPU; the
     python -m pp.embed_scorer fit <export_dir> <out_prefix> [--seed 0] [--threads 2] [--lr --n-embed --n-blocks --patience --epochs --loss --use-v]"""
 from __future__ import annotations
 
-import json
 import sys
 import time
 from pathlib import Path
@@ -19,7 +18,10 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "modules" / "05_support_predictor" / "m05"))
-from pp import core as C  # noqa: E402
+sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "probes"))
+import json_records
+
+from pp import core as C
 
 Z_OF = {"H": 1, "C": 6, "N": 7, "O": 8, "F": 9, "S": 16, "CL": 17, "BR": 35}
 
@@ -151,8 +153,9 @@ class EmbedScorer:
         return s
 
 
-def fit_from_exports(export_dir: Path, out_prefix: Path, seed: int = 0, threads: int = 2, log=print, lr: float = 1e-3, n_embed: int = 64,
-                     n_blocks: int = 3, patience: int = 8, epochs: int = 120, loss: str = "mse", use_v: bool = False) -> dict:
+def fit_from_exports(export_dir: Path, out_prefix: Path, seed: int = 0, threads: int = 2, log=print,  # noqa: PLR0913  CLI recipe flags (TASKS 139)
+                     lr: float = 1e-3, n_embed: int = 64, n_blocks: int = 3, patience: int = 8, epochs: int = 120, loss: str = "mse",
+                     use_v: bool = False) -> dict:
     import torch
     torch.set_num_threads(threads)
     train, val, used = [], [], {"train": [], "val": []}
@@ -171,7 +174,7 @@ def fit_from_exports(export_dir: Path, out_prefix: Path, seed: int = 0, threads:
     s.save(out_prefix)
     info.update(molecules=used, seed=seed, n_params=int(sum(p.numel() for p in s.params)),
                 recipe=dict(lr=lr, n_embed=n_embed, n_blocks=n_blocks, patience=patience, epochs=epochs, loss=loss, use_v=use_v))
-    json.dump(info, open(str(out_prefix) + f"_seed{seed}.json", "w"), indent=1)
+    json_records.write(str(out_prefix) + f"_seed{seed}.json", info)
     return info
 
 

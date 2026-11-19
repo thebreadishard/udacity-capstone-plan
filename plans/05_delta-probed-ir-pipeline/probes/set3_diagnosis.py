@@ -26,6 +26,7 @@ PLAN = Path(__file__).resolve().parents[1]
 M05 = PLAN / "modules" / "05_support_predictor"
 sys.path.insert(0, str(PLAN / "probes"))
 import anchor_set3_read as S3  # noqa: E402
+import json_records  # noqa: E402
 
 SET3 = M05 / "out" / "anchor_set3_2026-10-20"
 FAMILIES = ("CH-oop", "other", "ring-ip", "CH-stretch")
@@ -193,7 +194,7 @@ def read(out_dir: Path) -> dict:
         md += [f"| {r} | " + " | ".join(f"{v[k][0]:.3f} ± {v[k][1]:.3f}" if k.startswith("intensity") else f"{v[k][0]:.2f} ± {v[k][1]:.2f}"
                                         for k in keys)
                + " |" for r, v in spread.items()]
-    (out_dir / "diagnosis.json").write_text(json.dumps({"runs": rows, "over_seeds": spread}, indent=1), encoding="utf-8")
+    json_records.write(out_dir / "diagnosis.json", {"runs": rows, "over_seeds": spread})
     (out_dir / "diagnosis.md").write_text("\n".join(md) + "\n", encoding="utf-8")
     print("\n".join(md))
     return rows

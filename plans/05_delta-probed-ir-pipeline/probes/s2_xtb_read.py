@@ -18,7 +18,6 @@ Line 2: ≤ 3.0 cm⁻¹ per family. The labels are GVPT2 on both sides (probes/g
 from __future__ import annotations
 
 import argparse
-import json
 import os
 import sys
 from collections.abc import Callable
@@ -29,6 +28,7 @@ from scipy.optimize import linear_sum_assignment
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
+import json_records  # noqa: E402
 from s2_read import (  # noqa: E402
     FAMILIES,
     LINE_LICENSE,
@@ -325,7 +325,7 @@ def main() -> int:
             raise SystemExit(f"scope {scope}: {len(by_scaf)} scaffold(s) with xtb partners — no leave-one-scaffold-out read")
         res["scopes"][scope] = {"counts": counts, "scaffolds": len(by_scaf), "read": read_scope(by_scaf, window)}
     os.makedirs(a.out, exist_ok=True)
-    write_atomic(os.path.join(a.out, "s2_xtb_read.json"), json.dumps(res, indent=1, default=float))
+    json_records.write(os.path.join(a.out, "s2_xtb_read.json"), res, default=float)
     lines = report(res)
     write_atomic(os.path.join(a.out, "s2_xtb_read.md"), "\n".join(lines) + "\n")
     print("\n".join(lines))

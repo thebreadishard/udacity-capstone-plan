@@ -24,6 +24,9 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import json_records
+
 from dpir import qff as Q
 
 OFF_DIAGONAL_LIMIT = 1e-6    # largest |T_kl| / |T_kk| allowed between our modes and Psience's (k ≠ l)
@@ -152,9 +155,7 @@ def main(argv: list[str] | None = None) -> int:
     internals = json.loads(args.zmatrix) if args.zmatrix else None
     excluded = [int(k) for k in args.exclude_modes.split(",") if k.strip()]
     rec = run(args.hess_dir, args.disp, internals, excluded)
-    tmp = Path(args.out + ".tmp")
-    tmp.write_text(json.dumps(rec, indent=1), encoding="utf-8")
-    tmp.replace(args.out)
+    json_records.write(args.out, rec)
     for k, (wo, wp, no, npk) in enumerate(zip(rec["omega_ours_cm"], rec["omega_psience_cm"], rec["nu_ours_cm"], rec["nu_psience_cm"], strict=True)):
         print(f"mode {k:2d}  ω ours {wo:9.2f}  Psience {wp:9.2f}   ν ours {no:9.2f}  Psience {npk:9.2f}  Δν {npk - no:+7.2f}", flush=True)
     return 0
