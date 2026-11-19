@@ -28,10 +28,10 @@ atom range, read from the checkpoints that ran: 8–30 atoms for v1.3 (pipeline 
 computed and its certificate says it is outside those sizes.
 
 **What its certificate claims** (since 0.12). The correction moves B3LYP toward ωB97X/6-31G* — the DFT proxy the networks were trained
-on. Under decision 66 the spectrum is made by v1.4's release networks, which trained on the hold-outs too and so have no held-out error
+on. Under decision 66 the spectrum is made by v1.4's release networks, which trained on test sets (a) and (b) too and so have no test-set error
 of their own; the error per family is that of v1.4's measurement networks, measured on molecules they never saw, in the quantity the
 licence reads since 16 Nov 2026 (the corrected band positions of the seed-mean correction). Under decision 65 all four families —
-CH-stretch, ring-ip, CH-oop and 'other' — are licensed (within 3 cm⁻¹ on both hold-outs); where a family's bootstrap interval over
+CH-stretch, ring-ip, CH-oop and 'other' — are licensed (within 3 cm⁻¹ on both test sets); where a family's bootstrap interval over
 molecules crosses the line, the certificate says so once. Positions are harmonic unless the anharmonic step (0.11) ran; the licence is
 a statement about ω. Nothing is claimed at the coupled-cluster level. (Up to 0.11, v1.3 made and measured the spectrum, and 'other'
 was not licensed.)
