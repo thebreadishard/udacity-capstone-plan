@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import csv
 import sys
+import time
 from pathlib import Path
 
 import numpy as np
@@ -22,7 +23,7 @@ from m08 import seen as S
 PIN_MODEL = DATA / "rungC_cc_pin_model.pt"
 TRAINING = (("C", "CL", "F", "H", "N", "O", "S"), (6, 40))
 
-# The expected strings are aromir's (tests/test_admission.py at aromir commit 4d0461c): the product and the pipeline name alike.
+# The expected strings are aromir's (tests/test_admission.py at aromir commit 1636fde): the product and the pipeline name alike.
 MAPPED_PAIRS = [("Cc1ccc(O)cc1Cl", "[CH3:5]c1ccc(O)cc1Cl"), ("c1ccc2ncccc2c1", "c1ccc2[n:1]cccc2c1"),
                 ("N#Cc1ccc(F)cc1", "N#[C:2]c1ccc(F)cc1"), ("c1ccccc1", "[cH:1]1ccccc1")]
 AZIDE_WRITINGS = ("[N-]=[N+]=Nc1ccccc1", "N#[N+][N-]c1ccccc1", "N#[N+]N=c1cccc[cH-]1")
@@ -194,3 +195,112 @@ def test_the_corpus_folders_are_matched_by_the_standard_form(tmp_path):
                      {"id": "A_benz", "smiles": "[cH:1]1ccccc1", "status": "done"}])
     assert [p.name for p, _ in R.corpus_folders("O=[N+]([O-])c1ccccc1", tmp_path).folders] == ["A_nitro"]
     assert [p.name for p, _ in R.corpus_folders("c1ccccc1", tmp_path).folders] == ["A_benz"]
+
+
+SYDNONE = "[O-]c1c[n+](-c2ccccc2)no1"
+SYDNONE_WRITINGS = (SYDNONE, "[O-]c1cn(-c2ccccc2)n[o+]1")
+HANG_GUARD_S = 60.0          # only a guard against a hang: the resonance step's bounds are counts, not time
+HEAVILY_CHARGED = ["O=[N+]([O-])c1c([N+](=O)[O-])c([N+](=O)[O-])c2c([N+](=O)[O-])c([N+](=O)[O-])"
+                   "c([N+](=O)[O-])c([N+](=O)[O-])c2c1[N+](=O)[O-]",
+                   "[N-]=[N+]=Nc1c(N=[N+]=[N-])c(N=[N+]=[N-])c(N=[N+]=[N-])c(N=[N+]=[N-])c1N=[N+]=[N-]"]
+
+
+def test_a_step_that_would_change_the_hydrogens_is_discarded(tmp_path, pin_registry):
+    """On a sydnone RDKit's Normalizer and a resonance structure both rebuilt the molecule with two more hydrogens."""
+    admitted = P.admit(config(tmp_path, smiles=SYDNONE))
+    assert admitted.smiles == SYDNONE and admitted.formula == "C8H6N2O2"
+    made, _ = P.start_geometry(config(tmp_path, smiles=SYDNONE))
+    for seed in range(4):
+        from_xyz = P.admit(config(tmp_path, smiles=None, xyz=listed_xyz(tmp_path / f"{seed}.xyz", made, seed)))
+        assert from_xyz.formula == "C8H6N2O2"
+        assert M.fixed_h_key(from_xyz.smiles) == M.fixed_h_key(SYDNONE)
+
+
+def test_two_tied_writings_of_a_sydnone_get_one_name(tmp_path, pin_registry):
+    names = {M.canonical(listing) for writing in SYDNONE_WRITINGS
+             for listing in Chem.MolToRandomSmilesVect(Chem.MolFromSmiles(writing), 10, randomSeed=3)}
+    made, _ = P.start_geometry(config(tmp_path, smiles=SYDNONE_WRITINGS[1]))
+    for seed in range(8):
+        names.add(P.admit(config(tmp_path, smiles=None, xyz=listed_xyz(tmp_path / f"{seed}.xyz", made, seed))).smiles)
+    assert names == {SYDNONE}
+
+
+def test_a_betaine_keeps_its_aromatic_form_and_is_admitted(tmp_path, pin_registry):
+    assert P.admit(config(tmp_path, smiles="[O-]c1ccc(C=Cc2cc[n+](C)cc2)cc1")).smiles == "C[n+]1ccc(C=Cc2ccc([O-])cc2)cc1"
+
+
+@pytest.mark.parametrize(("smiles", "named"), [("[CH2-][n+]1ccccc1", "[CH2-][n+]1ccccc1"),
+                                               ("[N-]=[N+]=Cc1ccccc1", "[N-]=[N+]=Cc1ccccc1"),
+                                               ("[O-]c1ccc([N+]#N)cc1", "N#[N+]c1ccc([O-])cc1")])
+def test_an_ylide_or_a_diazo_compound_gets_one_name_in_every_listing(tmp_path, pin_registry, smiles, named):
+    """Bond perception puts the ylide's charge in the ring (C=[N+]1C=CC=C[CH-]1); only an enumeration that may move a charge onto
+    carbon finds the usual structure from there."""
+    made, _ = P.start_geometry(config(tmp_path, smiles=smiles))
+    assert P.admit(config(tmp_path, smiles=smiles)).smiles == named
+    for seed in range(8):
+        assert P.admit(config(tmp_path, smiles=None, xyz=listed_xyz(tmp_path / f"{seed}.xyz", made, seed))).smiles == named
+
+
+class _NoStructures:
+    """A resonance supplier that finds nothing, as RDKit's does for some molecules (phenyldiazomethane under the default flags)."""
+
+    def __init__(self, *_arguments: object) -> None:
+        pass
+
+    def Enumerate(self) -> None:
+        pass
+
+    def __len__(self) -> int:
+        return 0
+
+
+def test_an_enumeration_that_finds_nothing_keeps_the_structure(monkeypatch):
+    monkeypatch.setattr(Chem, "ResonanceMolSupplier", _NoStructures)
+    assert M.canonical_of(M.from_smiles("N#[N+][N-]c1ccccc1").mol) == "N#[N+][N-]c1ccccc1"
+
+
+def test_an_enumeration_that_reaches_its_cap_keeps_the_structure(monkeypatch):
+    monkeypatch.setattr(M, "RESONANCE_MAX_STRUCTURES", 2)
+    assert M.canonical_of(M.from_smiles("N#[N+][N-]c1ccccc1").mol) == "N#[N+][N-]c1ccccc1"
+
+
+def test_a_molecule_with_too_many_charged_atoms_keeps_the_structure(monkeypatch):
+    monkeypatch.setattr(M, "RESONANCE_MAX_CHARGED_ATOMS", 1)
+    assert M.canonical_of(M.from_smiles("N#[N+][N-]c1ccccc1").mol) == "N#[N+][N-]c1ccccc1"
+
+
+@pytest.mark.parametrize("smiles", HEAVILY_CHARGED, ids=["octanitronaphthalene", "hexaazidobenzene"])
+def test_a_heavily_charged_molecule_gets_one_name_and_finishes(smiles):
+    started = time.monotonic()
+    names = {M.canonical_of(M.from_smiles(smiles).mol) for _ in range(2)}
+    assert len(names) == 1 and time.monotonic() - started < HANG_GUARD_S
+
+
+@pytest.mark.parametrize("smiles", ["O=[N+]([O-])c1ccccc1", "O=[N+]([O-])c1cccc([N+](=O)[O-])c1", "[O-][n+]1ccccc1",
+                                    "C[S+]([O-])c1ccccc1", "[N-]=[N+]=Nc1ccccc1"])
+def test_a_structure_already_preferred_keeps_its_charges_on_its_atoms(smiles):
+    """A nitro group's two structures tie: the one given is kept, so the charge stays on the oxygen the canonical SMILES puts it on."""
+    given = Chem.AddHs(Chem.MolFromSmiles(smiles))
+    read = M.from_smiles(smiles).mol
+    assert [a.GetFormalCharge() for a in read.GetAtoms()] == [a.GetFormalCharge() for a in given.GetAtoms()]
+
+
+def test_a_molecule_is_found_by_its_fixed_h_key_where_its_name_differs(monkeypatch):
+    """Past the resonance step's bounds a molecule keeps the structure it was given; 'seen' still finds it by its FixedH InChIKey, and a
+    tautomer (another FixedH key) is not found."""
+    seen = S.build({"A_azide"}, {}, {"A_azide": "[N-]=[N+]=Nc1ccccc1"})
+    monkeypatch.setattr(M, "RESONANCE_MAX_CHARGED_ATOMS", 1)
+    M.canonical.cache_clear()
+    try:
+        assert M.canonical("N#[N+][N-]c1ccccc1") == "N#[N+][N-]c1ccccc1"
+        assert S.status("N#[N+][N-]c1ccccc1", seen, None)["ids"] == ["A_azide"]
+    finally:
+        M.canonical.cache_clear()
+    pyridone = S.build({"A_one"}, {}, {"A_one": "O=c1cccc[nH]1"})
+    assert S.status("Oc1ccccn1", pyridone, None)["role"] == "unseen"
+
+
+def test_an_empty_fixed_h_key_matches_nothing(monkeypatch):
+    seen = S.build({"A_benz"}, {}, {"A_benz": "c1ccccc1"})
+    monkeypatch.setattr(S, "fixed_h_key", lambda smiles: None)
+    assert S.status("Cc1ccccc1", seen, None)["role"] == "unseen"

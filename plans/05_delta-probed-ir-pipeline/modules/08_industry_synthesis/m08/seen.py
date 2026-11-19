@@ -1,7 +1,8 @@
 """Has the network seen this molecule? (TASKS 155: the demo's molecule must be unseen, and a molecule the network trained on must not be read
 by the hold-out error.) The carried models' training ids — every molecule a seed fitted or stopped on — come from the checkpoints
 (`pipeline.train_ids`), the hold-outs from the models' evaluation records, the SMILES from the corpus manifest. A molecule is matched by its
-canonical SMILES, not by its id, so the same molecule under another id is caught. Where the corpus holds the molecule's ωB97X Hessian the
+canonical SMILES, not by its id, so the same molecule under another id is caught; failing that, by its FixedH InChIKey (aromir's second
+key: a molecule whose standard form still depends on how it was given is found by it). Where the corpus holds the molecule's ωB97X Hessian the
 truth is set beside the network's spectrum without an atom mapping: positions paired by rank and the overlap of the broadened spectra, both
 independent of the atom order and the frame."""
 from __future__ import annotations
@@ -15,7 +16,7 @@ import numpy as np
 
 from . import accuracy as A
 from . import pipeline as P
-from .molecule import canonical, without_stereo
+from .molecule import canonical, fixed_h_key, without_stereo
 from .spectrum import cheap_apt, overlap, series
 
 MANIFEST = P.M05 / "corpus" / "manifest.csv"
@@ -133,16 +134,21 @@ def status(smiles: str, seen: Seen, listed_id: str | None, release: Seen | None 
 
 
 def covering_key(c: str | None, seen: Seen, release: Seen | None) -> str | None:
-    """The key the molecule is looked up under: its own canonical SMILES when an index holds it, else that SMILES without stereo
+    """The key the molecule is looked up under: its own canonical SMILES when an index holds it; else that SMILES without stereo
     labels when an index holds that — a row without stereo marks covers every configuration (an xyz sulfoxide names its
-    configuration, the training SMILES leave it open)."""
+    configuration, the training SMILES leave it open); else the index key with the same FixedH InChIKey (an empty key matches
+    nothing); else its own."""
     if c is None:
         return None
     indexes = [seen.trained, seen.holdout, seen.cations] + ([release.trained, release.cations] if release is not None else [])
     if any(c in index for index in indexes):
         return c
     plain = without_stereo(c)
-    return plain if any(plain in index for index in indexes) else c
+    if any(plain in index for index in indexes):
+        return plain
+    if (key := fixed_h_key(c)) is None:
+        return c
+    return next((k for index in indexes for k in index if fixed_h_key(k) == key), c)
 
 
 def stereoisomer_keys(c: str | None, keys) -> list[str]:
