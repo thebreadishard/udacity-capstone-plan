@@ -11,9 +11,10 @@ Usage: python analytic_hessians.py <molecule dir> [more dirs...] [--threads 16] 
        to the separate CPHF route to 4.8e-7 e). An existing APT file is kept. A failed APT (or a sum rule above 5e-4 e) is reported after the
        molecule's two Hessians are written, and the exit status is 3, so the lane logs the molecule as FAILED. --no-apt turns it off.
        Soft modes on an older pyscf (TASKS 226): the low-mode repair needs pyscf 2.15.0. On an older one a molecule with a mode below
-       LOW_MODE_CM is refused by name before the repair starts -- its lowest soft modes, the pyscf version, the interpreter, the lane
-       (--lane) and what to do -- its two Hessians stay on disk marked pending, the other folders go on, and the exit status is 4
-       (EXIT_SOFT_MODE_DEFERRED) unless an APT failed (3). --reuse-existing on pyscf 2.15.0 finishes such a folder from those Hessians.
+       LOW_MODE_CM is refused by name before the repair starts -- its soft modes, why this pyscf cannot repair them, the interpreter,
+       the lane (--lane) and what to do -- its Hessians stay on disk marked pending, the other folders go on, and the exit status is 4
+       (EXIT_SOFT_MODE_DEFERRED) unless an APT failed (3, which then names the deferral too). --reuse-existing reads a pending file
+       and the same check decides again: on pyscf 2.15.0 the repair finishes it, and a molecule without a soft mode finishes anywhere.
        Residual-checked response (12 Oct 2026, TASKS 44 (a)): pyscf's Krylov CPHF stops early for DFT (pyscf #2702), which the Hessian does not
        feel and the APT does; the APT is contracted from the response after `refine_response` (apt.py), route "hessian_response_refined", and the
        file carries cphf_residual_before/after, cphf_refine_rounds and cphf_fallback_columns (13 Oct 2026: columns still above the bound after
@@ -32,6 +33,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib
 import json
 import os
 import platform
@@ -82,6 +84,7 @@ IMAGINARY_BELOW = 0.0                  # cm⁻¹: every negative mode, as pyscf 
 SPIN_CONTAMINATION = 0.05              # |<S²> − S(S+1)| above which a warning is printed
 MAX_MEMORY_MB = 20000                  # pyscf's max_memory (its blocking target); a run under a memory cap passes a smaller one
 REPAIR_MIN_PYSCF = (2, 15, 0)          # grid_response_blocked follows 2.15.0's grid-response code and refuses an older pyscf
+REPAIR_MODULE = "grid_response_blocked"  # what the repair imports; importing it is the probe for pyscf's helpers
 EXIT_SOFT_MODE_DEFERRED = 4            # the lanes' scripts read it (labels_lane.sh, labels_batch_ccx53.sh: DEFERRED_RC); 3 is a failed APT
 # A displaced point of the low-mode repair is converged for a finite difference, not for a label, so its two thresholds come from
 # that error budget and from a measured noise floor. T_76dfc434db (60 atoms) showed both floors on 14 Nov 2026: the energy oscillates
@@ -127,7 +130,14 @@ class LabelsRun:
 
 
 class SoftModeNeedsNewerPyscf(RuntimeError):
-    """A molecule with a soft mode met a pyscf too old for its repair; its analytic Hessians stay on disk, marked pending."""
+    """A molecule with a soft mode met a pyscf that cannot repair it; its analytic Hessians stay on disk, marked pending.
+
+    It carries the molecule's APT errors, which a refusal would otherwise drop before process_molecule returns them.
+    """
+
+    def __init__(self, message: str, apt_errors: list[str]) -> None:
+        super().__init__(message)
+        self.apt_errors = list(apt_errors)
 
 
 def parse_version(text: str) -> tuple[int, int, int]:
@@ -138,9 +148,16 @@ def parse_version(text: str) -> tuple[int, int, int]:
     return int(match[1]), int(match[2]), int(match[3] or 0)
 
 
-def repair_available() -> bool:
-    """Whether this environment's pyscf can run the low-mode repair."""
-    return parse_version(pyscf.__version__) >= REPAIR_MIN_PYSCF
+def repair_blocker() -> str:
+    """Why this environment cannot run the low-mode repair, or '' when it can: the version, then the helpers themselves (a 2.15
+    development build may lack them)."""
+    if parse_version(pyscf.__version__) < REPAIR_MIN_PYSCF:
+        return f"pyscf {pyscf.__version__} is older than {'.'.join(map(str, REPAIR_MIN_PYSCF))}"
+    try:
+        importlib.import_module(REPAIR_MODULE)
+    except ImportError as exc:
+        return f"pyscf {pyscf.__version__} lacks what {REPAIR_MODULE} needs ({exc})"
+    return ""
 
 
 def software():
@@ -288,24 +305,24 @@ def soft_modes(geometry: dict, hessians: dict[str, np.ndarray], below_cm: float)
     return modes, low_mode_directions([modes[tag] for tag in sorted(modes)], below_cm)
 
 
-def refuse_without_repair(d: str, geometry: dict, hessians: dict[str, np.ndarray], run: LabelsRun) -> None:
-    """Raise SoftModeNeedsNewerPyscf when the molecule has a mode below LOW_MODE_CM and this pyscf cannot repair it.
+def soft_mode_refusal(d: str, geometry: dict, hessians: dict[str, np.ndarray], run: LabelsRun) -> str:
+    """The refusal of a molecule with a mode below LOW_MODE_CM that this environment cannot repair, or '' when there is none.
 
-    It runs before the repair, so a lane's log gets the molecule, its soft modes, the environment, the lane and the remedy instead
+    It is read before the repair, so a lane's log gets the molecule, its soft modes, the environment, the lane and the remedy instead
     of grid_response_blocked's ImportError, which names only the version.
     """
-    if repair_available():
-        return
+    blocker = repair_blocker()
+    if not blocker:
+        return ""
     modes, U = soft_modes(geometry, hessians, LOW_MODE_CM)
     if U.shape[1] == 0:
-        return
+        return ""
     soft = "; ".join(f"{tag} {', '.join(f'{w:.2f}' for w in m.omega_cm[np.abs(m.omega_cm) < LOW_MODE_CM])}"
                      for tag, m in modes.items() if (np.abs(m.omega_cm) < LOW_MODE_CM).any())
-    raise SoftModeNeedsNewerPyscf(
-        f"{d}: SOFT MODE DEFERRED TO PYSCF 2.15 -- {U.shape[1]} direction(s) below {LOW_MODE_CM:g} cm-1 ({soft} cm-1). "
-        f"The low-mode repair needs pyscf >= {'.'.join(map(str, REPAIR_MIN_PYSCF))}; this lane ({run.lane or 'not named: pass --lane'}) "
-        f"runs pyscf {pyscf.__version__} from {sys.executable}. Both analytic Hessians are on disk, marked pending. Rerun this folder "
-        "with the 2.15 environment (qc215) and --reuse-existing, which keeps them and adds the repair.")
+    return (f"{d}: SOFT MODE DEFERRED TO PYSCF 2.15 -- {U.shape[1]} direction(s) below {LOW_MODE_CM:g} cm-1 ({soft} cm-1). "
+            f"The low-mode repair cannot run here: {blocker}; this lane ({run.lane or 'not named: pass --lane'}) runs {sys.executable}. "
+            f"{len(hessians)} analytic Hessian(s) ({', '.join(sorted(hessians))}) are on disk, marked pending. Rerun this folder with "
+            "the 2.15 environment (qc215) and --reuse-existing, which keeps them and adds the repair.")
 
 
 def repair_low_modes(geometry: dict, hessians: dict[str, np.ndarray], run: LabelsRun, lib_log: TextIO,
@@ -454,10 +471,9 @@ def analytic_label(d: str, mol: Any, tag: str, xc: str, run: LabelsRun,  # noqa:
     if run.compare_only or (run.reuse_existing and os.path.exists(saved)):
         with np.load(saved, allow_pickle=False) as z:
             pending = "low_mode_pending" in z.files
-            if pending and (run.compare_only or not repair_available()):
-                raise RuntimeError(f"{d} {tag}: {os.path.basename(saved)} was written before its low-mode repair; finish it with "
-                                   f"--reuse-existing on pyscf >= {'.'.join(map(str, REPAIR_MIN_PYSCF))} (this is "
-                                   f"{pyscf.__version__}{', and --compare-only reads finished labels only' if run.compare_only else ''})")
+            if pending and run.compare_only:
+                raise RuntimeError(f"{d} {tag}: {os.path.basename(saved)} was written before its low-mode repair and --compare-only "
+                                   "reads finished labels only; finish it with --reuse-existing")
             Hc, e = np.asarray(z["H_raw"], float), float(z["energy"])
             repaired_already = "low_mode_patch" in z.files
         if not run.compare_only:
@@ -518,7 +534,9 @@ def process_molecule(d: str, run: LabelsRun, lib_log: TextIO) -> list[str]:
     if run.compare_only or already:
         repaired, repair = {}, {}
     else:
-        refuse_without_repair(d, g, hessians, run)
+        refusal = soft_mode_refusal(d, g, hessians, run)
+        if refusal:
+            raise SoftModeNeedsNewerPyscf(refusal, apt_errors)
         repaired, repair = repair_low_modes(g, hessians, run, lib_log)
     out, imaginary = write_labels(d, run, labels, repaired, repair, g)
     with open(d + "/analytic_check.json", "w", encoding="utf-8") as fh:
@@ -565,7 +583,10 @@ def main() -> None:
             except SoftModeNeedsNewerPyscf as exc:
                 print(exc, flush=True)
                 deferred.append(d)
+                apt_errors += exc.apt_errors
     if apt_errors:
+        if deferred:
+            print(f"exit 3 for a failed APT; also SOFT MODE DEFERRED TO PYSCF 2.15: {', '.join(deferred)}", flush=True)
         raise SystemExit(3)
     if deferred:
         raise SystemExit(EXIT_SOFT_MODE_DEFERRED)

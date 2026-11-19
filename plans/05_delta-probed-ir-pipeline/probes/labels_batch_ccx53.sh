@@ -43,6 +43,7 @@ fi
 optimised() { [ -f "molecules/$1/result.json" ] && grep -q '"status": "done"' "molecules/$1/result.json"; }
 DEFERRED_RC=4                           # analytic_hessians.EXIT_SOFT_MODE_DEFERRED
 pending() { grep -qa 'low_mode_pending.npy' "$1"; }   # the npz's member names are stored uncompressed
+deferred_too() { tail -c +$(( $2 + 1 )) "$1" 2> /dev/null | grep -q 'SOFT MODE DEFERRED'; }   # <log> <its size before the call>
 labelled() {
   local f
   for f in "molecules/$1/hessian_b3lyp_analytic.npz" "molecules/$1/hessian_wb97x_analytic.npz"; do
@@ -77,7 +78,7 @@ opt() {
   fi
 }
 label() {
-  local id=$1 d=$BATCH/molecules/$1 t0 cmd extra rc
+  local id=$1 d=$BATCH/molecules/$1 t0 cmd extra rc before also=""
   if labelled "$id"; then echo "  $id labelled already"; return 0; fi
   [ -f "$d/geometry.json" ] || { echo "  $id LABELS SKIPPED (no optimised geometry)"; echo "$id skipped" >> "$STATUS"; return 1; }
   read -ra extra <<< "$LABEL_ARGS"
@@ -86,7 +87,7 @@ label() {
     cmd=(env CAP_SCOPE=system bash "$CAPPED" "$CAP_MB" -- /usr/bin/time -f "($TAG) $id max RSS %M kB, wall %e s" "${cmd[@]}")
   fi
   echo "  $id labels started $(date '+%F %T')"
-  t0=$(date +%s)
+  t0=$(date +%s); before=$(wc -c 2> /dev/null < "$d/labels.log" || echo 0)
   (cd "$CODE" && OMP_NUM_THREADS=$THREADS "${cmd[@]}" >> "$d/labels.log" 2>&1)
   rc=$?
   if [ "$rc" = 0 ]; then
@@ -97,10 +98,11 @@ label() {
   elif [ -n "$CAP_MB" ] && OOM_TAG=$TAG OOM_JOURNAL=system bash "$OOM_CHECK" "$id" >> "$d/labels.log" 2>&1; then
     echo "  $id KILLED at the cap of $CAP_MB MB $(( $(date +%s) - t0 )) s (molecules/$id/labels.log)"; echo "$id killed at the cap" >> "$STATUS"
   else
-    echo "  $id LABELS FAILED $(( $(date +%s) - t0 )) s (molecules/$id/labels.log)"; echo "$id failed" >> "$STATUS"
+    deferred_too "$d/labels.log" "$before" && also=" (and deferred to qc215: a soft mode)"
+    echo "  $id LABELS FAILED $(( $(date +%s) - t0 )) s$also (molecules/$id/labels.log)"; echo "$id failed$also" >> "$STATUS"
   fi
 }
-export -f opt label optimised labelled pending
+export -f opt label optimised labelled pending deferred_too
 export QC QC05 BATCH CODE THREADS LABEL_ARGS CAP_MB CAPPED OOM_CHECK TAG STATUS DEFERRED_RC
 mark "optimisations"
 printf '%s\n' "${IDS[@]}" | xargs -P "$LANES" -I{} bash -c 'opt {}'

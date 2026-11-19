@@ -205,3 +205,15 @@ def test_a_pending_hessian_file_is_not_a_label(tmp_path):
     (folder / "hessian_wb97x_analytic.npz").write_bytes(b"")
     res = _run(tmp_path, env)
     assert f"  {B} labelled already" not in res.stdout and f"  {B} labelled " in res.stdout
+
+
+def test_a_failed_call_that_also_deferred_says_so(tmp_path):
+    """Exit 3 (a failed APT) outranks a deferral; only this call's lines of labels.log are read, so an old deferral does not count."""
+    env = _setup(tmp_path, optimised=(A, B))
+    (tmp_path / "batch" / "molecules" / B / "labels.log").write_text("SOFT MODE DEFERRED (an earlier call)\n", encoding="utf-8")
+    env["QC05"] = _stub(tmp_path / "qc05_apt.sh", f'case "$(basename "$2")" in {A}) echo "x: SOFT MODE DEFERRED TO PYSCF 2.15" ;; esac; exit 3\n')
+    res = _run(tmp_path, env)
+    assert f"  {A} LABELS FAILED " in res.stdout and f"s (and deferred to qc215: a soft mode) (molecules/{A}/labels.log)" in res.stdout
+    assert f"  {B} LABELS FAILED " in res.stdout
+    status = (tmp_path / "batch" / "status_T.log").read_text(encoding="utf-8").splitlines()
+    assert sorted(status) == sorted([f"{A} failed (and deferred to qc215: a soft mode)", f"{B} failed"])
