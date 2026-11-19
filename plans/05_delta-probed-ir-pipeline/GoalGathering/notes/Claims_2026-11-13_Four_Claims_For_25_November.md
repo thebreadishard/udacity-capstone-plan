@@ -25,7 +25,7 @@ asks for the binding text, point her to decisions 63 (the capstone's end point),
 |---|---|
 | test set (a): unseen molecules | ten small parent molecules (benzene, phenanthrene, fluorene, …) kept out of training since 19 September |
 | (a8) | the eight of those ten never trained on under any name; the other two (2-naphthoic acid, benzonitrile) had a twin in training |
-| test set (b): unseen scaffolds | the substituted molecules of two scaffold cores (fluoranthene, fluorene): 70 kept out of training; the 41 frozen on 8 October are read, 40 of them (see below) |
+| test set (b): held-out scaffolds | the substituted molecules of two scaffold cores (fluoranthene, fluorene): 70 kept out of training (fluoranthene's ring system occurs in five training molecules, fluorene's in none); the 41 frozen on 8 October are read, 40 of them (see below) |
 | twin | the same molecule under another id or in another charge state, e.g. benzene's radical cation beside benzene |
 | hold-out | In code and records these are the hold-outs: never trained on in any form — a twin or another charge state included |
 | carried / promoted | the carried version is the network the pipeline uses; a new version is promoted to carried by a registered rule (decision 57) |

@@ -49,9 +49,10 @@ not directly comparable.
 
 **Test set, leave-one-out, scaffold.** In machine learning a *test set* is a set of examples kept away from training to test the model honestly.
 A *scaffold* is the ring skeleton of a molecule without its side groups. The network has two test sets: *test set (a): unseen molecules*, ten
-small parent molecules such as benzene and phenanthrene, kept out of training since 19 September 2026; and *test set (b): unseen scaffolds*,
-the substituted molecules of two ring skeletons (fluoranthene and fluorene), which tests whether the model generalises to ring systems it has
-never seen. A *twin* is the same molecule under another name or in another charge state. In code and records these are the hold-outs: never trained on in any form — a twin or another charge state included.
+small parent molecules such as benzene and phenanthrene, kept out of training since 19 September 2026; and *test set (b): held-out scaffolds*,
+the substituted molecules of two ring skeletons (fluoranthene and fluorene), all kept out of training as a whole, which tests whether the model
+generalises to ring systems it was not trained on — with one caveat: fluoranthene's ring system does occur in five training molecules
+(benzo[k]fluoranthene and four of its derivatives), so only fluorene's skeleton is wholly unseen. A *twin* is the same molecule under another name or in another charge state. In code and records these are the hold-outs: never trained on in any form — a twin or another charge state included.
 *Leave-one-molecule-out* keeps one molecule out at a time.
 
 **Ladder, rungs, comparison lines.** The project's own list of test molecules from small to large (the *ladder*, each molecule a *rung*), and the
