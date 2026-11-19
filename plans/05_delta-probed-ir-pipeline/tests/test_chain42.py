@@ -27,28 +27,43 @@ def test_the_read_takes_seed_means_and_applies_the_registered_lines():
     assert "too few to judge" in R.verdicts(1.5, 0.96)["line_2"] and R.verdicts(1.5, 0.9) == {"line_1": "between: noted", "line_2": "between: noted"}
 
 
-def test_ready_needs_every_file_and_a_minimum(tmp_path):
+SOUND_FREQ = [0.01, -0.02, 0.03, 0.0, -0.01, 0.02, 150.0, 410.0, 900.0, 3100.0]   # six near-zero entries, then the vibrations
+
+
+def _folder(tmp_path, b3lyp_freq=SOUND_FREQ, wb97x_freq=SOUND_FREQ, apt_passed=True, result=None):
     d = tmp_path / "T_x"
     d.mkdir()
-    assert LR.state(d) == "no geometry.json"
-    for f in ("geometry.json", "hessian_b3lyp_analytic.npz", "hessian_wb97x_analytic.npz"):
-        (d / f).write_text("{}")
-    np.savez(d / "dipole_b3lyp_cphf.npz", passed=True)
-    (d / "result.json").write_text(json.dumps({"labels": "analytic_only"}))
-    assert LR.state(d) == "no n_imaginary in result.json"
-    (d / "result.json").write_text(json.dumps({"labels": "analytic_only", "n_imaginary_b3lyp": 1, "n_imaginary_wb97x": 0}))
-    assert LR.state(d).startswith("IMAGINARY")
-    (d / "result.json").write_text(json.dumps({"labels": "analytic_only", "n_imaginary_b3lyp": 0, "n_imaginary_wb97x": 0}))
+    (d / "geometry.json").write_text("{}")
+    np.savez(d / "hessian_b3lyp_analytic.npz", freq_cm=np.array(b3lyp_freq))
+    np.savez(d / "hessian_wb97x_analytic.npz", freq_cm=np.array(wb97x_freq))
+    np.savez(d / "dipole_b3lyp_cphf.npz", passed=apt_passed)
+    (d / "result.json").write_text(json.dumps(result or {"labels": "analytic_only", "n_imaginary_b3lyp": 0, "n_imaginary_wb97x": 0}))
+    return d
+
+
+def test_ready_needs_every_file_and_a_minimum(tmp_path):
+    assert LR.state(tmp_path) == "no geometry.json"
+    d = _folder(tmp_path, b3lyp_freq=[*SOUND_FREQ, -120.0])
+    assert LR.state(d).startswith("IMAGINARY (1, 0)")
+    (d / "result.json").write_text(json.dumps({"labels": "fd"}))
+    assert LR.state(d) == "result.json not analytic_only"
+
+
+def test_a_sound_folder_is_ready_without_counts_in_result_json(tmp_path):
+    d = _folder(tmp_path, result={"labels": "analytic_only"})
     assert LR.state(d) == "ready" and LR.apt_passed(d)
 
 
+def test_a_mode_above_the_old_minus_ten_threshold_is_refused(tmp_path):
+    """TASKS 198: result.json written at the -10 cm-1 threshold says zero for a -7 cm-1 mode; the trainer's count, and so this check, says one."""
+    d = _folder(tmp_path, wb97x_freq=[*SOUND_FREQ[:6], -7.0, *SOUND_FREQ[7:]])
+    result = json.loads((d / "result.json").read_text())
+    assert result["n_imaginary_b3lyp"] == 0 and result["n_imaginary_wb97x"] == 0    # what the old check read: it passed
+    assert LR.state(d) == "IMAGINARY (0, 1): re-optimise at the label settings"
+
+
 def test_a_failed_apt_does_not_hold_the_run_and_is_named(tmp_path):
-    d = tmp_path / "T_x"
-    d.mkdir()
-    for f in ("geometry.json", "hessian_b3lyp_analytic.npz", "hessian_wb97x_analytic.npz"):
-        (d / f).write_text("{}")
-    np.savez(d / "dipole_b3lyp_cphf.npz", passed=False, sum_rule_max=7.9e-4)
-    (d / "result.json").write_text(json.dumps({"labels": "analytic_only", "n_imaginary_b3lyp": 0, "n_imaginary_wb97x": 0}))
+    d = _folder(tmp_path, apt_passed=False)
     assert LR.state(d) == "ready" and not LR.apt_passed(d)
 
 
