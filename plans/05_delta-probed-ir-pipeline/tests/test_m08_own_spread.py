@@ -438,10 +438,43 @@ def test_a_result_without_a_measurement_licenses_no_band_and_says_why(tmp_path, 
     families = ", ".join(c["licence"]["licensed_families"])
     assert (f"0 of 30 bands are licensed: the version's harmonic positions ω are licensed for {families} (decision 65) where a band's "
             f"{CONDITION.format(n='')}, and for this molecule that licence is withheld — {reason} — each band marked; at ") in c["statement"]
-    assert "Each band's own spread was measured" not in c["statement"]
+    assert "Each band's own spread was measured" not in c["statement"] and "; 0 of 30 bands are licensed: " in c["statement"]
     page = LC.to_markdown(c)
     assert f"| no: {UNCHECKED} | not measured |" in page and f"For this molecule it is withheld: H{reason[1:]}." in page
     assert f"- own spread: not measured — {refusal}" in page
+
+
+def test_a_band_that_was_never_licensable_says_that_before_its_spread():
+    """aromir's order of a band's licence note: a flat coordinate, an imaginary position, imaginary for a seed, then the own spread."""
+    moved = moved_note("9.95")
+    assert LC.licence_note(LC.BandState(-50.8, -25.2, -30.0, 9.951, "rotation 1"), "") == LC.FLAT_COORDINATE
+    assert LC.licence_note(LC.BandState(40.0, -25.2, -30.0, 9.951, "rotation 1"), "") == LC.IMAGINARY
+    assert LC.licence_note(LC.BandState(40.0, 25.2, -3.0, None, ""), "") == LC.IMAGINARY_FOR_A_SEED
+    assert LC.licence_note(LC.BandState(40.0, 25.2, 3.0, None, ""), "outside") == UNCHECKED
+    assert LC.licence_note(LC.BandState(40.0, 25.2, 3.0, 9.951, "rotation 1"), "outside") == moved
+    assert LC.licence_note(LC.BandState(40.0, 25.2, 3.0, 1.0, "rotation 1"), "outside") == "outside"
+    assert LC.licence_note(LC.BandState(40.0, 25.2, 3.0, LINE, "rotation 1"), "") == ""
+    assert LC.FLAT_COORDINATE == "a flat coordinate: its low-level mode is imaginary, so this is no band position"      # aromir's words
+
+
+def test_a_band_on_an_imaginary_b3lyp_mode_is_a_flat_coordinate_on_the_certificate(tmp_path, v14_release):
+    d = benzene_folder(tmp_path, v14_release, 3, 9.95)
+    hessian = d / R.HESSIAN
+    with np.load(hessian) as z:
+        arrays = {k: z[k] for k in z.files}
+    masses = OS.Molecule.of_folder(d).masses_amu
+    s = np.sqrt(np.repeat(masses, 3))
+    lam, V = np.linalg.eigh(arrays["H_projected"] / np.outer(s, s))
+    lam[6] = -lam[6]                                                        # the softest vibration, made imaginary at its own size
+    np.savez(hessian, **(arrays | {"H_projected": np.outer(s, s) * ((V * lam) @ V.T)}))
+    zero = np.zeros((36, 36))
+    rec = json.loads((d / "pipeline.json").read_text(encoding="utf-8"))
+    P.write_json(d / "pipeline.json", rec | {"spectra": P.spectra(d, zero, [zero] * 3)})
+    OS.save(d, uniform(30, 9.95), 0.0)
+    c = LC.certificate(d, NoCatalog())
+    assert c["bands"][0]["b3lyp_cm"] < 0 and c["bands"][0]["licence_note"] == LC.FLAT_COORDINATE and not c["bands"][0]["licensed"]
+    assert {b["licence_note"] for b in c["bands"][1:]} == {moved_note("9.95")}
+    assert f"| no: {LC.FLAT_COORDINATE} | 9.95, rotation 1 |" in LC.to_markdown(c)
 
 
 def test_a_measurement_of_another_correction_is_refused(tmp_path, v14_release):

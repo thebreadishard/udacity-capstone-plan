@@ -51,6 +51,9 @@ SAME_MODE_CM = 1e-6                    # two diagonalisations of one Hessian
 
 # aromir's certificate.py at bb8eb62, word for word: a band's licence note where its own spread was not measured, and what stays true
 UNCHECKED = "how far this band moves when the molecule is turned, mirrored or listed in another order could not be measured"
+FLAT_COORDINATE = "a flat coordinate: its low-level mode is imaginary, so this is no band position"
+IMAGINARY = "imaginary position"
+IMAGINARY_FOR_A_SEED = "imaginary for at least one seed"
 STILL_PRINTED = "the corrected positions are still printed"
 UNMEASURED = ("how far this molecule's bands move when it is turned, mirrored or listed in another order could not be measured "
               "({refusal}), so no band is licensed; " + STILL_PRINTED)
@@ -118,12 +121,32 @@ def moved_note(spread_cm: float | None, change: str, line: float) -> str:
     return f"its position moved by {OS.stated(spread_cm, line)} cm⁻¹ under {change} of this molecule, more than the licence line"
 
 
-def licence_note(spread_cm: float | None, change: str, outside_domain: str) -> str:
-    """The first condition of the licence a band fails beside its family's, in aromir's order (`certificate.licence_note`): its own spread
-    not measured, its own spread beyond the line, the molecule outside the training domain; "" when it passes all three."""
-    if spread_cm is None:
-        return UNCHECKED
-    return moved_note(spread_cm, change, A.LICENCE_LINE_CM) or outside_domain
+@dataclass(frozen=True)
+class BandState:
+    """What a band's licence note is read from, as aromir's `certificate.Mode` holds it: the signed positions of its B3LYP partner, of
+    the band itself and of its lowest seed, cm⁻¹, and its own spread, unrounded (None: not measured), with the presentation that gave it."""
+
+    low_level_cm: float
+    position_cm: float
+    lowest_seed_cm: float
+    spread_cm: float | None
+    spread_change: str
+
+
+def licence_note(band: BandState, outside_domain: str) -> str:
+    """The first condition of the licence a band fails beside its family's, in aromir's order (`certificate.licence_note`): its low-level
+    mode imaginary (a flat coordinate, never licensable), its own position imaginary, imaginary for a seed, its own spread not measured,
+    its own spread beyond the line, the molecule outside the training domain; "" when it passes all."""
+    moved = moved_note(band.spread_cm, band.spread_change, A.LICENCE_LINE_CM)
+    conditions = (
+        (band.low_level_cm < 0, FLAT_COORDINATE),
+        (band.position_cm < 0, IMAGINARY),
+        (band.lowest_seed_cm < 0, IMAGINARY_FOR_A_SEED),
+        (band.spread_cm is None, UNCHECKED),
+        (bool(moved), moved),
+        (bool(outside_domain), outside_domain),
+    )
+    return next((note for failed, note in conditions if failed), "")
 
 
 def band_spreads(r: Result, w_net: np.ndarray, spread: OS.Measurement) -> list[tuple[float | None, str]]:
@@ -171,7 +194,8 @@ def bands(r: Result, accuracy: dict, tolerance: dict[str, dict], licensed: list[
     rows = []
     for j, k in enumerate(RINT.match_modes(L_net, V_rule)):
         own, change = spreads[j]
-        note = licence_note(own, change, outside_domain)
+        lowest_seed = float(sticks[rank[j]]["seed_range_cm"][0])
+        note = licence_note(BandState(float(w_rule[k]), float(w_net[j]), lowest_seed, own, change), outside_domain)
         position = POS.band(sticks[rank[j]], summary, REASON_TEXT, NOT_MEASURED_TEXT)
         fam, region = families[k], lab_region(float(w_net[j]) if position["nu_cm"] is None else position["nu_cm"])
         rows.append(dict(network_cm=round(float(w_net[j]), 1), km_mol=round(float(k_net[j]), 2), seed_range_cm=sticks[rank[j]]["seed_range_cm"],
@@ -353,16 +377,16 @@ def statement(name: str, version: str, n_seeds: int, lic: dict, seen_text: str, 
     that none of its bands is licensed and why."""
     opening = f"{name}: the infrared spectrum of {P.NETWORK} v{version} ({n_seeds} seeds) — B3LYP/6-31G* corrected toward {A.HIGHER_LEVEL_NAME}"
     if made_by.release_trained_on is None:
-        measured = f" — with the {lic['quantity_name']} measured on molecules the network never saw; the "
+        measured = f" — with the {lic['quantity_name']} measured on molecules the network never saw; "
     else:
         measured = (f". {release_sentence(version, n_seeds, made_by)} The error stated is the measurement networks' "
-                    f"{lic['quantity_name']}; the ")
+                    f"{lic['quantity_name']}; ")
     families = ", ".join(lic["licensed_families"]) or "no family"
     own = lic["own_spread"]
     tried = f"{own['n_presentations']} " if own["n_presentations"] else ""
     condition = (f"where a band's own position moved by no more than the licence line in the {tried}presentations tried (this "
                  "molecule turned, mirrored or listed in another atom order)")          # aromir's statement, word for word from 'own position'
-    licensed = f"harmonic positions ω are licensed for {families} (decision 65) {condition}, each band marked"
+    licensed = f"the harmonic positions ω are licensed for {families} (decision 65) {condition}, each band marked"
     if (reason := withheld_reason(lic)) is not None:
         held = next(lic[key] for key in WITHHOLDING if key in lic)
         licensed = (f"0 of {held['n_bands']} bands are licensed: the version's harmonic positions ω are licensed for {families} "

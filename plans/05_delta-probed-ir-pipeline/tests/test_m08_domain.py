@@ -137,7 +137,8 @@ def test_a_molecule_outside_the_training_chemistry_is_printed_and_not_licensed(t
     said = (f"0 of {n} bands are licensed: the version's harmonic positions ω are licensed for {families} (decision 65) {own}, and for "
             f"this molecule that licence is withheld — {reason} — each band marked; at ")
     assert said in c["statement"] and c["statement"] == plain["statement"].replace(
-        f"harmonic positions ω are licensed for {families} (decision 65) {own}, each band marked; at ", said)
+        f"the harmonic positions ω are licensed for {families} (decision 65) {own}, each band marked; at ", said)
+    assert f"; 0 of {n} bands are licensed: " in c["statement"]                      # aromir's count opens the clause
     page = LC.to_markdown(c)
     assert f"- Outside the training chemistry: {ZWITTERION_CAVEAT}: no band is licensed.\n" in page
     assert f"| no: {DOMAIN.OUTSIDE_CHEMISTRY} |" in page
