@@ -59,6 +59,59 @@ def _folder_link(link: Path, target: Path) -> None:
         os.symlink(target, link, target_is_directory=True)
 
 
+WINDOWS_ONLY = pytest.mark.skipif(sys.platform != "win32", reason="MAX_PATH (260 characters) and the extended-length prefix are Windows' own; "
+                                                                "POSIX paths are passed through unchanged")
+MAX_PATH = 260
+PLAIN_DIR_LIMIT = 248   # CreateDirectoryW's own limit for a plain path: the main side of the test must stay under it
+
+
+def _nested_under(top: Path, budget: int) -> str:
+    """A repository-relative file under DATA whose path below `top` is as long as possible within `budget` characters."""
+    segments = ["deep"]
+    while len(str(top.joinpath(DATA, *segments, "d" * 20, "x.json"))) <= budget:
+        segments.append("d" * 20)
+    return "/".join([DATA, *segments, "x.json"])
+
+
+@WINDOWS_ONLY
+def test_os_path_is_extended_absolute_and_idempotent(tmp_path):
+    plain = tmp_path / "a" / "b"
+    extended = WD.os_path(plain)
+    assert extended == "\\\\?\\" + str(plain)
+    assert WD.os_path(extended) == extended
+    assert WD.os_path("C:/x/y") == r"\\?\C:\x\y"
+    assert WD.os_path(r"\\server\share\x") == r"\\?\UNC\server\share\x"
+
+
+@pytest.mark.skipif(sys.platform == "win32", reason="the POSIX branch: Windows paths get the extended-length prefix")
+def test_os_path_leaves_posix_paths_alone(tmp_path):
+    assert WD.os_path(tmp_path / "a") == str(tmp_path / "a")
+
+
+@WINDOWS_ONLY
+def test_a_target_past_max_path_is_linked_listed_and_unlinked(repo, tmp_path):
+    """A worktree with a long name pushes a nested file past MAX_PATH while its source in the main checkout stays under it (WinError 3)."""
+    long_worktree = tmp_path / ("wt_" + "long-name" * 6)
+    _git(repo.main, "worktree", "add", "-q", "-b", "long", str(long_worktree))
+    checkouts = WD.find_checkouts(long_worktree.resolve(), WD.repository_of(repo.main))
+    rel = _nested_under(repo.main, PLAIN_DIR_LIMIT - 10)
+    src, dst = repo.main / rel, checkouts.worktree / rel
+    assert len(str(src)) < PLAIN_DIR_LIMIT < MAX_PATH < len(str(dst)), (len(str(src)), len(str(dst)))
+    _write(src, "deep")
+
+    report = WD.link(checkouts, ("data",))
+    assert (report.linked, report.already, report.skipped, report.refused, report.not_ignored) == (3, 0, 1, [], [])
+    with open(WD.os_path(dst), encoding="utf-8") as f:
+        assert f.read() == "deep"
+    assert WD.status(checkouts) == {"(other folders)": 3}
+    assert WD.link(checkouts, ("data",)).already == 3
+
+    assert WD.unlink(checkouts) == 3
+    assert not os.path.lexists(WD.os_path(checkouts.worktree / DATA))         # the long folders left empty are pruned
+    assert src.read_text(encoding="utf-8") == "deep"
+    assert os.stat(src).st_nlink == 1
+
+
 def test_find_checkouts_reads_the_main_checkout_from_git(repo):
     assert _found(repo) == repo
 
