@@ -178,7 +178,10 @@ def is_inside(top: Path, path: Path) -> bool:
     A folder in the worktree that is a junction or symlink into the main checkout would make a create or remove act on the main checkout.
     """
     real_top, real = os.path.normcase(os.path.realpath(top)), os.path.normcase(os.path.realpath(path))
-    return os.path.commonpath([real_top, real]) == real_top
+    try:
+        return os.path.commonpath([real_top, real]) == real_top
+    except ValueError:   # another drive on Windows: certainly not inside
+        return False
 
 
 def _same_file(a: Path, b: Path) -> bool:
