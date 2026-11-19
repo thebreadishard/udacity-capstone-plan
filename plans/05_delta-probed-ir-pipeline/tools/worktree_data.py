@@ -233,6 +233,11 @@ def link(checkouts: Checkouts, dirs: tuple[str, ...]) -> LinkReport:
             report.skipped += 1
         else:
             candidates.append(rel)
+    # Before git sees the paths: on Linux `git check-ignore` stops at a path beyond a symlink with its own error, which would hide ours.
+    for rel in candidates:
+        if not is_inside(checkouts.worktree, checkouts.worktree / rel):
+            raise LinkStopped(f"{checkouts.worktree / rel} resolves outside the worktree (a junction or symlink on its path); "
+                              "nothing created", report)
     ignored = ignored_here(checkouts.worktree, candidates)
     for rel in candidates:
         if rel not in ignored:
