@@ -15,7 +15,7 @@ import numpy as np
 
 from . import accuracy as A
 from . import pipeline as P
-from .catalog import canonical
+from .molecule import canonical, without_stereo
 from .spectrum import cheap_apt, overlap, series
 
 MANIFEST = P.M05 / "corpus" / "manifest.csv"
@@ -28,6 +28,8 @@ TEXT = {
     "b": "held out, hold-out (b) ({ids}): never trained on; the measured error includes it",
     "catalogue": "in the catalogue ({ids}) but not among the molecules the network trained on",
     "unseen": "not in the catalogue: the network has not seen it",
+    # aromir's sentence (certificate.py): an xyz request names its sulfoxide's configuration, the training SMILES leave it open
+    "stereoisomer": "a stereoisomer of it, or the molecule itself written with other stereo labels, is in the network's training set ({ids})",
     "unseen_neutral": "not in the catalogue as a neutral molecule: the network has not seen it as one",
     # decision 66 (design note of 17 Nov 2026, §3): the line for a molecule the release networks trained on
     "release_trained": "in the release networks' training data: the error bars are not an out-of-sample error for this molecule; "
@@ -128,8 +130,17 @@ def status(smiles: str, seen: Seen, listed_id: str | None, release: Seen | None 
     return got | {"cation_trained": cations, "text": f"{head}; {TEXT['cation_trained'].format(ids=', '.join(cations))}"}
 
 
+def stereoisomer_ids(c: str | None, trained: dict[str, list[str]]) -> list[str]:
+    """The ids trained under another canonical SMILES that is `c` without, or with other, stereo labels."""
+    if c is None:
+        return []
+    plain = without_stereo(c)
+    return sorted(i for k, ids in trained.items() if k != c and without_stereo(k) == plain for i in ids)
+
+
 def role_of(c: str | None, seen: Seen, listed_id: str | None, release: Seen | None) -> dict:
-    """The role of the molecule of canonical SMILES `c`, with its ids and sentence (`status`, without the cation clause)."""
+    """The role of the molecule of canonical SMILES `c`, with its ids and sentence (`status`, without the cation clause). A molecule found
+    under none of its own keys but trained on as a stereoisomer — the networks that made the spectrum — says so."""
     if release is not None and c in release.trained:
         return {"role": "release_trained", "ids": release.trained[c], "text": TEXT["release_trained"]}
     if c in seen.trained and c in seen.holdout:
@@ -141,6 +152,8 @@ def role_of(c: str | None, seen: Seen, listed_id: str | None, release: Seen | No
         role, ids = "trained", seen.trained[c]
     elif c in seen.holdout:
         role, ids = seen.holdout[c]
+    elif stereo := stereoisomer_ids(c, (seen if release is None else release).trained):
+        role, ids = "stereoisomer", stereo
     elif listed_id is not None:
         role, ids = "catalogue", [listed_id]
     else:

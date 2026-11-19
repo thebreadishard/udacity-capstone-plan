@@ -27,6 +27,9 @@ from pathlib import Path
 
 import numpy as np
 
+from .molecule import canonical as canonical_form
+from .molecule import standard_molecule, without_hydrogens
+
 BOHR_ANGSTROM = 0.529177210903
 GEOMETRY, HESSIAN, APT, CHECK, RESULT, JOB = ("geometry.json", "hessian_b3lyp_analytic.npz", "dipole_b3lyp_cphf.npz",
                                               "analytic_check.json", "result.json", "job.json")
@@ -66,15 +69,12 @@ class Found:
 def corpus_folders(canonical: str, corpus: Path) -> Found:
     """The done folders of the corpus manifest whose SMILES has the request's canonical form — a molecule can sit in two layers, and a
     cation row (P3c) carries its neutral parent's SMILES; the Hessian's charge tells them apart."""
-    from rdkit import Chem
-
     manifest = corpus / "manifest.csv"
     if not manifest.is_file():
         return Found((), (f"no corpus manifest at {manifest}",))
     with manifest.open(encoding="utf-8", newline="") as fh:
         hits = sorted((r["id"], r["smiles"]) for r in csv.DictReader(fh)
-                      if ("status" not in r or r["status"] == "done") and (m := Chem.MolFromSmiles(r["smiles"])) is not None
-                      and Chem.MolToSmiles(m) == canonical)
+                      if ("status" not in r or r["status"] == "done") and canonical_form(r["smiles"]) == canonical)
     if not hits:
         return Found((), ("the corpus has no folder of this molecule",))
     return Found(tuple((corpus / "molecules" / i, s) for i, s in hits), ())
@@ -145,12 +145,14 @@ def _geometry_bonds(symbols: list[str], coords_bohr: np.ndarray) -> set[frozense
 
 
 def _written(smiles: str):
-    """(the parsed molecule, its heavy atoms in the order RDKit's canonical SMILES writes them)."""
+    """(the parsed molecule, its canonical SMILES, its heavy atoms in the order that SMILES writes them): the canonical SMILES of the
+    pipeline's molecule (`m08.molecule`), whose atoms keep the parse's indices, so the order applies to the parsed molecule's atoms."""
     from rdkit import Chem
 
     m = Chem.MolFromSmiles(smiles)
-    Chem.MolToSmiles(m)
-    return m, [int(i) for i in m.GetProp("_smilesAtomOutputOrder").strip("[],").split(",")]
+    skeleton = without_hydrogens(standard_molecule(Chem.AddHs(m)).mol)     # AddHs appends the hydrogens: heavy indices are the parse's
+    written = Chem.MolToSmiles(skeleton)
+    return m, written, [int(i) for i in skeleton.GetProp("_smilesAtomOutputOrder").strip("[],").split(",")]
 
 
 def atom_order(source_smiles: str, canonical: str, symbols: list[str], coords_bohr: np.ndarray) -> np.ndarray:
@@ -160,9 +162,9 @@ def atom_order(source_smiles: str, canonical: str, symbols: list[str], coords_bo
     atoms or its geometry's bonds are not its SMILES's."""
     from rdkit import Chem
 
-    heavy, written_src = _written(source_smiles)
-    can_heavy, written_can = _written(canonical)
-    if Chem.MolToSmiles(heavy) != canonical:
+    heavy, source_canonical, written_src = _written(source_smiles)
+    can_heavy, _, written_can = _written(canonical)
+    if source_canonical != canonical:
         raise ValueError(f"its SMILES {source_smiles} is not {canonical}")
     written = [0] * len(written_src)              # canonical atom → the folder's heavy atom at the same place of the canonical string
     for place, atom in enumerate(written_can):

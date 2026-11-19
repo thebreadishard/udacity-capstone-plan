@@ -57,6 +57,7 @@ from pathlib import Path, PureWindowsPath
 import numpy as np
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
+from . import molecule as M
 from . import reuse as R
 from .catalog import PLAN, Catalog
 from .progress import Progress
@@ -247,11 +248,13 @@ class Admission:
     models: tuple[dict, ...]
     measurement_models: tuple[dict, ...] = ()
     release_held_back: str | None = None
+    input_changes: tuple[str, ...] = ()
 
     def record(self) -> dict:
-        """The admission as pipeline.json holds it. The two fields of decision 66 are written only when they say something, so a run
-        of measurement networks alone writes the record it always wrote."""
-        kept = {k: v for k, v in vars(self).items() if k not in ("measurement_models", "release_held_back") or v}
+        """The admission as pipeline.json holds it. The two fields of decision 66, and what reading the input changed (`m08.molecule`:
+        atom maps cleared), are written only when they say something, so a run of measurement networks on a plainly written molecule
+        writes the record it always wrote."""
+        kept = {k: v for k, v in vars(self).items() if k not in ("measurement_models", "release_held_back", "input_changes") or v}
         return kept | {"inside_training_sizes": self.inside_training_sizes}
 
     @property
@@ -259,22 +262,12 @@ class Admission:
         return self.training_atoms[0] <= self.n_atoms <= self.training_atoms[1]
 
 
-def rdkit_molecule(cfg: PipelineConfig):
-    """The request as an RDKit molecule with explicit hydrogens (an xyz file's bonds from its geometry), or None when it does not parse."""
-    from rdkit import Chem
-    from rdkit.Chem import rdDetermineBonds
-
+def rdkit_molecule(cfg: PipelineConfig) -> M.Standardised | None:
+    """The request as the pipeline's molecule (`m08.molecule.standard_molecule`) with explicit hydrogens — an xyz file's bonds from its
+    geometry, its atoms in the file's order — or None when it does not parse."""
     if cfg.smiles is not None:
-        m = Chem.MolFromSmiles(cfg.smiles)
-        return None if m is None else Chem.AddHs(m)
-    m = Chem.MolFromXYZFile(str(cfg.xyz))
-    if m is None:
-        return None
-    try:
-        rdDetermineBonds.DetermineBonds(m, charge=cfg.charge)
-    except ValueError:
-        return None
-    return m
+        return M.from_smiles(cfg.smiles)
+    return M.from_xyz(cfg.xyz, cfg.charge)
 
 
 def train_ids(models: tuple[Path, ...]) -> set[str]:
@@ -378,9 +371,10 @@ def admit(cfg: PipelineConfig) -> Admission:
         reasons.append(f"{cfg.folder} exists and is not empty: a result is never overwritten")
     admitted, model_reasons = admitted_models(cfg.models)
     reasons += model_reasons
-    m = rdkit_molecule(cfg)
-    if m is None:
+    got = rdkit_molecule(cfg)
+    if got is None:
         raise Refused([*reasons, f"the input ({cfg.smiles or cfg.xyz}) does not parse as a molecule"])
+    m = got.mol
     from rdkit import Chem
 
     elements = tuple(sorted({a.GetSymbol().upper() for a in m.GetAtoms()}))
@@ -402,15 +396,16 @@ def admit(cfg: PipelineConfig) -> Admission:
         raise Refused(reasons)
     from rdkit.Chem.rdMolDescriptors import CalcMolFormula
 
-    return Admission(Chem.MolToSmiles(Chem.RemoveHs(m)), CalcMolFormula(m), elements, m.GetNumAtoms(), training_elements, training_atoms,
-                     admitted.entries, admitted.measurement, admitted.held_back)
+    return Admission(M.canonical_of(m), CalcMolFormula(m), elements, m.GetNumAtoms(), training_elements, training_atoms,
+                     admitted.entries, admitted.measurement, admitted.held_back, got.notes)
 
 
 def canonical_smiles(smiles: str) -> str:
-    """RDKit's canonical form: parsed again it numbers the atoms the same way for every writing of the molecule."""
-    from rdkit import Chem
-
-    return Chem.MolToSmiles(Chem.MolFromSmiles(smiles))
+    """The canonical SMILES of the pipeline's molecule (`m08.molecule`): parsed again it numbers the atoms the same way for every writing
+    of the molecule."""
+    if (c := M.canonical(smiles)) is None:
+        raise ValueError(f"{smiles}: does not parse as a molecule")
+    return c
 
 
 def smiles_route_order(m) -> list[int]:
@@ -420,7 +415,7 @@ def smiles_route_order(m) -> list[int]:
     from rdkit import Chem
 
     heavy = [a.GetIdx() for a in m.GetAtoms() if a.GetAtomicNum() > 1]
-    skeleton = Chem.RemoveHs(m)                                        # the heavy atoms keep their relative order
+    skeleton = M.without_hydrogens(m)                                  # the heavy atoms keep their relative order
     Chem.MolToSmiles(skeleton)
     written = [heavy[k] for k in skeleton.GetPropsAsDict(True, True)["_smilesAtomOutputOrder"]]
     hydrogens = [h.GetIdx() for c in written for h in sorted(m.GetAtomWithIdx(c).GetNeighbors(), key=lambda a: a.GetIdx())
@@ -432,10 +427,10 @@ def smiles_route_order(m) -> list[int]:
 
 def xyz_order(cfg: PipelineConfig) -> list[int]:
     """The xyz file's atom index of each atom the pipeline computes, in the SMILES route's order (`smiles_route_order`)."""
-    m = rdkit_molecule(cfg)
-    if m is None:
+    got = rdkit_molecule(cfg)
+    if got is None:
         raise ValueError(f"{cfg.xyz}: does not parse as a molecule")
-    return smiles_route_order(m)
+    return smiles_route_order(got.mol)
 
 
 def xyz_atoms(path: Path) -> list[list]:
