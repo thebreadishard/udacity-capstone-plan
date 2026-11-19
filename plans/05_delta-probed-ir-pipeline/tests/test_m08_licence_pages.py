@@ -15,6 +15,7 @@ import numpy as np
 import pytest
 
 from pin_tools import PLAN
+from test_m08_own_spread import OWN_SPREAD, UNMOVED
 
 sys.path.insert(0, str(PLAN / "modules" / "08_industry_synthesis"))
 from m08 import accuracy as A
@@ -43,10 +44,11 @@ def amended(stored) -> dict:
     lic = licence.state(acc)
     _, errors = A.stated_errors(acc)
     cert = copy.deepcopy(stored)
-    cert["accuracy"], cert["licence"] = acc, LC.licence_block(lic)
+    cert["accuracy"], cert["licence"], cert["own_spread"] = acc, LC.licence_block(lic, UNMOVED), dict(UNMOVED.record)
     for band in cert["bands"]:
         band["licensed"], band["error_cm"] = band["family"] in lic["licensed_families"], dict(errors[band["family"]])
-    cert["statement"] = LC.statement(cert["molecule"]["name"], "1.3", 3, lic, cert["molecule"]["seen"]["text"])
+        band["own_spread_cm"], band["own_spread_change"] = 0.0, "rotation 1"       # as networks that move no band would leave it
+    cert["statement"] = LC.statement(cert["molecule"]["name"], "1.3", 3, cert["licence"], cert["molecule"]["seen"]["text"])
     # the stored result predates the anharmonic step (pipeline 0.11, TASKS 211): its bands are harmonic and say so
     summary = LC.POS.summary_of({})
     cert["positions"] = dict(note=LC.POS.note(summary), anharmonic=summary, drawn=LC.POS.DRAWN)
@@ -106,7 +108,7 @@ def test_the_live_certificates_band_table_ends_with_the_caveat_and_the_statement
     assert CAVEAT not in amended["statement"]
     quiet = {**amended, "licence": {**amended["licence"], "caveats": []}}
     assert LC._band_lines(quiet)[-1].startswith("| ")
-    lic = {"quantity_name": PRODUCT_NAME, "licensed_families": ["ring-ip"], "caveats": []}
+    lic = {"quantity_name": PRODUCT_NAME, "licensed_families": ["ring-ip"], "caveats": []} | OWN_SPREAD
     assert LC.statement("x", "1.3", 3, lic, "never seen").endswith("This molecule and the ΔH network: never seen.")
     page = LC.to_markdown(amended)
     assert page.count(CAVEAT) == 1 and page.count(amended["licence"]["caveats"][0]) == 2   # the band table; and the licence line

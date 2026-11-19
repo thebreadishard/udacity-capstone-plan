@@ -13,6 +13,7 @@ import numpy as np
 import pytest
 
 from pin_tools import DATA, PIN_CORPUS, PLAN, require_frozen_corpus
+from test_m08_own_spread import UNMOVED
 
 sys.path.insert(0, str(PLAN / "modules" / "08_industry_synthesis"))
 from m08 import accuracy as A
@@ -152,7 +153,7 @@ def record(d: Path, dH: np.ndarray, seeds: list[np.ndarray]) -> None:
 
 def test_a_zero_correction_pairs_each_band_with_its_own_b3lyp_mode(result, accuracy):
     record(result, ZERO, [ZERO])
-    rows = LC.bands(LC.load_result(result), accuracy, {}, ["ring-ip"])
+    rows = LC.bands(LC.load_result(result), accuracy, {}, ["ring-ip"], UNMOVED)
     assert len(rows) == 30 and all(b["network_cm"] == b["b3lyp_cm"] for b in rows)
     assert [b["network_cm"] for b in rows] == sorted(b["network_cm"] for b in rows)
     assert all(b["licensed"] == (b["family"] == "ring-ip") for b in rows)
@@ -166,7 +167,7 @@ def test_the_bands_carry_the_recorded_positions_and_seed_ranges(result, accuracy
     dH, seeds = P.correction((PIN_MODEL, PIN_MODEL), result)
     record(result, dH, seeds)
     r = LC.load_result(result)
-    rows = LC.bands(r, accuracy, {"CH-stretch": {"u_band": 9.9}}, [])
+    rows = LC.bands(r, accuracy, {"CH-stretch": {"u_band": 9.9}}, [], UNMOVED)
     assert [b["network_cm"] for b in rows] == [s["omega_cm"] for s in r.record["spectra"]["network"]["sticks"]]
     assert all(b["seed_range_cm"] == [b["network_cm"]] * 2 for b in rows)
     assert {b["u_band_cm"] for b in rows if b["lab_region"] == "CH-stretch"} == {9.9}
@@ -193,7 +194,7 @@ def test_a_mode_lifted_over_the_line_keeps_its_partner(result, accuracy):
     np.savez(hessian, **(arrays | {"H_projected": H}))
     seeds = [with_mode_at(H, masses, 0, cm) - H for cm in (37.0, 19.0)]
     record(result, np.mean(seeds, 0), seeds)
-    rows = LC.bands(LC.load_result(result), accuracy, {}, [])
+    rows = LC.bands(LC.load_result(result), accuracy, {}, [], UNMOVED)
     lifted = [b for b in rows if b["baseline_cm"] is None]
     assert len(rows) == 30 and len(lifted) == 1
     assert lifted[0]["b3lyp_cm"] == 10.0 and lifted[0]["network_cm"] == round(float(np.sqrt((37.0 ** 2 + 19.0 ** 2) / 2)), 1)
@@ -204,7 +205,9 @@ def test_a_mode_lifted_over_the_line_keeps_its_partner(result, accuracy):
     lines = LC._band_lines({"bands": rows, "licence": {"quantity_name": A.QUANTITY_NAMES[A.PRODUCT]},
                             "positions": {"anharmonic": LC.POS.summary_of({})}})
     assert "— (B3LYP under 20 cm⁻¹)" in "\n".join(lines)
-    assert "| ω licensed | error of the corrected band positions of the seed-mean correction of ω on (a) / (b), cm⁻¹ |" in lines[0]
+    assert ("| ω licensed | own spread of ω (cm⁻¹), under | error of the corrected band positions of the seed-mean correction of ω on "
+            "(a) / (b), cm⁻¹ |") in lines[0]
+    assert all("| no | 0.00, rotation 1 |" in line for line in lines[2:])
 
 
 def test_a_record_that_is_not_its_correction_is_refused(result, accuracy):
@@ -213,7 +216,7 @@ def test_a_record_that_is_not_its_correction_is_refused(result, accuracy):
     rec["spectra"]["network"]["sticks"][5]["omega_cm"] += 1.0
     P.write_json(result / "pipeline.json", rec)
     with pytest.raises(RuntimeError, match="not the one H_low"):
-        LC.bands(LC.load_result(result), accuracy, {}, [])
+        LC.bands(LC.load_result(result), accuracy, {}, [], UNMOVED)
 
 
 def test_a_correction_of_other_models_is_refused(result):

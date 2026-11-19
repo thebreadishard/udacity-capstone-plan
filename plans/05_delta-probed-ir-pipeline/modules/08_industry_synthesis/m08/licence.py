@@ -8,7 +8,7 @@ exists. It replaces the layer-B rule of the proof-of-learning pre-registration (
 from __future__ import annotations
 
 from .accuracy import AMENDED, FIRST_ORDER, HOLDOUTS, LICENCE_LINE_CM, LICENCE_QUANTITY, PRODUCT, QUANTITY_NAMES, carried_accuracy, stated_errors
-from .invariance import condition
+from .own_spread import N_HYDROGEN_SWAPS, N_LISTINGS, N_ROTATIONS, N_SWAPS, SEED
 
 # isort: split
 from promotion_read import FAMILIES  # probes/, on the path through m08.pipeline
@@ -17,9 +17,17 @@ RULE = (f"decision 65 (29 Oct 2026, amended {AMENDED}): a mode family is license
         f"{QUANTITY_NAMES[PRODUCT]}: the carried ΔH network's seeds' mean ΔH added to the B3LYP Hessian and diagonalised, each corrected "
         "band paired to its ωB97X band by mode overlap and counted in the family of its B3LYP partner — is within 3 cm⁻¹ (decision 53) on "
         "both hold-outs, at the DFT-proxy level; until the amendment the licence was read on the first-order diagonal error averaged over "
-        "the seeds, which the records keep under its own name; it replaces the layer-B rule of 25 Sep 2026; and since 19 Nov 2026 (TASKS "
-        f"288) a molecule's bands are licensed only where {condition(linear_group=True)}, for a molecule with one, and "
-        f"{condition(linear_group=False)}, for a molecule without one; positions are printed either way (m08/invariance.py)")
+        "the seeds, which the records keep under its own name; it replaces the layer-B rule of 25 Sep 2026; and since pipeline 0.15 a "
+        "band's licence follows its own measured spread (m08/own_spread.py, aromir's rule): the networks correct the same molecule given "
+        f"in other ways — {N_ROTATIONS} random rotations, the mirror image and a rotated mirror image, {N_LISTINGS} random listings of "
+        "the atoms put into the canonical order and swaps of atoms the bond graph cannot tell apart (all of them up to "
+        f"{N_SWAPS}; of more, {N_SWAPS} symmetries of the heavy-atom skeleton and {N_HYDROGEN_SWAPS} exchanges of hydrogens), drawn "
+        f"with the seed {SEED} — each band is paired with itself by its motion, and it is licensed only when its position lay no more "
+        f"than {LICENCE_LINE_CM:g} cm⁻¹ from the printed one in every presentation tried: the distance from the printed presentation, "
+        "not the range between presentations, and a sample, not a bound; where that cannot be measured, no band is licensed; the "
+        "corrected positions are printed either way. It replaces the rule by a molecule's group of 19 Nov 2026 (TASKS 288), whose "
+        "measurement — the release's invariance record, <stem>_invariance.json beside the release networks — describes the network "
+        "and decides no licence")
 RULE_SOURCE = f"README.md, decision 65 as amended on {AMENDED}"
 
 

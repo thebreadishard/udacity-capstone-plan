@@ -10,7 +10,7 @@ import subprocess
 import time
 from pathlib import Path
 
-from . import invariance, paths, prices
+from . import paths, prices
 from . import positions as POS
 from . import spectrum as shape_mod
 from .catalog import FAMILY_SOURCE, PLAN, REPO, RUNG_LABELS, Catalog, family
@@ -118,7 +118,6 @@ def anchor_coverage(evidence: list[str], u_band: dict[str, dict]) -> list[dict]:
 def certificate(row: dict, catalog: Catalog) -> dict:
     mol = catalog.molecule(row["id"])
     lic = licence_state()
-    withheld = invariance.product_withheld(mol["geometry"]["symbols"], mol["geometry"]["coords_bohr"]) if mol else None
     rung = int(row["rung"])
     ub = catalog.u_band(row["name"])
     freqs = {}
@@ -179,7 +178,6 @@ def certificate(row: dict, catalog: Catalog) -> dict:
                 statement=(f"{row['name']}: rung {rung} ({RUNG_LABELS[rung]}). The cheap-level spectrum is served with the laboratory tolerance per family; no predicted "
                            "correction is shown in this record — the pipeline serves it for the licensed families ("
                            + ", ".join(lic["licensed_families"]) + "; decision 65)"
-                           + (f", though for this molecule no band of it would be licensed: {withheld.reason}" if withheld else "")
                            + "; the anchor coverage lists what coupled-cluster evidence exists "
                            "and where it is wider than the tolerance." + (" " + caveat_sentence(lic) if lic["caveats"] else "")))
 

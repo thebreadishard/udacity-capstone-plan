@@ -575,6 +575,7 @@ def stubbed_run(monkeypatch: pytest.MonkeyPatch, calls: list[str], preflight: bo
     monkeypatch.setattr(P, "low_level", lambda cfg: {})
     monkeypatch.setattr(P, "correction", lambda models, d: (np.zeros(1), []))
     monkeypatch.setattr(P, "save_correction", lambda *a: None)
+    monkeypatch.setattr(P, "measure_own_spread", lambda models, d, smiles: 0.0)     # its own tests: tests/test_m08_own_spread.py
     monkeypatch.setattr(P, "spectra", lambda d, dH, dH_seeds: {"network": {"sticks": [{"omega_cm": 700.0}]}})
 
 
@@ -638,7 +639,7 @@ def test_the_harmonic_result_is_delivered_complete_before_step_6_starts(tmp_path
     assert [(x["number"], x["delivery"]) for x in final["deliveries"]] == [(1, P.FIRST_DELIVERY), (2, P.SECOND_DELIVERY)]
     assert final["deliveries"][1]["final_by"] is None and final["spectra"]["note"] == "said"
     assert final["spectra"]["network"]["sticks"][0]["nu_cm"] == 690.0 and "anharmonic" in final["seconds"] == rec["seconds"]
-    assert all(x["seconds_since_start"] >= 0 and x["at"] for x in final["deliveries"]) and rec["pipeline_version"] == P.PIPELINE_VERSION == "0.14"
+    assert all(x["seconds_since_start"] >= 0 and x["at"] for x in final["deliveries"]) and rec["pipeline_version"] == P.PIPELINE_VERSION == "0.15"
 
 
 def test_a_step_over_its_budget_ends_in_the_harmonic_result_with_the_reason(tmp_path, monkeypatch):
