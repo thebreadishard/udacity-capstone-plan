@@ -6,7 +6,7 @@
   "system": "Windows",
   "torch": "2.14.0+cpu"
  },
- "page": "# Certificate — benzene · pipeline pin · -\n\nbenzene: the infrared spectrum of ΔH-network v1.3 (3 seeds) — B3LYP/6-31G* corrected toward ωB97X/6-31G* — with the error of the corrected band positions of the seed-mean correction measured on molecules the network never saw; the harmonic positions ω are licensed for ring-ip, CH-stretch, CH-oop, other (decision 65), each band marked; at the coupled-cluster level not measured for this network version: the coupled-cluster reads (T3) were made on an earlier network (chain 34). The scaled B3LYP spectrum is shown as the baseline only. This molecule and the ΔH network: held out, hold-out (a) (A_8448043181): never trained on; the measured error includes it.\n\n**Positions.** Positions are harmonic (ω): the anharmonic step was not applied — the result was computed by a pipeline version before the anharmonic step (0.11).\n\n## Molecule\n\n- c1ccccc1, C6H6, 12 atoms (C, H); the network's training set spans 6–40 atoms: inside\n- catalogue: not listed\n- the ΔH network: held out, hold-out (a) (A_8448043181): never trained on; the measured error includes it\n\n## Spectrum, band by band (ΔH-network v1.3, 3 seeds)\n\n| best estimate (cm⁻¹) | printed | harmonic ω, network | Δ_anh | ± of Δ_anh, against its VPT2 label (measured, not licensed) | height (km/mol) | seeds' range of ω | B3LYP ω | baseline ω | family | ω licensed | error of the corrected band positions of the seed-mean correction of ω on (a) / (b), cm⁻¹ | laboratory region | u_band (cm⁻¹) |\n|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n| 415.4 | harmonic ω | 415.4 | — | — | 0.0 | 415.4–415.4 | 415.4 | 397.1 | other | yes | 2.78 / 2.77 | low / skeletal | — |\n| 415.4 | harmonic ω | 415.4 | — | — | 0.0 | 415.4–415.4 | 415.4 | 397.1 | other | yes | 2.78 / 2.77 | low / skeletal | — |\n| 621.9 | harmonic ω | 621.9 | — | — | 0.0 | 621.9–621.9 | 621.9 | 594.5 | other | yes | 2.78 / 2.77 | low / skeletal | — |\n| 621.9 | harmonic ω | 621.9 | — | — | 0.0 | 621.9–621.9 | 621.9 | 594.5 | other | yes | 2.78 / 2.77 | low / skeletal | — |\n| 694.9 | harmonic ω | 694.9 | — | — | 77.57 | 694.9–694.9 | 694.9 | 664.3 | CH-oop | yes | 1.64 / 1.88 | CH-oop (10.5-15 um; benzene nu11 at 673 included) | — |\n| 717.9 | harmonic ω | 717.9 | — | — | 0.0 | 717.9–717.9 | 717.9 | 686.3 | other | yes | 2.78 / 2.77 | CH-oop (10.5-15 um; benzene nu11 at 673 included) | — |\n| 864.8 | harmonic ω | 864.8 | — | — | 0.0 | 864.8–864.8 | 864.8 | 826.7 | CH-oop | yes | 1.64 / 1.88 | CH-oop (10.5-15 um; benzene nu11 at 673 included) | — |\n| 864.9 | harmonic ω | 864.9 | — | — | 0.0 | 864.9–864.9 | 864.9 | 826.8 | CH-oop | yes | 1.64 / 1.88 | CH-oop (10.5-15 um; benzene nu11 at 673 included) | — |\n| 969.3 | harmonic ω | 969.3 | — | — | 0.0 | 969.3–969.3 | 969.3 | 926.7 | CH-oop | yes | 1.64 / 1.88 | ring / CH-ip (9-10.5 um) | — |\n| 969.4 | harmonic ω | 969.4 | — | — | 0.0 | 969.4–969.4 | 969.4 | 926.7 | CH-oop | yes | 1.64 / 1.88 | ring / CH-ip (9-10.5 um) | — |\n| 1011.0 | harmonic ω | 1011.0 | — | — | 0.0 | 1011.0–1011.0 | 1011.0 | 966.5 | CH-oop | yes | 1.64 / 1.88 | ring / CH-ip (9-10.5 um) | — |\n| 1019.8 | harmonic ω | 1019.8 | — | — | 0.0 | 1019.8–1019.8 | 1019.8 | 974.9 | ring-ip | yes | 1.43 / 1.91 | ring / CH-ip (9-10.5 um) | — |\n| 1020.0 | harmonic ω | 1020.0 | — | — | 0.0 | 1020.0–1020.0 | 1020.0 | 975.1 | ring-ip | yes | 1.43 / 1.91 | ring / CH-ip (9-10.5 um) | — |\n| 1068.8 | harmonic ω | 1068.8 | — | — | 3.27 | 1068.8–1068.8 | 1068.8 | 1021.8 | ring-ip | yes | 1.43 / 1.91 | ring / CH-ip (9-10.5 um) | — |\n| 1068.8 | harmonic ω | 1068.8 | — | — | 3.27 | 1068.8–1068.8 | 1068.8 | 1021.8 | ring-ip | yes | 1.43 / 1.91 | ring / CH-ip (9-10.5 um) | — |\n| 1185.5 | harmonic ω | 1185.5 | — | — | 0.0 | 1185.5–1185.5 | 1185.5 | 1128.6 | ring-ip | yes | 1.43 / 1.91 | CH-ip-bend (8.6 um) | — |\n| 1207.7 | harmonic ω | 1207.7 | — | — | 0.0 | 1207.7–1207.7 | 1207.7 | 1149.7 | ring-ip | yes | 1.43 / 1.91 | CH-ip-bend (8.6 um) | — |\n| 1207.7 | harmonic ω | 1207.7 | — | — | 0.0 | 1207.7–1207.7 | 1207.7 | 1149.7 | ring-ip | yes | 1.43 / 1.91 | CH-ip-bend (8.6 um) | — |\n| 1355.6 | harmonic ω | 1355.6 | — | — | 0.0 | 1355.6–1355.6 | 1355.6 | 1290.5 | ring-ip | yes | 1.43 / 1.91 | CC-stretch/CH-ip (7.7 um) | — |\n| 1387.1 | harmonic ω | 1387.1 | — | — | 0.0 | 1387.1–1387.1 | 1387.1 | 1320.5 | ring-ip | yes | 1.43 / 1.91 | CC-stretch/CH-ip (7.7 um) | — |\n| 1531.0 | harmonic ω | 1531.0 | — | — | 6.51 | 1531.0–1531.0 | 1531.0 | 1457.5 | ring-ip | yes | 1.43 / 1.91 | CC-stretch (6.2 um) | — |\n| 1531.1 | harmonic ω | 1531.1 | — | — | 6.51 | 1531.1–1531.1 | 1531.1 | 1457.6 | ring-ip | yes | 1.43 / 1.91 | CC-stretch (6.2 um) | — |\n| 1655.3 | harmonic ω | 1655.3 | — | — | 0.0 | 1655.3–1655.3 | 1655.3 | 1575.8 | ring-ip | yes | 1.43 / 1.91 | overtone / combination region | — |\n| 1655.3 | harmonic ω | 1655.3 | — | — | 0.0 | 1655.3–1655.3 | 1655.3 | 1575.8 | ring-ip | yes | 1.43 / 1.91 | overtone / combination region | — |\n| 3174.0 | harmonic ω | 3174.0 | — | — | 0.0 | 3174.0–3174.0 | 3174.0 | 3047.0 | CH-stretch | yes | 0.95 / 2.19 | CH-stretch | — |\n| 3183.6 | harmonic ω | 3183.6 | — | — | 0.0 | 3183.6–3183.6 | 3183.6 | 3056.3 | CH-stretch | yes | 0.95 / 2.19 | CH-stretch | — |\n| 3183.7 | harmonic ω | 3183.7 | — | — | 0.0 | 3183.7–3183.7 | 3183.7 | 3056.4 | CH-stretch | yes | 0.95 / 2.19 | CH-stretch | — |\n| 3199.4 | harmonic ω | 3199.4 | — | — | 52.0 | 3199.4–3199.4 | 3199.4 | 3071.4 | CH-stretch | yes | 0.95 / 2.19 | CH-stretch | — |\n| 3199.4 | harmonic ω | 3199.4 | — | — | 51.98 | 3199.4–3199.4 | 3199.4 | 3071.4 | CH-stretch | yes | 0.95 / 2.19 | CH-stretch | — |\n| 3210.1 | harmonic ω | 3210.1 | — | — | 0.0 | 3210.1–3210.1 | 3210.1 | 3081.7 | CH-stretch | yes | 0.95 / 2.19 | above 3200 | — |\n\n*Licence caveat: other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie under it).*\n\n*Laboratory region and u_band:* modules/03_lab_scoreboard/build_lab_tables.py FAMILY_RULE (12 Sep 2026), read at the printed position.\n\n## How well the network is known (its product-error record and its evaluation records)\n\nAgainst ωB97X/6-31G* (the DFT proxy: the network's ΔH is trained on ωB97X − B3LYP Hessians); two quantities, each under its name.\n\nThe licence reads the error of the corrected band positions of the seed-mean correction (rms over the family's bands of the corrected band position's error against the higher level (cm⁻¹): the seeds' mean ΔH added to the B3LYP Hessian and diagonalised, each corrected band paired to its higher-level band by mode overlap and counted in the family of its B3LYP partner — what the pipeline prints; with the 95 % interval of a bootstrap over whole molecules).\n\n| family | (a), 8 molecules | (b), 39 molecules | line |\n|---|---|---|---|\n| ring-ip | 1.43 (95 % interval over molecules 1.13–1.7; 199 bands) | 1.91 (95 % interval over molecules 1.84–2.0; 1164 bands) | 3 |\n| CH-stretch | 0.95 (95 % interval over molecules 0.39–1.48; 73 bands) | 2.19 (95 % interval over molecules 1.8–2.53; 401 bands) | 3 |\n| CH-oop | 1.64 (95 % interval over molecules 1.19–1.97; 46 bands) | 1.88 (95 % interval over molecules 1.56–2.16; 84 bands) | 3 |\n| other | 2.78 (95 % interval over molecules 1.68–3.76; 156 bands) | 2.77 (95 % interval over molecules 2.56–2.97; 1225 bands) | 3 |\n\nBeside it the evaluation records' read-outs — the first-order diagonal error of each seed's correction, averaged over the seeds (each seed's value in brackets), which the licence read until 16 Nov 2026 — and the coupling ratio; targets: 3 cm⁻¹ per family — decision 53's line for ring-ip, CH-oop and 'other', every family's under decision 65 (the licence) — and the coupling ratio ≤ 0.25 of chain 35's T1 line (probes/chain35_read.py).\n\n| read-out | (a), 8 molecules | (b), 39 molecules | target |\n|---|---|---|---|\n| ring-ip | 1.77 (1.95, 1.68, 1.7) | 2.12 (2.25, 2.02, 2.11) | 3.0 |\n| CH-stretch | 1.19 (0.91, 1.74, 0.91) | 2.5 (1.91, 3.51, 2.08) | 3.0 |\n| CH-oop | 2.17 (2.47, 2.06, 1.99) | 2.7 (2.44, 2.95, 2.72) | 3.0 |\n| other | 3.62 (4.09, 3.27, 3.51) | 3.89 (3.65, 4.51, 3.52) | 3.0 |\n| coupling_ratio | 0.184 (0.193, 0.176, 0.183) | 0.263 (0.282, 0.243, 0.265) | 0.25 |\n\n| spectral shape | (a), 8 with an APT | (b), 31 with an APT |\n|---|---|---|\n| overlap, uncorrected → corrected | 0.277 → 0.979 | 0.366 → 0.967 |\n| height error, uncorrected → corrected | 0.227 → 0.097 | 0.511 → 0.236 |\n\n*Read-outs:* rms over the family's B3LYP modes of the first-order diagonal error of a seed's ΔH against the higher level, per seed, and the seeds' mean (cm⁻¹); families by module 05's rule (m05/learning_curve_layerA.molecule_features).\n*Hold-outs:* hold-out (a) on its eight molecules never trained on in any version (the set fixed on 30 Oct 2026): eight layer-A molecules held out on 19 Sep 2026; this version trained on the other two, 2-naphthoic acid and benzonitrile, under layer-B ids; hold-out (b): every substituted molecule of two scaffold cores, frozen on 8 Oct 2026 — scaffolds the measurement networks never saw. *Coupled cluster:* not measured for this network version: the coupled-cluster reads (T3) were made on an earlier network (chain 34).\n*Sources:* E7_rungC_chain35_analytic_eval_frozenb_seed0.json; E7_rungC_chain35_analytic_eval_frozenb_seed1.json; E7_rungC_chain35_analytic_eval_frozenb_seed2.json; E7_rungC_chain35_analytic_a8read_seed0.json; E7_rungC_chain35_analytic_a8read_seed1.json; E7_rungC_chain35_analytic_a8read_seed2.json; E7_rungC_chain35_analytic_product_error.json.\n\n*Licence:* licensed at the DFT proxy: ring-ip (1.43 / 1.91), CH-stretch (0.95 / 2.19), CH-oop (1.64 / 1.88), other (2.78 / 2.77); not licensed: none — error of the corrected band positions of the seed-mean correction on hold-outs (a) / (b) in cm⁻¹ against 3 (decision 65 as amended on 16 Nov 2026); other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie under it); the first-order diagonal error of each seed's correction, averaged over the seeds, which the licence read until then: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7), other (3.62 / 3.89); no coupled-cluster licence (README.md, decision 65 as amended on 16 Nov 2026).\n\n## Cost\n\n- laptop (laptop): 60 s = 1 min, € 0.00 ex VAT (corpus ledger machine column 'Asus18'); steps low_level 60.0 s\n\n## Provenance\n\n- result -; run at commit 00000000 (uncommitted changes: False); certificate at -\n- deck dddddddddddddddd; low level {\"pyscf\": \"2.15.0\"}; host laptop\n- models: E7_rungC_chain35_analytic_model_n750_seed0.pt (carried, sha16 f930db4af9268a00); E7_rungC_chain35_analytic_model_n750_seed1.pt (carried, sha16 87734859e866d6f7); E7_rungC_chain35_analytic_model_n750_seed2.pt (carried, sha16 023b8c142ad5fa52)\n",
+ "page": "# Certificate — benzene · pipeline pin · -\n\nbenzene: the infrared spectrum of ΔH-network v1.3 (3 seeds) — B3LYP/6-31G* corrected toward ωB97X/6-31G* — with the error of the corrected band positions of the seed-mean correction measured on molecules the network never saw; the harmonic positions ω are licensed for ring-ip, CH-stretch, CH-oop, other (decision 65), each band marked; at the coupled-cluster level not measured for this network version: the coupled-cluster reads (T3) were made on an earlier network (chain 34). The scaled B3LYP spectrum is shown as the baseline only. This molecule and the ΔH network: held out, hold-out (a) (A_8448043181): never trained on; the measured error includes it.\n\n**Positions.** Positions are harmonic (ω): the anharmonic step was not applied — the result was computed by a pipeline version before the anharmonic step (0.11).\n\n## Molecule\n\n- c1ccccc1, C6H6, 12 atoms (C, H); the network's training set spans 6–40 atoms: inside\n- catalogue: not listed\n- the ΔH network: held out, hold-out (a) (A_8448043181): never trained on; the measured error includes it\n\n## Spectrum, band by band (ΔH-network v1.3, 3 seeds)\n\n| best estimate (cm⁻¹) | printed | harmonic ω, network | Δ_anh | ± of Δ_anh, against its VPT2 label (measured, not licensed) | height (km/mol) | seeds' range of ω | B3LYP ω | baseline ω | family | ω licensed | error of the corrected band positions of the seed-mean correction of ω on (a) / (b), cm⁻¹ | laboratory region | u_band (cm⁻¹) |\n|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n| 415.4 | harmonic ω | 415.4 | — | — | 0.0 | 415.4–415.4 | 415.4 | 406.7 | other | yes | 2.78 / 2.77 | low / skeletal | — |\n| 415.4 | harmonic ω | 415.4 | — | — | 0.0 | 415.4–415.4 | 415.4 | 406.7 | other | yes | 2.78 / 2.77 | low / skeletal | — |\n| 621.9 | harmonic ω | 621.9 | — | — | 0.0 | 621.9–621.9 | 621.9 | 608.8 | other | yes | 2.78 / 2.77 | low / skeletal | — |\n| 621.9 | harmonic ω | 621.9 | — | — | 0.0 | 621.9–621.9 | 621.9 | 608.8 | other | yes | 2.78 / 2.77 | low / skeletal | — |\n| 694.9 | harmonic ω | 694.9 | — | — | 77.57 | 694.9–694.9 | 694.9 | 680.3 | CH-oop | yes | 1.64 / 1.88 | CH-oop (10.5-15 um; benzene nu11 at 673 included) | — |\n| 717.9 | harmonic ω | 717.9 | — | — | 0.0 | 717.9–717.9 | 717.9 | 702.8 | other | yes | 2.78 / 2.77 | CH-oop (10.5-15 um; benzene nu11 at 673 included) | — |\n| 864.8 | harmonic ω | 864.8 | — | — | 0.0 | 864.8–864.8 | 864.8 | 846.6 | CH-oop | yes | 1.64 / 1.88 | CH-oop (10.5-15 um; benzene nu11 at 673 included) | — |\n| 864.9 | harmonic ω | 864.9 | — | — | 0.0 | 864.9–864.9 | 864.9 | 846.7 | CH-oop | yes | 1.64 / 1.88 | CH-oop (10.5-15 um; benzene nu11 at 673 included) | — |\n| 969.3 | harmonic ω | 969.3 | — | — | 0.0 | 969.3–969.3 | 969.3 | 948.9 | CH-oop | yes | 1.64 / 1.88 | ring / CH-ip (9-10.5 um) | — |\n| 969.4 | harmonic ω | 969.4 | — | — | 0.0 | 969.4–969.4 | 969.4 | 949.0 | CH-oop | yes | 1.64 / 1.88 | ring / CH-ip (9-10.5 um) | — |\n| 1011.0 | harmonic ω | 1011.0 | — | — | 0.0 | 1011.0–1011.0 | 1011.0 | 989.8 | CH-oop | yes | 1.64 / 1.88 | ring / CH-ip (9-10.5 um) | — |\n| 1019.8 | harmonic ω | 1019.8 | — | — | 0.0 | 1019.8–1019.8 | 1019.8 | 998.4 | ring-ip | yes | 1.43 / 1.91 | ring / CH-ip (9-10.5 um) | — |\n| 1020.0 | harmonic ω | 1020.0 | — | — | 0.0 | 1020.0–1020.0 | 1020.0 | 998.6 | ring-ip | yes | 1.43 / 1.91 | ring / CH-ip (9-10.5 um) | — |\n| 1068.8 | harmonic ω | 1068.8 | — | — | 3.27 | 1068.8–1068.8 | 1068.8 | 1046.4 | ring-ip | yes | 1.43 / 1.91 | ring / CH-ip (9-10.5 um) | — |\n| 1068.8 | harmonic ω | 1068.8 | — | — | 3.27 | 1068.8–1068.8 | 1068.8 | 1046.4 | ring-ip | yes | 1.43 / 1.91 | ring / CH-ip (9-10.5 um) | — |\n| 1185.5 | harmonic ω | 1185.5 | — | — | 0.0 | 1185.5–1185.5 | 1185.5 | 1148.7 | ring-ip | yes | 1.43 / 1.91 | CH-ip-bend (8.6 um) | — |\n| 1207.7 | harmonic ω | 1207.7 | — | — | 0.0 | 1207.7–1207.7 | 1207.7 | 1170.3 | ring-ip | yes | 1.43 / 1.91 | CH-ip-bend (8.6 um) | — |\n| 1207.7 | harmonic ω | 1207.7 | — | — | 0.0 | 1207.7–1207.7 | 1207.7 | 1170.3 | ring-ip | yes | 1.43 / 1.91 | CH-ip-bend (8.6 um) | — |\n| 1355.6 | harmonic ω | 1355.6 | — | — | 0.0 | 1355.6–1355.6 | 1355.6 | 1313.6 | ring-ip | yes | 1.43 / 1.91 | CC-stretch/CH-ip (7.7 um) | — |\n| 1387.1 | harmonic ω | 1387.1 | — | — | 0.0 | 1387.1–1387.1 | 1387.1 | 1344.1 | ring-ip | yes | 1.43 / 1.91 | CC-stretch/CH-ip (7.7 um) | — |\n| 1531.0 | harmonic ω | 1531.0 | — | — | 6.51 | 1531.0–1531.0 | 1531.0 | 1483.5 | ring-ip | yes | 1.43 / 1.91 | CC-stretch (6.2 um) | — |\n| 1531.1 | harmonic ω | 1531.1 | — | — | 6.51 | 1531.1–1531.1 | 1531.1 | 1483.6 | ring-ip | yes | 1.43 / 1.91 | CC-stretch (6.2 um) | — |\n| 1655.3 | harmonic ω | 1655.3 | — | — | 0.0 | 1655.3–1655.3 | 1655.3 | 1604.0 | ring-ip | yes | 1.43 / 1.91 | overtone / combination region | — |\n| 1655.3 | harmonic ω | 1655.3 | — | — | 0.0 | 1655.3–1655.3 | 1655.3 | 1604.0 | ring-ip | yes | 1.43 / 1.91 | overtone / combination region | — |\n| 3174.0 | harmonic ω | 3174.0 | — | — | 0.0 | 3174.0–3174.0 | 3174.0 | 3047.0 | CH-stretch | yes | 0.95 / 2.19 | CH-stretch | — |\n| 3183.6 | harmonic ω | 3183.6 | — | — | 0.0 | 3183.6–3183.6 | 3183.6 | 3056.3 | CH-stretch | yes | 0.95 / 2.19 | CH-stretch | — |\n| 3183.7 | harmonic ω | 3183.7 | — | — | 0.0 | 3183.7–3183.7 | 3183.7 | 3056.4 | CH-stretch | yes | 0.95 / 2.19 | CH-stretch | — |\n| 3199.4 | harmonic ω | 3199.4 | — | — | 52.0 | 3199.4–3199.4 | 3199.4 | 3071.4 | CH-stretch | yes | 0.95 / 2.19 | CH-stretch | — |\n| 3199.4 | harmonic ω | 3199.4 | — | — | 51.98 | 3199.4–3199.4 | 3199.4 | 3071.4 | CH-stretch | yes | 0.95 / 2.19 | CH-stretch | — |\n| 3210.1 | harmonic ω | 3210.1 | — | — | 0.0 | 3210.1–3210.1 | 3210.1 | 3081.7 | CH-stretch | yes | 0.95 / 2.19 | above 3200 | — |\n\n*Licence caveat: other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie under it).*\n\n*Laboratory region and u_band:* modules/03_lab_scoreboard/build_lab_tables.py FAMILY_RULE (12 Sep 2026), read at the printed position.\n\n## How well the network is known (its product-error record and its evaluation records)\n\nAgainst ωB97X/6-31G* (the DFT proxy: the network's ΔH is trained on ωB97X − B3LYP Hessians); two quantities, each under its name.\n\nThe licence reads the error of the corrected band positions of the seed-mean correction (rms over the family's bands of the corrected band position's error against the higher level (cm⁻¹): the seeds' mean ΔH added to the B3LYP Hessian and diagonalised, each corrected band paired to its higher-level band by mode overlap and counted in the family of its B3LYP partner — what the pipeline prints; with the 95 % interval of a bootstrap over whole molecules).\n\n| family | (a), 8 molecules | (b), 39 molecules | line |\n|---|---|---|---|\n| ring-ip | 1.43 (95 % interval over molecules 1.13–1.7; 199 bands) | 1.91 (95 % interval over molecules 1.84–2.0; 1164 bands) | 3 |\n| CH-stretch | 0.95 (95 % interval over molecules 0.39–1.48; 73 bands) | 2.19 (95 % interval over molecules 1.8–2.53; 401 bands) | 3 |\n| CH-oop | 1.64 (95 % interval over molecules 1.19–1.97; 46 bands) | 1.88 (95 % interval over molecules 1.56–2.16; 84 bands) | 3 |\n| other | 2.78 (95 % interval over molecules 1.68–3.76; 156 bands) | 2.77 (95 % interval over molecules 2.56–2.97; 1225 bands) | 3 |\n\nBeside it the evaluation records' read-outs — the first-order diagonal error of each seed's correction, averaged over the seeds (each seed's value in brackets), which the licence read until 16 Nov 2026 — and the coupling ratio; targets: 3 cm⁻¹ per family — decision 53's line for ring-ip, CH-oop and 'other', every family's under decision 65 (the licence) — and the coupling ratio ≤ 0.25 of chain 35's T1 line (probes/chain35_read.py).\n\n| read-out | (a), 8 molecules | (b), 39 molecules | target |\n|---|---|---|---|\n| ring-ip | 1.77 (1.95, 1.68, 1.7) | 2.12 (2.25, 2.02, 2.11) | 3.0 |\n| CH-stretch | 1.19 (0.91, 1.74, 0.91) | 2.5 (1.91, 3.51, 2.08) | 3.0 |\n| CH-oop | 2.17 (2.47, 2.06, 1.99) | 2.7 (2.44, 2.95, 2.72) | 3.0 |\n| other | 3.62 (4.09, 3.27, 3.51) | 3.89 (3.65, 4.51, 3.52) | 3.0 |\n| coupling_ratio | 0.184 (0.193, 0.176, 0.183) | 0.263 (0.282, 0.243, 0.265) | 0.25 |\n\n| spectral shape | (a), 8 with an APT | (b), 31 with an APT |\n|---|---|---|\n| overlap, uncorrected → corrected | 0.277 → 0.979 | 0.366 → 0.967 |\n| height error, uncorrected → corrected | 0.227 → 0.097 | 0.511 → 0.236 |\n\n*Read-outs:* rms over the family's B3LYP modes of the first-order diagonal error of a seed's ΔH against the higher level, per seed, and the seeds' mean (cm⁻¹); families by module 05's rule (m05/learning_curve_layerA.molecule_features).\n*Hold-outs:* hold-out (a) on its eight molecules never trained on in any version (the set fixed on 30 Oct 2026): eight layer-A molecules held out on 19 Sep 2026; this version trained on the other two, 2-naphthoic acid and benzonitrile, under layer-B ids; hold-out (b): every substituted molecule of two scaffold cores, frozen on 8 Oct 2026 — scaffolds the measurement networks never saw. *Coupled cluster:* not measured for this network version: the coupled-cluster reads (T3) were made on an earlier network (chain 34).\n*Sources:* E7_rungC_chain35_analytic_eval_frozenb_seed0.json; E7_rungC_chain35_analytic_eval_frozenb_seed1.json; E7_rungC_chain35_analytic_eval_frozenb_seed2.json; E7_rungC_chain35_analytic_a8read_seed0.json; E7_rungC_chain35_analytic_a8read_seed1.json; E7_rungC_chain35_analytic_a8read_seed2.json; E7_rungC_chain35_analytic_product_error.json.\n\n*Licence:* licensed at the DFT proxy: ring-ip (1.43 / 1.91), CH-stretch (0.95 / 2.19), CH-oop (1.64 / 1.88), other (2.78 / 2.77); not licensed: none — error of the corrected band positions of the seed-mean correction on hold-outs (a) / (b) in cm⁻¹ against 3 (decision 65 as amended on 16 Nov 2026); other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.68–3.76 cm⁻¹ and crosses the line (70 % of the resamples lie under it); the first-order diagonal error of each seed's correction, averaged over the seeds, which the licence read until then: ring-ip (1.77 / 2.12), CH-stretch (1.19 / 2.5), CH-oop (2.17 / 2.7), other (3.62 / 3.89); no coupled-cluster licence (README.md, decision 65 as amended on 16 Nov 2026).\n\n## Cost\n\n- laptop (laptop): 60 s = 1 min, € 0.00 ex VAT (corpus ledger machine column 'Asus18'); steps low_level 60.0 s\n\n## Provenance\n\n- result -; run at commit 00000000 (uncommitted changes: False); certificate at -\n- deck dddddddddddddddd; low level {\"pyscf\": \"2.15.0\"}; host laptop\n- models: E7_rungC_chain35_analytic_model_n750_seed0.pt (carried, sha16 f930db4af9268a00); E7_rungC_chain35_analytic_model_n750_seed1.pt (carried, sha16 87734859e866d6f7); E7_rungC_chain35_analytic_model_n750_seed2.pt (carried, sha16 023b8c142ad5fa52)\n",
  "record": {
   "accuracy": {
    "coupled_cluster": "not measured for this network version: the coupled-cluster reads (T3) were made on an earlier network (chain 34)",
@@ -289,7 +289,7 @@
   "bands": [
    {
     "b3lyp_cm": 415.4,
-    "baseline_cm": 397.1,
+    "baseline_cm": 406.7,
     "delta_anh_cm": null,
     "error_cm": {
      "a": 2.78,
@@ -316,7 +316,7 @@
    },
    {
     "b3lyp_cm": 415.4,
-    "baseline_cm": 397.1,
+    "baseline_cm": 406.7,
     "delta_anh_cm": null,
     "error_cm": {
      "a": 2.78,
@@ -343,7 +343,7 @@
    },
    {
     "b3lyp_cm": 621.9,
-    "baseline_cm": 594.5,
+    "baseline_cm": 608.8,
     "delta_anh_cm": null,
     "error_cm": {
      "a": 2.78,
@@ -370,7 +370,7 @@
    },
    {
     "b3lyp_cm": 621.9,
-    "baseline_cm": 594.5,
+    "baseline_cm": 608.8,
     "delta_anh_cm": null,
     "error_cm": {
      "a": 2.78,
@@ -397,7 +397,7 @@
    },
    {
     "b3lyp_cm": 694.9,
-    "baseline_cm": 664.3,
+    "baseline_cm": 680.3,
     "delta_anh_cm": null,
     "error_cm": {
      "a": 1.64,
@@ -424,7 +424,7 @@
    },
    {
     "b3lyp_cm": 717.9,
-    "baseline_cm": 686.3,
+    "baseline_cm": 702.8,
     "delta_anh_cm": null,
     "error_cm": {
      "a": 2.78,
@@ -451,7 +451,7 @@
    },
    {
     "b3lyp_cm": 864.8,
-    "baseline_cm": 826.7,
+    "baseline_cm": 846.6,
     "delta_anh_cm": null,
     "error_cm": {
      "a": 1.64,
@@ -478,7 +478,7 @@
    },
    {
     "b3lyp_cm": 864.9,
-    "baseline_cm": 826.8,
+    "baseline_cm": 846.7,
     "delta_anh_cm": null,
     "error_cm": {
      "a": 1.64,
@@ -505,7 +505,7 @@
    },
    {
     "b3lyp_cm": 969.3,
-    "baseline_cm": 926.7,
+    "baseline_cm": 948.9,
     "delta_anh_cm": null,
     "error_cm": {
      "a": 1.64,
@@ -532,7 +532,7 @@
    },
    {
     "b3lyp_cm": 969.4,
-    "baseline_cm": 926.7,
+    "baseline_cm": 949.0,
     "delta_anh_cm": null,
     "error_cm": {
      "a": 1.64,
@@ -559,7 +559,7 @@
    },
    {
     "b3lyp_cm": 1011.0,
-    "baseline_cm": 966.5,
+    "baseline_cm": 989.8,
     "delta_anh_cm": null,
     "error_cm": {
      "a": 1.64,
@@ -586,7 +586,7 @@
    },
    {
     "b3lyp_cm": 1019.8,
-    "baseline_cm": 974.9,
+    "baseline_cm": 998.4,
     "delta_anh_cm": null,
     "error_cm": {
      "a": 1.43,
@@ -613,7 +613,7 @@
    },
    {
     "b3lyp_cm": 1020.0,
-    "baseline_cm": 975.1,
+    "baseline_cm": 998.6,
     "delta_anh_cm": null,
     "error_cm": {
      "a": 1.43,
@@ -640,7 +640,7 @@
    },
    {
     "b3lyp_cm": 1068.8,
-    "baseline_cm": 1021.8,
+    "baseline_cm": 1046.4,
     "delta_anh_cm": null,
     "error_cm": {
      "a": 1.43,
@@ -667,7 +667,7 @@
    },
    {
     "b3lyp_cm": 1068.8,
-    "baseline_cm": 1021.8,
+    "baseline_cm": 1046.4,
     "delta_anh_cm": null,
     "error_cm": {
      "a": 1.43,
@@ -694,7 +694,7 @@
    },
    {
     "b3lyp_cm": 1185.5,
-    "baseline_cm": 1128.6,
+    "baseline_cm": 1148.7,
     "delta_anh_cm": null,
     "error_cm": {
      "a": 1.43,
@@ -721,7 +721,7 @@
    },
    {
     "b3lyp_cm": 1207.7,
-    "baseline_cm": 1149.7,
+    "baseline_cm": 1170.3,
     "delta_anh_cm": null,
     "error_cm": {
      "a": 1.43,
@@ -748,7 +748,7 @@
    },
    {
     "b3lyp_cm": 1207.7,
-    "baseline_cm": 1149.7,
+    "baseline_cm": 1170.3,
     "delta_anh_cm": null,
     "error_cm": {
      "a": 1.43,
@@ -775,7 +775,7 @@
    },
    {
     "b3lyp_cm": 1355.6,
-    "baseline_cm": 1290.5,
+    "baseline_cm": 1313.6,
     "delta_anh_cm": null,
     "error_cm": {
      "a": 1.43,
@@ -802,7 +802,7 @@
    },
    {
     "b3lyp_cm": 1387.1,
-    "baseline_cm": 1320.5,
+    "baseline_cm": 1344.1,
     "delta_anh_cm": null,
     "error_cm": {
      "a": 1.43,
@@ -829,7 +829,7 @@
    },
    {
     "b3lyp_cm": 1531.0,
-    "baseline_cm": 1457.5,
+    "baseline_cm": 1483.5,
     "delta_anh_cm": null,
     "error_cm": {
      "a": 1.43,
@@ -856,7 +856,7 @@
    },
    {
     "b3lyp_cm": 1531.1,
-    "baseline_cm": 1457.6,
+    "baseline_cm": 1483.6,
     "delta_anh_cm": null,
     "error_cm": {
      "a": 1.43,
@@ -883,7 +883,7 @@
    },
    {
     "b3lyp_cm": 1655.3,
-    "baseline_cm": 1575.8,
+    "baseline_cm": 1604.0,
     "delta_anh_cm": null,
     "error_cm": {
      "a": 1.43,
@@ -910,7 +910,7 @@
    },
    {
     "b3lyp_cm": 1655.3,
-    "baseline_cm": 1575.8,
+    "baseline_cm": 1604.0,
     "delta_anh_cm": null,
     "error_cm": {
      "a": 1.43,
@@ -1210,5 +1210,5 @@
    "rule": "modules/03_lab_scoreboard/build_lab_tables.py FAMILY_RULE (12 Sep 2026)"
   }
  },
- "written_by_m08_at_commit": "8b7f5d0d"
+ "written_by_m08_at_commit": "016264fe"
 }
