@@ -5,6 +5,8 @@ from pathlib import Path
 
 import numpy as np
 
+from pin_tools import SOUND_FREQ
+
 PLAN = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PLAN / "probes"))
 import chain42_read as R  # noqa: E402
@@ -27,7 +29,6 @@ def test_the_read_takes_seed_means_and_applies_the_registered_lines():
     assert "too few to judge" in R.verdicts(1.5, 0.96)["line_2"] and R.verdicts(1.5, 0.9) == {"line_1": "between: noted", "line_2": "between: noted"}
 
 
-SOUND_FREQ = [0.01, -0.02, 0.03, 0.0, -0.01, 0.02, 150.0, 410.0, 900.0, 3100.0]   # six near-zero entries, then the vibrations
 
 
 def _folder(tmp_path, b3lyp_freq=SOUND_FREQ, wb97x_freq=SOUND_FREQ, apt_passed=True, result=None):

@@ -15,7 +15,7 @@ import pytest
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
-from pin_tools import PLAN
+from pin_tools import PLAN, SOUND_FREQ
 
 sys.path.insert(0, str(PLAN / "probes"))
 import large_pah_merge as LM
@@ -49,8 +49,8 @@ def _folder(root: Path, layer: str, smiles: str, formula: str) -> str:
     result = {"id": mol_id, "layer": layer, "status": "done", "labels": "analytic_only", "n_imaginary_b3lyp": 0, "n_imaginary_wb97x": 0}
     for name, record in (("geometry.json", geometry), ("job.json", job), ("result.json", result)):
         (d / name).write_text(json.dumps(record), encoding="utf-8")
-    for name in ("hessian_b3lyp_analytic.npz", "hessian_wb97x_analytic.npz"):
-        np.savez(d / name, H=np.zeros(1))
+    for name in ("hessian_b3lyp_analytic.npz", "hessian_wb97x_analytic.npz"):   # the readiness check counts on freq_cm (TASKS 198)
+        np.savez(d / name, H=np.zeros(1), freq_cm=np.array(SOUND_FREQ))
     np.savez(d / "dipole_b3lyp_cphf.npz", passed=True)
     return mol_id
 

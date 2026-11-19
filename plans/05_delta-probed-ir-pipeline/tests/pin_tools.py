@@ -144,3 +144,7 @@ def event_scalars(run_dir: Path) -> dict[str, list[tuple[int, float]]]:
     events = EventAccumulator(str(run_dir), size_guidance={"scalars": 0})        # 0 = keep every point
     events.Reload()
     return {tag: [(e.step, e.value) for e in events.Scalars(tag)] for tag in events.Tags()["scalars"]}
+
+
+# A frequency list a readiness check passes: six near-zero entries (translations and rotations), then four vibrations.
+SOUND_FREQ = [0.01, -0.02, 0.03, 0.0, -0.01, 0.02, 150.0, 410.0, 900.0, 3100.0]
