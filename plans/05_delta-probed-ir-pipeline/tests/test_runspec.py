@@ -2,6 +2,7 @@
 vanished process, a bad exit or an overrun into one stable event each. The decision (assess) is tested without I/O; the probe lines run in a
 real bash on a scratch folder; launch and check run against a stand-in shell."""
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -560,3 +561,249 @@ def test_the_probe_reads_the_failure_line_and_the_lifetime(tmp_path):
     out = subprocess.run([BASH, "-c", script], capture_output=True, text=True, check=True).stdout
     obs = R.parse_probe(s, out)
     assert obs.failed_marker and obs.lived_s == 900 and obs.exit_code == 1
+# ---------------------------------------------------------------- stop: a deliberate stop holds the run until a fresh launch (TASKS 251)
+
+class StopShell(FakeShell):
+    """The stand-in for the stop's three steps: the kill where the run lives, the WSL sweep, the stop line and exit file."""
+
+    def __init__(self, probe_out="exit=\nalive=1\nprogress=0\n", kill_out="was_alive=1\nalive=0\n", wsl_out="wsl_tagged=0\nwsl_left=0\n",
+                 recorded="recorded=1\n"):
+        super().__init__(probe_out=probe_out)
+        self.kill_out, self.wsl_out, self.recorded = kill_out, wsl_out, recorded
+        self.scripts = []
+
+    def run(self, host, script, timeout=120):
+        self.scripts.append(script)
+        for word, out in (("was_alive", self.kill_out), ("wsl.exe", self.wsl_out), ("recorded=1", self.recorded)):
+            if word in script:
+                return 0, out
+        return super().run(host, script, timeout)
+
+
+def test_a_stop_holds_the_run_until_a_fresh_launch(tmp_path):
+    specs, state = tmp_path / "specs", tmp_path / "state"
+    p = write_spec(specs, spec(resumable=True))
+    sh = StopShell()
+    R.launch(p, sh, T0, state)
+    line = R.stop(p, sh, T0 + timedelta(hours=2), state, reason="room for v14_data")
+    assert line == "=== runspec stop: demo stopped by hand 2026-10-15 20:00:00, exit 143: room for v14_data"
+    assert any(R.shlex.quote(line) in s and "echo 143 > demo.exit" in s for s in sh.scripts)
+    st = R.load_state("demo", state)
+    assert st.status == "stopped" and st.stopped_at == T0 + timedelta(hours=2)
+    marker = "MARKER run demo stopped by hand 15 Oct 20:00 (launched 15 Oct 18:00)"
+    assert R.check(sh, T0 + timedelta(hours=3), specs, state, peek=True) == [marker, "QUIET demo stopped"]   # a peek leaves it for the watch
+    assert R.check(sh, T0 + timedelta(hours=3), specs, state) == [marker, "QUIET demo stopped"]
+    assert R.check(sh, T0 + timedelta(hours=4), specs, state) == ["QUIET no runs"]                            # reported once
+    gone = StopShell(probe_out="exit=\nalive=0\nprogress=0\n")
+    assert R.resume(gone, T0, specs, state, second_look=0) == [] and gone.launched == []
+    assert R.laptop_runs_in_progress("other", specs, state) == (0.0, []) and R.running_laptop_logs(specs, state) == []
+    R.launch(p, sh, T0 + timedelta(hours=5), state)
+    assert R.load_state("demo", state).status == "running" and sh.launched[-1] == ("laptop", "demo", False)
+
+
+def test_a_server_stop_ends_the_process_group_and_sweeps_no_wsl(tmp_path):
+    specs, state = tmp_path / "specs", tmp_path / "state"
+    p = write_spec(specs, spec(host="labels", workdir="/root/x", memory=None))
+    R.save_state("demo", run_state(), state)
+    sh = StopShell()
+    sh.hosts = {"labels": ("1.2.3.4", "m-id")}
+    R.stop(p, sh, T0, state)
+    kill = next(s for s in sh.scripts if "was_alive" in s)
+    assert 'kill -TERM -- -"$p"' in kill and 'kill -KILL -- -"$p"' in kill and "taskkill" not in kill
+    assert not any("wsl.exe" in s for s in sh.scripts)
+
+
+def test_a_laptop_stop_kills_the_windows_tree_then_the_tagged_wsl_processes(tmp_path):
+    specs, state = tmp_path / "specs", tmp_path / "state"
+    p = write_spec(specs, spec())
+    R.save_state("demo", run_state(), state)
+    sh = StopShell()
+    R.stop(p, sh, T0, state)
+    kill, wsl = next(s for s in sh.scripts if "was_alive" in s), next(s for s in sh.scripts if "wsl.exe" in s)
+    assert sh.scripts.index(kill) < sh.scripts.index(wsl)
+    assert 'taskkill /PID "$w" /T /F' in kill and "/proc/\"$p\"/winpid" in kill
+    assert "RUNSPEC_RUN=demo" in wsl and "--list --running" in wsl
+
+
+@pytest.mark.parametrize("make, words", [
+    (lambda: StopShell(probe_out="exit=0\nalive=0\nprogress=3\n"), "ended by itself (exit 0)"),          # its own exit code stays the record
+    (lambda: StopShell(probe_out=""), "cannot be read"),
+])
+def test_a_run_that_cannot_be_stopped_stays_running(tmp_path, make, words):
+    specs, state = tmp_path / "specs", tmp_path / "state"
+    p = write_spec(specs, spec())
+    R.save_state("demo", run_state(), state)
+    with pytest.raises(R.StopRefused, match=re.escape(words)):
+        R.stop(p, make(), T0, state)
+    assert R.load_state("demo", state) == run_state()
+
+
+@pytest.mark.parametrize("make, words", [
+    (lambda: StopShell(kill_out="was_alive=1\nalive=1\n"), "still alive after the kill"),
+    (lambda: StopShell(wsl_out="wsl_tagged=2\nwsl_left=1\n"), "RUNSPEC_RUN=demo left: 1"),
+    (lambda: StopShell(wsl_out=""), "left: unknown"),                                                      # no answer is not 'none left'
+    (lambda: StopShell(recorded=""), "could not be written"),
+])
+def test_a_stop_that_does_not_finish_holds_the_run_and_is_reported(tmp_path, make, words):
+    """Held from resume (a relaunch beside what is left would double it), refused by launch, an anomaly once stale, and stop again
+    finishes it - also when the first try had written the exit file already."""
+    specs, state = tmp_path / "specs", tmp_path / "state"
+    p = write_spec(specs, spec(resumable=True))
+    R.save_state("demo", run_state(), state)
+    with pytest.raises(R.StopRefused, match=re.escape(words)):
+        R.stop(p, make(), T0, state)
+    assert R.load_state("demo", state) == run_state(status="stopping", stopped_at=T0)
+    gone = StopShell(probe_out="exit=\nalive=0\nprogress=0\n")
+    assert R.resume(gone, T0, specs, state, second_look=0) == [] and gone.launched == []
+    with pytest.raises(R.LaunchRefused, match="did not finish"):
+        R.launch(p, gone, T0, state)
+    assert R.check(gone, T0 + timedelta(minutes=10), specs, state) == ["QUIET demo stopping"]
+    stale = "ANOMALY run demo: a stop began 15 Oct 18:00 and did not finish - `runspec.py stop` it again"
+    assert R.check(gone, T0 + timedelta(minutes=16), specs, state) == [stale, "QUIET demo stopping"]
+    R.stop(p, StopShell(probe_out="exit=143\nalive=0\nprogress=0\n"), T0 + timedelta(minutes=20), state)
+    assert R.load_state("demo", state).status == "stopped"
+
+
+def test_a_stop_of_a_run_that_had_gone_says_so(tmp_path):
+    specs, state = tmp_path / "specs", tmp_path / "state"
+    p = write_spec(specs, spec(resumable=True))
+    R.save_state("demo", run_state(), state)
+    out = R.stop(p, StopShell(probe_out="exit=\nalive=0\nprogress=0\n", kill_out="was_alive=0\nalive=0\n"), T0, state)
+    assert out.endswith("(no process of it was alive: the stop holds a run that had gone)")
+
+
+def test_only_a_running_run_is_stopped(tmp_path):
+    specs, state = tmp_path / "specs", tmp_path / "state"
+    p = write_spec(specs, spec())
+    with pytest.raises(R.StopRefused, match="not running \\(never launched\\)"):
+        R.stop(p, StopShell(), T0, state)
+    for status in ("ended", "stopped"):
+        R.save_state("demo", run_state(status=status), state)
+        with pytest.raises(R.StopRefused, match=f"not running \\({status}\\)"):
+            R.stop(p, StopShell(), T0, state)
+
+
+def test_a_stop_while_the_check_or_the_resume_looks_wins(tmp_path):
+    """The stop takes seconds; a check or a resume that loaded the state before it saves nothing and relaunches nothing."""
+    specs, state = tmp_path / "specs", tmp_path / "state"
+    write_spec(specs, spec(resumable=True))
+
+    class StoppedDuringTheLook(FakeShell):
+        def run(self, host, script, timeout=120):
+            R.save_state("demo", run_state(status="stopping"), state)
+            return 0, self.probe_out
+
+    R.save_state("demo", run_state(), state)
+    assert R.check(StoppedDuringTheLook(probe_out="exit=143\nalive=0\nprogress=0\n"), T0, specs, state) == ["QUIET no runs"]
+    assert R.load_state("demo", state).status == "stopping"
+    R.save_state("demo", run_state(), state)
+    sh = StoppedDuringTheLook(probe_out="exit=\nalive=0\nprogress=0\n")
+    assert R.resume(sh, T0, specs, state, second_look=0) == [] and sh.launched == []
+
+
+def test_the_laptop_launch_tags_every_process_for_the_stop(monkeypatch):
+    calls = []
+    monkeypatch.setattr(R.Shell, "_run", lambda self, args, timeout=120, cwd=None: calls.append(args) or subprocess.CompletedProcess(args, 0, "1", ""))
+    R.Shell("bash").launch_laptop(spec())
+    assert 'export RUNSPEC_RUN=demo WSLENV="${WSLENV:+$WSLENV:}RUNSPEC_RUN"; ' in calls[0][-1]
+
+
+def test_the_stop_line_names_the_run_the_time_and_the_reason():
+    assert R.stop_line(spec(), T0, "x") == "=== runspec stop: demo stopped by hand 2026-10-15 18:00:00, exit 143: x"
+    assert R.stop_line(spec(), T0, "") == "=== runspec stop: demo stopped by hand 2026-10-15 18:00:00, exit 143"
+
+
+# ---------------------------------------------------------------- stop on the real machine: a WMI launch, a tree, WSL
+
+def _windows_pid_alive(pid: int) -> bool:
+    out = subprocess.run(["tasklist", "/FI", f"PID eq {pid}", "/NH", "/FO", "CSV"], capture_output=True, text=True, check=True).stdout
+    return f'"{pid}"' in out
+
+
+def _wait_for(predicate, seconds=60):
+    deadline = R.time.monotonic() + seconds
+    while R.time.monotonic() < deadline:
+        if predicate():
+            return True
+        R.time.sleep(0.5)
+    return False
+
+
+class _NoGitShell(R.Shell):
+    def tracked(self, paths):
+        return []                                  # the scratch folder is outside the repository
+
+
+SLEEPER = """import subprocess, sys, time
+from pathlib import Path
+child = subprocess.Popen([sys.executable, "-c", "import time\\nwhile True: time.sleep(1)"])
+Path("child.pid").write_text(str(child.pid))
+while True:
+    print("  progress tick", flush=True)
+    time.sleep(1)
+"""
+
+real_windows = pytest.mark.skipif(sys.platform != "win32" or BASH is None, reason="the laptop's stop: Git Bash, WMI and taskkill")
+
+
+@pytest.fixture
+def real_run(tmp_path, monkeypatch):
+    """A scratch plan folder for real launches; the launch wrappers this test leaves in probes/watch_state/launch are removed after it."""
+    monkeypatch.setattr(R, "ROOT", tmp_path)
+    (tmp_path / "w").mkdir()
+    (tmp_path / "w" / "sleeper.py").write_text(SLEEPER, encoding="utf-8")
+    name = f"stoptest_{os.getpid()}"
+    yield tmp_path, name
+    left = spec(name=name, workdir="w")                    # a test that failed half-way leaves no processes behind
+    R.Shell().run(R.LAPTOP, R.kill_script(left))
+    R.Shell().run(R.LAPTOP, R.wsl_stop_script(name))
+    for wrapper in (PLAN / "probes" / "watch_state" / "launch").glob(f"{name}_*.sh"):
+        wrapper.unlink()
+
+
+@real_windows
+def test_stop_ends_a_real_laptop_tree_and_a_launch_arms_it_again(real_run):
+    root, name = real_run
+    specs, state = root / "specs", root / "state"
+    p = write_spec(specs, spec(name=name, workdir="w", command="python sleeper.py", sources=[{"local": "w/sleeper.py"}], resumable=True))
+    sh = _NoGitShell()
+    for launch in (1, 2):
+        R.launch(p, sh, R._now(), state)
+        assert _wait_for(lambda: (root / "w" / "child.pid").exists() and "progress tick" in (root / "w" / f"{name}.log").read_text())
+        child = int((root / "w" / "child.pid").read_text())
+        bash_pid = (root / "w" / f"{name}.pid").read_text().strip()
+        line = R.stop(p, sh, R._now(), state, reason=f"test stop {launch}")
+        assert not _windows_pid_alive(child)                                   # the tree, not only the wrapper
+        assert subprocess.run([BASH, "-c", f"kill -0 {bash_pid}"], check=False).returncode != 0
+        assert (root / "w" / f"{name}.exit").read_text().strip() == "143"
+        assert (root / "w" / f"{name}.log").read_text().splitlines()[-1] == line
+        assert R.load_state(name, state).status == "stopped"
+        assert R.check(sh, R._now(), specs, state, peek=True)[0].startswith(f"MARKER run {name} stopped by hand ")
+        assert R.resume(sh, R._now(), specs, state, second_look=0) == []
+        (root / "w" / "child.pid").unlink()
+        R.time.sleep(1.1)                                                      # the next launch keeps this log under another second
+
+
+def _wsl_running() -> bool:
+    if sys.platform != "win32" or shutil.which("wsl.exe") is None:
+        return False
+    out = subprocess.run(["wsl.exe", "--list", "--running", "--quiet"], capture_output=True, check=False).stdout
+    return bool(out.replace(b"\0", b"").strip())
+
+
+def _wsl_tagged(name: str) -> int:
+    script = f"grep -la 'RUNSPEC_RUN={name}' /proc/[0-9]*/environ 2>/dev/null | wc -l"
+    return int(subprocess.run(["wsl.exe", "-e", "sh", "-c", script], capture_output=True, text=True, check=True).stdout.strip())
+
+
+@pytest.mark.skipif(not _wsl_running(), reason="a running WSL (this test does not start one)")
+def test_stop_ends_the_wsl_processes_of_a_real_laptop_run(real_run):
+    root, name = real_run
+    specs, state = root / "specs", root / "state"
+    p = write_spec(specs, spec(name=name, workdir="w", command="wsl.exe -e sh -c 'sleep 600 & sleep 600'", sources=[{"local": "w/sleeper.py"}]))
+    sh = _NoGitShell()
+    R.launch(p, sh, R._now(), state)
+    assert _wait_for(lambda: _wsl_tagged(name) >= 2)                          # the sh and its two sleeps carry the tag
+    R.stop(p, sh, R._now(), state)
+    assert _wsl_tagged(name) == 0
+    assert R.load_state(name, state).status == "stopped"

@@ -283,6 +283,12 @@ _WRAPPERS = ("remote_launch.sh", "launch_outside_app.sh")
 _COMPUTE = ("python", "python3", "python.exe", "psi4", "wsl", "wsl.exe")
 
 
+def _door_launch(words: list[str]) -> bool:
+    """`python tools/runspec.py launch <spec>`: a call at the door, which returns once the run has started."""
+    args = [w for w in words[1:] if not w.startswith("-")]
+    return len(args) >= 2 and _name(args[0]) == "runspec.py" and args[1] == "launch"
+
+
 def long_job_past_the_door(c: Call) -> str | None:
     door = "launch it through `python tools/runspec.py launch probes/runspecs/<name>.json` (TASKS 63)"
     cmds = commands(c.command)
@@ -290,9 +296,11 @@ def long_job_past_the_door(c: Call) -> str | None:
         run = words[1:] if words[0] in ("bash", "sh") and len(words) > 1 else words
         if words[0] in ("nohup", "setsid", "disown") or _name(run[0]) in _WRAPPERS:
             return f"a detached job or a direct launch wrapper: {door}. The #2702 repro ran 37 h without a progress line, started by hand."
-    background_compute = any(_name(w[0]) in _COMPUTE for w in cmds)
-    harmless = any("watch.sh" in " ".join(w) or "pytest" in w for w in cmds)
-    if c.input.get("run_in_background") and background_compute and not harmless:
+    compute = [w for w in cmds if _name(w[0]) in _COMPUTE]
+    # a loop that retries the door until the budget lets the run in computes nothing itself (16 Nov 2026: refused, TASKS 251)
+    door_retry = bool(compute) and all(_door_launch(w) for w in compute)
+    harmless = door_retry or any("watch.sh" in " ".join(w) or "pytest" in w for w in cmds)
+    if c.input.get("run_in_background") and compute and not harmless:
         return f"a computation in the background of this session: {door}."
     return None
 

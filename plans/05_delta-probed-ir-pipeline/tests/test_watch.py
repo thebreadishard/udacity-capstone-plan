@@ -109,6 +109,27 @@ def test_every_new_line_of_one_check_is_reported(tmp_path):
     assert _run(tmp_path, "").returncode == 0
 
 
+def test_a_stopped_run_is_news_once_and_never_an_anomaly(tmp_path):
+    """TASKS 251: `runspec.py stop` leaves exit 143 and the state 'stopped'; the watch reports it once as a marker (exit 2), then nothing."""
+    pytest.importorskip("pydantic")
+    sys.path.insert(0, str(PLAN / "tools"))
+    import runspec as R
+    work = tmp_path / "w"
+    work.mkdir()
+    (work / "demo.log").write_text("  progress 1\n=== runspec stop: demo stopped by hand\n", encoding="utf-8", newline="\n")
+    (work / "demo.exit").write_text("143\n", encoding="utf-8")
+    spec = R.RunSpec.model_validate(dict(name="demo", purpose="TASKS 251 watch test", host="laptop", workdir="w", command="true",
+                                         sources=[{"local": "tools/stamp.py"}], progress={"regex": "^  progress ", "max_gap_minutes": 30}))
+    (tmp_path / "specs").mkdir()
+    (tmp_path / "specs" / "demo.json").write_text(spec.model_dump_json(), encoding="utf-8")
+    long_ago = datetime.now().astimezone() - timedelta(hours=2)
+    R.save_state("demo", R.RunState(started_at=long_ago, phase_started_at=long_ago, status="stopped", stopped_at=long_ago),
+                 tmp_path / "runstate")
+    r = _run(tmp_path, "")
+    assert r.returncode == 2 and "run demo stopped by hand" in r.stdout and "ANOMALY" not in r.stdout
+    assert _run(tmp_path, "").returncode == 0
+
+
 def test_every_check_stamps_the_heartbeat(tmp_path):
     """19 Oct 2026: on 18 Oct no watch ran for hours and nothing said so; state.sh reads this stamp's age."""
     _run(tmp_path, "")

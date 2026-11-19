@@ -116,6 +116,12 @@ def test_commit_over_live_log_passes_when_no_live_log_is_tracked():
     (bash("bash probes/watch.sh; echo rc=$?", run_in_background=True), False),
     (bash("until grep -q done x.log; do sleep 120; done; cut -c1-80 x.log", run_in_background=True), False),
     (bash("python -m pytest -q tests", run_in_background=True), False),
+    # TASKS 251: a loop that retries the door until the budget lets the run in is not a computation; anything else beside it is
+    (bash("until python tools/runspec.py launch probes/runspecs/v14.json; do sleep 600; done", run_in_background=True), False),
+    (bash("until python -u tools/runspec.py launch probes/runspecs/v14.json; do sleep 600; done", run_in_background=True), False),
+    (bash("until python tools/runspec.py launch probes/runspecs/v14.json; do sleep 600; done; python probes/s2_read.py",
+          run_in_background=True), True),
+    (bash("python tools/runspec.py check", run_in_background=True), True),
     (bash("python probes/s2_read.py"), False),                                                 # foreground: bounded by the tool's timeout
     (bash(". tools/hosts.sh; host_ssh pool3 'cd /root/x && setsid nohup bash run.sh > r.log 2>&1 &'"), True),   # detached on a server
     # 16 Oct 23:38 and 23:44, false alarms in the log: reading the wrapper is not starting it
