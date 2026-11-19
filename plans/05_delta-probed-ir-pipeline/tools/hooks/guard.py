@@ -285,14 +285,22 @@ _COMPUTE = ("python", "python3", "python.exe", "psi4", "wsl", "wsl.exe")
 
 _LOOP_WORDS = ("until", "while", "do", "if", "then", "!")
 _LOOP_ENDS = ("done", "fi")
-_HIDES_COMMANDS = ("`", "$(", "{", "|")       # behind these a command can sit that commands() does not list
+_HIDES_COMMANDS = ("`", "$(", "<(", ">(", "{", "|")       # behind these a command can sit that commands() does not list
+_PLAN_DOOR = "plans/05_delta-probed-ir-pipeline/tools/runspec.py"
+_ABSOLUTE = re.compile(r"^(/|[A-Za-z]:/)")
+
+
+def _is_the_door(path: str) -> bool:
+    """tools/runspec.py as named from the plan folder or the repository root, or by an absolute path into the plan."""
+    p = path.replace("\\", "/")
+    return p in ("tools/runspec.py", _PLAN_DOOR) or (bool(_ABSOLUTE.match(p)) and p.endswith("/" + _PLAN_DOOR))
 
 
 def _door_launch(words: list[str]) -> bool:
     """`python tools/runspec.py launch <spec>`, the door itself and no other file of that name: it returns once the run has started."""
     args = [w for w in words[1:] if not w.startswith("-")]
     return (_name(words[0]) in ("python", "python3", "py") and len(args) >= 2
-            and ("/" + args[0].replace("\\", "/")).endswith("/tools/runspec.py") and args[1] == "launch")
+            and _is_the_door(args[0]) and args[1] == "launch")
 
 
 def _door_retry(command: str, cmds: list[list[str]]) -> bool:

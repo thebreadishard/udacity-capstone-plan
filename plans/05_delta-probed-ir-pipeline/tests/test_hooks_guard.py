@@ -122,6 +122,13 @@ def test_commit_over_live_log_passes_when_no_live_log_is_tracked():
           run_in_background=True), False),
     (bash("python tools/runspec.py launch probes/runspecs/v14.json && sleep 5", run_in_background=True), False),
     (bash("python scratch/runspec.py launch probes/runspecs/v14.json", run_in_background=True), True),      # not the door
+    (bash("python scratch/tools/runspec.py launch probes/runspecs/v14.json", run_in_background=True), True),
+    (bash("python /tmp/x/tools/runspec.py launch probes/runspecs/v14.json", run_in_background=True), True),
+    (bash("python plans/05_delta-probed-ir-pipeline/tools/runspec.py launch x.json", run_in_background=True), False),
+    (bash("python /c/Users/u/CapstonePlan/plans/05_delta-probed-ir-pipeline/tools/runspec.py launch x.json", run_in_background=True), False),
+    (bash("python 'C:\\Users\\u\\CapstonePlan\\plans\\05_delta-probed-ir-pipeline\\tools\\runspec.py' launch x.json",
+          run_in_background=True), False),
+    (bash("python tools/runspec.py launch x.json < <(python heavy.py)", run_in_background=True), True),     # process substitution
     (bash("python tools/runspec.py launch probes/runspecs/v14.json; bash heavy.sh", run_in_background=True), True),
     (bash("python tools/runspec.py launch `python heavy.py`", run_in_background=True), True),
     (bash("python tools/runspec.py launch $(python heavy.py)", run_in_background=True), True),

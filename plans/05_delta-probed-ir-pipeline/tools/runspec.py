@@ -693,6 +693,14 @@ def _key_values(out: str) -> dict[str, str]:
     return {key: value.strip() for key, _, value in (line.partition("=") for line in out.splitlines()) if key}
 
 
+def wrapper_pattern(spec: RunSpec) -> str:
+    """ERE of the run's own wrapper in a command line: launch_outside_app.sh's launch/<name>_<date>_<time>.sh on the laptop,
+    remote_launch.sh's <name>.cmd.sh on a server. Anchored on both sides of the name, so chain35 is not chain35_read."""
+    if spec.host == LAPTOP:
+        return r"launch[\\/]" + spec.name + r"_[0-9]{8}_[0-9]{6}\.sh"
+    return "(^|[/'\"])" + spec.name + r"\.cmd\.sh"
+
+
 def kill_script(spec: RunSpec) -> str:
     """Shell lines that end the tree behind <name>.pid where the run lives; they print was_alive= (before) and alive= (after).
     The pid counts as the run only when its command line names this run's own wrapper - launch_outside_app.sh's launch/<name>_<time>.sh
@@ -700,7 +708,7 @@ def kill_script(spec: RunSpec) -> str:
     before one can name the watch's bash or another run, and a tree kill there would take that. Such a pid is printed as stale_pid=
     and left alone."""
     q = shlex.quote
-    wrapper = q(r"launch[\\/]" + spec.name + "_") if spec.host == LAPTOP else q(spec.name + r"\.cmd\.sh")
+    wrapper = q(wrapper_pattern(spec))
     if spec.host == LAPTOP:   # the pid is Git Bash's; /T from its Windows process takes the Windows tree, python and wsl.exe included
         end = 'w=$(cat /proc/"$p"/winpid 2>/dev/null); [ -n "$w" ] && MSYS2_ARG_CONV_EXCL="*" taskkill /PID "$w" /T /F > /dev/null 2>&1'
         alive = 'kill -0 "$p" 2>/dev/null'

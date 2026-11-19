@@ -603,14 +603,15 @@ def test_a_stop_holds_the_run_until_a_fresh_launch(tmp_path):
 
 def test_a_server_stop_ends_the_process_group_and_sweeps_no_wsl(tmp_path):
     specs, state = tmp_path / "specs", tmp_path / "state"
-    p = write_spec(specs, spec(host="labels", workdir="/root/x", memory=None))
+    s = spec(host="labels", workdir="/root/x", memory=None)
+    p = write_spec(specs, s)
     R.save_state("demo", run_state(), state)
     sh = StopShell()
     sh.hosts = {"labels": ("1.2.3.4", "m-id")}
     R.stop(p, sh, T0, state)
     kill = next(s for s in sh.scripts if "was_alive" in s)
     assert 'kill -TERM -- -"$p"' in kill and 'kill -KILL -- -"$p"' in kill and "taskkill" not in kill
-    assert "/proc/\"$p\"/cmdline" in kill and "grep -qE 'demo\\.cmd\\.sh'" in kill          # remote_launch.sh's wrapper of this run
+    assert "/proc/\"$p\"/cmdline" in kill and f"grep -qE {R.shlex.quote(R.wrapper_pattern(s))}" in kill   # remote_launch.sh's wrapper
     assert not any("wsl.exe" in s for s in sh.scripts)
 
 
@@ -623,7 +624,7 @@ def test_a_laptop_stop_kills_the_windows_tree_then_the_tagged_wsl_processes(tmp_
     kill, wsl = next(s for s in sh.scripts if "was_alive" in s), next(s for s in sh.scripts if "wsl.exe" in s)
     assert sh.scripts.index(kill) < sh.scripts.index(wsl)
     assert 'taskkill /PID "$w" /T /F' in kill and "/proc/\"$p\"/winpid" in kill
-    assert "/proc/\"$p\"/cmdline" in kill and "grep -qE 'launch[\\\\/]demo_'" in kill      # only this run's own wrapper is killed
+    assert "/proc/\"$p\"/cmdline" in kill and "grep -qE 'launch[\\\\/]demo_[0-9]{8}_[0-9]{6}\\.sh'" in kill   # only its own wrapper
     assert "RUNSPEC_RUN=demo" in wsl and "--list --running" in wsl
 
 
@@ -868,3 +869,18 @@ def test_a_pid_file_naming_an_unrelated_live_process_kills_nothing(real_run):
         else:
             bystander.kill()
         bystander.wait(timeout=30)
+@pytest.mark.parametrize("name, host, cmdline, mine", [
+    ("v14_stage1", "laptop", r"/usr/bin/bash -l C:\Users\u\plan\probes\watch_state\launch\v14_stage1_20261118_072120.sh", True),
+    ("v14_stage1", "laptop", "/usr/bin/bash -l C:/Users/u/plan/probes/watch_state/launch/v14_stage1_20261118_072120.sh", True),
+    ("chain35", "laptop", r"/usr/bin/bash -l C:\Users\u\plan\probes\watch_state\launch\chain35_read_20261119_101010.sh", False),
+    ("chain35", "laptop", r"/usr/bin/bash -l C:\Users\u\plan\probes\watch_state\launch\chain35_20261119_101010.sh", True),
+    ("read", "laptop", r"/usr/bin/bash -l C:\Users\u\plan\probes\watch_state\launch\chain35_read_20261119_101010.sh", False),
+    ("demo", "labels", "bash -c bash 'demo.cmd.sh'; echo $? > 'demo.exit'", True),
+    ("demo", "labels", "bash /root/x/demo.cmd.sh", True),
+    ("demo", "labels", "demo.cmd.sh", True),
+    ("demo", "labels", "bash -c bash 'other_demo.cmd.sh'; echo $? > 'other_demo.exit'", False),
+])
+def test_the_wrapper_pattern_fits_this_run_only(name, host, cmdline, mine):
+    """The pattern is an ERE for grep -E; the subset used reads the same in Python's re."""
+    s = spec(name=name) if host == "laptop" else spec(name=name, host=host, workdir="/root/x", memory=None)
+    assert bool(re.search(R.wrapper_pattern(s), cmdline)) is mine
