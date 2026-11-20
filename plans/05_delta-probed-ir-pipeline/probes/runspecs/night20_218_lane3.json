@@ -1,0 +1,77 @@
+{
+ "name": "night20_218_lane3",
+ "purpose": "TASKS 218, GoalGathering/notes/PreRegistration_2026-11-20_Low_Mode_Repair_Threshold.md with its amendment 1: lane 3 of 4 of the registered sample on the rented CCX53 night20 (code: git archive of fb3cd34b in /root/dpir; env qc215, pyscf 2.15.0; the registered arguments --below 60, step 0.01, --max-memory 2048; 8 threads). pyscf hessian/test/test_rks.py finite_diff makes the same gradient call, cited in probes/hessian_grid_response_fd.py.",
+ "host": "night20",
+ "workdir": "/root/night20_218",
+ "command": "/root/miniforge3/envs/qc215/bin/python /root/dpir/plans/05_delta-probed-ir-pipeline/probes/low_mode_patch_run.py /root/night20_218/in/molecules /root/night20_218/out_lane3 --ids /root/night20_218/in/ids_lane3.txt --threads 8 --max-memory 2048 --below 60",
+ "sources": [
+  {
+   "local": "probes/low_mode_patch_run.py",
+   "remote": "/root/dpir/plans/05_delta-probed-ir-pipeline/probes/low_mode_patch_run.py"
+  },
+  {
+   "local": "probes/low_mode_patch.py",
+   "remote": "/root/dpir/plans/05_delta-probed-ir-pipeline/probes/low_mode_patch.py"
+  },
+  {
+   "local": "probes/hessian_grid_response_fd.py",
+   "remote": "/root/dpir/plans/05_delta-probed-ir-pipeline/probes/hessian_grid_response_fd.py"
+  },
+  {
+   "local": "probes/qc_common.py",
+   "remote": "/root/dpir/plans/05_delta-probed-ir-pipeline/probes/qc_common.py"
+  },
+  {
+   "local": "probes/butterfly_scan.py",
+   "remote": "/root/dpir/plans/05_delta-probed-ir-pipeline/probes/butterfly_scan.py"
+  },
+  {
+   "local": "probes/library_log.py",
+   "remote": "/root/dpir/plans/05_delta-probed-ir-pipeline/probes/library_log.py"
+  },
+  {
+   "local": "probes/json_records.py",
+   "remote": "/root/dpir/plans/05_delta-probed-ir-pipeline/probes/json_records.py"
+  },
+  {
+   "local": "modules/05_support_predictor/corpus/analytic_hessians.py",
+   "remote": "/root/dpir/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/corpus/analytic_hessians.py"
+  },
+  {
+   "local": "modules/05_support_predictor/corpus/grid_response_blocked.py",
+   "remote": "/root/dpir/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/corpus/grid_response_blocked.py"
+  },
+  {
+   "local": "modules/05_support_predictor/corpus/vibrations.py",
+   "remote": "/root/dpir/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/corpus/vibrations.py"
+  },
+  {
+   "local": "modules/05_support_predictor/corpus/constants.py",
+   "remote": "/root/dpir/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/corpus/constants.py"
+  },
+  {
+   "local": "modules/05_support_predictor/corpus/scf_policy.py",
+   "remote": "/root/dpir/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/corpus/scf_policy.py"
+  },
+  {
+   "local": "modules/05_support_predictor/corpus/apt.py",
+   "remote": "/root/dpir/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/corpus/apt.py"
+  },
+  {
+   "local": "probes/results_m1/night20_2026-11-20/job218/ids_lane3.txt",
+   "remote": "/root/night20_218/in/ids_lane3.txt"
+  }
+ ],
+ "progress": {
+  "regex": "^\\(LMP\\) ",
+  "max_gap_minutes": 60,
+  "heartbeat_glob": "/root/night20_218/out_lane3/pyscf.log"
+ },
+ "marker_regex": "^\\(LMP\\) [0-9]+/[0-9]+ |Traceback|Error",
+ "dry_run_args": "--dry-run",
+ "threads": 8,
+ "estimate": {
+  "hours": 2.0,
+  "basis": "SAMPLE.md's minutes per molecule at 8 threads sum to 93 for this lane (laptop timings of 13-15 Nov); the gate molecule's points took 0.78 of the laptop's seconds on the server alone; four lanes share 32 cores, a slowdown nobody measured"
+ }
+}

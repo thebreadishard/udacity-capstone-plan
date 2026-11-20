@@ -248,3 +248,45 @@ gradients, 3.1 to 6.2 hours (SAMPLE.md). The registered population and the rule 
 points, which the table shows and the rule does not read. In both run specs `--below 60` becomes `--below 100` and `patch_below60` /
 `patch_step02_below60` become `patch_below100` / `patch_step02_below100` in the command and in `heartbeat_glob`, with the estimate's
 hours. Both runs must use the same threshold: the read refuses a step check made at another.
+
+## Amendment 1 (20 November 2026, 12:3x UTC, before any molecule of the sample is patched) — the place of the sample run
+
+The author rented a Hetzner CCX53 (32 dedicated cores, 122 GB, Ubuntu 24.04; `night20` in `tools/hosts.tsv`) for the night of
+20 November. The sample of section 3 runs there instead of on the laptop. Nothing else in this registration changes: the sample,
+the settings of section 4, the two-route check, the read and the rule stand as written.
+
+- **Same code, same commit.** The server's code is `git archive` of commit fb3cd34b (`/root/dpir`, stamped in `/root/dpir/COMMIT`).
+  The runner and everything it imports are unchanged between fb3cd34b and the trunk at this amendment (63929079; `git diff --stat`
+  over the run spec's sources is empty).
+- **Same pyscf.** Env `qc215` on the server is built as `tools/build_env_beside.py` built the laptop's: a venv on the server's `qc05`
+  interpreter with the laptop `qc215`'s 21 pins installed `--no-deps` (pyscf 2.15.0, numpy 2.5.2, scipy 1.18.1); `pip check` passes
+  and its `pip freeze` equals the pin list. The interpreter differs in its patch release and compiler (CPython 3.12.16, GCC, from
+  conda-forge; the laptop's is 3.12.14, Clang, from uv). Both freezes are kept in `probes/results_m1/night20_2026-11-20/env/`.
+- **Same arguments.** `--below 60`, the default step of 0.01 bohr, `--max-memory 2048`. Threads differ: 8 per process where the
+  laptop spec has 4.
+- **Four lanes.** Four processes of 8 threads over four disjoint id lists that together are `ids_sample.txt`
+  (`probes/results_m1/night20_2026-11-20/job218/ids_lane{0,1,2,3}.txt`; 4, 5, 5 and 6 molecules; 90, 90, 90 and 93 minutes by
+  SAMPLE.md's minutes per molecule). Each lane writes into an out folder of its own (`/root/night20_218/out_lane<k>`), because the
+  runner appends pyscf's log to one `pyscf.log` per out folder and four processes would write that file together; every other file
+  is per molecule. Each folder carries its own `run_settings.json`. The fetch puts the molecule folders and the settings record
+  into `probes/results_m1/low_mode_threshold_2026-11-20/patch_below60/`, where the read expects them, and the four logs beside the
+  env records. Launched through `tools/runspec.py` (specs `probes/runspecs/night20_218_lane<k>.json`), which calls
+  `tools/remote_launch.sh`.
+- **The gate, passed before this amendment.** (a) The runner's own water test on the server in `qc215`
+  (`tests/test_low_mode_patch_run.py`): 3 passed in 20.8 s. (b) One molecule of the repair of 13 November recomputed on the server
+  with that run's arguments (`--below 20`, step 0.01, 8 threads, `--max-memory 2048`) from the label files that run read
+  (`corpus/superseded_2026-11-14/B_1e0fa2d7f0/`, 13 atoms; the corpus's own files are the swapped ones since 14 November), against
+  the laptop's records in `probes/results_m1/low_mode_patch_2026-11-13/corpus/B_1e0fa2d7f0/`, over the four gradient points of both
+  functionals: the energies differ by at most 3.2e-12 hartree (bound 1e-8), the gradients by at most 1.9e-8 hartree/bohr in any
+  component (bound 1e-6), the patched frequencies by at most 0.0016 cm⁻¹ over all 33 modes of either functional (bound 0.05;
+  B3LYP's lowest −11.9545 on the laptop and −11.9535 on the server, ωB97X's 48.6212 and 48.6229), and the directions by 4e-15.
+  The gradient difference is the size of the gradient noise section 2 measured on B_0f06474656 (σ ≈ 1.4e-8 per gradient), so the
+  place adds no noise beyond what the registration already counts. The server's records are in `/root/night20_gate/out`.
+- **The inputs.** Per sampled molecule `geometry.json` and the two label files, the files `read_label` opens and no others, copied
+  from the corpus; 60 files, sha256 equal on both sides. None of the 20 has a superseded label. The runner's dry run on the server
+  over the full list prints 20 molecules, 21 directions below 60.0 cm⁻¹, 84 gradient points, as SAMPLE.md has it.
+- **The step-0.02 check stays on the laptop** (`low_mode_threshold_step02_2026-11-20`, running since before this amendment, into
+  `patch_step02_below60/`). The two routes of section 5 are therefore also two machines; the gate above is what makes a difference
+  between them a difference of the step.
+- **The laptop spec `probes/runspecs/low_mode_threshold_sample_2026-11-20.json` is not launched.** Its estimate of 6 to 12 hours
+  was for 4 threads beside the training search; four lanes of 8 threads on the server are expected to end within about two hours.
