@@ -1,0 +1,302 @@
+{
+ "registration": "GoalGathering/notes/PreRegistration_2026-11-20_Anharmonic_Step_Substituted_Molecule.md",
+ "source": "probes/results_m1/anharmonic_design_questions_2026-11-16/modes.json",
+ "quantity": "rms_inputs_on_B",
+ "min_bands": 4,
+ "bars_cm": {
+  "CH-oop": 8.38,
+  "other": 3.84,
+  "ring-ip": 3.37,
+  "CH-stretch": 6.21
+ },
+ "molecules": {
+  "B_a41f4cff9d": {
+   "name": "naphthalene+CN",
+   "all": {
+    "n": 36,
+    "rms_cm": 2.347225925089374
+   },
+   "families": {
+    "CH-oop": {
+     "n": 5,
+     "rms_cm": 1.8512966451013382,
+     "bar_cm": 8.38,
+     "statement": "within the bar"
+    },
+    "other": {
+     "n": 8,
+     "rms_cm": 1.681263146289408,
+     "bar_cm": 3.84,
+     "statement": "within the bar"
+    },
+    "ring-ip": {
+     "n": 16,
+     "rms_cm": 2.201580196198829,
+     "bar_cm": 3.37,
+     "statement": "within the bar"
+    },
+    "CH-stretch": {
+     "n": 7,
+     "rms_cm": 3.4025191365204903,
+     "bar_cm": 6.21,
+     "statement": "within the bar"
+    }
+   }
+  },
+  "B_052693bd01": {
+   "name": "oxazole+CN",
+   "all": {
+    "n": 17,
+    "rms_cm": 5.184825601438196
+   },
+   "families": {
+    "CH-oop": {
+     "n": 2,
+     "rms_cm": 3.360830450523583,
+     "bar_cm": 8.38,
+     "statement": "no statement"
+    },
+    "other": {
+     "n": 5,
+     "rms_cm": 1.7261526782019219,
+     "bar_cm": 3.84,
+     "statement": "within the bar"
+    },
+    "ring-ip": {
+     "n": 8,
+     "rms_cm": 6.800601765809696,
+     "bar_cm": 3.37,
+     "statement": "beyond the bar"
+    },
+    "CH-stretch": {
+     "n": 2,
+     "rms_cm": 4.976305245906303,
+     "bar_cm": 6.21,
+     "statement": "no statement"
+    }
+   }
+  },
+  "A_a848c04a21": {
+   "name": "phenylacetylene",
+   "all": {
+    "n": 25,
+    "rms_cm": 6.377642166198275
+   },
+   "families": {
+    "CH-oop": {
+     "n": 6,
+     "rms_cm": 4.9184685592630775,
+     "bar_cm": 8.38,
+     "statement": "within the bar"
+    },
+    "other": {
+     "n": 2,
+     "rms_cm": 3.470738358772079,
+     "bar_cm": 3.84,
+     "statement": "no statement"
+    },
+    "ring-ip": {
+     "n": 12,
+     "rms_cm": 3.477896758865991,
+     "bar_cm": 3.37,
+     "statement": "consistent with the bar at this n"
+    },
+    "CH-stretch": {
+     "n": 5,
+     "rms_cm": 11.853005967238257,
+     "bar_cm": 6.21,
+     "statement": "beyond the bar"
+    }
+   }
+  },
+  "B_410ac0fb2f": {
+   "name": "benzene+NH2+ethynyl",
+   "all": {
+    "n": 22,
+    "rms_cm": 5.924141463326659
+   },
+   "families": {
+    "other": {
+     "n": 7,
+     "rms_cm": 7.414790910847251,
+     "bar_cm": 3.84,
+     "statement": "beyond the bar"
+    },
+    "ring-ip": {
+     "n": 11,
+     "rms_cm": 5.178228448948412,
+     "bar_cm": 3.37,
+     "statement": "beyond the bar"
+    },
+    "CH-stretch": {
+     "n": 4,
+     "rms_cm": 4.803423970970298,
+     "bar_cm": 6.21,
+     "statement": "within the bar"
+    }
+   }
+  },
+  "B_079e66d017": {
+   "name": "isoquinoline+CH3",
+   "all": {
+    "n": 43,
+    "rms_cm": 6.259243955447941
+   },
+   "families": {
+    "other": {
+     "n": 10,
+     "rms_cm": 3.3066144069282077,
+     "bar_cm": 3.84,
+     "statement": "within the bar"
+    },
+    "ring-ip": {
+     "n": 24,
+     "rms_cm": 2.909472898235089,
+     "bar_cm": 3.37,
+     "statement": "within the bar"
+    },
+    "CH-stretch": {
+     "n": 9,
+     "rms_cm": 12.347568500987904,
+     "bar_cm": 6.21,
+     "statement": "beyond the bar"
+    }
+   }
+  },
+  "B_78f8233b4c": {
+   "name": "azulene+NH2",
+   "all": {
+    "n": 32,
+    "rms_cm": 9.592654256961204
+   },
+   "families": {
+    "other": {
+     "n": 10,
+     "rms_cm": 6.145697088818433,
+     "bar_cm": 3.84,
+     "statement": "beyond the bar"
+    },
+    "ring-ip": {
+     "n": 15,
+     "rms_cm": 4.506958460770637,
+     "bar_cm": 3.37,
+     "statement": "beyond the bar"
+    },
+    "CH-stretch": {
+     "n": 7,
+     "rms_cm": 17.977058620893445,
+     "bar_cm": 6.21,
+     "statement": "beyond the bar"
+    }
+   }
+  },
+  "B_0603418c5b": {
+   "name": "azulene+ethynyl",
+   "all": {
+    "n": 38,
+    "rms_cm": 6.444925139711297
+   },
+   "families": {
+    "CH-oop": {
+     "n": 9,
+     "rms_cm": 9.035863756872077,
+     "bar_cm": 8.38,
+     "statement": "consistent with the bar at this n"
+    },
+    "other": {
+     "n": 4,
+     "rms_cm": 1.9238035178612491,
+     "bar_cm": 3.84,
+     "statement": "within the bar"
+    },
+    "ring-ip": {
+     "n": 18,
+     "rms_cm": 3.5791437158820094,
+     "bar_cm": 3.37,
+     "statement": "consistent with the bar at this n"
+    },
+    "CH-stretch": {
+     "n": 7,
+     "rms_cm": 9.244286594195309,
+     "bar_cm": 6.21,
+     "statement": "beyond the bar"
+    }
+   }
+  }
+ },
+ "groups": {
+  "substituted": {
+   "molecules": 7,
+   "CH-oop": {
+    "molecules_judged": 3,
+    "above_the_bar": 1,
+    "beyond_the_line": 0,
+    "median_rms_cm": 4.9184685592630775,
+    "modes": 22,
+    "pooled_rms_cm": 6.465630677529723
+   },
+   "other": {
+    "molecules_judged": 6,
+    "above_the_bar": 2,
+    "beyond_the_line": 2,
+    "median_rms_cm": 2.6152089623947283,
+    "modes": 46,
+    "pooled_rms_cm": 4.540384239839413
+   },
+   "ring-ip": {
+    "molecules_judged": 7,
+    "above_the_bar": 5,
+    "beyond_the_line": 3,
+    "median_rms_cm": 3.5791437158820094,
+    "modes": 104,
+    "pooled_rms_cm": 3.9541558646852173
+   },
+   "CH-stretch": {
+    "molecules_judged": 6,
+    "above_the_bar": 4,
+    "beyond_the_line": 4,
+    "median_rms_cm": 10.548646280716783,
+    "modes": 41,
+    "pooled_rms_cm": 11.216179290388778
+   }
+  },
+  "unsubstituted": {
+   "molecules": 31,
+   "not_training_molecules": [
+    "coronene"
+   ],
+   "CH-oop": {
+    "molecules_judged": 28,
+    "above_the_bar": 3,
+    "beyond_the_line": 1,
+    "median_rms_cm": 3.961599203511465,
+    "modes": 233,
+    "pooled_rms_cm": 5.78505689541958
+   },
+   "other": {
+    "molecules_judged": 30,
+    "above_the_bar": 4,
+    "beyond_the_line": 3,
+    "median_rms_cm": 1.5316051637673609,
+    "modes": 269,
+    "pooled_rms_cm": 3.1210574222993945
+   },
+   "ring-ip": {
+    "molecules_judged": 31,
+    "above_the_bar": 6,
+    "beyond_the_line": 1,
+    "median_rms_cm": 2.764514899640206,
+    "modes": 633,
+    "pooled_rms_cm": 2.9636237932600102
+   },
+   "CH-stretch": {
+    "molecules_judged": 31,
+    "above_the_bar": 22,
+    "beyond_the_line": 7,
+    "median_rms_cm": 7.272833336881821,
+    "modes": 258,
+    "pooled_rms_cm": 8.522894776880573
+   }
+  }
+ }
+}
