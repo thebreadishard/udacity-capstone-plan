@@ -345,7 +345,7 @@ RESULTS_CODE = """out = dict(date=time.strftime("%Y-%m-%d %H:%M"), catalogue=dic
                       accuracy=dict(version=acc["version"], higher_level=acc["higher_level"], coupled_cluster=acc["coupled_cluster"], sources=acc["sources"],
                                     test_sets={h: dict(n_in_test_set=v["n_molecules"], **v["shape"]) for h, v in acc["holdouts"].items()})),
            s2=dict(request=req2, kind=d2.kind, gate=d2.gate_named, needed=d2.what_would_be_needed), s2b=dict(request=req2b, kind=d2b.kind, gate=d2b.gate, worker=worker2b),
-           s3=dict(candidate=s3["candidate"], reasons=s3["decision"]["reasons"]), prices=dict(machines=prices.MACHINES, steps={k: prices.step_price(k) for k in prices.STEPS}),
+           s3=dict(candidate=s3["candidate"], reasons=s3["decision"]["reasons"]), prices=prices.table_record(),
            pipeline_run=dict(folder=stored_run.STORED_RUN, molecule=run["molecule"]["name"], date=run["date"], pipeline_version=run["pipeline_version"],
                              network_version=net["version"], network_kind=net["kind"], trained_on_molecules=net["trained_on_molecules"],
                              seen=run["molecule"]["seen"], n_bands=len(run["bands"]), n_licensed=n_lic, has_own_spread=has_own_spread,

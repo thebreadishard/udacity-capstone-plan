@@ -33,7 +33,7 @@ FIGURES = HERE / "notebook" / "figures"
 OUT_DOCX = HERE / "Reflective_Synthesis_Paper.docx"
 AUTHOR = "Frederic Petrignani"         # the title page's author line, and the file's own author fields
 WORD_RANGE = (1500, 2000)              # the rubric's range for the body
-ANCHOR_STEP, CHEAP_STEP = "anchor_e8_cc_hessian_naphthalene", "cheap_deck_v1"
+CHEAP_STEP = "cheap_deck_v1"
 FIXED_CANDIDATE_FLAG = "--no-candidate"
 GLOSSARY = "https://github.com/thebreadishard/udacity-capstone-plan/blob/master/plans/05_delta-probed-ir-pipeline/modules/GLOSSARY.md"
 
@@ -132,8 +132,9 @@ def scenario_sentences(scenarios: dict[str, Any], outcome: dict[str, Any]) -> st
     return (f"The officer answered {scenarios['n']} requests — {len(registered)} pre-registered ({', '.join(registered)}) and "
             f"{len(added)} added cases ({', '.join(added)}) — and all produced the registered kind of output ({scenarios['n_pass']} of "
             f"{scenarios['n']}). The three mechanical checks are separate. S7: every cost line traced to its source "
-            f"({mechanical['S7']['lines_traced']} of {mechanical['S7']['lines_checked']}); {outcome['n_unpriced']} anchor lines are shown as "
-            f"not priced. S6, accessibility, is not run by the scenario script; its record says: {mechanical['S6']['status']}. {s5}.")
+            f"({mechanical['S7']['lines_traced']} of {mechanical['S7']['lines_checked']}); {outcome['n_unpriced']} anchor "
+            f"line{' is' if outcome['n_unpriced'] == 1 else 's are'} shown as not priced. S6, accessibility, is not run by the scenario "
+            f"script; its record says: {mechanical['S6']['status']}. {s5}.")
 
 
 def failure_sentence(coverage: list[dict[str, Any]]) -> str:
@@ -148,10 +149,23 @@ def failure_sentence(coverage: list[dict[str, Any]]) -> str:
             "at this rung.")
 
 
+def anchor_price_sentence(results: dict[str, Any]) -> str:
+    """Whose price the anchor's is, and which of the two certificates carries a price for its anchor in force, from their cost lines."""
+    priced, unpriced = [], []
+    for key in ("s1", "s8"):
+        in_force = [line for line in results[key]["cost"] if line["step"].startswith("anchor in force")]
+        if not in_force:
+            raise ValueError(f"results.json holds no 'anchor in force' cost line for {key}: the paper's sentence on anchor prices has no record")
+        (unpriced if any(line["eur_ex_vat"] is None for line in in_force) else priced).append(results[key]["anchor"]["name"])
+    said = ([f"the certificate of {' and '.join(priced)} carries it"] if priced else []) + (
+        [f"{' and '.join(unpriced)} {'shows its anchor' if len(unpriced) == 1 else 'show their anchors'} unpriced"] if unpriced else [])
+    return "That one price includes one-off checks and a lost first attempt; " + ", ".join(said) + "."
+
+
 def context(results: dict[str, Any]) -> list[Block]:
     """Sections 1–2: the industry problem and the integrated solution."""
-    steps, counts = results["prices"]["steps"], results["catalogue"]["rung_counts"]
-    anchor, cheap = steps[ANCHOR_STEP], steps[CHEAP_STEP]
+    counts = results["catalogue"]["rung_counts"]
+    anchor, cheap = results["prices"]["anchor"], results["prices"]["steps"][CHEAP_STEP]
     return [
         ("heading", "Industry Context and Problem Definition"),
         ("para", "Laboratory astrophysics reads the infrared spectra that the James Webb Space Telescope returns from interstellar matter against "
@@ -161,9 +175,10 @@ def context(results: dict[str, Any]) -> list[Block]:
                  "uncertainty of its scaled-harmonic method. The industry problem this module addresses is therefore a data-service problem: to "
                  "deliver, for a molecule that no laboratory has measured, a computed spectrum with a stated and measured accuracy and a stated "
                  "price — or, when neither can be given, a refusal that says which step is missing and what it would cost."),
-        ("para", "The constraint that shapes the whole design is cost. The accurate method, coupled-cluster theory, is unaffordable per molecule at "
-                 f"the sizes that matter: one anchor run of that kind for a naphthalene-sized molecule was priced at {anchor['hours']:.1f} "
-                 f"machine-hours on a rented server ({anchor['eur_ex_vat']:.0f} € before tax) on 28 September. The cheap method, "
+        ("para", "The constraint that shapes the whole design is cost. The accurate method, coupled-cluster theory, is not affordable across a library: "
+                 "its cost rises steeply with molecular size, and the one anchor priced from run logs, "
+                 f"{anchor['measured_molecule']}'s ({anchor['measured_atoms']} atoms), took {anchor['hours']:.1f} machine-hours on rented "
+                 f"servers ({anchor['eur_ex_vat']:.0f} € before tax); nothing larger is priced. The cheap method, "
                  f"density-functional theory, costs about {cheap['hours'] * 60:.0f} minutes per molecule and is systematically wrong by an amount "
                  "that differs per vibrational family. The project's thesis is a learned correction: a neural network that turns the cheap "
                  "calculation into a better one. What this capstone proves is a proxy version of that thesis. The network is trained on the "
@@ -256,8 +271,7 @@ def reflection(results: dict[str, Any]) -> list[Block]:
                  "not against coupled cluster and not against the laboratory, and the certificate says so in its licence statement. "
                  f"{anharmonic_sentence(results['pipeline_run']['anharmonic'], licence['line_cm'])} Where a licensed family rests on few molecules "
                  f"its interval crosses the line ({len(licence['caveats'])} such cases today). The catalogue is thin above the cheap rung: "
-                 f"{counts['anchored']} anchored molecules and {counts['validated']} validated. The price of an anchor is that of one run in "
-                 "September; the anchors in force today are later runs, which the registry carries without a price. "
+                 f"{counts['anchored']} anchored molecules and {counts['validated']} validated. {anchor_price_sentence(results)} "
                  f"{failure_sentence(results['s8']['coverage'])}"),
         ("heading", "Professional and Industry Relevance"),
         ("para", "The product form is a spectrum with a per-band budget, a cost record and a provenance block, or a refusal with a price. A "

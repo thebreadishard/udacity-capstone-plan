@@ -96,3 +96,34 @@ S4b changed its reason and its "needed" text on 20 November 2026 to what is true
 pipeline takes neutral closed-shell molecules only, the anchor registry carries no cation anchor; its registered expectation (the gate
 "cation rung closed", the measured cation price) is unchanged. S1's certificate now carries three cost lines instead of two: the anchor
 in force is quoted from the anchor registry and shown as not priced.
+
+## Note, 20 November 2026 10:01 — the anchor's price is read from the run logs; S3's budget is amended
+
+- **The price.** The refusals quoted €36.34 (42.5 CCX53-hours) for a missing anchor, as the outcome of 28 September above records it.
+  That entry priced a rerun of 28 September (30 gradients at ≈ 4.2 h each; the obstacle ledger's entry of 28 Sep 12:3x), which ran
+  before the lambda incident and whose Hessian is not in the anchor registry. The anchor in force for naphthalene is the composite of
+  decision 62, and `probes/anchor_price_from_logs.py` reads what it cost from its run logs
+  (`probes/results_m1/anchor_price_2026-11-20/`): the CCSD(T)/cc-pVDZ Hessian took 68,815 s from launch to VALID on a CPX62
+  (19.12 h, €3.98 — 24,426 s of it the one-off two-route checks, 17,182 s a lost first attempt, both left in), and the MP2 basis step
+  31,110 s of job time on a quarter of a CCX53 (2.16 h, €1.85). Together **€5.83**, 21.28 machine-hours, for naphthalene.
+- **The registered expectations.** S2 and S3 name the price line: `anchor_composite_naphthalene` (it was
+  `anchor_e8_cc_hessian_naphthalene`). Their kinds, gates and rules are unchanged. A run order for an anchor now names the CPX62,
+  where the coupled-cluster Hessian was measured, instead of the CCX53.
+- **S3's budget, €20 → €2.** S3 registers "a budget below one anchor → refusal naming the cap, the cheapest rung reachable and its
+  price". €20 is not below one anchor any more: left as it was, the officer answers S3 with a run order, which is S2b's case. €2 is
+  below the anchor and above the cheap rung (€0.24), so the case is kept and its number moved. S2b's €100 still covers the anchor.
+  Both amendments are in `scenarios/scenarios.json` with their reasons.
+- **Not run here.** `out/` and `notebook/results.json` hold the record of this morning's run with the old price until the scenarios
+  are run and the notebook and paper rebuilt.
+
+## Note, 20 November 2026 10:12 — the certificate carries the priced anchor; a budget is held against everything missing
+
+- **S1's certificate** carries four cost lines instead of three: naphthalene's anchor in force is the composite whose runs the price
+  table now prices, so it is shown as two priced lines (the coupled-cluster Hessian on the CPX62, the MP2 basis step on the CCX53)
+  instead of one line "not priced". The key is the file the registry names for the entry (`certify.PRICED_ANCHORS`), not the
+  molecule and not the route: benzene's full cc-pVTZ anchor (S8) and every other composite stay "not priced". S1's and S8's
+  registered expectations are unchanged.
+- **The officer's budget rule.** For a molecule below the cheap rung asked for at rung 4, the budget was compared with the anchor's
+  price alone. It is compared with the sum of what is missing (deck + anchor, €0.24 + €5.83 = €6.07); a budget between the two is
+  refused with what it does reach (rung 1), and a run order for such a molecule names the deck as its first job. No registered
+  kind changes: S3's €2 is below both, S2 and S2b ask for a molecule that has the cheap rung.

@@ -1,0 +1,220 @@
+{
+ "molecule": "naphthalene",
+ "written_by": "probes/anchor_price_from_logs.py",
+ "rule": "a machine-hour is a wall-clock hour of the rented machine, charged to the molecule by the share of the machine's lanes that worked for it: a run the machine was rented for is charged its whole wall-clock span from launch to end, lost attempts and idle gaps included, also where other work ran beside it; a job in a queue of N lanes shared with other molecules is charged its own wall time / N, and the queue's own losses (failed starts, another molecule's killed job) are not charged to this molecule",
+ "sources": {
+  "cc_dz_hessian": [
+   "probes/results_m1/e8_naphthalene_ccpvdz_tlambda_2026-10-02/e8_fd.log",
+   "probes/results_m1/e8_naphthalene_ccpvdz_tlambda_2026-10-02/anchors.log"
+  ],
+  "mp2_basis_step": [
+   "probes/results_m1/composite_rows_2026-10-07/queue.log",
+   "probes/results_m1/composite_rows_2026-10-07/jobs.txt",
+   "probes/results_m1/composite_rows_2026-10-07/worker_0.log",
+   "probes/results_m1/composite_rows_2026-10-07/worker_1.log",
+   "probes/results_m1/composite_rows_2026-10-07/worker_2.log",
+   "probes/results_m1/composite_rows_2026-10-07/worker_3.log"
+  ]
+ },
+ "cc_dz_hessian": {
+  "host": "ubuntu-32gb-hel1-2",
+  "machine": "CPX62",
+  "n_atoms": 18,
+  "launched": "2026-10-01 06:32:39",
+  "n_starts": 2,
+  "relaunched": "2026-10-01 11:19:01",
+  "valid": "2026-10-02 01:39:34",
+  "wall_s": 68815,
+  "parts": {
+   "lost_before_relaunch_s": 17182,
+   "reference_s": 24821,
+   "gradients_s": 26789,
+   "assembly_s": 22
+  },
+  "reference": {
+   "ended": "2026-10-01 18:12:43",
+   "seconds": 24821,
+   "two_route_checks_s": {
+    "lambda": 5609,
+    "density": 18817
+   },
+   "two_route_checks_sum_s": 24426
+  },
+  "gradients": {
+   "n_gradients": 30,
+   "started": "2026-10-01 18:12:43",
+   "ended": "2026-10-02 01:39:12",
+   "span_s": 26789,
+   "lanes": [
+    {
+     "displacements": [
+      0,
+      1,
+      2,
+      6,
+      7,
+      8,
+      9
+     ],
+     "threads": 8,
+     "started": "2026-10-01 18:12:43",
+     "ended": "2026-10-02 00:47:50",
+     "span_s": 23707,
+     "n_gradients": 14,
+     "gradient_s": {
+      "min": 1666,
+      "max": 1730,
+      "sum": 23706,
+      "each": [
+       1690,
+       1694,
+       1695,
+       1686,
+       1690,
+       1698,
+       1709,
+       1679,
+       1675,
+       1666,
+       1730,
+       1676,
+       1710,
+       1708
+      ]
+     }
+    },
+    {
+     "displacements": [
+      10,
+      11,
+      30,
+      31,
+      32,
+      36,
+      37,
+      38
+     ],
+     "threads": 8,
+     "started": "2026-10-01 18:12:48",
+     "ended": "2026-10-02 01:39:12",
+     "span_s": 26784,
+     "n_gradients": 16,
+     "gradient_s": {
+      "min": 1596,
+      "max": 1718,
+      "sum": 26783,
+      "each": [
+       1688,
+       1699,
+       1682,
+       1678,
+       1692,
+       1696,
+       1696,
+       1670,
+       1671,
+       1664,
+       1718,
+       1675,
+       1679,
+       1675,
+       1604,
+       1596
+      ]
+     }
+    }
+   ]
+  },
+  "machine_share": 1.0,
+  "machine_seconds": 68815,
+  "price": {
+   "machine": "CPX62",
+   "machine_hours": 19.115,
+   "eur_per_hour": 0.208,
+   "eur_ex_vat": 3.98
+  },
+  "of_which_eur": {
+   "two_route_checks_at_most": 1.41,
+   "lost_before_relaunch": 0.99
+  }
+ },
+ "mp2_basis_step": {
+  "machine": "CCX53",
+  "machine_source": "obstacle ledger, 7 Oct 17:2x (the MP2 rows queue on the CCX53); queue.log names its script mp2_rows_queue_ccx53.sh",
+  "lanes_sharing": [
+   4
+  ],
+  "threads_per_lane": [
+   8
+  ],
+  "first_job_ended": "2026-10-07 10:53:57",
+  "last_job_ended": "2026-10-07 15:10:01",
+  "n_jobs": 30,
+  "by_basis": {
+   "ccpvdz": {
+    "n_jobs": 15,
+    "job_s": {
+     "min": 76,
+     "max": 82,
+     "sum": 1186,
+     "each": [
+      80,
+      76,
+      79,
+      77,
+      78,
+      80,
+      79,
+      80,
+      81,
+      82,
+      79,
+      80,
+      78,
+      80,
+      77
+     ]
+    },
+    "machine_seconds": 296.5
+   },
+   "ccpvtz": {
+    "n_jobs": 15,
+    "job_s": {
+     "min": 1937,
+     "max": 2053,
+     "sum": 29924,
+     "each": [
+      2030,
+      2021,
+      1983,
+      2027,
+      2025,
+      2022,
+      2053,
+      1977,
+      1990,
+      1996,
+      1937,
+      1939,
+      1976,
+      1998,
+      1950
+     ]
+    },
+    "machine_seconds": 7481.0
+   }
+  },
+  "job_seconds": 31110,
+  "machine_seconds": 7777.5,
+  "price": {
+   "machine": "CCX53",
+   "machine_hours": 2.16,
+   "eur_per_hour": 0.855,
+   "eur_ex_vat": 1.85
+  }
+ },
+ "anchor": {
+  "machine_hours": 21.276,
+  "eur_ex_vat": 5.83
+ }
+}

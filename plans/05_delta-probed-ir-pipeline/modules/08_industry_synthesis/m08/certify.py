@@ -28,6 +28,12 @@ PRICED_EVIDENCE = {
     "probes/results_m1/M3_TZ_MODE12_READING_2026-09-20.md": "anchor_m3_family_reading_naphthalene",
     "probes/results_m1/M3_TZ_MODE22_READING_2026-09-23.md": "anchor_m3_family_reading_naphthalene",
 }
+# The anchors in force whose own runs the price table prices, by the file the registry names for the entry and that file's digest.
+# The key is the run, not the molecule or the route: another molecule's composite cost something else, and a file rebuilt under
+# the same name (another sha16) came from runs nobody has read the price of.
+PRICED_ANCHORS = {
+    (prices.ANCHOR_REGISTRY_ENTRY["path"], prices.ANCHOR_REGISTRY_ENTRY["sha16"]): prices.ANCHOR_PARTS,
+}
 
 
 def carried_anchor(mol_id: str, name: str) -> dict | None:
@@ -51,8 +57,10 @@ def carried_anchor(mol_id: str, name: str) -> dict | None:
 def anchor_cost_lines(name: str, evidence: list[str], entry: dict | None) -> list[dict]:
     """The anchored rung's cost lines: one per evidence page the price table prices, then the anchor in force as the registry names it.
 
-    The registry says what the anchor is — level, kind, date, file — and not what its run cost, so that line is shown as not
-    priced, never as €0. Until 20 Nov 2026 these lines named September's runs as typed text, and the registry marks one of those
+    The registry says what the anchor is — level, kind, date, file — and not what its run cost. Where the price table priced the
+    runs behind that file (`PRICED_ANCHORS`), the anchor in force gets one line per priced part, each on its own machine;
+    otherwise its line is shown as not priced, never as €0. Until 20 Nov 2026 these lines named September's runs as typed text,
+    and the registry marks one of those
     runs invalid (the lambda incident). A molecule at the anchored rung without a carried registry entry is refused: the
     certificate would name an anchor nobody can point to.
     """
@@ -67,10 +75,17 @@ def anchor_cost_lines(name: str, evidence: list[str], entry: dict | None) -> lis
         lines.append(dict(step=f"anchor family reading (M3, one family, laptop): {Path(page).name}", **reading,
                           note="the hours are the price table's for one family's reading (five points), measured where its source says; "
                                "this page's own hours are not recorded apart. The anchor in force is the registry's entry on the last line"))
-    lines.append(dict(step=f"anchor in force: {entry['level']} ({entry['kind']}, registered {entry['date']})",
-                      eur_ex_vat=None, hours=None, machine=None,
-                      source=f"{ANCHOR_REGISTRY} → {entry['path']}; the registry carries no hours for this run — shown as not "
-                             "priced, not as €0"))
+    in_force = f"anchor in force: {entry['level']} ({entry['kind']}, registered {entry['date']})"
+    priced_run = (entry["path"], entry["sha16"])
+    if priced_run not in PRICED_ANCHORS:
+        lines.append(dict(step=in_force, eur_ex_vat=None, hours=None, machine=None,
+                          source=f"{ANCHOR_REGISTRY} → {entry['path']}; the registry carries no hours for this run and the price "
+                                 "table holds no reading of its logs — shown as not priced, not as €0"))
+        return lines
+    for label, step in PRICED_ANCHORS[priced_run]:
+        part = {k: v for k, v in prices.step_price(step).items() if k != "step"}
+        source = f"{ANCHOR_REGISTRY} → {entry['path']} (sha16 {entry['sha16']}); {part['source']}"
+        lines.append(dict(step=f"{in_force} — {label}", **part) | dict(source=source))
     return lines
 
 
