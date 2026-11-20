@@ -72,3 +72,9 @@ simpler model); the uncertainty layer as |residual| quantiles.
   `notebook/opponent_column_ladder.csv`, `notebook/uncertainty_layer.csv`.
 - `make_summary.py` → `module_summary.docx/.pdf` (template `Rubrics/APA7_template.docx`).
 - `README.md` (rubric form), `requirements.txt` (`pip freeze`; scikit-learn 1.9.1 installed 2026-09-12).
+
+## Addendum, 20 November 2026
+
+- The first item under "Owed" is settled as far as the baseline column goes: on 4 October 2026 I decided that ridge stays
+  (`RECIPE.md`, dated note "Baseline column"). The line stays where it was written; this addendum records that it is no longer
+  owed. The rest of that item (the pilot note adopting or amending the recipe, the stricter-join candidate) is unchanged.

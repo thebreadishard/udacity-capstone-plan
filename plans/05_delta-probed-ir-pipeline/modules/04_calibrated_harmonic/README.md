@@ -34,10 +34,15 @@ is the *pairing*, which exists in neither.
 
 ```bash
 pip install -r requirements.txt
-jupyter notebook notebook/modeling.ipynb
+jupyter nbconvert --to notebook --execute --inplace notebook/modeling.ipynb
 ```
 
-Run all cells top to bottom (about one minute; 83 folds × 2 fitted models). The notebook needs only the
+The command runs every cell top to bottom and stores the outputs in the notebook file. To step through the cells in a
+browser instead, install the notebook interface as well (`pip install notebook`; it is not in `requirements.txt`) and open
+the file with `jupyter notebook notebook/modeling.ipynb`.
+
+The run takes about two minutes (83 folds × 2 fitted models; the stored notebook's cells ran in 1 min 46 s on
+18 October 2026). The notebook needs only the
 files in `notebook/`; before submission it was executed in a fresh clone of this repository, with nothing else
 present. `requirements.txt` was created with `pip freeze > requirements.txt`.
 
