@@ -28,10 +28,14 @@ computed science data, not AI-generated.
 
 ```bash
 pip install -r requirements.txt
-jupyter notebook notebook/data_workflow.ipynb
+jupyter nbconvert --to notebook --execute --inplace notebook/data_workflow.ipynb
 ```
 
-Run all cells top to bottom. Everything the notebook reads is in this repository: the species table
+The command runs every cell top to bottom and stores the outputs in the notebook file. To step through the cells in a
+browser instead, install the notebook interface as well (`pip install notebook`; it is not in `requirements.txt`) and open
+the file with `jupyter notebook notebook/data_workflow.ipynb`.
+
+Everything the notebook reads is in this repository: the species table
 beside it, the three small comparison tables under `out/`, and `notebook/bands_derived/` — the aggregates and
 samples of the computed library's band table (2,517,399 rows, 51 MB, not shipped) that the band-level cells use.
 Before submission the notebook was executed in a fresh clone of this repository, with nothing else present.
