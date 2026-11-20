@@ -24,12 +24,15 @@ molecules patched at twice the step, along the same directions. A central differ
 the two steps' stored columns are combined as (4·C(q) − C(2q))/3, which cancels the error's q² term, and the patched Hessian is
 rebuilt from those columns with the repair's own `vibrations.patched_hessian`. The extrapolated frequency is then the measurement;
 each point also carries the small step's frequency and the large step's. A point whose two steps stand more than NOT_QUADRATIC_CM
-apart is flagged and left out; a molecule without a second step, or whose two steps were measured along different directions, has no
-extrapolated value, is listed, and holds the outcome back. `--step-check` and `--second-step` do not combine: the first is the
-registered read, kept as it ran.
+apart is flagged and left out. So are the points of a molecule whose two steps were measured along rotated directions of the same
+space: columns along other directions do not combine, so those points have no extrapolated value. A molecule without a second step
+is a missing measurement: it is listed and holds the outcome back. The extrapolation rests on the step error growing as q², which
+`probes/low_mode_step_analysis.py --third` tests on a third step; the read states an outcome only when that test's record is named
+with `--q2-test` and says the law holds. `--step-check` and `--second-step` do not combine: the first is the registered read, kept
+as it ran.
 
     python probes/low_mode_threshold_read.py --source <patches>=<labels> [--source ...]
-        [--step-check <patches>=<labels> | --second-step <patches>=<labels> [--second-step ...]]
+        [--step-check <patches>=<labels> | --second-step <patches>=<labels> [--second-step ...] [--q2-test <q2_test.json>]]
         --molecules <corpus molecules dir> --out <new results folder> [--sample <sample.json>]
         [--exploratory "<why this read decides nothing>"]
 
@@ -90,6 +93,9 @@ WEIGHT_LARGE = -1.0 / (STEP_RATIO ** 2 - 1)              # −1/3: Richardson's 
 EXTRAPOLATED_NOISE_FACTOR = math.hypot(WEIGHT_SMALL, WEIGHT_LARGE / STEP_RATIO)
 NOT_QUADRATIC_CM = 1.0        # two steps further apart than this: a two-point extrapolation is not trusted (the seven checked reach 0.57)
 NOT_QUADRATIC = "not quadratic"
+DIRECTIONS_DIFFER = "directions differ"   # the two steps were measured along rotated directions of one space: no extrapolated value
+SPAN_TOL = 1e-10              # how far the two steps' projectors may stand apart and their directions still span one space
+Q2_HOLDS, Q2_FAILS = "holds", "fails"     # the verdicts of the q²-test record (probes/low_mode_step_analysis.py --third)
 DIRECTIONS_TOL = 1e-12        # the two steps' directions must be the same numbers: columns along rotated directions do not combine
 STEP_RATIO_TOL = 1e-9
 REBUILD_TOL_CM = 1e-6         # a step's patch rebuilt from its stored columns must give the patched frequencies the runner stored
@@ -123,10 +129,13 @@ class ReadConfig:
     exploratory: str | None
     sample: Path | None = None
     second_steps: tuple[Source, ...] = ()   # the sources' molecules at STEP_RATIO times the step: the read is then the extrapolated one
+    q2_test: Path | None = None             # the q²-test record; without one that holds the extrapolated read states no outcome
 
     def __post_init__(self) -> None:
         if not self.sources:
             raise ValueError("no source given")
+        if self.q2_test is not None and not self.second_steps:
+            raise ValueError("a q²-test record belongs to the extrapolated read: give it with a second step")
         if self.step_checks and self.second_steps:
             raise ValueError("a step check belongs to the registered read and a second step to the extrapolated one: give one of the two")
         inputs = [self.molecules,
@@ -134,6 +143,8 @@ class ReadConfig:
         missing = [str(p) for p in inputs if not p.is_dir()]
         if self.sample is not None and not self.sample.is_file():
             missing.append(str(self.sample))
+        if self.q2_test is not None and not self.q2_test.is_file():
+            missing.append(str(self.q2_test))
         if missing:
             raise FileNotFoundError(f"not there: {missing}")
         out = self.out.resolve()
@@ -184,6 +195,7 @@ class Point:
     step_check_cm: float | None = None   # patched frequency at the other step minus this one; None when not checked
     small_step_cm: float | None = None   # an extrapolated point only: the patched frequency at the small step
     large_step_cm: float | None = None   # and at the large one; patched_cm is then the value extrapolated to step zero
+    directions_differ: bool = False      # the two steps used rotated directions: patched_cm is the small step's, nothing is extrapolated
 
     @property
     def change_cm(self) -> float:
@@ -203,8 +215,9 @@ class Point:
 
     @property
     def bias_removed_cm(self) -> float | None:
-        """How far the small step's frequency stands from the extrapolated one: the size of the step bias the extrapolation removed."""
-        return None if self.small_step_cm is None else abs(self.small_step_cm - self.patched_cm)
+        """How far the small step's frequency stands from the extrapolated one: the size of the step bias the extrapolation removed.
+        None where nothing was extrapolated."""
+        return None if self.small_step_cm is None or self.directions_differ else abs(self.small_step_cm - self.patched_cm)
 
     @property
     def flags(self) -> tuple[str, ...]:
@@ -215,6 +228,8 @@ class Point:
             found.append("step")
         if self.two_step_cm is not None and abs(self.two_step_cm) > NOT_QUADRATIC_CM:
             found.append(NOT_QUADRATIC)
+        if self.directions_differ:
+            found.append(DIRECTIONS_DIFFER)
         return tuple(found)
 
     @property
@@ -394,10 +409,11 @@ def directions_apart(small: np.ndarray, large: np.ndarray) -> float:
     return math.inf if small.shape != large.shape else float(np.abs(small - large).max())
 
 
-def step_pair_refusal(small: dict[str, Any], large: dict[str, Any]) -> str | None:
-    """Why two patch records are not the two steps of one measurement, or None when they are."""
+def step_pair_refusal(small: dict[str, Any], large: dict[str, Any], rotated: bool = False) -> str | None:
+    """Why two patch records are not the two steps of one measurement, or None when they are. `rotated` asks only for the steps and
+    the space: the two records are then not combined, and their directions may differ."""
     apart = directions_apart(small["U"], large["U"])
-    if apart > DIRECTIONS_TOL:
+    if not rotated and apart > DIRECTIONS_TOL:
         return (f"the two steps were measured along different directions (largest difference {apart:.1e}); columns along other "
                 "directions carry another step error and do not combine")
     if abs(large["step_bohr"] / small["step_bohr"] - STEP_RATIO) > STEP_RATIO_TOL:
@@ -437,9 +453,30 @@ def extrapolated_tag_points(mol: Molecule, tag: str, small: dict[str, Any], larg
     return points
 
 
+def same_space(small: np.ndarray, large: np.ndarray) -> bool:
+    """Whether two steps' directions span one space, whatever their rotation in it."""
+    return small.shape == large.shape and float(np.abs(small @ small.T - large @ large.T).max()) <= SPAN_TOL
+
+
+def rotated_tag_points(mol: Molecule, tag: str, small: dict[str, Any], large: dict[str, Any]) -> list[Point]:
+    """One functional's points where the two steps were measured along rotated directions of one space. Each step's patched Hessian
+    is whole, so both frequencies are known, but the columns do not combine: the point keeps the small step's value as its patched
+    frequency and is flagged, which leaves it out of every statistic."""
+    refusal = step_pair_refusal(small, large, rotated=True)
+    if refusal is not None or not same_space(small["U"], large["U"]):
+        raise ValueError(f"{mol.mol_id} {tag}: {refusal or 'the two steps did not re-measure the same space'}")
+    at_large = vibrational_modes(large["H"], mol.masses, mol.coords)
+    points = []
+    for p in tag_points(mol, tag, small, small["H"]):
+        large_cm, large_overlap = matched_mode(at_large, mol.modes[tag].vectors[:, p.mode])
+        points.append(replace(p, small_step_cm=p.patched_cm, large_step_cm=large_cm, directions_differ=True,
+                              overlap_patched=min(p.overlap_patched, large_overlap)))
+    return points
+
+
 def extrapolated_points(cfg: ReadConfig) -> tuple[list[Point], list[dict[str, str]]]:
-    """The extrapolated points of every source molecule that has both steps, and the molecules that cannot be read with the reason:
-    one without a second step, and one whose two steps were measured along different directions."""
+    """The points of every source molecule that has both steps — extrapolated, or flagged where the two steps used rotated
+    directions — and the molecules that have no second step: those are missing measurements and hold the outcome back."""
     first, second = molecules_of(cfg.sources), molecules_of(cfg.second_steps, "second-step folder")
     strangers = sorted(set(second) - set(first))
     if strangers:
@@ -453,11 +490,8 @@ def extrapolated_points(cfg: ReadConfig) -> tuple[list[Point], list[dict[str, st
         mol = Molecule.read(mol_id, source.labels, cfg.molecules)
         steps = {tag: (patch_of(mol, tag, source, read_step), patch_of(mol, tag, second[mol_id], read_step)) for tag in LABEL_TAGS}
         apart = max(directions_apart(small["U"], large["U"]) for small, large in steps.values())
-        if apart > DIRECTIONS_TOL:
-            unread.append({"id": mol_id, "reason": "the two steps were measured along different directions"})
-            continue
         for tag, (small, large) in steps.items():
-            points.extend(extrapolated_tag_points(mol, tag, small, large))
+            points.extend((rotated_tag_points if apart > DIRECTIONS_TOL else extrapolated_tag_points)(mol, tag, small, large))
     return points, unread
 
 
@@ -649,13 +683,44 @@ def held_back(candidates: list[Point], clean: list[Point]) -> tuple[str, str] | 
     return None
 
 
-def held_back_extrapolated(candidates: list[Point], unread: list[dict[str, str]]) -> tuple[str, str] | None:
+@dataclass(frozen=True)
+class Extrapolation:
+    """What the extrapolated read knows besides its points: the molecules without a second step, and the q²-test record it was
+    given (None when it was given none)."""
+
+    unread: tuple[dict[str, str], ...] = ()
+    q2_test: dict[str, Any] | None = None
+
+
+def read_q2_test(path: Path) -> dict[str, Any]:
+    """The q²-test record's verdict, ratios and interval; a file that is no such record is refused."""
+    record = json.loads(path.read_text(encoding="utf-8"))
+    ratios = record.get("ratios") if isinstance(record, dict) else None
+    if not isinstance(ratios, list) or not ratios or record.get("verdict") not in (Q2_HOLDS, Q2_FAILS) or "interval" not in record:
+        raise ValueError(f"{path} is no q²-test record: it needs a verdict ({Q2_HOLDS!r} or {Q2_FAILS!r}), its ratios and their interval")
+    return {"record": shown(path), "verdict": record["verdict"], "interval": list(record["interval"]),
+            "ratios": [{key: r[key] for key in ("id", "tag", "direction", "ratio")} for r in ratios]}
+
+
+def q2_sentence(q2_test: dict[str, Any]) -> str:
+    """The q² test's ratios and verdict in one sentence."""
+    ratios = ", ".join(f"{r['id']} {r['tag']} {r['ratio']:.2f}" for r in q2_test["ratios"])
+    return (f"the q² test {q2_test['verdict']} (`{q2_test['record']}`): R = {ratios}; the law is taken to hold when every R lies in "
+            f"{q2_test['interval'][0]:g}–{q2_test['interval'][1]:g}")
+
+
+def held_back_extrapolated(candidates: list[Point], extrapolation: Extrapolation) -> tuple[str, str] | None:
     """Why the extrapolated read states no outcome, or an undecided one, as (outcome, statement); None when the rule may be read."""
-    if unread:
-        reasons = sorted({u["reason"] for u in unread})
-        listed = "; ".join(f"{reason}: {', '.join(u['id'] for u in unread if u['reason'] == reason)}" for reason in reasons)
-        return OUTCOME_NOT_STATED, (f"No outcome is stated: {len(unread)} molecule(s) have no extrapolated value ({listed}). The rule is "
-                                    "read when every molecule has both steps along the same directions.")
+    if extrapolation.unread:
+        return OUTCOME_NOT_STATED, (f"No outcome is stated: {len(extrapolation.unread)} molecule(s) have no second step "
+                                    f"({', '.join(u['id'] for u in extrapolation.unread)}). That is a missing measurement; the rule is "
+                                    "read when every molecule has both steps.")
+    if extrapolation.q2_test is None:
+        return OUTCOME_NOT_STATED, ("No outcome is stated: no record of the q² test was given (`--q2-test`). The extrapolated value is "
+                                    "the measurement only once the step error is shown to grow as q² on a third step.")
+    if extrapolation.q2_test["verdict"] != Q2_HOLDS:
+        return OUTCOME_NOT_STATED, (f"No outcome is stated by the extrapolated read: {q2_sentence(extrapolation.q2_test)}. A two-point "
+                                    "extrapolation is not trusted, and the registered read's outcome 3 stands.")
     failed = [p for p in candidates if NOT_QUADRATIC in p.flags]
     if len(failed) >= STEP_FAILURES_STOP:
         return OUTCOME_UNDECIDED, (f"{len(failed)} points differ by more than {NOT_QUADRATIC_CM} cm⁻¹ between the two steps "
@@ -673,20 +738,21 @@ def decision_point(p: Point, extrapolated: bool) -> dict[str, Any]:
     return listed
 
 
-def registered_decision(points: list[Point], strata: Strata | None, unread: list[dict[str, str]] | None = None) -> dict[str, Any]:
+def registered_decision(points: list[Point], strata: Strata | None, extrapolation: Extrapolation | None = None) -> dict[str, Any]:
     """The registered rule on the registered population, with what stands beside it: the step check's say, the bounds from the flagged
-    points, and the fractions per band and weighted by the bands' sizes (descriptive). `unread` is given by the extrapolated read (the
-    molecules without an extrapolated value); the rule is then held back by them and by points that are not quadratic in the step."""
+    points, and the fractions per band and weighted by the bands' sizes (descriptive). `extrapolation` is given by the extrapolated
+    read; the rule is then held back by a molecule without a second step, by a q² test that is absent or failed, and by points that
+    are not quadratic in the step."""
     candidates = in_window([p for p in points if (p.tag, p.sample) == (DECISION_TAG, UNBIASED)], DECISION_WINDOW_CM)
     clean = [p for p in candidates if not p.flags]
     rule = apply_rule(clean, strata.population if strata else "the molecules of these sources")
     decision = asdict(rule) | {"bounds": flagged_bounds(clean, [p for p in candidates if p.flags]), "ordering": ordering_sentence(clean),
                                "strata": stratum_rows(clean, strata) if strata else None}
     decision["weighted_fraction"] = weighted_fraction(decision["strata"]) if strata else None
-    stop = held_back(candidates, clean) if unread is None else held_back_extrapolated(candidates, unread)
+    stop = held_back(candidates, clean) if extrapolation is None else held_back_extrapolated(candidates, extrapolation)
     if stop is not None:
         decision["outcome"], decision["statement"] = stop
-    decision["points"] = [decision_point(p, unread is not None) for p in candidates]
+    decision["points"] = [decision_point(p, extrapolation is not None) for p in candidates]
     return decision
 
 
@@ -700,9 +766,10 @@ def group_summary(tag: str, sample: str, points: list[Point]) -> dict[str, Any]:
             "rule": asdict(apply_rule(in_window(points, DECISION_WINDOW_CM), "this group's molecules"))}
 
 
-def summarise(points: list[Point], strata: Strata | None = None, unread: list[dict[str, str]] | None = None) -> dict[str, Any]:
-    """The whole record: one group per functional and sample with unflagged points in the bands, the registered group always. With
-    `unread` (the extrapolated read) the record also names those molecules and counts the points that are not quadratic in the step."""
+def summarise(points: list[Point], strata: Strata | None = None, extrapolation: Extrapolation | None = None) -> dict[str, Any]:
+    """The whole record: one group per functional and sample with unflagged points in the bands, the registered group always. For the
+    extrapolated read the record also names the molecules without a second step, counts the points that are not quadratic in the
+    step and those whose steps used rotated directions, and carries the q² test it was given."""
     clean = [p for p in points if not p.flags]
     keys = sorted({(p.tag, p.sample) for p in clean} | {(DECISION_TAG, UNBIASED)})
     groups = [group_summary(tag, sample, [p for p in clean if (p.tag, p.sample) == (tag, sample)]) for tag, sample in keys]
@@ -711,9 +778,11 @@ def summarise(points: list[Point], strata: Strata | None = None, unread: list[di
               "flagged_overlap": sum("overlap" in p.flags for p in points), "flagged_step": sum("step" in p.flags for p in points),
               "step_checked": sum(p.step_check_cm is not None for p in points),
               "turned_imaginary": [f"{p.mol_id} {p.tag}" for p in points if p.turned_imaginary],
-              "groups": groups, "decision": registered_decision(points, strata, unread)}
-    if unread is not None:
-        record |= {"flagged_not_quadratic": sum(NOT_QUADRATIC in p.flags for p in points), "unread": unread}
+              "groups": groups, "decision": registered_decision(points, strata, extrapolation)}
+    if extrapolation is not None:
+        record |= {"flagged_not_quadratic": sum(NOT_QUADRATIC in p.flags for p in points),
+                   "flagged_directions": sum(DIRECTIONS_DIFFER in p.flags for p in points),
+                   "unread": list(extrapolation.unread), "q2_test": extrapolation.q2_test}
     return record
 
 
@@ -732,7 +801,8 @@ def points_csv(points: list[Point], extrapolated: bool = False) -> str:
                f"{p.step_bohr:g}", "" if p.step_check_cm is None else f"{p.step_check_cm:+.4f}", int(p.turned_imaginary),
                "+".join(p.flags)]
         if extrapolated:
-            row += [f"{p.small_step_change_cm:+.4f}", f"{p.bias_removed_cm:.4f}", f"{p.two_step_cm:+.4f}"]
+            row += [f"{p.small_step_change_cm:+.4f}", "" if p.bias_removed_cm is None else f"{p.bias_removed_cm:.4f}",
+                    f"{p.two_step_cm:+.4f}"]
         writer.writerow(row)
     return buffer.getvalue()
 
@@ -762,9 +832,14 @@ def group_lines(group: dict[str, Any]) -> list[str]:
 
 
 def extrapolated_row(name: str, label_cm: float, values: dict[str, Any]) -> str:
-    """One row of an extrapolated read's point table: the extrapolated change first, then what the small step alone gave."""
-    return (f"| {name} | {label_cm:.2f} | {values['patched_cm']:.2f} | {values['change_cm']:+.2f} | {values['small_step_change_cm']:+.2f} | "
-            f"{values['bias_removed_cm']:.2f} | {values['two_step_cm']:+.2f} | {values['noise_cm']:.2f} | {'+'.join(values['flags'])} |")
+    """One row of an extrapolated read's point table: the extrapolated change first, then what the small step alone gave. A point
+    whose steps used rotated directions has no extrapolated value, and its row says so."""
+    if values["bias_removed_cm"] is None:
+        zero, bias = "none | none", "none"
+    else:
+        zero, bias = f"{values['patched_cm']:.2f} | {values['change_cm']:+.2f}", f"{values['bias_removed_cm']:.2f}"
+    return (f"| {name} | {label_cm:.2f} | {zero} | {values['small_step_change_cm']:+.2f} | {bias} | {values['two_step_cm']:+.2f} | "
+            f"{values['noise_cm']:.2f} | {'+'.join(values['flags'])} |")
 
 
 def extrapolated_table(first: str) -> list[str]:
@@ -821,14 +896,20 @@ def extrapolated_intro(record: dict[str, Any], points: list[Point]) -> list[str]
              "'Patched' and Δ below are the extrapolated values. "
              f"{record['flagged_overlap']} points are flagged for a coverage or overlap below {OVERLAP_MIN} (at step zero or at either step) "
              f"and {record['flagged_not_quadratic']} as '{NOT_QUADRATIC}', their two steps standing more than {NOT_QUADRATIC_CM} cm⁻¹ apart; "
-             "flagged points are in points.csv and in no statistic. "
+             f"{record['flagged_directions']} are flagged '{DIRECTIONS_DIFFER}': their molecule's two steps were measured along rotated "
+             "directions of the same space, so they have no extrapolated value (their noise is the small step's). "
+             "Flagged points are in points.csv and in no statistic. "
              f"A molecule is '{BIASED}' when a label mode of it lies below {LOW_MODE_CM:g} cm⁻¹. {len(record['turned_imaginary'])} point(s) "
              f"turned imaginary under the patch. 'Noise' is the frequency noise the extrapolated value carries per {GRADIENT_NOISE_UNIT:g} "
              f"hartree/bohr of gradient noise: the small step's (`noise_sensitivity_cm`) times {EXTRAPOLATED_NOISE_FACTOR:.3f}; the gradient "
              "noise itself is not measured here.", ""]
+    if record["q2_test"] is None:
+        lines += ["**No record of the q² test was given**, so this read states no outcome.", ""]
+    else:
+        lines += [f"On a third step {q2_sentence(record['q2_test'])}.", ""]
     if record["unread"]:
-        lines += [f"**{len(record['unread'])} molecule(s) have no extrapolated value** and no point here: "
-                  + "; ".join(f"{u['id']} ({u['reason']})" for u in record["unread"]) + ".", ""]
+        lines += [f"**{len(record['unread'])} molecule(s) have no second step** and no point here: "
+                  + ", ".join(u["id"] for u in record["unread"]) + ".", ""]
     lines += ["## Every point: extrapolated, at the small step, and the step bias removed", "", *extrapolated_table("point")]
     lines += [extrapolated_row(f"{p.mol_id} {p.tag} mode {p.mode}", p.label_cm, decision_point(p, True))
               for p in sorted(points, key=lambda p: (p.tag, p.label_cm))]
@@ -871,7 +952,8 @@ def registered_record(cfg: ReadConfig) -> tuple[dict[str, Any], list[Point]]:
 def extrapolated_record(cfg: ReadConfig) -> tuple[dict[str, Any], list[Point]]:
     """The extrapolated read: every source molecule from its two steps."""
     points, unread = extrapolated_points(cfg)
-    return summarise(points, Strata.read(cfg.sample) if cfg.sample else None, unread), points
+    extrapolation = Extrapolation(tuple(unread), read_q2_test(cfg.q2_test) if cfg.q2_test else None)
+    return summarise(points, Strata.read(cfg.sample) if cfg.sample else None, extrapolation), points
 
 
 def run(cfg: ReadConfig) -> dict[str, Any]:
@@ -888,7 +970,7 @@ def run(cfg: ReadConfig) -> dict[str, Any]:
         record["inputs"]["second_steps"] = [[shown(s.patches), shown(s.labels)] for s in cfg.second_steps]
         record["constants"] |= {"step_ratio": STEP_RATIO, "weight_small": WEIGHT_SMALL, "weight_large": WEIGHT_LARGE,
                                 "extrapolated_noise_factor": EXTRAPOLATED_NOISE_FACTOR, "not_quadratic_cm": NOT_QUADRATIC_CM,
-                                "directions_tol": DIRECTIONS_TOL, "rebuild_tol_cm": REBUILD_TOL_CM}
+                                "directions_tol": DIRECTIONS_TOL, "span_tol": SPAN_TOL, "rebuild_tol_cm": REBUILD_TOL_CM}
     cfg.out.mkdir(parents=True, exist_ok=True)
     write_atomic(cfg.out / "points.csv", points_csv(points, extrapolated))
     write_atomic(cfg.out / "record.json", json.dumps(record, indent=1, ensure_ascii=False) + "\n")
@@ -902,13 +984,15 @@ def parse_args(argv: list[str] | None = None) -> ReadConfig:
     ap.add_argument("--step-check", action="append", default=[], help="the same molecules patched at another step, as a source; repeatable")
     ap.add_argument("--second-step", action="append", default=[],
                     help="the sources' molecules patched at twice the step, as a source: the read extrapolates to step zero; repeatable")
+    ap.add_argument("--q2-test", type=Path, default=None,
+                    help="the q²-test record of low_mode_step_analysis.py --third; the extrapolated read states no outcome without one that holds")
     ap.add_argument("--molecules", type=Path, required=True, help="the corpus molecules folder (geometry.json per id)")
     ap.add_argument("--out", type=Path, required=True, help="a results folder of this read's own")
     ap.add_argument("--sample", type=Path, default=None, help="the sample script's sample.json: bands and their sizes, for the weighted fraction")
     ap.add_argument("--exploratory", default=None, help="why this read decides nothing; printed at the top of RESULT.md")
     a = ap.parse_args(argv)
     return ReadConfig(tuple(Source.parse(s) for s in a.source), tuple(Source.parse(s) for s in a.step_check), a.molecules, a.out, a.exploratory,
-                      a.sample, tuple(Source.parse(s) for s in a.second_step))
+                      a.sample, tuple(Source.parse(s) for s in a.second_step), a.q2_test)
 
 
 def main(argv: list[str] | None = None) -> None:

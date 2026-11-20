@@ -313,7 +313,7 @@ made at another step). Run specs `probes/runspecs/night20_218b_lane<k>.json`. Th
 night20's; for those seven the two steps are two machines, which the gate of amendment 1 covers (gradients within 1.9e-8
 hartree/bohr). Nothing else in the registration changes.
 
-## Amendment 3 (20 November 2026, 14:3x UTC) — the measurement becomes the value extrapolated to step zero
+## Amendment 3 (20 November 2026, 14:3x UTC; revised 14:4x UTC before it joined the trunk) — the measurement becomes the value extrapolated to step zero, once the q² law is tested
 
 **When this is written, and what had been seen.** After the registered read gave outcome 3 (amendment 2), and after the two steps of
 the seven checked molecules were set side by side (`probes/low_mode_step_analysis.py`, into
@@ -322,6 +322,10 @@ step-0.02 data of the other 13 molecules were read: their folder, `patch_step02_
 checkout when this was written and was not opened. Everything below comes from the seven molecules of `patch_step02_below60/`.
 The extrapolated values of six of those seven were also seen (`step_analysis/extrapolated_7/`, a demonstration of the new read
 that states no outcome); point 6 says what that costs.
+
+This amendment was revised once, the same day, before it joined the trunk and with that folder still absent and unopened: the
+rotated directions of B_3dcbd985e3 became a flag on its points where the first text made the read wait for a new measurement
+(points 2 and 3), and the test of the q² law was added (point 7). The first text is commit a7a5d87b on the branch.
 
 **1. What the two steps showed.** As registered, a point whose two steps differ by more than 0.15 cm⁻¹ is flagged and left out.
 On the seven molecules that removes all 8 registered points, so after the extension the rule would have nothing to read. The
@@ -370,16 +374,22 @@ Two checks stand before the combination, both in `probes/low_mode_threshold_read
 - Both steps must hold the same `directions`, to 1e-12 in every element. Columns measured along rotated directions carry another
   step error and do not combine. **B_3dcbd985e3 fails this**: its two directions span the same space at both steps but are
   rotated in it (largest element difference 0.73; the step-0.01 run was night20's, the step-0.02 run the laptop's, and the two
-  directions come from a singular-value decomposition). It has two registered points (23.7 and 30.3 cm⁻¹). It gets no
-  extrapolated value from the data that exist; it has to be measured again at one of the two steps along the other step's
-  directions (2 directions, 8 gradients over both functionals). Until then it is a molecule without both steps (point 3).
+  directions come from a singular-value decomposition; the two projectors agree to 3e-14). It has two registered points (23.7
+  and 30.3 cm⁻¹). They get no extrapolated value. **They are left out, flagged "directions differ"**, and listed with the
+  frequencies of both steps; the read does not wait for a new measurement of that molecule. Like any flagged point they count
+  in the outcome printed with the flagged points as moved and as unmoved, and they do not count towards the "two or more not
+  quadratic" clause. Any molecule among the extension's 13 whose two steps turn out to hold rotated directions of one space is
+  treated the same way (both their steps are night20's, so none is expected); this was decided before their data were read. A
+  second step that measured another space is no second step of this measurement, and the read stops on it.
 
 **3. What replaces the 0.15 cm⁻¹ flag.** A point is flagged "not quadratic in the step" and left out of every statistic when
 |ω(0.02) − ω(0.01)| exceeds 1.0 cm⁻¹. The limit is set now, from the seven molecules, above their largest difference
 (0.573 cm⁻¹, B_0c6c144a7f, B3LYP, 23.7 cm⁻¹): a difference of that size is a removed bias of about 0.19 cm⁻¹, and beyond 1.0
-(a bias beyond a third of a wavenumber, two thirds of the line) a two-point extrapolation is not trusted. A point without both
-steps along the same directions cannot be read: its molecule is listed with the reason, and **the read states no outcome while
-any molecule of its sources is in that list**.
+(a bias beyond a third of a wavenumber, two thirds of the line) a two-point extrapolation is not trusted. A molecule without a
+second step at all is a missing measurement, not a flag: it is listed, and **the read states no outcome while any molecule of
+its sources has no second step**. The rule is then read on the registered points that have both steps along the same directions
+and carry no flag, and only when at least 16 of them are left (the floor of section 7); with the two points of B_3dcbd985e3
+out, at most 19 of the 21 are.
 
 **4. The noise of the extrapolated value.** A column's gradient noise goes as σ/q, so the step-0.02 column carries half the noise
 of the step-0.01 one. With the weights 4/3 and −1/3 and independent noise at the two steps the extrapolated column carries
@@ -395,15 +405,17 @@ the descriptive lines (bands, quartiles, correlations, the weighted fraction, th
 label is swapped and `LOW_MODE_CM` does not change by this registration. The clause "two or more registered points failing the
 step check is outcome 3" now means two or more registered points flagged "not quadratic". The rule that a registered point
 which moved by 0.25 to 1.0 cm⁻¹ without a step check must be repeated is moot once every molecule has both steps, and the
-extrapolated read does not apply it: a molecule without both steps holds the outcome back by point 3 instead.
+extrapolated read does not apply it: a molecule without a second step holds the outcome back by point 3 instead.
 
 The registered, un-extrapolated read stays reproducible: `--step-check` runs it as it ran, and
 `tests/test_low_mode_threshold_read.py` pins that it writes the three files of `read/` to the byte. The extrapolated read ran
 on synthetic records before this amendment was committed (same test file): a quartic term is removed to 1e-8 cm⁻¹ where each
 single step is off by the constructed amount; a sextic term leaves the stated −4·b·q⁴; the noise factor follows from the
-repair's own `column` by propagation; the flag holds at 1.0 exactly and trips just beyond; a molecule without its second step,
-and one with rotated directions, get no point and hold the outcome back; a second step that is not twice the first, or patched
-another space, is refused; each outcome is reached from constructed extrapolated points.
+repair's own `column` by propagation; the flag holds at 1.0 exactly and trips just beyond; a molecule without its second step
+gets no point and holds the outcome back; one with rotated directions gets flagged points that count nowhere, and 19 clean
+points beside them are read while 15 are not; a second step that is not twice the first, that patched below another threshold
+or that measured another space is refused; each outcome is reached from constructed extrapolated points; and without a q²-test
+record that holds, no outcome is stated (point 7).
 
 **6. What this amendment costs.** The definition of the measurement changed after part of the data was seen: the two-step
 differences of seven molecules, and the extrapolated values of six of them (12 points, 6 registered; the bias removed is 0.04
@@ -411,3 +423,45 @@ to 0.19 cm⁻¹, and one registered point, B_4ff67f9ea2, goes from −0.43 at st
 The limit of 1.0 cm⁻¹ was chosen with those seven molecules' differences in view. The rule's line, thresholds and floor did not
 change, and the step-0.02 data of the other 13 molecules had not been read. The registered read stays on record as outcome 3
 (`read/`), and a reader who distrusts the extrapolation has the step-0.01 change of every point beside the extrapolated one.
+Leaving out the two points of B_3dcbd985e3 was decided knowing their step-0.01 changes (+0.08 and −0.35 cm⁻¹, both inside the
+line) and their two-step differences (+0.44 and +0.27); the reason they are out, a rotation of the directions between two
+machines, does not depend on those values, and the outcome is printed with them counted both ways.
+
+**7. The q² law is tested on a third step before the extrapolated read is believed.** Registered here, before the run; the run
+is made on night20 after this amendment has joined the trunk. Points 1 and 2 rest on the step error growing as q², which two
+steps cannot show. B_1726105aae and B_1428bc8164 — of the seven checked molecules the two with one direction and the least
+noise (0.14 and 0.07 cm⁻¹ per 1e-7 hartree/bohr at step 0.01) — are patched a third time at a step of 0.04 bohr, with the same
+runner call otherwise (`--below 60`; the runner takes steps up to 0.05 bohr, `probes/low_mode_patch_run.py:66`). The third
+step must hold the directions of the other two to 1e-12, as in point 2; otherwise the test is not read.
+
+- *The prediction.* With c = uᵀC the measured curvature along the direction and an error a·q², c(0.04) − c(0.01) = 15·a·q² and
+  c(0.02) − c(0.01) = 3·a·q², so their ratio R = [c(0.04) − c(0.01)] / [c(0.02) − c(0.01)] is (16 − 1)/(4 − 1) = 5.0. An error
+  linear in the step gives 3, one that grows as q⁴ gives 17, and noise gives no particular value. The denominators are known:
+  29.1 (B3LYP) and 30.0 (ωB97X) cm⁻² for B_1726105aae, 29.9 and 30.8 for B_1428bc8164. The predicted numerators are five
+  times those: 146, 150, 149 and 154 cm⁻².
+- *The rule.* R is read per molecule and functional: four values. The law is taken to hold when all four lie in 4.0 to 6.0.
+- *Where the interval comes from.* The curvature's noise goes as 1/q, so c(0.02) carries half and c(0.04) a quarter of the
+  noise n of c(0.01), and to first order R carries (n/D)·√((R − 1)² + (R/2)² + (1/4)²), with D the denominator
+  (`low_mode_step_analysis.q2_ratio_noise`, checked against numerical derivatives in the tests). At σ = 2e-8 hartree/bohr and
+  R = 5 that is 0.30 for B_1726105aae (n = 1.88 cm⁻²) and 0.22 for B_1428bc8164 (n = 1.41); at σ = 1e-8 half of it. The
+  interval is therefore 3.3 (B_1726105aae) to 4.6 (B_1428bc8164) standard deviations wide on either side at the upper σ, and
+  6.6 to 9.2 at the lower: noise alone leaves it about once in a thousand per value at worst. It is not loose either. With a
+  q⁴ term of x times the q² term at step 0.01, R = (15 + 255x)/(3 + 15x): R = 6.0 is x = +1.8 %, R = 4.0 is x = −1.5 %. What
+  a two-point extrapolation then leaves is 4x of the bias it removed, about 7 % of at most 10.4 cm⁻², which is under
+  0.02 cm⁻¹ at 23 cm⁻¹. So 4.0 to 6.0 is kept as proposed; the propagation gave no reason to move it.
+- *If the law holds*, the extrapolated value is the measurement, as points 2 to 5 say.
+- *If any R lies outside*, a two-point extrapolation is not trusted: the extrapolated read states no outcome, the registered
+  read's outcome 3 stands, and the four R values are reported.
+- *How the read enforces it.* `probes/low_mode_step_analysis.py --third <the step-0.04 folder>` writes Q2_TEST.md and
+  q2_test.json with the four values and the verdict. The extrapolated read states an outcome only when that record is named
+  with `--q2-test` and says the law holds; without a record, or with one that fails, it prints its tables and states none.
+  There is no default record.
+- *Described, without a rule.* The same script prints the zero-step curvature of c₀ + a·q² + b·q⁴ fitted through the three
+  steps beside the two-point value of point 2, for these two molecules.
+- *What the test does not cover.* It is made on two heavy-frame molecules (34 and 50 cm⁻¹ in B3LYP) and taken to speak for
+  the light-atom modes, where the noise would swallow it; the 1.0 cm⁻¹ flag of point 3 stays the guard per point.
+
+The test's read ran on synthetic records before this amendment was committed: an error a·q² gives R = 5 and "holds"; a q⁴
+term beside it gives the computed R = 8.16 and "fails", and the three-point fit then recovers the true curvature where the
+two-point value is off by the stated −4·b·q⁴; differences made as noise would leave them give R = 0.4 and "fails"; R just
+inside and just outside 6.0; a third step along rotated directions, or not twice the second, is refused.
