@@ -15,6 +15,7 @@ from . import prices
 from .catalog import PLAN, RUNG_LABELS, Catalog
 from .licence import state as licence_state
 from .molecule import canonical
+from .seen import CATION_LAYER
 
 sys.path.insert(0, str(PLAN / "modules" / "07_agentic_workflows"))
 from steward.gate import check as gate_check  # noqa: E402
@@ -57,6 +58,13 @@ class Decision(BaseModel):
     gate: dict | None = None
     ledger_line: str = ""
     date: str = Field(default_factory=lambda: datetime.now().strftime("%Y-%m-%d %H:%M"))
+
+
+# what a cation request lacks today (20 Nov 2026): until then the refusal asked for "the cation rows of the anchor plan (benzene⁺,
+# naphthalene⁺) read", written on 28 Sep 2026 before the corpus had cation rows and before decision 63 stopped new anchors
+CATION_NEEDED = ("a pipeline version that takes open-shell input, with the correction's error measured on cations (the corpus's cation "
+                 "rows are not all computed yet), and for the anchored rung a coupled-cluster cation anchor, which decision 63 leaves out "
+                 "of scope until July 2027; then a rung opened by a dated decision")
 
 
 def _refuse(req: Request, reasons: list[str], rule_ids: list[str], gate_named: str, price_lines: list[dict], needed: str, row: dict | None = None) -> Decision:
@@ -107,9 +115,11 @@ def decide(req: Request, catalog: Catalog) -> Decision:  # noqa: PLR0911  one re
                        "a valid SMILES, corpus name or manifest id")
     if req.charge != 0 or req.multiplicity != 1:
         return _refuse(req, [f"charge {req.charge}, multiplicity {req.multiplicity}: the cation rung is closed (obstacle 9; the measured price of one "
-                             "naphthalene⁺ energy is on the line below); no certificate rung exists for open-shell species yet"], ["R25"],
-                       "cation rung closed (obstacle 9)", [prices.step_price("cation_energy_naphthalene_plus")],
-                       "the cation rows of the anchor plan (benzene⁺, naphthalene⁺) read and a rung opened by a dated decision", row)
+                             "naphthalene⁺ energy is on the line below). The corpus holds radical-cation rows at the DFT level (layer "
+                             f"{CATION_LAYER} of its manifest), but no certificate rung exists for a charged or open-shell species: the "
+                             "pipeline takes neutral closed-shell molecules only and the anchor registry carries no cation anchor"],
+                       ["R25"], "cation rung closed (obstacle 9)", [prices.step_price("cation_energy_naphthalene_plus")],
+                       CATION_NEEDED, row)
     # 2. outside the corpus: the cap decides what is reachable
     cheap = prices.step_price("cheap_deck_v1"); anchor = prices.step_price("anchor_e8_cc_hessian_naphthalene")
     if row is None:

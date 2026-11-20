@@ -39,3 +39,34 @@ promised. A snapshot built now would have to be built again. This note fixes the
 2. Root resolver, `make_snapshot.py`, the snapshot-mode test (regression test first, CLAUDE.md "Python code").
 3. Build the snapshot; `SUBMISSION.txt`; README sections Files and Repository (`udacity-industry-ai-synthesis`, REVIEW item 6).
 4. The dry run with `tools/make_module_repo.sh` in a fresh clone (`-` for no development branch, as for modules 06 and 07).
+
+## Corrections to the inventory, 20 November 2026 08:18
+
+The table above is the inventory of 18 October and stays. The licence was rewritten in between (decision 65, v1.4), so four of its rows
+no longer describe what the code reads. Read from the code on 20 November 2026:
+
+| # | Was | Is |
+|---|---|---|
+| 4 | module 05: the licence reading `out/E7_rungB_layerB_2026-09-27.md` and the layer-B rule | `licence.py` → `accuracy.carried_accuracy()` reads module 05's `out/MODELS_STATUS.json`, then for the carried measurement networks the six evaluation records `out/v14/E7_rungC_v14s3clean_c00_control_eval_clean_seed{0,1,2}.json` and `…_a8read_seed{0,1,2}.json`, the product-error record `…_product_error.json` and the training record `…c00_control.json`. `product_error_record` also hashes the three `.pt` checkpoints where they are present (`accuracy.py`, `P.sha16`), which the recorder would copy |
+| 5 | module 05: chain 34 evaluations and T3 intensities, read by `spectrum.py` | no longer read by the scenarios or the notebook. `spectrum.shape` reads `corpus/molecules/<id>/` (geometry, the B3LYP Hessian, the APT file); `spectrum.test_prediction` still reads chain 34's `out/T3_tz_folds_c34_seed*_fold_<mid>.npz`, and only `website/export/build_catalog.py` calls it |
+| 7 | module 07: the `steward` package and "the rule tables" | the package and `rules/rules_v2.json` (41 rules), the default table `officer.py` loads |
+| 9 | evidence files: the layer B pre-registration, … | the layer-B pre-registration is no longer named on a certificate (20 Nov); `certify.py` reads module 05's `out/ANCHORS_STATUS.json` (decision 62) and the evidence paths the export names |
+
+Two rows were missing:
+
+| # | Source | Read by | Standalone form |
+|---|---|---|---|
+| 12 | **code** of module 05 (`m05/`, `corpus/`), of `probes/` and of `src/dpir`, imported through `sys.path`, not through `paths.resolve`: `model_registry`, `network_kind`, `rungC_train`, `rungC_infer`, `rungC_equivariant`, `rungC_intensities`, `rungC_settings_added`, `learning_curve_layerA`, `anchor_registry`, `run_corpus`, `apt`, `promotion_read`, `chain35_read`, `scale_factor_baseline`, `dpir.provenance` and what they import — 34 files, and torch, rdkit and scipy | `pipeline.py:73-88`, `accuracy.py:17-20`, `licence.py`, `own_spread.py`, `spectrum.py` (`_m05`), `run_scenarios.py` | **open.** In a fresh clone `import m08.certify` fails at these imports, so the notebook cannot run there. The snapshot-mode test does not see it: it runs inside the plan repository, where the code is importable. See below |
+| 13 | one stored pipeline run: `probes/results_m1/pipeline_benzene_anharmonic_v3_2026-11-19/benzene/certificate.json` | `stored_run.py` (the notebook's section 3.7) | copied: `make_snapshot.py` opens it under the recorder after the scenarios |
+
+**What row 12 needs (looked at on 20 November 2026, not done).** The certificate and the licence need three things from that code: the model
+registry's reading (`model_registry.read_status`, `carried_keys`, `checkpoint_key`), the evaluation-record readers
+(`promotion_read.load_eval_arm`, `reported`, `FAMILIES`, `QUANTITIES`; `chain35_read`'s two lines; `rungC_settings_added`;
+`network_kind`) and `rungC_intensities.mode_intensities` for the heights. None of that trains or runs a network. But
+`m05/model_registry.py` imports torch at its top, `accuracy.py` reaches it through `m08.pipeline`, which also imports the trainer and
+the inference code, and `licence.py` takes five constants from `m08/own_spread.py`, which imports the pipeline. Two ways out:
+(a) vendor the 34 files into the snapshot and give `pipeline.py`'s `sys.path` lines a resolver, keeping torch in `requirements.txt`;
+(b) decouple: make `model_registry`'s torch import lazy (a change in `m05/`), move the registry reads, `M05`, `NETWORK` and `sha16` out
+of `pipeline.py` and the own-spread constants out of `own_spread.py` into light modules, so that a catalogue certificate imports no
+training code — then only the light readers need vendoring. (b) touches `m05/`, which a running search imports; it waits for that
+search to end. Until one of the two is done, step 3's snapshot build gives a repository whose notebook does not run.

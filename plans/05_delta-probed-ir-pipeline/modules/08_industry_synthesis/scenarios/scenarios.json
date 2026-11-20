@@ -4,7 +4,9 @@
     {"date": "2026-11-14 18:2x", "scenarios": ["S2", "S2b"], "change": "azulene -> biphenyl",
      "why": "azulene reached rung 4 when its coupled-cluster anchor landed (it is one of the ten in the anchor registry), so the request these two cases are built on - a corpus molecule with the cheap column only - is answered with a certificate, correctly. Biphenyl is at rung 1 with no anchor, as azulene was on 28 September. The cases, their expectations and their predictions are unchanged."},
     {"date": "2026-11-14 18:2x", "scenarios": ["S3"], "change": "the title says 'listed but not computed' instead of 'outside the corpus'",
-     "why": "module 06's candidates are in the catalogue at rung 0 now, so the drawn molecule is listed rather than absent. The case - a budget below one anchor must be refused with the cap, the cheapest rung reachable and its price - is unchanged, and the refusal for a listed molecule was improved to give that answer (m08/officer.py, reachable_within)."}
+     "why": "module 06's candidates are in the catalogue at rung 0 now, so the drawn molecule is listed rather than absent. The case - a budget below one anchor must be refused with the cap, the cheapest rung reachable and its price - is unchanged, and the refusal for a listed molecule was improved to give that answer (m08/officer.py, reachable_within)."},
+    {"date": "2026-11-20 08:01", "scenarios": ["S6"], "change": "the status names the record of the run instead of 'not run in this build (needs the built site and axe; website backlog rows 8–9)'",
+     "why": "S6 was run on 11 October 2026 and passes on the published site (PRE_REGISTRATION.md, outcome addendum of 11 October; out/s6_accessibility_2026-10-11.json). run_scenarios.py still does not run it - it needs the built site and a browser - and now reads the status it reports from that record. The pass line is unchanged."}
   ],
   "scenarios": [
     {"id": "S1", "title": "naphthalene, anchored (rung 4), target 4 → certificate",
@@ -42,7 +44,7 @@
   ],
   "mechanical": [
     {"id": "S5", "title": "catalogue consistency: build_catalog.py exits 0 (its invariants hold)", "command": "python website/export/build_catalog.py", "pass": "exit 0 and problems = []"},
-    {"id": "S6", "title": "accessibility and mobile: axe 0 serious/critical on Home, Atlas, one molecule page; keyboard walk; phone layout", "pass": "0 serious", "status": "not run in this build (needs the built site and axe; website backlog rows 8–9)"},
+    {"id": "S6", "title": "accessibility and mobile: axe 0 serious/critical on Home, Atlas, one molecule page; keyboard walk; phone layout", "pass": "0 serious", "status": "run on 11 October 2026, not by run_scenarios.py: the record is out/s6_accessibility_2026-10-11.json, and run_scenarios.py reports its verdict"},
     {"id": "S7", "title": "cost record honesty: every € and hour on a certificate traces to a run log or the measured price table", "pass": "100 %"}
   ]
 }
