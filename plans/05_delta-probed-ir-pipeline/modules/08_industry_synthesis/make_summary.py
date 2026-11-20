@@ -132,8 +132,9 @@ def scenario_sentences(scenarios: dict[str, Any], outcome: dict[str, Any]) -> st
     return (f"The officer answered {scenarios['n']} requests — {len(registered)} pre-registered ({', '.join(registered)}) and "
             f"{len(added)} added cases ({', '.join(added)}) — and all produced the registered kind of output ({scenarios['n_pass']} of "
             f"{scenarios['n']}). The three mechanical checks are separate. S7: every cost line traced to its source "
-            f"({mechanical['S7']['lines_traced']} of {mechanical['S7']['lines_checked']}); {outcome['n_unpriced']} anchor lines are shown as "
-            f"not priced. S6, accessibility, is not run by the scenario script; its record says: {mechanical['S6']['status']}. {s5}.")
+            f"({mechanical['S7']['lines_traced']} of {mechanical['S7']['lines_checked']}); {outcome['n_unpriced']} anchor "
+            f"line{' is' if outcome['n_unpriced'] == 1 else 's are'} shown as not priced. S6, accessibility, is not run by the scenario "
+            f"script; its record says: {mechanical['S6']['status']}. {s5}.")
 
 
 def failure_sentence(coverage: list[dict[str, Any]]) -> str:
@@ -146,6 +147,20 @@ def failure_sentence(coverage: list[dict[str, Any]]) -> str:
     return (f"The failure case is real: on benzene, the coupled-cluster composite deviates from CCSD(T) by {deviations} against "
             f"tolerances of {' and '.join(f'{a['u_band']:.0f}' for a in wider)}, and the certificate marks those families as not decidable "
             "at this rung.")
+
+
+def anchor_price_sentence(results: dict[str, Any]) -> str:
+    """Whose price the anchor's is, and which of the two certificates carries a price for its anchor in force, from their cost lines."""
+    priced, unpriced = [], []
+    for key in ("s1", "s8"):
+        in_force = [line for line in results[key]["cost"] if line["step"].startswith("anchor in force")]
+        if not in_force:
+            raise ValueError(f"results.json holds no 'anchor in force' cost line for {key}: the paper's sentence on anchor prices has no record")
+        (unpriced if any(line["eur_ex_vat"] is None for line in in_force) else priced).append(results[key]["anchor"]["name"])
+    said = ([f"the certificate of {' and '.join(priced)} carries it"] if priced else []) + (
+        [f"for {' and '.join(unpriced)} the anchor in force is shown without a price"] if unpriced else [])
+    return ("The one anchor price is naphthalene's, from its run logs with one-off checks and a lost first attempt; "
+            + ", and ".join(said) + ".")
 
 
 def context(results: dict[str, Any]) -> list[Block]:
@@ -257,9 +272,7 @@ def reflection(results: dict[str, Any]) -> list[Block]:
                  "not against coupled cluster and not against the laboratory, and the certificate says so in its licence statement. "
                  f"{anharmonic_sentence(results['pipeline_run']['anharmonic'], licence['line_cm'])} Where a licensed family rests on few molecules "
                  f"its interval crosses the line ({len(licence['caveats'])} such cases today). The catalogue is thin above the cheap rung: "
-                 f"{counts['anchored']} anchored molecules and {counts['validated']} validated. The price of an anchor is naphthalene's alone, "
-                 "read from its run logs, one-off checks and a lost first attempt included; the certificates show the anchors in force "
-                 "without a price, because the registry carries no hours. "
+                 f"{counts['anchored']} anchored molecules and {counts['validated']} validated. {anchor_price_sentence(results)} "
                  f"{failure_sentence(results['s8']['coverage'])}"),
         ("heading", "Professional and Industry Relevance"),
         ("para", "The product form is a spectrum with a per-band budget, a cost record and a provenance block, or a refusal with a price. A "

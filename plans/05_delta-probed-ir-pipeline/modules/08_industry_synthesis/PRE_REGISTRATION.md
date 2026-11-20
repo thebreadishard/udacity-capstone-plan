@@ -115,3 +115,15 @@ in force is quoted from the anchor registry and shown as not priced.
   Both amendments are in `scenarios/scenarios.json` with their reasons.
 - **Not run here.** `out/` and `notebook/results.json` hold the record of this morning's run with the old price until the scenarios
   are run and the notebook and paper rebuilt.
+
+## Note, 20 November 2026 10:12 — the certificate carries the priced anchor; a budget is held against everything missing
+
+- **S1's certificate** carries four cost lines instead of three: naphthalene's anchor in force is the composite whose runs the price
+  table now prices, so it is shown as two priced lines (the coupled-cluster Hessian on the CPX62, the MP2 basis step on the CCX53)
+  instead of one line "not priced". The key is the file the registry names for the entry (`certify.PRICED_ANCHORS`), not the
+  molecule and not the route: benzene's full cc-pVTZ anchor (S8) and every other composite stay "not priced". S1's and S8's
+  registered expectations are unchanged.
+- **The officer's budget rule.** For a molecule below the cheap rung asked for at rung 4, the budget was compared with the anchor's
+  price alone. It is compared with the sum of what is missing (deck + anchor, €0.24 + €5.83 = €6.07); a budget between the two is
+  refused with what it does reach (rung 1), and a run order for such a molecule names the deck as its first job. No registered
+  kind changes: S3's €2 is below both, S2 and S2b ask for a molecule that has the cheap rung.

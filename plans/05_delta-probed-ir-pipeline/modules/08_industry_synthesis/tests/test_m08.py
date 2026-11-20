@@ -20,7 +20,7 @@ from m08.catalog import Catalog, family  # noqa: E402
 from m08.certify import certificate, to_markdown  # noqa: E402
 from m08.licence import caveat_sentence  # noqa: E402
 from m08.licence import state as licence_state  # noqa: E402
-from m08.officer import Request, cap_of, decide, instruction_in, reachable_within, within_line  # noqa: E402
+from m08.officer import Request, cap_of, cost_of, decide, instruction_in, missing_steps, reachable_within, within_line  # noqa: E402
 from m08.replay import execute_run_order  # noqa: E402
 
 # a path of the repository inside a source line: at least one folder and a file extension
@@ -297,7 +297,7 @@ def test_a_listed_molecule_under_a_short_budget_is_told_what_it_can_have(cat):
     assert d.kind == "refusal" and d.gate_named.startswith("cap: budget \u20ac2.00;")
     assert any("rung 1 (cheap level)" in r for r in d.reasons) and not any("rung 4 (anchored" in r for r in d.reasons)
     assert [p["step"] for p in d.price_lines] == ["cheap_deck_v1", prices.ANCHOR_STEP]
-    assert any("does not cover the missing step (\u2248 \u20ac5.83)" in r for r in d.reasons)
+    assert any("does not cover the missing steps (\u2248 \u20ac6.07)" in r for r in d.reasons)
 
 
 def test_a_molecule_at_the_cheap_rung_is_not_offered_the_cheap_rung(cat):
@@ -338,3 +338,25 @@ def test_a_run_order_for_an_anchor_names_the_machine_the_price_was_measured_on(c
     d = decide(Request(molecule="biphenyl", target_rung=4, budget_eur=100.0), cat)
     assert d.kind == "run_order" and d.proposal["args"]["host"] == "CPX62" and not d.gate["approved"]
     assert [p["step"] for p in d.price_lines] == [prices.ANCHOR_STEP]
+
+
+def test_the_missing_steps_are_summed_by_one_function():
+    assert missing_steps(0, 4, CHEAP, ANCHOR) == [CHEAP, ANCHOR] and missing_steps(1, 4, CHEAP, ANCHOR) == [ANCHOR]
+    assert missing_steps(0, 1, CHEAP, ANCHOR) == [CHEAP]
+    assert cost_of([CHEAP, ANCHOR]) == 6.07 and cost_of([ANCHOR]) == 5.83
+    assert reachable_within(6.0, 0, CHEAP, ANCHOR) == ["rung 1 (cheap level) at \u2248 \u20ac0.24"]
+    assert reachable_within(6.07, 0, CHEAP, ANCHOR)[1] == "rung 4 (anchored, naphthalene-sized) at \u2248 \u20ac6.07"
+
+
+def test_a_budget_between_the_anchor_and_everything_missing_is_refused_with_what_it_reaches(cat):
+    """A molecule below the cheap rung needs the deck and the anchor: the anchor's price alone does not buy rung 4."""
+    row = next(r for r in cat.rows if int(r["rung"]) == 0)
+    total = cost_of([prices.step_price("cheap_deck_v1"), prices.anchor_price()])
+    below = decide(Request(molecule=row["id"], target_rung=4, budget_eur=total - 0.01), cat)
+    assert below.kind == "refusal" and [p["step"] for p in below.price_lines] == ["cheap_deck_v1", prices.ANCHOR_STEP]
+    assert any(f"does not cover the missing steps (\u2248 \u20ac{total:.2f})" in r for r in below.reasons)
+    assert any("reachable within it \u2014 rung 1 (cheap level)" in r for r in below.reasons) and not any("rung 4 (anchored" in r for r in below.reasons)
+    assert "; then " in below.what_would_be_needed
+    at = decide(Request(molecule=row["id"], target_rung=4, budget_eur=total), cat)
+    assert at.kind == "run_order" and [p["step"] for p in at.price_lines] == ["cheap_deck_v1", prices.ANCHOR_STEP]
+    assert at.proposal["args"] == {"host": "CPX62", "job": f"deck_v1:{row['id']}"} and not at.gate["approved"]

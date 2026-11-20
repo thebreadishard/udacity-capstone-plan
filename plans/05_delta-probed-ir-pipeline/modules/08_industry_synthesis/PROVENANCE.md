@@ -125,3 +125,14 @@ read with it:
   (`scenarios/scenarios.json`, amendments of 20 November 09:58; `PRE_REGISTRATION.md`, note of 20 November 10:01).
 - **Behind until the next run:** `out/scenario_results*.json`, the notebook, `notebook/results.json` and the paper were built this
   morning on the old price.
+
+## Addendum, 20 Nov 2026 10:12 — the certificate and the officer follow the price table (TASKS 290)
+
+- **Replaces one line of the addendum of 10:01**, "The certificates' cost lines are unchanged": naphthalene's certificate now prices its
+  anchor in force from the table, as two lines with the registry's file and the table's sources
+  (`certify.PRICED_ANCHORS` → `prices.ANCHOR_PARTS`); their euros add up to the price the refusals quote. An anchor in force whose
+  runs the table does not price — benzene's, and every other molecule's composite — stays "not priced".
+- **The paper** says whose certificate carries the price and for whom the anchor in force is shown without one, read from the cost
+  lines in `results.json` (`make_summary.anchor_price_sentence`); "1 anchor line is shown as not priced" is written in the singular.
+- **The officer** sums the missing steps by one function (`officer.missing_steps`, `cost_of`): the deck and the anchor for a molecule
+  below the cheap rung. `reachable_within` offers rung 4 at that sum.

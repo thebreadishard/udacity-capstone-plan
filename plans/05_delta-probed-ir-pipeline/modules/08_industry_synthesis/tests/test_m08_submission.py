@@ -25,7 +25,7 @@ import run_scenarios  # noqa: E402
 from m08 import paths, prices, stored_run  # noqa: E402
 from m08 import pipeline as P  # noqa: E402
 from m08.catalog import Catalog  # noqa: E402
-from m08.certify import ANCHOR_REGISTRY, PRICED_EVIDENCE, anchor_cost_lines, carried_anchor, certificate, to_markdown  # noqa: E402
+from m08.certify import ANCHOR_REGISTRY, PRICED_ANCHORS, PRICED_EVIDENCE, anchor_cost_lines, carried_anchor, certificate, to_markdown  # noqa: E402
 from m08.officer import CATION_NEEDED, Request, decide  # noqa: E402
 from m08.replay import execute_run_order  # noqa: E402
 from m08.scenario_kinds import ADDED_CASES, MECHANICAL_CHECKS, PRE_REGISTERED_REQUESTS, request_kinds  # noqa: E402
@@ -110,11 +110,11 @@ def test_a_priced_evidence_page_gives_one_line_with_the_price_tables_numbers(cat
     row = cat.find("naphthalene")
     priced = [page for page in row["evidence"] if page in PRICED_EVIDENCE]
     assert len(priced) == 1, "naphthalene's export names one M3 reading page today; the test reads its line"
-    reading, in_force = anchor_cost_lines("naphthalene", row["evidence"], carried_anchor(row["id"], row["name"]))
+    reading, *in_force = anchor_cost_lines("naphthalene", row["evidence"], carried_anchor(row["id"], row["name"]))
     step = prices.step_price(PRICED_EVIDENCE[priced[0]])
     assert reading["step"].endswith(Path(priced[0]).name) and "one family" in reading["step"] and "two families" not in reading["step"]
     assert reading["hours"] == step["hours"] and reading["eur_ex_vat"] == step["eur_ex_vat"] and reading["source"] == step["source"]
-    assert in_force["step"].startswith("anchor in force: ")
+    assert in_force and all(line["step"].startswith("anchor in force: ") for line in in_force)
 
 
 def test_the_priced_line_follows_the_evidence_not_the_molecules_name(cat: Catalog) -> None:
@@ -124,7 +124,7 @@ def test_the_priced_line_follows_the_evidence_not_the_molecules_name(cat: Catalo
     assert len(anchor_cost_lines("benzene", [*row["evidence"], page], entry)) == 2
     naphthalene = cat.find("naphthalene")
     without = [p for p in naphthalene["evidence"] if p not in PRICED_EVIDENCE]
-    assert len(anchor_cost_lines("naphthalene", without, carried_anchor(naphthalene["id"], naphthalene["name"]))) == 1
+    assert len(anchor_cost_lines("naphthalene", without, carried_anchor(naphthalene["id"], naphthalene["name"]))) == len(prices.ANCHOR_PARTS)
 
 
 @pytest.mark.parametrize("name", ["benzene", "naphthalene"])
@@ -273,7 +273,9 @@ def test_the_paper_says_which_requests_passed_and_reports_the_mechanical_checks_
     assert f"{len(scenarios['registered_ids'])} pre-registered ({', '.join(scenarios['registered_ids'])})" in sentence
     assert f"{len(scenarios['added_ids'])} added cases ({', '.join(scenarios['added_ids'])})" in sentence
     assert not {"S5", "S6", "S7"} & set(scenarios["registered_ids"] + scenarios["added_ids"])
-    assert f"{results['outcome']['n_unpriced']} anchor lines are shown as not priced" in sentence
+    assert f"{results['outcome']['n_unpriced']} anchor line" in sentence and "shown as not priced" in sentence
+    assert "1 anchor line is shown as not priced" in summary.scenario_sentences(scenarios, results["outcome"] | dict(n_unpriced=1))
+    assert "2 anchor lines are shown as not priced" in summary.scenario_sentences(scenarios, results["outcome"] | dict(n_unpriced=2))
     assert scenarios["mechanical"]["S6"]["status"] in sentence
     with_s5 = json.loads(json.dumps(scenarios))
     with_s5["mechanical"]["S5"] = dict(exit_code=0, problems=[])
@@ -448,3 +450,50 @@ def test_the_paper_refuses_a_body_outside_the_range(summary: ModuleType) -> None
 def test_the_paper_refuses_to_describe_a_failure_case_that_is_gone(summary: ModuleType) -> None:
     with pytest.raises(ValueError, match="failure case"):
         summary.failure_sentence([dict(family="CH-oop", wider_than_tolerance=False)])
+
+
+def test_the_anchor_in_force_is_priced_where_the_table_priced_its_runs(cat: Catalog) -> None:
+    """Naphthalene's composite is the run the table read from its logs: one line per part, each on its machine, summing to the table's anchor."""
+    row = cat.find("naphthalene")
+    entry = carried_anchor(row["id"], row["name"])
+    in_force = [line for line in anchor_cost_lines("naphthalene", row["evidence"], entry) if line["step"].startswith("anchor in force")]
+    parts = [prices.step_price(step) for _, step in prices.ANCHOR_PARTS]
+    assert [(line["machine"], line["hours"], line["eur_ex_vat"]) for line in in_force] == [(p["machine"], p["hours"], p["eur_ex_vat"]) for p in parts]
+    assert round(sum(line["eur_ex_vat"] for line in in_force), 2) == prices.anchor_price()["eur_ex_vat"]
+    for line, part in zip(in_force, parts, strict=True):
+        assert entry["level"] in line["step"] and entry["path"] in line["source"] and part["source"] in line["source"] and line["note"] == part["note"]
+    honesty = run_scenarios.cost_honesty([dict(molecule=dict(name="naphthalene"), cost_record=in_force)])
+    assert honesty["lines_traced"] == honesty["lines_checked"] == len(parts) and not honesty["misses"]
+
+
+def test_every_priced_anchor_is_a_carried_composite_of_the_registry() -> None:
+    """The price follows the registry's file: a key the registry does not carry, or carries for another route, would price the wrong run."""
+    registry = json.loads((MODULE.parents[1] / ANCHOR_REGISTRY).read_text(encoding="utf-8"))["anchors"]
+    for path in PRICED_ANCHORS:
+        entry = [e for e in registry if e["path"] == path]
+        assert len(entry) == 1 and entry[0]["status"] == "carried" and entry[0]["kind"] == "composite", path
+        assert entry[0]["level"] == "CCSD(T)/cc-pVDZ + [MP2/cc-pVTZ − MP2/cc-pVDZ]", "the table's parts are this route's"
+
+
+def test_an_anchor_whose_runs_the_table_does_not_price_stays_unpriced(cat: Catalog) -> None:
+    row = cat.find("benzene")
+    entry = carried_anchor(row["id"], row["name"])
+    (line,) = anchor_cost_lines("benzene", [], entry)
+    assert entry["path"] not in PRICED_ANCHORS and line["eur_ex_vat"] is None and "not priced" in line["source"]
+    same_route_other_run = entry | dict(level="CCSD(T)/cc-pVDZ + [MP2/cc-pVTZ − MP2/cc-pVDZ]", kind="composite")
+    assert anchor_cost_lines("pyridine", [], same_route_other_run)[0]["eur_ex_vat"] is None, "a route is not a price: only the priced run is"
+
+
+def test_the_paper_says_which_certificate_carries_its_anchors_price(summary: ModuleType, results: dict, cat: Catalog) -> None:
+    """On a record where naphthalene's line is priced and benzene's is not, and on one where neither is: the sentence follows the record."""
+    row = cat.find("naphthalene")
+    today = json.loads(json.dumps(results))
+    today["s1"]["cost"] = anchor_cost_lines("naphthalene", row["evidence"], carried_anchor(row["id"], row["name"]))
+    sentence = summary.anchor_price_sentence(today)
+    assert "the certificate of naphthalene carries it, and for benzene the anchor in force is shown without a price." in sentence
+    neither = json.loads(json.dumps(today))
+    neither["s1"]["cost"] = [dict(step="anchor in force: x", eur_ex_vat=None)]
+    assert "attempt; for naphthalene and benzene the anchor in force is shown without a price." in summary.anchor_price_sentence(neither)
+    neither["s1"]["cost"] = []
+    with pytest.raises(ValueError, match="no 'anchor in force' cost line for s1"):
+        summary.anchor_price_sentence(neither)

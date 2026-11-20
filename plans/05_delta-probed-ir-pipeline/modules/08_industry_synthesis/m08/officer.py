@@ -75,6 +75,20 @@ def _refuse(req: Request, reasons: list[str], rule_ids: list[str], gate_named: s
                     ledger_line=f"refusal — {name}: {gate_named}; {'; '.join(reasons)}; needed: {needed}")
 
 
+def missing_steps(reached: int, target_rung: int, cheap: dict, anchor: dict) -> list[dict]:
+    """The priced steps between the rung a molecule has and the rung asked for, in the order they run."""
+    return ([cheap] if reached < 1 else []) + ([anchor] if target_rung >= 4 else [])
+
+
+def cost_of(steps: list[dict]) -> float:
+    return round(sum(step["eur_ex_vat"] for step in steps), 2)
+
+
+def needed_line(step: dict) -> str:
+    return (f"{step['what']} — measured on {step['measured_on']}: ≈ {step['hours']:.1f} machine-hours ({step['machine']}) "
+            f"≈ €{step['eur_ex_vat']:.2f} ex VAT" + (f" ({step['note']})" if step["note"] else ""))
+
+
 def reachable_within(budget: float | None, reached: int, cheap: dict, anchor: dict) -> list[str]:
     """The rungs a budget buys above the one the molecule has, cheapest first. A refusal owes the requester this: 'too expensive'
     without 'and this is what you can have' is not an answer (DESIGN_2026-09-27 §5; the scenarios' S2, S2b and S3)."""
@@ -83,8 +97,9 @@ def reachable_within(budget: float | None, reached: int, cheap: dict, anchor: di
         return out
     if reached < 1 and budget >= cheap["eur_ex_vat"]:
         out.append(f"rung 1 (cheap level) at ≈ €{cheap['eur_ex_vat']:.2f}")
-    if reached < 4 and budget >= anchor["eur_ex_vat"]:
-        out.append(f"rung 4 (anchored, naphthalene-sized) at ≈ €{anchor['eur_ex_vat']:.2f}")
+    to_anchor = cost_of(missing_steps(reached, 4, cheap, anchor))   # a molecule below the cheap rung needs the deck first
+    if reached < 4 and budget >= to_anchor:
+        out.append(f"rung 4 (anchored, naphthalene-sized) at ≈ €{to_anchor:.2f}")
     return out
 
 
@@ -144,31 +159,31 @@ def decide(req: Request, catalog: Catalog) -> Decision:  # noqa: PLR0911  one re
                         reasons=[f"rung {reached} ({RUNG_LABELS[reached]}) reached; target {req.target_rung}"], rule_ids=[],
                         ledger_line=f"certificate — {row['name']} at rung {reached} ({RUNG_LABELS[reached]}), target {req.target_rung}")
     # 4. the target is above what exists: name the gate and the price; order a run only under a budget that covers it, and only through the gate
-    missing = anchor if req.target_rung >= 4 else cheap
+    steps = missing_steps(reached, req.target_rung, cheap, anchor)
+    total = cost_of(steps)
     gate_named = ("no anchor: no coupled-cluster reading exists, and the learned layer is not licensed at the coupled-cluster level (decision 65 "
                   "licenses it at the DFT proxy only)"
                   if req.target_rung >= 4 else "cheap level not computed")
-    needed = (f"{missing['what']} — measured on {missing['measured_on']}: ≈ {missing['hours']:.1f} machine-hours ({missing['machine']}) "
-              f"≈ €{missing['eur_ex_vat']:.2f} ex VAT" + (f" ({missing['note']})" if missing["note"] else ""))
-    if req.budget_eur is None or req.budget_eur < missing["eur_ex_vat"]:
+    needed = "; then ".join(needed_line(step) for step in steps)
+    if req.budget_eur is None or req.budget_eur < total:
         cap = cap_of(req.budget_eur)
-        # the prices of the steps that are actually missing, cheapest first, and what the cap reaches above the rung the molecule has
-        lines = ([cheap] if reached < 1 else []) + ([anchor] if req.target_rung >= 4 else [])
+        # the budget is held against everything that is missing, and the refusal says what the cap does reach above the molecule's rung
         return _refuse(req, [f"rung {reached} ({RUNG_LABELS[reached]}) exists; target rung {req.target_rung} not reached",
-                             f"{cap} does not cover the missing step (≈ €{missing['eur_ex_vat']:.2f})",
+                             f"{cap} does not cover the missing step{'s' if len(steps) > 1 else ''} (≈ €{total:.2f})",
                              within_line(cap, reachable_within(req.budget_eur, reached, cheap, anchor), reached, cheap)],
-                       ["R14" if req.target_rung >= 4 else "R25"], f"cap: {cap}; {gate_named}", lines or [missing], needed, row)
+                       ["R14" if req.target_rung >= 4 else "R25"], f"cap: {cap}; {gate_named}", steps, needed, row)
     # a run order: the officer proposes 'launch' of a named job; module 07's gate decides — without a passed dry run it forces the dry run first (R01)
-    job = f"{'anchor_e8' if req.target_rung >= 4 else 'deck_v1'}:{row['id']}"
-    # the job's first step runs where the price table measured it: the coupled-cluster Hessian for an anchor, the deck for the cheap rung
-    host = (anchor["parts"][0] if req.target_rung >= 4 else cheap)["machine"]
+    first = steps[0]
+    job = f"{'deck_v1' if first is cheap else 'anchor_e8'}:{row['id']}"
+    # the first missing step runs where the price table measured it: the deck, or the coupled-cluster Hessian of an anchor
+    host = first["machine"] if first is cheap else first["parts"][0]["machine"]
     proposal = Proposal(action="launch", args={"host": host, "job": job}, rule_id="R01",
-                        reason=f"request for {row['name']} at rung {req.target_rung} under budget €{req.budget_eur:.2f} ≥ €{missing['eur_ex_vat']:.2f}")
+                        reason=f"request for {row['name']} at rung {req.target_rung} under budget €{req.budget_eur:.2f} ≥ €{total:.2f}")
     state = {"observations": [{"source": "request officer", "text": req.note, "facts": {"host": proposal.args["host"], "job_due": job}}], "actions_taken": []}
     g = gate_check(proposal, state, RID)
     return Decision(kind="run_order", request=req, molecule_id=row["id"], name=row["name"], rung_reached=reached, rung_label=RUNG_LABELS[reached],
                     reasons=[f"rung {reached} exists; target {req.target_rung}; budget covers the missing step", f"gate: {'approved' if g.approved else 'not approved — ' + '; '.join(g.reasons)}"],
                     rule_ids=["R01"] + (["R06"] if not g.approved else []), gate_named=None if g.approved else "module 07 gate (R01: dry run first)",
-                    price_lines=[missing], what_would_be_needed=needed, proposal=proposal.model_dump(),
+                    price_lines=steps, what_would_be_needed=needed, proposal=proposal.model_dump(),
                     gate=dict(approved=g.approved, reasons=g.reasons, forced_action=g.forced_action.model_dump() if g.forced_action else None),
                     ledger_line=f"run order — {row['name']} → {job}: gate {'approved' if g.approved else 'substituted ' + (g.forced_action.action if g.forced_action else '')}")
