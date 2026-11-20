@@ -23,11 +23,17 @@ while [ $# -gt 0 ]; do
     *) echo "unknown argument '$1'; $USAGE"; exit 2 ;;
   esac
 done
-P=$(cd "$(dirname "$0")/.." && pwd)
-# Git Bash names drive C as /c/…, WSL as /mnt/c/…; on Linux or inside WSL a path is its own, also one that starts with a one-letter
-# folder. LMP_HOST_KERNEL stands in for `uname -s` in the test.
+# -P: a shell started by another program can inherit PWD in Windows form ('C:/Users/…'), and the logical `pwd` then answers in it.
+P=$(cd -P "$(dirname "$0")/.." && pwd -P)
+# Git Bash names drive C as /c/… (or, from an inherited PWD, C:/…), WSL as /mnt/c/…; on Linux or inside WSL a path is its own, also
+# one that starts with a one-letter folder. LMP_HOST_KERNEL stands in for `uname -s` in the test.
 case "${LMP_HOST_KERNEL:-$(uname -s)}" in
-  MINGW*|MSYS*|CYGWIN*) PW=/mnt$P ;;
+  MINGW*|MSYS*|CYGWIN*)
+    case "$P" in
+      [A-Za-z]:/*) PW=/mnt/$(printf '%s' "${P:0:1}" | tr 'A-Z' 'a-z')${P:2} ;;
+      /[A-Za-z]/*) PW=/mnt$P ;;
+      *) echo "low_mode_patch.sh: cannot turn '$P' into a WSL path"; exit 2 ;;
+    esac ;;
   *) PW=$P ;;
 esac
 CAP_MB=${CAP_MB:-4096}

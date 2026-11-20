@@ -98,9 +98,25 @@ def test_a_path_with_a_space_stays_one_argument() -> None:
     assert args[2].endswith("/probes/results_m1/some where") and args[3] == "--ids" and args[-2:] == ["--below", "60"]
 
 
+ON_WINDOWS = pytest.mark.skipif(os.name != "nt", reason="a drive path and an inherited Windows-style PWD exist under Git Bash only")
+
+
+@ON_WINDOWS
+def test_started_with_a_windows_style_pwd_the_wsl_path_is_still_a_mount() -> None:
+    """The run door starts the wrapper from probes/results_m1 with PWD inherited in Windows form; the WSL path must not become
+    '/mntC:/…' (20 Nov 2026: the step check's dry run stopped on it)."""
+    workdir = PLAN / "probes" / "results_m1"
+    clean = {k: v for k, v in os.environ.items() if not k.startswith("LMP_")}
+    res = subprocess.run([BASH, "../low_mode_patch.sh", IDS, OUT, "--show-command"], cwd=workdir, capture_output=True, text=True,
+                         encoding="utf-8", env=clean | {"PWD": workdir.as_posix()}, timeout=SHELL_HANG_GUARD_S, check=False)
+    assert res.returncode == 0, res.stdout + res.stderr
+    assert "/mnt/" in res.stdout and "/mntC:" not in res.stdout and "C:/" not in res.stdout
+
+
 def test_only_git_bash_turns_a_drive_path_into_a_wsl_mount() -> None:
     """On Linux or inside WSL a path is its own, also one that starts with a one-letter folder such as /a/b."""
     plan = subprocess.run([BASH, "-c", 'cd "$1" && pwd', "_", PLAN.as_posix()], capture_output=True, text=True, encoding="utf-8",
                           timeout=SHELL_HANG_GUARD_S, check=True).stdout.strip()
     assert runner_args(IDS, OUT, LMP_HOST_KERNEL="Linux")[2] == f"{plan}/{OUT}"
-    assert runner_args(IDS, OUT, LMP_HOST_KERNEL="MINGW64_NT-10.0-26200")[2] == f"/mnt{plan}/{OUT}"
+    if os.name == "nt":                     # only there is the plan folder a drive path that the Git Bash branch can mount
+        assert runner_args(IDS, OUT, LMP_HOST_KERNEL="MINGW64_NT-10.0-26200")[2] == f"/mnt{plan}/{OUT}"

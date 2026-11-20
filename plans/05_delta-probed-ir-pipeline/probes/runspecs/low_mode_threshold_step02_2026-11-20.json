@@ -1,4 +1,4 @@
-{"name": "low_mode_threshold_step02",
+{"name": "low_mode_threshold_step02_2026-11-20",
  "purpose": "TASKS 218, GoalGathering/notes/PreRegistration_2026-11-20_Low_Mode_Repair_Threshold.md, the two-route check: the seven molecules of sample/ids_step02.txt (the smallest sampled molecule of each band, and every molecule with a registered point whose frequency noise passes 0.5 cm-1 per 1e-7 hartree/bohr of gradient noise; probes/low_mode_threshold_sample.py lists them by that rule; 15-25 atoms) patched again with a step of 0.02 bohr instead of 0.01, same threshold as the sample run, into a folder of its own. probes/low_mode_threshold_read.py --step-check flags a point whose two steps differ by more than 0.15 cm-1 (the agreement recorded at vibrations.STEP_BOHR). The corpus files are only read",
  "host": "laptop",
  "workdir": "probes/results_m1",

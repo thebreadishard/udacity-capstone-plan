@@ -1,4 +1,4 @@
-{"name": "low_mode_threshold_sample",
+{"name": "low_mode_threshold_sample_2026-11-20",
  "purpose": "TASKS 218, GoalGathering/notes/PreRegistration_2026-11-20_Low_Mode_Repair_Threshold.md: the 20 unrepaired molecules of the registered sample (probes/low_mode_threshold_sample.py, seed 218, 5 per band of the lowest B3LYP mode in 20-60 cm-1, at most 25 atoms) patched along every label mode below 60 cm-1 with grid-response gradients (probes/low_mode_patch_run.py; pyscf hessian/test/test_rks.py finite_diff makes the same gradient call, cited in probes/hessian_grid_response_fd.py), so that probes/low_mode_threshold_read.py can read the label error against frequency and force constant. A measurement: the patched Hessians are written into the results folder; the corpus files are only read and no label is swapped",
  "host": "laptop",
  "workdir": "probes/results_m1",
