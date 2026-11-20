@@ -14,8 +14,11 @@ their `dir_*.json` files, by atom count and functional.
     python probes/low_mode_threshold_sample.py --molecules <corpus molecules dir> --out <new folder> --timing <patch folder> [...]
         [--per-band 5] [--max-atoms 25] [--seed 218]
 
-Writes ids_sample.txt, ids_step02.txt (the smallest molecule of each band, for the step check), sample.json and SAMPLE.md, each
-through a temp file. Reads H_raw of every unrepaired molecule and takes its modes with the runner's own arithmetic, so the bands are
+The step check's list is a rule, not a choice: the smallest sampled molecule of each band, and every sampled molecule with a
+registered point (a B3LYP mode in the decision window) whose frequency noise per unit of gradient noise passes the read script's line.
+
+Writes ids_sample.txt, ids_step02.txt (the step check's list), sample.json and SAMPLE.md, each through a temp file. Reads H_raw of every
+unrepaired molecule and takes its modes with the runner's own arithmetic, so the bands are
 the frequencies the runner selects by; computes no chemistry. numpy only.
 """
 from __future__ import annotations
@@ -34,9 +37,16 @@ PLAN = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(PLAN / "modules" / "05_support_predictor" / "corpus"))
 from low_mode_patch import label_directions, read_label  # noqa: E402  the path lines above come first
-from low_mode_threshold_read import BAND_EDGES_CM, DECISION_TAG, DECISION_WINDOW_CM  # noqa: E402
+from low_mode_threshold_read import (  # noqa: E402
+    BAND_EDGES_CM,
+    DECISION_TAG,
+    DECISION_WINDOW_CM,
+    GRADIENT_NOISE_UNIT,
+    STEP_CHECK_NOISE_CM,
+    noise_sensitivity_cm,
+)
 from qc_common import write_atomic  # noqa: E402
-from vibrations import LABEL_TAGS, LOW_MODE_CM, vibrational_modes  # noqa: E402
+from vibrations import LABEL_TAGS, LOW_MODE_CM, STEP_BOHR, vibrational_modes  # noqa: E402
 
 SAMPLE_BANDS_CM = tuple(b for b in itertools.pairwise(BAND_EDGES_CM) if DECISION_WINDOW_CM[0] <= b[0] and b[1] <= DECISION_WINDOW_CM[1])
 BELOW_OPTIONS_CM = (60.0, 100.0)       # the two `--below` values the run is priced at; the author chooses
@@ -148,10 +158,22 @@ def gradient_seconds(timing: tuple[Path, ...], molecules: Path) -> dict[tuple[in
     return {key: {"median_s": float(np.median(v)), "points": len(v)} for key, v in seconds.items()}
 
 
+def registered_points(molecule_dir: Path) -> list[dict[str, float]]:
+    """The molecule's modes of the decision functional inside the decision window, each with the frequency noise the patch makes of
+    GRADIENT_NOISE_UNIT of gradient noise at the repair's step (the read script's formula, on the label mode)."""
+    geometry, hessians = read_label(molecule_dir)
+    masses = np.asarray(geometry["masses_amu"], float)
+    modes = vibrational_modes(hessians[DECISION_TAG], masses, np.asarray(geometry["coords_bohr"], float))
+    return [{"mode": i, "label_cm": float(w), "noise_cm": noise_sensitivity_cm(modes.vectors[:, i], float(w), masses, STEP_BOHR)}
+            for i, w in enumerate(modes.omega_cm) if DECISION_WINDOW_CM[0] <= w < DECISION_WINDOW_CM[1]]
+
+
 def molecule_row(c: Candidate, band: tuple[float, float], cfg: SampleConfig, per_gradient: dict[tuple[int, str], dict[str, float]]) -> dict[str, Any]:
-    """One sampled molecule: its soft modes, and per `--below` option the directions, gradients and seconds at the timings' threads."""
+    """One sampled molecule: its soft modes, its registered points, and per `--below` option the directions, gradients and seconds at the
+    timings' threads."""
     row: dict[str, Any] = {"id": c.mol_id, "band": f"{band[0]:g}–{band[1]:g}", "atoms": c.atoms,
-                           "modes_cm": {t: [round(float(w), 2) for w in c.omega[t] if w < LISTED_BELOW_CM] for t in LABEL_TAGS}, "below": {}}
+                           "modes_cm": {t: [round(float(w), 2) for w in c.omega[t] if w < LISTED_BELOW_CM] for t in LABEL_TAGS},
+                           "registered_points": registered_points(cfg.molecules / c.mol_id), "below": {}}
     missing = [t for t in LABEL_TAGS if (timing_bin(c.atoms), t) not in per_gradient]
     if missing:
         raise ValueError(f"no recorded gradient time for {c.atoms} atoms in {missing}: give a timing folder that covers this size")
@@ -173,6 +195,19 @@ def totals(rows: list[dict[str, Any]]) -> dict[str, dict[str, float]]:
     return out
 
 
+def step_check_ids(rows: list[dict[str, Any]]) -> dict[str, str]:
+    """The step check's molecules with the reason each is on the list, in the sample's order: the smallest of each band (ties by id),
+    and every molecule with a registered point noisier than STEP_CHECK_NOISE_CM per GRADIENT_NOISE_UNIT."""
+    smallest = {min((r for r in rows if r["band"] == band), key=lambda r: (r["atoms"], r["id"]))["id"] for band in {r["band"] for r in rows}}
+    reasons = {}
+    for r in rows:
+        noisy = max((p["noise_cm"] for p in r["registered_points"]), default=0.0) > STEP_CHECK_NOISE_CM
+        if r["id"] in smallest or noisy:
+            reasons[r["id"]] = " and ".join(text for text, holds in (("smallest of its band", r["id"] in smallest),
+                                                                     ("a registered point above the noise line", noisy)) if holds)
+    return reasons
+
+
 def population_rows(population: list[Candidate], max_atoms: int) -> list[dict[str, Any]]:
     """Per band: the unrepaired molecules of any size, those within the atom limit, and the eligible ones the draw is made from."""
     rows = []
@@ -192,24 +227,30 @@ def sample_md(record: dict[str, Any]) -> str:
              f"| lowest {DECISION_TAG} mode (cm⁻¹) | unrepaired molecules | with ≤ {s['max_atoms']} atoms | eligible | drawn |", "|---|---|---|---|---|"]
     lines += [f"| {p['band']} | {p['unrepaired']} | {p['within_atom_limit']} | {p['eligible']} | {s['per_band']} |" for p in record["population"]]
     lines += ["", f"Eligible: no mode of either label below {LOW_MODE_CM:g} cm⁻¹ (imaginary ones included).", "",
-              "| id | band | atoms | " + " | ".join(f"{t} modes below {LISTED_BELOW_CM:g}" for t in LABEL_TAGS) + " | "
-              + " | ".join(f"directions / gradients / min at --below {b}" for b in belows) + " |", "|---|---|---|---|---|---|---|"]
+              "| id | band | atoms | " + " | ".join(f"{t} modes below {LISTED_BELOW_CM:g}" for t in LABEL_TAGS)
+              + f" | noise per {GRADIENT_NOISE_UNIT:g} (cm⁻¹) | "
+              + " | ".join(f"directions / gradients / min at --below {b}" for b in belows) + " |", "|---|---|---|---|---|---|---|---|"]
     for r in record["molecules"]:
         modes = " | ".join(", ".join(f"{w:.1f}" for w in r["modes_cm"][t]) for t in LABEL_TAGS)
+        noise = ", ".join(f"{p['noise_cm']:.2f}" for p in r["registered_points"])
         cost = " | ".join(f"{r['below'][b]['directions']} / {r['below'][b]['gradients']} / {r['below'][b]['seconds'] / 60:.0f}" for b in belows)
-        lines.append(f"| {r['id']} | {r['band']} | {r['atoms']} | {modes} | {cost} |")
-    lines += [""]
-    for b in belows:
-        t = record["totals"][b]
-        lines.append(f"At `--below {b}`: {t['directions']} directions, {t['gradients']} gradients and {t['reference_scfs']} reference SCFs; "
-                     f"{t['hours_8_threads']:.1f} h at the timings' 8 threads, so {t['hours_low']:.1f}–{t['hours_high']:.1f} h at 4 threads "
-                     f"(factor {THREAD_FACTOR_RANGE[0]:g}–{THREAD_FACTOR_RANGE[1]:g}, assumed, not measured; no other job beside it).")
+        lines.append(f"| {r['id']} | {r['band']} | {r['atoms']} | {modes} | {noise} | {cost} |")
+    lines += ["", f"Noise: the frequency noise the patch makes of {GRADIENT_NOISE_UNIT:g} hartree/bohr of gradient noise on each registered point "
+              f"(a {DECISION_TAG} mode in {DECISION_WINDOW_CM[0]:g}–{DECISION_WINDOW_CM[1]:g} cm⁻¹), in the order of the modes; "
+              "`low_mode_threshold_read.noise_sensitivity_cm`.", ""]
+    for name, key in (("The sample", "totals"), ("The step check", "step_check_totals")):
+        for b in belows:
+            t = record[key][b]
+            lines.append(f"{name} at `--below {b}`: {t['directions']} directions, {t['gradients']} gradients and {t['reference_scfs']} reference "
+                         f"SCFs; {t['hours_8_threads']:.1f} h at the timings' 8 threads, so {t['hours_low']:.1f}–{t['hours_high']:.1f} h at 4 "
+                         f"threads (factor {THREAD_FACTOR_RANGE[0]:g}–{THREAD_FACTOR_RANGE[1]:g}, assumed, not measured; no other job beside it).")
     lines += ["", "Seconds per gradient (median, 8 threads) from the timing folders, by atom count: "
               + "; ".join(f"≤ {TIMING_ATOM_EDGES[int(k.split()[0])]} atoms {k.split()[1]} {v['median_s']:.0f} s ({v['points']} points)"
                           for k, v in sorted(record["gradient_seconds"].items())) + ".",
               f"A molecule costs (directions + {REFERENCE_SHARE}) × 2 × (the two functionals' seconds); the {REFERENCE_SHARE} is the reference "
               "SCFs and start-up measured on B_0f06474656.", "",
-              "Step check (the smallest molecule of each band): " + ", ".join(record["step_check_ids"]) + "."]
+              f"Step check (the smallest molecule of each band, and every molecule with a registered point above {STEP_CHECK_NOISE_CM} cm⁻¹ "
+              f"per {GRADIENT_NOISE_UNIT:g}): " + "; ".join(f"{i} ({why})" for i, why in record["step_check"].items()) + "."]
     return "\n".join(lines) + "\n"
 
 
@@ -219,14 +260,15 @@ def run(cfg: SampleConfig) -> dict[str, Any]:
     chosen = draw(population, cfg)
     per_gradient = gradient_seconds(cfg.timing, cfg.molecules)
     rows = [molecule_row(c, band, cfg, per_gradient) for band, picked in chosen.items() for c in picked]
-    step_ids = [min(picked, key=lambda c: (c.atoms, c.mol_id)).mol_id for picked in chosen.values()]
+    step_check = step_check_ids(rows)
     record = {"settings": {"seed": cfg.seed, "per_band": cfg.per_band, "max_atoms": cfg.max_atoms},
               "population": population_rows(population, cfg.max_atoms), "molecules": rows, "totals": totals(rows),
-              "gradient_seconds": {f"{k} {t}": v for (k, t), v in sorted(per_gradient.items())}, "step_check_ids": step_ids}
+              "step_check_totals": totals([r for r in rows if r["id"] in step_check]), "step_check": step_check,
+              "gradient_seconds": {f"{k} {t}": v for (k, t), v in sorted(per_gradient.items())}, "step_check_ids": list(step_check)}
     cfg.out.mkdir(parents=True, exist_ok=True)
     head = f"# low_mode_threshold_sample.py: seed {cfg.seed}, {cfg.per_band} per band, at most {cfg.max_atoms} atoms (id, band, atoms)"
     write_atomic(cfg.out / "ids_sample.txt", "\n".join([head, *(f"{r['id']} {r['band']} {r['atoms']}" for r in rows)]) + "\n")
-    write_atomic(cfg.out / "ids_step02.txt", "\n".join(["# the smallest sampled molecule of each band, for the step check", *step_ids]) + "\n")
+    write_atomic(cfg.out / "ids_step02.txt", "\n".join(["# the step check: id, why", *(f"{i} # {why}" for i, why in step_check.items())]) + "\n")
     write_atomic(cfg.out / "sample.json", json.dumps(record, indent=1, ensure_ascii=False) + "\n")
     write_atomic(cfg.out / "SAMPLE.md", sample_md(record))
     return record

@@ -30,6 +30,7 @@ import numpy as np
 from qc_common import write_atomic
 
 CORPUS_CODE = Path(__file__).resolve().parents[1] / "modules" / "05_support_predictor" / "corpus"
+RUN_SETTINGS_NAME = "run_settings.json"   # in a patch run's out folder: the step, threshold and grid its points were made with
 sys.path.insert(0, str(CORPUS_CODE))
 from vibrations import (  # noqa: E402  (the arithmetic lives beside the label route that runs it now: TASKS 216)
     LABEL_TAGS,
@@ -54,6 +55,22 @@ def label_directions(molecule_dir: Path, below_cm: float = LOW_MODE_CM) -> np.nd
     geometry, hessians = read_label(molecule_dir)
     masses, coords = np.asarray(geometry["masses_amu"], float), np.asarray(geometry["coords_bohr"], float)
     return low_mode_directions([vibrational_modes(H, masses, coords) for H in hessians.values()], below_cm)
+
+
+def settings_conflict(recorded: dict | None, wanted: dict, has_results: bool) -> str | None:
+    """Why the runner may not write into an out folder with the settings `wanted`, or None when it may. The runner keeps every point
+    file and every finished molecule it finds, so a folder made at another step or threshold would mix two measurements; a folder with
+    results and no record of its settings (made before 20 November 2026) cannot be told apart from one."""
+    if recorded is None:
+        if has_results:
+            return f"the out folder holds results but no {RUN_SETTINGS_NAME}: their step and threshold are unknown, so nothing is reused; " \
+                   "give a fresh out folder"
+        return None
+    different = {key: (recorded.get(key), value) for key, value in wanted.items() if recorded.get(key) != value}
+    if different:
+        return "the out folder was made with other settings (" + ", ".join(f"{k}: {old} there, {new} asked" for k, (old, new) in
+                                                                         different.items()) + "); give a fresh out folder"
+    return None
 
 
 def select(molecules: Path, below_cm: float = LOW_MODE_CM) -> dict[str, int]:

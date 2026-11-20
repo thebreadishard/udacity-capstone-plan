@@ -81,7 +81,9 @@ def test_the_files_are_written_into_the_output_folder_and_the_runner_can_read_th
     lines = (tmp_path / "out" / "ids_sample.txt").read_text(encoding="utf-8").splitlines()
     assert [line.split()[0] for line in lines if not line.startswith("#")] == drawn(record)
     step = (tmp_path / "out" / "ids_step02.txt").read_text(encoding="utf-8").splitlines()
-    assert [line for line in step if not line.startswith("#")] == record["step_check_ids"] and len(record["step_check_ids"]) == 4
+    assert [line.split()[0] for line in step if not line.startswith("#")] == record["step_check_ids"] == list(record["step_check"])
+    assert set(record["step_check_ids"]) <= set(drawn(record)) and len(record["step_check_ids"]) >= 4
+    assert all(m["registered_points"][0]["noise_cm"] > 0 and m["registered_points"][0]["mode"] == 0 for m in record["molecules"])
     assert json.loads((tmp_path / "out" / "sample.json").read_text(encoding="utf-8")) == json.loads(json.dumps(record))
 
 
@@ -118,7 +120,8 @@ def test_the_price_counts_the_runners_directions_at_each_threshold(tmp_path: Pat
     assert (total["hours_low"], total["hours_high"]) == pytest.approx((total["hours_8_threads"], 2 * total["hours_8_threads"]))
     assert record["gradient_seconds"] == {"0 b3lyp": {"median_s": 30.0, "points": 2}, "0 wb97x": {"median_s": 50.0, "points": 2}}
     text = (tmp_path / "out" / "SAMPLE.md").read_text(encoding="utf-8")
-    assert "At `--below 60`: 4 directions, 16 gradients and 8 reference SCFs" in text and "nan" not in text.lower()
+    assert "The sample at `--below 60`: 4 directions, 16 gradients and 8 reference SCFs" in text and "nan" not in text.lower()
+    assert record["step_check_totals"]["60"]["directions"] == len(record["step_check_ids"]) and "The step check at `--below 60`" in text
 
 
 def test_a_size_without_a_recorded_gradient_time_refuses_the_price(tmp_path: Path) -> None:
@@ -142,3 +145,25 @@ def test_a_molecule_past_the_atom_limit_is_never_drawn(tmp_path: Path) -> None:
     with pytest.raises(ValueError, match="20–30 cm⁻¹ holds 2 eligible molecules"):
         S.draw(population, config(tmp_path, per_band=3))
     assert S.population_rows(population, 25)[0] == {"band": "20–30", "unrepaired": 3, "within_atom_limit": 2, "eligible": 2}
+
+
+def test_the_step_check_list_is_the_smallest_of_each_band_and_every_noisy_registered_point() -> None:
+    """Review finding 1: a rule, not a typed list. A quiet large molecule stays off; a noisy one goes on whatever its size; a tie in size
+    goes to the first id."""
+    def row(mol_id: str, band: str, atoms: int, *noise: float) -> dict:
+        return {"id": mol_id, "band": band, "atoms": atoms, "registered_points": [{"mode": i, "label_cm": 25.0, "noise_cm": n} for i, n in enumerate(noise)]}
+
+    rows = [row("A_big_quiet", "20–30", 25, 0.2), row("A_small", "20–30", 15, 0.1), row("A_noisy", "20–30", 23, 0.2, 0.71),
+            row("B_tie_1", "30–40", 16, 0.1), row("B_tie_2", "30–40", 16, 0.5), row("B_both", "30–40", 12, 1.09)]
+    assert S.step_check_ids(rows) == {"A_small": "smallest of its band", "A_noisy": "a registered point above the noise line",
+                                      "B_both": "smallest of its band and a registered point above the noise line"}
+    assert S.step_check_ids(rows[3:5]) == {"B_tie_1": "smallest of its band"}      # 0.5 is not above the line
+
+
+def test_the_registered_points_of_a_molecule_are_its_modes_in_the_window(tmp_path: Path) -> None:
+    molecules = tmp_path / "molecules"
+    write_molecule(molecules, "M_1", [23.7, 30.3, 3700.0])
+    write_molecule(molecules, "M_2", [45.0, 80.0, 3700.0])
+    two = S.registered_points(molecules / "M_1")
+    assert [(p["mode"], round(p["label_cm"], 4)) for p in two] == [(0, 23.7), (1, 30.3)]
+    assert [p["mode"] for p in S.registered_points(molecules / "M_2")] == [0]

@@ -88,3 +88,19 @@ def test_the_measurement_run_specs_patch_at_their_own_settings_into_their_own_fo
     assert words[:5] == ["env", "THREADS=4", "CAP_MB=4096", "bash", "../low_mode_patch.sh"] and words[7:] == extra
     assert words[6].startswith("probes/results_m1/low_mode_threshold_2026-11-20/patch_") and spec["threads"] == 4
     assert spec["progress"]["heartbeat_glob"] == words[6].removeprefix("probes/results_m1/") + "/pyscf.log"
+
+
+def test_a_path_with_a_space_stays_one_argument() -> None:
+    """Review finding 10: the runner's arguments are quoted one by one for the shell inside WSL."""
+    res = show(IDS, "probes/results_m1/some where", "--below", "60")
+    assert res.returncode == 0, res.stdout + res.stderr
+    args = shlex.split(res.stdout.split("python ", 1)[1])
+    assert args[2].endswith("/probes/results_m1/some where") and args[3] == "--ids" and args[-2:] == ["--below", "60"]
+
+
+def test_only_git_bash_turns_a_drive_path_into_a_wsl_mount() -> None:
+    """On Linux or inside WSL a path is its own, also one that starts with a one-letter folder such as /a/b."""
+    plan = subprocess.run([BASH, "-c", 'cd "$1" && pwd', "_", PLAN.as_posix()], capture_output=True, text=True, encoding="utf-8",
+                          timeout=SHELL_HANG_GUARD_S, check=True).stdout.strip()
+    assert runner_args(IDS, OUT, LMP_HOST_KERNEL="Linux")[2] == f"{plan}/{OUT}"
+    assert runner_args(IDS, OUT, LMP_HOST_KERNEL="MINGW64_NT-10.0-26200")[2] == f"/mnt{plan}/{OUT}"
