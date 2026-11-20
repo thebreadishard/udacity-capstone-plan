@@ -67,3 +67,12 @@ data can show; the report prints u_c and u_res beside every Δ.
 
 The beat margin per family and the verdict *matrix-gated / decidable / inconclusive by construction*
 belong to the pilot note (Ladder §2). This module prints the numbers the pilot note will consume.
+
+---
+
+**Note added 20 November 2026 (nothing above this line was changed).** The "Data" table names
+`../02_opponent_atlas/out/experimental_3.10/`. That path belongs to the plan repository in which this form was written
+([udacity-capstone-plan](https://github.com/thebreadishard/udacity-capstone-plan), under
+`plans/05_delta-probed-ir-pipeline/modules/`). The folder is not part of this submission repository. The matrix and gas-phase
+records the test uses are here in `notebook/bands_lab.csv`, and the pairs formed under the rule above in
+`notebook/pairs_matrix_gas.csv`; `build_lab_tables.py`, which wrote both from the parsed library, stays in the plan repository.
