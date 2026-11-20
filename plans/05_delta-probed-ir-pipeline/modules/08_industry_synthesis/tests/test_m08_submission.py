@@ -37,6 +37,40 @@ def cat() -> Catalog:
     return Catalog()
 
 
+def test_s5_is_recorded_from_what_the_catalogue_builder_reports() -> None:
+    """A clean build has an empty list of problems and its molecule count; a broken invariant is its INVARIANT lines; a build
+    that stopped without one names its last stderr line; a build that exits 0 without a readable summary, or beside an
+    INVARIANT line, is refused (20 Nov 2026: the record held problems=null)."""
+    record = run_scenarios.s5_record
+    clean = record(0, 'note\n{"n_molecules": 14258, "built_utc": "x"}', "", 42)
+    assert clean["problems"] == [] and clean["n_molecules"] == 14258 and clean["exit_code"] == 0
+    broken = record(1, "", "INVARIANT: rung counts do not add up\nINVARIANT: catalog id without a manifest row\nother", 3)
+    assert broken["problems"] == ["rung counts do not add up", "catalog id without a manifest row"] and broken["n_molecules"] is None
+    crashed = record(1, "", "Traceback (most recent call last):\n  File x\nSystemExit: evidence file missing a.json\n\n", 2)
+    assert crashed["problems"] == ["build_catalog.py stopped with exit code 1: SystemExit: evidence file missing a.json"]
+    assert record(3, "", "", 1)["problems"] == ["build_catalog.py stopped with exit code 3: nothing on stderr"]
+    with pytest.raises(RuntimeError, match="without printing its summary"):
+        record(0, "no json here", "", 1)
+    with pytest.raises(RuntimeError, match="exited 0 beside 1 INVARIANT"):
+        record(0, '{"n_molecules": 1}', "INVARIANT: x", 1)
+    for unreadable in ('{"built_utc": "x"}', '{"n_molecules": 1} trailing', "{not json"):
+        with pytest.raises(RuntimeError, match="printed summary cannot be read"):
+            record(0, unreadable, "", 1)
+
+
+def test_a_failing_s5_fails_the_run_and_is_never_the_submitted_record(tmp_path: Path) -> None:
+    """The request scenarios can all pass while the catalogue's check fails: that run is a failing run."""
+    s5 = run_scenarios.s5_record(1, "", "INVARIANT: rung counts do not add up", 3)
+    rec = dict(n_pass=8, n_scenarios=8, mechanical={"S5": s5})
+    assert run_scenarios.run_failure(rec) == "S5 failed (build_catalog.py exit 1, 1 problem(s))"
+    with pytest.raises(RuntimeError, match=r"S5 failed .*is not written from a failing run"):
+        run_scenarios.write_records(rec, tmp_path, submitted=True)
+    assert not (tmp_path / run_scenarios.SUBMITTED).exists() and len(list(tmp_path.glob("scenario_results_2*.json"))) == 1
+    assert run_scenarios.run_failure(dict(n_pass=8, n_scenarios=8, mechanical={})) is None
+    assert run_scenarios.run_failure(dict(n_pass=7, n_scenarios=8, mechanical={})) == "7 of 8 scenarios pass"
+    assert run_scenarios.run_failure(dict(n_pass=8, n_scenarios=8, mechanical={"S5": run_scenarios.s5_record(0, '{"n_molecules": 2}', "", 1)})) is None
+
+
 def test_s6_status_is_the_verdict_of_its_record() -> None:
     record = json.loads(run_scenarios.S6_RECORD.read_text(encoding="utf-8"))
     status = run_scenarios.s6_status()
@@ -352,14 +386,14 @@ def test_the_submitted_record_needs_the_whole_run() -> None:
 
 
 def test_the_submitted_record_is_written_under_its_fixed_name_and_never_from_a_failing_run(tmp_path: Path) -> None:
-    passing = dict(n_pass=8, n_scenarios=8)
+    passing = dict(n_pass=8, n_scenarios=8, mechanical={})
     dated = run_scenarios.write_records(passing, tmp_path, submitted=True)
     assert json.loads((tmp_path / run_scenarios.SUBMITTED).read_text(encoding="utf-8")) == passing
     assert dated.name.startswith("scenario_results_2") and sorted(p.name for p in tmp_path.iterdir()) == sorted([dated.name, run_scenarios.SUBMITTED])
     failing = tmp_path / "failing"
     failing.mkdir()
     with pytest.raises(RuntimeError, match="not written from a failing run"):
-        run_scenarios.write_records(dict(n_pass=7, n_scenarios=8), failing, submitted=True)
+        run_scenarios.write_records(dict(n_pass=7, n_scenarios=8, mechanical={}), failing, submitted=True)
     assert [p.name for p in failing.iterdir()] == [dated.name]
     plain = tmp_path / "plain"
     plain.mkdir()

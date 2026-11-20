@@ -100,23 +100,60 @@ def s6_status(record: Path = S6_RECORD) -> dict:
                 pass_line=rec["pass_line"], record=under_module(record))
 
 
+INVARIANT = "INVARIANT: "            # build_catalog.py's prefix for a broken invariant, one line each on stderr, with exit 1
+
+
+def s5_record(exit_code: int, stdout: str, stderr: str, seconds: int) -> dict:
+    """S5 as the catalogue's builder reports it: its problems are the INVARIANT lines on stderr, and a clean build prints its
+    summary as JSON on stdout. A build that stopped without an INVARIANT line (a missing evidence file, a traceback) has its
+    last stderr line as its one problem. A build that says neither — exit 0 without a readable summary, or exit 0 beside an
+    INVARIANT line — is refused rather than recorded as clean."""
+    problems = [line[len(INVARIANT):] for line in stderr.splitlines() if line.startswith(INVARIANT)]
+    n_molecules = None
+    if exit_code != 0 and not problems:
+        said = [line.strip() for line in stderr.splitlines() if line.strip()]
+        problems = [f"build_catalog.py stopped with exit code {exit_code}: {said[-1] if said else 'nothing on stderr'}"]
+    if exit_code == 0:
+        if problems:
+            raise RuntimeError(f"build_catalog.py exited 0 beside {len(problems)} INVARIANT line(s): {problems[:3]}")
+        start = stdout.find("{")
+        if start < 0:
+            raise RuntimeError("build_catalog.py exited 0 without printing its summary; S5 cannot be recorded as clean")
+        try:
+            n_molecules = json.loads(stdout[start:])["n_molecules"]
+        except (json.JSONDecodeError, KeyError) as err:
+            raise RuntimeError(f"build_catalog.py exited 0 but its printed summary cannot be read ({type(err).__name__}: {err}); "
+                               "S5 cannot be recorded as clean") from err
+    return dict(exit_code=exit_code, seconds=seconds, problems=problems, n_molecules=n_molecules, stderr_tail=stderr[-400:])
+
+
+def run_failure(rec: dict) -> str | None:
+    """Why this run failed, or None: a request scenario that did not pass, or S5 — when it was run — with a non-zero exit."""
+    if rec["n_pass"] != rec["n_scenarios"]:
+        return f"{rec['n_pass']} of {rec['n_scenarios']} scenarios pass"
+    if "S5" in rec["mechanical"] and rec["mechanical"]["S5"]["exit_code"] != 0:
+        s5 = rec["mechanical"]["S5"]
+        return f"S5 failed (build_catalog.py exit {s5['exit_code']}, {len(s5['problems'])} problem(s))"
+    return None
+
+
 def write_records(rec: dict, out: Path, submitted: bool) -> Path:
     """Write the run's record under its date, and with `submitted` also under the fixed name the submission ships.
 
-    Each goes to a temp file that is moved over the target. A run in which a scenario fails is never written as the submitted
-    record: the dated file keeps it for reading, and the reason is raised.
+    Each goes to a temp file that is moved over the target. A run in which a scenario or S5 fails is never written as the
+    submitted record: the dated file keeps it for reading, and the reason is raised.
     """
+    failure = run_failure(rec)
     names = [f"scenario_results_{time.strftime('%Y-%m-%d')}.json"] + ([SUBMITTED] if submitted else [])
-    if submitted and rec["n_pass"] != rec["n_scenarios"]:
+    if submitted and failure:
         names.remove(SUBMITTED)
     for name in names:
         tmp = out / (name + ".tmp")
         with open(tmp, "w", encoding="utf-8") as fh:
             json.dump(rec, fh, indent=1, ensure_ascii=False)
         os.replace(tmp, out / name)
-    if submitted and SUBMITTED not in names:
-        raise RuntimeError(f"{rec['n_pass']} of {rec['n_scenarios']} scenarios pass: {SUBMITTED} is not written from a failing run "
-                           f"(the dated record is {names[0]})")
+    if submitted and failure:
+        raise RuntimeError(f"{failure}: {SUBMITTED} is not written from a failing run (the dated record is {names[0]})")
     return out / names[0]
 
 
@@ -197,20 +234,14 @@ def main(argv: list[str] | None = None) -> int:
     if a.with_catalog:
         t0 = time.time()
         r = subprocess.run([sys.executable, str(REPO / "website" / "export" / "build_catalog.py")], capture_output=True, text=True, check=False)
-        summ = {}
-        if "{" in r.stdout:
-            try:
-                summ = json.loads(r.stdout[r.stdout.find("{"):])
-            except json.JSONDecodeError:
-                summ = {}
-        mech["S5"] = dict(exit_code=r.returncode, seconds=round(time.time() - t0), problems=summ.get("problems"), n_molecules=summ.get("n_molecules"), stderr_tail=r.stderr[-400:])
-        print(f"S5: build_catalog.py exit {r.returncode}, problems {summ.get('problems')}")
+        mech["S5"] = s5_record(r.returncode, r.stdout, r.stderr, round(time.time() - t0))
+        print(f"S5: build_catalog.py exit {r.returncode}, {len(mech['S5']['problems'])} problems, {mech['S5']['n_molecules']} molecules")
     mech["S6"] = s6_status()
     rec = dict(date=time.strftime("%Y-%m-%d %H:%M"), frozen=S["frozen"], n_pass=sum(r["passed"] for r in results), n_scenarios=len(results), results=results, mechanical=mech,
                licence=cert["provenance"]["licence"] if certs else None, provenance=provenance())
     p = write_records(rec, out, a.submitted)
     print(f"{rec['n_pass']}/{rec['n_scenarios']} scenarios pass; written {under_module(p)}")
-    return 0 if rec["n_pass"] == rec["n_scenarios"] else 1
+    return 1 if run_failure(rec) else 0
 
 
 if __name__ == "__main__":
