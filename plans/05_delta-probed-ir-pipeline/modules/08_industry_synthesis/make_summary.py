@@ -112,12 +112,23 @@ def stored_run_sentence(run: dict[str, Any]) -> str:
             f"which {spread} the own-spread check. {known}.")
 
 
+def s5_sentence(mechanical: dict[str, Any]) -> str:
+    """S5 in prose, from the record: not run, or run and clean. A run with problems stops the build: the paper has no sentence for it."""
+    if "S5" not in mechanical:
+        return "S5, the catalogue's consistency check, was not part of this run"
+    s5 = mechanical["S5"]
+    if s5["exit_code"] != 0 or s5["problems"] != []:
+        count = len(s5["problems"]) if isinstance(s5["problems"], list) else "an unreadable list of"
+        raise ValueError(f"S5 did not pass in this record (exit code {s5['exit_code']}, {count} problems): the paper says the catalogue "
+                         "is consistent; repair the catalogue or rewrite that sentence before building")
+    return "S5, the catalogue's consistency check, found no problems"
+
+
 def scenario_sentences(scenarios: dict[str, Any], outcome: dict[str, Any]) -> str:
     """What the scenario record shows: the requests by kind, then the three mechanical checks, each from the record."""
     registered, added = scenarios["registered_ids"], scenarios["added_ids"]
     mechanical = scenarios["mechanical"]
-    s5 = ("S5, the catalogue's consistency check, exited with code " f"{mechanical['S5']['exit_code']} and problems {mechanical['S5']['problems']}"
-          if "S5" in mechanical else "S5, the catalogue's consistency check, was not part of this run")
+    s5 = s5_sentence(mechanical)
     return (f"The officer answered {scenarios['n']} requests — {len(registered)} pre-registered ({', '.join(registered)}) and "
             f"{len(added)} added cases ({', '.join(added)}) — and all produced the registered kind of output ({scenarios['n_pass']} of "
             f"{scenarios['n']}). The three mechanical checks are separate. S7: every cost line traced to its source "
@@ -213,7 +224,7 @@ def integration(results: dict[str, Any]) -> list[Block]:
                  "number can be traced to a file at a commit. The worker replays; it is not live. It re-executes recorded logs and returns the "
                  "same run record marked as a replay. An earlier design had a live worker that rents a server per job. I no longer promise it: "
                  "under the proxy proof there is no coupled-cluster job to launch, and a new molecule is served by running the pipeline on a "
-                 "laptop. The refusal is a first-class output. The officer names the gate (cap, closed rung, invalid input, an instruction "
+                 "laptop. A refusal is an output in its own right. The officer names the gate (cap, closed rung, invalid input, an instruction "
                  "hidden in the request) and prices the missing step from a table in which every entry names the record it comes from. The "
                  "measured error stands beside every number. The pipeline certificate prints each corrected band with its family's measured "
                  "error, and since version 0.15 it licenses a band only if the band's own position stayed within the line when the networks were "

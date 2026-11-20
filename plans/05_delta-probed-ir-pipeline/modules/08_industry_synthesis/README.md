@@ -1,4 +1,4 @@
-# Module 08 — Industry-Integrated AI Systems Synthesis: a spectrum with a stated accuracy and price, or an honest refusal
+# Module 08 — Industry-Integrated AI Systems Synthesis: a spectrum with a stated accuracy and price, or a refusal that names the missing step
 
 **Author:** Frederic Petrignani
 
@@ -112,7 +112,8 @@ python run_scenarios.py --no-candidate     # the scenarios again: S1–S4 and S8
 In the plan's repository (from `plans/05_delta-probed-ir-pipeline`):
 
 ```bash
-python modules/08_industry_synthesis/run_scenarios.py --with-catalog     # S1–S4, S8 end to end; S7; S5 (the export builder, ≈ a minute)
+python modules/08_industry_synthesis/run_scenarios.py --with-catalog --submitted   # S1–S4, S8 end to end; S7; S5 (the export builder, ≈ a minute);
+                                                                          # --submitted also writes out/scenario_results_submitted.json
 python -m pytest modules/08_industry_synthesis/tests tests/test_m08_*.py -q   # the module's and the pipeline's tests, no machine
 cd modules/08_industry_synthesis && python -m m08.pipeline --name benzene --smiles c1ccccc1 --out <folder> --threads 6
                                                                           # the pipeline; CORPUS_QC_PYTHON names the psi4 env
@@ -123,9 +124,9 @@ cd modules/08_industry_synthesis && python -m m08.make_snapshot           # free
 
 Environment: Python 3.14 with torch, rdkit, pydantic and nbclient (`requirements.txt` is its `pip freeze`).
 
-Inputs. In the submitted repository everything the module reads from outside its own folder lies under `snapshot/`, at the path it has in the plan's repository; `snapshot/MANIFEST.json` lists every file with its size, its sha256 and the plan commit it was frozen from. That is: the website export (the catalogue, its summary and the molecule records the scenarios open), module 03's tolerance table and laboratory band table, module 05's corpus manifest, anchor registry, model registry and the evaluation records of the carried network (under `out/v14/`), the evidence files the certificates cite, and one stored pipeline run. `steward/` is module 07's package with its rule table. Outputs: `out/certificates/*.json|.md`, `out/requests_ledger.csv`, `out/scenario_results_<date>.json`.
+Inputs. In the submitted repository everything the module reads from outside its own folder lies under `snapshot/`, at the path it has in the plan's repository; `snapshot/MANIFEST.json` lists every file with its size, its sha256 and the plan commit it was frozen from. That is: the website export (the catalogue, its summary and the molecule records the scenarios open), module 03's tolerance table and laboratory band table, module 05's corpus manifest, anchor registry, model registry and the evaluation records of the carried network (under `out/v14/`), the evidence files the certificates cite, and one stored pipeline run. `steward/` is module 07's package with its rule table. Outputs: `out/certificates/*.json|.md`, `out/requests_ledger.csv`, `out/scenario_results_<date>.json`, and from the run with `--submitted` also `out/scenario_results_submitted.json`, the record this repository ships and the notebook reads.
 
-## Decisions (I decided, 28 September 2026)
+## Decisions (28 September 2026)
 
 1 replay worker, not live · 2 Cloudflare Pages when live · 3 the standout's plan line labelled proxy, in the "estimated" column only · 4 module-06
 candidates: intake only · 5 build now. `PRE_REGISTRATION.md` carries them with the date.

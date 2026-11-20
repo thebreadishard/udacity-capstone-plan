@@ -29,7 +29,7 @@ HERE = Path(__file__).resolve().parent
 NOTEBOOK = HERE / "integrated_system.ipynb"
 OUT_ENV = "M08_NOTEBOOK_OUT"           # where the executed cells write results.json and figures/; unset: the notebook's own folder
 
-HEADER = """# Module 08 — the industry synthesis: a computed infrared spectrum with a stated accuracy and a stated price, or an honest refusal
+HEADER = """# Module 08 — the industry synthesis: a computed infrared spectrum with a stated accuracy and a stated price, or a refusal that names the missing step
 
 **Author:** Frederic Petrignani
 
@@ -53,9 +53,9 @@ trained on all data (decision 66). The records and the code call the two test se
 budget; module 05's network and its evaluation records give the correction and the *licence* the officer reads; module 06's generated molecules supply
 the candidate the corpus has not computed; module 07's rule table and gate decide whether a run order may start. Modules 02 (the library of existing
 predictions) and 04 (the calibrated-harmonic reading) are part of the story, but no code here reads their output. The website export is the single
-catalogue the officer reads."""
+catalogue the officer reads."""  # noqa: E501  the title is one markdown line
 
-IMPORTS = """import json, os, re, sys, time
+IMPORTS = """import json, os, sys, time
 from pathlib import Path
 import numpy as np, pandas as pd
 import matplotlib.pyplot as plt
@@ -69,6 +69,7 @@ from m08.licence import state as licence_state
 from m08.officer import Request, decide, RULES
 from m08.pipeline import PIPELINE_VERSION
 from m08.replay import execute_run_order
+from m08.scenario_kinds import request_kinds
 OUT = Path(os.environ["M08_NOTEBOOK_OUT"]) if "M08_NOTEBOOK_OUT" in os.environ else Path(".")   # where this run writes results.json and figures/
 FIG = OUT / "figures"; FIG.mkdir(parents=True, exist_ok=True)
 cat = Catalog()
@@ -125,7 +126,7 @@ read and which run wrote it. The three mechanical checks are not requests and ar
 check), S6 (accessibility of the public site) and S7 (every cost line traces to its source). Certificates are written to `../out/certificates/`;
 every decision lands in `../out/requests_ledger.csv`."""
 
-SCENARIOS_CODE = """SC = json.load(open(Path("..") / "scenarios" / "scenarios.json", encoding="utf-8")); S = SC["scenarios"]
+SCENARIOS_CODE = """S = json.load(open(Path("..") / "scenarios" / "scenarios.json", encoding="utf-8"))["scenarios"]
 results_env_set = "M08_SCENARIO_RESULTS" in os.environ
 results_dir = Path(os.environ["M08_SCENARIO_RESULTS"]) if results_env_set else Path("..") / "out"
 submitted = results_dir / "scenario_results_submitted.json"                               # written only by run_scenarios.py --submitted
@@ -139,9 +140,8 @@ for r in R["results"]:
                  "decision": d["kind"], "gate / cap named": (d["gate_named"] or "—")[:60], "rules": " ".join(d["rule_ids"]) or "—",
                  "price lines": ", ".join(f"{p['step']} €{p['eur_ex_vat']:.2f}" for p in d["price_lines"]) or "—", "pass": r["passed"]})
 tab = pd.DataFrame(rows); display(tab)
-added_ids = re.findall(r"S[0-9]+[a-z]", SC["frozen"].split(";")[1])                        # the frozen line names the added cases
-registered_ids = [r["id"] for r in R["results"] if r["id"] not in added_ids]
-print("pre-registered requests:", registered_ids, "| added cases:", [r["id"] for r in R["results"] if r["id"] in added_ids])
+registered_ids, added_ids = request_kinds([r["id"] for r in R["results"]])                 # refuses a record with other requests
+print("pre-registered requests:", registered_ids, "| added cases:", added_ids)
 written_by = " ".join(Path(w).name if ("/" in w or chr(92) in w) else w for w in R["provenance"]["command"].split())   # no local folders in the notebook
 print("results folder:", f"M08_SCENARIO_RESULTS is set ({results_dir.name})" if results_env_set else "the module's own out/")
 print("results record:", results_file.name, "| written by:", written_by)
@@ -327,7 +327,7 @@ that a new molecule is served only by running the pipeline by hand on a laptop. 
 ETHICS_MD = """## 5. Ethics and responsible use
 
 The largest risk is a certified-looking spectrum being cited for a molecule whose accuracy was never measured. The design answers it in four ways.
-The refusal is a first-class output. The ladder is on every certificate. The corrected positions are printed with the family's measured error beside
+A refusal is an output in its own right. The ladder is on every certificate. The corrected positions are printed with the family's measured error beside
 them, and a band's harmonic position is called licensed only where that error is within the line and — since pipeline 0.15 — the band's own position
 held still when the molecule was presented in other ways. And a molecule outside the sizes or the chemistry the networks trained on is computed and
 printed with no band licensed. Every number links to its file; corrections are dated addenda; the price of compute is on the certificate; no personal
@@ -337,7 +337,7 @@ closed step. The certificate states what the service does not cover."""
 RESULTS_CODE = """out = dict(date=time.strftime("%Y-%m-%d %H:%M"), catalogue=dict(n=len(cat.rows), built_utc=cat.summary["built_utc"], rung_counts=cat.summary["rung_counts"]),
            licence=lic, scenarios=dict(n_pass=R["n_pass"], n=R["n_scenarios"], date=R["date"], record=results_file.name, written_by=written_by,
                                        results_dir=results_dir.name, results_env_set=results_env_set, registered_ids=registered_ids,
-                                       added_ids=[r["id"] for r in R["results"] if r["id"] in added_ids], table=rows, mechanical=R["mechanical"]),
+                                       added_ids=added_ids, table=rows, mechanical=R["mechanical"]),
            outcome=dict(claims=claims, n_cost_lines=len(all_costs), n_unpriced=n_unpriced),
            s1=dict(rung=c1["rung"]["reached"], families=list(c1["per_band_budget"].keys()), coverage=c1["anchor_coverage"], cost=c1["cost_record"], anchor=c1["anchor"]["entry"]),
            s8=dict(rung=c8["rung"]["reached"], coverage=c8["anchor_coverage"], n_lab_bands=c8["laboratory"]["n_bands"], cost=c8["cost_record"], anchor=c8["anchor"]["entry"]),

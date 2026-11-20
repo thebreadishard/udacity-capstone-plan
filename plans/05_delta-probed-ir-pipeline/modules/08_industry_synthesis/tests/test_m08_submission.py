@@ -28,6 +28,7 @@ from m08.catalog import Catalog  # noqa: E402
 from m08.certify import ANCHOR_REGISTRY, PRICED_EVIDENCE, anchor_cost_lines, carried_anchor, certificate, to_markdown  # noqa: E402
 from m08.officer import CATION_NEEDED, Request, decide  # noqa: E402
 from m08.replay import execute_run_order  # noqa: E402
+from m08.scenario_kinds import ADDED_CASES, MECHANICAL_CHECKS, PRE_REGISTERED_REQUESTS, request_kinds  # noqa: E402
 from m08.seen import CATION_LAYER  # noqa: E402
 
 
@@ -225,9 +226,28 @@ def test_the_paper_says_which_requests_passed_and_reports_the_mechanical_checks_
     assert scenarios["mechanical"]["S6"]["status"] in sentence
     with_s5 = json.loads(json.dumps(scenarios))
     with_s5["mechanical"]["S5"] = dict(exit_code=0, problems=[])
-    assert "exited with code 0 and problems []" in summary.scenario_sentences(with_s5, results["outcome"])
+    clean = summary.scenario_sentences(with_s5, results["outcome"])
+    assert "S5, the catalogue's consistency check, found no problems." in clean and "[" not in clean
+    for failing in (dict(exit_code=1, problems=[]), dict(exit_code=0, problems=["a", "b"]), dict(exit_code=0, problems=None)):
+        with pytest.raises(ValueError, match="S5 did not pass"):
+            summary.s5_sentence({"S5": failing})
     assert "was not part of this run" in summary.scenario_sentences({**with_s5, "mechanical": {k: v for k, v in with_s5["mechanical"].items()
                                                                                              if k != "S5"}}, results["outcome"])
+
+
+def test_the_request_kinds_are_named_and_a_record_with_other_requests_is_refused(results: dict) -> None:
+    ids = list(PRE_REGISTERED_REQUESTS + ADDED_CASES)
+    assert request_kinds(ids) == (list(PRE_REGISTERED_REQUESTS), list(ADDED_CASES))
+    assert (results["scenarios"]["registered_ids"], results["scenarios"]["added_ids"]) == request_kinds(
+        [row["id"] for row in results["scenarios"]["table"]])
+    with pytest.raises(ValueError, match=r"missing \['S4c'\]"):
+        request_kinds(ids[:-1])
+    with pytest.raises(ValueError, match=r"neither pre-registered nor added \['S9'\]"):
+        request_kinds([*ids, "S9"])
+    scenarios = json.loads((MODULE / "scenarios" / "scenarios.json").read_text(encoding="utf-8"))
+    assert request_kinds([s["id"] for s in scenarios["scenarios"]])[1] == list(ADDED_CASES)
+    assert {m["id"] for m in scenarios["mechanical"]} == set(MECHANICAL_CHECKS)
+    assert "S2b, S4b and S4c are added cases" in (MODULE / "PRE_REGISTRATION.md").read_text(encoding="utf-8").splitlines()[10]
 
 
 def test_the_paper_states_the_anharmonic_bars_from_the_record(summary: ModuleType, results: dict) -> None:
