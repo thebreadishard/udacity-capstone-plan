@@ -312,3 +312,102 @@ made at another step). Run specs `probes/runspecs/night20_218b_lane<k>.json`. Th
 **The laptop's seven step-0.02 molecules stand as measured** (`patch_step02_below60/`). For the 13 new ones both steps are
 night20's; for those seven the two steps are two machines, which the gate of amendment 1 covers (gradients within 1.9e-8
 hartree/bohr). Nothing else in the registration changes.
+
+## Amendment 3 (20 November 2026, 14:3x UTC) — the measurement becomes the value extrapolated to step zero
+
+**When this is written, and what had been seen.** After the registered read gave outcome 3 (amendment 2), and after the two steps of
+the seven checked molecules were set side by side (`probes/low_mode_step_analysis.py`, into
+`probes/results_m1/low_mode_threshold_2026-11-20/step_analysis/`: STEP_ANALYSIS.md, step_points.csv, record.json). Before the
+step-0.02 data of the other 13 molecules were read: their folder, `patch_step02_below60_extension/`, did not exist in the
+checkout when this was written and was not opened. Everything below comes from the seven molecules of `patch_step02_below60/`.
+The extrapolated values of six of those seven were also seen (`step_analysis/extrapolated_7/`, a demonstration of the new read
+that states no outcome); point 6 says what that costs.
+
+**1. What the two steps showed.** As registered, a point whose two steps differ by more than 0.15 cm⁻¹ is flagged and left out.
+On the seven molecules that removes all 8 registered points, so after the extension the rule would have nothing to read. The
+difference is not noise:
+
+- *One sign.* The seven molecules give 16 points (re-measured mode × functional); one has no single counterpart after the patch
+  and is set aside. On all 15 others the step-0.02 frequency lies above the step-0.01 one, by 0.120 to 0.573 cm⁻¹ (the 8
+  registered B3LYP points: 0.226 to 0.573). Noise without a preferred sign gives one sign on 15 points with probability 6e-5.
+- *One size, as a curvature.* Expressed as curvature, the difference is +16.0 to +31.2 cm⁻² (mean 23.9, standard deviation
+  5.2), whatever the mode's frequency (23 to 112 cm⁻¹) and whoever carries the motion.
+- *The same in two separate calculations.* Along the six directions that were measured along the same vector at both steps, the
+  measured curvature uᵀC rises by 20.1 to 30.8 cm⁻² from step 0.01 to step 0.02, and the B3LYP and ωB97X values of one direction
+  stand 0.8 to 3.2 cm⁻² apart. The two functionals are separate SCFs with independent gradient noise.
+- *Against the noise estimate of section 2.* The two-step difference of a frequency carries √(1 + ¼) = 1.118 times the small
+  step's noise. At σ = 2e-8 hartree/bohr a point's difference is 1.6 to 18.8 of those standard deviations (median 2.7; 8 of the
+  15 points, the ones with the most noise, below 3), at σ = 1e-8 it is 3.2 to 37.6 (none below 3). So a single light-atom point does not
+  show the bias by itself at the upper σ; the sign, the common size and the agreement of the functionals do.
+
+This is what a central difference does. Its error is even in the step q: the measured column is C(q) = C₀ + a·q² + b·q⁴ + …,
+where a comes from the quartic term of the potential along the direction. Doubling the step multiplies a·q² by four, so the two
+steps differ by three times the small step's own bias: the step-0.01 curvature stands 5.3 to 10.4 cm⁻² too high on these
+molecules. Section 2 already had this offset on one molecule (the step-0.01 patch of B_0f06474656 stands 4.08 and 4.10 cm⁻²
+above the full finite difference, same sign, same in both functionals) and could not say whether it was general. The registered
+0.15 cm⁻¹ agreement of the two steps was taken from one heavy-frame molecule at higher frequency (`vibrations.py:31`); a fixed
+curvature bias weighs 1/(2ω) in the frequency, so it does not hold for modes of 20 to 60 cm⁻¹.
+
+What two steps cannot show: that the error grows as q² and not otherwise. That is the central difference's error law for a
+smooth potential, not a measurement of ours; a third step on one molecule would test it.
+
+**2. The measurement becomes the step-extrapolated value.** Per direction the columns of the two steps are combined as
+
+    C₀ = (4·C(0.01) − C(0.02)) / 3
+
+(Richardson extrapolation in q²: exact for a quartic term; a sextic term b·q⁴ leaves −4·b·q⁴ at the small step's q). The patched
+Hessian and its frequencies are computed from C₀ with the unchanged arithmetic of `vibrations.py` (`patched_hessian`), from the
+label and the `directions` and `columns` the runner stored. Each point reports three numbers: the extrapolated change (the
+measurement, which the rule reads), the step-0.01 change (what the registered read called the change), and
+|ω(0.01) − ω(extrapolated)|, the size of the step bias that was removed. A point's overlap is the smallest of its three matches
+(at step zero and at each step), so a mode without a single counterpart at either step is flagged as before.
+
+Two checks stand before the combination, both in `probes/low_mode_threshold_read.py` (option `--second-step`):
+
+- The stored columns of each step, put through `patched_hessian` from the label, must give the patched frequencies the runner
+  stored, to 1e-6 cm⁻¹; otherwise the read stops. On the seven molecules, both steps, both functionals, the largest difference
+  is 5.9e-11 cm⁻¹.
+- Both steps must hold the same `directions`, to 1e-12 in every element. Columns measured along rotated directions carry another
+  step error and do not combine. **B_3dcbd985e3 fails this**: its two directions span the same space at both steps but are
+  rotated in it (largest element difference 0.73; the step-0.01 run was night20's, the step-0.02 run the laptop's, and the two
+  directions come from a singular-value decomposition). It has two registered points (23.7 and 30.3 cm⁻¹). It gets no
+  extrapolated value from the data that exist; it has to be measured again at one of the two steps along the other step's
+  directions (2 directions, 8 gradients over both functionals). Until then it is a molecule without both steps (point 3).
+
+**3. What replaces the 0.15 cm⁻¹ flag.** A point is flagged "not quadratic in the step" and left out of every statistic when
+|ω(0.02) − ω(0.01)| exceeds 1.0 cm⁻¹. The limit is set now, from the seven molecules, above their largest difference
+(0.573 cm⁻¹, B_0c6c144a7f, B3LYP, 23.7 cm⁻¹): a difference of that size is a removed bias of about 0.19 cm⁻¹, and beyond 1.0
+(a bias beyond a third of a wavenumber, two thirds of the line) a two-point extrapolation is not trusted. A point without both
+steps along the same directions cannot be read: its molecule is listed with the reason, and **the read states no outcome while
+any molecule of its sources is in that list**.
+
+**4. The noise of the extrapolated value.** A column's gradient noise goes as σ/q, so the step-0.02 column carries half the noise
+of the step-0.01 one. With the weights 4/3 and −1/3 and independent noise at the two steps the extrapolated column carries
+√((4/3)² + (1/3 · 1/2)²) = √65/6 = 1.344 times the step-0.01 column's noise. The per-point noise column is multiplied by that
+factor, and the 0.5 cm⁻¹ line is held against it as before. The extrapolation removes a bias and pays for it in noise: for the
+noisiest registered points (1.04 and 1.09 cm⁻¹ per 1e-7 hartree/bohr at step 0.01, 1.39 and 1.46 extrapolated) one standard
+deviation at σ = 2e-8 is now 0.28 to 0.29 cm⁻¹, so the line is 1.7 times that. That is thinner than section 2 had it.
+
+**5. Unchanged.** The population (the sample of section 3, B3LYP, label frequency 20 to 60 cm⁻¹, coverage and overlap at least
+0.9); the 0.5 cm⁻¹ line; the three outcomes and their thresholds (p ≤ 0.20 with p + 1 SE ≤ 0.30; p ≥ 0.50 with p − 1 SE ≥ 0.40;
+anything else undecided); the floor of 16 points; the outcome printed with the flagged points counted as moved and as unmoved;
+the descriptive lines (bands, quartiles, correlations, the weighted fraction, the root mean square of section 8); and that no
+label is swapped and `LOW_MODE_CM` does not change by this registration. The clause "two or more registered points failing the
+step check is outcome 3" now means two or more registered points flagged "not quadratic". The rule that a registered point
+which moved by 0.25 to 1.0 cm⁻¹ without a step check must be repeated is moot once every molecule has both steps, and the
+extrapolated read does not apply it: a molecule without both steps holds the outcome back by point 3 instead.
+
+The registered, un-extrapolated read stays reproducible: `--step-check` runs it as it ran, and
+`tests/test_low_mode_threshold_read.py` pins that it writes the three files of `read/` to the byte. The extrapolated read ran
+on synthetic records before this amendment was committed (same test file): a quartic term is removed to 1e-8 cm⁻¹ where each
+single step is off by the constructed amount; a sextic term leaves the stated −4·b·q⁴; the noise factor follows from the
+repair's own `column` by propagation; the flag holds at 1.0 exactly and trips just beyond; a molecule without its second step,
+and one with rotated directions, get no point and hold the outcome back; a second step that is not twice the first, or patched
+another space, is refused; each outcome is reached from constructed extrapolated points.
+
+**6. What this amendment costs.** The definition of the measurement changed after part of the data was seen: the two-step
+differences of seven molecules, and the extrapolated values of six of them (12 points, 6 registered; the bias removed is 0.04
+to 0.19 cm⁻¹, and one registered point, B_4ff67f9ea2, goes from −0.43 at step 0.01 to −0.53 extrapolated, across the line).
+The limit of 1.0 cm⁻¹ was chosen with those seven molecules' differences in view. The rule's line, thresholds and floor did not
+change, and the step-0.02 data of the other 13 molecules had not been read. The registered read stays on record as outcome 3
+(`read/`), and a reader who distrusts the extrapolation has the step-0.01 change of every point beside the extrapolated one.
