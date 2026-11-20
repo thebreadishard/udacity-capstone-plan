@@ -123,3 +123,11 @@ molecule, seeds 0 1 2, one controlled change (2 → 4 layers), the family-block 
 Result in `PROVENANCE.md` (dated note of the same time) and `notebook/results.json`: band shifts learned (model beats the family median
 2–3× on three families), couplings at the zero rule, depth 2 → 4 without effect, models still improving at epoch 30. The recipe is unchanged;
 the E6 learning curve decides whether the coupling target is data-limited.
+
+## Dated pointer 2026-11-20 — the dataset's release: no DOI yet
+
+Rule 5 of the recipe above says the dataset is "published as its own release (Zenodo DOI, deck hashes) before the module starts". That
+has not happened: on 20 November 2026 no Zenodo DOI has been minted for the corpus. What exists is the set of corpus releases in
+`data/corpus_release/` (`RELEASES.md` lists them), each with a manifest that gives the SHA-256 of every input file; they are public in
+the plan repository since 27 September 2026 and are part of this repository. Minting the DOI is my action and is still open; a later
+pointer will give the DOI. Nothing else in the recipe changes.

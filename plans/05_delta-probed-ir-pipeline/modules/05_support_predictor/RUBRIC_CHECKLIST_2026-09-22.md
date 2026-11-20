@@ -84,3 +84,22 @@ outputs are current again. Items unchanged otherwise; the reviewer sees sections
 - 3 Nov 2026 19:1x: section 12.6 executed append-only (88 cells, no error outputs, cells 0–84 unchanged against the committed notebook); the October top-to-bottom executions recorded in PROVENANCE. The report has no addendum for sections 12–12.6 yet (TASKS 20, writing phase).
 - 3 Nov 2026 19:3x: the report's Addendum 6 (sections 12–12.6, every number from the records through `m05/followup_reads.py`); report rebuilt; README status rewritten (v1.3, decision 65). Open: an erratum for section 12.4's family count (PROVENANCE).
 - 3 Nov 2026 20:2x: section 12.7 appended, the dated note correcting section 12.4's family count (89 cells, no error outputs).
+
+## Status 2026-11-20 — after a re-read against the rubric (text fixes only; nothing executed)
+
+- **The carried network is v1.4** (carried since 17 November 2026, `MODELS.md`; v1.3 = chain 35 is superseded). The README's status and
+  "Model versions" paragraphs said v1.3 and one unlicensed family until today; they now give v1.4 and its licence, read on the
+  measurement networks' product error: within 3 cm⁻¹ for all four families on both test sets. The notebook and the report follow the
+  project up to 10 October (chains 34 and 36) and make no claim about v1.3 or v1.4 as the carried network.
+- **The table at the top is still the desk pass of 22 September** ("prepared", quick mode). The state is in the dated sections below it.
+  The stored notebook has 89 cells (34 code cells, 0 error outputs); its execution counts run 1–33 and then 1, because section 12.6 was
+  executed append-only on 3 November (the README says so).
+- **Fixed today in text:** "3 seed(s)" in the notebook's summary (builder and stored cell); a `UserWarning` with a local path removed
+  from cell 13's stored output (PROVENANCE, note of today); the README's run line (`jupyter nbconvert`, which `requirements.txt`
+  provides); README names of files that do not ship; `SUBMISSION.txt` lists 82 files under `out/` instead of the folder's 1,858; a dated
+  pointer in `RECIPE.md` that the Zenodo DOI is not minted.
+- **Open, rubric-visible:** the report's citations (Williams et al. 2025 is in the reference list but not cited in the text; AdamW, early
+  stopping, dropout, layer normalisation and average precision have no source) — writing plus a report rebuild; the fresh-clone check
+  with the new `SUBMISSION.txt` (the last one was on 18 October, before sections 12.6 and 12.7); a new `pip freeze` (the file's header
+  comment holds a local path).
+- **Open, unchanged:** my own pass over notebook and report; the Zenodo release; the promotion of the model to `src/dpir`.

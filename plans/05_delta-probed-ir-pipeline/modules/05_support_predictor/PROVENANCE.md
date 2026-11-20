@@ -237,3 +237,31 @@ Addendum 5 from `results_followup5.json`; `module_summary.docx/.pdf` rebuilt 18:
 ## Dated note 2026-11-03 20:2x — section 12.7, the correction of section 12.4's count, appended
 
 On the user's word ('Ja, een gedateerde notitiecel append-only') the error found while writing Addendum 6 is corrected in the notebook by a dated markdown note, section 12.7 (cell 88), its numbers built from the records the 12.4 table reads (`m05/followup_reads.py`): three of the four families at or under 3 cm⁻¹ for chain 24, not two; C–H out-of-plane inside its label noise. Executed append-only (`probes/runspecs/m05_append_12_7.json`, `execute_section8.py --from-cell 88 --setup '' --defs ''`, no code cell run); cells 0–87 unchanged against the committed notebook, no error outputs. Section 12.4 stays as written and run.
+
+## Dated note 2026-11-20 — text fixes after a re-read against the rubric; nothing was executed
+
+- **A warning removed from a stored output, without re-execution.** Cell 13 of `notebook/deep_learning.ipynb` (the baseline's training)
+  stored a three-line `UserWarning` on its error stream ("Converting a tensor with requires_grad=True to a scalar …"), whose first line
+  held the path of the kernel's temporary file on my laptop. That stream output was removed from the stored notebook today by a patch of
+  the file; the cell was not run again, and its other output (the line with the best epochs and the run time) and every other cell's
+  outputs and execution counts are as they were. The stored source of cell 13 still reads `tl.append(float(loss))`, the line that ran.
+- **The builder's line that caused the warning.** In `notebook/make_notebook.py` that line is now `tl.append(loss.item())`: the same
+  value, without the warning. The stored notebook will carry it from its next full execution on; until then builder and stored notebook
+  differ in this one line of cell 13.
+- **"3 seed(s)" in the summary** (section 6, cell 20) reads "3 seeds" in the builder and in the stored cell's source.
+- **`SUBMISSION.txt` no longer ships the whole of `out/`** (1,858 tracked files). It lists 82 files under `out/`: the records the
+  notebook's code cells open, the records the builder and `m05/followup_reads.py` name, and the records the README cites. The list was
+  derived by a script from those sources (literal names, the reader module's name rules, and name patterns with a seed number); the only
+  name it could not resolve as a pattern is `{name}.json` in the notebook's and the reader's `fam_read`/`record` functions, whose callers
+  pass literal names that the script did resolve. With it the submission's tracked files go from 1,913 to 137. One record the README
+  cites, `out/v14/E7_rungC_v14s3clean_c00_control_product_error.json`, is left out because it stores a local path of the machine that
+  wrote it; the README names it as a record of this repository.
+- **README**: status and "Model versions" brought to v1.4 (carried since 17 November 2026; v1.3 superseded), with the licence read on
+  the measurement networks' product error; the run line uses `jupyter nbconvert`, which `requirements.txt` provides; files that are not
+  part of the submission are named as the plan repository's.
+- **`RECIPE.md`**: a dated pointer says that no Zenodo DOI has been minted yet.
+
+Owed after this note: the report still lists Williams et al. (2025) without citing it in the text, and cites no source for AdamW, early
+stopping, dropout, layer normalisation or average precision. That needs new sentences and verified references and then a rebuild of the
+report, so it was not done in this text pass. Also owed: the fresh-clone check with the new `SUBMISSION.txt` (pipeline check,
+`M05_QUICK=1`), and a new `pip freeze` — the header comment of `requirements.txt` holds the local path of the Python that wrote it.

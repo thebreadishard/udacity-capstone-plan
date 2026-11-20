@@ -2,7 +2,13 @@
 
 *Until decision 49 (23 September 2026) this module was named the Δ₂-support predictor; the notebook's pre-registered task is unchanged, the target is the correction itself.*
 
-**Status (2026-11-03 19:3x).** The module has run and has kept learning. Sections 1–6 of `notebook/deep_learning.ipynb` are the main run of 23 September (a rented CCX53, fresh environment from `requirements.txt`), unchanged in source; the dated follow-up sections 7–12.6 (23 September – 10 October) show what was learned after it, and a dated note (12.7, 3 November) corrects a count in 12.4, and the report tells the same story in its Addenda 1–6. The stored outputs are the top-to-bottom execution of 8 October with sections 12.6 and 12.7 executed append-only on 3 November; earlier outputs are in the repository's history (`PROVENANCE.md`, note of 3 November). Nothing in notebook or report is typed by hand: `make_notebook.py` fills the text from `notebook/results*.json` and the records in `out/`, `make_summary.py` reads every number from the same files, and the readers of the follow-up records are one module both use (`m05/followup_reads.py`). The network the project carries is the ΔH-network v1.3 (chain 35, `MODELS.md`, decision 55): on the eight clean molecules of test set (a) (unseen molecules) it reaches ring in-plane 1.77, C–H stretch 1.19, C–H out-of-plane 2.17 and other 3.62 cm⁻¹, on test set (b) (held-out scaffolds) 2.12, 2.50, 2.70 and 3.89 (seed means, `out/holdout_a_clean_read_2026-10-30.md`). By decision 65 it is licensed where it is within 3 cm⁻¹ on both test sets: every family but 'other', the soft low-frequency modes. Later candidates are listed in `MODELS.md` and carried only when they are worse on neither test set (decision 57). Still open: the user's pass over notebook and report, the Zenodo release of the corpus (the user), the submission copy at the very end (`SUBMISSION.txt`), and the promotion of the model to `src/dpir` under decision 47. The history of every step is in `PROVENANCE.md` (dated notes) and `RUBRIC_CHECKLIST_2026-09-22.md` (status per rubric item, appended per date).
+**Status (20 November 2026).** The module has run and has kept learning. Sections 1–6 of `notebook/deep_learning.ipynb` are the main run of 23 September (a rented CCX53, fresh environment from `requirements.txt`), unchanged in source; the dated follow-up sections 7–12.6 (23 September – 10 October) show what was learned after it, a dated note (12.7, 3 November) corrects a count in 12.4, and the report tells the same story in its Addenda 1–6. The stored outputs are the top-to-bottom execution of 8 October with sections 12.6 and 12.7 executed append-only on 3 November, which is why the last execution count starts again at 1. Nothing in notebook or report is typed by hand: the notebook's builder fills the text from `notebook/results*.json` and the records in `out/`, and the report's builder reads every number from the same files.
+
+The notebook and the report follow the project up to 10 October 2026 (section 12.6); the newest networks they read are chains 34 and 36, versions 1.1 and 1.2. The project has moved on since, and the network it carries today is the ΔH-network v1.4, promoted on 17 November 2026 (`MODELS.md`; the promotion read is `out/v14/read_clean.md`). v1.3 (chain 35), which an earlier version of this README named, is superseded. A version is a pair of networks with one recipe: the *measurement networks* are trained without the two test sets and are the ones every error is read on; the *release networks* are trained on all 1,132 molecules that have labels and make the spectrum the project prints. The project's licence for a family of vibrations is an error of at most 3 cm⁻¹ on both test sets, read on what the product delivers: the band positions after the mean correction of the three seeds has been applied. On its measurement networks v1.4 reaches, on the eight clean molecules of test set (a) (unseen molecules), ring in-plane 1.17, C–H stretch 0.80, C–H out-of-plane 1.86 and other 2.38 cm⁻¹, and on the 40 molecules of test set (b) (held-out scaffolds) 1.22, 1.67, 1.26 and 2.10 (the record `E7_rungC_v14s3clean_c00_control_product_error.json`, kept in the plan repository's folder `out/v14/`). All four families are within the line on both test sets, so the licence is in force for all four. Test set (a) is small: resampling its eight molecules gives an interval that reaches above the line for C–H out-of-plane (0.93–3.20) and for other (1.45–3.19). The records, the code and the file names say *hold-out* where this text says *test set*.
+
+Still open: my own pass over notebook and report; the Zenodo release of the corpus (no DOI has been minted yet, see the dated pointer at the end of `RECIPE.md`); the fresh-clone check of the files listed in `SUBMISSION.txt`; and the promotion of the model code to the plan repository's package under its quality policy.
+
+**Paths.** This repository holds the files listed in `SUBMISSION.txt`. Other files this text names — the scripts under `m05/` apart from `m05/deltah_model.py`, the scripts under `probes/`, the builders, `PROVENANCE.md` with the dated history of every step — are in the plan repository, in the module's folder [`modules/05_support_predictor`](https://github.com/thebreadishard/udacity-capstone-plan/tree/master/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor).
 
 ## Project description (as it reads)
 
@@ -20,11 +26,11 @@ identical geometries, Δ = H(ωB97X) − H(B3LYP) per molecule; layer A (42 ladd
 four-ring cores) in the release the notebook trains on, `data/corpus_release/layerA2_2026-09-23.npz` — 224 molecules, 14,607 modes, split by molecule
 186 / 18 / 20 (train / validation / test), 20 candidates with an imaginary mode skipped. Later releases (`RELEASES.md`: the corrected `…23b`, the
 229-molecule `…24`, the 60-molecule layer-B interim) feed the follow-up sections. Computed ab initio data, not AI-generated, not used in any earlier
-capstone module. Hessian QM9 (Williams et al., 2025) was downloaded and inventoried on 12 September and is *not* in the dataset (the user's decision of
-22 September: too few aromatic rings, at most nine heavy atoms); `PROVENANCE.md` keeps what was learned from it.
+capstone module. Hessian QM9 (Williams et al., 2025) was downloaded and inventoried on 12 September and is *not* in the dataset (I decided that on
+22 September: too few aromatic rings, at most nine heavy atoms); the plan repository's `PROVENANCE.md` keeps what was learned from it.
 
-**Models and the one controlled change.** Baseline: the ΔH model of the architecture sheet (`m05/deltah_model.py`, kept identical to
-`GoalGathering/architecture/51_deltaH_model_pytorch.py` by `m05/sync_model.py`), two Transformer layers, 135,939 parameters; the controlled change:
+**Models and the one controlled change.** Baseline: the ΔH model of the architecture sheet (`m05/deltah_model.py`; the plan repository keeps it identical to its
+architecture sheet `51_deltaH_model_pytorch.py`), two Transformer layers, 135,939 parameters; the controlled change:
 four layers, 235,907 parameters, everything else fixed. 30 epochs, early stopping on the validation loss, seeds 0, 1, 2; two rules as opponents (zero
 correction; the family median of the training set) and, for the pair head, the resonance-denominator rule.
 
@@ -41,7 +47,7 @@ The shifts are learned (four to six times better than the zero rule on the C–H
 except the C–H stretch, where the median rule is already good); the couplings in the mode basis are not (every model sits on the zero rule); the
 extra layers change nothing outside seed scatter. That reading is the module's honest result, and it is what the follow-up sections explain.
 
-## What the project learned (sections 7–12.6 of the notebook; the same story in `Uitleg/10_Module_05_Steunvoorspeller.md`)
+## What the project learned (sections 7–12.6 of the notebook)
 
 - **Why the couplings did not learn, and where they do (E6 → E7, section 7).** A normal mode is a direction without a fixed sign, so a coupling
   per mode pair is sign-blind and the label is ill-posed; the learning curve stayed flat at 45, 100 and 175 molecules. Written in local coordinates
@@ -67,12 +73,17 @@ extra layers change nothing outside seed scatter. That reading is the module's h
 
 ```bash
 pip install -r requirements.txt     # torch is the CPU build: pip may need --extra-index-url https://download.pytorch.org/whl/cpu
-jupyter notebook notebook/deep_learning.ipynb
+# the pipeline check: the same cells with fewer epochs and one seed, written to notebook/quick_check.ipynb
+M05_QUICK=1 jupyter nbconvert --to notebook --execute --output quick_check.ipynb notebook/deep_learning.ipynb
+# the full run: every model of the notebook, written to notebook/full_run.ipynb
+jupyter nbconvert --to notebook --execute --output full_run.ipynb notebook/deep_learning.ipynb
 ```
 
-Run all cells top to bottom. The full run trains every model of the notebook (several hours on a laptop); the stored notebook is the full run of 8 October with section 12.6 added append-only (`notebook/execute_section8.py`, which runs only new cells and keeps the stored outputs).
-`M05_QUICK=1 jupyter notebook notebook/deep_learning.ipynb` runs the same cells as a pipeline check (fewer epochs, one seed; the notebook
-labels its numbers as not a result). The notebook needs only the files listed below; before submission the pipeline check was executed in
+Both commands run all cells top to bottom and leave the stored notebook as it is. The full run trains every model of the notebook
+(several hours on a laptop); the stored notebook is the full run of 8 October with sections 12.6 and 12.7 added append-only (by an
+executor script in the plan repository that runs only new cells and keeps the stored outputs). The pipeline check labels its numbers
+as not a result. To step through the cells in a browser instead, install the notebook interface as well (`pip install notebook`; it is
+not in `requirements.txt`) and open the file with `jupyter notebook notebook/deep_learning.ipynb`. The notebook needs only the files listed below; before submission the pipeline check was executed in
 a fresh clone of this repository, with nothing else present. `requirements.txt` was created with `pip freeze > requirements.txt`.
 
 ### Where the data come from
@@ -85,11 +96,14 @@ manifest. The data are public in this repository and, since 27 September 2026, i
 
 ## Model versions (decision 55, 3 October 2026)
 
-`MODELS.md` lists every saved network in `out/` with its network name and version (decision 59: the ΔH-network, v1.0 = chain 24, v1.1 = chain 34, v1.2 = chain 36, v1.3 = chain 35, carried), its reviewed status (`carried`, `superseded`, `invalid`, `smoke`, `pretrained`, `candidate`, `experimental`), the chain that made
-it, the recipe read from the checkpoint, the hold-out numbers and the commit. It is generated — `python m05/model_registry.py`, checked by
-`python m05/model_registry.py --check` and by `tests/test_model_registry.py` — from the checkpoints and `out/MODELS_STATUS.json`, the one file that is
-written by hand (a judgement per model). Reads and transfers (`m05/rungC_cc_transfer.py`, `probes/rungC_eval_saved.py`) run on `carried` models only;
-`--allow-any-model` is the named exception.
+`MODELS.md` lists every saved network with its name and version, its kind (a measurement network, or a release network trained on
+all data), its reviewed status (`carried`, `superseded`, `invalid`, `smoke`, `pretrained`, `candidate`, `experimental`), the chain that
+made it, the recipe read from the checkpoint, the hold-out numbers and the commit. The versions that were in production are v1.0
+(chain 24), v1.1 (chain 34), v1.2 (chain 36) and v1.3 (chain 35), all superseded, and v1.4, carried since 17 November 2026 (its three
+measurement networks; its three release networks since 18 November). The registry is generated in the plan repository, by a script
+with its own test, from the checkpoints and `out/MODELS_STATUS.json`, the one file that is written by hand (a judgement per model).
+The checkpoints (`.pt` files) and most of the records the registry's notes cite are not in this repository; they are in the plan
+repository. Reads and transfers run on `carried` models only; `--allow-any-model` is the named exception.
 
 ## Files
 
@@ -98,7 +112,8 @@ written by hand (a judgement per model). Reads and transfers (`m05/rungC_cc_tran
 - `m05/deltah_model.py` — the ΔH model the notebook trains.
 - `data/corpus_release/` — the dataset: the corpus releases with their manifests (`RELEASES.md` lists them); `data/second_route/`, `data/e8/`,
   `data/e9/` — the second-route checks and the E8–E10 records the follow-up sections read.
-- `out/` — the experiment records sections 7–12 read; `corpus/manifest.csv` — the corpus manifest; `MODELS.md` — the saved networks and their status.
+- `out/` — the experiment records sections 7–12 read and the records this README cites, each listed in `SUBMISSION.txt` (the plan
+  repository holds the others); `corpus/manifest.csv` — the corpus manifest; `MODELS.md` — the saved networks and their status.
 - `Deep_Learning_Systems_Analysis_Report.pdf` — the report in the Udacity APA 7 template; `module_summary.pdf` is the same file.
 - `SUBMISSION.txt` — the list of files this repository holds.
 
