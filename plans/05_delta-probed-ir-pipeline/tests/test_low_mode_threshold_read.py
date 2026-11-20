@@ -415,7 +415,7 @@ READ_FOLDER = PLAN / "probes" / "results_m1" / "low_mode_threshold_2026-11-20"
 CORPUS = PLAN / "modules" / "05_support_predictor" / "corpus" / "molecules"
 CM2 = 1.0 / HARTREE2CM ** 2   # one cm⁻² of curvature in atomic units
 Q2_RECORD = {"record": "q2_test.json", "verdict": R.Q2_HOLDS, "interval": [4.0, 6.0],
-             "ratios": [{"id": "T_1", "tag": "b3lyp", "direction": 0, "ratio": 5.02}]}
+             "ratios": [{"id": m, "tag": tag, "direction": 0, "ratio": 5.02} for m in R.Q2_MOLECULES for tag in V.LABEL_TAGS]}
 BOTH_STEPS_AND_Q2 = R.Extrapolation((), Q2_RECORD)   # nothing holds the extrapolated read back
 
 
@@ -530,11 +530,11 @@ def test_an_extrapolated_point_carries_the_small_steps_noise_times_the_factor(tm
 @pytest.mark.parametrize(("two_step", "flags"), [
     (1.0, ()),                              # at the limit exactly: read
     (-1.0, ()),
-    (1.0 + 1e-9, (R.NOT_QUADRATIC,)),       # just beyond: left out
-    (-1.0 - 1e-9, (R.NOT_QUADRATIC,)),
+    (1.0 + 1e-9, (R.STEP_BIAS_TOO_LARGE,)),       # just beyond: left out
+    (-1.0 - 1e-9, (R.STEP_BIAS_TOO_LARGE,)),
     (0.57, ()),                             # the largest difference of the seven checked molecules
 ])
-def test_a_point_is_not_quadratic_beyond_one_wavenumber_between_the_steps(two_step: float, flags: tuple[str, ...]) -> None:
+def test_a_point_is_too_large_a_step_bias_beyond_one_wavenumber_between_the_steps(two_step: float, flags: tuple[str, ...]) -> None:
     p = point(30.0, 0.2, small_step_cm=30.0, large_step_cm=30.0 + two_step)
     assert p.flags == flags
     assert point(30.0, 0.2).flags == ()     # a point of the registered read has no two steps and no such flag
@@ -547,8 +547,8 @@ def test_a_molecule_without_its_second_step_has_no_point_and_holds_the_outcome_b
     assert record["unread"] == [{"id": "M_2", "reason": "no second step"}]
     assert record["molecules"] == 1 and record["points"] == 2
     assert record["decision"]["outcome"] == R.OUTCOME_NOT_STATED
-    assert "1 molecule(s) have no second step (M_2)" in record["decision"]["statement"]
-    assert "no point here: M_2." in (tmp_path / "out" / "RESULT.md").read_text(encoding="utf-8")
+    assert "1 molecule(s) have no second step of this measurement (M_2: no second step)" in record["decision"]["statement"]
+    assert "no point here: M_2 (no second step)." in (tmp_path / "out" / "RESULT.md").read_text(encoding="utf-8")
 
 
 def test_a_second_step_that_is_not_twice_the_first_or_patched_another_space_is_refused(tmp_path: Path) -> None:
@@ -620,14 +620,14 @@ def test_the_small_steps_change_does_not_decide_an_extrapolated_point() -> None:
     assert decision["n"] == 20 and decision["moved"] == 1
 
 
-def test_two_points_not_quadratic_make_the_outcome_undecided_and_one_only_drops_its_point() -> None:
+def test_two_points_too_large_a_step_bias_make_the_outcome_undecided_and_one_only_drops_its_point() -> None:
     registered = [two_step_point(21.0 + 1.9 * i, 1.0 if i < 2 else 0.1) for i in range(20)]
     one = R.summarise([*registered, two_step_point(40.0, 3.0, 1.2, mol_id="F_1")], extrapolation=BOTH_STEPS_AND_Q2)
-    assert one["decision"]["outcome"] == R.OUTCOME_SOUND and one["decision"]["n"] == 20 and one["flagged_not_quadratic"] == 1
+    assert one["decision"]["outcome"] == R.OUTCOME_SOUND and one["decision"]["n"] == 20 and one["flagged_step_bias"] == 1
     two = R.summarise([*registered, two_step_point(40.0, 3.0, 1.2, mol_id="F_1"), two_step_point(45.0, 0.1, -1.5, mol_id="F_2")],
                       extrapolation=BOTH_STEPS_AND_Q2)["decision"]
     assert two["outcome"] == R.OUTCOME_UNDECIDED and "F_1 mode 0, F_2 mode 0" in two["statement"] and two["n"] == 20
-    assert "the step error is not quadratic there" in two["statement"]
+    assert "too large for the 0.5 cm⁻¹ line" in two["statement"]
     elsewhere = R.summarise([*registered, two_step_point(40.0, 3.0, 1.2, tag="wb97x"), two_step_point(70.0, 3.0, 1.2),
                              two_step_point(45.0, 3.0, 1.2, sample=R.BIASED)], extrapolation=BOTH_STEPS_AND_Q2)["decision"]
     assert elsewhere["outcome"] == R.OUTCOME_SOUND
@@ -653,18 +653,18 @@ def test_the_extrapolated_read_writes_its_three_numbers_and_says_what_it_is(tmp_
     text = (out / "RESULT.md").read_text(encoding="utf-8")
     assert "**Extrapolated to step zero (amendment 3 of the registration).**" in text and "1.3333·C(small) -0.3333·C(large)" in text
     assert "| M_1 mode 0 | 35.00 | 37.50 | +2.50 | +2.59 | 0.09 | +0.28 |" in text
-    assert record["constants"]["not_quadratic_cm"] == 1.0 and record["constants"]["extrapolated_noise_factor"] == R.EXTRAPOLATED_NOISE_FACTOR
+    assert record["constants"]["step_bias_limit_cm"] == 1.0 and record["constants"]["extrapolated_noise_factor"] == R.EXTRAPOLATED_NOISE_FACTOR
     assert record["inputs"]["second_steps"] == [[(tmp_path / "second").resolve().as_posix(), (tmp_path / "labels").resolve().as_posix()]]
-    assert record["flagged_not_quadratic"] == 0 and record["flagged_directions"] == 0 and record["unread"] == []
+    assert record["flagged_step_bias"] == 0 and record["flagged_directions"] == 0 and record["unread"] == []
     assert record["q2_test"] is None and record["decision"]["outcome"] == R.OUTCOME_NOT_STATED
 
 
 def test_the_registered_read_carries_nothing_of_the_extrapolation(tmp_path: Path) -> None:
     write_molecule(tmp_path, "M_1", both([35.0, *STIFF]), both([37.5, *STIFF]))
     record = R.run(config(tmp_path))
-    assert not {"unread", "flagged_not_quadratic", "flagged_directions", "q2_test"} & set(record)
+    assert not {"unread", "flagged_step_bias", "flagged_directions", "q2_test"} & set(record)
     assert "second_steps" not in record["inputs"]
-    assert "not_quadratic_cm" not in record["constants"] and "two_step_cm" not in record["decision"]["points"][0]
+    assert "step_bias_limit_cm" not in record["constants"] and "two_step_cm" not in record["decision"]["points"][0]
     assert (tmp_path / "out" / "points.csv").read_text(encoding="utf-8").splitlines()[0].endswith("turned_imaginary,flags")
 
 
@@ -735,11 +735,13 @@ def test_steps_along_rotated_directions_are_flagged_left_out_and_never_combined(
         R.extrapolated_columns(small["C"], large["C"][:, :1])
 
 
-def test_a_second_step_that_measured_another_space_is_refused_not_flagged(tmp_path: Path) -> None:
+def test_a_second_step_that_measured_another_space_is_a_missing_second_step(tmp_path: Path) -> None:
     write_two_steps(tmp_path, "M_1", [35.0, 55.0, 3700.0], [37.5, 56.0, 3700.0], directions=BASIS[:, :2],
                     large_directions=BASIS[:, [0, 2]])
-    with pytest.raises(ValueError, match="did not re-measure the same space"):
-        R.extrapolated_points(extrapolated(tmp_path))
+    points, unread = R.extrapolated_points(extrapolated(tmp_path))
+    assert points == [] and unread == [{"id": "M_1", "reason": R.ANOTHER_SPACE}]
+    decision = R.run(extrapolated(tmp_path))["decision"]
+    assert decision["outcome"] == R.OUTCOME_NOT_STATED and "M_1: its second step measured another space" in decision["statement"]
 
 
 def test_points_with_rotated_directions_leave_the_rule_to_the_rest_and_to_the_floor_of_sixteen() -> None:
@@ -758,89 +760,97 @@ def test_the_extrapolated_read_states_no_outcome_without_a_q2_test_that_holds() 
     none = R.summarise(points, extrapolation=R.Extrapolation())["decision"]
     assert none["outcome"] == R.OUTCOME_NOT_STATED and "no record of the q² test was given" in none["statement"]
     assert (none["n"], none["moved"]) == (20, 2)                           # the arithmetic is printed; the outcome is not
-    failed_record = Q2_RECORD | {"verdict": R.Q2_FAILS, "ratios": [{"id": "T_1", "tag": "b3lyp", "direction": 0, "ratio": 8.158}]}
+    failed_record = Q2_RECORD | {"verdict": R.Q2_FAILS, "ratios": [r | {"ratio": 8.158} for r in Q2_RECORD["ratios"]]}
     failed = R.summarise(points, extrapolation=R.Extrapolation((), failed_record))["decision"]
     assert failed["outcome"] == R.OUTCOME_NOT_STATED and "the q² test fails" in failed["statement"]
-    assert "R = T_1 b3lyp 8.16" in failed["statement"] and "the registered read's outcome 3 stands" in failed["statement"]
+    assert f"R = {R.Q2_MOLECULES[0]} b3lyp 8.16" in failed["statement"] and "the registered read's outcome 3 stands" in failed["statement"]
     assert R.summarise(points, extrapolation=BOTH_STEPS_AND_Q2)["decision"]["outcome"] == R.OUTCOME_SOUND
 
 
-def test_the_q2_record_is_named_explicitly_and_checked_before_it_is_believed(tmp_path: Path) -> None:
-    write_two_steps(tmp_path, "M_1", [35.0, *STIFF], [37.5, *STIFF], quartic_cm2=7.0)
-    path = tmp_path / "q2_test.json"
-    path.write_text(json.dumps({"verdict": R.Q2_HOLDS, "interval": [4.0, 6.0], "predicted": 5.0,
-                                "ratios": [{"id": "T_1", "tag": "b3lyp", "direction": 0, "ratio": 5.02, "noise_sd": 0.2}]}), encoding="utf-8")
-    record = R.run(extrapolated(tmp_path, q2_test=path))
-    assert record["q2_test"]["verdict"] == R.Q2_HOLDS and record["q2_test"]["ratios"][0]["ratio"] == 5.02
-    assert record["decision"]["outcome"] == R.OUTCOME_UNDECIDED and "fewer than the 16 points" in record["decision"]["statement"]
-    assert "the q² test holds" in (tmp_path / "out" / "RESULT.md").read_text(encoding="utf-8")
-    source = f"{tmp_path / 'patches'}={tmp_path / 'labels'}"
-    parsed = R.parse_args(["--source", source, "--second-step", f"{tmp_path / 'second'}={tmp_path / 'labels'}", "--q2-test", str(path),
-                           "--molecules", str(tmp_path / "molecules"), "--out", str(tmp_path / "out")])
-    assert parsed.q2_test == path and len(parsed.second_steps) == 1
-    path.write_text(json.dumps({"verdict": "fine", "interval": [4.0, 6.0], "ratios": [{"ratio": 5.0}]}), encoding="utf-8")
-    with pytest.raises(ValueError, match="is no q²-test record"):
-        R.run(extrapolated(tmp_path, q2_test=path))
-    with pytest.raises(ValueError, match="belongs to the extrapolated read"):
-        config(tmp_path, q2_test=path)
-    with pytest.raises(FileNotFoundError):
-        extrapolated(tmp_path, q2_test=tmp_path / "absent.json")
+def test_a_reversed_direction_is_the_same_measurement_and_is_combined(tmp_path: Path) -> None:
+    """The central difference along −u is minus the one along u, so a second step along −u extrapolates as one along u does."""
+    write_two_steps(tmp_path, "M_1", [35.0, *STIFF], [37.5, *STIFF], quartic_cm2=7.0, large_directions=-BASIS[:, :1])
+    points, unread = R.extrapolated_points(extrapolated(tmp_path))
+    assert unread == [] and len(points) == 2
+    for p in points:
+        assert p.flags == () and p.patched_cm == pytest.approx(37.5, abs=1e-8)
+        assert p.large_step_cm == pytest.approx(math.sqrt(37.5 ** 2 + 28.0), abs=1e-8)
+    turned = R.sign_aligned({"U": BASIS[:, :2]}, {"U": BASIS[:, :2] * [1.0, -1.0], "C": np.ones((9, 2))})
+    assert np.array_equal(turned["U"], BASIS[:, :2]) and np.array_equal(turned["C"], np.ones((9, 2)) * [1.0, -1.0])
+    other = {"U": BASIS[:, 1:3], "C": np.ones((9, 2))}
+    assert R.sign_aligned({"U": BASIS[:, :2]}, other) is not other and np.array_equal(R.sign_aligned({"U": BASIS[:, :2]}, other)["U"], other["U"])
 
 
 # --- the q² test on a third step (amendment 3, point 7) ------------------------------------------------------------------------------
 
-def three_steps(root: Path, mol_id: str, true: list[float], terms: list[tuple[float, float]], **patch: object) -> A.AnalysisConfig:
-    """A molecule patched at 0.01, 0.02 and 0.04 bohr into `patches`, `second` and `third`. `terms` gives each step's quartic and
-    sextic term: the same pair thrice is one potential, different pairs stand for errors that follow no law."""
+Q2_TRUE = [37.5, 56.0, 3700.0]
+
+
+def three_steps(root: Path, terms: list[tuple[float, float]], **patch: object) -> A.AnalysisConfig:
+    """The test's molecules (synthetic ones under the registered ids) patched at 0.01, 0.02 and 0.04 bohr into `patches`, `second`
+    and `third`. `terms` gives each step's quartic and sextic term: the same pair thrice is one potential, different pairs stand for
+    errors that follow no law."""
     U = np.asarray(patch.get("directions", BASIS[:, :1]), float)
     label = [35.0, 55.0, 3700.0]
-    write_molecule(root, mol_id, both(label), both(label))
-    steps = zip(("patches", "second", "third"), (0.01, 0.02, float(patch.get("third_step", 0.04))), terms,
-                (U, U, np.asarray(patch.get("third_directions", U), float)), strict=True)
-    for folder, step, (quartic, sextic), directions in steps:
-        write_step(root, folder, mol_id, label, measured_columns(true, directions, step, quartic, sextic), directions=directions, step=step)
+    for mol_id in patch.get("ids", R.Q2_MOLECULES):
+        write_molecule(root, mol_id, both(label), both(label))
+        steps = zip(("patches", "second", "third"), (0.01, 0.02, float(patch.get("third_step", 0.04))), terms,
+                    (U, U, np.asarray(patch.get("third_directions", U), float)), strict=True)
+        for folder, step, (quartic, sextic), directions in steps:
+            write_step(root, folder, mol_id, label, measured_columns(Q2_TRUE, directions, step, quartic, sextic), directions=directions,
+                       step=step)
     labels = root / "labels"
     return A.AnalysisConfig(R.Source(root / "patches", labels), R.Source(root / "second", labels), root / "molecules", root / "q2",
                             R.Source(root / "third", labels))
 
 
 def test_an_error_that_grows_as_q2_gives_a_ratio_of_five_and_the_law_holds(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
-    cfg = three_steps(tmp_path, "T_1", [37.5, 56.0, 3700.0], [(7.0, 0.0)] * 3)
+    cfg = three_steps(tmp_path, [(7.0, 0.0)] * 3)
     A.main(["--small", f"{cfg.small.patches}={cfg.small.labels}", "--large", f"{cfg.large.patches}={cfg.large.labels}",
             "--third", f"{cfg.third.patches}={cfg.third.labels}", "--molecules", str(cfg.molecules), "--out", str(cfg.out)])
     assert "**The law holds.**" in capsys.readouterr().out
     record = json.loads((cfg.out / "q2_test.json").read_text(encoding="utf-8"))
     assert pytest.approx(5.0, rel=1e-15) == A.Q2_PREDICTED and record["verdict"] == R.Q2_HOLDS and record["interval"] == [4.0, 6.0]
-    assert [(r["id"], r["tag"]) for r in record["ratios"]] == [("T_1", "b3lyp"), ("T_1", "wb97x")]
+    assert sorted((r["id"], r["tag"]) for r in record["ratios"]) == sorted((m, tag) for m in R.Q2_MOLECULES for tag in V.LABEL_TAGS)
+    assert set(record["files"]) == {"small", "large", "third"} and set(record["files"]["small"]) == set(R.Q2_MOLECULES)
     for r in record["ratios"]:
         assert r["ratio"] == pytest.approx(5.0, abs=1e-6) and r["inside"] and r["noise_sd"] > 0
         assert r["curvature_cm2"] == pytest.approx([37.5 ** 2 + 7.0, 37.5 ** 2 + 28.0, 37.5 ** 2 + 112.0], abs=1e-6)
         assert r["zero_two_step_cm2"] == pytest.approx(37.5 ** 2, abs=1e-6) and r["zero_three_step_cm2"] == pytest.approx(37.5 ** 2, abs=1e-6)
     read = R.run(extrapolated(tmp_path, q2_test=cfg.out / "q2_test.json"))       # the read takes the record the test wrote
-    assert read["q2_test"]["verdict"] == R.Q2_HOLDS and "No outcome is stated" not in read["decision"]["statement"]
+    assert read["q2_test"]["verdict"] == R.Q2_HOLDS and len(read["q2_test"]["ratios"]) == 4
+    assert read["decision"]["outcome"] == R.OUTCOME_UNDECIDED and "fewer than the 16 points" in read["decision"]["statement"]
+    assert "the q² test holds" in (tmp_path / "out" / "RESULT.md").read_text(encoding="utf-8")
 
 
 def test_a_q4_term_beside_the_q2_term_moves_the_ratio_out_and_the_law_fails(tmp_path: Path) -> None:
-    record = A.run_q2_test(three_steps(tmp_path, "T_1", [37.5, 56.0, 3700.0], [(7.0, 0.5)] * 3))
-    assert record["verdict"] == R.Q2_FAILS
+    cfg = three_steps(tmp_path, [(7.0, 0.5)] * 3)
+    record = A.run_q2_test(cfg)
+    assert record["verdict"] == R.Q2_FAILS and len(record["ratios"]) == 4
     for r in record["ratios"]:
         assert r["ratio"] == pytest.approx((112.0 + 128.0 - 7.5) / (28.0 + 8.0 - 7.5), abs=1e-6) and not r["inside"]     # 8.16
         assert r["zero_three_step_cm2"] == pytest.approx(37.5 ** 2, abs=1e-6)             # three points remove both terms,
         assert r["zero_two_step_cm2"] == pytest.approx(37.5 ** 2 - 4 * 0.5, abs=1e-6)     # two leave −4·b·q⁴
+    decision = R.run(extrapolated(tmp_path, q2_test=cfg.out / "q2_test.json"))["decision"]
+    assert decision["outcome"] == R.OUTCOME_NOT_STATED and "the q² test fails" in decision["statement"]
+    assert f"{R.Q2_MOLECULES[0]} b3lyp 8.16" in decision["statement"] and "outcome 3 stands" in decision["statement"]
 
 
 def test_differences_that_are_noise_give_no_ratio_of_five_and_the_law_fails(tmp_path: Path) -> None:
     """Offsets of +0.3, −0.2 and +0.1 cm⁻² at the three steps, as noise would leave them: R = (0.1 − 0.3) / (−0.2 − 0.3) = 0.4."""
-    record = A.run_q2_test(three_steps(tmp_path, "T_1", [37.5, 56.0, 3700.0], [(0.3, 0.0), (-0.05, 0.0), (0.1 / 16, 0.0)]))
-    assert record["verdict"] == R.Q2_FAILS and [r["ratio"] for r in record["ratios"]] == [pytest.approx(0.4, abs=1e-5)] * 2
+    record = A.run_q2_test(three_steps(tmp_path, [(0.3, 0.0), (-0.05, 0.0), (0.1 / 16, 0.0)]))
+    assert record["verdict"] == R.Q2_FAILS and [r["ratio"] for r in record["ratios"]] == [pytest.approx(0.4, abs=1e-5)] * 4
 
 
-def test_one_ratio_outside_fails_the_law_and_the_bounds_are_inside(tmp_path: Path) -> None:
+def test_the_bounds_of_the_interval_are_inside_and_just_beyond_them_the_law_fails(tmp_path: Path) -> None:
     """A q⁴ term of 1.818 % of the q² term at the small step puts R on 6.0; just beyond it the law fails."""
-    inside = A.run_q2_test(three_steps(tmp_path / "a", "T_1", [37.5, 56.0, 3700.0], [(7.0, 7.0 * 0.018)] * 3))
-    beyond = A.run_q2_test(three_steps(tmp_path / "b", "T_1", [37.5, 56.0, 3700.0], [(7.0, 7.0 * 0.0185)] * 3))
+    inside = A.run_q2_test(three_steps(tmp_path / "a", [(7.0, 7.0 * 0.018)] * 3))
+    beyond = A.run_q2_test(three_steps(tmp_path / "b", [(7.0, 7.0 * 0.0185)] * 3))
     assert inside["verdict"] == R.Q2_HOLDS and 5.9 < inside["ratios"][0]["ratio"] < 6.0
     assert beyond["verdict"] == R.Q2_FAILS and 6.0 < beyond["ratios"][0]["ratio"] < 6.1
+    rows = [{"id": m, "tag": tag, "direction": 0, "ratio": 4.0} for m in R.Q2_MOLECULES for tag in V.LABEL_TAGS]
+    assert R.q2_verdict(rows) == R.Q2_HOLDS and R.q2_verdict([*rows[:3], rows[3] | {"ratio": 6.0}]) == R.Q2_HOLDS
+    assert R.q2_verdict([*rows[:3], rows[3] | {"ratio": 3.999}]) == R.Q2_FAILS      # one value outside is enough
 
 
 def test_the_ratios_noise_follows_from_the_three_curvatures_by_propagation() -> None:
@@ -855,13 +865,71 @@ def test_the_ratios_noise_follows_from_the_three_curvatures_by_propagation() -> 
         A.q2_ratio([10.0, 10.0, 12.0])
 
 
-def test_a_third_step_along_rotated_directions_or_not_twice_the_second_is_refused(tmp_path: Path) -> None:
+def test_a_third_step_that_is_not_the_registered_test_is_not_read_and_unlocks_nothing(tmp_path: Path) -> None:
     turn = np.array([[np.cos(0.4), -np.sin(0.4)], [np.sin(0.4), np.cos(0.4)]])
-    rotated = three_steps(tmp_path / "rotated", "T_1", [37.5, 56.0, 3700.0], [(7.0, 0.0)] * 3, directions=BASIS[:, :2],
-                          third_directions=BASIS[:, :2] @ turn)
-    with pytest.raises(ValueError, match="different directions"):
-        A.run_q2_test(rotated)
-    with pytest.raises(ValueError, match=r"0\.02 and 0\.03 bohr"):
-        A.run_q2_test(three_steps(tmp_path / "ratio", "T_1", [37.5, 56.0, 3700.0], [(7.0, 0.0)] * 3, third_step=0.03))
+    cases = {"rotated": ({"directions": BASIS[:, :2], "third_directions": BASIS[:, :2] @ turn}, "different directions"),
+             "ratio": ({"third_step": 0.03}, "0.02 and 0.03 bohr"),
+             "two directions": ({"directions": BASIS[:, :2]}, "the test is registered on one"),
+             "one molecule": ({"ids": R.Q2_MOLECULES[:1]}, "and on nothing else"),
+             "another molecule": ({"ids": (*R.Q2_MOLECULES, "T_3")}, "and on nothing else")}
+    for name, (patch, reason) in cases.items():
+        cfg = three_steps(tmp_path / name, [(7.0, 0.0)] * 3, **patch)
+        record = A.run_q2_test(cfg)
+        assert record["verdict"] == R.Q2_NOT_READ and reason in record["reason"] and record["ratios"] == [], name
+        assert "**The test was not read**" in (cfg.out / "Q2_TEST.md").read_text(encoding="utf-8")
+        with pytest.raises(A.NotReadError):
+            A.q2_rows(cfg)
+    unfinished = three_steps(tmp_path / "unfinished", [(7.0, 0.0)] * 3)
+    (unfinished.third.patches / R.Q2_MOLECULES[0] / "report.json").unlink()
+    assert "has no report.json" in A.run_q2_test(unfinished)["reason"]
+    decision = R.run(extrapolated(tmp_path / "unfinished", q2_test=unfinished.out / "q2_test.json"))["decision"]
+    assert decision["outcome"] == R.OUTCOME_NOT_STATED and "the q² test was not read" in decision["statement"]
+    assert "the author's decision" in decision["statement"]
     with pytest.raises(ValueError, match="needs a third step"):
-        A.q2_rows(A.AnalysisConfig(rotated.small, rotated.large, rotated.molecules, tmp_path / "out"))
+        A.q2_rows(A.AnalysisConfig(unfinished.small, unfinished.large, unfinished.molecules, tmp_path / "out"))
+
+
+def test_the_read_draws_the_verdict_itself_from_four_ratios_made_from_its_own_files(tmp_path: Path) -> None:
+    cfg = three_steps(tmp_path, [(7.0, 0.0)] * 3)
+    made = A.run_q2_test(cfg)
+    path = tmp_path / "record.json"
+
+    def rewritten(**changes: object) -> R.ReadConfig:
+        path.write_text(json.dumps(made | changes), encoding="utf-8")
+        return extrapolated(tmp_path, q2_test=path)
+
+    assert R.run(rewritten())["q2_test"]["verdict"] == R.Q2_HOLDS
+    outside = [made["ratios"][0] | {"ratio": 8.0}, *made["ratios"][1:]]
+    with pytest.raises(ValueError, match="its ratios give 'fails'"):          # a record that says "holds" over a ratio outside
+        R.run(rewritten(ratios=outside))
+    assert R.run(rewritten(ratios=outside, verdict=R.Q2_FAILS))["decision"]["outcome"] == R.OUTCOME_NOT_STATED
+    with pytest.raises(ValueError, match="and on nothing else"):              # one molecule's two ratios unlock nothing
+        R.run(rewritten(ratios=made["ratios"][:2]))
+    with pytest.raises(ValueError, match="the registered interval"):          # another interval is another test
+        R.run(rewritten(interval=[3.0, 7.0]))
+    with pytest.raises(ValueError, match="is no q²-test record"):
+        R.run(rewritten(verdict="fine"))
+    with pytest.raises(ValueError, match="are not the ones the record was made from"):
+        R.run(rewritten(files=made["files"] | {"large": made["files"]["small"]}))
+    write_step(tmp_path, "second", R.Q2_MOLECULES[1], [35.0, 55.0, 3700.0], measured_columns(Q2_TRUE, BASIS[:, :1], 0.02, 7.5), step=0.02)
+    with pytest.raises(ValueError, match=f"the large-step patch files of {R.Q2_MOLECULES[1]} are not the ones"):
+        R.run(rewritten())                                                    # the read's second step changed after the test
+    elsewhere = tmp_path / "elsewhere"
+    write_two_steps(elsewhere, "M_1", [35.0, *STIFF], [37.5, *STIFF])
+    path.write_text(json.dumps(made), encoding="utf-8")
+    with pytest.raises(ValueError, match="is not among this read's small-step molecules"):
+        R.run(extrapolated(elsewhere, q2_test=path))
+
+
+def test_the_q2_record_is_an_explicit_argument_of_the_extrapolated_read_only(tmp_path: Path) -> None:
+    write_two_steps(tmp_path, "M_1", [35.0, *STIFF], [37.5, *STIFF], quartic_cm2=7.0)
+    path = tmp_path / "q2_test.json"
+    path.write_text("{}", encoding="utf-8")
+    source = f"{tmp_path / 'patches'}={tmp_path / 'labels'}"
+    parsed = R.parse_args(["--source", source, "--second-step", f"{tmp_path / 'second'}={tmp_path / 'labels'}", "--q2-test", str(path),
+                           "--molecules", str(tmp_path / "molecules"), "--out", str(tmp_path / "out")])
+    assert parsed.q2_test == path and len(parsed.second_steps) == 1
+    with pytest.raises(ValueError, match="belongs to the extrapolated read"):
+        config(tmp_path, q2_test=path)
+    with pytest.raises(FileNotFoundError):
+        extrapolated(tmp_path, q2_test=tmp_path / "absent.json")

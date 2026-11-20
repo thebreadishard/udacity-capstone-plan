@@ -23,8 +23,11 @@ directions, the script reads no points but tests the law the extrapolation rests
 a direction rises between the small step and the third by (16 − 1)/(4 − 1) = 5 times its rise between the small step and the
 large one. Per molecule, functional and direction it prints that ratio R with the noise it carries at σ = 2e-8 hartree/bohr, and,
 as a description, the zero-step curvature of the fit c₀ + a·q² + b·q⁴ through the three steps beside the two-point extrapolation.
-The law is taken to hold when every R lies in Q2_INTERVAL. It writes Q2_TEST.md and q2_test.json; the extrapolated read
-(`low_mode_threshold_read.py --q2-test`) states an outcome only when given a record that holds.
+The test is registered on low_mode_threshold_read.Q2_MOLECULES, one direction each, in both functionals: four values, and the
+law is taken to hold when all four lie in Q2_INTERVAL. A third folder that holds other molecules, an unfinished one, or steps that
+do not double along the same directions is not that test: the record then says "not read" with the reason, and nothing follows
+from it. It writes Q2_TEST.md and q2_test.json (with the sha256 of the patch files it read); the extrapolated read
+(`low_mode_threshold_read.py --q2-test`) states an outcome only when given a record that holds and was made from its own files.
 
     python probes/low_mode_step_analysis.py --small <patches>=<labels> --large <patches>=<labels> --third <patches>=<labels>
         --molecules <corpus molecules dir> --out <new results folder>
@@ -56,7 +59,6 @@ from vibrations import LABEL_TAGS, displacement, mass_weights  # noqa: E402
 SIGMA_RANGE = (1e-8, 2e-8)    # hartree/bohr: the gradient noise the registration calibrated on B_0f06474656 (its section 2)
 TWO_STEP_NOISE = math.hypot(1.0, 1.0 / R.STEP_RATIO)   # noise of (large − small) over the small step's: the large step's is 1/ratio of it
 Q2_PREDICTED = (R.STEP_RATIO ** 4 - 1) / (R.STEP_RATIO ** 2 - 1)   # 5: [c(4q) − c(q)] / [c(2q) − c(q)] for an error that grows as q²
-Q2_INTERVAL = (4.0, 6.0)      # every ratio inside: the law is taken to hold (registered in amendment 3, point 7, before the third step ran)
 Q2_SIGMA = SIGMA_RANGE[1]     # the gradient noise at which a ratio's own noise is quoted
 
 
@@ -136,6 +138,11 @@ def curvature_noise_cm2(u: np.ndarray, masses_amu: np.ndarray, step_bohr: float)
     return R.GRADIENT_NOISE_UNIT * math.sqrt(2) * float(np.linalg.norm(u / mass_weights(masses_amu))) / (2 * q) * HARTREE2CM ** 2
 
 
+class NotReadError(ValueError):
+    """The third step is not the registered q² test (other molecules, an unfinished one, steps or directions that do not fit): the
+    record says "not read", and no outcome follows from it."""
+
+
 def direction_rows(cfg: AnalysisConfig) -> list[dict[str, Any]]:
     """Per molecule, functional and direction: the measured curvature uᵀC (cm⁻²) at both steps, and the noise (cm⁻²) their difference
     would carry per R.GRADIENT_NOISE_UNIT. Where the two steps' directions differ, the curvatures are along other directions and no
@@ -144,7 +151,8 @@ def direction_rows(cfg: AnalysisConfig) -> list[dict[str, Any]]:
     for mol_id in R.patched_ids(cfg.large.patches):
         mol = R.Molecule.read(mol_id, cfg.small.labels, cfg.molecules)
         for tag in LABEL_TAGS:
-            small, large = R.patch_of(mol, tag, cfg.small, R.read_step), R.patch_of(mol, tag, cfg.large, R.read_step)
+            small = R.patch_of(mol, tag, cfg.small, R.read_step)
+            large = R.sign_aligned(small, R.patch_of(mol, tag, cfg.large, R.read_step))
             same = R.directions_apart(small["U"], large["U"]) <= R.DIRECTIONS_TOL
             for j in range(small["U"].shape[1]):
                 u = small["U"][:, j]
@@ -282,30 +290,44 @@ def three_step_zero(c: Sequence[float]) -> float:
     return float(np.linalg.solve(np.vander(x, 3, increasing=True), np.asarray(c, float))[0])
 
 
+def q2_steps(cfg: AnalysisConfig, mol: R.Molecule, tag: str) -> list[dict[str, Any]]:
+    """One functional's three steps of a test molecule, each twice the one before along the same single direction (a reversed
+    direction is turned back); anything else is not the registered test."""
+    first = R.patch_of(mol, tag, cfg.small, R.read_step)
+    steps = [first, *(R.sign_aligned(first, R.patch_of(mol, tag, source, R.read_step)) for source in (cfg.large, cfg.third))]
+    for smaller, larger in itertools.pairwise(steps):
+        refusal = R.step_pair_refusal(smaller, larger)
+        if refusal is not None:
+            raise NotReadError(f"{mol.mol_id} {tag}: {refusal}")
+    if first["U"].shape[1] != 1:
+        raise NotReadError(f"{mol.mol_id} {tag}: {first['U'].shape[1]} directions; the test is registered on one")
+    return steps
+
+
 def q2_rows(cfg: AnalysisConfig) -> list[dict[str, Any]]:
-    """Per molecule of the third step, functional and direction: the three curvatures, their ratio with its noise, and the two
-    zero-step estimates. The three steps must double each time and hold the same directions; anything else is refused."""
+    """Per test molecule and functional: the three curvatures along the direction, their ratio with its noise, and the two zero-step
+    estimates. The third folder must hold R.Q2_MOLECULES, finished, and nothing else; otherwise the test is not read."""
     if cfg.third is None:
         raise ValueError("the q² test needs a third step")
-    lo, hi = Q2_INTERVAL
+    try:
+        ids = R.patched_ids(cfg.third.patches)
+    except FileNotFoundError as error:
+        raise NotReadError(str(error)) from error
+    if sorted(ids) != sorted(R.Q2_MOLECULES):
+        raise NotReadError(f"the third step holds {ids}; the test is registered on {list(R.Q2_MOLECULES)} and on nothing else")
+    lo, hi = R.Q2_INTERVAL
     rows = []
-    for mol_id in R.patched_ids(cfg.third.patches):
+    for mol_id in ids:
         mol = R.Molecule.read(mol_id, cfg.small.labels, cfg.molecules)
         for tag in LABEL_TAGS:
-            steps = [R.patch_of(mol, tag, source, R.read_step) for source in (cfg.small, cfg.large, cfg.third)]
-            for smaller, larger in itertools.pairwise(steps):
-                refusal = R.step_pair_refusal(smaller, larger)
-                if refusal is not None:
-                    raise ValueError(f"{mol_id} {tag}: {refusal}")
-            for j, u in enumerate(steps[0]["U"].T):
-                c = [float(u @ step["C"][:, j]) * HARTREE2CM ** 2 for step in steps]
-                noise = curvature_noise_cm2(u, mol.masses, steps[0]["step_bohr"]) * Q2_SIGMA / R.GRADIENT_NOISE_UNIT
-                ratio = q2_ratio(c)
-                rows.append({"id": mol_id, "tag": tag, "direction": j, "curvature_cm2": c, "ratio": ratio,
-                             "noise_sd": q2_ratio_noise(c, noise), "inside": bool(lo <= ratio <= hi),
-                             "zero_two_step_cm2": R.WEIGHT_SMALL * c[0] + R.WEIGHT_LARGE * c[1], "zero_three_step_cm2": three_step_zero(c)})
-    if not rows:
-        raise ValueError(f"{cfg.third.patches} holds no patched molecule: nothing to test")
+            steps = q2_steps(cfg, mol, tag)
+            u = steps[0]["U"][:, 0]
+            c = [float(u @ step["C"][:, 0]) * HARTREE2CM ** 2 for step in steps]
+            noise = curvature_noise_cm2(u, mol.masses, steps[0]["step_bohr"]) * Q2_SIGMA / R.GRADIENT_NOISE_UNIT
+            ratio = q2_ratio(c)
+            rows.append({"id": mol_id, "tag": tag, "direction": 0, "curvature_cm2": c, "ratio": ratio,
+                         "noise_sd": q2_ratio_noise(c, noise), "inside": bool(lo <= ratio <= hi),
+                         "zero_two_step_cm2": R.WEIGHT_SMALL * c[0] + R.WEIGHT_LARGE * c[1], "zero_three_step_cm2": three_step_zero(c)})
     return rows
 
 
@@ -316,7 +338,9 @@ def q2_md(cfg: AnalysisConfig, record: dict[str, Any]) -> str:
              f"one before, along the same directions. For an error a·q² the ratio R = [c(4q) − c(q)] / [c(2q) − c(q)] of a direction's "
              f"measured curvatures c = uᵀC is {record['predicted']:g}; an error linear in q gives 3, one that grows as q⁴ gives 17. The law is "
              f"taken to hold when every R lies in {lo:g}–{hi:g}. 'Noise of R' is one standard deviation at σ = {record['sigma']:g} hartree/bohr.",
-             "", f"**The law {record['verdict']}.**", "",
+             "", f"**The law {record['verdict']}.**" if record["reason"] is None else
+             f"**The test was not read**: {record['reason']}. Nothing follows from this record; the test is run once, and what follows "
+             "a third step that cannot be read is the author's decision.", "",
              "| molecule | functional | direction | c(q) (cm⁻²) | c(2q) | c(4q) | R | noise of R | inside | zero step, two points | zero "
              "step, three points | difference |", "|---|---|---|---|---|---|---|---|---|---|---|---|"]
     lines += [f"| {r['id']} | {r['tag']} | {r['direction']} | " + " | ".join(f"{c:.2f}" for c in r["curvature_cm2"])
@@ -327,12 +351,18 @@ def q2_md(cfg: AnalysisConfig, record: dict[str, Any]) -> str:
 
 
 def run_q2_test(cfg: AnalysisConfig) -> dict[str, Any]:
-    """Read the three steps, write Q2_TEST.md and q2_test.json, return the record."""
-    rows = q2_rows(cfg)
-    record = {"verdict": R.Q2_HOLDS if all(r["inside"] for r in rows) else R.Q2_FAILS, "interval": Q2_INTERVAL, "predicted": Q2_PREDICTED,
-              "sigma": Q2_SIGMA, "ratios": rows,
-              "inputs": {name: [R.shown(s.patches), R.shown(s.labels)] for name, s in (("small", cfg.small), ("large", cfg.large),
-                                                                                         ("third", cfg.third))}}
+    """Read the three steps, write Q2_TEST.md and q2_test.json, return the record. A third step that is not the registered test
+    gives a record that says so; the verdict of one that is comes from the read script's own `q2_verdict`."""
+    try:
+        rows, reason = q2_rows(cfg), None
+    except NotReadError as error:
+        rows, reason = [], str(error)
+    sources = {"small": cfg.small, "large": cfg.large, "third": cfg.third}
+    record = {"verdict": R.q2_verdict(rows) if reason is None else R.Q2_NOT_READ, "reason": reason, "interval": R.Q2_INTERVAL,
+              "predicted": Q2_PREDICTED, "sigma": Q2_SIGMA, "ratios": rows,
+              "files": {} if reason is not None else {name: {mol_id: R.patch_shas(s.patches, mol_id) for mol_id in R.Q2_MOLECULES}
+                                                      for name, s in sources.items()},
+              "inputs": {name: [R.shown(s.patches), R.shown(s.labels)] for name, s in sources.items()}}
     cfg.out.mkdir(parents=True, exist_ok=True)
     write_atomic(cfg.out / "q2_test.json", json.dumps(record, indent=1, ensure_ascii=False) + "\n")
     write_atomic(cfg.out / "Q2_TEST.md", q2_md(cfg, record))
