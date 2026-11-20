@@ -96,3 +96,10 @@ read with it:
   "one anchor run of that kind was priced … on 28 September" and that the anchors in force carry no price.
 - **Rebuilt** on the same interim results: notebook, `results.json`, figures, paper (1,934 body words). The paper's file names
   its author in its own properties.
+
+## Addendum, 20 Nov 2026 — the final scenario run and the rebuild
+
+- **Run.** `python run_scenarios.py --with-catalog --submitted` through the run door (run spec `probes/runspecs/m08_scenarios_submitted_2026-11-20.json`), record of 2026-11-20 09:17: 8 of 8 request cases, S7 5 of 5 cost lines, S5 `build_catalog.py` exit 0 with no problems on 14,258 molecules, S3 on a fresh module-06 draw. Written to `out/scenario_results_submitted.json` and `out/scenario_results_2026-11-20.json`; the certificates and the request ledger in `out/` are this run's.
+- **A first run at 09:08 recorded S5's problems as null**: the export's builder has reported a broken invariant on stderr with exit 1 since it was split on 19 November, and the runner still read a `problems` key behind two silent fallbacks. The paper's builder refused that record. Fixed and reviewed (commit c53b15c4): S5 is recorded from what the builder reports, and a failing S5 fails the run and is never the submitted record.
+- **Rebuilt** on the submitted record: notebook, `results.json`, figures, paper (1,947 body words).
+- **Not done:** the snapshot, `steward/`, the frozen `requirements.txt` and the fresh-clone run (the standalone plan's section of 20 November says what they wait for).

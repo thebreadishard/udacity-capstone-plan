@@ -1,6 +1,6 @@
-# Certificate — naphthalene (A_01f3186607), rung 4 · anchored — 2026-11-18 03:00
+# Certificate — naphthalene (A_01f3186607), rung 4 · anchored — 2026-11-20 09:16
 
-naphthalene: rung 4 (anchored). The cheap-level spectrum is served with the laboratory tolerance per family; no predicted correction is shown in this record — the pipeline serves it for the licensed families (ring-ip, CH-stretch, CH-oop, other; decision 65); the anchor coverage lists what coupled-cluster evidence exists and where it is wider than the tolerance. Licence caveat: CH-oop on hold-out (a) rests on 5 of the hold-out's 8 molecules (the others have no such band): the 95 % interval of a bootstrap over molecules is 0.93–3.2 cm⁻¹ and crosses the line (96 % of the resamples lie under it); other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.45–3.19 cm⁻¹ and crosses the line (93 % of the resamples lie under it).
+naphthalene: rung 4 (anchored). The cheap-level spectrum is served with the laboratory tolerance per family; no predicted correction is shown in this record — the pipeline serves it for the licensed families (ring-ip, CH-stretch, CH-oop, other; decision 65), a band only where its own position moved by no more than the licence line in the presentations tried (this molecule turned, mirrored or listed in another atom order); the anchor coverage lists what coupled-cluster evidence exists and where it is wider than the tolerance. Licence caveat: CH-oop on hold-out (a) rests on 5 of the hold-out's 8 molecules (the others have no such band): the 95 % interval of a bootstrap over molecules is 0.93–3.2 cm⁻¹ and crosses the line (96 % of the resamples lie under it); other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.45–3.19 cm⁻¹ and crosses the line (93 % of the resamples lie under it).
 
 **Positions.** Positions are harmonic (ω): a catalogue record carries no anharmonic step; the pipeline (m08/pipeline.py) prints the anharmonic estimate ν = ω + Δ_anh for a molecule it computes, and claims no licence for it.
 
@@ -59,11 +59,12 @@ Source: `modules/05_support_predictor/out/ANCHORS_STATUS.json`, the project's an
 | step | machine | hours | € ex VAT | source |
 |---|---|---|---|---|
 | cheap rung (deck v1, both functionals) | Asus18 | 0.95 | 0.00 | corpus ledger machine column 'Asus18' |
-| anchor family readings (M3, two families, laptop) | laptop | 66.83 | 0.00 | probes/results_m1/M3_TZ_MODE12_READING_2026-09-20.md (12.2 h per TZ energy); REPRODUCE.md row on the neutral price (4,201 s) |
+| anchor family reading (M3, one family, laptop): M3_TZ_MODE22_READING_2026-09-23.md | laptop | 66.83 | 0.00 | probes/results_m1/M3_TZ_MODE12_READING_2026-09-20.md (12.2 h per TZ energy); REPRODUCE.md row on the neutral price (4,201 s) |
+| anchor in force: CCSD(T)/cc-pVDZ + [MP2/cc-pVTZ − MP2/cc-pVDZ] (composite, registered 2026-10-07) | — | — | not priced | modules/05_support_predictor/out/ANCHORS_STATUS.json → modules/05_support_predictor/out/composite_full_naphthalene_2026-10-07.npz; the registry carries no hours for this run — shown as not priced, not as €0 |
 
 ## Provenance
 
-- releases: layerA2_2026-09-23, layerA2_2026-09-23b, layerA2_2026-09-24, layerA_2026-09-22; deck 97ed2d67c66b; commit 4050f7c1; export built 2026-11-02T10:01:23Z
+- releases: layerA2_2026-09-23, layerA2_2026-09-23b, layerA2_2026-09-24, layerA_2026-09-22; deck 97ed2d67c66b; commit c53b15c4; export built 2026-11-20T08:08:50Z
 - evidence: modules/05_support_predictor/out/composite_full_naphthalene_2026-10-07.npz (exists); probes/results_m1/e8_naphthalene_ccpvdz_tlambda_2026-10-02/E8_locality_naphthalene.md (exists); probes/results_m1/M3_TZ_MODE22_READING_2026-09-23.md (exists)
 - licence: 4 families licensed, read on the error of the corrected band positions of the seed-mean correction (README.md, decision 65 as amended on 16 Nov 2026); CH-oop on hold-out (a) rests on 5 of the hold-out's 8 molecules (the others have no such band): the 95 % interval of a bootstrap over molecules is 0.93–3.2 cm⁻¹ and crosses the line (96 % of the resamples lie under it); other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.45–3.19 cm⁻¹ and crosses the line (93 % of the resamples lie under it)
 - family rule: modules/03_lab_scoreboard/build_lab_tables.py FAMILY_RULE (12 Sep 2026)

@@ -10,7 +10,7 @@
 | trade-offs and constraints | paper §4; notebook §4 | done |
 | ethical concern grounded in the industry and design | paper §5; notebook §5 (certified-looking spectrum for an unreached rung; refusal as first-class output) | done |
 | responsible deployment reasoning | paper §5 (allow-list, gate, ledger, licence, cost record); `PRE_REGISTRATION.md` decisions 1–2 | done |
-| synthesis paper 1,500–2,000 words, eight sections, professional audience | `Reflective_Synthesis_Paper.pdf` (the script prints the count and refuses outside the range; 1,934 body words on 20 Nov 2026, on interim results) | done |
+| synthesis paper 1,500–2,000 words, eight sections, professional audience | `Reflective_Synthesis_Paper.pdf` (the script prints the count and refuses outside the range; 1,947 body words on 20 Nov 2026, on the submitted scenario record) | done |
 | evidence-based reflection | every number in the paper from `notebook/results.json`; the failure case S8 and the S4c incident | done |
 | citations: ≥ 3 credible, ≥ 1 scholarly, consistent style | four references (Mackie 2015 JCP; Ricca 2026 ApJS; Mitchell 2019 FAT*; Shavit 2023) in APA 7 | done |
 | portfolio value | the public Spectrum Atlas + this service + the paper | done (atlas live since 24 Sep) |

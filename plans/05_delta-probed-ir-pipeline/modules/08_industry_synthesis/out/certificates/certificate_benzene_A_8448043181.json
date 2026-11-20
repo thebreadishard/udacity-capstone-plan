@@ -1,6 +1,6 @@
 {
  "kind": "certificate",
- "date": "2026-11-18 03:00",
+ "date": "2026-11-20 09:17",
  "molecule": {
   "id": "A_8448043181",
   "name": "benzene",
@@ -268,7 +268,7 @@
    "higher_level": "ωB97X/6-31G* (the DFT proxy: the network's ΔH is trained on ωB97X − B3LYP Hessians)",
    "holdouts": {
     "a": {
-     "description": "hold-out (a) without its two trained twins (2-naphthoic acid and benzonitrile were trained on as layer-B molecules; TASKS 157): eight layer-A molecules held out on 19 Sep 2026, never trained on under any id",
+     "description": "hold-out (a) on its eight molecules never trained on in any version (the set fixed on 30 Oct 2026): eight layer-A molecules held out on 19 Sep 2026; this version's training left out the twins of the hold-out molecules, so the other two, 2-naphthoic acid and benzonitrile, are clean too, and the eight are kept for comparability with v1.3",
      "n_molecules": 8,
      "readouts": {
       "ring-ip": {
@@ -393,7 +393,7 @@
      }
     },
     "b": {
-     "description": "hold-out (b): every substituted molecule of two scaffold cores, frozen on 8 Oct 2026 — scaffolds the network never saw",
+     "description": "hold-out (b): every substituted molecule of two scaffold cores, frozen on 8 Oct 2026 — scaffolds the measurement networks never saw",
      "n_molecules": 40,
      "readouts": {
       "ring-ip": {
@@ -534,13 +534,13 @@
     "E7_rungC_v14s3clean_c00_control_product_error.json"
    ],
    "definitions": {
-    "family": "the read-outs: rms over the family's B3LYP modes of the first-order diagonal error of a seed's ΔH against the higher level, per seed, and the seeds' mean (cm⁻¹); families by module 05's rule (m05/learning_curve_layerA.molecule_features)",
+    "family": "rms over the family's B3LYP modes of the first-order diagonal error of a seed's ΔH against the higher level, per seed, and the seeds' mean (cm⁻¹); families by module 05's rule (m05/learning_curve_layerA.molecule_features)",
     "product": "rms over the family's bands of the corrected band position's error against the higher level (cm⁻¹): the seeds' mean ΔH added to the B3LYP Hessian and diagonalised, each corrected band paired to its higher-level band by mode overlap and counted in the family of its B3LYP partner — what the pipeline prints; with the 95 % interval of a bootstrap over whole molecules",
     "coupling_ratio": "rms of the predicted mode couplings' error over the rms of the couplings themselves; 0 = exact, 1 = no better than none",
     "spectrum_overlap": "cosine similarity of the two Lorentzian-broadened spectra (FWHM 10 cm⁻¹, 500–3500 cm⁻¹); 1 = identical shape",
     "intensity_error": "intensity-weighted rms of the relative height error per band, bands paired by the shape of the motion (eigenvector overlap); 0 = identical heights"
    },
-   "coupled_cluster": "not measured for this network version: the coupled-cluster reads (T3) were made on chain 34, and tests on the 9–11 existing anchors wait for the anchor decision of November 2026",
+   "coupled_cluster": "not measured for this network version: the coupled-cluster reads (T3) were made on an earlier network (chain 34)",
    "version": "1.4"
   }
  },
@@ -757,11 +757,11 @@
    "replay": true
   },
   {
-   "step": "anchor: E8 CCSD(T)/cc-pVDZ Hessian (72 gradients, rented machine, 24 Sep 2026)",
+   "step": "anchor in force: CCSD(T)/cc-pVTZ (full, registered 2026-10-06)",
    "eur_ex_vat": null,
    "hours": null,
-   "machine": "CCX53",
-   "source": "probes/results_m1/e8_benzene_ccpvdz/E8_locality_benzene.md; the run's hours are not in a cost record yet — shown as not priced, not as €0"
+   "machine": null,
+   "source": "modules/05_support_predictor/out/ANCHORS_STATUS.json → probes/results_m1/e8_benzene_ccpvtz_oop_2026-10-03/hessian_ccsd_t.npz; the registry carries no hours for this run — shown as not priced, not as €0"
   }
  ],
  "provenance": {
@@ -772,10 +772,10 @@
    "layerA_2026-09-22"
   ],
   "deck_hash": "97ed2d67c66b",
-  "commit": "4050f7c1",
-  "export_built_utc": "2026-11-02T10:01:23Z",
+  "commit": "c53b15c4",
+  "export_built_utc": "2026-11-20T08:08:50Z",
   "export_sources_sha256": {
-   "manifest": "95363ef25aa38e09b9b90296787a0ec62f1c63d0f766f9271598796e9dbd6770",
+   "manifest": "48dd5b7416592331bb0d858f7b083b4c70ee5f886d545d6a58e424ab41ff2577",
    "ledger": "273c8e3c9ab3dc59d50aa3908178b50e56455c7a11ac033fa105ceddd756bf72"
   },
   "evidence": [
@@ -797,7 +797,6 @@
    }
   ],
   "pre_registrations": [
-   "GoalGathering/notes/PreRegistration_2026-09-25_Proof_of_Learning_Layer_B.md",
    "modules/08_industry_synthesis/PRE_REGISTRATION.md"
   ],
   "family_rule": "modules/03_lab_scoreboard/build_lab_tables.py FAMILY_RULE (12 Sep 2026)",
@@ -863,5 +862,5 @@
   }
  },
  "positions": "positions are harmonic (ω): a catalogue record carries no anharmonic step; the pipeline (m08/pipeline.py) prints the anharmonic estimate ν = ω + Δ_anh for a molecule it computes, and claims no licence for it",
- "statement": "benzene: rung 5 (validated). The cheap-level spectrum is served with the laboratory tolerance per family; no predicted correction is shown in this record — the pipeline serves it for the licensed families (ring-ip, CH-stretch, CH-oop, other; decision 65); the anchor coverage lists what coupled-cluster evidence exists and where it is wider than the tolerance. Licence caveat: CH-oop on hold-out (a) rests on 5 of the hold-out's 8 molecules (the others have no such band): the 95 % interval of a bootstrap over molecules is 0.93–3.2 cm⁻¹ and crosses the line (96 % of the resamples lie under it); other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.45–3.19 cm⁻¹ and crosses the line (93 % of the resamples lie under it)."
+ "statement": "benzene: rung 5 (validated). The cheap-level spectrum is served with the laboratory tolerance per family; no predicted correction is shown in this record — the pipeline serves it for the licensed families (ring-ip, CH-stretch, CH-oop, other; decision 65), a band only where its own position moved by no more than the licence line in the presentations tried (this molecule turned, mirrored or listed in another atom order); the anchor coverage lists what coupled-cluster evidence exists and where it is wider than the tolerance. Licence caveat: CH-oop on hold-out (a) rests on 5 of the hold-out's 8 molecules (the others have no such band): the 95 % interval of a bootstrap over molecules is 0.93–3.2 cm⁻¹ and crosses the line (96 % of the resamples lie under it); other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.45–3.19 cm⁻¹ and crosses the line (93 % of the resamples lie under it)."
 }

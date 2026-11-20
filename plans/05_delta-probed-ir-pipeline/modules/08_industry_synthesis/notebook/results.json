@@ -1,8 +1,8 @@
 {
- "date": "2026-11-20 09:01",
+ "date": "2026-11-20 09:18",
  "catalogue": {
   "n": 14258,
-  "built_utc": "2026-11-19T13:41:50Z",
+  "built_utc": "2026-11-20T08:17:46Z",
   "rung_counts": {
    "listed": 13018,
    "cheap_level_done": 1229,
@@ -78,11 +78,11 @@
  "scenarios": {
   "n_pass": 8,
   "n": 8,
-  "date": "2026-11-20 08:03",
-  "record": "scenario_results_2026-11-20.json",
-  "written_by": "run_scenarios.py --no-candidate --out light_out",
-  "results_dir": "light_out",
-  "results_env_set": true,
+  "date": "2026-11-20 09:17",
+  "record": "scenario_results_submitted.json",
+  "written_by": "run_scenarios.py --with-catalog --submitted",
+  "results_dir": "out",
+  "results_env_set": false,
   "registered_ids": [
    "S1",
    "S2",
@@ -131,12 +131,12 @@
    },
    {
     "id": "S3",
-    "molecule": "generator r4+ none #15 (PubChem)",
+    "molecule": "CC(OC(=O)C(F)(F)F)c1ccc(O)c2ncccc1",
     "target": 4,
     "budget €": 20,
     "decision": "refusal",
-    "gate / cap named": "cap: budget €20.00; no anchor: no coupled-cluster reading ex",
-    "rules": "R14",
+    "gate / cap named": "cap: budget €20.00; target rung 4 not reachable",
+    "rules": "R25 R32",
     "price lines": "cheap_deck_v1 €0.24, anchor_e8_cc_hessian_naphthalene €36.34",
     "pass": true
    },
@@ -191,6 +191,13 @@
     "lines_traced": 5,
     "fraction": 1.0,
     "misses": []
+   },
+   "S5": {
+    "exit_code": 0,
+    "seconds": 24,
+    "problems": [],
+    "n_molecules": 14258,
+    "stderr_tail": ""
    },
    "S6": {
     "status": "S6 passes on the published site (run 2026-10-11; this script does not run it)",
@@ -480,13 +487,18 @@
  },
  "s3": {
   "candidate": {
-   "smiles": "c1ccc2c(c1)ccc1c2ccc2cc3ccccc3cc12",
-   "source": "fixed test candidate (no module-06 draw)"
+   "smiles": "CC(OC(=O)C(F)(F)F)c1ccc(O)c2ncccc12",
+   "heavy_atoms": 20,
+   "aromatic_rings": 2,
+   "draw_index": 0,
+   "n_drawn": 200,
+   "n_valid": 1,
+   "source": "module 06 modules/06_generative_candidates/notebook/out/seed0/model_seed0.pt (run of 25–26 Sep 2026), generate(n=200, T=1.0, seed=0); first valid fused-aromatic string not in the corpus"
   },
   "reasons": [
-   "rung 0 (listed) exists; target rung 4 not reached",
-   "budget €20.00 does not cover the missing step (≈ €36.34)",
-   "budget €20.00: reachable within it — rung 1 (cheap level) at ≈ €0.24"
+   "'CC(OC(=O)C(F)(F)F)c1ccc(O)c2ncccc12' is not in the corpus (canonical CC(OC(=O)C(F)(F)F)c1ccc(O)c2ncccc12); nothing exists to certify",
+   "budget €20.00: reachable within it — rung 1 (cheap level) at ≈ €0.24",
+   "no run is started: the officer never spends without a passed gate, and the gate needs a dry run of a named job first (R01)"
   ]
  },
  "prices": {
