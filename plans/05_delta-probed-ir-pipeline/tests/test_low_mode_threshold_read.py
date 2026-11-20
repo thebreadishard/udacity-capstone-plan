@@ -7,6 +7,7 @@ frequencies, so the change the read must recover is known exactly. numpy only; e
 from __future__ import annotations
 
 import json
+import math
 import sys
 from pathlib import Path
 
@@ -16,6 +17,7 @@ import pytest
 PLAN = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PLAN / "probes"))
 sys.path.insert(0, str(PLAN / "modules" / "05_support_predictor" / "corpus"))
+import low_mode_step_analysis as A  # noqa: E402
 import low_mode_threshold_read as R  # noqa: E402
 import vibrations as V  # noqa: E402
 from constants import AMU2AU, HARTREE2CM  # noqa: E402
@@ -405,3 +407,529 @@ def test_an_exploratory_read_says_so_at_the_top(tmp_path: Path, capsys: pytest.C
     printed = capsys.readouterr().out
     assert "**Exploratory read; it decides nothing.** the points were looked at before" in printed
     assert "Outcome 3: undecided" in printed
+
+
+# --- the extrapolated read (amendment 3): two steps combined to step zero --------------------------------------------------------------
+
+READ_FOLDER = PLAN / "probes" / "results_m1" / "low_mode_threshold_2026-11-20"
+CORPUS = PLAN / "modules" / "05_support_predictor" / "corpus" / "molecules"
+CM2 = 1.0 / HARTREE2CM ** 2   # one cm⁻² of curvature in atomic units
+Q2_RECORD = {"record": "q2_test.json", "verdict": R.Q2_HOLDS, "interval": [4.0, 6.0],
+             "ratios": [{"id": m, "tag": tag, "direction": 0, "ratio": 5.02} for m in R.Q2_MOLECULES for tag in V.LABEL_TAGS]}
+BOTH_STEPS_AND_Q2 = R.Extrapolation((), Q2_RECORD)   # nothing holds the extrapolated read back
+
+
+def measured_columns(true_cm: list[float], U: np.ndarray, step: float, quartic_cm2: float = 0.0, sextic_cm2: float = 0.0) -> np.ndarray:
+    """The columns the repair's own `column` makes of gradients at ± one step along each direction, for a potential with the given
+    harmonic frequencies and, along every direction, a quartic and a sextic term. The two terms are named by the curvature error (cm⁻²)
+    they cause at a step of 0.01 bohr: the central difference of g(x) = λx + c₄x³/6 + c₆x⁵/120 is λ + c₄q²/6 + c₆q⁴/120."""
+    sm = V.mass_weights(MASSES)
+    w = np.asarray(true_cm, float)
+    Hmw = BASIS @ np.diag(np.sign(w) * (w / HARTREE2CM) ** 2) @ BASIS.T
+    columns = []
+    for u in U.T:
+        _, q = V.displacement(u, MASSES, step)
+        scale = step / 0.01
+        along = q * (Hmw @ u) + q * (quartic_cm2 * scale ** 2 + sextic_cm2 * scale ** 4) * CM2 * u   # the mass-weighted gradient at +q
+        columns.append(V.column(along * sm, -along * sm, q, MASSES))
+    return np.stack(columns, axis=1)
+
+
+def write_step(root: Path, folder: str, mol_id: str, label: list[float], columns: np.ndarray, **patch: object) -> None:
+    """One molecule's patch record at one step, made from its columns as the runner makes it; both functionals alike."""
+    U = np.asarray(patch.get("directions", BASIS[:, :1]), float)
+    (root / folder / mol_id).mkdir(parents=True, exist_ok=True)
+    H = V.patched_hessian(hessian(label), MASSES, U, columns)
+    stored = V.vibrational_modes(H, MASSES, COORDS).omega_cm + float(patch.get("stored_shift", 0.0))
+    for tag in V.LABEL_TAGS:
+        np.savez(root / folder / mol_id / f"hessian_{tag}_analytic_grfpatch.npz", H_raw=H, directions=U, columns=columns,
+                 freq_label_vib_cm=np.sort(label), freq_patched_vib_cm=stored, below_cm=float(patch.get("below", 60.0)),
+                 step_bohr=float(patch.get("step", 0.01)))
+    (root / folder / mol_id / "report.json").write_text(json.dumps({"id": mol_id, "directions": int(U.shape[1])}), encoding="utf-8")
+
+
+def write_two_steps(root: Path, mol_id: str, label: list[float], true: list[float], quartic_cm2: float = 0.0, **patch: object) -> None:
+    """A molecule with its geometry and labels, patched at 0.01 bohr into `patches` and, unless `second=False`, at the large step into
+    `second` (optionally along other directions there)."""
+    U = np.asarray(patch.get("directions", BASIS[:, :1]), float)
+    write_molecule(root, mol_id, both(label), both(label))
+    write_step(root, "patches", mol_id, label, measured_columns(true, U, 0.01, quartic_cm2), directions=U)
+    if patch.get("second", True):
+        U2, step = np.asarray(patch.get("large_directions", U), float), float(patch.get("large_step", 0.02))
+        write_step(root, "second", mol_id, label, measured_columns(true, U2, step, quartic_cm2), directions=U2, step=step)
+
+
+def extrapolated(root: Path, **changes: object) -> R.ReadConfig:
+    return config(root, second_steps=(R.Source(root / "second", root / "labels"),), **changes)
+
+
+def two_step_point(label_cm: float, change_cm: float, two_step_cm: float = 0.3, **changes: object) -> R.Point:
+    """A constructed extrapolated point: the small step stands 0.1 cm⁻¹ above the extrapolated value, the large one two_step_cm above
+    the small."""
+    small = label_cm + change_cm + 0.1
+    return point(label_cm, change_cm, small_step_cm=small, large_step_cm=small + two_step_cm, **changes)
+
+
+def test_the_weights_are_richardsons_and_the_noise_factor_follows_from_them() -> None:
+    assert pytest.approx(4 / 3, rel=1e-15) == R.WEIGHT_SMALL
+    assert pytest.approx(-1 / 3, rel=1e-15) == R.WEIGHT_LARGE
+    assert pytest.approx(math.sqrt(65) / 6, rel=1e-15) == R.EXTRAPOLATED_NOISE_FACTOR
+
+
+def test_a_quartic_term_is_removed_exactly_and_each_single_step_is_off() -> None:
+    u = BASIS[:, :1]
+    truth = float(u[:, 0] @ measured_columns([37.5, *STIFF], u, 0.01)[:, 0])
+    small, large = (measured_columns([37.5, *STIFF], u, step, quartic_cm2=7.0) for step in (0.01, 0.02))
+    assert float(u[:, 0] @ small[:, 0]) - truth == pytest.approx(7.0 * CM2, rel=1e-9)        # the step error grows as q²:
+    assert float(u[:, 0] @ large[:, 0]) - truth == pytest.approx(28.0 * CM2, rel=1e-9)       # four times it at twice the step
+    assert np.abs(R.extrapolated_columns(small, large) - measured_columns([37.5, *STIFF], u, 0.01)).max() < 1e-12 * abs(truth)
+
+
+def test_the_extrapolated_frequency_is_the_true_one_to_1e_8_where_neither_step_is(tmp_path: Path) -> None:
+    write_two_steps(tmp_path, "M_1", [35.0, *STIFF], [37.5, *STIFF], quartic_cm2=7.0)
+    points, unread = R.extrapolated_points(extrapolated(tmp_path))
+    assert unread == [] and len(points) == 2
+    for p in points:
+        assert p.patched_cm == pytest.approx(37.5, abs=1e-8) and p.change_cm == pytest.approx(2.5, abs=1e-8)
+        assert p.small_step_cm == pytest.approx(math.sqrt(37.5 ** 2 + 7.0), abs=1e-8)
+        assert p.large_step_cm == pytest.approx(math.sqrt(37.5 ** 2 + 28.0), abs=1e-8)
+        assert p.small_step_change_cm == pytest.approx(p.small_step_cm - 35.0)
+        assert p.bias_removed_cm == pytest.approx(p.small_step_cm - 37.5, abs=1e-8) and p.bias_removed_cm > 0.09
+        assert p.two_step_cm == pytest.approx(p.large_step_cm - p.small_step_cm) and p.flags == ()
+
+
+def test_a_sextic_term_leaves_a_known_residual() -> None:
+    u = BASIS[:, :1]
+    truth = float(u[:, 0] @ measured_columns([37.5, *STIFF], u, 0.01)[:, 0])
+    small, large = (measured_columns([37.5, *STIFF], u, step, quartic_cm2=7.0, sextic_cm2=0.5) for step in (0.01, 0.02))
+    left = float(u[:, 0] @ R.extrapolated_columns(small, large)[:, 0]) - truth
+    assert left == pytest.approx(-R.STEP_RATIO ** 2 * 0.5 * CM2, rel=1e-9)     # −4·b·q⁴: the q² term is gone, the q⁴ term is not
+
+
+def test_gradient_noise_reaches_the_extrapolated_curvature_with_the_stated_factor() -> None:
+    """By propagation: the curvature along u is linear in the four gradients, so its noise is the root sum of squares of the
+    coefficients, read off the repair's own `column` on unit gradients."""
+    u = BASIS[:, 0]
+    q = V.displacement(u, MASSES, 0.01)[1]
+    unit, zero = np.eye(len(u)), np.zeros(len(u))
+    small = np.array([u @ V.column(e, zero, q, MASSES) for e in unit])                   # d(uᵀC)/d(g₊) at the small step; g₋ mirrors it
+    large = np.array([u @ V.column(e, zero, R.STEP_RATIO * q, MASSES) for e in unit])
+    single = math.sqrt(2 * (small ** 2).sum())
+    combined = math.sqrt(2 * ((R.WEIGHT_SMALL * small) ** 2).sum() + 2 * ((R.WEIGHT_LARGE * large) ** 2).sum())
+    assert combined / single == pytest.approx(R.EXTRAPOLATED_NOISE_FACTOR, rel=1e-12)
+    assert 1.34 < R.EXTRAPOLATED_NOISE_FACTOR < 1.35
+
+
+def test_an_extrapolated_point_carries_the_small_steps_noise_times_the_factor(tmp_path: Path) -> None:
+    write_two_steps(tmp_path, "M_1", [35.0, *STIFF], [37.5, *STIFF], quartic_cm2=7.0)
+    single = {p.tag: p.noise_cm for p in read_points(tmp_path)}
+    points, _ = R.extrapolated_points(extrapolated(tmp_path))
+    assert {p.tag: p.noise_cm for p in points} == {tag: pytest.approx(n * R.EXTRAPOLATED_NOISE_FACTOR) for tag, n in single.items()}
+
+
+@pytest.mark.parametrize(("two_step", "flags"), [
+    (1.0, ()),                              # at the limit exactly: read
+    (-1.0, ()),
+    (1.0 + 1e-9, (R.STEP_BIAS_TOO_LARGE,)),       # just beyond: left out
+    (-1.0 - 1e-9, (R.STEP_BIAS_TOO_LARGE,)),
+    (0.57, ()),                             # the largest difference of the seven checked molecules
+])
+def test_a_point_is_too_large_a_step_bias_beyond_one_wavenumber_between_the_steps(two_step: float, flags: tuple[str, ...]) -> None:
+    p = point(30.0, 0.2, small_step_cm=30.0, large_step_cm=30.0 + two_step)
+    assert p.flags == flags
+    assert point(30.0, 0.2).flags == ()     # a point of the registered read has no two steps and no such flag
+
+
+def test_a_molecule_without_its_second_step_has_no_point_and_holds_the_outcome_back(tmp_path: Path) -> None:
+    write_two_steps(tmp_path, "M_1", [35.0, *STIFF], [37.5, *STIFF], quartic_cm2=7.0)
+    write_two_steps(tmp_path, "M_2", [45.0, *STIFF], [45.2, *STIFF], second=False)
+    record = R.run(extrapolated(tmp_path))
+    assert record["unread"] == [{"id": "M_2", "reason": "no second step"}]
+    assert record["molecules"] == 1 and record["points"] == 2
+    assert record["decision"]["outcome"] == R.OUTCOME_NOT_STATED
+    assert "1 molecule(s) have no second step of this measurement (M_2: no second step)" in record["decision"]["statement"]
+    assert "no point here: M_2 (no second step)." in (tmp_path / "out" / "RESULT.md").read_text(encoding="utf-8")
+
+
+def test_a_second_step_that_is_not_twice_the_first_or_patched_another_space_is_refused(tmp_path: Path) -> None:
+    write_two_steps(tmp_path / "ratio", "M_1", [35.0, *STIFF], [37.5, *STIFF], large_step=0.03)
+    with pytest.raises(ValueError, match=r"0\.01 and 0\.03 bohr"):
+        R.extrapolated_points(extrapolated(tmp_path / "ratio"))
+    root = tmp_path / "space"
+    write_two_steps(root, "M_1", [35.0, *STIFF], [37.5, *STIFF])
+    write_step(root, "second", "M_1", [35.0, *STIFF], measured_columns([37.5, *STIFF], BASIS[:, :1], 0.02), step=0.02, below=100.0)
+    with pytest.raises(ValueError, match="not the same space"):
+        R.extrapolated_points(extrapolated(root))
+
+
+def test_stored_columns_that_do_not_rebuild_the_stored_patch_are_refused(tmp_path: Path) -> None:
+    write_two_steps(tmp_path, "M_1", [35.0, *STIFF], [37.5, *STIFF])
+    write_step(tmp_path, "second", "M_1", [35.0, *STIFF], measured_columns([37.5, *STIFF], BASIS[:, :1], 0.02), step=0.02,
+               stored_shift=1e-5)
+    with pytest.raises(ValueError, match="rebuilt from the stored columns"):
+        R.extrapolated_points(extrapolated(tmp_path))
+
+
+def test_second_step_folders_may_be_several_but_hold_each_molecule_once_and_no_stranger(tmp_path: Path) -> None:
+    write_two_steps(tmp_path, "M_1", [35.0, *STIFF], [37.5, *STIFF])
+    write_two_steps(tmp_path, "M_2", [45.0, *STIFF], [45.2, *STIFF], second=False)
+    write_step(tmp_path, "extension", "M_2", [45.0, *STIFF], measured_columns([45.2, *STIFF], BASIS[:, :1], 0.02), step=0.02)
+    labels = tmp_path / "labels"
+    both_folders = (R.Source(tmp_path / "second", labels), R.Source(tmp_path / "extension", labels))
+    points, unread = R.extrapolated_points(config(tmp_path, second_steps=both_folders))
+    assert unread == [] and {p.mol_id for p in points} == {"M_1", "M_2"}
+    write_step(tmp_path, "extension", "M_1", [35.0, *STIFF], measured_columns([37.5, *STIFF], BASIS[:, :1], 0.02), step=0.02)
+    with pytest.raises(ValueError, match="M_1 is in more than one second-step folder"):
+        R.extrapolated_points(config(tmp_path, second_steps=both_folders))
+    write_step(tmp_path, "stranger", "M_9", [35.0, *STIFF], measured_columns([37.5, *STIFF], BASIS[:, :1], 0.02), step=0.02)
+    with pytest.raises(ValueError, match="holds molecules the sources do not"):
+        R.extrapolated_points(config(tmp_path, second_steps=(R.Source(tmp_path / "stranger", labels),)))
+
+
+def test_a_step_check_and_a_second_step_do_not_combine(tmp_path: Path) -> None:
+    write_two_steps(tmp_path, "M_1", [35.0, *STIFF], [37.5, *STIFF])
+    second = (R.Source(tmp_path / "second", tmp_path / "labels"),)
+    with pytest.raises(ValueError, match="give one of the two"):
+        config(tmp_path, step_checks=second, second_steps=second)
+    with pytest.raises(FileNotFoundError):
+        config(tmp_path, second_steps=(R.Source(tmp_path / "absent", tmp_path / "labels"),))
+
+
+@pytest.mark.parametrize(("n", "moved", "outcome"), [
+    (20, 4, R.OUTCOME_SOUND),              # p = 0.20, p + 1 SE = 0.29
+    (20, 5, R.OUTCOME_UNDECIDED),
+    (20, 10, R.OUTCOME_UNDECIDED),         # p = 0.50 but p − 1 SE = 0.39
+    (20, 12, R.OUTCOME_MAJORITY),
+    (15, 0, R.OUTCOME_UNDECIDED),          # below the floor of 16 points
+])
+def test_the_rule_is_read_on_the_extrapolated_change_with_its_thresholds_unchanged(n: int, moved: int, outcome: str) -> None:
+    points = [two_step_point(21.0 + 38.0 * i / n, 1.0 if i < moved else 0.1) for i in range(n)]
+    decision = R.summarise(points, extrapolation=BOTH_STEPS_AND_Q2)["decision"]
+    assert decision["outcome"] == outcome and decision["n"] == n and decision["moved"] == moved
+    listed = decision["points"][0]
+    assert listed["small_step_change_cm"] == pytest.approx(listed["change_cm"] + 0.1) and listed["bias_removed_cm"] == pytest.approx(0.1)
+    assert listed["two_step_cm"] == pytest.approx(0.3)
+
+
+def test_the_small_steps_change_does_not_decide_an_extrapolated_point() -> None:
+    """A point whose small step alone is beyond the line and whose extrapolated value is not counts as unmoved, and the reverse."""
+    inside = point(30.0, 0.45, small_step_cm=30.6, large_step_cm=31.05)
+    beyond = point(40.0, -0.55, small_step_cm=39.55, large_step_cm=39.85)
+    rest = [two_step_point(21.0 + 2.0 * i, 0.1) for i in range(18)]
+    decision = R.summarise([inside, beyond, *rest], extrapolation=BOTH_STEPS_AND_Q2)["decision"]
+    assert decision["n"] == 20 and decision["moved"] == 1
+
+
+def test_two_points_too_large_a_step_bias_make_the_outcome_undecided_and_one_only_drops_its_point() -> None:
+    registered = [two_step_point(21.0 + 1.9 * i, 1.0 if i < 2 else 0.1) for i in range(20)]
+    one = R.summarise([*registered, two_step_point(40.0, 3.0, 1.2, mol_id="F_1")], extrapolation=BOTH_STEPS_AND_Q2)
+    assert one["decision"]["outcome"] == R.OUTCOME_SOUND and one["decision"]["n"] == 20 and one["flagged_step_bias"] == 1
+    two = R.summarise([*registered, two_step_point(40.0, 3.0, 1.2, mol_id="F_1"), two_step_point(45.0, 0.1, -1.5, mol_id="F_2")],
+                      extrapolation=BOTH_STEPS_AND_Q2)["decision"]
+    assert two["outcome"] == R.OUTCOME_UNDECIDED and "F_1 mode 0, F_2 mode 0" in two["statement"] and two["n"] == 20
+    assert "too large for the 0.5 cm⁻¹ line" in two["statement"]
+    elsewhere = R.summarise([*registered, two_step_point(40.0, 3.0, 1.2, tag="wb97x"), two_step_point(70.0, 3.0, 1.2),
+                             two_step_point(45.0, 3.0, 1.2, sample=R.BIASED)], extrapolation=BOTH_STEPS_AND_Q2)["decision"]
+    assert elsewhere["outcome"] == R.OUTCOME_SOUND
+
+
+def test_a_move_near_the_line_holds_nothing_back_once_every_point_has_both_steps() -> None:
+    registered = [two_step_point(21.0 + 1.9 * i, 1.0 if i < 2 else 0.1) for i in range(20)]
+    decision = R.summarise([*registered, two_step_point(40.0, 0.6, mol_id="N_1")], extrapolation=BOTH_STEPS_AND_Q2)["decision"]
+    assert decision["outcome"] == R.OUTCOME_SOUND and decision["n"] == 21
+    missing = R.Extrapolation(({"id": "W_1", "reason": "no second step"},), Q2_RECORD)
+    waiting = R.summarise([*registered], extrapolation=missing)["decision"]
+    assert waiting["outcome"] == R.OUTCOME_NOT_STATED and "W_1" in waiting["statement"]
+
+
+def test_the_extrapolated_read_writes_its_three_numbers_and_says_what_it_is(tmp_path: Path) -> None:
+    write_two_steps(tmp_path, "M_1", [35.0, *STIFF], [37.5, *STIFF], quartic_cm2=7.0)
+    record = R.run(extrapolated(tmp_path))
+    out = tmp_path / "out"
+    header, first = (out / "points.csv").read_text(encoding="utf-8").splitlines()[:2]
+    assert header.endswith("flags,small_step_change_cm,bias_removed_cm,large_minus_small_step_cm")
+    small, large = math.sqrt(37.5 ** 2 + 7.0), math.sqrt(37.5 ** 2 + 28.0)
+    assert first.endswith(f",{small - 35.0:+.4f},{small - 37.5:.4f},{large - small:+.4f}")
+    text = (out / "RESULT.md").read_text(encoding="utf-8")
+    assert "**Extrapolated to step zero (amendment 3 of the registration).**" in text and "1.3333·C(small) -0.3333·C(large)" in text
+    assert "| M_1 mode 0 | 35.00 | 37.50 | +2.50 | +2.59 | 0.09 | +0.28 |" in text
+    assert record["constants"]["step_bias_limit_cm"] == 1.0 and record["constants"]["extrapolated_noise_factor"] == R.EXTRAPOLATED_NOISE_FACTOR
+    assert record["inputs"]["second_steps"] == [[(tmp_path / "second").resolve().as_posix(), (tmp_path / "labels").resolve().as_posix()]]
+    assert record["flagged_step_bias"] == 0 and record["flagged_directions"] == 0 and record["unread"] == []
+    assert record["q2_test"] is None and record["decision"]["outcome"] == R.OUTCOME_NOT_STATED
+
+
+def test_the_registered_read_carries_nothing_of_the_extrapolation(tmp_path: Path) -> None:
+    write_molecule(tmp_path, "M_1", both([35.0, *STIFF]), both([37.5, *STIFF]))
+    record = R.run(config(tmp_path))
+    assert not {"unread", "flagged_step_bias", "flagged_directions", "q2_test"} & set(record)
+    assert "second_steps" not in record["inputs"]
+    assert "step_bias_limit_cm" not in record["constants"] and "two_step_cm" not in record["decision"]["points"][0]
+    assert (tmp_path / "out" / "points.csv").read_text(encoding="utf-8").splitlines()[0].endswith("turned_imaginary,flags")
+
+
+@pytest.mark.skipif(not (READ_FOLDER / "read" / "record.json").is_file() or not (READ_FOLDER / "patch_step02_below60").is_dir(),
+                    reason="the registered read's records are not in this checkout")
+def test_the_registered_read_of_20_november_is_reproduced_byte_for_byte(tmp_path: Path) -> None:
+    """The unchanged path on the stored patches against the read that ran on 20 November: the three files, to the byte."""
+    cfg = R.ReadConfig((R.Source(READ_FOLDER / "patch_below60", CORPUS),), (R.Source(READ_FOLDER / "patch_step02_below60", CORPUS),),
+                       CORPUS, tmp_path / "out", None, READ_FOLDER / "sample" / "sample.json")
+    R.run(cfg)
+    for name in ("record.json", "points.csv", "RESULT.md"):
+        assert (tmp_path / "out" / name).read_bytes() == (READ_FOLDER / "read" / name).read_bytes(), name
+
+
+@pytest.mark.skipif(not (READ_FOLDER / "patch_below60" / "B_0c6c144a7f").is_dir(), reason="the stored patch is not in this checkout")
+@pytest.mark.parametrize("tag", V.LABEL_TAGS)
+def test_a_stored_patch_is_rebuilt_from_its_columns_to_1e_6(tag: str) -> None:
+    """The label and the stored columns of step 0.01 through `vibrations.patched_hessian` give the frequencies the runner stored."""
+    mol = R.Molecule.read("B_0c6c144a7f", CORPUS, CORPUS)
+    step = R.patch_of(mol, tag, R.Source(READ_FOLDER / "patch_below60", CORPUS), R.read_step)
+    rebuilt = V.vibrational_modes(V.patched_hessian(mol.labels[tag], mol.masses, step["U"], step["C"]), mol.masses, mol.coords).omega_cm
+    assert np.abs(rebuilt - np.sort(step["patched_vib"])).max() < 1e-6
+    assert np.array_equal(R.rebuilt_modes(mol, tag, step).omega_cm, rebuilt)     # the read's own check passes on it
+
+
+def test_the_step_analysis_tells_a_one_signed_step_bias_from_its_noise(tmp_path: Path) -> None:
+    write_two_steps(tmp_path, "M_1", [35.0, *STIFF], [37.5, *STIFF], quartic_cm2=7.0)
+    write_two_steps(tmp_path, "M_2", [45.0, *STIFF], [45.2, *STIFF], quartic_cm2=9.0)
+    write_two_steps(tmp_path, "M_3", [50.0, *STIFF], [50.2, *STIFF], second=False)
+    labels = tmp_path / "labels"
+    cfg = A.AnalysisConfig(R.Source(tmp_path / "patches", labels), R.Source(tmp_path / "second", labels), tmp_path / "molecules",
+                           tmp_path / "analysis")
+    record = A.run(cfg)
+    assert (record["n"], record["positive"], record["negative"]) == (4, 4, 0) and record["chance_one_sign"] == 0.125
+    assert record["curvature_diff_cm2"]["min"] == pytest.approx(21.0, abs=1e-6) and record["curvature_diff_cm2"]["max"] == pytest.approx(27.0, abs=1e-6)
+    assert [g["diffs_cm2"] for g in record["functional_gaps"]] == [pytest.approx([21.0, 21.0], abs=1e-6), pytest.approx([27.0, 27.0], abs=1e-6)]
+    point_1 = A.step_points(cfg)[0]
+    assert point_1.noise_of_diff_cm(2e-8) == pytest.approx(point_1.noise_cm * 0.2 * math.sqrt(1.25))
+    assert "4 have the large step above the small one and 0 below" in (tmp_path / "analysis" / "STEP_ANALYSIS.md").read_text(encoding="utf-8")
+    with pytest.raises(ValueError, match="an analysis writes into a folder of its own"):
+        A.AnalysisConfig(cfg.small, cfg.large, cfg.molecules, tmp_path / "second" / "out")
+
+
+def test_steps_along_rotated_directions_are_flagged_left_out_and_never_combined(tmp_path: Path) -> None:
+    turn = np.array([[np.cos(0.4), -np.sin(0.4)], [np.sin(0.4), np.cos(0.4)]])
+    write_two_steps(tmp_path, "M_1", [35.0, 55.0, 3700.0], [37.5, 56.0, 3700.0], quartic_cm2=7.0, directions=BASIS[:, :2],
+                    large_directions=BASIS[:, :2] @ turn)
+    cfg = extrapolated(tmp_path)
+    points, unread = R.extrapolated_points(cfg)
+    single = {(p.tag, p.mode): p for p in read_points(tmp_path)}
+    assert unread == [] and len(points) == 4
+    for p in points:
+        assert p.flags == (R.DIRECTIONS_DIFFER,) and p.bias_removed_cm is None
+        assert p.patched_cm == p.small_step_cm == single[p.tag, p.mode].patched_cm     # nothing is extrapolated: the small step's value
+        assert p.noise_cm == single[p.tag, p.mode].noise_cm and p.two_step_cm > 0.1    # both frequencies are still known
+    record = R.run(cfg)
+    assert record["flagged_directions"] == 4 and record["unread"] == []
+    assert record["decision"]["n"] == 0 and record["decision"]["bounds"]["flagged"] == 2
+    assert [p["bias_removed_cm"] for p in record["decision"]["points"]] == [None, None]
+    text = (tmp_path / "out" / "RESULT.md").read_text(encoding="utf-8")
+    assert "| M_1 mode 0 | 35.00 | none | none | +2.59 | none |" in text and "directions differ |" in text
+    assert ",directions differ,+2.5932,,+0.2783" in (tmp_path / "out" / "points.csv").read_text(encoding="utf-8")
+    mol = R.Molecule.read("M_1", tmp_path / "labels", tmp_path / "molecules")
+    small, large = (R.patch_of(mol, "b3lyp", source, R.read_step) for source in (cfg.sources[0], cfg.second_steps[0]))
+    with pytest.raises(ValueError, match="different directions"):
+        R.extrapolated_tag_points(mol, "b3lyp", small, large)
+    with pytest.raises(ValueError, match="differ in shape"):
+        R.extrapolated_columns(small["C"], large["C"][:, :1])
+
+
+def test_a_second_step_that_measured_another_space_is_a_missing_second_step(tmp_path: Path) -> None:
+    write_two_steps(tmp_path, "M_1", [35.0, 55.0, 3700.0], [37.5, 56.0, 3700.0], directions=BASIS[:, :2],
+                    large_directions=BASIS[:, [0, 2]])
+    points, unread = R.extrapolated_points(extrapolated(tmp_path))
+    assert points == [] and unread == [{"id": "M_1", "reason": R.ANOTHER_SPACE}]
+    decision = R.run(extrapolated(tmp_path))["decision"]
+    assert decision["outcome"] == R.OUTCOME_NOT_STATED and "M_1: its second step measured another space" in decision["statement"]
+
+
+def test_points_with_rotated_directions_leave_the_rule_to_the_rest_and_to_the_floor_of_sixteen() -> None:
+    rotated = [two_step_point(23.7, 0.1, mol_id="D_1", directions_differ=True),
+               two_step_point(30.3, -0.4, mol_id="D_1", mode=1, directions_differ=True)]
+    nineteen = [two_step_point(21.0 + 2.0 * i, 1.0 if i < 2 else 0.1) for i in range(19)]
+    decision = R.summarise([*nineteen, *rotated], extrapolation=BOTH_STEPS_AND_Q2)["decision"]
+    assert decision["outcome"] == R.OUTCOME_SOUND and decision["n"] == 19 and decision["bounds"]["flagged"] == 2
+    assert [p["flags"] for p in decision["points"] if p["id"] == "D_1"] == [[R.DIRECTIONS_DIFFER]] * 2
+    fifteen = R.summarise([*nineteen[:15], *rotated], extrapolation=BOTH_STEPS_AND_Q2)["decision"]
+    assert fifteen["outcome"] == R.OUTCOME_UNDECIDED and "fewer than the 16 points" in fifteen["statement"]
+
+
+def test_the_extrapolated_read_states_no_outcome_without_a_q2_test_that_holds() -> None:
+    points = [two_step_point(21.0 + 1.9 * i, 1.0 if i < 2 else 0.1) for i in range(20)]
+    none = R.summarise(points, extrapolation=R.Extrapolation())["decision"]
+    assert none["outcome"] == R.OUTCOME_NOT_STATED and "no record of the q² test was given" in none["statement"]
+    assert (none["n"], none["moved"]) == (20, 2)                           # the arithmetic is printed; the outcome is not
+    failed_record = Q2_RECORD | {"verdict": R.Q2_FAILS, "ratios": [r | {"ratio": 8.158} for r in Q2_RECORD["ratios"]]}
+    failed = R.summarise(points, extrapolation=R.Extrapolation((), failed_record))["decision"]
+    assert failed["outcome"] == R.OUTCOME_NOT_STATED and "the q² test fails" in failed["statement"]
+    assert f"R = {R.Q2_MOLECULES[0]} b3lyp 8.16" in failed["statement"] and "the registered read's outcome 3 stands" in failed["statement"]
+    assert R.summarise(points, extrapolation=BOTH_STEPS_AND_Q2)["decision"]["outcome"] == R.OUTCOME_SOUND
+
+
+def test_a_reversed_direction_is_the_same_measurement_and_is_combined(tmp_path: Path) -> None:
+    """The central difference along −u is minus the one along u, so a second step along −u extrapolates as one along u does."""
+    write_two_steps(tmp_path, "M_1", [35.0, *STIFF], [37.5, *STIFF], quartic_cm2=7.0, large_directions=-BASIS[:, :1])
+    points, unread = R.extrapolated_points(extrapolated(tmp_path))
+    assert unread == [] and len(points) == 2
+    for p in points:
+        assert p.flags == () and p.patched_cm == pytest.approx(37.5, abs=1e-8)
+        assert p.large_step_cm == pytest.approx(math.sqrt(37.5 ** 2 + 28.0), abs=1e-8)
+    turned = R.sign_aligned({"U": BASIS[:, :2]}, {"U": BASIS[:, :2] * [1.0, -1.0], "C": np.ones((9, 2))})
+    assert np.array_equal(turned["U"], BASIS[:, :2]) and np.array_equal(turned["C"], np.ones((9, 2)) * [1.0, -1.0])
+    other = {"U": BASIS[:, 1:3], "C": np.ones((9, 2))}
+    assert R.sign_aligned({"U": BASIS[:, :2]}, other) is not other and np.array_equal(R.sign_aligned({"U": BASIS[:, :2]}, other)["U"], other["U"])
+
+
+# --- the q² test on a third step (amendment 3, point 7) ------------------------------------------------------------------------------
+
+Q2_TRUE = [37.5, 56.0, 3700.0]
+
+
+def three_steps(root: Path, terms: list[tuple[float, float]], **patch: object) -> A.AnalysisConfig:
+    """The test's molecules (synthetic ones under the registered ids) patched at 0.01, 0.02 and 0.04 bohr into `patches`, `second`
+    and `third`. `terms` gives each step's quartic and sextic term: the same pair thrice is one potential, different pairs stand for
+    errors that follow no law."""
+    U = np.asarray(patch.get("directions", BASIS[:, :1]), float)
+    label = [35.0, 55.0, 3700.0]
+    for mol_id in patch.get("ids", R.Q2_MOLECULES):
+        write_molecule(root, mol_id, both(label), both(label))
+        steps = zip(("patches", "second", "third"), (0.01, 0.02, float(patch.get("third_step", 0.04))), terms,
+                    (U, U, np.asarray(patch.get("third_directions", U), float)), strict=True)
+        for folder, step, (quartic, sextic), directions in steps:
+            write_step(root, folder, mol_id, label, measured_columns(Q2_TRUE, directions, step, quartic, sextic), directions=directions,
+                       step=step)
+    labels = root / "labels"
+    return A.AnalysisConfig(R.Source(root / "patches", labels), R.Source(root / "second", labels), root / "molecules", root / "q2",
+                            R.Source(root / "third", labels))
+
+
+def test_an_error_that_grows_as_q2_gives_a_ratio_of_five_and_the_law_holds(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    cfg = three_steps(tmp_path, [(7.0, 0.0)] * 3)
+    A.main(["--small", f"{cfg.small.patches}={cfg.small.labels}", "--large", f"{cfg.large.patches}={cfg.large.labels}",
+            "--third", f"{cfg.third.patches}={cfg.third.labels}", "--molecules", str(cfg.molecules), "--out", str(cfg.out)])
+    assert "**The law holds.**" in capsys.readouterr().out
+    record = json.loads((cfg.out / "q2_test.json").read_text(encoding="utf-8"))
+    assert pytest.approx(5.0, rel=1e-15) == A.Q2_PREDICTED and record["verdict"] == R.Q2_HOLDS and record["interval"] == [4.0, 6.0]
+    assert sorted((r["id"], r["tag"]) for r in record["ratios"]) == sorted((m, tag) for m in R.Q2_MOLECULES for tag in V.LABEL_TAGS)
+    assert set(record["files"]) == {"small", "large", "third"} and set(record["files"]["small"]) == set(R.Q2_MOLECULES)
+    for r in record["ratios"]:
+        assert r["ratio"] == pytest.approx(5.0, abs=1e-6) and r["inside"] and r["noise_sd"] > 0
+        assert r["curvature_cm2"] == pytest.approx([37.5 ** 2 + 7.0, 37.5 ** 2 + 28.0, 37.5 ** 2 + 112.0], abs=1e-6)
+        assert r["zero_two_step_cm2"] == pytest.approx(37.5 ** 2, abs=1e-6) and r["zero_three_step_cm2"] == pytest.approx(37.5 ** 2, abs=1e-6)
+    read = R.run(extrapolated(tmp_path, q2_test=cfg.out / "q2_test.json"))       # the read takes the record the test wrote
+    assert read["q2_test"]["verdict"] == R.Q2_HOLDS and len(read["q2_test"]["ratios"]) == 4
+    assert read["decision"]["outcome"] == R.OUTCOME_UNDECIDED and "fewer than the 16 points" in read["decision"]["statement"]
+    assert "the q² test holds" in (tmp_path / "out" / "RESULT.md").read_text(encoding="utf-8")
+
+
+def test_a_q4_term_beside_the_q2_term_moves_the_ratio_out_and_the_law_fails(tmp_path: Path) -> None:
+    cfg = three_steps(tmp_path, [(7.0, 0.5)] * 3)
+    record = A.run_q2_test(cfg)
+    assert record["verdict"] == R.Q2_FAILS and len(record["ratios"]) == 4
+    for r in record["ratios"]:
+        assert r["ratio"] == pytest.approx((112.0 + 128.0 - 7.5) / (28.0 + 8.0 - 7.5), abs=1e-6) and not r["inside"]     # 8.16
+        assert r["zero_three_step_cm2"] == pytest.approx(37.5 ** 2, abs=1e-6)             # three points remove both terms,
+        assert r["zero_two_step_cm2"] == pytest.approx(37.5 ** 2 - 4 * 0.5, abs=1e-6)     # two leave −4·b·q⁴
+    decision = R.run(extrapolated(tmp_path, q2_test=cfg.out / "q2_test.json"))["decision"]
+    assert decision["outcome"] == R.OUTCOME_NOT_STATED and "the q² test fails" in decision["statement"]
+    assert f"{R.Q2_MOLECULES[0]} b3lyp 8.16" in decision["statement"] and "outcome 3 stands" in decision["statement"]
+
+
+def test_differences_that_are_noise_give_no_ratio_of_five_and_the_law_fails(tmp_path: Path) -> None:
+    """Offsets of +0.3, −0.2 and +0.1 cm⁻² at the three steps, as noise would leave them: R = (0.1 − 0.3) / (−0.2 − 0.3) = 0.4."""
+    record = A.run_q2_test(three_steps(tmp_path, [(0.3, 0.0), (-0.05, 0.0), (0.1 / 16, 0.0)]))
+    assert record["verdict"] == R.Q2_FAILS and [r["ratio"] for r in record["ratios"]] == [pytest.approx(0.4, abs=1e-5)] * 4
+
+
+def test_the_bounds_of_the_interval_are_inside_and_just_beyond_them_the_law_fails(tmp_path: Path) -> None:
+    """A q⁴ term of 1.818 % of the q² term at the small step puts R on 6.0; just beyond it the law fails."""
+    inside = A.run_q2_test(three_steps(tmp_path / "a", [(7.0, 7.0 * 0.018)] * 3))
+    beyond = A.run_q2_test(three_steps(tmp_path / "b", [(7.0, 7.0 * 0.0185)] * 3))
+    assert inside["verdict"] == R.Q2_HOLDS and 5.9 < inside["ratios"][0]["ratio"] < 6.0
+    assert beyond["verdict"] == R.Q2_FAILS and 6.0 < beyond["ratios"][0]["ratio"] < 6.1
+    rows = [{"id": m, "tag": tag, "direction": 0, "ratio": 4.0} for m in R.Q2_MOLECULES for tag in V.LABEL_TAGS]
+    assert R.q2_verdict(rows) == R.Q2_HOLDS and R.q2_verdict([*rows[:3], rows[3] | {"ratio": 6.0}]) == R.Q2_HOLDS
+    assert R.q2_verdict([*rows[:3], rows[3] | {"ratio": 3.999}]) == R.Q2_FAILS      # one value outside is enough
+
+
+def test_the_ratios_noise_follows_from_the_three_curvatures_by_propagation() -> None:
+    c, noise = [1204.3, 1233.4, 1349.9], 1.88
+    eps = 1e-6
+    slopes = [(A.q2_ratio([x + eps * (i == j) for j, x in enumerate(c)]) - A.q2_ratio(c)) / eps for i in range(3)]
+    by_hand = math.sqrt(sum((slope * noise / R.STEP_RATIO ** i) ** 2 for i, slope in enumerate(slopes)))
+    assert A.q2_ratio_noise(c, noise) == pytest.approx(by_hand, rel=1e-5)
+    assert A.q2_ratio_noise([0.0, 30.0, 150.0], 1.88) == pytest.approx(1.88 / 30.0 * math.sqrt(16 + 6.25 + 0.0625))    # 0.296 at R = 5
+    assert A.three_step_zero([3.0 + 2.0 + 0.5, 3.0 + 8.0 + 8.0, 3.0 + 32.0 + 128.0]) == pytest.approx(3.0)
+    with pytest.raises(ValueError, match="the ratio is undefined"):
+        A.q2_ratio([10.0, 10.0, 12.0])
+
+
+def test_a_third_step_that_is_not_the_registered_test_is_not_read_and_unlocks_nothing(tmp_path: Path) -> None:
+    turn = np.array([[np.cos(0.4), -np.sin(0.4)], [np.sin(0.4), np.cos(0.4)]])
+    cases = {"rotated": ({"directions": BASIS[:, :2], "third_directions": BASIS[:, :2] @ turn}, "different directions"),
+             "ratio": ({"third_step": 0.03}, "0.02 and 0.03 bohr"),
+             "two directions": ({"directions": BASIS[:, :2]}, "the test is registered on one"),
+             "one molecule": ({"ids": R.Q2_MOLECULES[:1]}, "and on nothing else"),
+             "another molecule": ({"ids": (*R.Q2_MOLECULES, "T_3")}, "and on nothing else")}
+    for name, (patch, reason) in cases.items():
+        cfg = three_steps(tmp_path / name, [(7.0, 0.0)] * 3, **patch)
+        record = A.run_q2_test(cfg)
+        assert record["verdict"] == R.Q2_NOT_READ and reason in record["reason"] and record["ratios"] == [], name
+        assert "**The test was not read**" in (cfg.out / "Q2_TEST.md").read_text(encoding="utf-8")
+        with pytest.raises(A.NotReadError):
+            A.q2_rows(cfg)
+    unfinished = three_steps(tmp_path / "unfinished", [(7.0, 0.0)] * 3)
+    (unfinished.third.patches / R.Q2_MOLECULES[0] / "report.json").unlink()
+    assert "has no report.json" in A.run_q2_test(unfinished)["reason"]
+    decision = R.run(extrapolated(tmp_path / "unfinished", q2_test=unfinished.out / "q2_test.json"))["decision"]
+    assert decision["outcome"] == R.OUTCOME_NOT_STATED and "the q² test was not read" in decision["statement"]
+    assert "the author's decision" in decision["statement"]
+    with pytest.raises(ValueError, match="needs a third step"):
+        A.q2_rows(A.AnalysisConfig(unfinished.small, unfinished.large, unfinished.molecules, tmp_path / "out"))
+
+
+def test_the_read_draws_the_verdict_itself_from_four_ratios_made_from_its_own_files(tmp_path: Path) -> None:
+    cfg = three_steps(tmp_path, [(7.0, 0.0)] * 3)
+    made = A.run_q2_test(cfg)
+    path = tmp_path / "record.json"
+
+    def rewritten(**changes: object) -> R.ReadConfig:
+        path.write_text(json.dumps(made | changes), encoding="utf-8")
+        return extrapolated(tmp_path, q2_test=path)
+
+    assert R.run(rewritten())["q2_test"]["verdict"] == R.Q2_HOLDS
+    outside = [made["ratios"][0] | {"ratio": 8.0}, *made["ratios"][1:]]
+    with pytest.raises(ValueError, match="its ratios give 'fails'"):          # a record that says "holds" over a ratio outside
+        R.run(rewritten(ratios=outside))
+    assert R.run(rewritten(ratios=outside, verdict=R.Q2_FAILS))["decision"]["outcome"] == R.OUTCOME_NOT_STATED
+    with pytest.raises(ValueError, match="and on nothing else"):              # one molecule's two ratios unlock nothing
+        R.run(rewritten(ratios=made["ratios"][:2]))
+    with pytest.raises(ValueError, match="the registered interval"):          # another interval is another test
+        R.run(rewritten(interval=[3.0, 7.0]))
+    with pytest.raises(ValueError, match="is no q²-test record"):
+        R.run(rewritten(verdict="fine"))
+    with pytest.raises(ValueError, match="are not the ones the record was made from"):
+        R.run(rewritten(files=made["files"] | {"large": made["files"]["small"]}))
+    write_step(tmp_path, "second", R.Q2_MOLECULES[1], [35.0, 55.0, 3700.0], measured_columns(Q2_TRUE, BASIS[:, :1], 0.02, 7.5), step=0.02)
+    with pytest.raises(ValueError, match=f"the large-step patch files of {R.Q2_MOLECULES[1]} are not the ones"):
+        R.run(rewritten())                                                    # the read's second step changed after the test
+    elsewhere = tmp_path / "elsewhere"
+    write_two_steps(elsewhere, "M_1", [35.0, *STIFF], [37.5, *STIFF])
+    path.write_text(json.dumps(made), encoding="utf-8")
+    with pytest.raises(ValueError, match="is not among this read's small-step molecules"):
+        R.run(extrapolated(elsewhere, q2_test=path))
+
+
+def test_the_q2_record_is_an_explicit_argument_of_the_extrapolated_read_only(tmp_path: Path) -> None:
+    write_two_steps(tmp_path, "M_1", [35.0, *STIFF], [37.5, *STIFF], quartic_cm2=7.0)
+    path = tmp_path / "q2_test.json"
+    path.write_text("{}", encoding="utf-8")
+    source = f"{tmp_path / 'patches'}={tmp_path / 'labels'}"
+    parsed = R.parse_args(["--source", source, "--second-step", f"{tmp_path / 'second'}={tmp_path / 'labels'}", "--q2-test", str(path),
+                           "--molecules", str(tmp_path / "molecules"), "--out", str(tmp_path / "out")])
+    assert parsed.q2_test == path and len(parsed.second_steps) == 1
+    with pytest.raises(ValueError, match="belongs to the extrapolated read"):
+        config(tmp_path, q2_test=path)
+    with pytest.raises(FileNotFoundError):
+        extrapolated(tmp_path, q2_test=tmp_path / "absent.json")
