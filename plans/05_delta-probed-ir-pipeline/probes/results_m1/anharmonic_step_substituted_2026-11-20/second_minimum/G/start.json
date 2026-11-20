@@ -1,0 +1,9 @@
+{
+ "run": "probes/results_m1/pipeline_benzonitrile_anharmonic_v3_2026-11-19/benzonitrile",
+ "chosen": "modules/05_support_predictor/corpus/molecules/A_3100da3761/geometry.json",
+ "rule": "the stored B3LYP minimum farthest from the run's, rms after rotation",
+ "rms_bohr_from_the_run": {
+  "modules/05_support_predictor/corpus/molecules/A_3100da3761/geometry.json": 0.0005702575726916987,
+  "probes/results_m1/aromir_e2e_2026-11-16/benzonitrile/geometry.json": 0.00036722570851243047
+ }
+}

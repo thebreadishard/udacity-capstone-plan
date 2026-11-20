@@ -1,0 +1,227 @@
+{
+ "registration": "GoalGathering/notes/PreRegistration_2026-11-20_Anharmonic_Step_Substituted_Molecule.md",
+ "source": "probes/results_m1/anharmonic_design_questions_2026-11-16/modes.json",
+ "quantity": "rms_inputs_on_B",
+ "min_bands": 4,
+ "bars_cm": {
+  "CH-oop": 8.38,
+  "other": 3.84,
+  "ring-ip": 3.37,
+  "CH-stretch": 6.21
+ },
+ "molecules": {
+  "B_a41f4cff9d": {
+   "name": "naphthalene+CN",
+   "all": {
+    "n": 36,
+    "rms_cm": 2.347225925089374
+   },
+   "families": {
+    "CH-oop": {
+     "n": 5,
+     "rms_cm": 1.8512966451013382,
+     "bar_cm": 8.38,
+     "statement": "holds"
+    },
+    "other": {
+     "n": 8,
+     "rms_cm": 1.681263146289408,
+     "bar_cm": 3.84,
+     "statement": "holds"
+    },
+    "ring-ip": {
+     "n": 16,
+     "rms_cm": 2.201580196198829,
+     "bar_cm": 3.37,
+     "statement": "holds"
+    },
+    "CH-stretch": {
+     "n": 7,
+     "rms_cm": 3.4025191365204903,
+     "bar_cm": 6.21,
+     "statement": "holds"
+    }
+   }
+  },
+  "B_052693bd01": {
+   "name": "oxazole+CN",
+   "all": {
+    "n": 17,
+    "rms_cm": 5.184825601438196
+   },
+   "families": {
+    "CH-oop": {
+     "n": 2,
+     "rms_cm": 3.360830450523583,
+     "bar_cm": 8.38,
+     "statement": "no statement"
+    },
+    "other": {
+     "n": 5,
+     "rms_cm": 1.7261526782019219,
+     "bar_cm": 3.84,
+     "statement": "holds"
+    },
+    "ring-ip": {
+     "n": 8,
+     "rms_cm": 6.800601765809696,
+     "bar_cm": 3.37,
+     "statement": "exceeds"
+    },
+    "CH-stretch": {
+     "n": 2,
+     "rms_cm": 4.976305245906303,
+     "bar_cm": 6.21,
+     "statement": "no statement"
+    }
+   }
+  },
+  "A_a848c04a21": {
+   "name": "phenylacetylene",
+   "all": {
+    "n": 25,
+    "rms_cm": 6.377642166198275
+   },
+   "families": {
+    "CH-oop": {
+     "n": 6,
+     "rms_cm": 4.9184685592630775,
+     "bar_cm": 8.38,
+     "statement": "holds"
+    },
+    "other": {
+     "n": 2,
+     "rms_cm": 3.470738358772079,
+     "bar_cm": 3.84,
+     "statement": "no statement"
+    },
+    "ring-ip": {
+     "n": 12,
+     "rms_cm": 3.477896758865991,
+     "bar_cm": 3.37,
+     "statement": "exceeds"
+    },
+    "CH-stretch": {
+     "n": 5,
+     "rms_cm": 11.853005967238257,
+     "bar_cm": 6.21,
+     "statement": "exceeds"
+    }
+   }
+  },
+  "B_410ac0fb2f": {
+   "name": "benzene+NH2+ethynyl",
+   "all": {
+    "n": 22,
+    "rms_cm": 5.924141463326659
+   },
+   "families": {
+    "other": {
+     "n": 7,
+     "rms_cm": 7.414790910847251,
+     "bar_cm": 3.84,
+     "statement": "exceeds"
+    },
+    "ring-ip": {
+     "n": 11,
+     "rms_cm": 5.178228448948412,
+     "bar_cm": 3.37,
+     "statement": "exceeds"
+    },
+    "CH-stretch": {
+     "n": 4,
+     "rms_cm": 4.803423970970298,
+     "bar_cm": 6.21,
+     "statement": "holds"
+    }
+   }
+  },
+  "B_079e66d017": {
+   "name": "isoquinoline+CH3",
+   "all": {
+    "n": 43,
+    "rms_cm": 6.259243955447941
+   },
+   "families": {
+    "other": {
+     "n": 10,
+     "rms_cm": 3.3066144069282077,
+     "bar_cm": 3.84,
+     "statement": "holds"
+    },
+    "ring-ip": {
+     "n": 24,
+     "rms_cm": 2.909472898235089,
+     "bar_cm": 3.37,
+     "statement": "holds"
+    },
+    "CH-stretch": {
+     "n": 9,
+     "rms_cm": 12.347568500987904,
+     "bar_cm": 6.21,
+     "statement": "exceeds"
+    }
+   }
+  },
+  "B_78f8233b4c": {
+   "name": "azulene+NH2",
+   "all": {
+    "n": 32,
+    "rms_cm": 9.592654256961204
+   },
+   "families": {
+    "other": {
+     "n": 10,
+     "rms_cm": 6.145697088818433,
+     "bar_cm": 3.84,
+     "statement": "exceeds"
+    },
+    "ring-ip": {
+     "n": 15,
+     "rms_cm": 4.506958460770637,
+     "bar_cm": 3.37,
+     "statement": "exceeds"
+    },
+    "CH-stretch": {
+     "n": 7,
+     "rms_cm": 17.977058620893445,
+     "bar_cm": 6.21,
+     "statement": "exceeds"
+    }
+   }
+  },
+  "B_0603418c5b": {
+   "name": "azulene+ethynyl",
+   "all": {
+    "n": 38,
+    "rms_cm": 6.444925139711297
+   },
+   "families": {
+    "CH-oop": {
+     "n": 9,
+     "rms_cm": 9.035863756872077,
+     "bar_cm": 8.38,
+     "statement": "exceeds"
+    },
+    "other": {
+     "n": 4,
+     "rms_cm": 1.9238035178612491,
+     "bar_cm": 3.84,
+     "statement": "holds"
+    },
+    "ring-ip": {
+     "n": 18,
+     "rms_cm": 3.5791437158820094,
+     "bar_cm": 3.37,
+     "statement": "exceeds"
+    },
+    "CH-stretch": {
+     "n": 7,
+     "rms_cm": 9.244286594195309,
+     "bar_cm": 6.21,
+     "statement": "exceeds"
+    }
+   }
+  }
+ }
+}
