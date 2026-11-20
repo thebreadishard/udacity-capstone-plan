@@ -91,3 +91,27 @@ def test_the_probe_takes_its_arithmetic_from_the_corpus_module() -> None:
     assert L.vibrational_modes is V.vibrational_modes
     assert L.low_mode_directions is V.low_mode_directions
     assert L.LOW_MODE_CM == V.LOW_MODE_CM
+
+
+WANTED = {"below_cm": 60.0, "step_bohr": 0.02, "grid": [99, 590]}
+
+
+def test_a_fresh_out_folder_and_one_made_with_the_same_settings_may_be_used() -> None:
+    assert L.settings_conflict(None, WANTED, has_results=False) is None
+    assert L.settings_conflict(dict(WANTED), WANTED, has_results=True) is None
+    assert L.settings_conflict(dict(WANTED), WANTED, has_results=False) is None
+
+
+def test_an_out_folder_made_with_another_step_or_threshold_is_refused() -> None:
+    """20 Nov 2026 review: the runner kept any dir_j_±.json it found, so a folder reused at another --step or --below mixed two
+    measurements in one Hessian."""
+    other_step = L.settings_conflict(WANTED | {"step_bohr": 0.01}, WANTED, has_results=True)
+    assert other_step is not None and "step_bohr: 0.01 there, 0.02 asked" in other_step
+    other_below = L.settings_conflict(WANTED | {"below_cm": 20.0}, WANTED, has_results=False)
+    assert other_below is not None and "below_cm: 20.0 there, 60.0 asked" in other_below
+    assert "grid" in L.settings_conflict({"below_cm": 60.0, "step_bohr": 0.02}, WANTED, has_results=True)
+
+
+def test_an_out_folder_with_results_and_no_record_of_its_settings_is_refused() -> None:
+    problem = L.settings_conflict(None, WANTED, has_results=True)
+    assert problem is not None and L.RUN_SETTINGS_NAME in problem and "fresh out folder" in problem

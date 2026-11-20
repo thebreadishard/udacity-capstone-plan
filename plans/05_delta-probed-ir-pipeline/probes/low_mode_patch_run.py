@@ -5,7 +5,8 @@ direction the SCF is converged at ± one step (the largest atomic displacement S
 grid-response gradient (our blocked implementation, software ledger 57) gives the true Hessian column along the direction. The repaired
 Hessian is written beside the label as <out>/<id>/hessian_<xc>_analytic_grfpatch.npz (H_raw, H_projected, freq_cm as the labels write them,
 with the directions, the columns and the frequencies before and after); the label files are only read. A molecule with no low mode gets
-<out>/<id>/report.json saying so. Points are json files and are kept on a resume. Runs on pyscf 2.15.0 (~/qc215 in WSL).
+<out>/<id>/report.json saying so. Points are json files and are kept on a resume; <out>/run_settings.json records the threshold, step and
+grid they were made with, and a run with other settings is refused there. Runs on pyscf 2.15.0 (~/qc215 in WSL).
 
     python probes/low_mode_patch_run.py <corpus molecules dir> <out dir> --ids FILE [--below 20] [--step 0.01] [--threads 8]
         [--max-memory MB] [--dry-run]
@@ -28,7 +29,7 @@ from analytic_hessians import FUNCTIONALS, freqs_cm, labels_mol, project_tr, sof
 from butterfly_scan import LABEL_GRID, write_json
 from hessian_grid_response_fd import FdHessianConfig, converged_scf, point_record
 from library_log import PYSCF_LOG_NAME
-from low_mode_patch import label_directions, read_label
+from low_mode_patch import RUN_SETTINGS_NAME, label_directions, read_label, settings_conflict
 from pyscf import lib
 from vibrations import (
     LABEL_TAGS,
@@ -146,6 +147,19 @@ def patch_molecule(molecule_dir: Path, cfg: PatchConfig, lib_log: TextIO) -> dic
     return record
 
 
+def claim_out_folder(cfg: PatchConfig) -> None:
+    """Record the run's settings in the out folder, or refuse the folder when what it holds was made with others."""
+    cfg.out.mkdir(parents=True, exist_ok=True)
+    wanted = {"below_cm": cfg.below_cm, "step_bohr": cfg.step_bohr, "grid": list(LABEL_GRID)}
+    path = cfg.out / RUN_SETTINGS_NAME
+    recorded = json.loads(path.read_text(encoding="utf-8")) if path.is_file() else None
+    problem = settings_conflict(recorded, wanted, any(p.is_dir() for p in cfg.out.iterdir()))
+    if problem:
+        raise ValueError(f"{cfg.out}: {problem}")
+    if recorded is None:
+        write_json(path, wanted)
+
+
 def parse_args(argv: list[str] | None = None) -> PatchConfig:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("molecules", type=Path)
@@ -168,8 +182,8 @@ def main(argv: list[str] | None = None) -> None:
         print(f"(LMP) dry run: {len(counts)} molecules, {sum(1 for c in counts.values() if c)} with low modes, "
               f"{sum(counts.values())} directions below {cfg.below_cm} cm⁻¹ → {4 * sum(counts.values())} gradient points", flush=True)
         return
+    claim_out_folder(cfg)
     lib.num_threads(cfg.threads)
-    cfg.out.mkdir(parents=True, exist_ok=True)
     with open(cfg.out / PYSCF_LOG_NAME, "a", encoding="utf-8") as lib_log:
         for k, mol_id in enumerate(cfg.ids, 1):
             done = cfg.out / mol_id / "report.json"

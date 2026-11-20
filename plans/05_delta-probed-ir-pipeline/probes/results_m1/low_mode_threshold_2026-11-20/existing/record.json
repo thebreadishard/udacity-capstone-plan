@@ -1,0 +1,290 @@
+{
+ "points": 128,
+ "molecules": 60,
+ "flagged_overlap": 11,
+ "flagged_step": 0,
+ "step_checked": 0,
+ "turned_imaginary": [
+  "B_84485091e3 b3lyp"
+ ],
+ "groups": [
+  {
+   "tag": "b3lyp",
+   "sample": "unbiased",
+   "registered": true,
+   "n": 0,
+   "bands": [
+    {
+     "group": "20–30",
+     "n": 0,
+     "median_abs_cm": null,
+     "max_abs_cm": null,
+     "moved": 0,
+     "fraction": null,
+     "se": null,
+     "median_noise_cm": null
+    },
+    {
+     "group": "30–40",
+     "n": 0,
+     "median_abs_cm": null,
+     "max_abs_cm": null,
+     "moved": 0,
+     "fraction": null,
+     "se": null,
+     "median_noise_cm": null
+    },
+    {
+     "group": "40–50",
+     "n": 0,
+     "median_abs_cm": null,
+     "max_abs_cm": null,
+     "moved": 0,
+     "fraction": null,
+     "se": null,
+     "median_noise_cm": null
+    },
+    {
+     "group": "50–60",
+     "n": 0,
+     "median_abs_cm": null,
+     "max_abs_cm": null,
+     "moved": 0,
+     "fraction": null,
+     "se": null,
+     "median_noise_cm": null
+    },
+    {
+     "group": "60–80",
+     "n": 0,
+     "median_abs_cm": null,
+     "max_abs_cm": null,
+     "moved": 0,
+     "fraction": null,
+     "se": null,
+     "median_noise_cm": null
+    },
+    {
+     "group": "80–100",
+     "n": 0,
+     "median_abs_cm": null,
+     "max_abs_cm": null,
+     "moved": 0,
+     "fraction": null,
+     "se": null,
+     "median_noise_cm": null
+    }
+   ],
+   "quartiles": [],
+   "correlations": {
+    "n_frequency": 0,
+    "rho_frequency": null,
+    "n_log_k": 0,
+    "rho_log_k": null,
+    "rho_frequency_log_k": null
+   },
+   "ordering": "Spearman of abs Δ against the label frequency: undefined (n = 0); against log k: undefined (n = 0). Frequency against log k on the same points: undefined; as far as these two are one ordering the points cannot tell a frequency trigger from a force-constant trigger, and the read names none.",
+   "rms_change_cm": null,
+   "rule": {
+    "n": 0,
+    "moved": 0,
+    "p": null,
+    "se": null,
+    "outcome": "undecided",
+    "statement": "n = 0, 0 moved more than 0.5 cm⁻¹: fewer than the 16 points the rule needs, so it reads nothing from them. Outcome 3: undecided."
+   }
+  },
+  {
+   "tag": "wb97x",
+   "sample": "biased",
+   "registered": false,
+   "n": 52,
+   "bands": [
+    {
+     "group": "20–30",
+     "n": 1,
+     "median_abs_cm": 2.810093102043986,
+     "max_abs_cm": 2.810093102043986,
+     "moved": 1,
+     "fraction": 1.0,
+     "se": 0.0,
+     "median_noise_cm": 0.1899084652940019
+    },
+    {
+     "group": "30–40",
+     "n": 1,
+     "median_abs_cm": 1.6691609901531805,
+     "max_abs_cm": 1.6691609901531805,
+     "moved": 1,
+     "fraction": 1.0,
+     "se": 0.0,
+     "median_noise_cm": 0.13959052189509213
+    },
+    {
+     "group": "40–50",
+     "n": 4,
+     "median_abs_cm": 2.505936405433612,
+     "max_abs_cm": 4.014297920554654,
+     "moved": 3,
+     "fraction": 0.75,
+     "se": 0.21650635094610965,
+     "median_noise_cm": 0.3807176653511509
+    },
+    {
+     "group": "50–60",
+     "n": 35,
+     "median_abs_cm": 0.7037414558786139,
+     "max_abs_cm": 4.434277821599515,
+     "moved": 24,
+     "fraction": 0.6857142857142857,
+     "se": 0.07846932140863945,
+     "median_noise_cm": 0.05911893941115728
+    },
+    {
+     "group": "60–80",
+     "n": 11,
+     "median_abs_cm": 0.8871457992077865,
+     "max_abs_cm": 6.7219579767334,
+     "moved": 9,
+     "fraction": 0.8181818181818182,
+     "se": 0.11629129983033296,
+     "median_noise_cm": 0.07891106092787938
+    },
+    {
+     "group": "80–100",
+     "n": 0,
+     "median_abs_cm": null,
+     "max_abs_cm": null,
+     "moved": 0,
+     "fraction": null,
+     "se": null,
+     "median_noise_cm": null
+    }
+   ],
+   "quartiles": [
+    {
+     "group": "Q1: 1.68e-04 to 9.59e-04",
+     "n": 13,
+     "median_abs_cm": 2.7629937913324056,
+     "max_abs_cm": 6.7219579767334,
+     "moved": 11,
+     "fraction": 0.8461538461538461,
+     "se": 0.10006825162892168,
+     "median_noise_cm": 0.1899084652940019
+    },
+    {
+     "group": "Q2: 1.00e-03 to 1.39e-03",
+     "n": 13,
+     "median_abs_cm": 0.5373634948259394,
+     "max_abs_cm": 2.600225872036596,
+     "moved": 9,
+     "fraction": 0.6923076923076923,
+     "se": 0.1280077375904375,
+     "median_noise_cm": 0.062342663667828035
+    },
+    {
+     "group": "Q3: 1.39e-03 to 1.63e-03",
+     "n": 13,
+     "median_abs_cm": 0.7131971592171453,
+     "max_abs_cm": 1.6097221963851922,
+     "moved": 8,
+     "fraction": 0.6153846153846154,
+     "se": 0.1349320029703122,
+     "median_noise_cm": 0.05844335593527213
+    },
+    {
+     "group": "Q4: 1.64e-03 to 2.81e-03",
+     "n": 13,
+     "median_abs_cm": 0.8871457992077865,
+     "max_abs_cm": 1.665289784166447,
+     "moved": 10,
+     "fraction": 0.7692307692307693,
+     "se": 0.11685454235580768,
+     "median_noise_cm": 0.05470482665800446
+    }
+   ],
+   "correlations": {
+    "n_frequency": 52,
+    "rho_frequency": -0.2599675574148382,
+    "n_log_k": 52,
+    "rho_log_k": -0.29044651242209507,
+    "rho_frequency_log_k": 0.5567318364210705
+   },
+   "ordering": "Spearman of abs Δ against the label frequency: -0.26 (n = 52); against log k: -0.29 (n = 52). Frequency against log k on the same points: +0.56; as far as these two are one ordering the points cannot tell a frequency trigger from a force-constant trigger, and the read names none.",
+   "rms_change_cm": 1.8131808955637083,
+   "rule": {
+    "n": 41,
+    "moved": 29,
+    "p": 0.7073170731707317,
+    "se": 0.07105814025765193,
+    "outcome": "majority wrong",
+    "statement": "n = 41, 29 moved more than 0.5 cm⁻¹: p = 0.71, 1 SE = 0.07. p ≥ 0.50 and p − 1 SE = 0.64 ≥ 0.40. Outcome 2, for this group's molecules: a majority of the labels of their modes in this window stand more than 0.5 cm⁻¹ from the patched value. That says label and patch disagree, not why: the missing grid-weight derivative is one cause, the labels' older CPHF another, and the finite difference corrects both."
+   }
+  }
+ ],
+ "decision": {
+  "n": 0,
+  "moved": 0,
+  "p": null,
+  "se": null,
+  "outcome": "undecided",
+  "statement": "n = 0, 0 moved more than 0.5 cm⁻¹: fewer than the 16 points the rule needs, so it reads nothing from them. Outcome 3: undecided.",
+  "bounds": {
+   "flagged": 0,
+   "n": 0,
+   "as_moved": {
+    "moved": 0,
+    "outcome": "undecided"
+   },
+   "as_unmoved": {
+    "moved": 0,
+    "outcome": "undecided"
+   }
+  },
+  "ordering": "Spearman of abs Δ against the label frequency: undefined (n = 0); against log k: undefined (n = 0). Frequency against log k on the same points: undefined; as far as these two are one ordering the points cannot tell a frequency trigger from a force-constant trigger, and the read names none.",
+  "strata": null,
+  "weighted_fraction": null,
+  "points": []
+ },
+ "step_checks_set_aside": [],
+ "inputs": {
+  "sources": [
+   [
+    "probes/results_m1/low_mode_patch_2026-11-13/corpus",
+    "modules/05_support_predictor/corpus/superseded_2026-11-14"
+   ],
+   [
+    "probes/results_m1/low_mode_patch_fd222_2026-11-15/corpus",
+    "modules/05_support_predictor/corpus/superseded_2026-11-15"
+   ]
+  ],
+  "step_checks": [],
+  "sample": null,
+  "exploratory": "These are the by-product points of the repairs of 13 and 15 November, and they were looked at before this read was written. Every molecule here was selected for a label mode below 20 cm⁻¹, so the sample is biased, and it holds no B3LYP mode between 20 and 60 cm⁻¹."
+ },
+ "constants": {
+  "band_edges_cm": [
+   20.0,
+   30.0,
+   40.0,
+   50.0,
+   60.0,
+   80.0,
+   100.0
+  ],
+  "move_line_cm": 0.5,
+  "overlap_min": 0.9,
+  "step_agreement_cm": 0.15,
+  "decision_window_cm": [
+   20.0,
+   60.0
+  ],
+  "rule_min_points": 16,
+  "near_line_cm": [
+   0.25,
+   1.0
+  ],
+  "step_failures_stop": 2,
+  "gradient_noise_unit": 1e-07
+ }
+}

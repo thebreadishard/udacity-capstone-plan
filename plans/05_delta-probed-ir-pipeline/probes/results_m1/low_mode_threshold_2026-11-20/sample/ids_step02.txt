@@ -1,0 +1,8 @@
+# the step check: id, why
+B_0c6c144a7f # smallest of its band and a registered point above the noise line
+B_3dcbd985e3 # a registered point above the noise line
+B_55cca3aaf2 # a registered point above the noise line
+B_1726105aae # smallest of its band
+B_4ff67f9ea2 # a registered point above the noise line
+B_0af11315e3 # smallest of its band
+B_1428bc8164 # smallest of its band
