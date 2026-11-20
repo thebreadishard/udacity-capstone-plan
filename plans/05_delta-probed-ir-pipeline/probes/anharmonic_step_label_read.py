@@ -8,8 +8,9 @@ GoalGathering/notes/PreRegistration_2026-11-20_Anharmonic_Step_Substituted_Molec
 label is the molecule's B3LYP/6-31G* quartic force field with its GVPT2 file (probes/g_label_for_step.sh). Each band is matched
 to the label's modes by `s2_xtb_read.match_sets`, the match the step and its training use, after the label's geometry is
 rotated onto the run's. Per band: the printed step minus the label's shift. Per family: the rms over the bands that carry the
-family's bar, by `s3_read.family_read` — the function that computed the bars on coronene and tetracene — beside the bar, and
-the registered statement. Bands printed harmonic are listed with the label's shift: what leaving them harmonic costs.
+family's bar, by `s3_read.family_read` — the function that computed the bars on coronene and tetracene — beside the bar, the
+95 % line for that number of bands (`line_factor`) and the registered statement: within the bar, consistent with it at this n,
+or beyond it. Bands printed harmonic are listed with the label's shift: what leaving them harmonic costs.
 
 Refused: a label of other atoms, another atom order or a geometry past `frame_match.FRAME_TOLERANCE_BOHR`; a label with
 another number of modes than the run has bands; a label that predates the VPT2-domain check; a label with symmetry pairs
@@ -17,7 +18,8 @@ another number of modes than the run has bands; a label that predates the VPT2-d
 (`s2_read.load_molecule`'s noise rule, the one S2 excluded its five molecules by).
 
 `prior`: from the stored scaffold-left-out read of the training molecules (results_m1/anharmonic_design_questions_2026-11-16),
-the substituted molecules' rms per family beside the bars. No run; prior information for the read above.
+the substituted molecules' rms per family beside the bars, and the same count for the unsubstituted molecules of that read.
+No run; prior information for the read above.
 
 Writes <out>/label_read.json and RESULT.md, or <out>/prior.json and PRIOR.md, each through a temp file; an existing record is
 never overwritten.
@@ -33,6 +35,7 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+from scipy.stats import chi2
 
 HERE = Path(__file__).resolve().parent
 PLAN = HERE.parent
@@ -52,20 +55,26 @@ from s3_read import family_read  # noqa: E402
 REGISTRATION = "GoalGathering/notes/PreRegistration_2026-11-20_Anharmonic_Step_Substituted_Molecule.md"
 MIN_BANDS = 4               # a family with fewer bands under its bar gets its rms reported and no statement
 BAR_DECIMALS = 2            # the bars are stated to 0.01 cm⁻¹; an rms is compared at the precision it is printed with
-HOLDS, EXCEEDS, NO_STATEMENT = "holds", "exceeds", "no statement"
+LINE_QUANTILE = 0.95        # one-sided: the rms that n independent errors with the bar as their sd stay under 19 times in 20
+WITHIN, CONSISTENT, BEYOND, NO_STATEMENT = "within the bar", "consistent with the bar at this n", "beyond the bar", "no statement"
+NONE_BEYOND = "no family beyond its bar"        # the molecule's outcome when every family with a statement is WITHIN or CONSISTENT
 NOISY_REASON = "NOISY"      # how `s2_read.load_molecule` opens the reason of a force field its noise rule excludes
 ALL = "all"                 # the stored read's row over every family
 # The training molecules with a substituent on the ring system, by corpus id (names from the corpus manifest); the other 30 of
-# the artefact's 37 are bare ring systems.
+# the artefact's 37 are bare ring systems. The stored read (modes.json) holds 38 molecules: those 37 and coronene, a target,
+# which that read fitted on all training molecules (its modes.py, line 14); tetracene is in its `skipped` for want of a corpus
+# row. The baseline of the prior table is therefore 31 unsubstituted molecules, 30 with their scaffold left out and coronene.
 SUBSTITUTED = {"B_a41f4cff9d": "naphthalene+CN", "B_052693bd01": "oxazole+CN", "A_a848c04a21": "phenylacetylene",
                "B_410ac0fb2f": "benzene+NH2+ethynyl", "B_079e66d017": "isoquinoline+CH3", "B_78f8233b4c": "azulene+NH2",
                "B_0603418c5b": "azulene+ethynyl"}
 CONSEQUENCE = {
-    HOLDS: "Every family with a statement holds on this molecule. One data point on substituted molecules, not a new bar: TASKS "
-           "211's step (3), the default of 120 minutes, may go to a reviewed change, with the certificate's wording unchanged.",
-    EXCEEDS: "At least one family exceeds its bar on this molecule. The default does not change by this run; the certificate's "
-             "sentence about what the bars rest on gains the measured number for a substituted molecule; and the question whether "
-             "the bars need a substituted target goes to the author with that number (a new target is label compute). No bar changes.",
+    NONE_BEYOND: "No family is beyond its bar on this molecule. TASKS 211's step (3), the default of 120 minutes, may go to a "
+                 "reviewed change, with the certificate's wording unchanged; the numbers are recorded as one substituted data point "
+                 "beside the bars, not as a new bar.",
+    BEYOND: "At least one family is beyond its bar on this molecule: evidence that the bar understates the step's error here. The "
+            "default does not change by this run; the certificate's sentence about what the bars rest on gains the measured number "
+            "for a substituted molecule; and the question whether the bars need a substituted target goes to the author with that "
+            "number (a new target is label compute). No bar changes.",
     NO_STATEMENT: f"No family has {MIN_BANDS} bands under its bar, so this run makes no statement and the default does not change.",
 }
 
@@ -193,11 +202,31 @@ def family_errors(family: np.ndarray, step: np.ndarray, label: np.ndarray) -> di
     return {fa: {"n": entry["n"], "rms_cm": entry["per_molecule"]["molecule"][AS.MODEL]} for fa, entry in family_read(rows, {}).items()}
 
 
+def line_factor(n: int) -> float:
+    """The rms of n errors, in units of the bar, that is exceeded LINE_QUANTILE's remainder of the time when the bar is right:
+    n independent Gaussian errors with the bar as their standard deviation have n·rms²/bar² chi-square distributed with n degrees
+    of freedom, so the line is √(χ²_q(n)/n). 1.32 at n = 12, 1.45 at 6, 1.49 at 5. Errors within one molecule are not
+    independent, which makes the true line wider than this one: the statement 'beyond' is, if anything, too eager.
+    (`scipy.stats.chi2.ppf`, as scipy/stats/tests/test_distributions.py calls it; pinned here on the tabulated quantiles.)"""
+    if n < 1:
+        raise ValueError(f"a line for {n} bands: at least one is needed")
+    return math.sqrt(float(chi2.ppf(LINE_QUANTILE, n)) / n)
+
+
+def line_cm(n: int, bar_cm: float) -> float:
+    """The family's line for n bands, in cm⁻¹ and at the precision the rms is compared with."""
+    return round(bar_cm * line_factor(n), BAR_DECIMALS)
+
+
 def statement(n: int, rms_cm: float, bar_cm: float) -> str:
-    """The registered statement of one family: with at least MIN_BANDS bands, 'holds' when the rms as printed is at most the bar."""
+    """The registered statement of one family with at least MIN_BANDS bands, on the rms as printed: within the bar; above it and
+    at most the line for this n; or beyond the line."""
     if n < MIN_BANDS:
         return NO_STATEMENT
-    return HOLDS if round(rms_cm, BAR_DECIMALS) <= bar_cm else EXCEEDS
+    printed = round(rms_cm, BAR_DECIMALS)
+    if printed <= bar_cm:
+        return WITHIN
+    return CONSISTENT if printed <= line_cm(n, bar_cm) else BEYOND
 
 
 def judge(rows: list[dict[str, Any]], bars: dict[str, float]) -> dict[str, dict[str, Any]]:
@@ -213,18 +242,19 @@ def judge(rows: list[dict[str, Any]], bars: dict[str, float]) -> dict[str, dict[
     for fa, bar in bars.items():
         # a family without a band has no rms: None in the record, never NaN, which no JSON reader outside Python accepts
         n, rms_cm = int(under_bar.get(fa, {}).get("n", 0)), under_bar.get(fa, {}).get("rms_cm")
-        out[fa] = {"n": n, "rms_cm": rms_cm, "bar_cm": bar, "statement": NO_STATEMENT if rms_cm is None else statement(n, rms_cm, bar),
+        out[fa] = {"n": n, "rms_cm": rms_cm, "bar_cm": bar, "line_cm": line_cm(n, bar) if n >= MIN_BANDS else None,
+                   "statement": NO_STATEMENT if rms_cm is None else statement(n, rms_cm, bar),
                    "n_every_stepped_band": int(every.get(fa, {}).get("n", 0)), "rms_every_stepped_band_cm": every.get(fa, {}).get("rms_cm")}
     return out
 
 
 def outcome(families: dict[str, dict[str, Any]]) -> str:
-    """The molecule's outcome: 'exceeds' when any family does, 'holds' when every family with a statement holds, and 'no
-    statement' when no family has one."""
+    """The molecule's outcome: BEYOND when any family is, NONE_BEYOND when every family with a statement is within its bar or
+    consistent with it, and NO_STATEMENT when no family has one."""
     said = [f["statement"] for f in families.values() if f["statement"] != NO_STATEMENT]
     if not said:
         return NO_STATEMENT
-    return EXCEEDS if EXCEEDS in said else HOLDS
+    return BEYOND if BEYOND in said else NONE_BEYOND
 
 
 def cell(value: float | None, digits: int = 1) -> str:
@@ -234,10 +264,10 @@ def cell(value: float | None, digits: int = 1) -> str:
 
 def family_lines(families: dict[str, dict[str, Any]]) -> list[str]:
     """The per-family table: rms with n beside the bar, and the statement."""
-    lines = ["| family | bands under the bar | rms of step − label (cm⁻¹) | printed bar (cm⁻¹) | statement | every stepped band: n, rms |",
-             "|---|---|---|---|---|---|"]
+    lines = ["| family | bands under the bar | rms of step − label (cm⁻¹) | printed bar (cm⁻¹) | 95 % line at this n (cm⁻¹) | statement | "
+             "every stepped band: n, rms |", "|---|---|---|---|---|---|---|"]
     for fa, f in families.items():
-        lines.append(f"| {fa} | {f['n']} | {cell(f['rms_cm'], 2)} | {f['bar_cm']:.2f} | {f['statement']} | "
+        lines.append(f"| {fa} | {f['n']} | {cell(f['rms_cm'], 2)} | {f['bar_cm']:.2f} | {cell(f['line_cm'], 2)} | {f['statement']} | "
                      f"{f['n_every_stepped_band']}, {cell(f['rms_every_stepped_band_cm'], 2)} |")
     return lines
 
@@ -251,6 +281,18 @@ def band_lines(rows: list[dict[str, Any]]) -> list[str]:
     return lines
 
 
+def mismatch_lines(rows: list[dict[str, Any]]) -> list[str]:
+    """The bands whose printed family is not their label mode's: each is judged against the printed family's bar, because that
+    is the bar the certificate prints on it, and named here so a reader can see which."""
+    other = [r for r in rows if r["family"] is not None and r["label_family"] is not None and r["family"] != r["label_family"]]
+    lines = ["## Bands whose printed family differs from the label mode's", ""]
+    if not other:
+        return [*lines, "None."]
+    lines += ["Each is read against the printed family's bar: that is the bar the certificate prints on it.", "",
+              "| ω (cm⁻¹) | printed family | label mode's family | step − label |", "|---|---|---|---|"]
+    return [*lines, *(f"| {r['omega_cm']:.1f} | {r['family']} | {r['label_family']} | {cell(r['error_cm'])} |" for r in other)]
+
+
 def report(record: dict[str, Any]) -> list[str]:
     """RESULT.md of a read that was made."""
     harmonic = [r for r in record["bands"] if r["step_delta_cm"] is None]
@@ -259,11 +301,15 @@ def report(record: dict[str, Any]) -> list[str]:
              f"(geometry {record['geometry_rms_bohr']:.4f} bohr rms from the run's after rotation).", "",
              f"**Outcome: {record['outcome']}.** {CONSEQUENCE[record['outcome']]}", "", *family_lines(record["families"]), "",
              f"The statement is read on the bands printed with a step and the family's bar, at least {MIN_BANDS} of them; the rms is "
-             f"compared as printed, to {BAR_DECIMALS} decimals. The printed steps are the record's, rounded to 0.1 cm⁻¹.", "",
+             f"compared as printed, to {BAR_DECIMALS} decimals. The line is the rms that n independent errors with the bar as their "
+             f"standard deviation stay under {LINE_QUANTILE:.0%} of the time; with three families judged, about one run in seven "
+             "shows a 'beyond' when every bar is right, and errors within a molecule are not independent, so the line is "
+             "approximate and, if anything, too narrow. One molecule cannot establish a bar. The printed steps are the record's, "
+             "rounded to 0.1 cm⁻¹.", "",
              "## Bands printed harmonic, and what the label says for them", "",
              "| ω (cm⁻¹) | why no step | label Δ (cm⁻¹) | label outside VPT2's domain |", "|---|---|---|---|"]
     lines += [f"| {r['omega_cm']:.1f} | {r['step_reason']} | {cell(r['label_delta_cm'])} | {'yes' if r['label_marked'] else 'no'} |" for r in harmonic]
-    return [*lines, "", "## Every band", "", *band_lines(record["bands"])]
+    return [*lines, "", *mismatch_lines(record["bands"]), "", "## Every band", "", *band_lines(record["bands"])]
 
 
 def write_record(out: Path, name: str, record: dict[str, Any], markdown: tuple[str, list[str]]) -> None:
@@ -287,8 +333,24 @@ def read(cfg: ReadConfig) -> dict[str, Any]:
             "families": families, "outcome": outcome(families), "bands": rows}
 
 
+def group_summary(families_of: list[dict[str, Any]], bars: dict[str, float]) -> dict[str, dict[str, Any]]:
+    """Per family, over a group of molecules of the stored read: how many have MIN_BANDS modes or more, how many of those lie
+    above the bar and how many beyond their line, the median of their rms, and the rms pooled over every mode of the group."""
+    out = {}
+    for fa, bar in bars.items():
+        have = [f[fa] for f in families_of if fa in f]
+        judged = [(f["n"], f["rms_inputs_on_B"]) for f in have if f["n"] >= MIN_BANDS]
+        modes = sum(f["n"] for f in have)
+        out[fa] = {"molecules_judged": len(judged), "above_the_bar": sum(round(r, BAR_DECIMALS) > bar for _, r in judged),
+                   "beyond_the_line": sum(statement(n, r, bar) == BEYOND for n, r in judged),
+                   "median_rms_cm": float(np.median([r for _, r in judged])) if judged else None, "modes": modes,
+                   "pooled_rms_cm": math.sqrt(math.fsum(f["n"] * f["rms_inputs_on_B"] ** 2 for f in have) / modes) if modes else None}
+    return out
+
+
 def prior(modes_json: Path) -> dict[str, Any]:
-    """The substituted training molecules' scaffold-left-out rms per family beside the bars, from the stored read."""
+    """The substituted training molecules' scaffold-left-out rms per family beside the bars, from the stored read, and the same
+    read's unsubstituted molecules as the baseline."""
     stored = json.loads(modes_json.read_text(encoding="utf-8"))["per_molecule"]
     artefact = AS.load_artefact()
     missing = sorted(set(SUBSTITUTED) - set(artefact.header["training_molecules"]) | set(SUBSTITUTED) - set(stored))
@@ -302,12 +364,17 @@ def prior(modes_json: Path) -> dict[str, Any]:
                           "families": {fa: {"n": fams[fa]["n"], "rms_cm": fams[fa]["rms_inputs_on_B"], "bar_cm": bar,
                                             "statement": statement(fams[fa]["n"], fams[fa]["rms_inputs_on_B"], bar)}
                                        for fa, bar in bars.items() if fa in fams}}
+    plain = [m for m in stored if m not in SUBSTITUTED]
     return {"registration": REGISTRATION, "source": modes_json.as_posix(), "quantity": "rms_inputs_on_B", "min_bands": MIN_BANDS,
-            "bars_cm": bars, "molecules": molecules}
+            "bars_cm": bars, "molecules": molecules,
+            "groups": {"substituted": {"molecules": len(SUBSTITUTED), **group_summary([stored[m]["families"] for m in SUBSTITUTED], bars)},
+                       "unsubstituted": {"molecules": len(plain), "not_training_molecules": sorted(set(plain) - set(artefact.header["training_molecules"])),
+                                         **group_summary([stored[m]["families"] for m in plain], bars)}}}
 
 
 def prior_report(record: dict[str, Any]) -> list[str]:
-    """PRIOR.md: one row per molecule, each family's rms with n, in bold where the registered rule would say 'exceeds'."""
+    """PRIOR.md: one row per molecule, each family's rms with n, in bold where it lies above the bar with enough modes; then
+    the two groups of the read side by side."""
     bars = record["bars_cm"]
     lines = ["# Substituted training molecules: the step's scaffold-left-out error beside the printed bars", "",
              f"Registration: `{REGISTRATION}`, section 5 (descriptive; no run). Source: `{record['source']}`, `per_molecule`, "
@@ -319,14 +386,24 @@ def prior_report(record: dict[str, Any]) -> list[str]:
         for fa in bars:
             f = m["families"].get(fa)
             text = "—" if f is None else f"{f['rms_cm']:.2f} ({f['n']})"
-            cells.append(f"**{text}**" if f is not None and f["statement"] == EXCEEDS else text)
+            cells.append(f"**{text}**" if f is not None and f["statement"] in (CONSISTENT, BEYOND) else text)
         lines.append(f"| {m['name']} | {mol} | " + " | ".join(cells) + f" | {m['all']['rms_cm']:.2f} ({m['all']['n']}) |")
     lines.append("| printed bar | | " + " | ".join(f"{b:.2f}" for b in bars.values()) + " | |")
-    above = {fa: sum(m["families"].get(fa, {}).get("statement") == EXCEEDS for m in record["molecules"].values()) for fa in bars}
-    judged = {fa: sum(m["families"].get(fa, {}).get("statement") in (HOLDS, EXCEEDS) for m in record["molecules"].values()) for fa in bars}
-    return [*lines, "", "Above the bar, of the molecules with enough modes: " + ", ".join(f"{fa} {above[fa]} of {judged[fa]}" for fa in bars) + ".",
-            "These molecules were in the fit of every scaffold but their own, and the bars were measured on two other molecules: the "
-            "table says which outcome to expect of an unseen substituted molecule, it is not that measurement."]
+    groups = record["groups"]
+    lines += ["", "## Beside the unsubstituted molecules of the same read", "",
+              f"Molecules with at least {record['min_bands']} modes in the family: how many lie above the printed bar, how many beyond the "
+              f"{LINE_QUANTILE:.0%} line for their number of modes, the median of their rms, and the rms pooled over every mode of the "
+              f"group. Unsubstituted: {groups['unsubstituted']['molecules']} molecules, the bare ring systems of the training table and "
+              f"{', '.join(groups['unsubstituted']['not_training_molecules']) or 'no other'} (a target, fitted on all training molecules).", "",
+              "| family | bar | substituted: above / beyond / of | median | pooled | unsubstituted: above / beyond / of | median | pooled |",
+              "|---|---|---|---|---|---|---|---|"]
+    for fa, bar in bars.items():
+        s, u = groups["substituted"][fa], groups["unsubstituted"][fa]
+        lines.append(f"| {fa} | {bar:.2f} | " + " | ".join(
+            f"{g['above_the_bar']} / {g['beyond_the_line']} / {g['molecules_judged']} | {cell(g['median_rms_cm'], 2)} | {cell(g['pooled_rms_cm'], 2)}"
+            for g in (s, u)) + " |")
+    return [*lines, "", "The substituted molecules were in the fit of every scaffold but their own, and the bars were measured on two other "
+            "molecules: the table says which outcome to expect of an unseen substituted molecule, it is not that measurement."]
 
 
 def main(argv: list[str] | None = None) -> int:

@@ -13,5 +13,15 @@ Registration: `GoalGathering/notes/PreRegistration_2026-11-20_Anharmonic_Step_Su
 | azulene+ethynyl | B_0603418c5b | **9.04 (9)** | 1.92 (4) | **3.58 (18)** | **9.24 (7)** | 6.44 (38) |
 | printed bar | | 8.38 | 3.84 | 3.37 | 6.21 | |
 
-Above the bar, of the molecules with enough modes: CH-oop 1 of 3, other 2 of 6, ring-ip 5 of 7, CH-stretch 4 of 6.
-These molecules were in the fit of every scaffold but their own, and the bars were measured on two other molecules: the table says which outcome to expect of an unseen substituted molecule, it is not that measurement.
+## Beside the unsubstituted molecules of the same read
+
+Molecules with at least 4 modes in the family: how many lie above the printed bar, how many beyond the 95% line for their number of modes, the median of their rms, and the rms pooled over every mode of the group. Unsubstituted: 31 molecules, the bare ring systems of the training table and coronene (a target, fitted on all training molecules).
+
+| family | bar | substituted: above / beyond / of | median | pooled | unsubstituted: above / beyond / of | median | pooled |
+|---|---|---|---|---|---|---|---|
+| CH-oop | 8.38 | 1 / 0 / 3 | 4.92 | 6.47 | 3 / 1 / 28 | 3.96 | 5.79 |
+| other | 3.84 | 2 / 2 / 6 | 2.62 | 4.54 | 4 / 3 / 30 | 1.53 | 3.12 |
+| ring-ip | 3.37 | 5 / 3 / 7 | 3.58 | 3.95 | 6 / 1 / 31 | 2.76 | 2.96 |
+| CH-stretch | 6.21 | 4 / 4 / 6 | 10.55 | 11.22 | 22 / 7 / 31 | 7.27 | 8.52 |
+
+The substituted molecules were in the fit of every scaffold but their own, and the bars were measured on two other molecules: the table says which outcome to expect of an unseen substituted molecule, it is not that measurement.

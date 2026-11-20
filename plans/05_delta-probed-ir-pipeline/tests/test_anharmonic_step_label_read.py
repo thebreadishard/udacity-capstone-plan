@@ -45,23 +45,51 @@ def rows_of(errors: dict[str, list[float]]) -> list[dict]:
     return [row(fa, e) for fa, es in errors.items() for e in es]
 
 
-def test_every_family_within_its_bar_holds() -> None:
+def test_the_line_by_n_is_the_chi_square_quantile_of_an_rms() -> None:
+    """√(χ²₀.₉₅(n)/n) on the tabulated quantiles 9.488, 11.070, 12.592, 21.026, and the review's figures for the expected counts."""
+    table = {4: 9.488, 5: 11.070, 6: 12.592, 12: 21.026}
+    assert {n: round(R.line_factor(n) ** 2 * n, 3) for n in table} == table
+    assert [round(R.line_factor(n), 2) for n in (12, 6, 5)] == [1.32, 1.45, 1.49]
+    assert (R.line_cm(12, 3.37), R.line_cm(6, 8.38), R.line_cm(5, 6.21)) == (4.46, 12.14, 9.24)
+    assert R.line_factor(1000) < 1.04 < R.line_factor(100)          # more bands, a narrower line
+    with pytest.raises(ValueError, match="at least one"):
+        R.line_factor(0)
+
+
+def test_every_family_within_its_bar_is_no_family_beyond() -> None:
     families = R.judge(rows_of({"ring-ip": [3.0, -3.0, 2.0, -2.0], "CH-oop": [8.0] * 5, "other": [1.0] * 4, "CH-stretch": [6.0] * 4}), BARS)
-    assert {fa: f["statement"] for fa, f in families.items()} == dict.fromkeys(BARS, R.HOLDS)
-    assert R.outcome(families) == R.HOLDS and families["ring-ip"]["n"] == 4
+    assert {fa: f["statement"] for fa, f in families.items()} == dict.fromkeys(BARS, R.WITHIN)
+    assert R.outcome(families) == R.NONE_BEYOND and families["ring-ip"]["n"] == 4 and families["ring-ip"]["line_cm"] == R.line_cm(4, 3.37)
 
 
-def test_one_family_above_its_bar_makes_the_molecule_exceed() -> None:
-    families = R.judge(rows_of({"ring-ip": [3.0] * 6, "CH-stretch": [12.0, -12.0, 12.0, -12.0], "CH-oop": [1.0] * 4}), BARS)
-    assert families["CH-stretch"]["statement"] == R.EXCEEDS and families["ring-ip"]["statement"] == R.HOLDS
-    assert families["CH-stretch"]["rms_cm"] == pytest.approx(12.0) and R.outcome(families) == R.EXCEEDS
+def test_a_family_above_its_bar_and_under_its_line_is_consistent_and_changes_nothing() -> None:
+    families = R.judge(rows_of({"ring-ip": [4.0] * 12, "CH-oop": [1.0] * 4}), BARS)
+    assert families["ring-ip"]["statement"] == R.CONSISTENT and R.outcome(families) == R.NONE_BEYOND
+    assert "may go to a reviewed change" in R.CONSEQUENCE[R.NONE_BEYOND]
+
+
+def test_one_family_beyond_its_line_makes_the_molecule_beyond() -> None:
+    families = R.judge(rows_of({"ring-ip": [3.0] * 6, "CH-stretch": [12.0, -12.0, 12.0, -12.0], "CH-oop": [9.0] * 4}), BARS)
+    assert families["CH-stretch"]["statement"] == R.BEYOND and families["ring-ip"]["statement"] == R.WITHIN
+    assert families["CH-oop"]["statement"] == R.CONSISTENT
+    assert families["CH-stretch"]["rms_cm"] == pytest.approx(12.0) and R.outcome(families) == R.BEYOND
+    assert "default does not change" in R.CONSEQUENCE[R.BEYOND]
+
+
+@pytest.mark.parametrize(("family", "n"), [("ring-ip", 12), ("CH-oop", 6), ("CH-stretch", 5), ("other", 4)])
+def test_both_boundaries_of_every_family_at_its_expected_count(family: str, n: int) -> None:
+    """At the bar: within. One hundredth above: consistent. At the line: consistent. One hundredth above the line: beyond."""
+    bar, line = BARS[family], R.line_cm(n, BARS[family])
+    said = [R.statement(n, value, bar) for value in (bar, bar + 0.01, line, line + 0.01)]
+    assert said == [R.WITHIN, R.CONSISTENT, R.CONSISTENT, R.BEYOND]
+    assert R.statement(n - 1 if n == 4 else 3, 99.0, bar) == R.NO_STATEMENT
 
 
 def test_a_family_with_fewer_than_four_bands_is_reported_without_a_statement() -> None:
     families = R.judge(rows_of({"other": [9.0, 9.0, 9.0], "ring-ip": [1.0] * 4}), BARS)
-    assert families["other"] == {"n": 3, "rms_cm": pytest.approx(9.0), "bar_cm": 3.84, "statement": R.NO_STATEMENT,
+    assert families["other"] == {"n": 3, "rms_cm": pytest.approx(9.0), "bar_cm": 3.84, "line_cm": None, "statement": R.NO_STATEMENT,
                                  "n_every_stepped_band": 3, "rms_every_stepped_band_cm": pytest.approx(9.0)}
-    assert R.outcome(families) == R.HOLDS       # the three bands at 9 decide nothing: the family is not judged by this molecule
+    assert R.outcome(families) == R.NONE_BEYOND       # the three bands at 9 decide nothing: the family is not judged by this molecule
     assert families["CH-oop"]["n"] == 0 and families["CH-oop"]["rms_cm"] is None and families["CH-oop"]["statement"] == R.NO_STATEMENT
 
 
@@ -70,8 +98,9 @@ def test_no_family_with_four_bands_is_no_statement_at_all() -> None:
     assert R.outcome(families) == R.NO_STATEMENT and "default does not change" in R.CONSEQUENCE[R.NO_STATEMENT]
 
 
-@pytest.mark.parametrize(("error", "said"), [(3.37, R.HOLDS), (3.374, R.HOLDS), (3.376, R.EXCEEDS), (3.38, R.EXCEEDS)])
-def test_an_rms_exactly_at_the_bar_holds_and_is_compared_as_printed(error: float, said: str) -> None:
+@pytest.mark.parametrize(("error", "said"), [(3.37, R.WITHIN), (3.374, R.WITHIN), (3.376, R.CONSISTENT), (5.19, R.CONSISTENT),
+                                             (5.194, R.CONSISTENT), (5.196, R.BEYOND)])
+def test_an_rms_exactly_at_the_bar_or_the_line_is_on_the_mild_side_and_is_compared_as_printed(error: float, said: str) -> None:
     families = R.judge(rows_of({"ring-ip": [error, -error, error, -error]}), BARS)
     assert families["ring-ip"]["statement"] == said
 
@@ -89,7 +118,7 @@ def test_a_band_stepped_without_the_bars_claim_is_outside_the_statement_and_insi
     unbarred = row("other", 20.0, bar_cm=None, not_counted=R.not_counted(-10.0, None, -30.0, False, None))
     families = R.judge([*rows_of({"other": [1.0] * 4}), unbarred], BARS)
     assert unbarred["not_counted"].startswith("stepped without the family's bar")
-    assert families["other"]["n"] == 4 and families["other"]["statement"] == R.HOLDS
+    assert families["other"]["n"] == 4 and families["other"]["statement"] == R.WITHIN
     assert families["other"]["n_every_stepped_band"] == 5 and families["other"]["rms_every_stepped_band_cm"] > 8.0
 
 
@@ -97,6 +126,14 @@ def test_a_band_whose_label_mode_is_outside_vpt2s_domain_is_in_neither() -> None
     marked = row("ring-ip", 150.0, label_marked=True, not_counted=R.not_counted(-10.0, 3.37, -160.0, True, None))
     families = R.judge([*rows_of({"ring-ip": [1.0] * 4}), marked], BARS)
     assert families["ring-ip"]["n"] == 4 and families["ring-ip"]["n_every_stepped_band"] == 4
+
+
+def test_a_band_printed_in_another_family_than_its_label_modes_is_listed() -> None:
+    rows = [*rows_of({"ring-ip": [1.0] * 4}), row("ring-ip", 2.5, omega=1307.2, label_family="other")]
+    text = "\n".join(R.mismatch_lines(rows))
+    assert "| 1307.2 | ring-ip | other | 2.5 |" in text and "printed family's bar" in text
+    assert R.judge(rows, BARS)["ring-ip"]["n"] == 5                     # judged in the printed family
+    assert R.mismatch_lines(rows_of({"ring-ip": [1.0] * 4}))[-1] == "None."
 
 
 def test_why_a_band_is_not_counted_in_the_order_the_read_asks() -> None:
@@ -210,9 +247,10 @@ def test_the_command_writes_the_record_once_and_never_over_it(tmp_path: Path, mo
     args = ["read", "--run", str(run), "--g-dir", str(g), "--label", str(label_file), "--out", str(tmp_path / "read")]
     assert R.main(args) == 0
     record = json.loads((tmp_path / "read" / "label_read.json").read_text(encoding="utf-8"))      # strict JSON: no NaN in it
-    assert record["read"] is True and record["outcome"] == R.HOLDS and record["families"]["ring-ip"]["n"] == 29
+    assert record["read"] is True and record["outcome"] == R.NONE_BEYOND and record["families"]["ring-ip"]["n"] == 29
     assert record["families"]["CH-oop"]["rms_cm"] is None and not list((tmp_path / "read").glob("*.tmp"))
-    assert "**Outcome: holds.**" in (tmp_path / "read" / "RESULT.md").read_text(encoding="utf-8")
+    text = (tmp_path / "read" / "RESULT.md").read_text(encoding="utf-8")
+    assert f"**Outcome: {R.NONE_BEYOND}.**" in text and "## Bands whose printed family differs" in text and "one run in seven" in text
     with pytest.raises(ValueError, match="never overwritten"):
         R.main(args)
 
@@ -227,6 +265,25 @@ def test_a_run_without_the_step_or_without_its_files_is_refused(tmp_path: Path) 
                                        encoding="utf-8")
     with pytest.raises(ValueError, match="was not applied"):
         R.load_bands(run)
+
+
+def test_the_real_benzonitrile_record_reads_band_for_band_against_its_own_b3lyp_modes() -> None:
+    """The real path, without a label: the run of 19 Nov with its own B3LYP modes standing in for the label's. All 33 bands find
+    their mode, and no band's printed family differs from its mode's."""
+    run = RESULTS / "pipeline_benzonitrile_anharmonic_v3_2026-11-19" / "benzonitrile"
+    if not (run / "correction.npz").exists():
+        pytest.skip(f"data not present: {run}")
+    bands = R.load_bands(run)
+    modes = R.AS.Modes.from_hessian(R.AN.low_hessian(run), bands.symbols, bands.coords)
+    recorded = json.loads((run / "anharmonic.json").read_text(encoding="utf-8"))["modes"]
+    stand_in = R.Label(modes.omega, np.zeros(len(modes.omega)), np.zeros(len(modes.omega), bool), np.array([m["family"] for m in recorded]),
+                       modes.q, 0.0)
+    rows = R.compare(bands, stand_in)
+    assert len(rows) == 33 and bands.bars == BARS and all(r["label_omega_cm"] is not None for r in rows)
+    assert R.mismatch_lines(rows)[-1] == "None." and all(r["family"] == r["label_family"] for r in rows)
+    families = R.judge(rows, bands.bars)
+    assert {fa: f["n"] for fa, f in families.items()} == {"CH-oop": 6, "other": 3, "ring-ip": 12, "CH-stretch": 5}
+    assert families["other"]["n_every_stepped_band"] == 4 and sum(r["step_delta_cm"] is None for r in rows) == 6
 
 
 # --- the same arithmetic as the printed bars --------------------------------------------------------------------------------------
@@ -258,11 +315,17 @@ def test_the_committed_prior_table_is_what_the_stored_read_gives() -> None:
     record = R.prior(RESULTS / "anharmonic_design_questions_2026-11-16" / "modes.json")
     assert list(record["molecules"]) == list(R.SUBSTITUTED) and record["bars_cm"] == BARS
     worst = record["molecules"]["B_78f8233b4c"]["families"]["CH-stretch"]
-    assert (round(worst["rms_cm"], 2), worst["n"], worst["statement"]) == (17.98, 7, R.EXCEEDS)
+    assert (round(worst["rms_cm"], 2), worst["n"], worst["statement"]) == (17.98, 7, R.BEYOND)
+    counts = {g: {fa: (v[fa]["above_the_bar"], v[fa]["beyond_the_line"], v[fa]["molecules_judged"]) for fa in BARS}
+              for g, v in record["groups"].items()}
+    assert counts == {"substituted": {"CH-oop": (1, 0, 3), "other": (2, 2, 6), "ring-ip": (5, 3, 7), "CH-stretch": (4, 4, 6)},
+                      "unsubstituted": {"CH-oop": (3, 1, 28), "other": (4, 3, 30), "ring-ip": (6, 1, 31), "CH-stretch": (22, 7, 31)}}
+    assert record["groups"]["unsubstituted"]["molecules"] == 31 and record["groups"]["unsubstituted"]["not_training_molecules"] == ["coronene"]
+    assert round(record["groups"]["unsubstituted"]["CH-stretch"]["pooled_rms_cm"], 2) == 8.52
     few = record["molecules"]["B_052693bd01"]["families"]["CH-oop"]
     assert (few["n"], few["statement"]) == (2, R.NO_STATEMENT)
     committed = json.loads((RESULTS / "anharmonic_step_substituted_2026-11-20" / "prior" / "prior.json").read_text(encoding="utf-8"))
-    assert committed["molecules"] == json.loads(json.dumps(record["molecules"]))
+    assert committed["molecules"] == json.loads(json.dumps(record["molecules"])) and committed["groups"] == json.loads(json.dumps(record["groups"]))
     assert "| azulene+NH2 | B_78f8233b4c | — | **6.15 (10)** | **4.51 (15)** | **17.98 (7)** | 9.59 (32) |" in R.prior_report(record)
 
 
