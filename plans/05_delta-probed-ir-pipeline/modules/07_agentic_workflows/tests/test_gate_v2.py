@@ -1,6 +1,6 @@
 """Gate and policy tests for the rules of 27 September – 3 October 2026 (R33–R41) and the R27 reading fix: every new check fails without its fact
-(negative control), passes with the fact resolved, and scenarios S9–S17 replay with the deterministic policy. Run: ../../.venv python -m pytest
-modules/07_agentic_workflows/tests -q"""
+(negative control), passes with the fact resolved, and scenarios S9–S17 replay with the deterministic policy. Run from the module's folder:
+python -m pytest -q tests"""
 import json
 import sys
 from pathlib import Path

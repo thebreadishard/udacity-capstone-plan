@@ -2,7 +2,11 @@
 
 *For readers without chemistry:* The project's calculations run for days on rented computers, and things go wrong at night: a job dies, a lock file blocks the next one, a log falls silent while the work continues. The run steward is a small program (an 'agent') that watches those machines, applies a written table of rules distilled from the project's own past mistakes, and may take only a short list of harmless actions; anything that costs money, deletes data or makes a scientific claim it hands to a human. The scenarios in section 4 replay real log excerpts to check that it behaves. Terms are defined in [glossary](https://github.com/thebreadishard/udacity-capstone-plan/blob/master/plans/05_delta-probed-ir-pipeline/modules/GLOSSARY.md).
 
-**Status (3 October 2026).** Built 25 September: `steward/` (LangGraph graph, closed allow-list, deterministic gate, replay tools, rule-table and LLM policies), `rules/rules_v2.json` (41 lessons of 10 September – 3 October; v1's 32 unchanged inside it), `scenarios/` (S1–S17: eight from the real logs of 25 September, nine from the records of 27 September – 3 October; 17/17 with the deterministic policy), `tests/` (29 green), the executed notebook `notebook/agentic_system.ipynb`, `Agentic_AI_System_Design_Report.docx/.pdf`, `requirements.txt`, `RUBRIC_CHECKLIST_2026-09-25.md`. The provider switch of 28 September lets the LLM policy run on the Anthropic API or an OpenAI-compatible endpoint such as the course's Vocareum key (`M07_LLM=1`); that run still waits for a key the user sets. `rules/rules_v2.json` (3 October) carries v1 unchanged plus R33–R41, the lessons of 27 September – 3 October (the lambda incident, the frozen-core incident, thread budgets and watchdog thresholds, carried model versions, targets per family, test isolation, the full server fetch, guards that stop), each with its source; since 3 October 23:4x scenarios S9–S17 replay them (registered before the branches, baseline 0 of 9 under v1 — four launches, three waits, two repeated readings — then 17/17), the gate refuses each with a negative-control test (`tests/test_gate_v2.py`), and `rules_v2.json` is the graph's default. `DESIGN_2026-09-25.md`: the *run steward* — a single bounded agent that keeps a pre-registered computational campaign moving (status, read, launch under an allow-list with a dry-run gate, retry, escalate), with seventeen evaluation scenarios (eight replayed from the real events of 25 September, nine from the week after) and the framework and endpoint decided on 5–6 September (LangGraph; Anthropic API, model id logged) and one open question (timing). Implementation after the 28th unless the answers arrive earlier; the agent is evaluated on replayed logs, never live, until the report is written.
+**Status (20 November 2026).** The agent is built and has been evaluated on replayed logs; it has never been run against a live machine. It was built on 25 September 2026 and extended on 3 October: `steward/` (LangGraph graph, closed allow-list, deterministic gate, replay tools, rule-table and LLM policies), `rules/rules_v2.json` (41 lessons of 10 September – 3 October; v1's 32 unchanged inside it), `scenarios/` (S1–S17: eight from the real logs of 25 September, nine from the records of 27 September – 3 October; 17/17 with the deterministic policy), `tests/` (29 tests), the executed notebook `notebook/agentic_system.ipynb` (last executed on 17 October 2026) and the report `Agentic_AI_System_Design_Report.pdf`. `rules/rules_v2.json` (3 October) carries v1 unchanged plus R33–R41, the lessons of 27 September – 3 October (the lambda incident, the frozen-core incident, thread budgets and watchdog thresholds, carried model versions, targets per family, test isolation, the full server fetch, guards that stop), each with its source; since 3 October 23:4x scenarios S9–S17 replay them (registered before the branches, baseline 0 of 9 under v1 — four launches, three waits, two repeated readings — then 17/17), the gate refuses each with a negative-control test (`tests/test_gate_v2.py`), and `rules_v2.json` is the graph's default.
+
+**One run is still owed: the language-model policy.** The provider switch of 28 September lets the LLM policy run on the Anthropic API or an OpenAI-compatible endpoint such as the course's Vocareum key (`M07_LLM=1`). That run still waits for a key that I have to set. Until then `notebook/results.json` holds `"llm_policy": null`, the notebook and the report say that the LLM policy is untested, and every result in this repository is the deterministic rule-table policy's.
+
+**The design.** The *run steward* — a single bounded agent that keeps a pre-registered computational campaign moving (status, read, launch under an allow-list with a dry-run gate, retry, escalate), with seventeen evaluation scenarios (eight replayed from the real events of 25 September, nine from the week after), on the framework and endpoint I decided on 5–6 September (LangGraph; Anthropic API, model id logged). The design note (`DESIGN_2026-09-25.md`), the rubric checklist and the report's Word source are in the plan repository (see "Files").
 
 ## How to run
 
@@ -12,14 +16,16 @@ Python 3.13 with the packages of `requirements.txt` (LangGraph, no torch); from 
 pip install -r requirements.txt
 python run_scenarios.py --policy rules                 # the deterministic reference policy, offline: replays the 17 scenarios
 python -m pytest -q tests                              # the guards' negative controls
-jupyter notebook notebook/agentic_system.ipynb         # the notebook (rebuilt and executed by python notebook/make_notebook.py)
+jupyter execute --output=executed.ipynb notebook/agentic_system.ipynb   # runs the notebook top to bottom into notebook/executed.ipynb
 ```
 
 `--policy llm` asks a language model instead and needs a key: `ANTHROPIC_API_KEY`, or `OPENAI_API_KEY` for any OpenAI-compatible
 endpoint (with `OPENAI_BASE_URL`, e.g. the course's Vocareum endpoint); `STEWARD_PROVIDER` / `STEWARD_MODEL` override the choice, and the
 provider and model id are written into every proposal. No machine is touched in either mode. Terms are explained in the [glossary](https://github.com/thebreadishard/udacity-capstone-plan/blob/master/plans/05_delta-probed-ir-pipeline/modules/GLOSSARY.md).
 
-The notebook runs in the same environment (its kernel must be the Python with LangGraph); before submission it was executed in a fresh
+`jupyter execute` comes with `nbclient`, which is in `requirements.txt`; to step through the cells in a browser instead, install the
+notebook interface as well (`pip install notebook`) and open the file with `jupyter notebook notebook/agentic_system.ipynb`. The
+notebook runs in the same environment (its kernel must be the Python with LangGraph); before submission it was executed in a fresh
 clone of this repository, with nothing else present. `requirements.txt` was created with `pip freeze > requirements.txt`.
 
 ## Files
@@ -31,7 +37,8 @@ clone of this repository, with nothing else present. `requirements.txt` was crea
 - `scenarios/` — the 17 scenarios and the log excerpts they replay (`fixtures/`).
 - `run_scenarios.py` — the command-line runner; `out/` — its recorded results; `tests/` — the gate's and the rules' tests.
 - `notebook/results.json`, `notebook/figures/` — the notebook's numbers and figure.
-- `Agentic_AI_System_Design_Report.pdf` — the report in the Udacity APA 7 template.
+- `Agentic_AI_System_Design_Report.pdf` — the report in the Udacity APA 7 template. `Agentic_AI_Systems_Analysis_Report.pdf` and
+  `module_summary.pdf` are the same file under the two other names the rubric uses for it.
 - `SUBMISSION.txt` — the list of files this repository holds.
 
 The design note, the provenance notes and the scripts that build the notebook and the report stay in the plan's repository, in the module's
