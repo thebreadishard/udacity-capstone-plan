@@ -5,6 +5,7 @@
 README.md
 requirements.txt
 Generative_AI_Analysis_Report.pdf
+module_summary.pdf
 PRE_REGISTRATION.md
 MODELS.md
 MODEL_CARD.md
@@ -13,7 +14,15 @@ notebook/generative_model.ipynb
 notebook/results.json
 notebook/pahdb_comparison.json
 notebook/figures/
-notebook/out/
+# Under notebook/out/: the per-epoch logs, the stored samples and the registry's status file. The four console logs (*.log) stay in the
+# plan repository: they hold paths of the server they were written on (20 Nov 2026).
+notebook/out/MODELS_STATUS.json
+notebook/out/samples_seed0_T1.0.txt
+notebook/out/seed0/train_log_seed0.json
+notebook/out/seed1/train_log_seed1.json
+notebook/out/seed2/train_log_seed2.json
+notebook/out/cond_seed0/train_log_seed0.json
+notebook/out/seed2_repro_2026-11-14/train_log_seed2.json
 m06/data.py
 m06/model.py
 m06/train.py

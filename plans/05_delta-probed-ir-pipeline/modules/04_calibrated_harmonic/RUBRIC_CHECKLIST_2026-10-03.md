@@ -29,3 +29,26 @@ reproduced exactly); the first checklist file written for 04.*
   paper D's data release.
 
 - Lay-reader pass done 4 Oct 2026 (TASKS item 20): the target, the scale factor, the matrix and the evaluation explained in plain words in README, notebook and report; `modules/GLOSSARY.md` linked. Notebook and report rebuilt.
+
+## Status on 20 November 2026 (text update after a re-read against the rubric; nothing was executed)
+
+The table and the open points above are left as written. Where they are out of date, the files say:
+
+- **Baseline column — settled.** The open point says the ridge column "stands until the note says otherwise". It was decided on
+  4 October 2026: ridge stays (`RECIPE.md`, the dated note "Baseline column"; `PROVENANCE.md`, the line under "Owed" and its
+  addendum of 20 November). This point is closed.
+- **Notebook execution.** The row says "≈ 1 min". The stored notebook (21 cells, 11 code cells, execution counts 1–11 in order,
+  0 error outputs) was executed on 18 October 2026; its cell time stamps run from 08:40:23 to 08:42:09 UTC, 1 min 46 s. The
+  README now says "about two minutes".
+- **Report.** `Machine_Learning_Analysis_Report.pdf` was last rebuilt on 17 October 2026 (commit 5764e69d); `module_summary.pdf`
+  is its copy.
+- **Run line.** `requirements.txt` (12 Sep, commit c8b19327) holds `nbconvert` and `ipykernel` but not the `notebook` package. The
+  README now runs the notebook with `jupyter nbconvert --to notebook --execute --inplace …` and says what to install for the
+  browser interface.
+
+Open:
+
+- A new `pip freeze` in the environment the notebook runs in, at submission.
+- The fresh-clone check with `tools/make_module_repo.sh` (the last one was on 18 October), then the submission repository — the
+  author's action.
+- The author's own pass over notebook, README and report.

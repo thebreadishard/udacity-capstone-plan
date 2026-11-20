@@ -40,3 +40,24 @@ memorisation ≤ 0.10, three seeds within ±0.03 on validity). Design and rubric
 **Dated note 2026-09-25 11:3x — baseline, reuse knob, quick check.** `m06/baseline_ngram.py` (5-gram token Markov control; dated amendment of the pre-registration with its reading rule and its outcome, validity 0.030 on the CCX53); the notebook computes it live in the evaluation cell and `make_summary.py` reports it. `M06_REUSE=1` lets the notebook load weights trained earlier by `m06/train.py` with the same seed and recipe (printed in the cell); quick mode writes to `notebook/out/quick/` so it can never overwrite a real run. Quick-mode check of the changed notebook on the CCX53 (`notebook/quick_run_2026-09-25b.log`): executed top to bottom, no errors, baseline cell and quick directories as designed; quick numbers are not a result. Seed 0 of the pre-registered run trains on the CCX53 since 11:05 (`m06_seed0.log`, `notebook/out/seed0/`; the dry run's two-epoch files there are overwritten by the real run at its first epoch and at its end).
 
 **Dated note 2026-09-25 21:1x — seed 0 of the pre-registered run trained (training only; sampling and evaluation follow in the notebook).** CCX53, `m06/train.py`, the notebook's own `train_model`, seed 0, 125,065 training / 15,434 validation molecules, 3,201,024 parameters, 20 epochs of ≈ 30 min (603 min total) at `nice 15` beside naphthalene E8: train loss 1.212 → 0.522, validation loss 0.784 → 0.553 (best 0.5530 at epoch 19), validity of 200 samples per epoch 0.22 → 0.955 (`notebook/out/seed0/train_log_seed0.json`, `m06_seed0.log`; weights `model_seed0.pt`, 12.8 MB, kept on the CCX53 and the laptop, not committed). The per-epoch validity is above the registered 0.85 from epoch 9 on; the registered metrics (10,000 samples, T = 1.0 and 0.7) are computed only in the notebook run with `M06_REUSE=1`. Seed 1 and the conditioned model (seed 0, `--conditioning`, smoke of that branch passed) started 21:1x on the CCX53, six threads each at `nice 15`, unbuffered logs (`m06_seed1.log`, `m06_cond_seed0.log`); expected ≈ 12–14 h each (Saturday midday), seed 2 after the CCX53 read-out on another machine.
+
+**Dated note 2026-11-20 — the seed-2 reproduction of 14–15 November named as a dated reproduction; text fixes; nothing executed.**
+Seed 2 was trained once more by the registered protocol (`m06/train.py`, 20 epochs, 6 threads, the same dataset; run spec
+`m06_seed2_repro`) into `notebook/out/seed2_repro_2026-11-14/`; the registry (`MODELS.md`) has it as "reproduction of 14 Nov 2026",
+checkpoint saved 15 November 08:16. It is a **dated reproduction**: the record of 26 September stays the result and nothing in
+`results.json`, the notebook's outputs or the report was replaced. What the two training logs say at epoch 20, like for like
+(`notebook/out/seed2/train_log_seed2.json` against `notebook/out/seed2_repro_2026-11-14/train_log_seed2.json`): train loss 0.5219 and
+0.5219, validation loss 0.5523 and 0.5526, validity of 200 samples 0.935 and 0.95. **Owed, a run:** the 10,000 samples of the
+reproduction checkpoint have not been drawn, stored or evaluated, so the folder holds a log and a checkpoint and no samples; the
+registry note that said "log, checkpoint and samples belong together" and set 0.95 beside 0.923 has a correction appended today (in
+`notebook/out/MODELS_STATUS.json`, and by hand in the same words in `MODELS.md`, the table generated from it — the generator was not
+run because it loads the checkpoints; `python ../05_support_predictor/m05/model_registry.py --check` must confirm the table afterwards).
+
+Text fixes of the same day, after a re-read against the rubric: section 7 of the notebook has a markdown summary of six sentences that
+names the challenges, written from the stored outputs of 26 September and added after the heading in the builder and in the stored
+notebook (the stored notebook has 29 cells; the new cell is markdown, so no cell was executed and no output or execution count
+changed); the README's title and status say what happened instead of what was planned, count eight tests, and give run lines that
+`requirements.txt` supports (`jupyter execute` from nbclient; pytest named as an extra install); the README no longer says the
+requirements file is a `pip freeze`; `SUBMISSION.txt` lists the files under `notebook/out/` one by one, without the four console logs
+(they hold `/root/…` paths of the rented server), and `module_summary.pdf`, a byte copy of
+`Generative_AI_Analysis_Report.pdf` under the name the rubric's overview uses.

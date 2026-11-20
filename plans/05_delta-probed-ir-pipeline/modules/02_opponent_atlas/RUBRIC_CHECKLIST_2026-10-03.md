@@ -36,3 +36,22 @@ missing and who owes it. Evidence is a file or a cell, never a memory. The noteb
 
 Checked on the files, not on this table: the notebook re-executed (0 error outputs), every rubric item present. Found and fixed (bd8f646e): Task 3's **author** was missing from the notebook's first cell (now 'Frederic Petrignani'); two links pointed outside the module folder (`../../GLOSSARY.md` in the notebook, `../GLOSSARY.md` in the README), dead in the submission repository — now the glossary's GitHub URL; the README's Repository section now describes the submission repository `ai-programming-foundations-project` (main + `module-02-opponent-atlas`); an unused `import re` removed (the user: no unnecessary imports; Task 4's seaborn is not added, the grading table allows Matplotlib). The notebook was rebuilt by `make_notebook.py` (0 errors, ruff F401 clean). **Git/GitHub usage:** a copy of the folder would carry one commit; `tools/make_module_repo.sh` carries the module's own history (git subtree split: `main` from master, the development branch kept), tested on a synthetic repository; the user creates the GitHub repository and pushes both branches. **At submission:** regenerate `requirements.txt` with `pip freeze` in the environment the notebook runs in (the user: 't.z.t.').
 
+## Status on 20 November 2026 (text update after a re-read against the rubric; nothing was executed)
+
+The table above is the state of 3 October and is left as written. Where it is out of date, the files say:
+
+- **Notebook execution.** The row says "last execution 22 Sep" and the header counts 22 cells. The stored notebook has 23 cells
+  (10 code cells, execution counts 1–10 in order, 0 error outputs) and was last executed on 18 October 2026 (cell time stamps
+  07:18 UTC).
+- **Summary report (Task 10).** The row says "built 11 Sep". `module_summary.pdf` was last rebuilt on 18 October 2026 (commit
+  9d64be64).
+- **Run line.** `requirements.txt` (11 Sep, commit 09934a27) holds `nbconvert` and `ipykernel` but not the `notebook` package, so
+  the README's `jupyter notebook …` line could not work from the file alone. The README now runs the notebook with
+  `jupyter nbconvert --to notebook --execute --inplace …` and says what to install for the browser interface.
+
+Open:
+
+- A new `pip freeze` in the environment the notebook runs in, at submission (the review of 17 October already names it).
+- The fresh-clone check with `tools/make_module_repo.sh`, then creating the repository `ai-programming-foundations-project` with
+  its two branches and pushing it — the author's action.
+- The author's own pass over notebook, README and report.

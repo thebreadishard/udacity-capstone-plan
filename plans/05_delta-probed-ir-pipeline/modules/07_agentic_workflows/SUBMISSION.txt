@@ -3,6 +3,9 @@
 README.md
 requirements.txt
 Agentic_AI_System_Design_Report.pdf
+# the same report under the two other names the rubric uses (byte copies, 20 Nov 2026)
+Agentic_AI_Systems_Analysis_Report.pdf
+module_summary.pdf
 SUBMISSION.txt
 notebook/agentic_system.ipynb
 notebook/results.json

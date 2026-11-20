@@ -34,10 +34,14 @@ AI-generated, and not the Module 02 dataset (which was the *computed* PAHdb libr
 
 ```bash
 pip install -r requirements.txt
-jupyter notebook notebook/analysis.ipynb
+jupyter nbconvert --to notebook --execute --inplace notebook/analysis.ipynb
 ```
 
-Run all cells top to bottom. The notebook needs only the files in `notebook/`; before submission it was
+The command runs every cell top to bottom and stores the outputs in the notebook file. To step through the cells in a
+browser instead, install the notebook interface as well (`pip install notebook`; it is not in `requirements.txt`) and open
+the file with `jupyter notebook notebook/analysis.ipynb`.
+
+The notebook needs only the files in `notebook/`; before submission it was
 executed in a fresh clone of this repository, with nothing else present. `requirements.txt` was created with
 `pip freeze > requirements.txt`.
 

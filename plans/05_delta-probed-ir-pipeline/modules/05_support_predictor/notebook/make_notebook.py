@@ -187,7 +187,7 @@ def train(cfg, seed, epochs=EPOCHS, bs=8, patience=6):
         m.train(); tl = []
         for b in batches(idx["train"], bs, rng):
             lb, lp, _ = losses(m, torch.tensor(b)); loss = lb + lp
-            opt.zero_grad(); loss.backward(); nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step(); tl.append(float(loss))
+            opt.zero_grad(); loss.backward(); nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step(); tl.append(loss.item())
         m.eval()
         with torch.no_grad():
             lb, lp, _ = losses(m, torch.tensor(idx["val"])); vl = float(lb + lp)
@@ -291,13 +291,15 @@ res_path = HERE / "results.json"
 if res_path.exists():
     R = json.load(open(res_path, encoding="utf-8"))
     rip = R["test_rms"]["ring-ip"]; oop = R["test_rms"]["CH-oop"]
+    n_seeds = len(R["seeds"])
+    seeds_text = "one seed" if n_seeds == 1 else f"{n_seeds} seeds"
     better = "the deeper model" if np.nanmean([R["test_rms"][F]["4 layers"]["diag"] for F in R["test_rms"]]) < np.nanmean([R["test_rms"][F]["baseline"]["diag"] for F in R["test_rms"]]) else "the baseline"
     summary = (f"""## 6. Summary
 
 The task was to predict, from cheap-level normal-mode tokens alone, the family blocks of the correction matrix between two levels of
 theory for {R['n_molecules']} molecules ({R['n_modes_total']:,} modes; release `{R['release']}`), split by molecule into
 {R['splits']['train']}/{R['splits']['val']}/{R['splits']['test']}. The baseline was the ΔH model with a two-layer encoder ({R['parameters']['baseline']:,}
-parameters); the one controlled change was depth, four layers ({R['parameters']['4 layers']:,} parameters), everything else fixed, {len(R['seeds'])} seed(s).
+parameters); the one controlled change was depth, four layers ({R['parameters']['4 layers']:,} parameters), everything else fixed, {seeds_text}.
 On the test molecules the ring-in-plane band shifts came out at RMS {rip['baseline']['diag']:.1f} cm⁻¹ (baseline) and {rip['4 layers']['diag']:.1f} (four layers) against
 {rip['zero']['diag']:.1f} for the zero rule and {rip['family-median']['diag']:.1f} for the family-median rule; the C–H out-of-plane shifts {oop['baseline']['diag']:.1f} / {oop['4 layers']['diag']:.1f}
 against {oop['zero']['diag']:.1f} / {oop['family-median']['diag']:.1f}; the pair head reached average precision {R['pair_ap']['baseline']:.2f} / {R['pair_ap']['4 layers']:.2f} against

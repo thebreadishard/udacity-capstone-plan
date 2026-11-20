@@ -26,3 +26,31 @@ first checklist file written for 06.*
   run with the cap lifted is a dated follow-up section if the user wants one, never a replacement.
 
 - Lay-reader pass done 4 Oct 2026 (TASKS item 20): a plain-language opening in README, notebook (builder and the executed notebook's markdown) and report; `modules/GLOSSARY.md` linked; the report rebuilt; the notebook re-executed after the TZ run (decision 58, text and execution split).
+
+## Status on 20 November 2026 (text update after a re-read against the rubric; nothing was executed)
+
+The table above is the state of 3 October and is left as written. Where it is out of date, the files say:
+
+- **Notebook.** The header counts 27 cells. The stored notebook had 28 cells before today and has 29 now: one markdown cell was
+  added. Its 11 code cells carry the outputs of 26 September 2026 (execution counts 1–11, 0 error outputs).
+- **Notebook organisation / summary.** Section 7 was a heading and a code cell that prints one paragraph. The rubric asks for a written
+  summary that names the challenges, so a markdown cell of six sentences now follows the heading (builder and stored notebook); the code
+  cell and its output are unchanged.
+- **Written report.** Shipped under both names the rubric uses, `Generative_AI_Analysis_Report.pdf` and `module_summary.pdf` (a byte
+  copy).
+- **Reproducibility.** `requirements.txt` is a hand-written list of 11 packages, ten of them with a version, not a `pip freeze`; the README now says
+  so, names pytest as an extra install and runs the notebook with `jupyter execute` (nbclient is in the file).
+- **Academic integrity.** Seed 2 was reproduced on 14–15 November (README, PROVENANCE note of today); the 26 September run stays the
+  result.
+
+Open:
+
+- The report still has the gaps the review of 17 October named: no generated sample is quoted, the PAHdb comparison is not in it, and it
+  does not mention seed 2's history. That is writing in `make_summary.py` plus a rebuild of the report; after the rebuild
+  `module_summary.pdf` must be copied again.
+- The 10,000 samples of the seed-2 reproduction (a run), then one line in README and report.
+- A real `pip freeze`, the fresh-clone check with the new `SUBMISSION.txt` (`M06_QUICK=1`), and `model_registry.py --check` in the main
+  checkout for the registry note corrected today.
+- The stored outputs are older than two later source changes (17 and 18 October); only a full re-run, about ten hours per seed, would
+  close that, and the README says which run is stored.
+- My own pass over notebook, README and report.

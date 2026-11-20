@@ -29,3 +29,25 @@ identical to the run of 12 September); the first checklist file written for 03.*
   which touched the notebook summary and the README only.
 
 - Lay-reader pass done 4 Oct 2026 (TASKS item 20): matrix vs gas phase, the rank test and the Holm correction, the unit cm⁻¹ explained in README, notebook and report; `modules/GLOSSARY.md` linked; the 'nine records' count spelled out. Notebook and report rebuilt.
+
+## Status on 20 November 2026 (text update after a re-read against the rubric; nothing was executed)
+
+The table above is the state of 3 October and is left as written. Where it is out of date, the files say:
+
+- **Notebook.** The header counts 17 cells and a re-execution on 3 October. The stored notebook has 18 cells (8 code cells,
+  execution counts 1–8 in order, 0 error outputs) and was last executed on 17 October 2026 (cell time stamps 20:21 UTC).
+- **Report.** The open point speaks of the "22 Sep build". The report was rebuilt on 17 October 2026 (commit c46f7ba0) and ships
+  under two names, `Statistical_Analysis_Report.pdf` and `module_summary.pdf`.
+- **Pre-registration.** The shipped form names `../02_opponent_atlas/out/experimental_3.10/`, a folder of the plan repository.
+  A dated note at the end of `PRE_REGISTRATION.md` now says that the folder is not part of the submission repository and that the
+  records used are in `notebook/bands_lab.csv`. The form itself is unchanged.
+- **Run line.** `requirements.txt` (11 Sep, commit 0f52c0c7) holds `nbconvert` and `ipykernel` but not the `notebook` package. The
+  README now runs the notebook with `jupyter nbconvert --to notebook --execute --inplace …` and says what to install for the
+  browser interface.
+
+Open:
+
+- A new `pip freeze` in the environment the notebook runs in, at submission.
+- The fresh-clone check with `tools/make_module_repo.sh` (the last one was on 18 October), then the repository
+  `udacity-statistical-analysis` — the author's action.
+- The author's own pass over notebook, README and report.

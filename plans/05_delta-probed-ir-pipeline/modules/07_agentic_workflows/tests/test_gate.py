@@ -1,5 +1,5 @@
 """Gate tests: each guard fails without its check (negative controls), the allow-list is closed, and the eight scenarios replay correctly with the
-deterministic policy. Run: ../../.venv python -m pytest modules/07_agentic_workflows/tests -q"""
+deterministic policy. Run from the module's folder: python -m pytest -q tests"""
 import json
 import sys
 from pathlib import Path
