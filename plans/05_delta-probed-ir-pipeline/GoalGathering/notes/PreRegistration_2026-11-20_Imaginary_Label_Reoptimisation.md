@@ -156,3 +156,14 @@ finished when the server is given back is recorded "not run" (or "unfinished", w
 written), as section 6 says; that is not a failure and not a verdict.**
 
 Nothing else changes: the call, the settings, the environment, the acceptance rule and what is not decided stand as registered.
+
+## Amendment 2 (20 November 2026, before any re-optimised label was read) — section 5.2, the APT carries passed = True
+
+Section 5.2 says "the
+APT file exists". That is too weak: the label route (`corpus/analytic_hessians.py`, `write_apt`) writes `dipole_b3lyp_cphf.npz`
+also when the APT fails its sum rule or its CPHF residual, marks it `passed = False`, and then stops with exit 3. The condition
+is therefore: the APT file exists and carries `passed = True`. A file with `passed = False` is the label route's own record of
+a failed check, and the molecule stays out with that reason; a file without a `passed` mark stays out too, because its checks
+are not on record. The independent review of the read script found this on 20 November 2026, before the read ran on any
+re-optimised folder; the read (`probes/imaginary_reopt_read.py`) applies the amended condition, and its tests cover a failed, an
+unmarked and a cut-off APT file. Nothing else of section 5 changes.
