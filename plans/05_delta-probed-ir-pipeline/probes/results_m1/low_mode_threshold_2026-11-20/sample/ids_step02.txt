@@ -1,0 +1,5 @@
+# the smallest sampled molecule of each band, for the step check
+B_0c6c144a7f
+B_1726105aae
+B_0af11315e3
+B_1428bc8164
