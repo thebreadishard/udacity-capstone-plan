@@ -1,0 +1,69 @@
+{
+ "name": "night20_211_smoke_water",
+ "purpose": "TASKS 211 part B (GoalGathering/notes/PreRegistration_2026-11-20_Anharmonic_Step_Substituted_Molecule.md, section 7), the smoke before the field on the rented CCX53 night20: the G route end to end on water (probes/results_m1/water_dipole_fd_2026-10-02/geometry.json) in the server env qc05 (pyscf 2.14.0) with the field's own call and lanes, beside the laptop's stored smoke ~/s1_smoke_water_e/G (omega 1710.8, 3721.1, 3844.9; nu - omega -28.10, -170.79, -168.82).",
+ "host": "night20",
+ "workdir": "/root/night20_211",
+ "command": "env MAX_FIRST=1800 LANES=4 PY=/root/miniforge3/envs/qc05/bin/python bash /root/dpir_90cb5e23/plans/05_delta-probed-ir-pipeline/probes/s1_anharmonic_level.sh /root/dpir_90cb5e23/plans/05_delta-probed-ir-pipeline/probes/results_m1/water_dipole_fd_2026-10-02/geometry.json /root/night20_211/smoke_water 2 G:6-31g*:75,302",
+ "sources": [
+  {
+   "local": "probes/s1_anharmonic_level.sh",
+   "remote": "/root/dpir_90cb5e23/plans/05_delta-probed-ir-pipeline/probes/s1_anharmonic_level.sh"
+  },
+  {
+   "local": "probes/s1_anharmonic_level.py",
+   "remote": "/root/dpir_90cb5e23/plans/05_delta-probed-ir-pipeline/probes/s1_anharmonic_level.py"
+  },
+  {
+   "local": "probes/pyscf_hessians_for_qff.py",
+   "remote": "/root/dpir_90cb5e23/plans/05_delta-probed-ir-pipeline/probes/pyscf_hessians_for_qff.py"
+  },
+  {
+   "local": "probes/make_qff_displacements.py",
+   "remote": "/root/dpir_90cb5e23/plans/05_delta-probed-ir-pipeline/probes/make_qff_displacements.py"
+  },
+  {
+   "local": "probes/qff_pm_saving.py",
+   "remote": "/root/dpir_90cb5e23/plans/05_delta-probed-ir-pipeline/probes/qff_pm_saving.py"
+  },
+  {
+   "local": "probes/library_log.py",
+   "remote": "/root/dpir_90cb5e23/plans/05_delta-probed-ir-pipeline/probes/library_log.py"
+  },
+  {
+   "local": "probes/scf_converge.py",
+   "remote": "/root/dpir_90cb5e23/plans/05_delta-probed-ir-pipeline/probes/scf_converge.py"
+  },
+  {
+   "local": "probes/qc_common.py",
+   "remote": "/root/dpir_90cb5e23/plans/05_delta-probed-ir-pipeline/probes/qc_common.py"
+  },
+  {
+   "local": "modules/05_support_predictor/corpus/scf_policy.py",
+   "remote": "/root/dpir_90cb5e23/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/corpus/scf_policy.py"
+  },
+  {
+   "local": "src/dpir/qff.py",
+   "remote": "/root/dpir_90cb5e23/plans/05_delta-probed-ir-pipeline/src/dpir/qff.py"
+  },
+  {
+   "local": "src/dpir/vpt2_domain.py",
+   "remote": "/root/dpir_90cb5e23/plans/05_delta-probed-ir-pipeline/src/dpir/vpt2_domain.py"
+  },
+  {
+   "local": "src/dpir/symmetry.py",
+   "remote": "/root/dpir_90cb5e23/plans/05_delta-probed-ir-pipeline/src/dpir/symmetry.py"
+  }
+ ],
+ "progress": {
+  "regex": "^\\[[0-9:]+\\] (start )?[0-9]+/[0-9]+ |^  BFGS evaluation |^  Newton |^=== \\(S1\\) ",
+  "max_gap_minutes": 60,
+  "heartbeat_glob": "/root/night20_211/smoke_water/G/*/pyscf.log"
+ },
+ "marker_regex": "^=== \\(S1\\) .*(STOPPED|FAILED|NOISY|done)|Traceback",
+ "end_regex": "^=== \\(S1\\) all settings done",
+ "threads": 8,
+ "estimate": {
+  "hours": 0.2,
+  "basis": "water: 7 Hessians of seconds each; the laptop smoke of 13 Oct ran in minutes"
+ }
+}

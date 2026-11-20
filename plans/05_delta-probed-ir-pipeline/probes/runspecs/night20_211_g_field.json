@@ -1,0 +1,69 @@
+{
+ "name": "night20_211_g_field",
+ "purpose": "TASKS 211 part B (GoalGathering/notes/PreRegistration_2026-11-20_Anharmonic_Step_Substituted_Molecule.md, sections 4 and 7): benzonitrile's B3LYP/6-31G* quartic force field at grid 75,302 from the corpus geometry B_3100da3761 by probes/s1_anharmonic_level.sh, the registered call, on the rented CCX53 night20 in env qc05 (pyscf 2.14.0); code: git archive of 90cb5e23. 67 Hessians; the 66 displaced ones in 4 processes of 4 threads (LANES=4), the minimum and the reference Hessian at 16 threads. MAX_FIRST 1800 as the laptop spec; PM_SAVING, GUESS_FROM_PREVIOUS, GATE_GRID and DISP unset. The GVPT2 label (probes/gvpt2_labels.py --setting G) is made on the laptop from the fetched G folder: the label step's env (pyVPT2 fork, psi4 import) is not part of any server recipe.",
+ "host": "night20",
+ "workdir": "/root/night20_211",
+ "command": "env MAX_FIRST=1800 LANES=4 PY=/root/miniforge3/envs/qc05/bin/python bash /root/dpir_90cb5e23/plans/05_delta-probed-ir-pipeline/probes/s1_anharmonic_level.sh /root/night20_211/in/B_3100da3761/geometry.json /root/night20_211/g_label/g/benzonitrile 4 G:6-31g*:75,302",
+ "sources": [
+  {
+   "local": "probes/s1_anharmonic_level.sh",
+   "remote": "/root/dpir_90cb5e23/plans/05_delta-probed-ir-pipeline/probes/s1_anharmonic_level.sh"
+  },
+  {
+   "local": "probes/s1_anharmonic_level.py",
+   "remote": "/root/dpir_90cb5e23/plans/05_delta-probed-ir-pipeline/probes/s1_anharmonic_level.py"
+  },
+  {
+   "local": "probes/pyscf_hessians_for_qff.py",
+   "remote": "/root/dpir_90cb5e23/plans/05_delta-probed-ir-pipeline/probes/pyscf_hessians_for_qff.py"
+  },
+  {
+   "local": "probes/make_qff_displacements.py",
+   "remote": "/root/dpir_90cb5e23/plans/05_delta-probed-ir-pipeline/probes/make_qff_displacements.py"
+  },
+  {
+   "local": "probes/qff_pm_saving.py",
+   "remote": "/root/dpir_90cb5e23/plans/05_delta-probed-ir-pipeline/probes/qff_pm_saving.py"
+  },
+  {
+   "local": "probes/library_log.py",
+   "remote": "/root/dpir_90cb5e23/plans/05_delta-probed-ir-pipeline/probes/library_log.py"
+  },
+  {
+   "local": "probes/scf_converge.py",
+   "remote": "/root/dpir_90cb5e23/plans/05_delta-probed-ir-pipeline/probes/scf_converge.py"
+  },
+  {
+   "local": "probes/qc_common.py",
+   "remote": "/root/dpir_90cb5e23/plans/05_delta-probed-ir-pipeline/probes/qc_common.py"
+  },
+  {
+   "local": "modules/05_support_predictor/corpus/scf_policy.py",
+   "remote": "/root/dpir_90cb5e23/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/corpus/scf_policy.py"
+  },
+  {
+   "local": "src/dpir/qff.py",
+   "remote": "/root/dpir_90cb5e23/plans/05_delta-probed-ir-pipeline/src/dpir/qff.py"
+  },
+  {
+   "local": "src/dpir/vpt2_domain.py",
+   "remote": "/root/dpir_90cb5e23/plans/05_delta-probed-ir-pipeline/src/dpir/vpt2_domain.py"
+  },
+  {
+   "local": "src/dpir/symmetry.py",
+   "remote": "/root/dpir_90cb5e23/plans/05_delta-probed-ir-pipeline/src/dpir/symmetry.py"
+  }
+ ],
+ "progress": {
+  "regex": "^\\[[0-9:]+\\] (start )?[0-9]+/[0-9]+ |^  BFGS evaluation |^  Newton |^=== \\(S1\\) ",
+  "max_gap_minutes": 60,
+  "heartbeat_glob": "/root/night20_211/g_label/g/benzonitrile/G/*/pyscf.log"
+ },
+ "marker_regex": "^=== \\(S1\\) .*(STOPPED|FAILED|NOISY|done)|Traceback",
+ "end_regex": "^=== \\(S1\\) all settings done",
+ "threads": 16,
+ "estimate": {
+  "hours": 2.0,
+  "basis": "the registration's 180-260 s per Hessian at 5 server threads (phenylacetylene's median 240 s, S2's fit 157 s at 13 atoms): 66 displaced Hessians in 4 lanes of 4 threads are 17 each, about 1.3 h at 260 s, plus the minimum and the reference; the 4-thread time is not measured"
+ }
+}
