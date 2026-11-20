@@ -914,9 +914,9 @@
     "hours": 66.83,
     "machine": "laptop",
     "measured_on": "naphthalene, laptop: 4,201 s per cc-pVDZ energy, 12.2 h per cc-pVTZ energy at tight thresholds",
-    "note": "two families read (evidence files); hours per family from the M3 record; the anchor in force is the registry's entry on the next line",
+    "note": "the hours are the price table's for one family's reading (five points), measured where its source says; this page's own hours are not recorded apart. The anchor in force is the registry's entry on the last line",
     "source": "probes/results_m1/M3_TZ_MODE12_READING_2026-09-20.md (12.2 h per TZ energy); REPRODUCE.md row on the neutral price (4,201 s)",
-    "step": "anchor family readings (M3, two families, laptop)",
+    "step": "anchor family reading (M3, one family, laptop): M3_TZ_MODE22_READING_2026-09-23.md",
     "what": "one family's anchor reading along a mode (M3: cc-pVDZ + cc-pVTZ curvature, LNO-CCSD(T), five points)"
    },
    {

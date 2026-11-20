@@ -36,7 +36,9 @@ def band_rows(record: dict, strongest: int = 8) -> list[dict]:
 
     Each row holds what the certificate prints for the band: the printed position and which kind it is (the anharmonic estimate
     or the harmonic one), the network's harmonic position with the range of its seeds, the uncorrected B3LYP position and the
-    scaled baseline, the height, the family, the family's measured error on the two test sets, and whether the band is licensed.
+    scaled baseline, the height, the family, and two different error statements that must not be mixed. The licence and the
+    family error are about the network's harmonic ω against the DFT proxy. The step's bar is the anharmonic step's own error
+    against its label, for a band printed as ν; no licence is claimed for ν.
     """
     if strongest < 1:
         raise ValueError(f"strongest = {strongest}: at least one band")
@@ -44,5 +46,6 @@ def band_rows(record: dict, strongest: int = 8) -> list[dict]:
     return [{"printed (cm⁻¹)": b["printed_cm"], "printed as": b["printed"], "network ω": b["network_cm"],
              "seeds' range": f"{b['seed_range_cm'][0]}–{b['seed_range_cm'][1]}", "B3LYP ω": b["b3lyp_cm"],
              "scaled B3LYP": b["baseline_cm"], "height (km/mol)": b["km_mol"], "family": b["family"],
-             "family error (a) / (b)": f"{b['error_cm']['a']} / {b['error_cm']['b']}", "licensed": b["licensed"]}
+             "ω: family error (a) / (b)": f"{b['error_cm']['a']} / {b['error_cm']['b']}", "ω licensed": b["licensed"],
+             "ν: the step's error bar": b["step_bar_cm"] if b["step_bar_cm"] is not None else "—"}
             for b in sorted(top, key=lambda b: b["printed_cm"])]

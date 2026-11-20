@@ -7,12 +7,18 @@ with observable outputs, a failure case and the limitations. Everything runs fro
 and nothing is computed beyond reading them.
 
 The markdown carries no measured number: every number a reader sees is printed by a code cell from a record, so the text cannot fall
-behind the records again. The scenario results are read from `../out/`, or from the folder `M08_SCENARIO_RESULTS` names.
+behind the records again. Where the text states an outcome ("no run started"), a code cell checks it against the record and stops
+the build when it does not hold. A record's keys are indexed, never defaulted: a missing key stops the build with its name.
+
+The scenario results are read from `../out/` — the submitted record `scenario_results_submitted.json` where it exists, else the newest
+dated one — or from the folder `M08_SCENARIO_RESULTS` names; `results.json` records which. With `--out` elsewhere, `results.json` and
+the figures are written beside that notebook and the module's own stay untouched.
 
 Run: python notebook/make_notebook.py [--no-execute] [--out PATH]"""
 from __future__ import annotations
 
 import argparse
+import os
 from pathlib import Path
 
 import nbformat
@@ -21,6 +27,7 @@ from nbformat.v4 import new_code_cell, new_markdown_cell, new_notebook
 
 HERE = Path(__file__).resolve().parent
 NOTEBOOK = HERE / "integrated_system.ipynb"
+OUT_ENV = "M08_NOTEBOOK_OUT"           # where the executed cells write results.json and figures/; unset: the notebook's own folder
 
 HEADER = """# Module 08 — the industry synthesis: a computed infrared spectrum with a stated accuracy and a stated price, or an honest refusal
 
@@ -38,17 +45,17 @@ and systematically wrong. The project's answer is a learned correction: a neural
 functionals (B3LYP and ωB97X) and reproduces the second from the first on molecules it never saw. Nothing is claimed at the coupled-cluster level, and
 no new coupled-cluster reference calculation is made before July 2027 (decision 63). The correction may be called licensed only for a family of
 vibrations whose measured error is within the licence line on both test sets — test set (a), unseen molecules, and test set (b), molecules of held-out
-scaffolds (decision 65). The error is measured on *measurement networks*, which never saw the test sets; the printed spectrum is made by *release
-networks* of the same recipe, trained on all data (decision 66). The records and the code call the two test sets "hold-out (a)" and "hold-out (b)";
-the words mean the same.
+scaffolds (decision 65). That licence is about one quantity: the corrected *harmonic* band position ω, measured against the second functional. The
+error is measured on *measurement networks*, which never saw the test sets; the printed spectrum is made by *release networks* of the same recipe,
+trained on all data (decision 66). The records and the code call the two test sets "hold-out (a)" and "hold-out (b)"; the words mean the same.
 
-**Integration (Task 2).** Four earlier modules are load-bearing here and each appears as code, not as a citation: module 03's laboratory tolerance
-`u_band` per family is the certificate's error budget; module 05's network and its evaluation records give the correction and the *licence* the officer
-reads; module 06's generated molecules supply the candidate the corpus has not computed; module 07's rule table and gate decide whether a run order may
-start. Modules 02 (the library of existing predictions) and 04 (the calibrated-harmonic reading) are part of the story, but no code here reads their
-output. The website export is the single catalogue the officer reads."""
+**Integration (Task 2).** Four earlier modules are used in the code: module 03's laboratory tolerance `u_band` per family is the certificate's error
+budget; module 05's network and its evaluation records give the correction and the *licence* the officer reads; module 06's generated molecules supply
+the candidate the corpus has not computed; module 07's rule table and gate decide whether a run order may start. Modules 02 (the library of existing
+predictions) and 04 (the calibrated-harmonic reading) are part of the story, but no code here reads their output. The website export is the single
+catalogue the officer reads."""
 
-IMPORTS = """import json, os, sys, time
+IMPORTS = """import json, os, re, sys, time
 from pathlib import Path
 import numpy as np, pandas as pd
 import matplotlib.pyplot as plt
@@ -62,21 +69,23 @@ from m08.licence import state as licence_state
 from m08.officer import Request, decide, RULES
 from m08.pipeline import PIPELINE_VERSION
 from m08.replay import execute_run_order
-FIG = Path("figures"); FIG.mkdir(exist_ok=True)
+OUT = Path(os.environ["M08_NOTEBOOK_OUT"]) if "M08_NOTEBOOK_OUT" in os.environ else Path(".")   # where this run writes results.json and figures/
+FIG = OUT / "figures"; FIG.mkdir(parents=True, exist_ok=True)
 cat = Catalog()
 print(f"catalogue: {len(cat.rows):,} molecules, built {cat.summary['built_utc']}; rung counts {cat.summary['rung_counts']}; module 07 rules: {len(RULES)}")"""
 
-LAY = """*Reading this without chemistry.* The integrated system turns a request — a molecule, how accurate the answer must be, a budget — into either a computed infrared spectrum with a stated accuracy and price, or a refusal that names the missing step. Its parts come from the earlier modules: the library of existing predictions (02), the laboratory numbers to score against (03), the trained correction (05) and the run steward that is allowed to start work (07). Terms are defined in the [glossary](https://github.com/thebreadishard/udacity-capstone-plan/blob/master/plans/05_delta-probed-ir-pipeline/modules/GLOSSARY.md)."""  # noqa: E501  a notebook cell: one statement or one paragraph per line
+LAY = """*Reading this without chemistry.* The integrated system turns a request — a molecule, how accurate the answer must be, a budget — into either a computed infrared spectrum with a stated accuracy and price, or a refusal that names the missing step. Four earlier modules are used in its code: the laboratory numbers to score against (03), the trained correction and its measured error (05), the generated candidate molecules (06) and the run steward that is allowed to start work (07). Terms are defined in the [glossary](https://github.com/thebreadishard/udacity-capstone-plan/blob/master/plans/05_delta-probed-ir-pipeline/modules/GLOSSARY.md)."""  # noqa: E501  a notebook cell: one statement or one paragraph per line
 
 LADDER_MD = """## 1. What the repository holds today — the ladder, and the licence
 
 Every molecule in the catalogue holds the highest rung it reaches: 0 listed · 1 cheap level done · 2 correction predicted · 3 spectrum predicted ·
 4 anchored · 5 validated. Rungs 2–3 are empty in the catalogue because a catalogue record is the cheap level: the corrected spectrum is not stored
 per molecule, it is computed by the pipeline for the molecule asked for (section 3.7). The cell below draws the counts and prints the licence as the
-code reads it from the network's evaluation records: per family, the error of the corrected band positions on the two test sets against the line."""
+code reads it from the network's evaluation records: per family, the error of the corrected harmonic band positions on the two test sets against the
+line."""
 
 LADDER_CODE = """order = ["listed", "cheap_level_done", "correction_predicted", "spectrum_predicted", "anchored", "validated"]
-rc = {i: int(cat.summary["rung_counts"].get(k, 0)) for i, k in enumerate(order)}           # the export keys the counts by label
+rc = {i: int(cat.summary["rung_counts"][k]) for i, k in enumerate(order)}                  # the export keys the counts by label
 labels = ["listed", "cheap done", "corr. predicted", "spectrum predicted", "anchored", "validated"]
 fig, ax = plt.subplots(figsize=(7, 3.2))
 ax.bar(range(6), [rc[i] for i in range(6)], color=["#bbb", "#7aa6c2", "#ddd", "#ddd", "#d98c3f", "#2e8b57"])
@@ -110,26 +119,35 @@ says so."""
 
 SCENARIOS_MD = """## 3. The scenarios, run end to end (Task 4 and 5)
 
-The eight pre-registered scenarios (`../PRE_REGISTRATION.md`, frozen before the build; `../scenarios/scenarios.json` carries the dated amendments)
-plus three added cases of the same kind. Each request goes through the officer; certificates are written to `../out/certificates/`; every decision
-lands in `../out/requests_ledger.csv`. The cell reads the newest results record and prints which run wrote it."""
+The table holds the requests the officer answered: the pre-registered ones (`../PRE_REGISTRATION.md`, frozen before the build;
+`../scenarios/scenarios.json` carries the dated amendments) and the cases added to them. The cell prints which are which, which results record it
+read and which run wrote it. The three mechanical checks are not requests and are reported under the table: S5 (the catalogue's own consistency
+check), S6 (accessibility of the public site) and S7 (every cost line traces to its source). Certificates are written to `../out/certificates/`;
+every decision lands in `../out/requests_ledger.csv`."""
 
-SCENARIOS_CODE = """S = json.load(open(Path("..") / "scenarios" / "scenarios.json", encoding="utf-8"))["scenarios"]
-results_dir = Path(os.environ.get("M08_SCENARIO_RESULTS", Path("..") / "out"))             # the run of run_scenarios.py
-results_file = sorted(results_dir.glob("scenario_results_*.json"))[-1]
+SCENARIOS_CODE = """SC = json.load(open(Path("..") / "scenarios" / "scenarios.json", encoding="utf-8")); S = SC["scenarios"]
+results_env_set = "M08_SCENARIO_RESULTS" in os.environ
+results_dir = Path(os.environ["M08_SCENARIO_RESULTS"]) if results_env_set else Path("..") / "out"
+submitted = results_dir / "scenario_results_submitted.json"                               # written only by run_scenarios.py --submitted
+results_file = submitted if submitted.is_file() else sorted(results_dir.glob("scenario_results_2*.json"))[-1]
 R = json.load(open(results_file, encoding="utf-8"))
 rows = []
 for r in R["results"]:
     d = r["decision"]
-    rows.append({"id": r["id"], "molecule": (d.get("name") or r["request"]["molecule"])[:34], "target": r["request"]["target_rung"], "budget €": r["request"].get("budget_eur", "—"),
-                 "decision": d["kind"], "gate / cap named": (d.get("gate_named") or "—")[:60], "rules": " ".join(d.get("rule_ids", [])) or "—",
-                 "price lines": ", ".join(f"{p['step']} €{p['eur_ex_vat']:.2f}" for p in d.get("price_lines", [])) or "—", "pass": r["passed"]})
+    rows.append({"id": r["id"], "molecule": (d["name"] or r["request"]["molecule"])[:34], "target": r["request"]["target_rung"],
+                 "budget €": r["request"]["budget_eur"] if "budget_eur" in r["request"] else "—",
+                 "decision": d["kind"], "gate / cap named": (d["gate_named"] or "—")[:60], "rules": " ".join(d["rule_ids"]) or "—",
+                 "price lines": ", ".join(f"{p['step']} €{p['eur_ex_vat']:.2f}" for p in d["price_lines"]) or "—", "pass": r["passed"]})
 tab = pd.DataFrame(rows); display(tab)
-written_by = " ".join(Path(w).name if ("/" in w or chr(92) in w) else w for w in R["provenance"].get("command", "").split())   # no local folders in the notebook
+added_ids = re.findall(r"S[0-9]+[a-z]", SC["frozen"].split(";")[1])                        # the frozen line names the added cases
+registered_ids = [r["id"] for r in R["results"] if r["id"] not in added_ids]
+print("pre-registered requests:", registered_ids, "| added cases:", [r["id"] for r in R["results"] if r["id"] in added_ids])
+written_by = " ".join(Path(w).name if ("/" in w or chr(92) in w) else w for w in R["provenance"]["command"].split())   # no local folders in the notebook
+print("results folder:", f"M08_SCENARIO_RESULTS is set ({results_dir.name})" if results_env_set else "the module's own out/")
 print("results record:", results_file.name, "| written by:", written_by)
-print(f"{R['n_pass']}/{R['n_scenarios']} scenarios pass ({R['date']}); S7 cost honesty: {R['mechanical']['S7']['lines_traced']}/{R['mechanical']['S7']['lines_checked']} lines traced")
-print("S6:", R["mechanical"]["S6"]["status"], "—", R["mechanical"]["S6"].get("record"))
-print("S5 catalogue consistency:", R["mechanical"].get("S5", "not in this record (run_scenarios.py without --with-catalog)"))"""  # noqa: E501  a notebook cell: one statement or one paragraph per line
+print(f"{R['n_pass']}/{R['n_scenarios']} requests pass ({R['date']}); S7 cost honesty: {R['mechanical']['S7']['lines_traced']}/{R['mechanical']['S7']['lines_checked']} lines traced")
+print("S6:", R["mechanical"]["S6"]["status"], "—", R["mechanical"]["S6"]["record"])
+print("S5 catalogue consistency:", R["mechanical"]["S5"] if "S5" in R["mechanical"] else "not in this record (run_scenarios.py without --with-catalog)")"""  # noqa: E501  a notebook cell: one statement or one paragraph per line
 
 BUDGET_MD = """### 3.2 The spectrum with its per-band budget
 
@@ -140,15 +158,19 @@ of that family as a band. No corrected position is drawn here: a catalogue recor
 BUDGET_CODE = """fig, ax = plt.subplots(figsize=(9, 3.4))
 fam_col = {}
 pal = plt.cm.tab10.colors
+tolerances = cat.u_band(c1["molecule"]["name"])            # module 03's table per family; a family without a row has no laboratory tolerance
+no_tolerance = sorted({family(w) for fn in ("b3lyp", "wb97x") for w in c1["spectrum"][fn]["values_cm"]} - set(tolerances))
 for fn, colr, off in (("b3lyp", "#1f77b4", 0.0), ("wb97x", "#d62728", 0.35)):
     for w in c1["spectrum"][fn]["values_cm"]:
         fam = family(w); fam_col.setdefault(fam, pal[len(fam_col) % 10])
-        tol = c1["per_band_budget"].get(fam, {}).get("u_band_lab") or 0
-        ax.add_patch(plt.Rectangle((w - tol, off), 2 * tol, 0.3, color=fam_col[fam], alpha=0.15, lw=0))
+        if fam in tolerances:
+            tol = tolerances[fam]["u_band"]
+            ax.add_patch(plt.Rectangle((w - tol, off), 2 * tol, 0.3, color=fam_col[fam], alpha=0.15, lw=0))
         ax.vlines(w, off, off + 0.3, color=colr, lw=1.2)
 ax.set_xlim(300, 3400); ax.set_ylim(0, 0.75); ax.set_yticks([0.15, 0.5]); ax.set_yticklabels(["B3LYP", "ωB97X"]); ax.set_xlabel("harmonic wavenumber, cm⁻¹")
 ax.set_title("Figure 2. Naphthalene, cheap rung: modes with the laboratory tolerance u_band of their family (module 03) as shaded bands", fontsize=9)
-fig.tight_layout(); fig.savefig(FIG / "naphthalene_budget.png", dpi=150); plt.show()"""
+fig.tight_layout(); fig.savefig(FIG / "naphthalene_budget.png", dpi=150); plt.show()
+print("families drawn without a band (module 03 has no tolerance for them):", no_tolerance or "none")"""
 
 S8_MD = """### 3.3 S8 — the failure case, shown
 
@@ -169,15 +191,16 @@ GATE_MD = """### 3.4 S2 and S2b — the gate, named and enforced
 
 The same molecule — one the corpus holds at the cheap rung only; the scenario file names it — asked for at the anchored rung. Without a budget the
 officer refuses: it names the cap, says that no coupled-cluster reading exists and that the learned correction is not licensed at that level, and gives
-the measured price of the missing anchor. With a budget that covers it the officer issues a run order, and module 07's gate stops it at the dry run
-(R01), so nothing starts. The worker, in replay mode, touches no machine either way."""
+the price of the missing anchor from the price table. With a budget that covers it the officer issues a run order, and module 07's gate decides: the
+cell prints the gate's verdict and the action it forced, and section 4 checks that nothing started. The worker, in replay mode, touches no machine
+either way."""
 
 GATE_CODE = """req2 = next(s for s in S if s["id"] == "S2")["request"]; req2b = next(s for s in S if s["id"] == "S2b")["request"]
 d2 = decide(Request(**req2), cat); d2b = decide(Request(**req2b), cat)
-print("request:", req2, "/ with a budget:", req2b.get("budget_eur"))
+print("request:", req2, "/ with a budget:", req2b["budget_eur"])
 print("S2 :", d2.kind, "|", d2.gate_named, "\\n     ", d2.what_would_be_needed)
 print("S2b:", d2b.kind, "| gate approved:", d2b.gate["approved"], "| forced:", d2b.gate["forced_action"]["action"], "(", d2b.gate["reasons"][0], ")")
-print("worker:", execute_run_order(d2b.model_dump(), cat))"""
+worker2b = execute_run_order(d2b.model_dump(), cat); print("worker:", worker2b)"""
 
 S3_MD = """### 3.5 S3 — a module-06 candidate under a small budget
 
@@ -239,41 +262,63 @@ PIPELINE_MD = """### 3.7 What the product prints: a stored pipeline run (added 2
 Since 29 October (decision 64) the module holds the pipeline the service promised: one molecule in, as a SMILES or an xyz file, and its corrected
 infrared spectrum out with a certificate, computed on a laptop. A notebook cannot run it — the steps need two quantum-chemistry programs and the
 networks' weights — so this section reads the certificate of **one stored run** and computes nothing. The cell prints the pipeline version that wrote
-the record; a stored run is evidence of that version, not of the newest one.
+the record, and whether the networks had this molecule in their training data; a stored run is evidence of that version and that molecule, not of
+the newest version or of an unseen molecule.
 
-*How to read the table.* Each row is one band. "Printed" is the position the certificate gives as its best estimate and "printed as" says which kind it
-is: the anharmonic estimate ν where that step ran, or the harmonic ω. "Network ω" is the corrected harmonic position with the range over the
-networks' seeds; "B3LYP ω" is the uncorrected cheap calculation, and "scaled B3LYP" the baseline other libraries use. "Family error" is the measured
-error of that family on test sets (a) and (b) — the licence's numbers of section 1. "Licensed" says whether the record lets this band be read as
-within the licence line.
+*Two positions per band, and two different error statements.* The network corrects the **harmonic** position ω. An optional last step then adds an
+anharmonic shift, and the band is printed at ν = ω + shift where that step ran. "Printed" is the position the certificate gives as its best estimate
+and "printed as" says which of the two it is. "Network ω" is the corrected harmonic position with the range over the networks' seeds; "B3LYP ω" is
+the uncorrected cheap calculation, and "scaled B3LYP" the baseline other libraries use.
 
-*What changed after this run.* The stored record licenses a band when its family is licensed and no rule withholds the licence from the molecule.
+- **"ω: family error" and "ω licensed"** are about the harmonic position against the second DFT functional, the proxy. The family error is the
+  licence's number of section 1, on test sets (a) and (b). "ω licensed" says whether the record lets the band's ω be read as within the licence line.
+- **"ν: the step's error bar"** is the anharmonic step's own error against its reference label, measured per family. No licence is claimed for ν:
+  the step's bars rest on few molecules, which the cell prints, and ν carries ω's error too.
+
+*What changed after this run.* The stored record licenses a band's ω when its family is licensed and no rule withholds the licence from the molecule.
 Since pipeline 0.15 that is not enough: the networks correct the same molecule again turned, mirrored and with its atoms listed in other orders, and a
-band is licensed only if its own position stayed within the licence line of the printed one in every presentation tried — a sample, not a bound. A
+band's ω is licensed only if its own position stayed within the licence line of the printed one in every presentation tried — a sample, not a bound. A
 result stored before 0.15 holds no such measurement, so today's pipeline, reading this folder again, would license none of its bands until the
 measurement is run on it. The corrected positions are printed either way; the licence says how far they may be trusted."""
 
 PIPELINE_CODE = """run = stored_run.certificate()
-net = run["network"]
+net = run["network"]; anh = run["positions"]["anharmonic"]
 print(f"stored run: {run['molecule']['name']} ({run['molecule']['formula']}), certificate of {run['date']}, pipeline version {run['pipeline_version']}")
 print(f"network: {net['name']} v{net['version']}, {net['kind']} networks trained on {net['trained_on_molecules']} entries; error bars from {len(net['measurement_models'])} measurement networks")
 print("this molecule and the network:", run["molecule"]["seen"]["text"])
 display(pd.DataFrame(stored_run.band_rows(run)))
 n_lic = sum(bool(b["licensed"]) for b in run["bands"]); kinds = pd.Series([b["printed"] for b in run["bands"]]).value_counts().to_dict()
-print(f"{n_lic} of {len(run['bands'])} bands licensed in this record; printed as: {kinds}")
-print("own-spread measurement in this record:", "yes" if run.get("own_spread") else "no (the record was written before pipeline 0.15)", "| the pipeline today:", PIPELINE_VERSION)
-print("licence concerns:", run["licence"]["concerns"])
+print(f"ω licensed for {n_lic} of {len(run['bands'])} bands in this record; printed as: {kinds}")
+has_own_spread = "own_spread" in run                                                      # the key exists since pipeline 0.15
+print("own-spread measurement in this record:", "yes" if has_own_spread else "no (the record was written before pipeline 0.15)", "| the pipeline today:", PIPELINE_VERSION)
+print("what the licence is about:", run["licence"]["concerns"])
+print("the anharmonic step:", anh["status"], "| model", anh["model"], "| its error bars per family, cm⁻¹:", anh["artefact"]["bars_cm"])
+print("what those bars rest on:", run["positions"]["cautions"]["targets"])
+print("the step and this molecule:", run["positions"]["cautions"]["seen"])
 print("cost:", run["cost"]["machine_class"], f"{run['cost']['seconds']:.0f} s, € {run['cost']['eur_ex_vat']:.2f};", run["cost"]["steps_s"])"""  # noqa: E501  a notebook cell: one statement or one paragraph per line
+
+EVALUATION_CODE = """s7 = R["mechanical"]["S7"]; all_costs = c1["cost_record"] + c8["cost_record"]
+n_unpriced = sum(k["eur_ex_vat"] is None for k in all_costs)
+claims = {"every request produced the registered kind of output": R["n_pass"] == R["n_scenarios"],
+          "no run started: no worker touched a machine": all(r["worker"] is None or r["worker"]["machine_touched"] is False for r in R["results"]) and worker2b["machine_touched"] is False,
+          "the gate did not approve the run order and forced the dry run": d2b.gate["approved"] is False and d2b.gate["forced_action"]["action"] == "dry_run",
+          "every cost line traces to its source (S7)": s7["lines_traced"] == s7["lines_checked"] and not s7["misses"],
+          "the failure case is on the page (S8)": any(a["wider_than_tolerance"] for a in c8["anchor_coverage"])}
+for claim, holds in claims.items(): print("holds        " if holds else "DOES NOT HOLD", "—", claim)
+print(f"cost lines on the two certificates: {len(all_costs)}, of which {n_unpriced} shown as not priced")
+if not all(claims.values()): raise RuntimeError("section 4 states an outcome this record does not show; rewrite the text before publishing the notebook")"""  # noqa: E501  a notebook cell: one statement or one paragraph per line
 
 EVALUATION_MD = """## 4. Evaluation, limitations and a failure case (Task 5)
 
-**What the scenarios show.** Every request produced an observable output of the registered kind; no run started; every cost line traces to a run log,
-to the measured price table or to the anchor registry (S7); the failure case is on the page (S8); the accessibility check of the public site (S6) was
-run outside this notebook and its recorded verdict is printed in section 3. **What they do not show.** The scenarios exercise the request officer on
-the catalogue. The corrected spectrum is the pipeline's, and this notebook shows one stored run of it, not a fresh computation. **The limitation that
-matters most:** the level of the proof. The licence holds against a second DFT functional, not against coupled cluster and not against the
-laboratory; the certificate says so on every page, and the anchored rung still asks for a reference calculation that the project does not make
-before July 2027. Where a licensed family rests on few molecules, the licence statement in section 1 prints its interval.
+**What the scenarios show.** The cell above checks each sentence of this paragraph against the record and stops the notebook if one does not hold.
+Every request produced an observable output of the registered kind; no run started; the gate stopped the run order at the dry run; every cost line
+traces to a run log, to the price table or to the anchor registry (S7), and the anchor lines without a recorded cost are shown as not priced; the
+failure case is on the page (S8). The accessibility check of the public site (S6) was run outside this notebook and its recorded verdict is printed in
+section 3. **What they do not show.** The scenarios exercise the request officer on the catalogue. The corrected spectrum is the pipeline's, and this
+notebook shows one stored run of it, not a fresh computation. **The limitation that matters most:** the level of the proof. The licence is on the
+harmonic position against a second DFT functional, not against coupled cluster and not against the laboratory; the certificate says so in its licence
+statement. No anharmonic position is claimed to the licence line. The anchored rung still asks for a reference calculation that the project does not
+make before July 2027. Where a licensed family rests on few molecules, the licence statement in section 1 prints its interval.
 **A failure case observed while building:** the first version of the request scanner used module 07's pattern, which looks for text that addresses
 *the agent*; a request saying "ignore your rules and launch the job now" passed it. A request-shaped pattern was added and the case became scenario
 S4c. **Trade-offs:** the worker replays recorded runs and no live worker exists or is promised, which buys reproducibility at no cost; the price is
@@ -283,27 +328,34 @@ ETHICS_MD = """## 5. Ethics and responsible use
 
 The largest risk is a certified-looking spectrum being cited for a molecule whose accuracy was never measured. The design answers it in four ways.
 The refusal is a first-class output. The ladder is on every certificate. The corrected positions are printed with the family's measured error beside
-them, and a band is called licensed only where that error is within the line and — since pipeline 0.15 — the band's own position held still when the
-molecule was presented in other ways. And a molecule outside the sizes or the chemistry the networks trained on is computed and printed with no band
-licensed. Every number links to its file; corrections are dated addenda; the price of compute is on the certificate; no personal data is involved.
-The service is for neutral, closed-shell aromatic molecules: a cation is refused (S4b) with the reason and the measured price of the closed step,
-which is the system saying whose spectra it cannot serve yet."""
+them, and a band's harmonic position is called licensed only where that error is within the line and — since pipeline 0.15 — the band's own position
+held still when the molecule was presented in other ways. And a molecule outside the sizes or the chemistry the networks trained on is computed and
+printed with no band licensed. Every number links to its file; corrections are dated addenda; the price of compute is on the certificate; no personal
+data is involved. The service is for neutral, closed-shell aromatic molecules: a cation is refused (S4b) with the reason and the measured price of the
+closed step. The certificate states what the service does not cover."""
 
 RESULTS_CODE = """out = dict(date=time.strftime("%Y-%m-%d %H:%M"), catalogue=dict(n=len(cat.rows), built_utc=cat.summary["built_utc"], rung_counts=cat.summary["rung_counts"]),
            licence=lic, scenarios=dict(n_pass=R["n_pass"], n=R["n_scenarios"], date=R["date"], record=results_file.name, written_by=written_by,
-                                       table=rows, mechanical=R["mechanical"]),
+                                       results_dir=results_dir.name, results_env_set=results_env_set, registered_ids=registered_ids,
+                                       added_ids=[r["id"] for r in R["results"] if r["id"] in added_ids], table=rows, mechanical=R["mechanical"]),
+           outcome=dict(claims=claims, n_cost_lines=len(all_costs), n_unpriced=n_unpriced),
            s1=dict(rung=c1["rung"]["reached"], families=list(c1["per_band_budget"].keys()), coverage=c1["anchor_coverage"], cost=c1["cost_record"], anchor=c1["anchor"]["entry"]),
-           s8=dict(rung=c8["rung"]["reached"], coverage=c8["anchor_coverage"], n_lab_bands=c8["laboratory"]["n_bands"], anchor=c8["anchor"]["entry"]),
+           s8=dict(rung=c8["rung"]["reached"], coverage=c8["anchor_coverage"], n_lab_bands=c8["laboratory"]["n_bands"], cost=c8["cost_record"], anchor=c8["anchor"]["entry"]),
            shape=dict(benzene=dict(n_ir_active=sb["n_ir_active"], n_modes=len(sb["sticks"]), max_dev_from_listed_cm=sb["max_dev_from_listed_cm"]),
                       accuracy=dict(version=acc["version"], higher_level=acc["higher_level"], coupled_cluster=acc["coupled_cluster"], sources=acc["sources"],
                                     test_sets={h: dict(n_in_test_set=v["n_molecules"], **v["shape"]) for h, v in acc["holdouts"].items()})),
-           s2=dict(request=req2, kind=d2.kind, gate=d2.gate_named, needed=d2.what_would_be_needed), s2b=dict(request=req2b, kind=d2b.kind, gate=d2b.gate),
+           s2=dict(request=req2, kind=d2.kind, gate=d2.gate_named, needed=d2.what_would_be_needed), s2b=dict(request=req2b, kind=d2b.kind, gate=d2b.gate, worker=worker2b),
            s3=dict(candidate=s3["candidate"], reasons=s3["decision"]["reasons"]), prices=dict(machines=prices.MACHINES, steps={k: prices.step_price(k) for k in prices.STEPS}),
            pipeline_run=dict(folder=stored_run.STORED_RUN, molecule=run["molecule"]["name"], date=run["date"], pipeline_version=run["pipeline_version"],
                              network_version=net["version"], network_kind=net["kind"], trained_on_molecules=net["trained_on_molecules"],
-                             n_bands=len(run["bands"]), n_licensed=n_lic, has_own_spread=bool(run.get("own_spread"))),
+                             seen=run["molecule"]["seen"], n_bands=len(run["bands"]), n_licensed=n_lic, has_own_spread=has_own_spread,
+                             anharmonic=dict(status=anh["status"], model=anh["model"], artefact=anh["artefact"]["file"], bars_cm=anh["artefact"]["bars_cm"],
+                                             target_rows={f: t["rows"] for f, t in anh["artefact"]["targets"].items()},
+                                             target_molecules=sorted(anh["artefact"]["target_composition"]), n_stepped=anh["bands"]["stepped"])),
            n_rules=len(RULES), pipeline_version=PIPELINE_VERSION, versions=dict(python=sys.version.split()[0], pandas=pd.__version__, numpy=np.__version__))
-json.dump(out, open("results.json", "w", encoding="utf-8"), indent=1, ensure_ascii=False); print("results.json written")"""  # noqa: E501  a notebook cell: one statement or one paragraph per line
+tmp = OUT / "results.json.tmp"
+with open(tmp, "w", encoding="utf-8") as fh: json.dump(out, fh, indent=1, ensure_ascii=False)
+os.replace(tmp, OUT / "results.json"); print("results.json written")"""  # noqa: E501  a notebook cell: one statement or one paragraph per line
 
 CELLS: tuple[tuple[str, str], ...] = (
     ("md", HEADER), ("code", IMPORTS), ("md", LAY),
@@ -318,7 +370,7 @@ CELLS: tuple[tuple[str, str], ...] = (
     ("md", S3_MD), ("code", S3_CODE),
     ("md", SHAPE_MD), ("code", SHAPE_CODE), ("md", SHAPE_READING),
     ("md", PIPELINE_MD), ("code", PIPELINE_CODE),
-    ("md", EVALUATION_MD), ("md", ETHICS_MD),
+    ("code", EVALUATION_CODE), ("md", EVALUATION_MD), ("md", ETHICS_MD),
     ("code", RESULTS_CODE),
 )
 
@@ -330,20 +382,41 @@ def notebook() -> nbformat.NotebookNode:
                         metadata={"kernelspec": {"name": "python3", "display_name": "Python 3", "language": "python"}})
 
 
-def build(path: Path, execute: bool) -> None:
-    """Write the notebook to `path`; with `execute`, run it in the notebook's own folder first, so its relative reads resolve."""
-    nb = notebook()
-    if execute:
+def execute(nb: nbformat.NotebookNode, out_dir: Path) -> None:
+    """Run the cells in the notebook's own folder, so its relative reads resolve; what they write goes to `out_dir`.
+
+    The kernel inherits this process's environment, so the output folder is named there for the run and put back after it.
+    """
+    before = os.environ.get(OUT_ENV)   # an environment variable may be absent: that is its default, not a missing record
+    if out_dir != HERE:
+        os.environ[OUT_ENV] = str(out_dir)
+    try:
         NotebookClient(nb, timeout=1800, kernel_name="python3", resources={"metadata": {"path": str(HERE)}}).execute()
-    nbformat.write(nb, path)
+    finally:
+        if before is None:
+            os.environ.pop(OUT_ENV, None)
+        else:
+            os.environ[OUT_ENV] = before
+
+
+def build(path: Path, run: bool) -> None:
+    """Write the notebook to `path` through a temp file moved over it; with `run`, execute it first."""
+    path = path.resolve()
+    nb = notebook()
+    if run:
+        execute(nb, path.parent)
+    tmp = path.with_name(path.name + ".tmp")
+    nbformat.write(nb, tmp)
+    os.replace(tmp, path)
 
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="Write and execute module 08's notebook.")
     ap.add_argument("--no-execute", action="store_true", help="write the cells without running them")
-    ap.add_argument("--out", type=Path, default=NOTEBOOK, help="where the notebook is written (default: the module's notebook)")
+    ap.add_argument("--out", type=Path, default=NOTEBOOK,
+                    help="where the notebook is written (default: the module's notebook); results.json and figures/ go beside it")
     a = ap.parse_args(argv)
-    build(a.out, execute=not a.no_execute)
+    build(a.out, run=not a.no_execute)
     print(("written (not executed): " if a.no_execute else "executed and written: ") + str(a.out))
     return 0
 

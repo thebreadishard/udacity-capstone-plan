@@ -67,3 +67,32 @@ The lines above are the record of 28 September and stay as written. What they sa
 - **Not done on 20 November 2026:** the final scenario run, the snapshot build, `steward/`, `requirements.txt` frozen again, and the dry run of
   `tools/make_module_repo.sh`. Also open: a submitted repository cannot import `m08.certify` yet, because `m08/pipeline.py` and
   `m08/accuracy.py` import module 05's and `probes/`' code through `sys.path` (`STANDALONE_PLAN_2026-10-18.md`, section of 20 November 2026).
+
+## Addendum, 20 November 2026 08:48 — after the independent review of this rewrite
+
+The review of the addendum above found twenty things, four of them wrong statements. What changed, so that the addendum above is
+read with it:
+
+- **The anharmonic step.** The paper and the README said the C–H stretches had no measured error. They have one since 14 November:
+  the step's bars are 3.37 (ring-ip), 3.84 ('other'), 8.38 (CH-oop) and 6.21 cm⁻¹ (CH-stretch), over 56, 23, 22 and 20 modes of
+  coronene and tetracene (`GoalGathering/notes/PreRegistration_2026-11-14_Printed_Band_Position.md`, amendment 1 of 19 Nov;
+  `probes/anharmonic_step/x2star_v3.json`). The README's section was read again against that note, `modules/PIPELINE.md` and the
+  two run notes of 19 November. The paper reads the bars from the stored run's record.
+- **One wording for the licence.** It is on the network's harmonic position ω against the DFT proxy. No anharmonic position ν is
+  claimed to 3 cm⁻¹. README, notebook (section 3.7's table has separate columns) and paper say it the same way.
+- **The eight requests.** "8 of 8" are five pre-registered requests and three added cases; S5, S6 and S7 are mechanical checks and
+  are reported apart, each from the record.
+- **Builders.** A record's keys are indexed: a missing key stops the build with its name. A sentence that states an outcome is
+  checked against the record first (the notebook's cell before section 4; `make_summary.checked_outcome`). The notebook, the paper
+  and `results.json` are written through a temp file. `results.json` records where the scenario results were read from, and
+  `make_summary.py` refuses an interim record unless `--interim` is given.
+- **The submitted results.** `run_scenarios.py --with-catalog --submitted` writes `out/scenario_results_submitted.json`, which
+  `SUBMISSION.txt` lists; the notebook reads that file where it exists.
+- **Cost lines.** A priced line comes from the evidence page the export names (`certify.PRICED_EVIDENCE`), not from the molecule's
+  name; naphthalene has one such page today, so its line says one family. A molecule at the anchored rung without a carried
+  registry entry is refused.
+- **The anchor's price.** The price table's anchor entry (42.5 CCX53-hours) cites the frozen-10 rerun of 28 September. That rerun
+  is not the anchor in force for naphthalene, and it ran before the lambda incident was found on 29 September; the paper now says
+  "one anchor run of that kind was priced … on 28 September" and that the anchors in force carry no price.
+- **Rebuilt** on the same interim results: notebook, `results.json`, figures, paper (1,934 body words). The paper's file names
+  its author in its own properties.

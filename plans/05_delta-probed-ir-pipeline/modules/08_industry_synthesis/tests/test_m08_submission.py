@@ -17,13 +17,15 @@ from types import ModuleType
 
 import nbformat
 import pytest
+from docx import Document
 
 MODULE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(MODULE))
 import run_scenarios  # noqa: E402
-from m08 import paths, stored_run  # noqa: E402
+from m08 import paths, prices, stored_run  # noqa: E402
+from m08 import pipeline as P  # noqa: E402
 from m08.catalog import Catalog  # noqa: E402
-from m08.certify import ANCHOR_REGISTRY, anchor_cost_lines, carried_anchor, certificate, to_markdown  # noqa: E402
+from m08.certify import ANCHOR_REGISTRY, PRICED_EVIDENCE, anchor_cost_lines, carried_anchor, certificate, to_markdown  # noqa: E402
 from m08.officer import CATION_NEEDED, Request, decide  # noqa: E402
 from m08.replay import execute_run_order  # noqa: E402
 from m08.seen import CATION_LAYER  # noqa: E402
@@ -55,7 +57,7 @@ def test_s6_status_follows_another_record_and_refuses_without_one(tmp_path: Path
 def test_the_anchor_cost_line_quotes_the_registry_entry(cat: Catalog) -> None:
     row = cat.find("benzene")
     entry = carried_anchor(row["id"], row["name"])
-    lines = anchor_cost_lines("benzene", entry)
+    lines = anchor_cost_lines("benzene", row["evidence"], entry)
     assert len(lines) == 1
     line = lines[0]
     assert entry["level"] in line["step"] and entry["date"] in line["step"] and entry["kind"] in line["step"]
@@ -63,15 +65,31 @@ def test_the_anchor_cost_line_quotes_the_registry_entry(cat: Catalog) -> None:
     assert ANCHOR_REGISTRY in line["source"] and entry["path"] in line["source"]
 
 
-def test_a_molecule_without_an_entry_gets_no_anchor_line() -> None:
-    assert anchor_cost_lines("biphenyl", None) == []
+def test_an_anchored_molecule_without_a_registry_entry_is_refused_by_name() -> None:
+    with pytest.raises(ValueError, match="biphenyl is at the anchored rung, but the anchor registry"):
+        anchor_cost_lines("biphenyl", [], None)
 
 
-def test_naphthalene_keeps_its_priced_family_readings_beside_the_registry_line(cat: Catalog) -> None:
+def test_a_priced_evidence_page_gives_one_line_with_the_price_tables_numbers(cat: Catalog) -> None:
+    """The line's label, hours and source are one reading's: the page the export names and the price table's entry for it."""
     row = cat.find("naphthalene")
-    readings, in_force = anchor_cost_lines("naphthalene", carried_anchor(row["id"], row["name"]))
-    assert readings["eur_ex_vat"] is not None and "registry" in readings["note"]
+    priced = [page for page in row["evidence"] if page in PRICED_EVIDENCE]
+    assert len(priced) == 1, "naphthalene's export names one M3 reading page today; the test reads its line"
+    reading, in_force = anchor_cost_lines("naphthalene", row["evidence"], carried_anchor(row["id"], row["name"]))
+    step = prices.step_price(PRICED_EVIDENCE[priced[0]])
+    assert reading["step"].endswith(Path(priced[0]).name) and "one family" in reading["step"] and "two families" not in reading["step"]
+    assert reading["hours"] == step["hours"] and reading["eur_ex_vat"] == step["eur_ex_vat"] and reading["source"] == step["source"]
     assert in_force["step"].startswith("anchor in force: ")
+
+
+def test_the_priced_line_follows_the_evidence_not_the_molecules_name(cat: Catalog) -> None:
+    row = cat.find("benzene")
+    entry = carried_anchor(row["id"], row["name"])
+    page = next(iter(PRICED_EVIDENCE))
+    assert len(anchor_cost_lines("benzene", [*row["evidence"], page], entry)) == 2
+    naphthalene = cat.find("naphthalene")
+    without = [p for p in naphthalene["evidence"] if p not in PRICED_EVIDENCE]
+    assert len(anchor_cost_lines("naphthalene", without, carried_anchor(naphthalene["id"], naphthalene["name"]))) == 1
 
 
 @pytest.mark.parametrize("name", ["benzene", "naphthalene"])
@@ -100,11 +118,16 @@ def test_the_cation_refusal_says_what_is_true_today(cat: Catalog) -> None:
     assert "anchor plan" not in refusal.ledger_line
 
 
-def test_the_facts_the_cation_refusal_states_hold() -> None:
-    """The sentence says the corpus holds cation rows and the registry carries no cation anchor; both are read here."""
+def test_the_facts_the_cation_refusal_states_hold(tmp_path: Path) -> None:
+    """Each clause of the refusal is read from where it is true, so the sentence fails here the day a fact changes: the corpus
+    holds cation rows, not all of them are computed, the pipeline takes neutral closed-shell input only, and the registry carries
+    no cation anchor."""
     with paths.resolve("modules/05_support_predictor/corpus/manifest.csv").open(encoding="utf-8", newline="") as fh:
-        layers = {row["layer"] for row in csv.DictReader(fh)}
-    assert CATION_LAYER in layers
+        cations = [row for row in csv.DictReader(fh) if row["layer"] == CATION_LAYER]
+    assert cations, "the corpus holds cation rows"
+    assert [row for row in cations if row["status"] != "done"], "'not all computed yet' (CATION_NEEDED)"
+    with pytest.raises(ValueError, match="neutral closed-shell"):
+        P.PipelineConfig(name="cation", out_root=tmp_path, smiles="c1ccccc1", charge=1, multiplicity=2, psi4_python=Path(sys.executable))
     registry = json.loads(paths.resolve(ANCHOR_REGISTRY).read_text(encoding="utf-8"))["anchors"]
     carried = [e["name"] for e in registry if e["status"] == "carried"]
     assert carried and not [n for n in carried if "+" in n or "⁺" in n or "cation" in n]
@@ -119,6 +142,10 @@ def test_the_stored_run_is_a_pipeline_certificate_of_the_carried_network() -> No
     assert [r["printed (cm⁻¹)"] for r in rows] == sorted(r["printed (cm⁻¹)"] for r in rows)
     strongest = max(b["km_mol"] for b in record["bands"])
     assert strongest in [r["height (km/mol)"] for r in rows]
+    # the licence is about ω; a band printed as ν shows the step's own bar beside it, read from the record
+    stepped = next(b for b in record["bands"] if b["step_bar_cm"] is not None and b["km_mol"] == strongest)
+    row = next(r for r in rows if r["height (km/mol)"] == strongest)
+    assert row["ν: the step's error bar"] == stepped["step_bar_cm"] and "ω licensed" in row
 
 
 def test_the_stored_run_refuses_another_kind_of_record(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -172,15 +199,158 @@ def test_the_notebook_names_the_scenarios_molecule_from_the_scenario_file() -> N
     assert molecule not in cells and "azulene" not in cells
 
 
-def test_the_paper_builds_from_todays_results_inside_the_word_range(summary: ModuleType, results: dict) -> None:
+def _text(summary: ModuleType, record: dict) -> str:
+    return " ".join(block[1] for block in summary.blocks(record) if block[0] == "para")
+
+
+def test_the_paper_builds_from_todays_results_with_headroom(summary: ModuleType, results: dict) -> None:
+    """Thirty words of headroom: the final run's record has a longer S3 source line and an S5 sentence."""
     paper = summary.blocks(results)
-    assert summary.WORD_RANGE[0] <= summary.checked_words(paper) <= summary.WORD_RANGE[1]
-    text = " ".join(block[1] for block in paper if block[0] == "para")
+    assert summary.WORD_RANGE[0] <= summary.checked_words(paper) <= summary.WORD_RANGE[1] - 30
+    text = _text(summary, results)
     assert f"rule table of {results['n_rules']} rules" in text
     assert results["s2"]["request"]["molecule"] in text
     assert f"version {results['pipeline_version']}" in text
-    for stale in ("1,200", "layer-B", "live worker would", "azulene", "this week"):
+    for stale in ("1,200", "layer-B", "live worker would", "azulene", "this week", "honest", "transferable", "not yet run"):
         assert stale not in text
+
+
+def test_the_paper_says_which_requests_passed_and_reports_the_mechanical_checks_apart(summary: ModuleType, results: dict) -> None:
+    scenarios = results["scenarios"]
+    sentence = summary.scenario_sentences(scenarios, results["outcome"])
+    assert f"{len(scenarios['registered_ids'])} pre-registered ({', '.join(scenarios['registered_ids'])})" in sentence
+    assert f"{len(scenarios['added_ids'])} added cases ({', '.join(scenarios['added_ids'])})" in sentence
+    assert not {"S5", "S6", "S7"} & set(scenarios["registered_ids"] + scenarios["added_ids"])
+    assert f"{results['outcome']['n_unpriced']} anchor lines are shown as not priced" in sentence
+    assert scenarios["mechanical"]["S6"]["status"] in sentence
+    with_s5 = json.loads(json.dumps(scenarios))
+    with_s5["mechanical"]["S5"] = dict(exit_code=0, problems=[])
+    assert "exited with code 0 and problems []" in summary.scenario_sentences(with_s5, results["outcome"])
+    assert "was not part of this run" in summary.scenario_sentences({**with_s5, "mechanical": {k: v for k, v in with_s5["mechanical"].items()
+                                                                                             if k != "S5"}}, results["outcome"])
+
+
+def test_the_paper_states_the_anharmonic_bars_from_the_record(summary: ModuleType, results: dict) -> None:
+    step = results["pipeline_run"]["anharmonic"]
+    sentence = summary.anharmonic_sentence(step, results["licence"]["line_cm"])
+    for family, bar in step["bars_cm"].items():
+        assert f"{bar:.2f} ({family})" in sentence
+    assert f"{len(step['bars_cm'])} families" in sentence and " and ".join(step["target_molecules"]) in sentence
+    assert "no anharmonic position is claimed" in sentence
+    one_passes = {**step, "bars_cm": {**step["bars_cm"], "ring-ip": 1.0}}
+    assert "Only ring-ip is within" in summary.anharmonic_sentence(one_passes, results["licence"]["line_cm"])
+
+
+def test_the_paper_says_what_the_stored_run_is_evidence_of(summary: ModuleType, results: dict) -> None:
+    run = results["pipeline_run"]
+    sentence = summary.stored_run_sentence(run)
+    assert f"written by version {run['pipeline_version']}" in sentence
+    assert ("was written before" if not run["has_own_spread"] else "carries") in sentence
+    assert "release networks' training data" in summary.stored_run_sentence({**run, "seen": dict(role="release_trained", text="-")})
+    assert "the text of the record" in summary.stored_run_sentence({**run, "seen": dict(role="unseen", text="the text of the record")})
+
+
+@pytest.mark.parametrize("path", [("catalogue", "rung_counts", "anchored"), ("scenarios", "results_env_set"), ("outcome",),
+                                  ("pipeline_run", "anharmonic", "bars_cm"), ("prices", "steps", "cheap_deck_v1")])
+def test_a_record_without_a_key_fails_the_papers_build(summary: ModuleType, results: dict, path: tuple[str, ...]) -> None:
+    broken = json.loads(json.dumps(results))
+    inner = broken
+    for key in path[:-1]:
+        inner = inner[key]
+    del inner[path[-1]]
+    with pytest.raises(KeyError, match=path[-1]):
+        summary.interim_reasons(broken)
+        summary.blocks(broken)
+
+
+def test_neither_builder_defaults_a_records_key() -> None:
+    """A `.get(key, default)` on a record printed a zero for a count the export no longer had; the builders index instead."""
+    builder = _builder("m08_make_notebook", MODULE / "notebook" / "make_notebook.py")
+    for kind, text in builder.CELLS:
+        if kind == "code":
+            assert ".get(" not in text, text.splitlines()[0]
+    assert ".get(" not in (MODULE / "make_summary.py").read_text(encoding="utf-8")
+
+
+def test_an_outcome_the_record_does_not_show_stops_the_paper(summary: ModuleType, results: dict) -> None:
+    for claim in results["outcome"]["claims"]:
+        broken = json.loads(json.dumps(results))
+        broken["outcome"]["claims"][claim] = False
+        with pytest.raises(ValueError, match="outcomes the record does not show"):
+            summary.blocks(broken)
+
+
+def test_an_interim_record_is_named_and_refused_without_the_flag(summary: ModuleType, results: dict, tmp_path: Path,
+                                                                 monkeypatch: pytest.MonkeyPatch) -> None:
+    final = json.loads(json.dumps(results))
+    final["scenarios"].update(written_by="run_scenarios.py --with-catalog --submitted", results_env_set=False, results_dir="out")
+    final["scenarios"]["mechanical"]["S5"] = dict(exit_code=0, problems=[])
+    assert summary.interim_reasons(final) == []
+    for change, word in ((dict(written_by="run_scenarios.py --no-candidate"), "fixed candidate"), (dict(results_env_set=True), "M08_SCENARIO_RESULTS")):
+        interim = json.loads(json.dumps(final))
+        interim["scenarios"].update(change)
+        assert word in " ".join(summary.interim_reasons(interim))
+    no_s5 = json.loads(json.dumps(final))
+    del no_s5["scenarios"]["mechanical"]["S5"]
+    assert "no S5" in " ".join(summary.interim_reasons(no_s5))
+    record = tmp_path / "results.json"
+    record.write_text(json.dumps(no_s5), encoding="utf-8")
+    monkeypatch.setattr(summary, "RESULTS", record)
+    with pytest.raises(SystemExit, match="not the final run's record"):
+        summary.main(["--no-pdf", "--out", str(tmp_path / "paper.docx")])
+    record.write_text(json.dumps(final), encoding="utf-8")
+    with pytest.raises(SystemExit, match="is the final run's record"):
+        summary.main(["--interim", "--no-pdf", "--out", str(tmp_path / "paper.docx")])
+    assert not list(tmp_path.glob("*.docx"))
+
+
+def test_the_docx_is_written_whole_under_the_authors_name(summary: ModuleType, results: dict, tmp_path: Path) -> None:
+    out = tmp_path / "paper.docx"
+    summary.write_docx(summary.blocks(results), out)
+    properties = Document(str(out)).core_properties
+    assert properties.author == properties.last_modified_by == summary.AUTHOR
+    assert summary.AUTHOR in summary.blocks(results)[2][1]
+    assert [p.name for p in tmp_path.iterdir()] == ["paper.docx"], "a temp file was left beside the paper"
+
+
+def test_the_notebook_builder_writes_through_a_temp_file_where_it_is_told(tmp_path: Path) -> None:
+    builder = _builder("m08_make_notebook", MODULE / "notebook" / "make_notebook.py")
+    before = (MODULE / "notebook" / "results.json").read_bytes()
+    builder.build(tmp_path / "elsewhere.ipynb", run=False)
+    assert [p.name for p in tmp_path.iterdir()] == ["elsewhere.ipynb"]
+    assert len(nbformat.read(tmp_path / "elsewhere.ipynb", as_version=4).cells) == len(builder.CELLS)
+    imports = next(text for kind, text in builder.CELLS if kind == "code")
+    assert f'os.environ["{builder.OUT_ENV}"]' in imports, "the cells write results.json and figures where the builder says"
+    assert (MODULE / "notebook" / "results.json").read_bytes() == before
+
+
+def test_the_submitted_record_needs_the_whole_run() -> None:
+    for argv in (["--submitted"], ["--submitted", "--with-catalog", "--no-candidate"]):
+        with pytest.raises(SystemExit) as refused:
+            run_scenarios.main(argv)
+        assert refused.value.code == 2
+
+
+def test_the_submitted_record_is_written_under_its_fixed_name_and_never_from_a_failing_run(tmp_path: Path) -> None:
+    passing = dict(n_pass=8, n_scenarios=8)
+    dated = run_scenarios.write_records(passing, tmp_path, submitted=True)
+    assert json.loads((tmp_path / run_scenarios.SUBMITTED).read_text(encoding="utf-8")) == passing
+    assert dated.name.startswith("scenario_results_2") and sorted(p.name for p in tmp_path.iterdir()) == sorted([dated.name, run_scenarios.SUBMITTED])
+    failing = tmp_path / "failing"
+    failing.mkdir()
+    with pytest.raises(RuntimeError, match="not written from a failing run"):
+        run_scenarios.write_records(dict(n_pass=7, n_scenarios=8), failing, submitted=True)
+    assert [p.name for p in failing.iterdir()] == [dated.name]
+    plain = tmp_path / "plain"
+    plain.mkdir()
+    run_scenarios.write_records(passing, plain, submitted=False)
+    assert [p.name for p in plain.iterdir()] == [dated.name]
+
+
+def test_the_submission_list_names_the_submitted_record_as_an_entry() -> None:
+    """A listed path the module does not hold stops tools/make_module_repo.sh, so the final run cannot be forgotten."""
+    lines = [line.split("#")[0].strip() for line in (MODULE / "SUBMISSION.txt").read_text(encoding="utf-8").splitlines()]
+    assert f"out/{run_scenarios.SUBMITTED}" in lines
 
 
 def test_the_papers_numbers_follow_the_record(summary: ModuleType, results: dict) -> None:
@@ -188,7 +358,7 @@ def test_the_papers_numbers_follow_the_record(summary: ModuleType, results: dict
     changed["n_rules"] = 7
     changed["licence"]["licensed_families"] = [f for f in changed["licence"]["licensed_families"] if f != "other"]
     changed["licence"]["errors"]["other"] = {"a": 3.5, "b": 3.9}
-    text = " ".join(block[1] for block in summary.blocks(changed) if block[0] == "para")
+    text = _text(summary, changed)
     n_families = len(changed["licence"]["errors"])
     assert "rule table of 7 rules" in text
     assert f"{n_families - 1} of {n_families} families are licensed" in text and "other is not" in text

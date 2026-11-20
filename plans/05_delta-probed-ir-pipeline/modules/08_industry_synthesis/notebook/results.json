@@ -1,5 +1,5 @@
 {
- "date": "2026-11-20 08:13",
+ "date": "2026-11-20 08:49",
  "catalogue": {
   "n": 14258,
   "built_utc": "2026-11-19T13:41:50Z",
@@ -81,6 +81,20 @@
   "date": "2026-11-20 08:03",
   "record": "scenario_results_2026-11-20.json",
   "written_by": "run_scenarios.py --no-candidate --out light_out",
+  "results_dir": "light_out",
+  "results_env_set": true,
+  "registered_ids": [
+   "S1",
+   "S2",
+   "S3",
+   "S4a",
+   "S8"
+  ],
+  "added_ids": [
+   "S2b",
+   "S4b",
+   "S4c"
+  ],
   "table": [
    {
     "id": "S1",
@@ -185,6 +199,17 @@
    }
   }
  },
+ "outcome": {
+  "claims": {
+   "every request produced the registered kind of output": true,
+   "no run started: no worker touched a machine": true,
+   "the gate did not approve the run order and forced the dry run": true,
+   "every cost line traces to its source (S7)": true,
+   "the failure case is on the page (S8)": true
+  },
+  "n_cost_lines": 5,
+  "n_unpriced": 2
+ },
  "s1": {
   "rung": 4,
   "families": [
@@ -229,14 +254,14 @@
     "replay": true
    },
    {
-    "step": "anchor family readings (M3, two families, laptop)",
+    "step": "anchor family reading (M3, one family, laptop): M3_TZ_MODE22_READING_2026-09-23.md",
     "what": "one family's anchor reading along a mode (M3: cc-pVDZ + cc-pVTZ curvature, LNO-CCSD(T), five points)",
     "machine": "laptop",
     "hours": 66.83,
     "eur_ex_vat": 0.0,
     "measured_on": "naphthalene, laptop: 4,201 s per cc-pVDZ energy, 12.2 h per cc-pVTZ energy at tight thresholds",
     "source": "probes/results_m1/M3_TZ_MODE12_READING_2026-09-20.md (12.2 h per TZ energy); REPRODUCE.md row on the neutral price (4,201 s)",
-    "note": "two families read (evidence files); hours per family from the M3 record; the anchor in force is the registry's entry on the next line"
+    "note": "the hours are the price table's for one family's reading (five points), measured where its source says; this page's own hours are not recorded apart. The anchor in force is the registry's entry on the last line"
    },
    {
     "step": "anchor in force: CCSD(T)/cc-pVDZ + [MP2/cc-pVTZ − MP2/cc-pVDZ] (composite, registered 2026-10-07)",
@@ -320,6 +345,31 @@
    }
   ],
   "n_lab_bands": 92,
+  "cost": [
+   {
+    "step": "cheap rung (deck v1, both functionals)",
+    "machine": "Asus18",
+    "machine_class": "laptop",
+    "seconds": 1041.9,
+    "hours": 0.289,
+    "eur_ex_vat": 0.0,
+    "source": "corpus ledger machine column 'Asus18'",
+    "breakdown_s": {
+     "optimise": 7.4,
+     "hessian_b3lyp": 243.7,
+     "hessian_wb97x": 298.2
+    },
+    "replayed_from": "corpus ledger row A_8448043181 (machine Asus18, 2026-09-15 17:02:35 → 2026-09-15 17:19:59)",
+    "replay": true
+   },
+   {
+    "step": "anchor in force: CCSD(T)/cc-pVTZ (full, registered 2026-10-06)",
+    "eur_ex_vat": null,
+    "hours": null,
+    "machine": null,
+    "source": "modules/05_support_predictor/out/ANCHORS_STATUS.json → probes/results_m1/e8_benzene_ccpvtz_oop_2026-10-03/hessian_ccsd_t.npz; the registry carries no hours for this run — shown as not priced, not as €0"
+   }
+  ],
   "anchor": {
    "mol_id": "A_8448043181",
    "name": "benzene",
@@ -411,6 +461,21 @@
     "rule_id": "R01",
     "reason": "gate: dry run first"
    }
+  },
+  "worker": {
+   "executed": false,
+   "queued": true,
+   "reason": "the module 07 gate did not approve the launch (no passed dry run recorded for job 'anchor_e8:A_fdc27f1bd1' (R01))",
+   "forced_action": {
+    "action": "dry_run",
+    "args": {
+     "host": "CCX53",
+     "job": "anchor_e8:A_fdc27f1bd1"
+    },
+    "rule_id": "R01",
+    "reason": "gate: dry run first"
+   },
+   "machine_touched": false
   }
  },
  "s3": {
@@ -493,9 +558,38 @@
   "network_version": "1.4",
   "network_kind": "release",
   "trained_on_molecules": 1132,
+  "seen": {
+   "role": "release_trained",
+   "ids": [
+    "A_8448043181"
+   ],
+   "text": "in the release networks' training data: the error bars are not an out-of-sample error for this molecule; expect it to be smaller"
+  },
   "n_bands": 30,
   "n_licensed": 30,
-  "has_own_spread": false
+  "has_own_spread": false,
+  "anharmonic": {
+   "status": "applied",
+   "model": "x2*",
+   "artefact": "probes/anharmonic_step/x2star_v3.json",
+   "bars_cm": {
+    "CH-oop": 8.38,
+    "other": 3.84,
+    "ring-ip": 3.37,
+    "CH-stretch": 6.21
+   },
+   "target_rows": {
+    "CH-oop": 22,
+    "other": 23,
+    "ring-ip": 56,
+    "CH-stretch": 20
+   },
+   "target_molecules": [
+    "coronene",
+    "tetracene"
+   ],
+   "n_stepped": 28
+  }
  },
  "n_rules": 41,
  "pipeline_version": "0.15",

@@ -3,10 +3,12 @@
 `out/scenario_results_<date>.json`, the certificates (`out/certificates/`), the request ledger (`out/requests_ledger.csv`) and the cost-honesty
 check (S7). S5 (catalogue consistency) runs the export's own builder when `--with-catalog` is given (RDKit over the whole catalogue,
 ≈ a minute). S6 (accessibility) is not run here: its status is read from the record of its run (`s6_status`).
-Usage: python run_scenarios.py [--with-catalog] [--no-candidate] [--out DIR]"""
+`--submitted` also writes the record under the fixed name the submission lists, `out/scenario_results_submitted.json`.
+Usage: python run_scenarios.py [--with-catalog] [--no-candidate] [--submitted] [--out DIR]"""
 import argparse
 import csv
 import json
+import os
 import subprocess
 import sys
 import time
@@ -25,6 +27,7 @@ from dpir.provenance import provenance  # noqa: E402
 
 OUT = HERE / "out"
 S6_RECORD = OUT / "s6_accessibility_2026-10-11.json"   # the run of 11 Oct 2026 (PRE_REGISTRATION.md, outcome addendum)
+SUBMITTED = "scenario_results_submitted.json"          # SUBMISSION.txt lists this name; only --submitted writes it
 
 
 def judge(sc: dict, d, cert: dict | None, worker: dict | None) -> tuple[bool, list[str]]:
@@ -97,6 +100,26 @@ def s6_status(record: Path = S6_RECORD) -> dict:
                 pass_line=rec["pass_line"], record=under_module(record))
 
 
+def write_records(rec: dict, out: Path, submitted: bool) -> Path:
+    """Write the run's record under its date, and with `submitted` also under the fixed name the submission ships.
+
+    Each goes to a temp file that is moved over the target. A run in which a scenario fails is never written as the submitted
+    record: the dated file keeps it for reading, and the reason is raised.
+    """
+    names = [f"scenario_results_{time.strftime('%Y-%m-%d')}.json"] + ([SUBMITTED] if submitted else [])
+    if submitted and rec["n_pass"] != rec["n_scenarios"]:
+        names.remove(SUBMITTED)
+    for name in names:
+        tmp = out / (name + ".tmp")
+        with open(tmp, "w", encoding="utf-8") as fh:
+            json.dump(rec, fh, indent=1, ensure_ascii=False)
+        os.replace(tmp, out / name)
+    if submitted and SUBMITTED not in names:
+        raise RuntimeError(f"{rec['n_pass']} of {rec['n_scenarios']} scenarios pass: {SUBMITTED} is not written from a failing run "
+                           f"(the dated record is {names[0]})")
+    return out / names[0]
+
+
 def under_module(path) -> str:
     """A written file's path for the record: module-relative when it lies under the module, the plain path otherwise (a test writes
     its outputs elsewhere, and a record is no reason to crash)."""
@@ -147,7 +170,12 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--with-catalog", action="store_true", help="also run S5: website/export/build_catalog.py (≈ a minute)")
     ap.add_argument("--no-candidate", action="store_true", help="S3 with a fixed SMILES instead of a fresh module-06 draw (tests)")
     ap.add_argument("--out", type=Path, default=OUT, help="folder for the records (default: the module's out/; tests give a temporary one)")
+    ap.add_argument("--submitted", action="store_true",
+                    help=f"also write {SUBMITTED}, the record the submission ships; needs --with-catalog and a drawn candidate")
     a = ap.parse_args(argv)
+    if a.submitted and (a.no_candidate or not a.with_catalog):
+        ap.error(f"--submitted writes the record the submission ships ({SUBMITTED}): it needs --with-catalog (S5) and a drawn "
+                 "candidate, so it does not combine with --no-candidate")
     out = a.out
     S = json.load(open(HERE / "scenarios" / "scenarios.json", encoding="utf-8"))
     cat = Catalog()
@@ -180,8 +208,7 @@ def main(argv: list[str] | None = None) -> int:
     mech["S6"] = s6_status()
     rec = dict(date=time.strftime("%Y-%m-%d %H:%M"), frozen=S["frozen"], n_pass=sum(r["passed"] for r in results), n_scenarios=len(results), results=results, mechanical=mech,
                licence=cert["provenance"]["licence"] if certs else None, provenance=provenance())
-    p = out / f"scenario_results_{time.strftime('%Y-%m-%d')}.json"
-    json.dump(rec, open(p, "w", encoding="utf-8"), indent=1, ensure_ascii=False)
+    p = write_records(rec, out, a.submitted)
     print(f"{rec['n_pass']}/{rec['n_scenarios']} scenarios pass; written {under_module(p)}")
     return 0 if rec["n_pass"] == rec["n_scenarios"] else 1
 

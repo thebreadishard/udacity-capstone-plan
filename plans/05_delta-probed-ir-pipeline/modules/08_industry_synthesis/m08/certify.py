@@ -22,6 +22,12 @@ from .replay import replay_run
 
 MODE_RE = re.compile(r"mode (\d+)[^0-9]{0,40}?(\d{3,4}\.\d) cm", re.I)
 ANCHOR_REGISTRY = "modules/05_support_predictor/out/ANCHORS_STATUS.json"   # decision 62: one carried entry per molecule
+# The evidence pages whose reading the price table prices, by the page the export names. One family's M3 reading is five points;
+# `prices.STEPS` holds its hours from the mode-12 reading's record, and the mode-22 page was read the same way.
+PRICED_EVIDENCE = {
+    "probes/results_m1/M3_TZ_MODE12_READING_2026-09-20.md": "anchor_m3_family_reading_naphthalene",
+    "probes/results_m1/M3_TZ_MODE22_READING_2026-09-23.md": "anchor_m3_family_reading_naphthalene",
+}
 
 
 def carried_anchor(mol_id: str, name: str) -> dict | None:
@@ -42,24 +48,29 @@ def carried_anchor(mol_id: str, name: str) -> dict | None:
     return None
 
 
-def anchor_cost_lines(name: str, entry: dict | None) -> list[dict]:
-    """The anchored rung's cost lines: the family readings the price table holds, and the anchor in force as the registry names it.
+def anchor_cost_lines(name: str, evidence: list[str], entry: dict | None) -> list[dict]:
+    """The anchored rung's cost lines: one per evidence page the price table prices, then the anchor in force as the registry names it.
 
     The registry says what the anchor is — level, kind, date, file — and not what its run cost, so that line is shown as not
     priced, never as €0. Until 20 Nov 2026 these lines named September's runs as typed text, and the registry marks one of those
-    runs invalid (the lambda incident).
+    runs invalid (the lambda incident). A molecule at the anchored rung without a carried registry entry is refused: the
+    certificate would name an anchor nobody can point to.
     """
+    if entry is None:
+        raise ValueError(f"{name} is at the anchored rung, but the anchor registry ({ANCHOR_REGISTRY}) carries no entry for it; "
+                         "register the anchor (m05/anchor_registry.py) or correct the molecule's rung in the export")
     lines = []
-    if name == "naphthalene":
-        reading = {k: v for k, v in prices.step_price("anchor_m3_family_reading_naphthalene").items() if k not in ("step", "note")}
-        lines.append(dict(step="anchor family readings (M3, two families, laptop)", **reading,
-                          note="two families read (evidence files); hours per family from the M3 record; the anchor in force is the "
-                               "registry's entry on the next line"))
-    if entry:
-        lines.append(dict(step=f"anchor in force: {entry['level']} ({entry['kind']}, registered {entry['date']})",
-                          eur_ex_vat=None, hours=None, machine=None,
-                          source=f"{ANCHOR_REGISTRY} → {entry['path']}; the registry carries no hours for this run — shown as not "
-                                 "priced, not as €0"))
+    for page in evidence:
+        if page not in PRICED_EVIDENCE:
+            continue
+        reading = {k: v for k, v in prices.step_price(PRICED_EVIDENCE[page]).items() if k not in ("step", "note")}
+        lines.append(dict(step=f"anchor family reading (M3, one family, laptop): {Path(page).name}", **reading,
+                          note="the hours are the price table's for one family's reading (five points), measured where its source says; "
+                               "this page's own hours are not recorded apart. The anchor in force is the registry's entry on the last line"))
+    lines.append(dict(step=f"anchor in force: {entry['level']} ({entry['kind']}, registered {entry['date']})",
+                      eur_ex_vat=None, hours=None, machine=None,
+                      source=f"{ANCHOR_REGISTRY} → {entry['path']}; the registry carries no hours for this run — shown as not "
+                             "priced, not as €0"))
     return lines
 
 
@@ -162,9 +173,7 @@ def certificate(row: dict, catalog: Catalog) -> dict:
     coverage = anchor_coverage(row.get("evidence", []), ub) if rung >= 4 else []
     entry = carried_anchor(row["id"], row["name"]) if rung >= 4 else None
     anchor = dict(registry=ANCHOR_REGISTRY, entry=entry,
-                  note=("the anchor in force for this molecule, with the checks it passed" if entry else
-                        "rung 4 is claimed but the anchor registry carries no entry for this molecule" if rung >= 4 else
-                        "\u2014 not anchored (rung < 4)"))
+                  note="the anchor in force for this molecule, with the checks it passed" if entry else "\u2014 not anchored (rung < 4)")
     run = replay_run(mol) if mol else None
     cost = []
     if run:
@@ -172,7 +181,7 @@ def certificate(row: dict, catalog: Catalog) -> dict:
                          breakdown_s=dict(optimise=run["seconds_optimise"], hessian_b3lyp=run["seconds_hessian_b3lyp"], hessian_wb97x=run["seconds_hessian_wb97x"]),
                          replayed_from=run["source"], replay=True))
     if rung >= 4:
-        cost += anchor_cost_lines(row["name"], entry)
+        cost += anchor_cost_lines(row["name"], row.get("evidence", []), entry)
     prov = dict(release=row.get("releases", []), deck_hash=mol["ledger"]["deck"] if mol else None, commit=commit_hash(), export_built_utc=catalog.summary["built_utc"],
                 export_sources_sha256=catalog.summary.get("sources"),
                 evidence=[dict(path=e, exists=paths.resolve(e, must_exist=False).exists()) for e in row.get("evidence", [])],
@@ -202,16 +211,14 @@ def certificate(row: dict, catalog: Catalog) -> dict:
 
 
 def anchor_markdown(c: dict) -> list[str]:
-    """The page's 'anchor in force' block: the registry's entry, or the plain statement that a rung 4 has none."""
+    """The page's 'anchor in force' block: the registry's entry; nothing for a molecule below the anchored rung."""
     entry = c["anchor"]["entry"]
-    if entry:
-        return ["", "## The anchor in force", "",
-                f"**{entry['level']}** ({entry['kind']}, basis tier {entry['tier']}), registered {entry['date']}, "
-                f"`{entry['path']}` (sha16 `{entry['sha16']}`).", "", f"Checks that passed: {entry['checks']}.", "",
-                f"Source: `{c['anchor']['registry']}`, the project's anchor registry."]
-    if c["rung"]["reached"] >= 4:
-        return ["", "## The anchor in force", "", f"**None.** {c['anchor']['note']}."]
-    return []
+    if not entry:
+        return []
+    return ["", "## The anchor in force", "",
+            f"**{entry['level']}** ({entry['kind']}, basis tier {entry['tier']}), registered {entry['date']}, "
+            f"`{entry['path']}` (sha16 `{entry['sha16']}`).", "", f"Checks that passed: {entry['checks']}.", "",
+            f"Source: `{c['anchor']['registry']}`, the project's anchor registry."]
 
 
 def to_markdown(c: dict) -> str:
