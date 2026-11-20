@@ -29,18 +29,21 @@ MP2_DIR = RESULTS / "composite_rows_2026-10-07"
 OUT_DIR = RESULTS / "anchor_price_2026-11-20"
 MOLECULE = "naphthalene"
 # The queue's logs do not print a host name. The machine is the CCX53: the obstacle ledger's entry of 7 Oct 17:2x ("the MP2 rows
-# queue … exceeded the CCX53's 122 GB"), and queue.log quotes its own script as mp2_rows_queue_ccx53.sh.
+# queue … exceeded the CCX53's 122 GB"), and queue.log quotes its own script, which the parser requires before it prices the step.
 MP2_MACHINE = "CCX53"
-MP2_MACHINE_SOURCE = "obstacle ledger, 7 Oct 17:2x (the MP2 rows queue on the CCX53); queue.log names its script mp2_rows_queue_ccx53.sh"
+MP2_QUEUE_SCRIPT = "mp2_rows_queue_ccx53.sh"
+MP2_MACHINE_SOURCE = f"obstacle ledger, 7 Oct 17:2x (the MP2 rows queue on the CCX53); queue.log names its script {MP2_QUEUE_SCRIPT}"
 RULE = ("a machine-hour is a wall-clock hour of the rented machine, charged to the molecule by the share of the machine's lanes that "
-        "worked for it: a run that holds the machine alone is charged its whole wall-clock span from launch to end, lost attempts "
-        "and idle gaps included; a job in a queue of N lanes shared with other molecules is charged its own wall time / N, and the "
+        "worked for it: a run the machine was rented for is charged its whole wall-clock span from launch to end, lost attempts "
+        "and idle gaps included, also where other work ran beside it; a job in a queue of N lanes shared with other molecules is "
+        "charged its own wall time / N, and the "
         "queue's own losses (failed starts, another molecule's killed job) are not charged to this molecule")
 STAMP_TOLERANCE_S = 60     # a logged duration and the stamps around it may differ by the lines written in between
 
 STAMP = re.compile(r"^\[(\d{4}-\d\d-\d\d \d\d:\d\d:\d\d)\] (.*)$")
 CHAIN_START = re.compile(r"chain \(corrected route\) start on (\S+)")
 HEADER_THREADS = re.compile(r"E8 FD Hessian: .*?(\d+) threads")
+HEADER_ATOMS = re.compile(r"E8 FD Hessian: (\d+) atoms")
 PARTIAL = re.compile(r"partial run: displacement indices \[([\d, ]+)\]")
 SYMMETRY = re.compile(r"symmetry: .*?(\d+) displacements \((\d+) gradients\)")
 GRADIENT = re.compile(r"coordinate\s+(\d+) ([pm]): .*?, (\d+) s ")
@@ -142,9 +145,21 @@ def reference_of(lines: list[tuple[datetime, str]], relaunched: datetime) -> dic
     at, ref_s = one([(t, int(m.group(1))) for t, body in after if (m := REFERENCE.search(body))], "reference line after the last start")
     if abs(seconds(at, relaunched) - ref_s) > STAMP_TOLERANCE_S:
         raise ValueError(f"the reference line says {ref_s} s, its stamp is {seconds(at, relaunched)} s after the last start: not the same attempt")
-    checks = {m.group(1): int(m.group(2)) for t, body in after if t <= at and (m := KERNEL_CHECK.search(body))}
-    return dict(ended=at.strftime(TIME_FORMAT), seconds=ref_s, two_route_checks_s=checks, two_route_checks_sum_s=sum(checks.values()),
-                seconds_without_checks=ref_s - sum(checks.values()))
+    checks: dict[str, int] = {}
+    for t, body in after:
+        if t <= at and (m := KERNEL_CHECK.search(body)):
+            if m.group(1) in checks:
+                raise ValueError(f"two {m.group(1)} two-route check lines in one attempt: which one the reference holds is not decided")
+            checks[m.group(1)] = int(m.group(2))
+    return dict(ended=at.strftime(TIME_FORMAT), seconds=ref_s, two_route_checks_s=checks, two_route_checks_sum_s=sum(checks.values()))
+
+
+def atoms_of(lines: list[tuple[datetime, str]]) -> int:
+    """The molecule's atom count as every run header of the log states it."""
+    counts = {int(m.group(1)) for _, body in lines if (m := HEADER_ATOMS.search(body))}
+    if len(counts) != 1:
+        raise ValueError(f"the run headers name {sorted(counts)} as atom counts: one molecule's log names exactly one")
+    return counts.pop()
 
 
 def parse_cc_run(fd_log: str, anchors_log: str) -> dict:
@@ -160,7 +175,7 @@ def parse_cc_run(fd_log: str, anchors_log: str) -> dict:
                  assembly_s=seconds(valid, datetime.strptime(grads["ended"], TIME_FORMAT)))
     if abs(sum(parts.values()) - wall) > STAMP_TOLERANCE_S:
         raise ValueError(f"the parts sum to {sum(parts.values())} s, launch to VALID is {wall} s: the log has a stretch this script does not name")
-    return dict(host=host, machine=prices.host_class(host), launched=launched.strftime(TIME_FORMAT), n_starts=len(starts),
+    return dict(host=host, machine=prices.host_class(host), n_atoms=atoms_of(lines), launched=launched.strftime(TIME_FORMAT), n_starts=len(starts),
                 relaunched=relaunched.strftime(TIME_FORMAT), valid=valid.strftime(TIME_FORMAT), wall_s=wall, parts=parts,
                 reference=reference, gradients=grads, machine_share=1.0, machine_seconds=wall)
 
@@ -221,6 +236,8 @@ def basis_summary(jobs: list[dict]) -> dict:
 def parse_mp2_step(queue_log: str, jobs_txt: str, worker_logs: dict[str, str], molecule: str) -> dict:
     """The molecule's MP2 jobs in the rows queue: per basis the jobs and their seconds, the lanes that shared the machine, and the
     machine time charged by `RULE`. A job the list names and no worker finished raises."""
+    if MP2_QUEUE_SCRIPT not in queue_log:
+        raise ValueError(f"queue.log does not name {MP2_QUEUE_SCRIPT}: nothing in these logs says the queue ran on the {MP2_MACHINE}")
     segments = queue_segments(queue_log)
     expected = expected_jobs(jobs_txt, molecule)
     found: dict[tuple[str, int], dict] = {}
@@ -248,7 +265,10 @@ def parse_mp2_step(queue_log: str, jobs_txt: str, worker_logs: dict[str, str], m
 
 
 def priced(part: dict) -> dict:
-    """The part's machine-hours at its machine's list price."""
+    """The part's machine-hours at its machine's list price; a machine the price table does not hold is refused."""
+    if part["machine"] not in prices.MACHINES:
+        raise ValueError(f"the run's machine class is {part['machine']!r}: the price table has no "
+                         "list price for it, so the run cannot be priced")
     hours = part["machine_seconds"] / 3600
     return dict(machine=part["machine"], machine_hours=round(hours, 3), eur_per_hour=prices.MACHINES[part["machine"]]["eur_per_hour"],
                 eur_ex_vat=prices.eur(hours, part["machine"]))
@@ -260,7 +280,7 @@ def build_record(cc: dict, mp2: dict, sources: dict[str, list[str]]) -> dict:
     return dict(
         molecule=MOLECULE, written_by="probes/anchor_price_from_logs.py", rule=RULE, sources=sources,
         cc_dz_hessian=cc | dict(price=cc_price, of_which_eur=dict(
-            two_route_checks=round(cc["reference"]["two_route_checks_sum_s"] * rate, 2),
+            two_route_checks_at_most=round(cc["reference"]["two_route_checks_sum_s"] * rate, 2),
             lost_before_relaunch=round(cc["parts"]["lost_before_relaunch_s"] * rate, 2))),
         mp2_basis_step=mp2 | dict(price=mp2_price),
         anchor=dict(machine_hours=round((cc["machine_seconds"] + mp2["machine_seconds"]) / 3600, 3),
@@ -287,14 +307,15 @@ def result_markdown(r: dict) -> str:
         f"**The anchor (composite, decision 62): {r['anchor']['machine_hours']:.2f} machine-hours, € {r['anchor']['eur_ex_vat']:.2f}.**", "",
         f"**Attribution rule.** {r['rule'][0].upper()}{r['rule'][1:]}.", "",
         "## The CCSD(T)/cc-pVDZ Hessian", "",
-        f"- Machine: {cc['host']} ({cc['machine']}), held for this run alone: share 1.",
+        f"- Molecule: {cc['n_atoms']} atoms. Machine: {cc['host']} ({cc['machine']}), rented for this run: share 1.",
         f"- As it ran: launched {cc['launched']}, Hessian written VALID {cc['valid']}: {cc['wall_s']:,} s = {hours(cc['wall_s'])} → "
         f"€ {cc['price']['eur_ex_vat']:.2f} at € {cc['price']['eur_per_hour']}/h.",
         f"- Starts: {cc['n_starts']} (the last at {cc['relaunched']}). From the launch to the last start {cc['parts']['lost_before_relaunch_s']:,} s "
         f"({hours(cc['parts']['lost_before_relaunch_s'])}, € {cc['of_which_eur']['lost_before_relaunch']:.2f}) produced nothing the Hessian uses.",
-        f"- Reference gradient: {ref['seconds']:,} s ({hours(ref['seconds'])}), of which the one-off two-route checks of the (T) kernels "
-        f"against pyscf's slow routes took {checks} = {ref['two_route_checks_sum_s']:,} s (€ {cc['of_which_eur']['two_route_checks']:.2f}); "
-        f"without them the reference is {ref['seconds_without_checks']:,} s.",
+        f"- Reference gradient: {ref['seconds']:,} s ({hours(ref['seconds'])}). The timers of the one-off two-route checks of the (T) "
+        f"kernels against pyscf's slow routes read {checks} = {ref['two_route_checks_sum_s']:,} s "
+        f"(€ {cc['of_which_eur']['two_route_checks_at_most']:.2f}). That is an upper bound on what the checks added: a timer may "
+        "enclose work a reference gradient needs anyway, and no reference without the checks has been timed.",
         f"- Displaced gradients: {cc['gradients']['n_gradients']} in {len(cc['gradients']['lanes'])} lanes, {cc['gradients']['started']} → "
         f"{cc['gradients']['ended']}: {cc['gradients']['span_s']:,} s = {hours(cc['gradients']['span_s'])}. {lanes}.",
         f"- Assembly after the last gradient: {cc['parts']['assembly_s']} s.", "",
@@ -308,9 +329,9 @@ def result_markdown(r: dict) -> str:
         "- They are the wall-clock time of the two runs that made the anchor in force, as those runs ran, at list prices. The "
         "coupled-cluster figure includes a lost first attempt and the one-off checks; both are stated above and neither is taken out.",
         "- A second molecule on the same environment does not repeat the two-route checks. That is a statement about the gate, not a "
-        "measured cheaper price: no run without them has been timed on this machine.",
-        "- The coupled-cluster machine also ran other work beside the first attempt (anchors.log names target-cache builds as the cause "
-        "of the kill); the whole span is charged to the anchor all the same.",
+        "measured cheaper price: no run without them has been timed on this machine, and the figure above is only a bound.",
+        "- The coupled-cluster machine did not run this job alone: anchors.log names target-cache builds beside the first attempt "
+        "as the cause of its kill. The machine was rented for the anchor, so the whole span is charged to it all the same.",
         "- The MP2 figure charges each job its own wall time divided by the lanes that ran; it does not include the queue's failed "
         "starts or another molecule's killed job and its rerun.",
         "- Not included: the B3LYP geometry, renting time before the launch (bootstrap, gate, smoke test) and after the last log "

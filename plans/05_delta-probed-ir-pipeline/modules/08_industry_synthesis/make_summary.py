@@ -158,9 +158,8 @@ def anchor_price_sentence(results: dict[str, Any]) -> str:
             raise ValueError(f"results.json holds no 'anchor in force' cost line for {key}: the paper's sentence on anchor prices has no record")
         (unpriced if any(line["eur_ex_vat"] is None for line in in_force) else priced).append(results[key]["anchor"]["name"])
     said = ([f"the certificate of {' and '.join(priced)} carries it"] if priced else []) + (
-        [f"for {' and '.join(unpriced)} the anchor in force is shown without a price"] if unpriced else [])
-    return ("The one anchor price is naphthalene's, from its run logs with one-off checks and a lost first attempt; "
-            + ", and ".join(said) + ".")
+        [f"{' and '.join(unpriced)} {'shows its anchor' if len(unpriced) == 1 else 'show their anchors'} unpriced"] if unpriced else [])
+    return "That one price includes one-off checks and a lost first attempt; " + ", ".join(said) + "."
 
 
 def context(results: dict[str, Any]) -> list[Block]:
@@ -177,9 +176,9 @@ def context(results: dict[str, Any]) -> list[Block]:
                  "deliver, for a molecule that no laboratory has measured, a computed spectrum with a stated and measured accuracy and a stated "
                  "price — or, when neither can be given, a refusal that says which step is missing and what it would cost."),
         ("para", "The constraint that shapes the whole design is cost. The accurate method, coupled-cluster theory, is not affordable across a library: "
-                 "its cost rises steeply with the size of the molecule, and the one anchor priced from its run logs is naphthalene's, 18 "
-                 f"atoms, at {anchor['hours']:.1f} machine-hours on rented servers ({anchor['eur_ex_vat']:.0f} € before tax); nothing "
-                 "larger has been priced. The cheap method, "
+                 "its cost rises steeply with molecular size, and the one anchor priced from run logs, "
+                 f"{anchor['measured_molecule']}'s ({anchor['measured_atoms']} atoms), took {anchor['hours']:.1f} machine-hours on rented "
+                 f"servers ({anchor['eur_ex_vat']:.0f} € before tax); nothing larger is priced. The cheap method, "
                  f"density-functional theory, costs about {cheap['hours'] * 60:.0f} minutes per molecule and is systematically wrong by an amount "
                  "that differs per vibrational family. The project's thesis is a learned correction: a neural network that turns the cheap "
                  "calculation into a better one. What this capstone proves is a proxy version of that thesis. The network is trained on the "

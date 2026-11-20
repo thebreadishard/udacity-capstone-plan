@@ -1,7 +1,7 @@
 {
  "molecule": "naphthalene",
  "written_by": "probes/anchor_price_from_logs.py",
- "rule": "a machine-hour is a wall-clock hour of the rented machine, charged to the molecule by the share of the machine's lanes that worked for it: a run that holds the machine alone is charged its whole wall-clock span from launch to end, lost attempts and idle gaps included; a job in a queue of N lanes shared with other molecules is charged its own wall time / N, and the queue's own losses (failed starts, another molecule's killed job) are not charged to this molecule",
+ "rule": "a machine-hour is a wall-clock hour of the rented machine, charged to the molecule by the share of the machine's lanes that worked for it: a run the machine was rented for is charged its whole wall-clock span from launch to end, lost attempts and idle gaps included, also where other work ran beside it; a job in a queue of N lanes shared with other molecules is charged its own wall time / N, and the queue's own losses (failed starts, another molecule's killed job) are not charged to this molecule",
  "sources": {
   "cc_dz_hessian": [
    "probes/results_m1/e8_naphthalene_ccpvdz_tlambda_2026-10-02/e8_fd.log",
@@ -19,6 +19,7 @@
  "cc_dz_hessian": {
   "host": "ubuntu-32gb-hel1-2",
   "machine": "CPX62",
+  "n_atoms": 18,
   "launched": "2026-10-01 06:32:39",
   "n_starts": 2,
   "relaunched": "2026-10-01 11:19:01",
@@ -37,8 +38,7 @@
     "lambda": 5609,
     "density": 18817
    },
-   "two_route_checks_sum_s": 24426,
-   "seconds_without_checks": 395
+   "two_route_checks_sum_s": 24426
   },
   "gradients": {
    "n_gradients": 30,
@@ -134,7 +134,7 @@
    "eur_ex_vat": 3.98
   },
   "of_which_eur": {
-   "two_route_checks": 1.41,
+   "two_route_checks_at_most": 1.41,
    "lost_before_relaunch": 0.99
   }
  },

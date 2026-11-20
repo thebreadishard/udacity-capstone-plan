@@ -33,8 +33,11 @@ def eur(hours: float, machine: str) -> float:
 # Naphthalene's anchor, in seconds as `probes/anchor_price_from_logs.py` reads them from the run logs; a test holds these equal to
 # its record. A machine-hour is a wall-clock hour of the rented machine, charged by the share of its lanes that worked for the molecule.
 ANCHOR_RECORD = "probes/results_m1/anchor_price_2026-11-20/anchor_price.json"
-CC_RUN_S = 68_815            # launch → Hessian written VALID, the CPX62 held for this run alone
-CC_TWO_ROUTE_CHECKS_S = 24_426   # inside it: the (T) kernels against pyscf's slow routes (5,609 s lambda + 18,817 s density)
+ANCHOR_ATOMS = 18            # the size the price was measured on: the run headers of the coupled-cluster log
+# the anchor the runs made, as the anchor registry names it: the certificate prices this entry and no other
+ANCHOR_REGISTRY_ENTRY = dict(path="modules/05_support_predictor/out/composite_full_naphthalene_2026-10-07.npz", sha16="3d37769ea7dcd41c")
+CC_RUN_S = 68_815            # launch → Hessian written VALID on the CPX62 rented for it (other work ran beside its first attempt)
+CC_TWO_ROUTE_CHECKS_S = 24_426   # inside it: the timers of the (T) kernel checks against pyscf (5,609 s lambda + 18,817 s density)
 CC_LOST_S = 17_182           # inside it: the first attempt, killed for memory, and the wait for its relaunch
 MP2_JOB_S = 31_110           # the 30 MP2 jobs' own wall time
 MP2_CHARGED_S = 7_777.5      # a quarter of it: four lanes shared the CCX53
@@ -50,25 +53,26 @@ STEPS = {
         note=""),
     "anchor_cc_dz_hessian_naphthalene": dict(
         what="the coupled-cluster part of an anchor: CCSD(T)/cc-pVDZ finite-difference Hessian with symmetry (E8 route, explicit (T) lambda)",
-        measured_on=f"naphthalene (18 atoms), CPX62 ubuntu-32gb-hel1-2, 1–2 Oct 2026: {CC_RUN_S:,} s of wall clock from launch to the Hessian "
-                    "written VALID, the machine held for this run — the reference gradient, then 15 symmetry-unique displacements → 30 "
-                    "gradients in two lanes of 8 threads",
+        measured_on=f"naphthalene ({ANCHOR_ATOMS} atoms), CPX62 ubuntu-32gb-hel1-2, 1–2 Oct 2026: {CC_RUN_S:,} s of wall clock from launch to "
+                    "the Hessian written VALID on the machine rented for it — the reference gradient, then 15 symmetry-unique "
+                    "displacements → 30 gradients in two lanes of 8 threads",
         hours=CC_RUN_S / 3600, machine="CPX62",
         source=f"{ANCHOR_RECORD}, written by probes/anchor_price_from_logs.py from "
                "probes/results_m1/e8_naphthalene_ccpvdz_tlambda_2026-10-02/e8_fd.log and "
                "probes/results_m1/e8_naphthalene_ccpvdz_tlambda_2026-10-02/anchors.log",
-        note=f"the run as it ran: {CC_TWO_ROUTE_CHECKS_S:,} s of it (€{eur(CC_TWO_ROUTE_CHECKS_S / 3600, 'CPX62'):.2f}) were the one-off "
-             "two-route checks of the (T) kernels against pyscf's slow routes, a validation gate that a second molecule on the same "
-             f"environment does not repeat, and {CC_LOST_S:,} s (€{eur(CC_LOST_S / 3600, 'CPX62'):.2f}) a first attempt lost to a memory "
-             "kill; no run without them has been timed, so neither is taken out of the price"),
+        note=f"the run as it ran: at most {CC_TWO_ROUTE_CHECKS_S:,} s of it (€{eur(CC_TWO_ROUTE_CHECKS_S / 3600, 'CPX62'):.2f}, the sum of "
+             "their timers) were added by the one-off two-route checks of the (T) kernels against pyscf's slow routes, a validation gate "
+             f"that a second molecule on the same environment does not repeat, and {CC_LOST_S:,} s (€{eur(CC_LOST_S / 3600, 'CPX62'):.2f}) "
+             "were a first attempt lost to a memory kill beside other work on the machine; no run without them has been timed, so "
+             "neither is taken out of the price; not in it: the rental before the launch and after the Hessian, and the geometry"),
     "anchor_mp2_basis_step_naphthalene": dict(
         what="the basis step of an anchor: MP2/cc-pVTZ − MP2/cc-pVDZ rows on the coupled-cluster Hessian's displacements",
-        measured_on=f"naphthalene (18 atoms), CCX53, 7 Oct 2026: 15 cc-pVTZ and 15 cc-pVDZ jobs of 8 threads, {MP2_JOB_S:,} s of job time in "
+        measured_on=f"naphthalene ({ANCHOR_ATOMS} atoms), CCX53, 7 Oct 2026: 15 cc-pVTZ and 15 cc-pVDZ jobs of 8 threads, {MP2_JOB_S:,} s of job time in "
                     "a queue of four lanes shared with four other molecules' rows, so a quarter of the machine for that time",
         hours=MP2_CHARGED_S / 3600, machine="CCX53",
         source=f"{ANCHOR_RECORD}, written by probes/anchor_price_from_logs.py from "
-               "probes/results_m1/composite_rows_2026-10-07/queue.log, probes/results_m1/composite_rows_2026-10-07/jobs.txt and the "
-               "worker_*.log files beside them",
+               "probes/results_m1/composite_rows_2026-10-07/queue.log, probes/results_m1/composite_rows_2026-10-07/jobs.txt and "
+               "probes/results_m1/composite_rows_2026-10-07/worker_*.log",
         note="the queue's failed starts and another molecule's killed job are not charged to naphthalene"),
     "anchor_m3_family_reading_naphthalene": dict(
         what="one family's anchor reading along a mode (M3: cc-pVDZ + cc-pVTZ curvature, LNO-CCSD(T), five points)",
@@ -80,7 +84,7 @@ STEPS = {
         what="one LNO-CCSD(T) energy of naphthalene⁺ (the cation rung, closed)",
         measured_on="naphthalene⁺, rented 16-core machine: 34,411 s per energy",
         hours=34411 / 3600, machine="CPX62",
-        source="REPRODUCE.md row 49 (cation_price_readout.py); obstacle 9",
+        source="REPRODUCE.md row 49 (probes/cation_price_readout.py); obstacle 9",
         note=""),
 }
 
@@ -97,16 +101,17 @@ def step_price(step: str) -> dict:
 
 def anchor_price() -> dict:
     """The price line of a whole-molecule anchor: the composite's parts added, euros as the sum of the parts' euros so that a reader
-    can add the lines. It is naphthalene's price; nothing larger has been priced."""
+    can add the lines. It is naphthalene's price; nothing larger has been priced, and `measured_atoms` is the size a reader of the
+    price holds a molecule against."""
     parts = [(label, step_price(step)) for label, step in ANCHOR_PARTS]
     return dict(
-        step=ANCHOR_STEP,
+        step=ANCHOR_STEP, measured_molecule="naphthalene", measured_atoms=ANCHOR_ATOMS,
         what="the anchor for a whole molecule by the route in force (decision 62): a CCSD(T)/cc-pVDZ finite-difference Hessian with symmetry "
              "plus the basis step MP2/cc-pVTZ − MP2/cc-pVDZ",
         machine=" + ".join(p["machine"] for _, p in parts),
         hours=round(sum(STEPS[step]["hours"] for _, step in ANCHOR_PARTS), 2),
         eur_ex_vat=round(sum(p["eur_ex_vat"] for _, p in parts), 2),
-        measured_on="naphthalene (18 atoms), 1–7 Oct 2026, from the run logs: "
+        measured_on=f"naphthalene ({ANCHOR_ATOMS} atoms), 1–7 Oct 2026, from the run logs: "
                     + " and ".join(f"{label} {p['hours']:.2f} h on a {p['machine']} (€{p['eur_ex_vat']:.2f})" for label, p in parts),
         source=ANCHOR_RECORD + " (probes/anchor_price_from_logs.py)",
         note="; ".join(p["note"] for _, p in parts) + "; measured for naphthalene: a larger molecule costs more than this and its price is "

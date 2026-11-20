@@ -61,7 +61,7 @@ def test_a_restarted_run_is_charged_from_its_first_launch_and_names_what_was_los
 def test_only_the_finished_attempts_two_route_checks_are_counted() -> None:
     reference = AP.parse_cc_run(fd_log(), anchors_log())["reference"]
     assert reference["two_route_checks_s"] == {"lambda": 1000, "density": 1500}
-    assert (reference["two_route_checks_sum_s"], reference["seconds_without_checks"]) == (2500, 1100)
+    assert reference["two_route_checks_sum_s"] == 2500 and "seconds_without_checks" not in reference
 
 
 def test_lanes_that_end_at_different_times_keep_their_own_spans_and_threads() -> None:
@@ -103,6 +103,7 @@ def test_a_log_without_a_valid_hessian_or_with_two_hosts_raises() -> None:
 
 
 QUEUE = ("=== QUEUE start: 4 jobs, 2 workers x 8 threads, max_memory 26000 2026-10-07 23:00:00 UTC\n"
+         "mp2_rows_queue_ccx53.sh: line 24: 390182 Killed                  OMP_NUM_THREADS=8 $PY cc_composite_full_check.py compute\n"
          "--- heartbeat 2026-10-07 23:59:59 UTC: 1 of 4 jobs done; 2 workers; 120 GB free\n"
          "=== QUEUE start: 4 jobs, 1 workers x 8 threads, max_memory 60000 2026-10-08 01:00:00 UTC\n")
 JOBS = "naphthalene|A_01|cc-pvtz|0|g.json\nnaphthalene|A_01|cc-pvdz|0|g.json\nnaphthalene|A_01|cc-pvtz|1|g.json\nanthracene|A_02|cc-pvtz|0|g.json\n"
@@ -149,7 +150,7 @@ def test_a_molecule_without_jobs_or_a_log_without_a_queue_start_raises() -> None
     with pytest.raises(ValueError, match="names no job of pyrene"):
         AP.parse_mp2_step(QUEUE, JOBS, workers(), "pyrene")
     with pytest.raises(ValueError, match="no '=== QUEUE start' line"):
-        AP.parse_mp2_step("--- heartbeat\n", JOBS, workers(), "naphthalene")
+        AP.parse_mp2_step("mp2_rows_queue_ccx53.sh: line 24\n--- heartbeat\n", JOBS, workers(), "naphthalene")
 
 
 def test_the_record_prices_each_part_on_its_own_machine_and_adds_them() -> None:
@@ -157,10 +158,11 @@ def test_the_record_prices_each_part_on_its_own_machine_and_adds_them() -> None:
     cc, mp2 = record["cc_dz_hessian"], record["mp2_basis_step"]
     assert cc["price"] == dict(machine="CPX62", machine_hours=3.008, eur_per_hour=0.208, eur_ex_vat=0.63)
     assert mp2["price"] == dict(machine="CCX53", machine_hours=0.319, eur_per_hour=0.855, eur_ex_vat=0.27)
-    assert cc["of_which_eur"] == dict(two_route_checks=0.14, lost_before_relaunch=0.21)
+    assert cc["of_which_eur"] == dict(two_route_checks_at_most=0.14, lost_before_relaunch=0.21)
     assert record["anchor"] == dict(machine_hours=3.328, eur_ex_vat=0.9)
     text = AP.result_markdown(record)
     assert "3.33 machine-hours, € 0.90" in text and "Starts: 2" in text and "1,000 s (lambda) + 1,500 s (density) = 2,500 s" in text
+    assert "upper bound on what the checks added" in text and "without them the reference is" not in text
 
 
 def test_the_record_on_disk_is_what_the_script_reads_from_the_real_logs(tmp_path: Path) -> None:
@@ -172,3 +174,31 @@ def test_the_record_on_disk_is_what_the_script_reads_from_the_real_logs(tmp_path
         assert (tmp_path / name).read_text(encoding="utf-8") == (AP.OUT_DIR / name).read_text(encoding="utf-8"), f"{name} is not the script's output"
     lanes = record["cc_dz_hessian"]["gradients"]["lanes"]
     assert [(lane["n_gradients"], lane["threads"], lane["ended"]) for lane in lanes] == [(14, 8, "2026-10-02 00:47:50"), (16, 8, "2026-10-02 01:39:12")]
+
+
+def test_the_record_holds_the_atom_count_of_the_run_headers() -> None:
+    assert AP.parse_cc_run(fd_log(), anchors_log())["n_atoms"] == 3
+    mixed = fd_log().replace("3 atoms", "4 atoms", 1)
+    with pytest.raises(ValueError, match=r"name \[3, 4\] as atom counts"):
+        AP.parse_cc_run(mixed, anchors_log())
+
+
+def test_two_hessian_written_lines_or_a_check_given_twice_raise() -> None:
+    twice = fd_log() + "\n" + stamp("09:10:00", "Hessian written (VALID); FD asymmetry max 1.61e-05 a.u.")
+    with pytest.raises(ValueError, match=r"exactly one 'Hessian written \(VALID\)' line in the log, found 2"):
+        AP.parse_cc_run(twice, anchors_log())
+    again = fd_log().replace(stamp("07:50:00", "fast (T) density"), stamp("07:50:00", "fast (T) lambda"))
+    with pytest.raises(ValueError, match="two lambda two-route check lines in one attempt"):
+        AP.parse_cc_run(again, anchors_log())
+
+
+def test_a_queue_log_that_does_not_name_the_ccx53_script_is_not_priced() -> None:
+    with pytest.raises(ValueError, match=r"does not name mp2_rows_queue_ccx53\.sh"):
+        AP.parse_mp2_step(QUEUE.replace("mp2_rows_queue_ccx53.sh", "mp2_rows_queue.sh"), JOBS, workers(), "naphthalene")
+
+
+def test_a_run_on_a_machine_the_price_table_does_not_hold_is_refused_with_the_reason() -> None:
+    cc = AP.parse_cc_run(fd_log(), anchors_log(host="some-new-host"))
+    assert cc["machine"] == "unknown"
+    with pytest.raises(ValueError, match="machine class is 'unknown': the price table has no list price"):
+        AP.priced(cc)

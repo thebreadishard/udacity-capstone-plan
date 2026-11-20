@@ -226,7 +226,7 @@ def test_the_record_on_disk_holds_the_tables_prices() -> None:
 def test_the_paper_states_the_anchors_price_as_the_table_has_it(summary: ModuleType, results: dict) -> None:
     anchor = prices.anchor_price()
     text = _text(summary, results)
-    assert f"at {anchor['hours']:.1f} machine-hours on rented servers ({anchor['eur_ex_vat']:.0f} € before tax)" in text
+    assert f"took {anchor['hours']:.1f} machine-hours on rented servers ({anchor['eur_ex_vat']:.0f} € before tax)" in text
     assert "42.5" not in text and "28 September. The cheap" not in text and "one run in September" not in text
 
 
@@ -461,7 +461,8 @@ def test_the_anchor_in_force_is_priced_where_the_table_priced_its_runs(cat: Cata
     assert [(line["machine"], line["hours"], line["eur_ex_vat"]) for line in in_force] == [(p["machine"], p["hours"], p["eur_ex_vat"]) for p in parts]
     assert round(sum(line["eur_ex_vat"] for line in in_force), 2) == prices.anchor_price()["eur_ex_vat"]
     for line, part in zip(in_force, parts, strict=True):
-        assert entry["level"] in line["step"] and entry["path"] in line["source"] and part["source"] in line["source"] and line["note"] == part["note"]
+        assert entry["level"] in line["step"] and line["note"] == part["note"]
+        assert entry["path"] in line["source"] and entry["sha16"] in line["source"] and part["source"] in line["source"]
     honesty = run_scenarios.cost_honesty([dict(molecule=dict(name="naphthalene"), cost_record=in_force)])
     assert honesty["lines_traced"] == honesty["lines_checked"] == len(parts) and not honesty["misses"]
 
@@ -469,8 +470,9 @@ def test_the_anchor_in_force_is_priced_where_the_table_priced_its_runs(cat: Cata
 def test_every_priced_anchor_is_a_carried_composite_of_the_registry() -> None:
     """The price follows the registry's file: a key the registry does not carry, or carries for another route, would price the wrong run."""
     registry = json.loads((MODULE.parents[1] / ANCHOR_REGISTRY).read_text(encoding="utf-8"))["anchors"]
-    for path in PRICED_ANCHORS:
-        entry = [e for e in registry if e["path"] == path]
+    assert list(PRICED_ANCHORS) == [(prices.ANCHOR_REGISTRY_ENTRY["path"], prices.ANCHOR_REGISTRY_ENTRY["sha16"])]
+    for path, sha16 in PRICED_ANCHORS:
+        entry = [e for e in registry if e["path"] == path and e["sha16"] == sha16]
         assert len(entry) == 1 and entry[0]["status"] == "carried" and entry[0]["kind"] == "composite", path
         assert entry[0]["level"] == "CCSD(T)/cc-pVDZ + [MP2/cc-pVTZ − MP2/cc-pVDZ]", "the table's parts are this route's"
 
@@ -479,9 +481,18 @@ def test_an_anchor_whose_runs_the_table_does_not_price_stays_unpriced(cat: Catal
     row = cat.find("benzene")
     entry = carried_anchor(row["id"], row["name"])
     (line,) = anchor_cost_lines("benzene", [], entry)
-    assert entry["path"] not in PRICED_ANCHORS and line["eur_ex_vat"] is None and "not priced" in line["source"]
+    assert (entry["path"], entry["sha16"]) not in PRICED_ANCHORS and line["eur_ex_vat"] is None and "not priced" in line["source"]
     same_route_other_run = entry | dict(level="CCSD(T)/cc-pVDZ + [MP2/cc-pVTZ − MP2/cc-pVDZ]", kind="composite")
     assert anchor_cost_lines("pyridine", [], same_route_other_run)[0]["eur_ex_vat"] is None, "a route is not a price: only the priced run is"
+
+
+def test_a_file_rebuilt_under_the_priced_anchors_name_is_not_priced(cat: Catalog) -> None:
+    """The price is of the runs behind one file: the same path with another digest is another anchor, and nobody read its logs."""
+    row = cat.find("naphthalene")
+    entry = carried_anchor(row["id"], row["name"])
+    assert (entry["path"], entry["sha16"]) in PRICED_ANCHORS
+    (line,) = anchor_cost_lines("naphthalene", [], entry | dict(sha16="0" * 16))
+    assert line["eur_ex_vat"] is None and line["hours"] is None and "not priced" in line["source"]
 
 
 def test_the_paper_says_which_certificate_carries_its_anchors_price(summary: ModuleType, results: dict, cat: Catalog) -> None:
@@ -490,10 +501,10 @@ def test_the_paper_says_which_certificate_carries_its_anchors_price(summary: Mod
     today = json.loads(json.dumps(results))
     today["s1"]["cost"] = anchor_cost_lines("naphthalene", row["evidence"], carried_anchor(row["id"], row["name"]))
     sentence = summary.anchor_price_sentence(today)
-    assert "the certificate of naphthalene carries it, and for benzene the anchor in force is shown without a price." in sentence
+    assert "attempt; the certificate of naphthalene carries it, benzene shows its anchor unpriced." in sentence
     neither = json.loads(json.dumps(today))
     neither["s1"]["cost"] = [dict(step="anchor in force: x", eur_ex_vat=None)]
-    assert "attempt; for naphthalene and benzene the anchor in force is shown without a price." in summary.anchor_price_sentence(neither)
+    assert "attempt; naphthalene and benzene show their anchors unpriced." in summary.anchor_price_sentence(neither)
     neither["s1"]["cost"] = []
     with pytest.raises(ValueError, match="no 'anchor in force' cost line for s1"):
         summary.anchor_price_sentence(neither)

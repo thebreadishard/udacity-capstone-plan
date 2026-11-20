@@ -136,3 +136,19 @@ read with it:
   lines in `results.json` (`make_summary.anchor_price_sentence`); "1 anchor line is shown as not priced" is written in the singular.
 - **The officer** sums the missing steps by one function (`officer.missing_steps`, `cost_of`): the deck and the anchor for a molecule
   below the cheap rung. `reachable_within` offers rung 4 at that sum.
+
+## Addendum, 20 Nov 2026 — after the independent review of the anchor's price (TASKS 290)
+
+- **The price is naphthalene's, and the officer says so.** The price line carries the size it was measured on (18 atoms, from the
+  run log's header). For a larger molecule no text says the budget covers the anchor or that rung 4 is reachable at that price:
+  a budget below the measured price is refused, and one at or above it gives a run order whose reason says the budget meets the
+  price measured for 18 atoms, not this molecule's, and that the dry run the gate forces is what prices it
+  (`officer.anchor_priced_for`). S2b (biphenyl, 22 atoms) keeps its registered kind; its reason text changed.
+- **Rung 5 is never ordered.** A step is missing only between the rung reached and the rung asked for, so an anchored molecule is
+  not sold a second anchor; a request for rung 5 is refused as a laboratory comparison that no run produces.
+- **Wording.** The coupled-cluster machine was rented for the run and did not run it alone (other work beside the first attempt);
+  the two-route checks' €1.41 is an upper bound on what they added (the sum of their timers); the note names what the price
+  leaves out. The prices are about €6 for the anchor: estimates from wall clocks at list prices, not quotes.
+- **Also in:** the certificate's price is tied to the registry entry's file and its sha16; the script requires the queue log to
+  name the CCX53 script; the source test checks every file a source names, globs included; the paper's two price sentences are
+  shorter (55 words spare on a record patched as the rebuild will write it).

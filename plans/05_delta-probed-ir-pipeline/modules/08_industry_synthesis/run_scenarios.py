@@ -66,7 +66,12 @@ def judge(sc: dict, d, cert: dict | None, worker: dict | None) -> tuple[bool, li
 
 
 def cost_honesty(certs: list[dict]) -> dict:
-    """S7: every priced line of every certificate names a machine in the price table and a source; every € equals hours × the list price."""
+    """S7: every priced line of every certificate names a machine in the price table and a source; every € equals hours × the list price.
+
+    "Traced" means a non-empty source string and that arithmetic; an unpriced line is traced when it names a source. Whether the
+    files a source names exist is not checked here: tests/test_m08.py::test_price_table_is_sourced_and_arithmetic does that for
+    the price table, and the certificate's own evidence paths are resolved by S1's `provenance_resolves`.
+    """
     checked = traced = 0; misses = []
     for c in certs:
         for k in c["cost_record"]:
