@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 """Runs the pre-registered scenarios of module 08 (PRE_REGISTRATION.md §5) end to end from repository data and writes the records:
 `out/scenario_results_<date>.json`, the certificates (`out/certificates/`), the request ledger (`out/requests_ledger.csv`) and the cost-honesty
-check (S7). S5 (catalogue consistency) runs the export's own builder when `--with-catalog` is given (RDKit over 11,321 rows, ≈ a minute).
+check (S7). S5 (catalogue consistency) runs the export's own builder when `--with-catalog` is given (RDKit over the whole catalogue,
+≈ a minute). S6 (accessibility) is not run here: its status is read from the record of its run (`s6_status`).
 Usage: python run_scenarios.py [--with-catalog] [--no-candidate] [--out DIR]"""
 import argparse
 import csv
@@ -23,6 +24,7 @@ from m08.replay import execute_run_order  # noqa: E402
 from dpir.provenance import provenance  # noqa: E402
 
 OUT = HERE / "out"
+S6_RECORD = OUT / "s6_accessibility_2026-10-11.json"   # the run of 11 Oct 2026 (PRE_REGISTRATION.md, outcome addendum)
 
 
 def judge(sc: dict, d, cert: dict | None, worker: dict | None) -> tuple[bool, list[str]]:
@@ -80,6 +82,19 @@ def cost_honesty(certs: list[dict]) -> dict:
                 misses.append((c["molecule"]["name"], k["step"], f"€ {k['eur_ex_vat']} ≠ {k['hours']} h × {price}")); continue
             traced += 1
     return dict(lines_checked=checked, lines_traced=traced, fraction=(traced / checked if checked else None), misses=misses)
+
+
+def s6_status(record: Path = S6_RECORD) -> dict:
+    """S6's status, from the record of its run.
+
+    This script cannot run S6: it needs the built site and a browser. So it reports the verdict that run recorded for the published
+    site, with the run's date, pass line and file, and refuses to say anything without the record.
+    """
+    if not record.is_file():
+        raise FileNotFoundError(f"{record}: the record of S6's run is missing; its status is read from it, never typed")
+    rec = json.loads(record.read_text(encoding="utf-8"))
+    return dict(status=f"{rec['published_site_after_fixes']['verdict']} (run {rec['date']}; this script does not run it)",
+                pass_line=rec["pass_line"], record=under_module(record))
 
 
 def under_module(path) -> str:
@@ -162,7 +177,7 @@ def main(argv: list[str] | None = None) -> int:
                 summ = {}
         mech["S5"] = dict(exit_code=r.returncode, seconds=round(time.time() - t0), problems=summ.get("problems"), n_molecules=summ.get("n_molecules"), stderr_tail=r.stderr[-400:])
         print(f"S5: build_catalog.py exit {r.returncode}, problems {summ.get('problems')}")
-    mech["S6"] = dict(status="not run in this build: needs the built site and axe (website backlog rows 8–9)")
+    mech["S6"] = s6_status()
     rec = dict(date=time.strftime("%Y-%m-%d %H:%M"), frozen=S["frozen"], n_pass=sum(r["passed"] for r in results), n_scenarios=len(results), results=results, mechanical=mech,
                licence=cert["provenance"]["licence"] if certs else None, provenance=provenance())
     p = out / f"scenario_results_{time.strftime('%Y-%m-%d')}.json"

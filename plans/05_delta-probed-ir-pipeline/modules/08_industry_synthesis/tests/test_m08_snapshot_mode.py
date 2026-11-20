@@ -21,7 +21,7 @@ import pytest
 HERE = Path(__file__).resolve().parent
 MODULE = HERE.parent
 sys.path.insert(0, str(MODULE))
-from m08 import paths  # noqa: E402
+from m08 import paths, stored_run  # noqa: E402
 
 # what two honest runs may differ in: when they ran, and where each file came from
 VARYING = frozenset({"date", "built", "provenance", "evidence", "path", "paths", "source_path", "files"})
@@ -64,12 +64,16 @@ def test_the_submitted_module_decides_what_the_plan_module_decides(tmp_path: Pat
     assert build(["--snapshot", str(tmp_path / "snapshot"), "--out", str(build_out)]) == 0, \
         "the builder refuses while the scenarios fail"
     assert sorted(build_out.glob("scenario_results_*.json")), "the builder's scenarios did not write into --out"
+    in_plan_run = stored_run.certificate()
     in_plan = decisions(run_scenarios_here(tmp_path / "plan_out"))
 
     monkeypatch.setattr(paths, "SNAPSHOT", tmp_path / "snapshot")
     monkeypatch.setenv(paths.MODE_ENV, "1")
     assert paths.snapshot_mode()
     in_snapshot = decisions(run_scenarios_here(tmp_path / "snapshot_out"))
+    # the notebook's pipeline section reads a stored run that no scenario opens: the snapshot must hold it all the same
+    assert (tmp_path / "snapshot" / stored_run.STORED_RUN / stored_run.CERTIFICATE).is_file()
+    assert stored_run.certificate() == in_plan_run
 
     assert set(in_snapshot) == set(in_plan)
     for scenario_id, decision in in_plan.items():

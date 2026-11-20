@@ -7,8 +7,9 @@ and the cheap rung's own B3LYP Hessian (`hessian_b3lyp.npz`, deck v1, the Hessia
 Hessian, two with the analytic one (checked 10 Oct), so they are not one consistent set. IR-inactive modes carry height zero and therefore weigh
 nothing in the drawn spectrum. A molecule without an APT gets positions only, and the certificate says so (the rung rule of TASKS 39).
 
-The accuracy statement is read from the records, not typed: module 05's re-read of chain 34 on hold-out (a) with eigenvector-matched pairing (9 Oct)
-and the T3 transfer to CCSD(T)/cc-pVTZ on benzene (9 Oct), seed means over three seeds."""
+The accuracy statement is read from the records, not typed: `shape_accuracy` takes the evaluation records of a network version, one per
+seed (`m08/accuracy.py` gives it the carried version's), and returns the seed means over a hold-out's molecules with an APT, bands paired
+by eigenvector overlap. No coupled-cluster comparison is read for the carried version (`accuracy.CC_NOTE`)."""
 from __future__ import annotations
 
 import functools

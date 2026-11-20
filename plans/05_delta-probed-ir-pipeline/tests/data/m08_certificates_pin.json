@@ -94,9 +94,9 @@
    {
     "eur_ex_vat": null,
     "hours": null,
-    "machine": "CCX53",
-    "source": "probes/results_m1/e8_benzene_ccpvdz/E8_locality_benzene.md; the run's hours are not in a cost record yet — shown as not priced, not as €0",
-    "step": "anchor: E8 CCSD(T)/cc-pVDZ Hessian (72 gradients, rented machine, 24 Sep 2026)"
+    "machine": null,
+    "source": "modules/05_support_predictor/out/ANCHORS_STATUS.json → probes/results_m1/e8_benzene_ccpvtz_oop_2026-10-03/hessian_ccsd_t.npz; the registry carries no hours for this run — shown as not priced, not as €0",
+    "step": "anchor in force: CCSD(T)/cc-pVTZ (full, registered 2026-10-06)"
    }
   ],
   "kind": "certificate",
@@ -320,7 +320,6 @@
     ]
    },
    "pre_registrations": [
-    "GoalGathering/notes/PreRegistration_2026-09-25_Proof_of_Learning_Layer_B.md",
     "modules/08_industry_synthesis/PRE_REGISTRATION.md"
    ],
    "release": [
@@ -915,10 +914,17 @@
     "hours": 66.83,
     "machine": "laptop",
     "measured_on": "naphthalene, laptop: 4,201 s per cc-pVDZ energy, 12.2 h per cc-pVTZ energy at tight thresholds",
-    "note": "two families read (evidence files); hours per family from the M3 record; the E8 whole-molecule Hessian is computing (frozen 10, 28 Sep) and joins this record when read",
+    "note": "two families read (evidence files); hours per family from the M3 record; the anchor in force is the registry's entry on the next line",
     "source": "probes/results_m1/M3_TZ_MODE12_READING_2026-09-20.md (12.2 h per TZ energy); REPRODUCE.md row on the neutral price (4,201 s)",
     "step": "anchor family readings (M3, two families, laptop)",
     "what": "one family's anchor reading along a mode (M3: cc-pVDZ + cc-pVTZ curvature, LNO-CCSD(T), five points)"
+   },
+   {
+    "eur_ex_vat": null,
+    "hours": null,
+    "machine": null,
+    "source": "modules/05_support_predictor/out/ANCHORS_STATUS.json → modules/05_support_predictor/out/composite_full_naphthalene_2026-10-07.npz; the registry carries no hours for this run — shown as not priced, not as €0",
+    "step": "anchor in force: CCSD(T)/cc-pVDZ + [MP2/cc-pVTZ − MP2/cc-pVDZ] (composite, registered 2026-10-07)"
    }
   ],
   "kind": "certificate",
@@ -1120,7 +1126,6 @@
     ]
    },
    "pre_registrations": [
-    "GoalGathering/notes/PreRegistration_2026-09-25_Proof_of_Learning_Layer_B.md",
     "modules/08_industry_synthesis/PRE_REGISTRATION.md"
    ],
    "release": [

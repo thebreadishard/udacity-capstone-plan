@@ -1,6 +1,7 @@
 """The replay worker (decision 1 of 28 Sep 2026: replay, not live). A run order in this module never provisions a machine: the worker re-executes
 the *recorded* run of the molecule — the corpus ledger row the export carries — and returns the run record marked as a replay with its source.
-The live path (a rented server per job, budget cap, OAuth) is documented in the design note and switched on only when the licence exists."""
+The live path (a rented server per job, budget cap, OAuth) is the design note's of 27 Sep 2026; it was not built and is no longer promised
+(the standalone plan of 18 Oct 2026)."""
 from __future__ import annotations
 
 import time
@@ -28,5 +29,6 @@ def execute_run_order(decision: dict, catalog) -> dict:
     mol = catalog.molecule(mid) if mid else None
     run = replay_run(mol)
     if run is None:
-        return dict(executed=False, queued=True, reason="no recorded run to replay for this molecule; a live worker would provision a machine here", machine_touched=False)
+        return dict(executed=False, queued=True, machine_touched=False,
+                    reason="no recorded run to replay for this molecule; nothing is computed (this module has no live worker)")
     return dict(executed=True, queued=False, run=run, machine_touched=False)

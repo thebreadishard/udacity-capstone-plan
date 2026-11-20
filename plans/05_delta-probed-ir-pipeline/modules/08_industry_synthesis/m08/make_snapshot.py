@@ -4,7 +4,8 @@ Module 08 reads the other modules' folders, the website export and the plan's ev
 them, so it carries `snapshot/` with the same paths under it and `m08/paths.resolve` reads from there (see that module).
 
 What goes in is not a list somebody keeps up to date: the builder runs the scenarios with Python's own audit hook watching every
-file opened for reading, and copies exactly those that lie under the plan or the repository. A file the scenarios never open is a
+file opened for reading, and copies exactly those that lie under the plan or the repository. The one read the notebook makes that no
+scenario makes, the stored pipeline run (`m08/stored_run.py`), is made under the same hook. A file the scenarios never open is a
 file the submitted module does not need; a file they open is in the snapshot by construction, so the two cannot drift apart.
 
     python -m m08.make_snapshot --dry-run     # what would be copied, with its size
@@ -26,7 +27,7 @@ import time
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from . import paths
+from . import paths, stored_run
 
 MODULE = paths.MODULE
 OWN_FOLDERS = ("modules/08_industry_synthesis",)     # the module's own files travel with the repository, not in the snapshot
@@ -70,7 +71,9 @@ def run_scenarios(recorder: Recorder, out: Path | None = None) -> int:
     import run_scenarios as scenarios  # imported here, after the path is set, so the hook sees everything it opens
 
     sys.addaudithook(recorder.hook)
-    return scenarios.main(["--no-candidate"] + (["--out", str(out)] if out is not None else []))
+    code = scenarios.main(["--no-candidate"] + (["--out", str(out)] if out is not None else []))
+    stored_run.certificate()      # the notebook's pipeline section reads it and no scenario does: opened here, it enters the snapshot
+    return code
 
 
 def copy_into(snapshot: Path, recorder: Recorder) -> list[dict]:

@@ -29,3 +29,41 @@
   turned `\b` into backspace characters twice; the pattern was written a third time with `chr(92)` and tested.
 - **Not done in this build:** the live worker; the Cloudflare
   deployment of the officer; the "confirmed" label on the standout's plan line (waits for the CC-level test).
+
+## Addendum, 20 November 2026 08:18 — the module under decisions 63, 65 and 66
+
+The lines above are the record of 28 September and stay as written. What they say that is no longer so, and what is so now:
+
+- **Licence.** `licence.py` no longer parses the layer-B table of 27 September. It reads decision 65 (as amended on 16 Nov 2026) from the
+  carried ΔH network's records through `accuracy.py`: module 05's `out/MODELS_STATUS.json`, the evaluation records
+  `out/v14/E7_rungC_v14s3clean_c00_control_eval_clean_seed{0,1,2}.json` and `…_a8read_seed{0,1,2}.json`, the product-error record
+  `…_product_error.json` and the training record `…c00_control.json`. The error is read on the measurement networks (decision 66).
+- **Pipeline.** Since 29 October the module holds the pipeline (decision 64): `pipeline.py` (version 0.15), `live_certificate.py`,
+  `own_spread.py`, `domain.py`, `molecule.py`, `seen.py`, `reuse.py`, `runtime.py`, `anharmonic.py`, `positions.py`, `progress.py`.
+  The standalone form: `paths.py`, `make_snapshot.py`, `stored_run.py` (the stored run the notebook shows).
+- **Certificates.** The anchored rung's cost lines quote the anchor registry's entry in force (module 05's `out/ANCHORS_STATUS.json`)
+  instead of naming September's runs; the registry marks benzene's cc-pVDZ run of 27 September invalid. The list of
+  pre-registrations no longer names the layer-B pre-registration of 25 September, which decision 65 replaced.
+- **Scenarios.** `scenarios/scenarios.json` carries three dated amendments (14 Nov: biphenyl for azulene in S2 and S2b, S3's title;
+  20 Nov: S6's status). `run_scenarios.py` reads S6's status from `out/s6_accessibility_2026-10-11.json`. The cation refusal (S4b)
+  says what is true today; its registered expectation is unchanged. The latest tracked results are `out/scenario_results_2026-11-18.json`,
+  written by a test run; the submitted record comes from a run of `run_scenarios.py --with-catalog` after this addendum.
+- **Tests.** Seven files in `tests/`, 68 tests passing on 20 November 2026 (`python -m pytest modules/08_industry_synthesis/tests -q -m "not slow"`),
+  beside the pipeline's 22 files `tests/test_m08_*.py` at plan level. `tests/test_m08_submission.py` holds the reads this addendum names.
+- **Notebook.** `notebook/make_notebook.py` rewritten on 20 November 2026: its markdown carries no measured number, every number is printed
+  by a code cell from a record, and a new section 3.7 reads one stored pipeline run
+  (`probes/results_m1/pipeline_benzene_anharmonic_v3_2026-11-19/benzene/certificate.json`, pipeline 0.14, network version 1.4, release
+  networks). Executed on 20 November 2026 08:18 with system Python 3.14 on **interim** scenario results: a run of
+  `run_scenarios.py --no-candidate` into a scratch folder (S3 on the fixed candidate, no S5). It is executed again on the final run.
+- **Paper.** `make_summary.py` rewritten on 20 November 2026: the text is built by `blocks()` from `notebook/results.json`, the rule count and the
+  scenario molecule are read from it, and the crash on the removed `latest_reading` key is gone. Body: 1,948 words on the interim results.
+- **Data sources read, never written, today:** `website/export/out` (catalogue, molecules, summary; built 19 Nov 2026), module 03's two
+  tables, module 05's `corpus/manifest.csv`, `out/ANCHORS_STATUS.json`, `out/MODELS_STATUS.json` and the records above, module 07's
+  `rules/rules_v2.json` (41 rules), the evidence files the export names, and the stored pipeline run. `out/E7_rungB_layerB_2026-09-27.md`
+  and `rules_v1.json` are no longer read.
+- **"Not done in this build", corrected.** The live worker and the hosted officer are not built and no longer promised (the standalone
+  plan of 18 October). The standout's "confirmed" label does not wait any more: its coupled-cluster test was run on 28 September and
+  failed (`PRE_REGISTRATION.md`, note of 28 September), so the plan line stays "proxy".
+- **Not done on 20 November 2026:** the final scenario run, the snapshot build, `steward/`, `requirements.txt` frozen again, and the dry run of
+  `tools/make_module_repo.sh`. Also open: a submitted repository cannot import `m08.certify` yet, because `m08/pipeline.py` and
+  `m08/accuracy.py` import module 05's and `probes/`' code through `sys.path` (`STANDALONE_PLAN_2026-10-18.md`, section of 20 November 2026).

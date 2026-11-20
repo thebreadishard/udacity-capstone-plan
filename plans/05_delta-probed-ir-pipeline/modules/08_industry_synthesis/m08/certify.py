@@ -42,6 +42,27 @@ def carried_anchor(mol_id: str, name: str) -> dict | None:
     return None
 
 
+def anchor_cost_lines(name: str, entry: dict | None) -> list[dict]:
+    """The anchored rung's cost lines: the family readings the price table holds, and the anchor in force as the registry names it.
+
+    The registry says what the anchor is — level, kind, date, file — and not what its run cost, so that line is shown as not
+    priced, never as €0. Until 20 Nov 2026 these lines named September's runs as typed text, and the registry marks one of those
+    runs invalid (the lambda incident).
+    """
+    lines = []
+    if name == "naphthalene":
+        reading = {k: v for k, v in prices.step_price("anchor_m3_family_reading_naphthalene").items() if k not in ("step", "note")}
+        lines.append(dict(step="anchor family readings (M3, two families, laptop)", **reading,
+                          note="two families read (evidence files); hours per family from the M3 record; the anchor in force is the "
+                               "registry's entry on the next line"))
+    if entry:
+        lines.append(dict(step=f"anchor in force: {entry['level']} ({entry['kind']}, registered {entry['date']})",
+                          eur_ex_vat=None, hours=None, machine=None,
+                          source=f"{ANCHOR_REGISTRY} → {entry['path']}; the registry carries no hours for this run — shown as not "
+                                 "priced, not as €0"))
+    return lines
+
+
 def commit_hash() -> str:
     try:
         return subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=REPO, capture_output=True, text=True, check=True).stdout.strip()
@@ -151,16 +172,13 @@ def certificate(row: dict, catalog: Catalog) -> dict:
                          breakdown_s=dict(optimise=run["seconds_optimise"], hessian_b3lyp=run["seconds_hessian_b3lyp"], hessian_wb97x=run["seconds_hessian_wb97x"]),
                          replayed_from=run["source"], replay=True))
     if rung >= 4:
-        for step in (("anchor_m3_family_reading_naphthalene",) if row["name"] == "naphthalene" else ()):
-            cost.append(dict(step="anchor family readings (M3, two families, laptop)", **{k: v for k, v in prices.step_price(step).items() if k not in ("step", "note")},
-                             note="two families read (evidence files); hours per family from the M3 record; the E8 whole-molecule Hessian is computing (frozen 10, 28 Sep) and joins this record when read"))
-        if row["name"] == "benzene":
-            cost.append(dict(step="anchor: E8 CCSD(T)/cc-pVDZ Hessian (72 gradients, rented machine, 24 Sep 2026)", eur_ex_vat=None, hours=None, machine="CCX53",
-                             source="probes/results_m1/e8_benzene_ccpvdz/E8_locality_benzene.md; the run's hours are not in a cost record yet — shown as not priced, not as €0"))
+        cost += anchor_cost_lines(row["name"], entry)
     prov = dict(release=row.get("releases", []), deck_hash=mol["ledger"]["deck"] if mol else None, commit=commit_hash(), export_built_utc=catalog.summary["built_utc"],
                 export_sources_sha256=catalog.summary.get("sources"),
                 evidence=[dict(path=e, exists=paths.resolve(e, must_exist=False).exists()) for e in row.get("evidence", [])],
-                pre_registrations=["GoalGathering/notes/PreRegistration_2026-09-25_Proof_of_Learning_Layer_B.md", "modules/08_industry_synthesis/PRE_REGISTRATION.md"],
+                # the licence's rule is decision 65's and is named in the licence block (rule_source); it replaced the layer-B
+                # pre-registration of 25 Sep 2026, which this list named until 20 Nov 2026 (m08/licence.py)
+                pre_registrations=["modules/08_industry_synthesis/PRE_REGISTRATION.md"],
                 family_rule=FAMILY_SOURCE, licence=dict(rule_source=lic["rule_source"], licensed_families=lic["licensed_families"],
                                                         errors=lic["errors"], quantity=lic["quantity"], quantity_name=lic["quantity_name"],
                                                         first_order_errors=lic["first_order_errors"], caveats=lic["caveats"],
@@ -222,7 +240,9 @@ def to_markdown(c: dict) -> str:
         L += ["", f"## Laboratory record (rung 5): {lab['n_bands']} bands in {len(lab['records'])} record(s) — {lab['source']}"]
     L += ["", "## Cost record", "", "| step | machine | hours | € ex VAT | source |", "|---|---|---|---|---|"]
     for k in c["cost_record"]:
-        L.append(f"| {k['step']} | {k.get('machine')} | {k.get('hours') if k.get('hours') is not None else '—'} | {format(k['eur_ex_vat'], '.2f') if k.get('eur_ex_vat') is not None else 'not priced'} | {k.get('source')} |")
+        hours = k.get("hours") if k.get("hours") is not None else "—"
+        euros = format(k["eur_ex_vat"], ".2f") if k.get("eur_ex_vat") is not None else "not priced"
+        L.append(f"| {k['step']} | {k.get('machine') or '—'} | {hours} | {euros} | {k.get('source')} |")
     p = c["provenance"]
     L += ["", "## Provenance", "", f"- releases: {', '.join(p['release']) or '—'}; deck {p['deck_hash']}; commit {p['commit']}; export built {p['export_built_utc']}",
           "- evidence: " + ("; ".join(f"{e['path']} ({'exists' if e['exists'] else 'MISSING'})" for e in p["evidence"]) or "—"),

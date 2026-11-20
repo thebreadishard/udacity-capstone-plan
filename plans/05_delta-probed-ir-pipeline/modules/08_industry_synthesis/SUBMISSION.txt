@@ -1,0 +1,28 @@
+# What module 08's submission repository holds (read by tools/make_module_repo.sh; written 20 Nov 2026).
+# The notebook must run in a fresh clone of that repository alone; the scripts that made the notebook and the paper stay in the plan repository.
+README.md
+requirements.txt
+Reflective_Synthesis_Paper.pdf
+SUBMISSION.txt
+PRE_REGISTRATION.md
+PROVENANCE.md
+DESIGN_2026-09-27.md
+notebook/integrated_system.ipynb
+notebook/results.json
+notebook/figures/
+run_scenarios.py
+m08/
+scenarios/
+tests/
+# out/ is listed file by file: the pipeline show's index and the demo candidates' note in it are records of the plan repository.
+out/certificates/
+out/requests_ledger.csv
+out/s6_accessibility_2026-10-11.json
+out/scenario_results_2026-09-28.json
+# TO ADD after the final scenario run: its record, out/scenario_results_<date>.json. The notebook reads the newest record in out/,
+# and the records of 14-18 Nov 2026 are interim (a run on the fixed candidate, then four test runs) and are not listed.
+# The next two are produced by the build (python -m m08.make_snapshot; the copy of module 07's package) and do not exist before it:
+# tools/make_module_repo.sh stops with exit 1 on a listed path the module does not hold, so it is run after the build.
+snapshot/
+steward/
+run: notebook/integrated_system.ipynb

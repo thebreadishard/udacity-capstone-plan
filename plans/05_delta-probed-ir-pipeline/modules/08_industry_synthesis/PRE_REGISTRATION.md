@@ -74,3 +74,25 @@ The published site passes once that build is published (on the user's word). Two
 **Published 11 October 2026 13:36 on the user's word ('Ja oké')** (`website/deploy.sh --no-export`: the tested build, the export of 10 October).
 Re-measured live at 13:3x: pyridine and benzene+Cl 0 serious axe findings and 0 contrast failures (light, 1280 px; lowest 6.13:1), Methods 0 and 0.
 S6 passes on the published site.
+
+## Note, 20 November 2026 08:18 — what the frozen sections say that is no longer the state
+
+The sections above are the record of 28 September with its dated addenda, and they stay. Three of their statements describe that day:
+
+- **"No family of the learned layer is licensed: the verdict falls at 1,200 admitted layer-B molecules."** That rule was replaced by
+  decision 65 (29 October, amended 16 November): a family is licensed where the error of the corrected band positions of the carried
+  network is within 3 cm⁻¹ on both test sets, read from the network's records (`m08/licence.py`). It holds at the DFT proxy only;
+  the proof is a proxy proof and no new coupled-cluster anchors are computed before July 2027 (decision 63). S2's refusal therefore
+  no longer names "the licence gate for every family": it names the cap, the missing anchor, and that the learned layer is not licensed
+  at the coupled-cluster level. S2's registered expectation (`gate_contains: "not licensed"`) is met by that sentence.
+- **"S6 is not run in this build."** It was run on 11 October (the addendum above). Since 20 November 2026 `run_scenarios.py` reads its status
+  from `out/s6_accessibility_2026-10-11.json`, and `scenarios/scenarios.json` carries the amendment with its reason.
+- **Decisions 1 and 2** (replay worker, not live; Cloudflare Pages when live). The worker is still a replay. No live worker or hosted
+  officer is promised any more (the standalone plan of 18 October).
+
+Amendments to the frozen scenario file are in `scenarios/scenarios.json` itself, each with date and reason: 14 November (S2 and S2b ask
+for biphenyl, because azulene was anchored; S3's title says "listed but not computed") and 20 November 2026 (S6's status). The cation refusal of
+S4b changed its reason and its "needed" text on 20 November 2026 to what is true today — the corpus holds cation rows at the DFT level, the
+pipeline takes neutral closed-shell molecules only, the anchor registry carries no cation anchor; its registered expectation (the gate
+"cation rung closed", the measured cation price) is unchanged. S1's certificate now carries three cost lines instead of two: the anchor
+in force is quoted from the anchor registry and shown as not priced.

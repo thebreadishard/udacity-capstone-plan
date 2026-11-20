@@ -1,48 +1,86 @@
 {
- "date": "2026-10-10 17:41",
+ "date": "2026-11-20 08:13",
  "catalogue": {
-  "n": 13714,
-  "built_utc": "2026-10-10T14:01:17Z",
+  "n": 14258,
+  "built_utc": "2026-11-19T13:41:50Z",
   "rung_counts": {
-   "listed": 12668,
-   "cheap_level_done": 1040,
+   "listed": 13018,
+   "cheap_level_done": 1229,
    "correction_predicted": 0,
    "spectrum_predicted": 0,
-   "anchored": 5,
+   "anchored": 10,
    "validated": 1
   }
  },
  "licence": {
-  "licensed_families": [],
-  "rule": "proof-of-learning pre-registration (25 Sep 2026): the verdict 'the network learns' falls at 1,200 admitted layer-B molecules on three hold-outs; intermediate tables at 300 and 600 are recorded and carry no verdict; no family is licensed before the verdict",
-  "rule_source": "GoalGathering/notes/PreRegistration_2026-09-25_Proof_of_Learning_Layer_B.md",
-  "latest_reading": {
-   "source": "modules/05_support_predictor/out/E7_rungB_layerB_2026-09-27.md",
-   "rows": {
-    "(a)": {
-     "n": 274,
-     "ring_coupling_ratio": 0.61,
-     "corrected_omega_rms": 6.18
-    },
-    "(b)": {
-     "n": 274,
-     "ring_coupling_ratio": 0.64,
-     "corrected_omega_rms": 5.6
-    },
-    "(c)": {
-     "n": 274,
-     "ring_coupling_ratio": 0.7,
-     "corrected_omega_rms": 5.59
-    }
+  "licensed_families": [
+   "ring-ip",
+   "CH-stretch",
+   "CH-oop",
+   "other"
+  ],
+  "errors": {
+   "ring-ip": {
+    "a": 1.17,
+    "b": 1.22
    },
-   "date": "2026-09-27 18:33"
+   "CH-stretch": {
+    "a": 0.8,
+    "b": 1.67
+   },
+   "CH-oop": {
+    "a": 1.86,
+    "b": 1.26
+   },
+   "other": {
+    "a": 2.38,
+    "b": 2.1
+   }
   },
-  "statement": "no family licensed: the registered verdict falls at 1,200 admitted layer-B molecules; the latest recorded table (2026-09-27 18:33, pool 274) shows ring coupling ratios (a) 0.61 / (b) 0.64 / (c) 0.70 against the zero rule, read as an interim only"
+  "quantity": "product",
+  "quantity_name": "error of the corrected band positions of the seed-mean correction",
+  "first_order_errors": {
+   "ring-ip": {
+    "a": 1.55,
+    "b": 1.64
+   },
+   "CH-stretch": {
+    "a": 1.15,
+    "b": 2.02
+   },
+   "CH-oop": {
+    "a": 2.22,
+    "b": 1.72
+   },
+   "other": {
+    "a": 2.91,
+    "b": 3.68
+   }
+  },
+  "caveats": [
+   "CH-oop on hold-out (a) rests on 5 of the hold-out's 8 molecules (the others have no such band): the 95 % interval of a bootstrap over molecules is 0.93–3.2 cm⁻¹ and crosses the line (96 % of the resamples lie under it)",
+   "other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.45–3.19 cm⁻¹ and crosses the line (93 % of the resamples lie under it)"
+  ],
+  "line_cm": 3.0,
+  "rule": "decision 65 (29 Oct 2026, amended 16 Nov 2026): a mode family is licensed where the error of what the product delivers — the error of the corrected band positions of the seed-mean correction: the carried ΔH network's seeds' mean ΔH added to the B3LYP Hessian and diagonalised, each corrected band paired to its ωB97X band by mode overlap and counted in the family of its B3LYP partner — is within 3 cm⁻¹ (decision 53) on both hold-outs, at the DFT-proxy level; until the amendment the licence was read on the first-order diagonal error averaged over the seeds, which the records keep under its own name; it replaces the layer-B rule of 25 Sep 2026; and since pipeline 0.15 a band's licence follows its own measured spread (m08/own_spread.py, aromir's rule): the networks correct the same molecule given in other ways — 8 random rotations, the mirror image and a rotated mirror image, 4 random listings of the atoms put into the canonical order and swaps of atoms the bond graph cannot tell apart (all of them up to 12; of more, 12 symmetries of the heavy-atom skeleton and 6 exchanges of hydrogens), drawn with the seed 7 — each band is paired with itself by its motion, and it is licensed only when its position lay no more than 3 cm⁻¹ from the printed one in every presentation tried: the distance from the printed presentation, not the range between presentations, and a sample, not a bound; where that cannot be measured, no band is licensed; the corrected positions are printed either way. It replaces the rule by a molecule's group of 19 Nov 2026 (TASKS 288), whose measurement — the release's invariance record, <stem>_invariance.json beside the release networks — describes the network and decides no licence",
+  "rule_source": "README.md, decision 65 as amended on 16 Nov 2026",
+  "sources": [
+   "E7_rungC_v14s3clean_c00_control_eval_clean_seed0.json",
+   "E7_rungC_v14s3clean_c00_control_eval_clean_seed1.json",
+   "E7_rungC_v14s3clean_c00_control_eval_clean_seed2.json",
+   "E7_rungC_v14s3clean_c00_control_a8read_seed0.json",
+   "E7_rungC_v14s3clean_c00_control_a8read_seed1.json",
+   "E7_rungC_v14s3clean_c00_control_a8read_seed2.json",
+   "E7_rungC_v14s3clean_c00_control_product_error.json"
+  ],
+  "statement": "licensed at the DFT proxy: ring-ip (1.17 / 1.22), CH-stretch (0.8 / 1.67), CH-oop (1.86 / 1.26), other (2.38 / 2.1); not licensed: none — error of the corrected band positions of the seed-mean correction on hold-outs (a) / (b) in cm⁻¹ against 3 (decision 65 as amended on 16 Nov 2026); CH-oop on hold-out (a) rests on 5 of the hold-out's 8 molecules (the others have no such band): the 95 % interval of a bootstrap over molecules is 0.93–3.2 cm⁻¹ and crosses the line (96 % of the resamples lie under it); other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.45–3.19 cm⁻¹ and crosses the line (93 % of the resamples lie under it); the first-order diagonal error of each seed's correction, averaged over the seeds, which the licence read until then: ring-ip (1.55 / 1.64), CH-stretch (1.15 / 2.02), CH-oop (2.22 / 1.72), other (2.91 / 3.68); no coupled-cluster licence"
  },
  "scenarios": {
   "n_pass": 8,
   "n": 8,
-  "date": "2026-09-28 20:16",
+  "date": "2026-11-20 08:03",
+  "record": "scenario_results_2026-11-20.json",
+  "written_by": "run_scenarios.py --no-candidate --out light_out",
   "table": [
    {
     "id": "S1",
@@ -57,18 +95,18 @@
    },
    {
     "id": "S2",
-    "molecule": "azulene",
+    "molecule": "biphenyl",
     "target": 4,
     "budget €": "—",
     "decision": "refusal",
-    "gate / cap named": "no anchor: the learned layer is not licensed for low / skele",
+    "gate / cap named": "cap: no budget given; no anchor: no coupled-cluster reading ",
     "rules": "R14",
     "price lines": "anchor_e8_cc_hessian_naphthalene €36.34",
     "pass": true
    },
    {
     "id": "S2b",
-    "molecule": "azulene",
+    "molecule": "biphenyl",
     "target": 4,
     "budget €": 100,
     "decision": "run_order",
@@ -79,12 +117,12 @@
    },
    {
     "id": "S3",
-    "molecule": "CC(OC(=O)C(F)(F)F)c1ccc(O)c2ncccc1",
+    "molecule": "generator r4+ none #15 (PubChem)",
     "target": 4,
     "budget €": 20,
     "decision": "refusal",
-    "gate / cap named": "cap: budget €20.00; target rung 4 not reachable",
-    "rules": "R25 R32",
+    "gate / cap named": "cap: budget €20.00; no anchor: no coupled-cluster reading ex",
+    "rules": "R14",
     "price lines": "cheap_deck_v1 €0.24, anchor_e8_cc_hessian_naphthalene €36.34",
     "pass": true
    },
@@ -135,20 +173,15 @@
   ],
   "mechanical": {
    "S7": {
-    "lines_checked": 4,
-    "lines_traced": 4,
+    "lines_checked": 5,
+    "lines_traced": 5,
     "fraction": 1.0,
     "misses": []
    },
-   "S5": {
-    "exit_code": 0,
-    "seconds": 3,
-    "problems": null,
-    "n_molecules": 11321,
-    "stderr_tail": ""
-   },
    "S6": {
-    "status": "not run in this build: needs the built site and axe (website backlog rows 8–9)"
+    "status": "S6 passes on the published site (run 2026-10-11; this script does not run it)",
+    "pass_line": "axe serious_or_critical == 0 and contrast failures == 0 on every page and scheme",
+    "record": "out/s6_accessibility_2026-10-11.json"
    }
   }
  },
@@ -203,9 +236,29 @@
     "eur_ex_vat": 0.0,
     "measured_on": "naphthalene, laptop: 4,201 s per cc-pVDZ energy, 12.2 h per cc-pVTZ energy at tight thresholds",
     "source": "probes/results_m1/M3_TZ_MODE12_READING_2026-09-20.md (12.2 h per TZ energy); REPRODUCE.md row on the neutral price (4,201 s)",
-    "note": "two families read (evidence files); hours per family from the M3 record; the E8 whole-molecule Hessian is computing (frozen 10, 28 Sep) and joins this record when read"
+    "note": "two families read (evidence files); hours per family from the M3 record; the anchor in force is the registry's entry on the next line"
+   },
+   {
+    "step": "anchor in force: CCSD(T)/cc-pVDZ + [MP2/cc-pVTZ − MP2/cc-pVDZ] (composite, registered 2026-10-07)",
+    "eur_ex_vat": null,
+    "hours": null,
+    "machine": null,
+    "source": "modules/05_support_predictor/out/ANCHORS_STATUS.json → modules/05_support_predictor/out/composite_full_naphthalene_2026-10-07.npz; the registry carries no hours for this run — shown as not priced, not as €0"
    }
-  ]
+  ],
+  "anchor": {
+   "mol_id": "A_01f3186607",
+   "name": "naphthalene",
+   "path": "modules/05_support_predictor/out/composite_full_naphthalene_2026-10-07.npz",
+   "level": "CCSD(T)/cc-pVDZ + [MP2/cc-pVTZ − MP2/cc-pVDZ]",
+   "tier": "TZ",
+   "kind": "composite",
+   "status": "carried",
+   "date": "2026-10-07",
+   "checks": "MP2 row symmetry spread 2.9e-05 / 4.0e-05; basis step rms 6.3e-03; softest 167, 180 cm⁻¹",
+   "note": "chain 33c promotion rule: VALID",
+   "sha16": "3d37769ea7dcd41c"
+  }
  },
  "s8": {
   "rung": 5,
@@ -266,64 +319,94 @@
     "reading": "composite vs CCSD(T): RMS 12.4 cm⁻¹ against the laboratory tolerance 12.7 — within"
    }
   ],
-  "n_lab_bands": 92
+  "n_lab_bands": 92,
+  "anchor": {
+   "mol_id": "A_8448043181",
+   "name": "benzene",
+   "path": "probes/results_m1/e8_benzene_ccpvtz_oop_2026-10-03/hessian_ccsd_t.npz",
+   "level": "CCSD(T)/cc-pVTZ",
+   "tier": "TZ",
+   "kind": "full",
+   "status": "carried",
+   "date": "2026-10-06",
+   "sha16": "4f264c390ec9ffc5",
+   "checks": "pair ≤ 1.9e-6; energy route gradient 4.8e-6, H_kk 4.7e-4; lambda kernel 7.3e-17",
+   "note": "the full cc-pVTZ anchor; test 2's reference"
+  }
  },
  "shape": {
   "benzene": {
    "n_ir_active": 7,
    "n_modes": 30,
-   "max_dev_from_listed_cm": 0.0
+   "max_dev_from_listed_cm": 0.05
   },
   "accuracy": {
-   "proxy": {
-    "cheap": {
-     "spectrum_overlap": 0.27,
-     "intensity_error": 0.296
+   "version": "1.4",
+   "higher_level": "ωB97X/6-31G* (the DFT proxy: the network's ΔH is trained on ωB97X − B3LYP Hessians)",
+   "coupled_cluster": "not measured for this network version: the coupled-cluster reads (T3) were made on an earlier network (chain 34)",
+   "sources": [
+    "E7_rungC_v14s3clean_c00_control_eval_clean_seed0.json",
+    "E7_rungC_v14s3clean_c00_control_eval_clean_seed1.json",
+    "E7_rungC_v14s3clean_c00_control_eval_clean_seed2.json",
+    "E7_rungC_v14s3clean_c00_control_a8read_seed0.json",
+    "E7_rungC_v14s3clean_c00_control_a8read_seed1.json",
+    "E7_rungC_v14s3clean_c00_control_a8read_seed2.json",
+    "E7_rungC_v14s3clean_c00_control_product_error.json"
+   ],
+   "test_sets": {
+    "a": {
+     "n_in_test_set": 8,
+     "n_molecules": 8,
+     "cheap": {
+      "spectrum_overlap": 0.277,
+      "intensity_error": 0.227
+     },
+     "corrected": {
+      "spectrum_overlap": 0.977,
+      "intensity_error": 0.109
+     }
     },
-    "corrected": {
-     "spectrum_overlap": 0.972,
-     "intensity_error": 0.127
-    },
-    "sources": [
-     "modules/05_support_predictor/out/E7_rungC_chain34_eval_matched_2026-10-09_seed0.json",
-     "modules/05_support_predictor/out/E7_rungC_chain34_eval_matched_2026-10-09_seed1.json",
-     "modules/05_support_predictor/out/E7_rungC_chain34_eval_matched_2026-10-09_seed2.json"
-    ]
-   },
-   "cc": {
-    "cheap": {
-     "spectrum_overlap": 0.257,
-     "intensity_error": 0.003
-    },
-    "corrected": {
-     "spectrum_overlap": 0.372,
-     "intensity_error": 0.007
-    },
-    "sources": [
-     "modules/05_support_predictor/out/T3_tz_intensity_matched_c34_seed0_2026-10-09.json",
-     "modules/05_support_predictor/out/T3_tz_intensity_matched_c34_seed1_2026-10-09.json",
-     "modules/05_support_predictor/out/T3_tz_intensity_matched_c34_seed2_2026-10-09.json"
-    ]
+    "b": {
+     "n_in_test_set": 40,
+     "n_molecules": 31,
+     "cheap": {
+      "spectrum_overlap": 0.366,
+      "intensity_error": 0.511
+     },
+     "corrected": {
+      "spectrum_overlap": 0.975,
+      "intensity_error": 0.216
+     }
+    }
    }
   }
  },
  "s2": {
+  "request": {
+   "molecule": "biphenyl",
+   "target_rung": 4
+  },
   "kind": "refusal",
-  "gate": "no anchor: the learned layer is not licensed for low / skeletal, CH-oop (10.5-15 um; benzene nu11 at 673 included), ring / CH-ip (9-10.5 um), CH-ip-bend (8.6 um), CC-stretch/CH-ip (7.7 um), CC-stretch (6.2 um), overtone / combination region, CH-stretch, above 3200 and no coupled-cluster reading exists",
+  "gate": "cap: no budget given; no anchor: no coupled-cluster reading exists, and the learned layer is not licensed at the coupled-cluster level (decision 65 licenses it at the DFT proxy only)",
   "needed": "the anchor for a whole molecule: CCSD(T)/cc-pVDZ finite-difference Hessian with symmetry (E8 route) — measured on naphthalene (18 atoms), CCX53: 15 displacements → 30 gradients at ≈ 4.25 h each, three processes of 10 threads in parallel → ≈ 43 machine-hours: ≈ 42.5 h on a CCX53 ≈ €36.34 ex VAT (measured for naphthalene; a larger molecule costs more than this and its price is not measured yet)"
  },
  "s2b": {
+  "request": {
+   "molecule": "biphenyl",
+   "target_rung": 4,
+   "budget_eur": 100
+  },
   "kind": "run_order",
   "gate": {
    "approved": false,
    "reasons": [
-    "no passed dry run recorded for job 'anchor_e8:A_d9139359ab' (R01)"
+    "no passed dry run recorded for job 'anchor_e8:A_fdc27f1bd1' (R01)"
    ],
    "forced_action": {
     "action": "dry_run",
     "args": {
      "host": "CCX53",
-     "job": "anchor_e8:A_d9139359ab"
+     "job": "anchor_e8:A_fdc27f1bd1"
     },
     "rule_id": "R01",
     "reason": "gate: dry run first"
@@ -332,18 +415,13 @@
  },
  "s3": {
   "candidate": {
-   "smiles": "CC(OC(=O)C(F)(F)F)c1ccc(O)c2ncccc12",
-   "heavy_atoms": 20,
-   "aromatic_rings": 2,
-   "draw_index": 0,
-   "n_drawn": 200,
-   "n_valid": 1,
-   "source": "module 06 modules/06_generative_candidates/notebook/out/seed0/model_seed0.pt (run of 25–26 Sep 2026), generate(n=200, T=1.0, seed=0); first valid fused-aromatic string not in the corpus"
+   "smiles": "c1ccc2c(c1)ccc1c2ccc2cc3ccccc3cc12",
+   "source": "fixed test candidate (no module-06 draw)"
   },
   "reasons": [
-   "'CC(OC(=O)C(F)(F)F)c1ccc(O)c2ncccc12' is not in the corpus (canonical CC(OC(=O)C(F)(F)F)c1ccc(O)c2ncccc12); nothing exists to certify",
-   "budget €20.00: reachable within it — rung 1 (cheap level) at ≈ €0.24",
-   "no run is started: the officer never spends without a passed gate, and the gate needs a dry run of a named job first (R01)"
+   "rung 0 (listed) exists; target rung 4 not reached",
+   "budget €20.00 does not cover the missing step (≈ €36.34)",
+   "budget €20.00: reachable within it — rung 1 (cheap level) at ≈ €0.24"
   ]
  },
  "prices": {
@@ -407,7 +485,20 @@
    }
   }
  },
+ "pipeline_run": {
+  "folder": "probes/results_m1/pipeline_benzene_anharmonic_v3_2026-11-19/benzene",
+  "molecule": "benzene",
+  "date": "2026-11-19 19:47",
+  "pipeline_version": "0.14",
+  "network_version": "1.4",
+  "network_kind": "release",
+  "trained_on_molecules": 1132,
+  "n_bands": 30,
+  "n_licensed": 30,
+  "has_own_spread": false
+ },
  "n_rules": 41,
+ "pipeline_version": "0.15",
  "versions": {
   "python": "3.14.6",
   "pandas": "3.0.3",
