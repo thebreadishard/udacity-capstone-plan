@@ -1,18 +1,19 @@
-# Module 06 — Generative AI Applications: candidate molecules for the atlas (prepared 24 September 2026; training after the 28th)
+# Module 06 — Generative AI Applications: candidate molecules for the atlas
 
-**Status.** Designed (`DESIGN_2026-09-24.md`), pre-registered (`PRE_REGISTRATION.md`, fixed before any training), dataset frozen from PubChem
-(`data/README.md` carries the query, the date, the filters, the counts and the SHA-256), code written with tests (`m06/`, six tests, seconds).
-**Run on 26 September 2026** (earlier than planned, on the rented CCX53 while the anchor laptop stayed untouched): three seeds and the conditioned model trained with
+**Status (20 November 2026).** Designed (the plan repository's `DESIGN_2026-09-24.md`), pre-registered (`PRE_REGISTRATION.md`, fixed before any training), dataset frozen from PubChem
+(`data/README.md` carries the query, the date, the filters, the counts and the SHA-256), code written with tests (`m06/`, eight tests, seconds).
+**Trained and evaluated on 26 September 2026** (on a rented server): three seeds and the conditioned model trained with
 `m06/train.py`, the pre-registered notebook executed with 10,000 samples per model — 6 of 7 registered read-outs met, the miss being a project-fit prediction
 (0.30–0.60) that the model exceeded (0.945); the 5-gram baseline beaten on every line. Numbers in `notebook/results.json`, the outcome section in
-`PRE_REGISTRATION.md`, the report `Generative_AI_Analysis_Report.docx/.pdf` built from the results file by `make_summary.py` (20:0x). On 5 October 2026 the generator became a registered source for the corpus (the batch route of TASKS 22: 2,272 new fused aromatic ring systems from 130,000 proposals, 308 of them PubChem molecules; [PreRegistration_2026-10-04_Candidate_Generator_Batch_Route.md](https://github.com/thebreadishard/udacity-capstone-plan/blob/master/plans/05_delta-probed-ir-pipeline/GoalGathering/notes/PreRegistration_2026-10-04_Candidate_Generator_Batch_Route.md)); its rows enter the manifest as layer G and reach version 1.0 at the first computed pool. The user's three decisions of the design note were taken as recommended and confirmed on 5 October 2026 (PubChem as the source; the dataset frozen at the 24 September snapshot; generated candidates only as a separately labelled source)
-on 24 September (PubChem; freeze now; candidates as a separately labelled source for the atlas) — to be confirmed or changed at any time.
+`PRE_REGISTRATION.md`, the report `Generative_AI_Analysis_Report.pdf` built from the results file (`module_summary.pdf` is the same file under the name the rubric's overview uses). On 5 October 2026 the generator became a registered source for the corpus (the batch route: 2,272 new fused aromatic ring systems from 130,000 proposals, 308 of them PubChem molecules; [PreRegistration_2026-10-04_Candidate_Generator_Batch_Route.md](https://github.com/thebreadishard/udacity-capstone-plan/blob/master/plans/05_delta-probed-ir-pipeline/GoalGathering/notes/PreRegistration_2026-10-04_Candidate_Generator_Batch_Route.md)); its rows enter the manifest as layer G and reach version 1.0 at the first computed pool. The three decisions of the design note — PubChem as the source, the dataset frozen at the 24 September snapshot, generated candidates only as a separately labelled source for the atlas — are mine; I confirmed them on 5 October 2026.
 
-## Project description (as it will read)
+## Project description
 
 *For readers without chemistry:* This module is a language model for molecules. A molecule can be written as a line of text, a SMILES string (`c1ccccc1` is benzene), and the 'fused aromatic' molecules — flat carbon-ring systems whose rings share edges, the family the project's spectroscopy pipeline serves — are its sentences. Input: 161,000 such strings of real, deposited molecules from the public PubChem database. The model learns their grammar character by character, the way a language model learns from sentences, and then writes new strings. Output: proposals that look like the real ones but are not among them; chemistry software checks each one (a valid molecule? new? similar in size and composition to the real ones?). The purpose is a list of candidates for the pipeline to compute next, never a claim about any molecule. The proposals have not entered the pipeline or the Spectrum Atlas yet: the route that would take them there — an exported, gated list as a new layer of the corpus — is tracked in the plan repository's task list. Terms are defined in the [glossary](https://github.com/thebreadishard/udacity-capstone-plan/blob/master/plans/05_delta-probed-ir-pipeline/modules/GLOSSARY.md).
 
-*Re-execution of 5 October 2026, not adopted:* the lay-reader pass's execution half re-ran the notebook with `M06_REUSE=1`. Seeds 0 and 1 reproduced the 26 September numbers to the digit, but seed 2's checkpoint had never been saved on 26 September (only its training log), so the reuse path trained seed 2 anew (20 epochs, 6 threads): a different model with validity 0.647 at T 1.0 against 0.923, which flipped two of the seven pre-registered read-outs. A retrained seed is a new run, not a reproduction, so the 26 September record stands (notebook, `results.json`, report restored from git; the 4 October plain-language opening is in them), and the retrained checkpoint is registered `invalid` in `MODELS.md`. What follows, as a dated follow-up if the user wants it (TASKS 26): retrain seed 2 with the recipe and save it, and store the drawn samples so a re-execution evaluates stored artefacts instead of redrawing.
+*Re-execution of 5 October 2026, not adopted:* the lay-reader pass's execution half re-ran the notebook with `M06_REUSE=1`. Seeds 0 and 1 reproduced the 26 September numbers to the digit, but seed 2's checkpoint had never been saved on 26 September (only its training log), so the reuse path trained seed 2 anew (20 epochs, 6 threads): a different model with validity 0.647 at T 1.0 against 0.923, which flipped two of the seven pre-registered read-outs. A retrained seed is a new run, not a reproduction, so the 26 September record stands (notebook, `results.json`, report restored from git; the 4 October plain-language opening is in them), and the retrained checkpoint is registered `invalid` in `MODELS.md`.
+
+*Reproduction of 14–15 November 2026:* seed 2 was then trained once more by the registered protocol (`m06/train.py`, 20 epochs, the same dataset) into a dated folder of its own, and this time its checkpoint was saved. The log of that run, `notebook/out/seed2_repro_2026-11-14/train_log_seed2.json`, agrees with the 26 September log of seed 2 at the last epoch: training loss 0.5219 in both, validation loss 0.5526 against 0.5523, and a validity of 0.95 against 0.935 on the 200 samples drawn at the end of training. It is a dated reproduction and is registered as one in `MODELS.md`; the 26 September record stays the result. One step is still owed: the 10,000 samples of this checkpoint have not been drawn, stored or evaluated, so the notebook's validity at temperature 1.0 (0.923 on 26 September) has no counterpart from the reproduction yet.
 
 **Task type: sequence generation with a Transformer.** A molecule is written as a SMILES string; a small decoder-only Transformer (the project's **candidate generator**, versions 0.1 and 0.2 in `MODELS.md` — an experiment outside the pipeline; 4 layers,
 4 heads, d 256, ≈ 3 M parameters, own PyTorch code) trained on public fused-aromatic chemistry generates new substituted and heteroatom PAH
@@ -29,15 +30,23 @@ deposited real chemistry — not synthetic, not AI-generated, not the dataset of
 
 ```bash
 pip install -r requirements.txt
+pip install pytest                                  # only for the tests; pytest is not in requirements.txt
 python -m pytest -q m06/tests                       # the model code's tests, seconds
-jupyter notebook notebook/generative_model.ipynb
+# the pipeline check: the same cells on 2,000 training molecules with one seed, written to notebook/quick_check.ipynb
+M06_QUICK=1 jupyter execute --output=quick_check.ipynb notebook/generative_model.ipynb
+# the full run: three seeds and the conditioned model, written to notebook/full_run.ipynb
+jupyter execute --output=full_run.ipynb notebook/generative_model.ipynb
 ```
 
-Run all cells top to bottom. The full run trains three seeds and the conditioned model (hours on a CPU); the stored notebook is that run
-(26 September 2026). `M06_QUICK=1 jupyter notebook notebook/generative_model.ipynb` runs the same cells as a pipeline check (2,000 training
-molecules, one seed; the notebook labels its numbers as not a result). The notebook reads the dataset from the two committed gzip parts in
+Both commands run all cells top to bottom and leave the stored notebook as it is. The full run trains three seeds and the conditioned
+model (about ten hours per seed on a CPU); the stored notebook is that run (26 September 2026). The pipeline check labels its numbers as
+not a result. `jupyter execute` comes with `nbclient`, which is in `requirements.txt`; to step through the cells in a browser instead,
+install the notebook interface as well (`pip install notebook`) and open the file with `jupyter notebook notebook/generative_model.ipynb`.
+The notebook reads the dataset from the two committed gzip parts in
 `data/` (the frozen CSV is 12.8 MB; header and rows of the parts are the CSV row for row). Before submission the pipeline check was executed
-in a fresh clone of this repository, with nothing else present. `requirements.txt` was created with `pip freeze > requirements.txt`.
+in a fresh clone of this repository, with nothing else present. `requirements.txt` is a short list written by hand: the packages the notebook and the scripts
+import, each with the version that was installed in the environment of the run on 25 September 2026 (`requests` alone has no version). It is
+not a full `pip freeze`.
 
 ### Where the data come from
 
@@ -51,15 +60,17 @@ report's builder (`make_summary.py`), the design note and the provenance notes s
 - `PRE_REGISTRATION.md` — split, tokenizer, model, metrics and predictions, fixed before training; its outcome section.
 - `notebook/generative_model.ipynb` — task and model choice, load and inspect, the model, training with curves, sampling and the
   pre-registered metrics with a failure gallery and nearest neighbours, the conditioning change, ethics, summary.
-- `notebook/results.json` (the numbers), `notebook/figures/`, `notebook/out/` (the training logs of the three seeds and the conditioned model,
-  and `samples_seed0_T1.0.txt`, seed 0's 10,000 samples).
+- `notebook/results.json` (the numbers), `notebook/figures/`, `notebook/out/` (the per-epoch training logs of the three seeds and the conditioned model as
+  JSON, the log of the seed-2 reproduction of 14–15 November, `samples_seed0_T1.0.txt` with seed 0's 10,000 samples, and
+  `MODELS_STATUS.json`, the reviewed status behind `MODELS.md`).
 - `notebook/pahdb_comparison.json` — how far the samples sit from the astrochemical distribution (PAHdb v4.00), made by
   `m06/pahdb_compare.py` from the samples and `data/pahdb_theoretical_4.00_neutral_chno.csv`.
 - `m06/` — `data.py` (dataset, Murcko scaffold split, tokenizer, conditioning prefixes), `model.py` (the Transformer, sampling), `train.py`
   (protocol, per-epoch log, early stopping, `generate`), `evaluate.py` (the pre-registered metrics), `baseline_ngram.py` (the 5-gram
   baseline), `tests/test_m06.py`.
 - `data/` — `README.md` and the dataset as two gzip parts.
-- `Generative_AI_Analysis_Report.pdf` — the report in the Udacity APA 7 template; `MODELS.md` — the generator's versions;
+- `Generative_AI_Analysis_Report.pdf` — the report in the Udacity APA 7 template; `module_summary.pdf` is the same file under the name
+  the rubric's overview uses; `MODELS.md` — the generator's versions;
   `MODEL_CARD.md` — the model card.
 - `SUBMISSION.txt` — the list of files this repository holds.
 

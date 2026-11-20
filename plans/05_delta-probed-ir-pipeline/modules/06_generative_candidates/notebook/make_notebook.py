@@ -240,6 +240,19 @@ md("""## 6. Ethics and responsible use
   it does not claim: no property, no safety, no synthesis.""")
 
 md("## 7. Summary")
+md("""In the full run of 26 September 2026 that is stored in this notebook, a character-level Transformer written in PyTorch and trained from
+scratch on 125,065 fused-aromatic PubChem molecules learned to write new molecules of the same kind: at temperature 1.0 about 92 % of its
+10,000 samples are valid molecules, 99 % are unique and 91 % are not in the training set, and it beats the 5-gram baseline on every
+registered line (validity 0.92 against 0.03). Six of the seven predictions fixed before training were met; the miss is project fit, which
+came out at 0.94–0.95, above the 0.30–0.60 I had predicted, so the forecast was wrong rather than the model. The first challenge was the
+trade between valid and copied output: a lower temperature of 0.7 raises validity to 0.98 but nearly doubles the share of training
+molecules returned verbatim (from 0.10 to 0.18–0.19), and at 1.0 that share (0.095–0.099) lies only just under the limit of 0.10 set
+beforehand. The second was steering: the conditioned model obeys a request for a ring count and a heteroatom in 87 % of its valid samples
+overall, but obedience falls to 0.625 for two rings with sulfur, and fewer than half of its strings are valid (0.486) when four or more
+rings without a heteroatom are asked for. The third was cost and waste: each seed took about ten hours of CPU training (560–696 minutes),
+and 761 of seed 0's 10,000 strings are not molecules at all (section 4 shows ten of them). A limit that remains is the data: PubChem holds
+what chemists have made or patented rather than the bare ring systems of interstellar space, so the samples are proposals for what to
+compute next and not a claim about any molecule.""")
 code("""r0 = results[(SEEDS[0], 1.0)]
 summary = (f"A character-level decoder-only Transformer ({model0.n_params():,} parameters, written in PyTorch without pretrained weights) was trained on "
            f"{split_counts.get('train', 0):,} fused-aromatic PubChem molecules split by scaffold. At temperature 1.0 its samples are {100 * m10.validity:.0f} % valid, "
