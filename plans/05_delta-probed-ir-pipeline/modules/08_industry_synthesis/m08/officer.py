@@ -121,7 +121,8 @@ def decide(req: Request, catalog: Catalog) -> Decision:  # noqa: PLR0911  one re
                        ["R25"], "cation rung closed (obstacle 9)", [prices.step_price("cation_energy_naphthalene_plus")],
                        CATION_NEEDED, row)
     # 2. outside the corpus: the cap decides what is reachable
-    cheap = prices.step_price("cheap_deck_v1"); anchor = prices.step_price("anchor_e8_cc_hessian_naphthalene")
+    cheap = prices.step_price("cheap_deck_v1")
+    anchor = prices.anchor_price()
     if row is None:
         cap = cap_of(req.budget_eur)
         reasons = [f"'{req.molecule}' is not in the corpus (canonical {canonical(req.molecule)}); nothing exists to certify",
@@ -147,7 +148,8 @@ def decide(req: Request, catalog: Catalog) -> Decision:  # noqa: PLR0911  one re
     gate_named = ("no anchor: no coupled-cluster reading exists, and the learned layer is not licensed at the coupled-cluster level (decision 65 "
                   "licenses it at the DFT proxy only)"
                   if req.target_rung >= 4 else "cheap level not computed")
-    needed = f"{missing['what']} — measured on {missing['measured_on']}: ≈ {missing['hours']:.1f} h on a {missing['machine']} ≈ €{missing['eur_ex_vat']:.2f} ex VAT" + (f" ({missing['note']})" if missing.get("note") else "")
+    needed = (f"{missing['what']} — measured on {missing['measured_on']}: ≈ {missing['hours']:.1f} machine-hours ({missing['machine']}) "
+              f"≈ €{missing['eur_ex_vat']:.2f} ex VAT" + (f" ({missing['note']})" if missing["note"] else ""))
     if req.budget_eur is None or req.budget_eur < missing["eur_ex_vat"]:
         cap = cap_of(req.budget_eur)
         # the prices of the steps that are actually missing, cheapest first, and what the cap reaches above the rung the molecule has
@@ -158,7 +160,9 @@ def decide(req: Request, catalog: Catalog) -> Decision:  # noqa: PLR0911  one re
                        ["R14" if req.target_rung >= 4 else "R25"], f"cap: {cap}; {gate_named}", lines or [missing], needed, row)
     # a run order: the officer proposes 'launch' of a named job; module 07's gate decides — without a passed dry run it forces the dry run first (R01)
     job = f"{'anchor_e8' if req.target_rung >= 4 else 'deck_v1'}:{row['id']}"
-    proposal = Proposal(action="launch", args={"host": "CCX53" if req.target_rung >= 4 else "CPX62", "job": job}, rule_id="R01",
+    # the job's first step runs where the price table measured it: the coupled-cluster Hessian for an anchor, the deck for the cheap rung
+    host = (anchor["parts"][0] if req.target_rung >= 4 else cheap)["machine"]
+    proposal = Proposal(action="launch", args={"host": host, "job": job}, rule_id="R01",
                         reason=f"request for {row['name']} at rung {req.target_rung} under budget €{req.budget_eur:.2f} ≥ €{missing['eur_ex_vat']:.2f}")
     state = {"observations": [{"source": "request officer", "text": req.note, "facts": {"host": proposal.args["host"], "job_due": job}}], "actions_taken": []}
     g = gate_check(proposal, state, RID)

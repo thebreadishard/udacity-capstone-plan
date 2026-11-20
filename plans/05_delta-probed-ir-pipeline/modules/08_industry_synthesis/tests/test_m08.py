@@ -2,12 +2,14 @@
 registered; a run order never passes module 07's gate without a dry run; the certificate carries a source for every number and resolves its
 evidence; the replay worker touches no machine. Run: python -m pytest modules/08_industry_synthesis/tests -q"""
 import json
+import re
 import sys
 from pathlib import Path
 
 import pytest
 
 HERE = Path(__file__).resolve().parents[1]
+PLAN = HERE.parents[1]
 sys.path.insert(0, str(HERE))
 
 from m08 import pipeline as PIPE  # noqa: E402
@@ -20,6 +22,9 @@ from m08.licence import caveat_sentence  # noqa: E402
 from m08.licence import state as licence_state  # noqa: E402
 from m08.officer import Request, cap_of, decide, instruction_in, reachable_within, within_line  # noqa: E402
 from m08.replay import execute_run_order  # noqa: E402
+
+# a path of the repository inside a source line: at least one folder and a file extension
+REPO_PATH = re.compile(r"(?<![\w/.])((?:[\w.-]+/)+[\w.-]+\.[A-Za-z0-9]+)")
 
 # isort: split
 # probes/, on the path through m08.pipeline
@@ -38,6 +43,8 @@ def test_price_table_is_sourced_and_arithmetic():
     for step in prices.STEPS:
         p = prices.step_price(step)
         assert p["source"] and p["measured_on"] and abs(p["eur_ex_vat"] - round(p["hours"] * prices.MACHINES[p["machine"]]["eur_per_hour"], 2)) < 0.011
+        for path in REPO_PATH.findall(p["source"]):
+            assert (PLAN / path).is_file(), f"{step} names {path} as its source and no such file is in the repository"
     assert prices.host_class("ubuntu-32gb-hel1-18") == "CPX62" and prices.host_class("Asus18") == "laptop" and prices.host_class("ubuntu-128gb-hel1-2") == "CCX53"
 
 
@@ -89,11 +96,11 @@ def test_scenarios_as_registered(cat):
     d1 = decide(Request(**by["S1"]["request"]), cat); assert d1.kind == "certificate" and d1.rung_reached == 4
     d2 = decide(Request(**(by["S2"]["request"] | {"molecule": rung_one_parent(cat)})), cat)
     assert d2.kind == "refusal" and "not licensed" in d2.gate_named and "R14" in d2.rule_ids
-    assert any(p["step"] == "anchor_e8_cc_hessian_naphthalene" for p in d2.price_lines)
+    assert any(p["step"] == prices.ANCHOR_STEP for p in d2.price_lines)
     # 1-methylcoronene (18 Nov 2026): coronene, the stand-in since 10 Oct, has a manifest row (layer T, TASKS 49) that the export carries
     outside = "Cc1cc2ccc3ccc4ccc5ccc6ccc1c1c2c3c4c5c61"
     assert cat.find(outside) is None
-    d3 = decide(Request(molecule=outside, target_rung=4, budget_eur=20), cat)
+    d3 = decide(Request(molecule=outside, target_rung=4, budget_eur=by["S3"]["request"]["budget_eur"]), cat)
     assert d3.kind == "refusal" and "cap" in d3.gate_named and any("rung 1" in r for r in d3.reasons)
     d4a = decide(Request(**by["S4a"]["request"]), cat); assert d4a.kind == "refusal" and "invalid" in d4a.gate_named
     d4b = decide(Request(**by["S4b"]["request"]), cat); assert d4b.kind == "refusal" and "cation" in d4b.gate_named
@@ -256,7 +263,7 @@ def test_the_live_certificate_agrees_with_benzenes_export_certificate(cat):
 
 
 CHEAP = {"eur_ex_vat": 0.24}
-ANCHOR = {"eur_ex_vat": 36.34}
+ANCHOR = {"eur_ex_vat": 5.83}
 
 
 def test_no_budget_reaches_nothing_and_the_sentence_says_which_cap():
@@ -267,13 +274,13 @@ def test_no_budget_reaches_nothing_and_the_sentence_says_which_cap():
 
 def test_a_budget_reaches_the_rungs_it_covers_cheapest_first():
     assert reachable_within(0.1, 0, CHEAP, ANCHOR) == []
-    assert len(reachable_within(20.0, 0, CHEAP, ANCHOR)) == 1
+    assert len(reachable_within(2.0, 0, CHEAP, ANCHOR)) == 1
     both = reachable_within(100.0, 0, CHEAP, ANCHOR)
     assert len(both) == 2 and both[0].startswith("rung 1") and both[1].startswith("rung 4")
 
 
 def test_a_rung_the_molecule_already_has_is_not_offered_again():
-    assert reachable_within(100.0, 1, CHEAP, ANCHOR) == ["rung 4 (anchored, naphthalene-sized) at \u2248 \u20ac36.34"]
+    assert reachable_within(100.0, 1, CHEAP, ANCHOR) == ["rung 4 (anchored, naphthalene-sized) at \u2248 \u20ac5.83"]
     assert reachable_within(100.0, 4, CHEAP, ANCHOR) == []
 
 
@@ -286,14 +293,48 @@ def test_the_sentence_distinguishes_nothing_affordable_from_nothing_left():
 def test_a_listed_molecule_under_a_short_budget_is_told_what_it_can_have(cat):
     """Scenario S3: the refusal names the cap, the cheapest rung reachable and both missing prices, not the anchor's price alone."""
     row = next(r for r in cat.rows if int(r["rung"]) == 0)
-    d = decide(Request(molecule=row["id"], target_rung=4, budget_eur=20.0), cat)
-    assert d.kind == "refusal" and d.gate_named.startswith("cap: budget \u20ac20.00;")
-    assert any("rung 1 (cheap level)" in r for r in d.reasons)
-    assert [p["step"] for p in d.price_lines] == ["cheap_deck_v1", "anchor_e8_cc_hessian_naphthalene"]
+    d = decide(Request(molecule=row["id"], target_rung=4, budget_eur=2.0), cat)
+    assert d.kind == "refusal" and d.gate_named.startswith("cap: budget \u20ac2.00;")
+    assert any("rung 1 (cheap level)" in r for r in d.reasons) and not any("rung 4 (anchored" in r for r in d.reasons)
+    assert [p["step"] for p in d.price_lines] == ["cheap_deck_v1", prices.ANCHOR_STEP]
+    assert any("does not cover the missing step (\u2248 \u20ac5.83)" in r for r in d.reasons)
 
 
 def test_a_molecule_at_the_cheap_rung_is_not_offered_the_cheap_rung(cat):
     """Scenario S2: biphenyl has layer A; the refusal prices the anchor only and says nothing above rung 1 is reachable."""
     d = decide(Request(molecule="biphenyl", target_rung=4, budget_eur=1.0), cat)
-    assert d.kind == "refusal" and [p["step"] for p in d.price_lines] == ["anchor_e8_cc_hessian_naphthalene"]
+    assert d.kind == "refusal" and [p["step"] for p in d.price_lines] == [prices.ANCHOR_STEP]
     assert any("nothing above rung 1 is reachable" in r for r in d.reasons)
+
+
+def test_the_table_quotes_the_price_the_anchor_test_pins():
+    """ANCHOR above is typed for the sentences' tests; it is the table's anchor."""
+    assert prices.anchor_price()["eur_ex_vat"] == ANCHOR["eur_ex_vat"]
+
+
+def test_the_anchors_price_is_the_sum_of_its_measured_parts():
+    anchor = prices.anchor_price()
+    parts = [prices.step_price(step) for _, step in prices.ANCHOR_PARTS]
+    assert anchor["parts"] == parts and [p["machine"] for p in parts] == ["CPX62", "CCX53"]
+    assert anchor["eur_ex_vat"] == round(sum(p["eur_ex_vat"] for p in parts), 2)
+    assert abs(anchor["hours"] - sum(p["hours"] for p in parts)) < 0.011
+    assert "two-route checks" in anchor["note"] and "larger molecule costs more" in anchor["note"]
+    assert prices.ANCHOR_STEP not in prices.STEPS and "anchor_e8_cc_hessian_naphthalene" not in prices.STEPS
+
+
+def test_the_anchors_seconds_are_the_records():
+    """The table types the seconds; the record `probes/anchor_price_from_logs.py` wrote from the run logs holds the same ones."""
+    record = json.loads((PLAN / prices.ANCHOR_RECORD).read_text(encoding="utf-8"))
+    cc, mp2 = record["cc_dz_hessian"], record["mp2_basis_step"]
+    assert (cc["machine_seconds"], cc["machine"]) == (prices.CC_RUN_S, prices.STEPS["anchor_cc_dz_hessian_naphthalene"]["machine"])
+    assert cc["reference"]["two_route_checks_sum_s"] == prices.CC_TWO_ROUTE_CHECKS_S and cc["parts"]["lost_before_relaunch_s"] == prices.CC_LOST_S
+    assert (mp2["job_seconds"], mp2["machine_seconds"], mp2["lanes_sharing"]) == (prices.MP2_JOB_S, prices.MP2_CHARGED_S, [4])
+    assert mp2["machine"] == prices.STEPS["anchor_mp2_basis_step_naphthalene"]["machine"]
+    assert record["anchor"]["eur_ex_vat"] == prices.anchor_price()["eur_ex_vat"]
+    assert [cc["price"]["eur_ex_vat"], mp2["price"]["eur_ex_vat"]] == [p["eur_ex_vat"] for p in prices.anchor_price()["parts"]]
+
+
+def test_a_run_order_for_an_anchor_names_the_machine_the_price_was_measured_on(cat):
+    d = decide(Request(molecule="biphenyl", target_rung=4, budget_eur=100.0), cat)
+    assert d.kind == "run_order" and d.proposal["args"]["host"] == "CPX62" and not d.gate["approved"]
+    assert [p["step"] for p in d.price_lines] == [prices.ANCHOR_STEP]

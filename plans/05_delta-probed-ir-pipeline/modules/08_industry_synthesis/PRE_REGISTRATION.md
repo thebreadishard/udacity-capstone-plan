@@ -96,3 +96,22 @@ S4b changed its reason and its "needed" text on 20 November 2026 to what is true
 pipeline takes neutral closed-shell molecules only, the anchor registry carries no cation anchor; its registered expectation (the gate
 "cation rung closed", the measured cation price) is unchanged. S1's certificate now carries three cost lines instead of two: the anchor
 in force is quoted from the anchor registry and shown as not priced.
+
+## Note, 20 November 2026 10:01 — the anchor's price is read from the run logs; S3's budget is amended
+
+- **The price.** The refusals quoted €36.34 (42.5 CCX53-hours) for a missing anchor, as the outcome of 28 September above records it.
+  That entry priced a rerun of 28 September (30 gradients at ≈ 4.2 h each; the obstacle ledger's entry of 28 Sep 12:3x), which ran
+  before the lambda incident and whose Hessian is not in the anchor registry. The anchor in force for naphthalene is the composite of
+  decision 62, and `probes/anchor_price_from_logs.py` reads what it cost from its run logs
+  (`probes/results_m1/anchor_price_2026-11-20/`): the CCSD(T)/cc-pVDZ Hessian took 68,815 s from launch to VALID on a CPX62
+  (19.12 h, €3.98 — 24,426 s of it the one-off two-route checks, 17,182 s a lost first attempt, both left in), and the MP2 basis step
+  31,110 s of job time on a quarter of a CCX53 (2.16 h, €1.85). Together **€5.83**, 21.28 machine-hours, for naphthalene.
+- **The registered expectations.** S2 and S3 name the price line: `anchor_composite_naphthalene` (it was
+  `anchor_e8_cc_hessian_naphthalene`). Their kinds, gates and rules are unchanged. A run order for an anchor now names the CPX62,
+  where the coupled-cluster Hessian was measured, instead of the CCX53.
+- **S3's budget, €20 → €2.** S3 registers "a budget below one anchor → refusal naming the cap, the cheapest rung reachable and its
+  price". €20 is not below one anchor any more: left as it was, the officer answers S3 with a run order, which is S2b's case. €2 is
+  below the anchor and above the cheap rung (€0.24), so the case is kept and its number moved. S2b's €100 still covers the anchor.
+  Both amendments are in `scenarios/scenarios.json` with their reasons.
+- **Not run here.** `out/` and `notebook/results.json` hold the record of this morning's run with the old price until the scenarios
+  are run and the notebook and paper rebuilt.

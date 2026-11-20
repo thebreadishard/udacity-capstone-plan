@@ -210,7 +210,24 @@ def summary() -> ModuleType:
 
 @pytest.fixture(scope="module")
 def results() -> dict:
-    return json.loads((MODULE / "notebook" / "results.json").read_text(encoding="utf-8"))
+    """The record on disk, with the price table as it stands: the paper's price sentences are tested on today's table, and
+    test_the_record_on_disk_holds_the_tables_prices says whether the record is behind it."""
+    record = json.loads((MODULE / "notebook" / "results.json").read_text(encoding="utf-8"))
+    record["prices"] = json.loads(json.dumps(prices.table_record()))
+    return record
+
+
+def test_the_record_on_disk_holds_the_tables_prices() -> None:
+    on_disk = json.loads((MODULE / "notebook" / "results.json").read_text(encoding="utf-8"))["prices"]
+    assert on_disk == json.loads(json.dumps(prices.table_record())), \
+        "the price table changed after the notebook wrote results.json: rebuild the notebook, then the paper"
+
+
+def test_the_paper_states_the_anchors_price_as_the_table_has_it(summary: ModuleType, results: dict) -> None:
+    anchor = prices.anchor_price()
+    text = _text(summary, results)
+    assert f"at {anchor['hours']:.1f} machine-hours on rented servers ({anchor['eur_ex_vat']:.0f} € before tax)" in text
+    assert "42.5" not in text and "28 September. The cheap" not in text and "one run in September" not in text
 
 
 def test_the_notebook_on_disk_is_the_builders_and_ran_whole() -> None:

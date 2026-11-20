@@ -33,7 +33,7 @@ FIGURES = HERE / "notebook" / "figures"
 OUT_DOCX = HERE / "Reflective_Synthesis_Paper.docx"
 AUTHOR = "Frederic Petrignani"         # the title page's author line, and the file's own author fields
 WORD_RANGE = (1500, 2000)              # the rubric's range for the body
-ANCHOR_STEP, CHEAP_STEP = "anchor_e8_cc_hessian_naphthalene", "cheap_deck_v1"
+CHEAP_STEP = "cheap_deck_v1"
 FIXED_CANDIDATE_FLAG = "--no-candidate"
 GLOSSARY = "https://github.com/thebreadishard/udacity-capstone-plan/blob/master/plans/05_delta-probed-ir-pipeline/modules/GLOSSARY.md"
 
@@ -150,8 +150,8 @@ def failure_sentence(coverage: list[dict[str, Any]]) -> str:
 
 def context(results: dict[str, Any]) -> list[Block]:
     """Sections 1–2: the industry problem and the integrated solution."""
-    steps, counts = results["prices"]["steps"], results["catalogue"]["rung_counts"]
-    anchor, cheap = steps[ANCHOR_STEP], steps[CHEAP_STEP]
+    counts = results["catalogue"]["rung_counts"]
+    anchor, cheap = results["prices"]["anchor"], results["prices"]["steps"][CHEAP_STEP]
     return [
         ("heading", "Industry Context and Problem Definition"),
         ("para", "Laboratory astrophysics reads the infrared spectra that the James Webb Space Telescope returns from interstellar matter against "
@@ -161,9 +161,10 @@ def context(results: dict[str, Any]) -> list[Block]:
                  "uncertainty of its scaled-harmonic method. The industry problem this module addresses is therefore a data-service problem: to "
                  "deliver, for a molecule that no laboratory has measured, a computed spectrum with a stated and measured accuracy and a stated "
                  "price — or, when neither can be given, a refusal that says which step is missing and what it would cost."),
-        ("para", "The constraint that shapes the whole design is cost. The accurate method, coupled-cluster theory, is unaffordable per molecule at "
-                 f"the sizes that matter: one anchor run of that kind for a naphthalene-sized molecule was priced at {anchor['hours']:.1f} "
-                 f"machine-hours on a rented server ({anchor['eur_ex_vat']:.0f} € before tax) on 28 September. The cheap method, "
+        ("para", "The constraint that shapes the whole design is cost. The accurate method, coupled-cluster theory, is not affordable across a library: "
+                 "its cost rises steeply with the size of the molecule, and the one anchor priced from its run logs is naphthalene's, 18 "
+                 f"atoms, at {anchor['hours']:.1f} machine-hours on rented servers ({anchor['eur_ex_vat']:.0f} € before tax); nothing "
+                 "larger has been priced. The cheap method, "
                  f"density-functional theory, costs about {cheap['hours'] * 60:.0f} minutes per molecule and is systematically wrong by an amount "
                  "that differs per vibrational family. The project's thesis is a learned correction: a neural network that turns the cheap "
                  "calculation into a better one. What this capstone proves is a proxy version of that thesis. The network is trained on the "
@@ -256,8 +257,9 @@ def reflection(results: dict[str, Any]) -> list[Block]:
                  "not against coupled cluster and not against the laboratory, and the certificate says so in its licence statement. "
                  f"{anharmonic_sentence(results['pipeline_run']['anharmonic'], licence['line_cm'])} Where a licensed family rests on few molecules "
                  f"its interval crosses the line ({len(licence['caveats'])} such cases today). The catalogue is thin above the cheap rung: "
-                 f"{counts['anchored']} anchored molecules and {counts['validated']} validated. The price of an anchor is that of one run in "
-                 "September; the anchors in force today are later runs, which the registry carries without a price. "
+                 f"{counts['anchored']} anchored molecules and {counts['validated']} validated. The price of an anchor is naphthalene's alone, "
+                 "read from its run logs, one-off checks and a lost first attempt included; the certificates show the anchors in force "
+                 "without a price, because the registry carries no hours. "
                  f"{failure_sentence(results['s8']['coverage'])}"),
         ("heading", "Professional and Industry Relevance"),
         ("para", "The product form is a spectrum with a per-band budget, a cost record and a provenance block, or a refusal with a price. A "

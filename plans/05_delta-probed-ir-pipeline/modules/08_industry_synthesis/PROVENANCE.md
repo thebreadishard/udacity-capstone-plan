@@ -103,3 +103,25 @@ read with it:
 - **A first run at 09:08 recorded S5's problems as null**: the export's builder has reported a broken invariant on stderr with exit 1 since it was split on 19 November, and the runner still read a `problems` key behind two silent fallbacks. The paper's builder refused that record. Fixed and reviewed (commit c53b15c4): S5 is recorded from what the builder reports, and a failing S5 fails the run and is never the submitted record.
 - **Rebuilt** on the submitted record: notebook, `results.json`, figures, paper (1,947 body words).
 - **Not done:** the snapshot, `steward/`, the frozen `requirements.txt` and the fresh-clone run (the standalone plan's section of 20 November says what they wait for).
+
+## Addendum, 20 Nov 2026 10:01 — the anchor's price from the run logs (TASKS 290)
+
+- **Supersedes "The anchor's price" above.** The entry `anchor_e8_cc_hessian_naphthalene` (42.5 CCX53-hours, €36.34) is gone from
+  `m08/prices.py`. Its source line named partial logs that are not kept; the number was the obstacle ledger's entry of 28 Sep 12:3x
+  about a rerun that the lambda incident superseded.
+- **In its place**, two measured entries and their sum (`prices.anchor_price()`, the line `anchor_composite_naphthalene`): the
+  CCSD(T)/cc-pVDZ Hessian of 1–2 October on the CPX62 `ubuntu-32gb-hel1-2`, 68,815 s from launch to VALID (19.12 h, €3.98), and the
+  MP2 basis step of 7 October on the CCX53, 31,110 s of job time in a queue of four lanes, charged a quarter (2.16 h, €1.85): €5.83.
+  `probes/anchor_price_from_logs.py` reads both from the logs and writes `probes/results_m1/anchor_price_2026-11-20/`
+  (`anchor_price.json`, `RESULT.md` with the attribution rule and what the numbers are not); a test holds the table's seconds equal to
+  that record. The price is the run as it ran: 24,426 s of one-off two-route checks (€1.41) and 17,182 s of a lost first attempt
+  (€0.99) are stated in the entry's note and not taken out.
+- **One more source corrected.** `cheap_deck_v1` named `corpus/ledger.csv`; the file is
+  `modules/05_support_predictor/corpus/ledger.csv`. A test now checks that every repository path a source line names exists.
+- **The paper** says the one priced anchor is naphthalene's, with its hours and euros from the table, that nothing larger has been
+  priced, and that the certificates show the anchors in force without a price because the registry carries no hours. The
+  certificates' cost lines are unchanged.
+- **The scenarios.** S2 and S3 name the new price line; S3's budget is €2 instead of €20 so that it stays below one anchor
+  (`scenarios/scenarios.json`, amendments of 20 November 09:58; `PRE_REGISTRATION.md`, note of 20 November 10:01).
+- **Behind until the next run:** `out/scenario_results*.json`, the notebook, `notebook/results.json` and the paper were built this
+  morning on the old price.
