@@ -290,3 +290,25 @@ the settings of section 4, the two-route check, the read and the rule stand as w
   between them a difference of the step.
 - **The laptop spec `probes/runspecs/low_mode_threshold_sample_2026-11-20.json` is not launched.** Its estimate of 6 to 12 hours
   was for 4 threads beside the training search; four lanes of 8 threads on the server are expected to end within about two hours.
+
+## Amendment 2 (20 November 2026, 14:3x UTC) — the read's outcome, and the step check extended to all 20 on night20
+
+**The registered read ran** (`probes/results_m1/low_mode_threshold_2026-11-20/read/RESULT.md`, with record.json and points.csv),
+on the sample's records from night20 (amendment 1; fetched and checked by sha256, 145 files) and the laptop's seven step-0.02
+molecules. **Outcome 3, undecided**: all 8 checked registered points — the B3LYP modes of B_0af11315e3, B_0c6c144a7f,
+B_1428bc8164, B_1726105aae, B_3dcbd985e3 (two modes), B_4ff67f9ea2 and B_55cca3aaf2 — differ by more than 0.15 cm⁻¹ between
+step 0.01 and step 0.02. Two or more failed checks are outcome 3 by sections 5 and 7, "and the step check is extended to all
+20 molecules before any statement".
+
+**That extension runs now, on night20.** The 13 sampled molecules not in `ids_step02.txt`
+(`probes/results_m1/night20_2026-11-20/job218b/ids_step02_extension.txt`, derived by script as `ids_sample.txt` minus those
+seven) are patched with the same runner call as the sample and `--step 0.02`: `--below 60`, `--max-memory 2048`, 8 threads per
+process, pyscf 2.15.0 (env `qc215`), the code of commit fb3cd34b in `/root/dpir` that the sample ran from, the inputs the sample
+read. 13 directions, 52 gradients and 26 reference SCFs, in two processes over two disjoint lists (119 and 121
+minutes by SAMPLE.md), each into a fresh out folder of its own (`/root/night20_218b/out_lane<k>`; the runner refuses a folder
+made at another step). Run specs `probes/runspecs/night20_218b_lane<k>.json`. The fetch puts the molecule folders into
+`probes/results_m1/low_mode_threshold_2026-11-20/patch_step02_below60_extension/`.
+
+**The laptop's seven step-0.02 molecules stand as measured** (`patch_step02_below60/`). For the 13 new ones both steps are
+night20's; for those seven the two steps are two machines, which the gate of amendment 1 covers (gradients within 1.9e-8
+hartree/bohr). Nothing else in the registration changes.
