@@ -152,3 +152,8 @@ read with it:
 - **Also in:** the certificate's price is tied to the registry entry's file and its sha16; the script requires the queue log to
   name the CCX53 script; the source test checks every file a source names, globs included; the paper's two price sentences are
   shorter (55 words spare on a record patched as the rebuild will write it).
+
+## Addendum, 20 Nov 2026 (10:4x) — rebuilt on the anchor's price from the logs
+
+- **Run.** `python run_scenarios.py --with-catalog --submitted` through the run door after merge f1ec732e, record of 2026-11-20 10:47: 8 of 8 request cases, S5 exit 0 with no problems on 14,258 molecules; S3 at its amended budget of €2.
+- **Rebuilt** on that record: notebook, `results.json`, paper (1,945 body words); the certificates and the request ledger in `out/` are this run's. 125 tests pass (module 08's and the price script's).

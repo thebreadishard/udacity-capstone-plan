@@ -1,5 +1,5 @@
 {
- "date": "2026-11-20 09:17",
+ "date": "2026-11-20 10:47",
  "frozen": "2026-09-28 (PRE_REGISTRATION.md, from DESIGN_2026-09-27.md §5; S2b and S4b/S4c are added cases, labelled extra)",
  "n_pass": 8,
  "n_scenarios": 8,
@@ -35,7 +35,7 @@
     "proposal": null,
     "gate": null,
     "ledger_line": "certificate — naphthalene at rung 4 (anchored), target 4",
-    "date": "2026-11-20 09:16"
+    "date": "2026-11-20 10:46"
    },
    "certificate_files": [
     "out/certificates/certificate_naphthalene_A_01f3186607.json",
@@ -70,7 +70,8 @@
     "rung_label": "cheap_level_done",
     "reasons": [
      "rung 1 (cheap_level_done) exists; target rung 4 not reached",
-     "no budget given does not cover the missing step (≈ €36.34)",
+     "no budget given does not cover even the price measured for 18 atoms (≈ €5.83)",
+     "the one measured anchor price is naphthalene's (18 atoms, ≈ €5.83); this molecule (22 atoms) costs more and its price is not measured",
      "no budget given: nothing above rung 1 is reachable within it"
     ],
     "rule_ids": [
@@ -79,21 +80,45 @@
     "gate_named": "cap: no budget given; no anchor: no coupled-cluster reading exists, and the learned layer is not licensed at the coupled-cluster level (decision 65 licenses it at the DFT proxy only)",
     "price_lines": [
      {
-      "step": "anchor_e8_cc_hessian_naphthalene",
-      "what": "the anchor for a whole molecule: CCSD(T)/cc-pVDZ finite-difference Hessian with symmetry (E8 route)",
-      "machine": "CCX53",
-      "hours": 42.5,
-      "eur_ex_vat": 36.34,
-      "measured_on": "naphthalene (18 atoms), CCX53: 15 displacements → 30 gradients at ≈ 4.25 h each, three processes of 10 threads in parallel → ≈ 43 machine-hours",
-      "source": "probes/results_m1 partial logs of the frozen-10 rerun (28 Sep 2026: 15,240–15,295 s per gradient); pre-registration E8 of 23 Sep",
-      "note": "measured for naphthalene; a larger molecule costs more than this and its price is not measured yet"
+      "step": "anchor_composite_naphthalene",
+      "measured_molecule": "naphthalene",
+      "measured_atoms": 18,
+      "what": "the anchor for a whole molecule by the route in force (decision 62): a CCSD(T)/cc-pVDZ finite-difference Hessian with symmetry plus the basis step MP2/cc-pVTZ − MP2/cc-pVDZ",
+      "machine": "CPX62 + CCX53",
+      "hours": 21.28,
+      "eur_ex_vat": 5.83,
+      "measured_on": "naphthalene (18 atoms), 1–7 Oct 2026, from the run logs: the coupled-cluster Hessian 19.12 h on a CPX62 (€3.98) and the MP2 basis step 2.16 h on a CCX53 (€1.85)",
+      "source": "probes/results_m1/anchor_price_2026-11-20/anchor_price.json (probes/anchor_price_from_logs.py)",
+      "note": "the run as it ran: at most 24,426 s of it (€1.41, the sum of their timers) were added by the one-off two-route checks of the (T) kernels against pyscf's slow routes, a validation gate that a second molecule on the same environment does not repeat, and 17,182 s (€0.99) were a first attempt lost to a memory kill beside other work on the machine; no run without them has been timed, so neither is taken out of the price; not in it: the rental before the launch and after the Hessian, and the geometry; the queue's failed starts and another molecule's killed job are not charged to naphthalene; measured for naphthalene: a larger molecule costs more than this and its price is not measured yet",
+      "parts": [
+       {
+        "step": "anchor_cc_dz_hessian_naphthalene",
+        "what": "the coupled-cluster part of an anchor: CCSD(T)/cc-pVDZ finite-difference Hessian with symmetry (E8 route, explicit (T) lambda)",
+        "machine": "CPX62",
+        "hours": 19.12,
+        "eur_ex_vat": 3.98,
+        "measured_on": "naphthalene (18 atoms), CPX62 ubuntu-32gb-hel1-2, 1–2 Oct 2026: 68,815 s of wall clock from launch to the Hessian written VALID on the machine rented for it — the reference gradient, then 15 symmetry-unique displacements → 30 gradients in two lanes of 8 threads",
+        "source": "probes/results_m1/anchor_price_2026-11-20/anchor_price.json, written by probes/anchor_price_from_logs.py from probes/results_m1/e8_naphthalene_ccpvdz_tlambda_2026-10-02/e8_fd.log and probes/results_m1/e8_naphthalene_ccpvdz_tlambda_2026-10-02/anchors.log",
+        "note": "the run as it ran: at most 24,426 s of it (€1.41, the sum of their timers) were added by the one-off two-route checks of the (T) kernels against pyscf's slow routes, a validation gate that a second molecule on the same environment does not repeat, and 17,182 s (€0.99) were a first attempt lost to a memory kill beside other work on the machine; no run without them has been timed, so neither is taken out of the price; not in it: the rental before the launch and after the Hessian, and the geometry"
+       },
+       {
+        "step": "anchor_mp2_basis_step_naphthalene",
+        "what": "the basis step of an anchor: MP2/cc-pVTZ − MP2/cc-pVDZ rows on the coupled-cluster Hessian's displacements",
+        "machine": "CCX53",
+        "hours": 2.16,
+        "eur_ex_vat": 1.85,
+        "measured_on": "naphthalene (18 atoms), CCX53, 7 Oct 2026: 15 cc-pVTZ and 15 cc-pVDZ jobs of 8 threads, 31,110 s of job time in a queue of four lanes shared with four other molecules' rows, so a quarter of the machine for that time",
+        "source": "probes/results_m1/anchor_price_2026-11-20/anchor_price.json, written by probes/anchor_price_from_logs.py from probes/results_m1/composite_rows_2026-10-07/queue.log, probes/results_m1/composite_rows_2026-10-07/jobs.txt and probes/results_m1/composite_rows_2026-10-07/worker_*.log",
+        "note": "the queue's failed starts and another molecule's killed job are not charged to naphthalene"
+       }
+      ]
      }
     ],
-    "what_would_be_needed": "the anchor for a whole molecule: CCSD(T)/cc-pVDZ finite-difference Hessian with symmetry (E8 route) — measured on naphthalene (18 atoms), CCX53: 15 displacements → 30 gradients at ≈ 4.25 h each, three processes of 10 threads in parallel → ≈ 43 machine-hours: ≈ 42.5 h on a CCX53 ≈ €36.34 ex VAT (measured for naphthalene; a larger molecule costs more than this and its price is not measured yet)",
+    "what_would_be_needed": "the anchor for a whole molecule by the route in force (decision 62): a CCSD(T)/cc-pVDZ finite-difference Hessian with symmetry plus the basis step MP2/cc-pVTZ − MP2/cc-pVDZ — measured on naphthalene (18 atoms), 1–7 Oct 2026, from the run logs: the coupled-cluster Hessian 19.12 h on a CPX62 (€3.98) and the MP2 basis step 2.16 h on a CCX53 (€1.85): ≈ 21.3 machine-hours (CPX62 + CCX53) ≈ €5.83 ex VAT (the run as it ran: at most 24,426 s of it (€1.41, the sum of their timers) were added by the one-off two-route checks of the (T) kernels against pyscf's slow routes, a validation gate that a second molecule on the same environment does not repeat, and 17,182 s (€0.99) were a first attempt lost to a memory kill beside other work on the machine; no run without them has been timed, so neither is taken out of the price; not in it: the rental before the launch and after the Hessian, and the geometry; the queue's failed starts and another molecule's killed job are not charged to naphthalene; measured for naphthalene: a larger molecule costs more than this and its price is not measured yet)",
     "proposal": null,
     "gate": null,
-    "ledger_line": "refusal — biphenyl: cap: no budget given; no anchor: no coupled-cluster reading exists, and the learned layer is not licensed at the coupled-cluster level (decision 65 licenses it at the DFT proxy only); rung 1 (cheap_level_done) exists; target rung 4 not reached; no budget given does not cover the missing step (≈ €36.34); no budget given: nothing above rung 1 is reachable within it; needed: the anchor for a whole molecule: CCSD(T)/cc-pVDZ finite-difference Hessian with symmetry (E8 route) — measured on naphthalene (18 atoms), CCX53: 15 displacements → 30 gradients at ≈ 4.25 h each, three processes of 10 threads in parallel → ≈ 43 machine-hours: ≈ 42.5 h on a CCX53 ≈ €36.34 ex VAT (measured for naphthalene; a larger molecule costs more than this and its price is not measured yet)",
-    "date": "2026-11-20 09:16"
+    "ledger_line": "refusal — biphenyl: cap: no budget given; no anchor: no coupled-cluster reading exists, and the learned layer is not licensed at the coupled-cluster level (decision 65 licenses it at the DFT proxy only); rung 1 (cheap_level_done) exists; target rung 4 not reached; no budget given does not cover even the price measured for 18 atoms (≈ €5.83); the one measured anchor price is naphthalene's (18 atoms, ≈ €5.83); this molecule (22 atoms) costs more and its price is not measured; no budget given: nothing above rung 1 is reachable within it; needed: the anchor for a whole molecule by the route in force (decision 62): a CCSD(T)/cc-pVDZ finite-difference Hessian with symmetry plus the basis step MP2/cc-pVTZ − MP2/cc-pVDZ — measured on naphthalene (18 atoms), 1–7 Oct 2026, from the run logs: the coupled-cluster Hessian 19.12 h on a CPX62 (€3.98) and the MP2 basis step 2.16 h on a CCX53 (€1.85): ≈ 21.3 machine-hours (CPX62 + CCX53) ≈ €5.83 ex VAT (the run as it ran: at most 24,426 s of it (€1.41, the sum of their timers) were added by the one-off two-route checks of the (T) kernels against pyscf's slow routes, a validation gate that a second molecule on the same environment does not repeat, and 17,182 s (€0.99) were a first attempt lost to a memory kill beside other work on the machine; no run without them has been timed, so neither is taken out of the price; not in it: the rental before the launch and after the Hessian, and the geometry; the queue's failed starts and another molecule's killed job are not charged to naphthalene; measured for naphthalene: a larger molecule costs more than this and its price is not measured yet)",
+    "date": "2026-11-20 10:46"
    },
    "certificate_files": [],
    "worker": null,
@@ -125,7 +150,7 @@
     "rung_reached": 1,
     "rung_label": "cheap_level_done",
     "reasons": [
-     "rung 1 exists; target 4; budget covers the missing step",
+     "rung 1 exists; target 4; budget €100.00 meets the price measured for 18 atoms (≈ €5.83), not this molecule's: the one measured anchor price is naphthalene's (18 atoms, ≈ €5.83); this molecule (22 atoms) costs more and its price is not measured; the dry run the gate forces is what prices it",
      "gate: not approved — no passed dry run recorded for job 'anchor_e8:A_fdc27f1bd1' (R01)"
     ],
     "rule_ids": [
@@ -135,25 +160,49 @@
     "gate_named": "module 07 gate (R01: dry run first)",
     "price_lines": [
      {
-      "step": "anchor_e8_cc_hessian_naphthalene",
-      "what": "the anchor for a whole molecule: CCSD(T)/cc-pVDZ finite-difference Hessian with symmetry (E8 route)",
-      "machine": "CCX53",
-      "hours": 42.5,
-      "eur_ex_vat": 36.34,
-      "measured_on": "naphthalene (18 atoms), CCX53: 15 displacements → 30 gradients at ≈ 4.25 h each, three processes of 10 threads in parallel → ≈ 43 machine-hours",
-      "source": "probes/results_m1 partial logs of the frozen-10 rerun (28 Sep 2026: 15,240–15,295 s per gradient); pre-registration E8 of 23 Sep",
-      "note": "measured for naphthalene; a larger molecule costs more than this and its price is not measured yet"
+      "step": "anchor_composite_naphthalene",
+      "measured_molecule": "naphthalene",
+      "measured_atoms": 18,
+      "what": "the anchor for a whole molecule by the route in force (decision 62): a CCSD(T)/cc-pVDZ finite-difference Hessian with symmetry plus the basis step MP2/cc-pVTZ − MP2/cc-pVDZ",
+      "machine": "CPX62 + CCX53",
+      "hours": 21.28,
+      "eur_ex_vat": 5.83,
+      "measured_on": "naphthalene (18 atoms), 1–7 Oct 2026, from the run logs: the coupled-cluster Hessian 19.12 h on a CPX62 (€3.98) and the MP2 basis step 2.16 h on a CCX53 (€1.85)",
+      "source": "probes/results_m1/anchor_price_2026-11-20/anchor_price.json (probes/anchor_price_from_logs.py)",
+      "note": "the run as it ran: at most 24,426 s of it (€1.41, the sum of their timers) were added by the one-off two-route checks of the (T) kernels against pyscf's slow routes, a validation gate that a second molecule on the same environment does not repeat, and 17,182 s (€0.99) were a first attempt lost to a memory kill beside other work on the machine; no run without them has been timed, so neither is taken out of the price; not in it: the rental before the launch and after the Hessian, and the geometry; the queue's failed starts and another molecule's killed job are not charged to naphthalene; measured for naphthalene: a larger molecule costs more than this and its price is not measured yet",
+      "parts": [
+       {
+        "step": "anchor_cc_dz_hessian_naphthalene",
+        "what": "the coupled-cluster part of an anchor: CCSD(T)/cc-pVDZ finite-difference Hessian with symmetry (E8 route, explicit (T) lambda)",
+        "machine": "CPX62",
+        "hours": 19.12,
+        "eur_ex_vat": 3.98,
+        "measured_on": "naphthalene (18 atoms), CPX62 ubuntu-32gb-hel1-2, 1–2 Oct 2026: 68,815 s of wall clock from launch to the Hessian written VALID on the machine rented for it — the reference gradient, then 15 symmetry-unique displacements → 30 gradients in two lanes of 8 threads",
+        "source": "probes/results_m1/anchor_price_2026-11-20/anchor_price.json, written by probes/anchor_price_from_logs.py from probes/results_m1/e8_naphthalene_ccpvdz_tlambda_2026-10-02/e8_fd.log and probes/results_m1/e8_naphthalene_ccpvdz_tlambda_2026-10-02/anchors.log",
+        "note": "the run as it ran: at most 24,426 s of it (€1.41, the sum of their timers) were added by the one-off two-route checks of the (T) kernels against pyscf's slow routes, a validation gate that a second molecule on the same environment does not repeat, and 17,182 s (€0.99) were a first attempt lost to a memory kill beside other work on the machine; no run without them has been timed, so neither is taken out of the price; not in it: the rental before the launch and after the Hessian, and the geometry"
+       },
+       {
+        "step": "anchor_mp2_basis_step_naphthalene",
+        "what": "the basis step of an anchor: MP2/cc-pVTZ − MP2/cc-pVDZ rows on the coupled-cluster Hessian's displacements",
+        "machine": "CCX53",
+        "hours": 2.16,
+        "eur_ex_vat": 1.85,
+        "measured_on": "naphthalene (18 atoms), CCX53, 7 Oct 2026: 15 cc-pVTZ and 15 cc-pVDZ jobs of 8 threads, 31,110 s of job time in a queue of four lanes shared with four other molecules' rows, so a quarter of the machine for that time",
+        "source": "probes/results_m1/anchor_price_2026-11-20/anchor_price.json, written by probes/anchor_price_from_logs.py from probes/results_m1/composite_rows_2026-10-07/queue.log, probes/results_m1/composite_rows_2026-10-07/jobs.txt and probes/results_m1/composite_rows_2026-10-07/worker_*.log",
+        "note": "the queue's failed starts and another molecule's killed job are not charged to naphthalene"
+       }
+      ]
      }
     ],
-    "what_would_be_needed": "the anchor for a whole molecule: CCSD(T)/cc-pVDZ finite-difference Hessian with symmetry (E8 route) — measured on naphthalene (18 atoms), CCX53: 15 displacements → 30 gradients at ≈ 4.25 h each, three processes of 10 threads in parallel → ≈ 43 machine-hours: ≈ 42.5 h on a CCX53 ≈ €36.34 ex VAT (measured for naphthalene; a larger molecule costs more than this and its price is not measured yet)",
+    "what_would_be_needed": "the anchor for a whole molecule by the route in force (decision 62): a CCSD(T)/cc-pVDZ finite-difference Hessian with symmetry plus the basis step MP2/cc-pVTZ − MP2/cc-pVDZ — measured on naphthalene (18 atoms), 1–7 Oct 2026, from the run logs: the coupled-cluster Hessian 19.12 h on a CPX62 (€3.98) and the MP2 basis step 2.16 h on a CCX53 (€1.85): ≈ 21.3 machine-hours (CPX62 + CCX53) ≈ €5.83 ex VAT (the run as it ran: at most 24,426 s of it (€1.41, the sum of their timers) were added by the one-off two-route checks of the (T) kernels against pyscf's slow routes, a validation gate that a second molecule on the same environment does not repeat, and 17,182 s (€0.99) were a first attempt lost to a memory kill beside other work on the machine; no run without them has been timed, so neither is taken out of the price; not in it: the rental before the launch and after the Hessian, and the geometry; the queue's failed starts and another molecule's killed job are not charged to naphthalene; measured for naphthalene: a larger molecule costs more than this and its price is not measured yet)",
     "proposal": {
      "action": "launch",
      "args": {
-      "host": "CCX53",
+      "host": "CPX62",
       "job": "anchor_e8:A_fdc27f1bd1"
      },
      "rule_id": "R01",
-     "reason": "request for biphenyl at rung 4 under budget €100.00 ≥ €36.34"
+     "reason": "request for biphenyl at rung 4: budget €100.00 meets the anchor price measured for 18 atoms (€5.83 with every missing step), which is not this molecule's; the dry run prices it"
     },
     "gate": {
      "approved": false,
@@ -163,7 +212,7 @@
      "forced_action": {
       "action": "dry_run",
       "args": {
-       "host": "CCX53",
+       "host": "CPX62",
        "job": "anchor_e8:A_fdc27f1bd1"
       },
       "rule_id": "R01",
@@ -171,7 +220,7 @@
      }
     },
     "ledger_line": "run order — biphenyl → anchor_e8:A_fdc27f1bd1: gate substituted dry_run",
-    "date": "2026-11-20 09:16"
+    "date": "2026-11-20 10:46"
    },
    "certificate_files": [],
    "worker": {
@@ -181,7 +230,7 @@
     "forced_action": {
      "action": "dry_run",
      "args": {
-      "host": "CCX53",
+      "host": "CPX62",
       "job": "anchor_e8:A_fdc27f1bd1"
      },
      "rule_id": "R01",
@@ -200,14 +249,14 @@
    "request": {
     "molecule": "CC(OC(=O)C(F)(F)F)c1ccc(O)c2ncccc12",
     "target_rung": 4,
-    "budget_eur": 20
+    "budget_eur": 2
    },
    "decision": {
     "kind": "refusal",
     "request": {
      "molecule": "CC(OC(=O)C(F)(F)F)c1ccc(O)c2ncccc12",
      "target_rung": 4,
-     "budget_eur": 20.0,
+     "budget_eur": 2.0,
      "charge": 0,
      "multiplicity": 1,
      "note": ""
@@ -218,14 +267,15 @@
     "rung_label": null,
     "reasons": [
      "'CC(OC(=O)C(F)(F)F)c1ccc(O)c2ncccc12' is not in the corpus (canonical CC(OC(=O)C(F)(F)F)c1ccc(O)c2ncccc12); nothing exists to certify",
-     "budget €20.00: reachable within it — rung 1 (cheap level) at ≈ €0.24",
+     "budget €2.00: reachable within it — rung 1 (cheap level) at ≈ €0.24",
+     "the one measured anchor price is naphthalene's (18 atoms, ≈ €5.83); this molecule (30 atoms) costs more and its price is not measured",
      "no run is started: the officer never spends without a passed gate, and the gate needs a dry run of a named job first (R01)"
     ],
     "rule_ids": [
      "R25",
      "R32"
     ],
-    "gate_named": "cap: budget €20.00; target rung 4 not reachable",
+    "gate_named": "cap: budget €2.00; target rung 4 not reachable",
     "price_lines": [
      {
       "step": "cheap_deck_v1",
@@ -234,25 +284,49 @@
       "hours": 1.17,
       "eur_ex_vat": 0.24,
       "measured_on": "naphthalene (18 atoms), laptop: 3,419.9 s total (corpus ledger row A_01f3186607, 14 Sep 2026); layer A2 on a CPX62: ≈ 70 min per 3–4-ring mono-substituted molecule",
-      "source": "corpus ledger `corpus/ledger.csv`; obstacle ledger 21 Sep (A2 ≈ 70 min per molecule on a CPX62)",
+      "source": "corpus ledger modules/05_support_predictor/corpus/ledger.csv; obstacle ledger 21 Sep (A2 ≈ 70 min per molecule on a CPX62)",
       "note": ""
      },
      {
-      "step": "anchor_e8_cc_hessian_naphthalene",
-      "what": "the anchor for a whole molecule: CCSD(T)/cc-pVDZ finite-difference Hessian with symmetry (E8 route)",
-      "machine": "CCX53",
-      "hours": 42.5,
-      "eur_ex_vat": 36.34,
-      "measured_on": "naphthalene (18 atoms), CCX53: 15 displacements → 30 gradients at ≈ 4.25 h each, three processes of 10 threads in parallel → ≈ 43 machine-hours",
-      "source": "probes/results_m1 partial logs of the frozen-10 rerun (28 Sep 2026: 15,240–15,295 s per gradient); pre-registration E8 of 23 Sep",
-      "note": "measured for naphthalene; a larger molecule costs more than this and its price is not measured yet"
+      "step": "anchor_composite_naphthalene",
+      "measured_molecule": "naphthalene",
+      "measured_atoms": 18,
+      "what": "the anchor for a whole molecule by the route in force (decision 62): a CCSD(T)/cc-pVDZ finite-difference Hessian with symmetry plus the basis step MP2/cc-pVTZ − MP2/cc-pVDZ",
+      "machine": "CPX62 + CCX53",
+      "hours": 21.28,
+      "eur_ex_vat": 5.83,
+      "measured_on": "naphthalene (18 atoms), 1–7 Oct 2026, from the run logs: the coupled-cluster Hessian 19.12 h on a CPX62 (€3.98) and the MP2 basis step 2.16 h on a CCX53 (€1.85)",
+      "source": "probes/results_m1/anchor_price_2026-11-20/anchor_price.json (probes/anchor_price_from_logs.py)",
+      "note": "the run as it ran: at most 24,426 s of it (€1.41, the sum of their timers) were added by the one-off two-route checks of the (T) kernels against pyscf's slow routes, a validation gate that a second molecule on the same environment does not repeat, and 17,182 s (€0.99) were a first attempt lost to a memory kill beside other work on the machine; no run without them has been timed, so neither is taken out of the price; not in it: the rental before the launch and after the Hessian, and the geometry; the queue's failed starts and another molecule's killed job are not charged to naphthalene; measured for naphthalene: a larger molecule costs more than this and its price is not measured yet",
+      "parts": [
+       {
+        "step": "anchor_cc_dz_hessian_naphthalene",
+        "what": "the coupled-cluster part of an anchor: CCSD(T)/cc-pVDZ finite-difference Hessian with symmetry (E8 route, explicit (T) lambda)",
+        "machine": "CPX62",
+        "hours": 19.12,
+        "eur_ex_vat": 3.98,
+        "measured_on": "naphthalene (18 atoms), CPX62 ubuntu-32gb-hel1-2, 1–2 Oct 2026: 68,815 s of wall clock from launch to the Hessian written VALID on the machine rented for it — the reference gradient, then 15 symmetry-unique displacements → 30 gradients in two lanes of 8 threads",
+        "source": "probes/results_m1/anchor_price_2026-11-20/anchor_price.json, written by probes/anchor_price_from_logs.py from probes/results_m1/e8_naphthalene_ccpvdz_tlambda_2026-10-02/e8_fd.log and probes/results_m1/e8_naphthalene_ccpvdz_tlambda_2026-10-02/anchors.log",
+        "note": "the run as it ran: at most 24,426 s of it (€1.41, the sum of their timers) were added by the one-off two-route checks of the (T) kernels against pyscf's slow routes, a validation gate that a second molecule on the same environment does not repeat, and 17,182 s (€0.99) were a first attempt lost to a memory kill beside other work on the machine; no run without them has been timed, so neither is taken out of the price; not in it: the rental before the launch and after the Hessian, and the geometry"
+       },
+       {
+        "step": "anchor_mp2_basis_step_naphthalene",
+        "what": "the basis step of an anchor: MP2/cc-pVTZ − MP2/cc-pVDZ rows on the coupled-cluster Hessian's displacements",
+        "machine": "CCX53",
+        "hours": 2.16,
+        "eur_ex_vat": 1.85,
+        "measured_on": "naphthalene (18 atoms), CCX53, 7 Oct 2026: 15 cc-pVTZ and 15 cc-pVDZ jobs of 8 threads, 31,110 s of job time in a queue of four lanes shared with four other molecules' rows, so a quarter of the machine for that time",
+        "source": "probes/results_m1/anchor_price_2026-11-20/anchor_price.json, written by probes/anchor_price_from_logs.py from probes/results_m1/composite_rows_2026-10-07/queue.log, probes/results_m1/composite_rows_2026-10-07/jobs.txt and probes/results_m1/composite_rows_2026-10-07/worker_*.log",
+        "note": "the queue's failed starts and another molecule's killed job are not charged to naphthalene"
+       }
+      ]
      }
     ],
     "what_would_be_needed": "an intake into the corpus factory (deck v1) at the cheap rung's price, then an anchor for the target rung",
     "proposal": null,
     "gate": null,
-    "ledger_line": "refusal — CC(OC(=O)C(F)(F)F)c1ccc(O)c2ncccc12: cap: budget €20.00; target rung 4 not reachable; 'CC(OC(=O)C(F)(F)F)c1ccc(O)c2ncccc12' is not in the corpus (canonical CC(OC(=O)C(F)(F)F)c1ccc(O)c2ncccc12); nothing exists to certify; budget €20.00: reachable within it — rung 1 (cheap level) at ≈ €0.24; needed: an intake into the corpus factory (deck v1) at the cheap rung's price, then an anchor for the target rung",
-    "date": "2026-11-20 09:17"
+    "ledger_line": "refusal — CC(OC(=O)C(F)(F)F)c1ccc(O)c2ncccc12: cap: budget €2.00; target rung 4 not reachable; 'CC(OC(=O)C(F)(F)F)c1ccc(O)c2ncccc12' is not in the corpus (canonical CC(OC(=O)C(F)(F)F)c1ccc(O)c2ncccc12); nothing exists to certify; budget €2.00: reachable within it — rung 1 (cheap level) at ≈ €0.24; the one measured anchor price is naphthalene's (18 atoms, ≈ €5.83); this molecule (30 atoms) costs more and its price is not measured; needed: an intake into the corpus factory (deck v1) at the cheap rung's price, then an anchor for the target rung",
+    "date": "2026-11-20 10:47"
    },
    "certificate_files": [],
    "worker": null,
@@ -302,7 +376,7 @@
     "proposal": null,
     "gate": null,
     "ledger_line": "refusal — c1ccc(cc1: invalid input; 'c1ccc(cc1' is neither a corpus name, a manifest id nor a SMILES RDKit can parse; needed: a valid SMILES, corpus name or manifest id",
-    "date": "2026-11-20 09:17"
+    "date": "2026-11-20 10:47"
    },
    "certificate_files": [],
    "worker": null,
@@ -349,7 +423,7 @@
       "hours": 9.56,
       "eur_ex_vat": 1.99,
       "measured_on": "naphthalene⁺, rented 16-core machine: 34,411 s per energy",
-      "source": "REPRODUCE.md row 49 (cation_price_readout.py); obstacle 9",
+      "source": "REPRODUCE.md row 49 (probes/cation_price_readout.py); obstacle 9",
       "note": ""
      }
     ],
@@ -357,7 +431,7 @@
     "proposal": null,
     "gate": null,
     "ledger_line": "refusal — naphthalene: cation rung closed (obstacle 9); charge 1, multiplicity 2: the cation rung is closed (obstacle 9; the measured price of one naphthalene⁺ energy is on the line below). The corpus holds radical-cation rows at the DFT level (layer P3c of its manifest), but no certificate rung exists for a charged or open-shell species: the pipeline takes neutral closed-shell molecules only and the anchor registry carries no cation anchor; needed: a pipeline version that takes open-shell input, with the correction's error measured on cations (the corpus's cation rows are not all computed yet), and for the anchored rung a coupled-cluster cation anchor, which decision 63 leaves out of scope until July 2027; then a rung opened by a dated decision",
-    "date": "2026-11-20 09:17"
+    "date": "2026-11-20 10:47"
    },
    "certificate_files": [],
    "worker": null,
@@ -400,7 +474,7 @@
     "proposal": null,
     "gate": null,
     "ledger_line": "refusal — naphthalene: instruction in observed content (R24); the request text contains an instruction addressed to the system; requests are data, never commands; needed: a request that names a molecule, a rung and a budget",
-    "date": "2026-11-20 09:17"
+    "date": "2026-11-20 10:47"
    },
    "certificate_files": [],
    "worker": null,
@@ -440,7 +514,7 @@
     "proposal": null,
     "gate": null,
     "ledger_line": "certificate — benzene at rung 5 (validated), target 5",
-    "date": "2026-11-20 09:17"
+    "date": "2026-11-20 10:47"
    },
    "certificate_files": [
     "out/certificates/certificate_benzene_A_8448043181.json",
@@ -455,14 +529,14 @@
  ],
  "mechanical": {
   "S7": {
-   "lines_checked": 5,
-   "lines_traced": 5,
+   "lines_checked": 6,
+   "lines_traced": 6,
    "fraction": 1.0,
    "misses": []
   },
   "S5": {
    "exit_code": 0,
-   "seconds": 24,
+   "seconds": 28,
    "problems": [],
    "n_molecules": 14258,
    "stderr_tail": ""
@@ -534,12 +608,12 @@
   ]
  },
  "provenance": {
-  "timestamp_utc": "2026-11-20 08:17:47",
+  "timestamp_utc": "2026-11-20 09:47:39",
   "host": "Asus18",
   "python": "3.14.6",
   "numpy": "2.5.1",
   "command": "run_scenarios.py --with-catalog --submitted",
-  "commit": "c53b15c4e4b0916d69385d3a0bf4f910182a83a7",
+  "commit": "f1ec732e6f573c2a2089e78f122729004ec95b6c",
   "dirty": "yes"
  }
 }

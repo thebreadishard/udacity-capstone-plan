@@ -1,6 +1,6 @@
 {
  "kind": "certificate",
- "date": "2026-11-20 09:17",
+ "date": "2026-11-20 10:47",
  "molecule": {
   "id": "A_8448043181",
   "name": "benzene",
@@ -761,7 +761,7 @@
    "eur_ex_vat": null,
    "hours": null,
    "machine": null,
-   "source": "modules/05_support_predictor/out/ANCHORS_STATUS.json → probes/results_m1/e8_benzene_ccpvtz_oop_2026-10-03/hessian_ccsd_t.npz; the registry carries no hours for this run — shown as not priced, not as €0"
+   "source": "modules/05_support_predictor/out/ANCHORS_STATUS.json → probes/results_m1/e8_benzene_ccpvtz_oop_2026-10-03/hessian_ccsd_t.npz; the registry carries no hours for this run and the price table holds no reading of its logs — shown as not priced, not as €0"
   }
  ],
  "provenance": {
@@ -772,8 +772,8 @@
    "layerA_2026-09-22"
   ],
   "deck_hash": "97ed2d67c66b",
-  "commit": "c53b15c4",
-  "export_built_utc": "2026-11-20T08:08:50Z",
+  "commit": "f1ec732e",
+  "export_built_utc": "2026-11-20T08:17:46Z",
   "export_sources_sha256": {
    "manifest": "48dd5b7416592331bb0d858f7b083b4c70ee5f886d545d6a58e424ab41ff2577",
    "ledger": "273c8e3c9ab3dc59d50aa3908178b50e56455c7a11ac033fa105ceddd756bf72"

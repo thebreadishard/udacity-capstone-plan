@@ -1,4 +1,4 @@
-# Certificate — benzene (A_8448043181), rung 5 · validated — 2026-11-20 09:17
+# Certificate — benzene (A_8448043181), rung 5 · validated — 2026-11-20 10:47
 
 benzene: rung 5 (validated). The cheap-level spectrum is served with the laboratory tolerance per family; no predicted correction is shown in this record — the pipeline serves it for the licensed families (ring-ip, CH-stretch, CH-oop, other; decision 65), a band only where its own position moved by no more than the licence line in the presentations tried (this molecule turned, mirrored or listed in another atom order); the anchor coverage lists what coupled-cluster evidence exists and where it is wider than the tolerance. Licence caveat: CH-oop on hold-out (a) rests on 5 of the hold-out's 8 molecules (the others have no such band): the 95 % interval of a bootstrap over molecules is 0.93–3.2 cm⁻¹ and crosses the line (96 % of the resamples lie under it); other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.45–3.19 cm⁻¹ and crosses the line (93 % of the resamples lie under it).
 
@@ -85,11 +85,11 @@ Source: `modules/05_support_predictor/out/ANCHORS_STATUS.json`, the project's an
 | step | machine | hours | € ex VAT | source |
 |---|---|---|---|---|
 | cheap rung (deck v1, both functionals) | Asus18 | 0.289 | 0.00 | corpus ledger machine column 'Asus18' |
-| anchor in force: CCSD(T)/cc-pVTZ (full, registered 2026-10-06) | — | — | not priced | modules/05_support_predictor/out/ANCHORS_STATUS.json → probes/results_m1/e8_benzene_ccpvtz_oop_2026-10-03/hessian_ccsd_t.npz; the registry carries no hours for this run — shown as not priced, not as €0 |
+| anchor in force: CCSD(T)/cc-pVTZ (full, registered 2026-10-06) | — | — | not priced | modules/05_support_predictor/out/ANCHORS_STATUS.json → probes/results_m1/e8_benzene_ccpvtz_oop_2026-10-03/hessian_ccsd_t.npz; the registry carries no hours for this run and the price table holds no reading of its logs — shown as not priced, not as €0 |
 
 ## Provenance
 
-- releases: layerA2_2026-09-23, layerA2_2026-09-23b, layerA2_2026-09-24, layerA_2026-09-22; deck 97ed2d67c66b; commit c53b15c4; export built 2026-11-20T08:08:50Z
+- releases: layerA2_2026-09-23, layerA2_2026-09-23b, layerA2_2026-09-24, layerA_2026-09-22; deck 97ed2d67c66b; commit f1ec732e; export built 2026-11-20T08:17:46Z
 - evidence: probes/results_m1/e8_benzene_ccpvtz_oop_2026-10-03/hessian_ccsd_t.npz (exists); probes/results_m1/e8_benzene_ccpvdz_tlambda/E8_locality_benzene.md (exists); probes/results_m1/R0_DIAGONAL_READING_2026-09-22.md (exists); probes/results_vpt2/benzene_benchmark_2026-09-22.md (exists)
 - licence: 4 families licensed, read on the error of the corrected band positions of the seed-mean correction (README.md, decision 65 as amended on 16 Nov 2026); CH-oop on hold-out (a) rests on 5 of the hold-out's 8 molecules (the others have no such band): the 95 % interval of a bootstrap over molecules is 0.93–3.2 cm⁻¹ and crosses the line (96 % of the resamples lie under it); other on hold-out (a) rests on 8 molecules: the 95 % interval of a bootstrap over molecules is 1.45–3.19 cm⁻¹ and crosses the line (93 % of the resamples lie under it)
 - family rule: modules/03_lab_scoreboard/build_lab_tables.py FAMILY_RULE (12 Sep 2026)

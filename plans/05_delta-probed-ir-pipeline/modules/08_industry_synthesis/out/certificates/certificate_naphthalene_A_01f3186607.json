@@ -1,6 +1,6 @@
 {
  "kind": "certificate",
- "date": "2026-11-20 09:16",
+ "date": "2026-11-20 10:46",
  "molecule": {
   "id": "A_01f3186607",
   "name": "naphthalene",
@@ -606,11 +606,24 @@
    "note": "the hours are the price table's for one family's reading (five points), measured where its source says; this page's own hours are not recorded apart. The anchor in force is the registry's entry on the last line"
   },
   {
-   "step": "anchor in force: CCSD(T)/cc-pVDZ + [MP2/cc-pVTZ − MP2/cc-pVDZ] (composite, registered 2026-10-07)",
-   "eur_ex_vat": null,
-   "hours": null,
-   "machine": null,
-   "source": "modules/05_support_predictor/out/ANCHORS_STATUS.json → modules/05_support_predictor/out/composite_full_naphthalene_2026-10-07.npz; the registry carries no hours for this run — shown as not priced, not as €0"
+   "step": "anchor in force: CCSD(T)/cc-pVDZ + [MP2/cc-pVTZ − MP2/cc-pVDZ] (composite, registered 2026-10-07) — the coupled-cluster Hessian",
+   "what": "the coupled-cluster part of an anchor: CCSD(T)/cc-pVDZ finite-difference Hessian with symmetry (E8 route, explicit (T) lambda)",
+   "machine": "CPX62",
+   "hours": 19.12,
+   "eur_ex_vat": 3.98,
+   "measured_on": "naphthalene (18 atoms), CPX62 ubuntu-32gb-hel1-2, 1–2 Oct 2026: 68,815 s of wall clock from launch to the Hessian written VALID on the machine rented for it — the reference gradient, then 15 symmetry-unique displacements → 30 gradients in two lanes of 8 threads",
+   "source": "modules/05_support_predictor/out/ANCHORS_STATUS.json → modules/05_support_predictor/out/composite_full_naphthalene_2026-10-07.npz (sha16 3d37769ea7dcd41c); probes/results_m1/anchor_price_2026-11-20/anchor_price.json, written by probes/anchor_price_from_logs.py from probes/results_m1/e8_naphthalene_ccpvdz_tlambda_2026-10-02/e8_fd.log and probes/results_m1/e8_naphthalene_ccpvdz_tlambda_2026-10-02/anchors.log",
+   "note": "the run as it ran: at most 24,426 s of it (€1.41, the sum of their timers) were added by the one-off two-route checks of the (T) kernels against pyscf's slow routes, a validation gate that a second molecule on the same environment does not repeat, and 17,182 s (€0.99) were a first attempt lost to a memory kill beside other work on the machine; no run without them has been timed, so neither is taken out of the price; not in it: the rental before the launch and after the Hessian, and the geometry"
+  },
+  {
+   "step": "anchor in force: CCSD(T)/cc-pVDZ + [MP2/cc-pVTZ − MP2/cc-pVDZ] (composite, registered 2026-10-07) — the MP2 basis step",
+   "what": "the basis step of an anchor: MP2/cc-pVTZ − MP2/cc-pVDZ rows on the coupled-cluster Hessian's displacements",
+   "machine": "CCX53",
+   "hours": 2.16,
+   "eur_ex_vat": 1.85,
+   "measured_on": "naphthalene (18 atoms), CCX53, 7 Oct 2026: 15 cc-pVTZ and 15 cc-pVDZ jobs of 8 threads, 31,110 s of job time in a queue of four lanes shared with four other molecules' rows, so a quarter of the machine for that time",
+   "source": "modules/05_support_predictor/out/ANCHORS_STATUS.json → modules/05_support_predictor/out/composite_full_naphthalene_2026-10-07.npz (sha16 3d37769ea7dcd41c); probes/results_m1/anchor_price_2026-11-20/anchor_price.json, written by probes/anchor_price_from_logs.py from probes/results_m1/composite_rows_2026-10-07/queue.log, probes/results_m1/composite_rows_2026-10-07/jobs.txt and probes/results_m1/composite_rows_2026-10-07/worker_*.log",
+   "note": "the queue's failed starts and another molecule's killed job are not charged to naphthalene"
   }
  ],
  "provenance": {
@@ -621,8 +634,8 @@
    "layerA_2026-09-22"
   ],
   "deck_hash": "97ed2d67c66b",
-  "commit": "c53b15c4",
-  "export_built_utc": "2026-11-20T08:08:50Z",
+  "commit": "f1ec732e",
+  "export_built_utc": "2026-11-20T08:17:46Z",
   "export_sources_sha256": {
    "manifest": "48dd5b7416592331bb0d858f7b083b4c70ee5f886d545d6a58e424ab41ff2577",
    "ledger": "273c8e3c9ab3dc59d50aa3908178b50e56455c7a11ac033fa105ceddd756bf72"
