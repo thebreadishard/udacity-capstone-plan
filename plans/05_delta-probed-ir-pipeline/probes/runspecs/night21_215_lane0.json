@@ -1,0 +1,66 @@
+{
+ "name": "night21_215_lane0",
+ "purpose": "TASKS 215 (GoalGathering/notes/PreRegistration_2026-11-20_Imaginary_Label_Reoptimisation.md with its amendments 1 to 3): lane 0 of 4 on the rented CCX53 night21, one of the twelve lanes of amendment 3 (4 molecules, smallest first), of the re-optimisation at the label settings of the corpus molecules with an imaginary label mode: probes/reoptimise_at_label_settings.py and corpus/analytic_hessians.py per molecule through probes/imaginary_reopt_lane.sh (master commit 6ec8af75; git archive in /root/dpir_6ec8af75; the lane's files are those of branch commit b322e94d, which night20 runs), env qc215 (pyscf 2.15.0, geomeTRIC 1.1.1), 8 threads, into a folder outside the corpus. geomeTRIC is called as pyscf/geomopt/test/test_geometric_solver.py (test_optimize_with_hessian) calls it. The server is rented for one night: the lane is expected to be stopped in its later part, and what it has not finished is recorded not run.",
+ "host": "night21",
+ "workdir": "/root/night_215",
+ "command": "env PY=/root/miniforge3/envs/qc215/bin/python MAX_MEMORY_MB=24000 bash /root/dpir_6ec8af75/plans/05_delta-probed-ir-pipeline/probes/imaginary_reopt_lane.sh /root/night_215/in/molecules /root/night_215/out/lane0 /root/night_215/in/ids_night21_lane0.txt 8",
+ "sources": [
+  {
+   "local": "probes/imaginary_reopt_lane.sh",
+   "remote": "/root/dpir_6ec8af75/plans/05_delta-probed-ir-pipeline/probes/imaginary_reopt_lane.sh"
+  },
+  {
+   "local": "probes/reoptimise_at_label_settings.py",
+   "remote": "/root/dpir_6ec8af75/plans/05_delta-probed-ir-pipeline/probes/reoptimise_at_label_settings.py"
+  },
+  {
+   "local": "probes/geomopt_verdict.py",
+   "remote": "/root/dpir_6ec8af75/plans/05_delta-probed-ir-pipeline/probes/geomopt_verdict.py"
+  },
+  {
+   "local": "probes/library_log.py",
+   "remote": "/root/dpir_6ec8af75/plans/05_delta-probed-ir-pipeline/probes/library_log.py"
+  },
+  {
+   "local": "modules/05_support_predictor/corpus/analytic_hessians.py",
+   "remote": "/root/dpir_6ec8af75/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/corpus/analytic_hessians.py"
+  },
+  {
+   "local": "modules/05_support_predictor/corpus/apt.py",
+   "remote": "/root/dpir_6ec8af75/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/corpus/apt.py"
+  },
+  {
+   "local": "modules/05_support_predictor/corpus/vibrations.py",
+   "remote": "/root/dpir_6ec8af75/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/corpus/vibrations.py"
+  },
+  {
+   "local": "modules/05_support_predictor/corpus/constants.py",
+   "remote": "/root/dpir_6ec8af75/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/corpus/constants.py"
+  },
+  {
+   "local": "modules/05_support_predictor/corpus/scf_policy.py",
+   "remote": "/root/dpir_6ec8af75/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/corpus/scf_policy.py"
+  },
+  {
+   "local": "modules/05_support_predictor/corpus/grid_response_blocked.py",
+   "remote": "/root/dpir_6ec8af75/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/corpus/grid_response_blocked.py"
+  },
+  {
+   "local": "probes/results_m1/imaginary_reopt_2026-11-20/lanes_three_servers/ids_night21_lane0.txt",
+   "remote": "/root/night_215/in/ids_night21_lane0.txt"
+  }
+ ],
+ "progress": {
+  "regex": "^\\(RLS\\) step |^=== \\(IRL\\) ",
+  "max_gap_minutes": 120,
+  "heartbeat_glob": "/root/night_215/out/lane0/*/pyscf.log"
+ },
+ "marker_regex": "^=== \\(IRL\\) .*(no imaginary mode|STILL IMAGINARY|FAILED|lane done)|Traceback",
+ "end_regex": "^=== \\(IRL\\) lane done",
+ "dry_run_args": "--dry-run",
+ "threads": 8,
+ "estimate": {
+  "hours": 30.1,
+  "basis": "each molecule's two stored label Hessians (analytic_check.json) times 2.86, the smoke's ratio on B_008b0bc366 on night20 (1,584 s on 554 s); one molecule, not measured for larger ones. The whole list (the price in the list's header); the night may end before it does"
+ }
+}
