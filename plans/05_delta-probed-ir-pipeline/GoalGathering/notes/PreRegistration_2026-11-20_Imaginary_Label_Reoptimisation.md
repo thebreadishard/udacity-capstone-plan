@@ -127,3 +127,32 @@ hartree/bohr).
 - Nothing about whether a flagged conformer is the one the corpus should hold.
 - `probes/imaginary_reopt_lane.sh`, `probes/imaginary_reopt_read.py` and its test are on the branch `t215-imaginary-reopt`
   and join the trunk only after the independent review; the run uses the branch commit named in its run specs.
+
+## Amendment 1 (20 November 2026, 14:4x UTC, before any lane is launched) — the smoke, the re-price and the order
+
+**The smoke ran** (section 6; B_008b0bc366, 10 atoms, through `probes/imaginary_reopt_lane.sh` at branch commit b322e94d, env
+`qc215`, 8 threads, into `/root/night20_215/smoke`). The optimisation converged in 47 steps and 591 s. The labels: B3LYP lowest
+mode −124.65 → +154.2 cm⁻¹, ωB97X +212.88 → +272.2; the route's imaginary counts 0 and 0; the APT's CPHF residual 2.4e-8 with no
+refinement round. Whether its bond graph is unchanged is the read's to say, with the others.
+
+**The price was too low.** The smoke took 1,584 s against the 720 s priced: the optimisation 591 s (107 % of the molecule's
+stored Hessian seconds, where section 6 assumed 30 %), the B3LYP Hessian 632 s against 241 s stored (pyscf 2.15.0's Krylov
+solver reports that it falls back to its per-root solve; 2.6 times the 2.14.0 time), the ωB97X Hessian 360 s against 313 s.
+That is 2.86 times a molecule's stored Hessian seconds where section 6 took 1.3, a factor 2.2 on every price of section
+6: about 335 lane-hours for the 41 molecules. **This factor comes from one molecule, the smallest; for larger molecules
+it is not measured.**
+
+**The order becomes smallest first, over all 41, in four lanes.** The server is rented for one night, about 59 lane-hours until
+07:00 UTC on 21 November (two lanes from about 15:45 UTC, two more from about 16:35). In the order of section 6 (largest first
+within the night's set) each lane would finish one or two molecules and never reach its small ones; smallest first finishes
+the most molecules, and the acceptance rule of section 5 does not depend on the order. The new lists are
+`probes/results_m1/imaginary_reopt_2026-11-20/lanes_smallest_first/ids_lane{0,1,2,3}.txt`: all 41 molecules sorted by the
+re-priced time, each given to the lane that is free first, so no molecule is in two lists and each list runs from small to
+large. The lists of section 6 (`lanes/`) are not run.
+
+**Expected by 07:00 UTC, at the smoke's factor:** 20 molecules finished (6, 6, 4, 4 per lane), the
+largest of them 24 atoms; the first not to finish would be A_78896cfe24 (27 atoms). **Every molecule a lane has not
+finished when the server is given back is recorded "not run" (or "unfinished", with its optimised geometry kept if it was
+written), as section 6 says; that is not a failure and not a verdict.**
+
+Nothing else changes: the call, the settings, the environment, the acceptance rule and what is not decided stand as registered.

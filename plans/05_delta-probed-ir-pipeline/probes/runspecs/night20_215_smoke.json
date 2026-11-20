@@ -1,0 +1,58 @@
+{
+ "name": "night20_215_smoke",
+ "purpose": "TASKS 215 (GoalGathering/notes/PreRegistration_2026-11-20_Imaginary_Label_Reoptimisation.md, section 6), the smoke before the lanes on the rented CCX53 night20: the smallest molecule of the list (B_008b0bc366, 10 atoms) through probes/imaginary_reopt_lane.sh (branch t215-imaginary-reopt, commit b322e94d) in env qc215 (pyscf 2.15.0, geomeTRIC 1.1.1) into a folder of its own.",
+ "host": "night20",
+ "workdir": "/root/night20_215",
+ "command": "env PY=/root/miniforge3/envs/qc215/bin/python MAX_MEMORY_MB=24000 bash /root/dpir_b322e94d/plans/05_delta-probed-ir-pipeline/probes/imaginary_reopt_lane.sh /root/night20_215/in/molecules /root/night20_215/smoke /root/night20_215/in/ids_smoke.txt 8",
+ "sources": [
+  {
+   "local": "probes/reoptimise_at_label_settings.py",
+   "remote": "/root/dpir_b322e94d/plans/05_delta-probed-ir-pipeline/probes/reoptimise_at_label_settings.py"
+  },
+  {
+   "local": "probes/geomopt_verdict.py",
+   "remote": "/root/dpir_b322e94d/plans/05_delta-probed-ir-pipeline/probes/geomopt_verdict.py"
+  },
+  {
+   "local": "probes/library_log.py",
+   "remote": "/root/dpir_b322e94d/plans/05_delta-probed-ir-pipeline/probes/library_log.py"
+  },
+  {
+   "local": "modules/05_support_predictor/corpus/analytic_hessians.py",
+   "remote": "/root/dpir_b322e94d/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/corpus/analytic_hessians.py"
+  },
+  {
+   "local": "modules/05_support_predictor/corpus/apt.py",
+   "remote": "/root/dpir_b322e94d/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/corpus/apt.py"
+  },
+  {
+   "local": "modules/05_support_predictor/corpus/vibrations.py",
+   "remote": "/root/dpir_b322e94d/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/corpus/vibrations.py"
+  },
+  {
+   "local": "modules/05_support_predictor/corpus/constants.py",
+   "remote": "/root/dpir_b322e94d/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/corpus/constants.py"
+  },
+  {
+   "local": "modules/05_support_predictor/corpus/scf_policy.py",
+   "remote": "/root/dpir_b322e94d/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/corpus/scf_policy.py"
+  },
+  {
+   "local": "modules/05_support_predictor/corpus/grid_response_blocked.py",
+   "remote": "/root/dpir_b322e94d/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/corpus/grid_response_blocked.py"
+  }
+ ],
+ "progress": {
+  "regex": "^\\(RLS\\) step |^=== \\(IRL\\) ",
+  "max_gap_minutes": 120,
+  "heartbeat_glob": "/root/night20_215/smoke/*/pyscf.log"
+ },
+ "marker_regex": "^=== \\(IRL\\) .*(no imaginary mode|STILL IMAGINARY|FAILED|lane done)|Traceback",
+ "end_regex": "^=== \\(IRL\\) lane done",
+ "dry_run_args": "--dry-run",
+ "threads": 8,
+ "estimate": {
+  "hours": 0.3,
+  "basis": "its two label Hessians took 241 and 313 s at 8 threads (its analytic_check.json), times 1.3 for the optimisation: 0.2 h"
+ }
+}
