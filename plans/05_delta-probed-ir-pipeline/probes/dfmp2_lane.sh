@@ -90,9 +90,12 @@ for line in "${LINES[@]}"; do
          --threads "$THREADS" --memory-gb "$MEMORY_GB" > "$log" 2>&1 &
     job=$!
     # a basis can take hours: a line whenever its row count has grown, so a stalled one prints nothing and the run's progress gap sees it
-    seen=0
+    # (looked at every BEAT_S, while the job's end is noticed within a few seconds: no idle wait after a basis)
+    seen=0; poll=$(( BEAT_S < 5 ? BEAT_S : 5 )); beat=$(( $(date +%s) + BEAT_S ))
     while kill -0 "$job" 2>/dev/null; do
-      sleep "$BEAT_S" & wait $!
+      sleep "$poll"
+      [ "$(date +%s)" -ge "$beat" ] || continue
+      beat=$(( $(date +%s) + BEAT_S ))
       n=$(grep -ac 'df-mp2 .* k=' "$log" 2>/dev/null); n=${n:-0}
       if [ "$n" -gt "$seen" ] && kill -0 "$job" 2>/dev/null; then echo "  $id $short progress: $n rows"; seen=$n; fi
     done
