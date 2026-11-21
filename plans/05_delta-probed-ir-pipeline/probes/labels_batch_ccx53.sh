@@ -4,7 +4,8 @@
 #   1. waits until WAIT_COUNT files of the WAIT_LOG glob match WAIT_RE (checked every WAIT_S s);
 #   2. psi4 optimisations (psi4_worker.py with the job's "hessians": false) of the molecules without a finished result, LANES at a time;
 #   3. analytic labels (analytic_hessians.py, the label lanes' own call, plus LABEL_ARGS), LANES at a time × THREADS, in ids.txt order (its
-#      first column; largest first lets the lanes end together). With CAP_MB each molecule runs in a system-scope memory cgroup of that size
+#      first column; largest first lets the lanes end together). With CAP_MB each molecule's labels — and since 21 Nov 2026 its psi4
+#      optimisation too — run in a system-scope memory cgroup of that size
 #      (wsl_capped.sh) under /usr/bin/time, and one killed at the cap is named so (cation_oom_check.sh against the system journal, tag TAG):
 #      pyscf's UKS CPHF does not keep to max_memory (pyscf#3530), so a cap is what keeps one molecule from starving the other lanes.
 # Job files: <batch>/molecules/<id>/job.json (probes/rung4_jobs.py); worker.log and labels.log beside them. Markers '=== (<TAG>) …' and one
@@ -68,10 +69,14 @@ mark "start: the wait condition is met"
 mkdir -p "$QC_TMP"
 : > "$STATUS"
 opt() {
-  local id=$1
+  local id=$1 cmd
   if optimised "$id"; then echo "  $id optimised already"; return 0; fi
   local t0; t0=$(date +%s)
-  if OMP_NUM_THREADS=$THREADS "$QC" "$CODE/psi4_worker.py" "molecules/$id/job.json" > "molecules/$id/worker.log" 2>&1; then
+  # under the same cap as the labels (21 Nov 2026): beside a CC wave an uncapped psi4 that grows would meet the kernel's OOM killer, which
+  # takes the largest process — the CC run, not psi4
+  cmd=("$QC" "$CODE/psi4_worker.py" "molecules/$id/job.json")
+  [ -n "$CAP_MB" ] && cmd=(env CAP_SCOPE=system bash "$CAPPED" "$CAP_MB" -- "${cmd[@]}")
+  if OMP_NUM_THREADS=$THREADS "${cmd[@]}" > "molecules/$id/worker.log" 2>&1; then
     echo "  $id optimised $(( $(date +%s) - t0 )) s"
   else
     echo "  $id OPTIMISATION FAILED $(( $(date +%s) - t0 )) s (molecules/$id/worker.log)"; echo "$id optimisation failed" >> "$STATUS"

@@ -29,6 +29,12 @@ def test_opt_job_refuses_a_row_start_geometry_would_not_optimise(monkeypatch):
         J.opt_job(ROW, DECK, "/x", {})
 
 
+@pytest.mark.parametrize("layer", ["P3c", "C", "D", "T"])
+def test_opt_job_refuses_layers_that_are_not_neutral_singlets(layer):
+    with pytest.raises(ValueError, match="not a neutral singlet layer"):
+        J.opt_job({**ROW, "layer": layer}, DECK, "/x", {})
+
+
 def test_read_ids_skips_comments_and_blank_lines_and_refuses_repeats(tmp_path):
     f = tmp_path / "ids.txt"
     f.write_text("# header\nA\n\nB\n")

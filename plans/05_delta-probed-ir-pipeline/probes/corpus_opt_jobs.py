@@ -12,7 +12,7 @@ server's folder, and `<out>/<host>/ids.txt` cheapest first, so each server's fir
 folder is refused; the folder is built beside it and renamed into place.
 
     python probes/corpus_opt_jobs.py --ids probes/results_m1/anchor_waves_2026-11-21/needs_dft.txt --hosts anc1,anc2,anc3,anc4,anc5 \
-        --server-root /root/dft1/molecules --threads 4 --memory-gb 8 --out probes/results_m1/anchor_dft_2026-11-21
+        --server-root /root/dft1/molecules --threads 4 --memory-gb 6 --out probes/results_m1/anchor_dft_2026-11-21
 """
 from __future__ import annotations
 
@@ -29,9 +29,14 @@ sys.path.insert(0, str(CORPUS))
 DECK = CORPUS / "decks" / "deck_v1.json"
 
 
+NEUTRAL_SINGLET_LAYERS = {"A", "A2", "B", "G", "P3", "R4"}   # deck v1's charge 0, singlet; cations (P3c) take their own deck and parent geometry
+
+
 def opt_job(row: dict, deck: dict, out_dir: str, source: dict) -> dict:
     """One psi4_worker job: optimise from the corpus start geometry at the deck's low functional, no Hessians."""
     from run_corpus import start_geometry
+    if row["layer"] not in NEUTRAL_SINGLET_LAYERS:
+        raise ValueError(f"{row['id']}: layer {row['layer']} is not a neutral singlet layer; opt_job builds deck v1 jobs only")
     xyz, optimise = start_geometry({**row, "qm9_label": ""})
     if not optimise:
         raise ValueError(f"{row['id']}: start_geometry would not optimise this row")
