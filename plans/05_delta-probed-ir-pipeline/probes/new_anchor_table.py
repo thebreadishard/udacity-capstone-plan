@@ -72,6 +72,24 @@ def finished_anchors(ids: list[str], entries: list[dict]) -> tuple[dict[str, dic
     return done, left_out
 
 
+def verify_files(used: dict[str, dict], entries: list[dict], root: Path = PLAN) -> None:
+    """Every anchor file read is its molecule's carried entry and unchanged since it was registered (`AR.require_carried_anchor`
+    refuses otherwise): a file re-fetched over a registered one must not be read under the registry's old hash."""
+    for i, e in used.items():
+        AR.require_carried_anchor(i, root / e["path"], entries=entries, root=root)
+
+
+def training_head(train_order: list[str], done: dict[str, dict], left_out: dict[str, str]) -> tuple[list[str], dict]:
+    """(the training anchors a milestone can use: the finished head of the order, cut to a multiple of STEP; what holds the order —
+    the first unfinished anchor with its reason, and how many are finished behind it)."""
+    k_done = next((j for j, i in enumerate(train_order) if i not in done), len(train_order))
+    blocked = None
+    if k_done < len(train_order):
+        first = train_order[k_done]
+        blocked = {"position": k_done + 1, "id": first, "why": left_out[first], "finished_behind_it": len(done) - k_done}
+    return train_order[:k_done - k_done % R.STEP], {"n_train_finished_in_order": k_done, "order_held_by": blocked}
+
+
 def family_points(reads: dict[str, BandRead]) -> dict[str, dict]:
     """Per family with bands: the rms over the molecules' bands (cm⁻¹), its 95 % bootstrap interval over molecules, the counts."""
     out = {}
@@ -145,8 +163,10 @@ def band_read(pr: Problem, i: str, dH: np.ndarray) -> BandRead:
     m = pr.an.mols[i]
     lo = np.asarray(m["H_low"], float)
     hi = lo + np.asarray(m["dH_true"], float)
-    family = np.array(molecule_features(pr.molecules / i, lo=lo, hi=hi)["family"])
-    bands = PE.corrected_bands(PE.Hessians(lo, hi, np.asarray(m["masses"], float)), dH, family)
+    truth = molecule_features(pr.molecules / i, lo=lo, hi=hi)
+    bands = PE.corrected_bands(PE.Hessians(lo, hi, np.asarray(m["masses"], float)), dH, np.array(truth["family"]))
+    if np.abs(bands.low_freq - np.asarray(truth["freq"], float)).max() > 1e-6:      # the guard of product_error_read.molecule_read
+        raise SystemExit(f"{i}: the family rule's modes are not the B3LYP normal modes")
     return bands.error, bands.family
 
 
@@ -214,6 +234,10 @@ def markdown(rec: dict) -> list[str]:
     if size["families"] is not None:
         lines += ["", f"Size read-out at k = {size['k']}: the {len(size['ids'])} largest test anchors ({min(size['atoms'])}–{max(size['atoms'])} "
                       "atoms): " + ", ".join(f"{f} {cell(size['families'].get(f))}" for f in R.FAMILIES) + "."]
+    held = rec.get("order_held_by")
+    if held:
+        lines += ["", f"The training order is held at position {held['position']} by {held['id']} ({held['why']}); "
+                      f"{held['finished_behind_it']} training anchors behind it are finished and wait."]
     if rec["test_left_out"]:
         lines += ["", "Test anchors not read: " + "; ".join(f"{i} ({why})" for i, why in sorted(rec["test_left_out"].items())) + "."]
     return [*lines, "", f"{rec['seconds']} s."]
@@ -230,21 +254,24 @@ def write_record(prefix: Path, rec: dict) -> None:
 def build_problem(a, entries: list[dict]) -> tuple[Problem, dict]:
     """The lists against the registry, the networks and the loaded anchors; and the record's header."""
     train_order, test_listed = read_ids(a.lists / "train_ids.txt"), read_ids(a.lists / "test_ids.txt")
-    train_done, _ = finished_anchors(train_order, entries)
+    both = sorted(set(train_order) & set(test_listed))
+    if both:
+        raise SystemExit(f"in the training order and among the test anchors: {both} — a test anchor is never trained on")
+    train_done, train_left = finished_anchors(train_order, entries)
     test_done, test_left = finished_anchors(test_listed, entries)
-    k_done = next((j for j, i in enumerate(train_order) if i not in train_done), len(train_order))
-    train = train_order[:k_done - k_done % R.STEP]              # the anchors a milestone can use
+    train, order = training_head(train_order, train_done, train_left)
     test = sorted(test_done)
     paths, _ = PE.carried(a.m05)
     nets = load_networks(paths)
     used = {i: {**train_done, **test_done}[i] for i in [*train, *test]}
+    verify_files(used, entries)
     an = CT.prepare_anchors(a.m05 / "corpus" / "molecules", {i: str(PLAN / e["path"]) for i, e in used.items()}, [], nets[0].cfg,
                             a.out.parent / "ls_targets")
     header = {"date": datetime.now().strftime("%Y-%m-%d %H:%M"), "registration": REGISTRATION, "recipe": RECIPE,
               "early_stop": {"max_epochs": CT.EarlyStop().max_epochs, "val": CT.EarlyStop().val, "patience": CT.EarlyStop().patience,
                              "seed": "each network's own"},
               "lr": LR, "aux_weight": AUX_WEIGHT, "networks": [p.name for p in paths], "n_train_order": len(train_order),
-              "n_train_finished": len(train_done), "n_train_finished_in_order": k_done, "n_test_listed": len(test_listed),
+              "n_train_finished": len(train_done), **order, "n_test_listed": len(test_listed),
               "test_read": test, "test_left_out": test_left,
               "anchors": {i: {"path": e["path"], "sha16": e["sha16"], "level": e["level"]} for i, e in used.items()}}
     return Problem(an, nets, train, test, a.m05 / "corpus" / "molecules"), header

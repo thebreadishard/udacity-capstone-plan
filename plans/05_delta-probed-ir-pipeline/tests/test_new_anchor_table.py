@@ -72,6 +72,7 @@ def test_corrected_bands_is_the_overlap_paired_band_error_in_the_low_level_partn
 
 
 FAMILY = np.array(["ring-ip", "CH-stretch", "CH-oop", "other"])
+FITTED: list[list[str]] = []          # the ids of every fit the fake fine-tune was given
 
 
 def fake_problem(n_train, n_test):
@@ -90,6 +91,7 @@ def fakes(monkeypatch):
     α scaling by 4; the zero rule by 30."""
     def finetune_es(model, loss_cfg, train, recipe, run, log=print):
         model["k"] = len(train)
+        FITTED.append(list(train))
         log("fitted")
         return {"final_loss": 0.1, "best_epoch": 3, "epochs_run": 13, "val_loss": 0.2, "n_fit": len(train) - 3, "n_val": 3,
                 "recipe": recipe, "split_seed": run.es.seed}
@@ -97,7 +99,8 @@ def fakes(monkeypatch):
     monkeypatch.setattr(T.CT, "finetune_es", finetune_es)
     monkeypatch.setattr(T.CT, "predict_cartesian", lambda model, t: np.full((4, 4), 60.0 / model["k"] if model["k"] else 5.0))
     monkeypatch.setattr(T.CT, "alpha_scaling_baseline", lambda mols, tensors, train_ids, i: np.full((4, 4), 4.0))
-    monkeypatch.setattr(T, "molecule_features", lambda folder, lo, hi: {"family": list(FAMILY)})
+    FITTED.clear()
+    monkeypatch.setattr(T, "molecule_features", lambda folder, lo, hi: {"family": list(FAMILY), "freq": np.zeros(4)})
     monkeypatch.setattr(T.PE, "corrected_bands",
                         lambda h, dH, family: PE.CorrectedBands(np.full(4, dH[0, 0] if dH.any() else 30.0), family, np.zeros(4)))
 
@@ -139,3 +142,46 @@ def test_the_record_is_written_once_and_its_table_names_the_outcome(fakes, tmp_p
     assert json.loads((tmp_path / "read.json").read_text(encoding="utf-8"))["curves"]["40"]["other"]["mean"] == pytest.approx(1.5)
     with pytest.raises(SystemExit, match="written once"):
         T.main(["--out", str(tmp_path / "read")])
+
+
+def test_every_fit_sees_exactly_the_first_k_training_anchors_and_never_a_test_anchor(fakes):
+    pr = fake_problem(40, 32)
+    T.run_read(pr, 122, lambda s: None)
+    assert [pr.train[:20]] * 3 + [pr.train[:40]] * 3 == FITTED
+    assert not set(pr.test) & {i for ids in FITTED for i in ids}
+
+
+def test_band_read_refuses_family_labels_that_are_not_the_low_level_modes(fakes, monkeypatch):
+    monkeypatch.setattr(T, "molecule_features", lambda folder, lo, hi: {"family": list(FAMILY), "freq": np.ones(4)})
+    with pytest.raises(SystemExit, match="not the B3LYP normal modes"):
+        T.run_read(fake_problem(0, 32), 122, lambda s: None)
+
+
+def test_training_head_is_cut_to_a_milestone_and_names_what_holds_the_order():
+    order = [f"t{j:03d}" for j in range(60)]
+    done = {i: {} for i in order if i != "t045"}
+    head, info = T.training_head(order, done, {"t045": "carried on tier DZ, not TZ: its MP2 basis step is missing"})
+    assert head == order[:40] and info["n_train_finished_in_order"] == 45
+    assert info["order_held_by"] == {"position": 46, "id": "t045", "why": "carried on tier DZ, not TZ: its MP2 basis step is missing",
+                                     "finished_behind_it": 14}
+    head, info = T.training_head(order, {i: {} for i in order}, {})
+    assert head == order and info["order_held_by"] is None
+
+
+def test_verify_files_refuses_an_anchor_file_changed_since_it_was_registered(tmp_path):
+    import anchor_registry as AR
+    f = tmp_path / "p" / "a.npz"
+    f.parent.mkdir()
+    f.write_bytes(b"first")
+    e = {**entry("a"), "sha16": AR.sha16(f)}
+    T.verify_files({"a": e}, [e], root=tmp_path)
+    f.write_bytes(b"fetched again")
+    with pytest.raises(SystemExit, match="changed since it was registered"):
+        T.verify_files({"a": e}, [e], root=tmp_path)
+
+
+def test_a_test_anchor_in_the_training_order_is_refused_before_anything_is_loaded(tmp_path):
+    (tmp_path / "train_ids.txt").write_text("a\nb\n")
+    (tmp_path / "test_ids.txt").write_text("b\nc\n")
+    with pytest.raises(SystemExit, match="never trained on"):
+        T.build_problem(SimpleNamespace(lists=tmp_path), [])
