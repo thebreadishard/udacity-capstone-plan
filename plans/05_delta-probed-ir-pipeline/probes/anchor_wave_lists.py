@@ -3,15 +3,17 @@
 The plan is `out/anchor_plan/count_<n>.json` (`probes/anchor_plan.py count`): per ring context, the cheapest neutral molecules. Here:
 
 - a molecule that already has a carried anchor in the registry (`out/ANCHORS_STATUS.json`) is left out — it is not computed twice;
-- a molecule without a corpus geometry (`corpus/molecules/<id>/geometry.json`, the B3LYP/6-31G* minimum every label is computed at) cannot
-  become an anchor yet; it is listed under 'needs its DFT row first' and in `needs_dft.txt`, never guessed;
-- the rest is ordered cheapest first by the plan's own hour rule (`anchor_plan.anchor_hours`) and dealt out one by one to the server with the
-  least hours so far, so each server works cheapest first and all finish near the same time. The hours are the rule's, which prices
-  symmetric molecules high.
+- a molecule is ready only when its manifest row is `done` and its corpus geometry exists (`corpus/molecules/<id>/geometry.json`, the
+  B3LYP/6-31G* minimum every label is computed at): a geometry left by an interrupted DFT run is not a finished one. The others are
+  listed under 'needs its DFT row first' and in `needs_dft.txt`, never guessed;
+- the ready molecules are dealt largest first (by the plan's own hour rule, `anchor_plan.anchor_hours`) to the server with the fewest hours
+  so far, which brings the servers' totals close; then each server's list is put cheapest first, so every server still begins with its
+  cheapest molecules. The hours are the rule's, which prices symmetric molecules high.
 
 Output, per server, the folder `<out>/<host>/` with `wave.txt` in the format `probes/anchor_wave.sh` reads
 (`name|geometry|workers|threads|mem_mb`, the geometry under `/root/dpir/geoms/<id>/`) and `geoms/<id>/geometry.json`; beside them `plan.md`
-and `needs_dft.txt`. An existing output folder is refused, so a list a server is already working on is never rewritten.
+and `needs_dft.txt`. The folder is built beside the target and renamed into place at the end, so a failure leaves no half list; an existing
+output folder is refused, so a list a server is already working on is never rewritten. Each `<out>/<host>/` is copied to `/root/dpir/`.
 
     python probes/anchor_wave_lists.py --hosts anc1,anc2,anc3,anc4,anc5 --out probes/results_m1/anchor_waves_2026-11-21
 """
@@ -47,8 +49,16 @@ def carried_ids(registry: Path = REGISTRY) -> set[str]:
     return {e["mol_id"] for e in entries if e["status"] == "carried"}
 
 
+def cheapest_first(items: list[Candidate]) -> list[Candidate]:
+    """Rule hours ascending; ties: fewer atoms, then the id."""
+    return sorted(items, key=lambda c: (c.hours, c.n_atoms, c.mol_id))
+
+
 def candidates(plan: dict, smiles_of: dict[str, str]) -> list[Candidate]:
-    """Every molecule of the plan with its rule hours, cheapest first (ties: fewer atoms, then the id)."""
+    """Every molecule of the plan with its rule hours, cheapest first; a plan id the corpus rows do not hold is refused by name."""
+    missing = sorted(i for ids in plan["chosen"].values() for i in ids if i not in smiles_of)
+    if missing:
+        raise SystemExit(f"{len(missing)} plan ids are not among the corpus rows in the domain (manifest changed since the plan?): {missing}")
     out = []
     for context, ids in plan["chosen"].items():
         for mol_id in ids:
@@ -56,20 +66,20 @@ def candidates(plan: dict, smiles_of: dict[str, str]) -> list[Candidate]:
             n_atoms = A.Chem.AddHs(A.Chem.MolFromSmiles(smiles)).GetNumAtoms()
             n_functions = A.basis_functions(smiles)
             out.append(Candidate(mol_id, context, n_atoms, n_functions, A.anchor_hours(n_atoms, n_functions)))
-    return sorted(out, key=lambda c: (c.hours, c.n_atoms, c.mol_id))
+    return cheapest_first(out)
 
 
-def deal(ordered: list[Candidate], hosts: list[str]) -> dict[str, list[Candidate]]:
-    """Each molecule, in the given order, to the host with the fewest hours so far (ties: the host listed first)."""
+def deal(items: list[Candidate], hosts: list[str]) -> dict[str, list[Candidate]]:
+    """Largest first to the host with the fewest hours so far (ties: the host listed first); each host's list then cheapest first."""
     if not hosts:
         raise ValueError("no hosts")
     lists: dict[str, list[Candidate]] = {h: [] for h in hosts}
     load = dict.fromkeys(hosts, 0.0)
-    for c in ordered:
+    for c in reversed(cheapest_first(items)):
         host = min(hosts, key=lambda h: (load[h], hosts.index(h)))
         lists[host].append(c)
         load[host] += c.hours
-    return lists
+    return {h: cheapest_first(items_h) for h, items_h in lists.items()}
 
 
 def wave_line(c: Candidate) -> str:
@@ -119,16 +129,26 @@ def main(argv: list[str] | None = None) -> int:
     all_candidates = candidates(plan, {i: r["smiles"] for i, r in rows.items()})
     skipped = [c.mol_id for c in all_candidates if c.mol_id in carried]
     open_ = [c for c in all_candidates if c.mol_id not in carried]
-    ready = [c for c in open_ if (corpus_molecules / c.mol_id / "geometry.json").exists()]
-    needs_dft = [c for c in open_ if c not in ready]
+    ready = [c for c in open_ if is_ready(rows[c.mol_id]["status"], corpus_molecules / c.mol_id)]
+    ready_ids = {c.mol_id for c in ready}
+    needs_dft = [c for c in open_ if c.mol_id not in ready_ids]
     lists = deal(ready, hosts)
-    args.out.mkdir(parents=True)
-    write_lists(args.out, lists, corpus_molecules)
-    (args.out / "needs_dft.txt").write_text("".join(c.mol_id + "\n" for c in needs_dft), encoding="utf-8", newline="\n")
     text = report(lists, skipped, needs_dft)
-    (args.out / "plan.md").write_text(text, encoding="utf-8", newline="\n")
+    staging = args.out.with_name(args.out.name + ".partial")
+    if staging.exists():
+        raise SystemExit(f"{staging} exists — a failed earlier run left it; look at it and remove it by hand")
+    staging.mkdir(parents=True)
+    write_lists(staging, lists, corpus_molecules)
+    (staging / "needs_dft.txt").write_text("".join(c.mol_id + "\n" for c in needs_dft), encoding="utf-8", newline="\n")
+    (staging / "plan.md").write_text(text, encoding="utf-8", newline="\n")
+    staging.rename(args.out)
     sys.stdout.write(text)
     return 0
+
+
+def is_ready(manifest_status: str, molecule_folder: Path) -> bool:
+    """A finished DFT row: manifest status done and the geometry on disk."""
+    return manifest_status == "done" and (molecule_folder / "geometry.json").exists()
 
 
 if __name__ == "__main__":

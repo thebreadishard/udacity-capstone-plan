@@ -19,7 +19,7 @@ S="ssh -i $HOME/.ssh/hetzner_g_measure -o ConnectTimeout=25 -o BatchMode=yes roo
 t() { date '+%T'; }
 
 echo "[$(t) $NAME] 1. system + miniforge + env qc05"
-bash "$HERE/../tools/bootstrap_qc05_env.sh" "$NAME" || exit 1
+bash "$HERE/../tools/bootstrap_qc05_env.sh" "$NAME" 2.14.0 || exit 1   # the labels recipe
 
 echo "[$(t) $NAME] 2. the S1 files under /root/dpir (git archive of HEAD)"
 P=plans/05_delta-probed-ir-pipeline

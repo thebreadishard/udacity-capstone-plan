@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
-# tools/bootstrap_qc05_env.sh <host name in tools/hosts.tsv> (13 Oct 2026) — system packages, miniforge and the env qc05 (python 3.12, pip
-# pyscf, numpy, scipy, psutil, pytest) on a fresh Ubuntu server: the labels recipe, one implementation for every server kind. Taken out
-# of step 1 of probes/bootstrap_anchors_cpx62.sh (which now calls it) when the S1 server needed the same env (probes/bootstrap_s1_cpx62.sh).
-# PYSCF_VERSION (default 2.15.1 since 21 Nov 2026, the newest release; 2.14.0 before) is the pin: pip installs exactly that version, also
-# over another one in an existing env, and the step fails unless the env then reports it. Idempotent otherwise: an existing miniforge or
-# env is kept. Prints the env's pyscf version; exit 1 when the env is not usable.
-#   bash tools/bootstrap_qc05_env.sh s1
-#   PYSCF_VERSION=2.14.0 bash tools/bootstrap_qc05_env.sh s1
+# tools/bootstrap_qc05_env.sh <host name in tools/hosts.tsv> <pyscf version> (13 Oct 2026) — system packages, miniforge and the env qc05
+# (python 3.12, pip pyscf, numpy, scipy, psutil, pytest) on a fresh Ubuntu server: one implementation for every server kind. Taken out of
+# step 1 of probes/bootstrap_anchors_cpx62.sh when the S1 server needed the same env (probes/bootstrap_s1_cpx62.sh).
+# The pyscf version is required, with no default (21 Nov 2026): each caller names its own, so moving one server kind to a new release —
+# the anchor servers to 2.15.1 — never changes another's labels recipe (2.14.0) unseen. pip installs exactly that version, also over
+# another one in an existing env, and the step fails unless the env then reports it. Idempotent otherwise: an existing miniforge or env is
+# kept. Prints the env's pyscf version; exit 1 when the env is not usable.
+#   bash tools/bootstrap_qc05_env.sh s1 2.14.0
 set -euo pipefail
 NAME=${1:?host name}
-PYSCF_VERSION=${PYSCF_VERSION:-2.15.1}
-[[ $PYSCF_VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "PYSCF_VERSION '$PYSCF_VERSION' is not a release number"; exit 1; }
+PYSCF_VERSION=${2:?pyscf version, e.g. 2.15.1}
+[[ $PYSCF_VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "pyscf version '$PYSCF_VERSION' is not a release number"; exit 1; }
 HERE=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 . "$HERE/hosts.sh"
 IP=$(host_ip "$NAME")

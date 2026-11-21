@@ -2,10 +2,12 @@
 # bootstrap_anchors_cpx62.sh <host name in tools/hosts.tsv> (12 Oct 2026; the user: 'Nee, laten we vol op 4 gaan. Meer ankers.') — a fresh CPX62
 # (Ubuntu 24.04, 16 vCPU, 32 GB) becomes an anchor server for CCSD(T)/cc-pVDZ FD Hessians (`probes/e8_cc_hessian_fd.py`) and CC APTs by the field
 # route (`probes/cc_apt_field.py`), run molecule by molecule by `probes/anchor_wave.sh`. Steps, each with its marker:
-#   1. system (build-essential, rsync) + miniforge + env qc05 (`tools/bootstrap_qc05_env.sh`; pyscf as pinned there, 2.15.1 since 21 Nov 2026);
+#   1. system (build-essential, rsync) + miniforge + env qc05 (`tools/bootstrap_qc05_env.sh`) with pyscf ANCHOR_PYSCF (2.15.1 since
+#      21 Nov 2026, the newest release; 2.14.0 before);
 #   2. the plan's files under /root/dpir in the plan's own layout (git archive of HEAD, the commit stamped in /root/dpir/COMMIT) — a fresh
-#      directory, never copied over one with results. The list is checked by `tools/deploy_closure.py` before anything is sent: since
-#      12 Oct the probes gained imports (constants, vibrations, library_log, src/dpir/symmetry) that the old hand-kept list lacked;
+#      directory, never copied over one with results. Before anything is sent, the list is checked by `tools/deploy_closure.py` (since
+#      12 Oct the probes gained imports — constants, vibrations, library_log, src/dpir/symmetry — that the old hand-kept list lacked), and
+#      a listed file with uncommitted changes is refused: the check reads the working tree, the server gets HEAD;
 #   3. the (T) C kernel built on the server against its pyscf (`t_density_kernel/build.sh`);
 #   4. GATE 1 (tests/test_acceptance_water.py in script mode): the stamp ~/.dpir_gate1.json the probe requires; no stamp, no anchor.
 # Exit 0 when gate 1 passed on both paths (RHF and UHF) or RHF only (exit 2 of the test is reported, not hidden); 1 otherwise.
@@ -20,6 +22,9 @@ IP=$(host_ip "$NAME") || exit 1
 KEY=~/.ssh/hetzner_g_measure
 S="ssh -i $KEY -o ConnectTimeout=25 -o BatchMode=yes root@$IP"
 PY=/root/miniforge3/envs/qc05/bin/python
+ANCHOR_PYSCF=2.15.1
+REPO=$(cd "$PLAN/../.." && pwd)
+REL=plans/05_delta-probed-ir-pipeline
 t() { date '+%T'; }
 FILES=(probes/e8_cc_hessian_fd.py probes/qc_common.py probes/e8_hessian_checks.py probes/e8_symmetry.py probes/cc_dipole_capture.py
        probes/cc_apt_field.py probes/cc_apt_field_check.py probes/apt_field_route.py probes/library_log.py
@@ -30,15 +35,15 @@ FILES=(probes/e8_cc_hessian_fd.py probes/qc_common.py probes/e8_hessian_checks.p
        modules/05_support_predictor/corpus/vibrations.py)
 
 ( cd "$PLAN" && python tools/deploy_closure.py "${FILES[@]}" ) || { echo "DEPLOY LIST NOT CLOSED — fix FILES before any server is touched"; exit 1; }
+DIRTY=$(git -C "$REPO" status --porcelain -- "${FILES[@]/#/$REL/}")
+[ -z "$DIRTY" ] || { echo "UNCOMMITTED CHANGES in the deploy list — commit them first (the server gets HEAD):"; echo "$DIRTY"; exit 1; }
 host_ssh "$NAME" 'true' || { echo "WRONG OR UNREACHABLE MACHINE $NAME"; exit 1; }
 
 echo "[$(t) $NAME] 1. system + miniforge + env qc05"
-bash "$PLAN/tools/bootstrap_qc05_env.sh" "$NAME" || exit 1
+bash "$PLAN/tools/bootstrap_qc05_env.sh" "$NAME" "$ANCHOR_PYSCF" || exit 1
 
 echo "[$(t) $NAME] 2. the plan's files under /root/dpir (git archive of HEAD)"
-REPO=$(cd "$PLAN/../.." && pwd)
 COMMIT=$(git -C "$REPO" rev-parse HEAD)
-REL=plans/05_delta-probed-ir-pipeline
 $S 'test ! -e /root/dpir' < /dev/null || { echo "/root/dpir EXISTS on $NAME — not overwritten (a fresh directory only)"; exit 1; }
 git -C "$REPO" archive --format=tar --prefix=dpir/ HEAD "${FILES[@]/#/$REL/}" \
   | $S "mkdir -p /root/tmp_dpir && tar xf - -C /root/tmp_dpir && mv /root/tmp_dpir/dpir/$REL /root/dpir && rm -rf /root/tmp_dpir && echo $COMMIT > /root/dpir/COMMIT && find /root/dpir -type f | wc -l" \

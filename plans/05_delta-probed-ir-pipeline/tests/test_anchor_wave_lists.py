@@ -14,13 +14,21 @@ def cand(mol_id, hours, n_atoms=12):
     return W.Candidate(mol_id, "single", n_atoms, 100, hours)
 
 
-def test_deal_balances_hours_and_keeps_each_list_cheapest_first():
-    ordered = [cand("a", 1), cand("b", 2), cand("c", 3), cand("d", 10), cand("e", 11)]
-    lists = W.deal(ordered, ["h1", "h2"])
-    assert [c.mol_id for c in lists["h1"]] == ["a", "c", "e"]
-    assert [c.mol_id for c in lists["h2"]] == ["b", "d"]
-    for items in lists.values():
-        assert [c.hours for c in items] == sorted(c.hours for c in items)
+def test_deal_largest_first_balances_hours_and_each_list_is_cheapest_first():
+    items = [cand("a", 1), cand("b", 2), cand("c", 3), cand("d", 10), cand("e", 11)]
+    lists = W.deal(items, ["h1", "h2"])
+    # largest first: e→h1 (11), d→h2 (10), c→h2 (13), b→h1 (13), a→h1 (14)
+    assert [c.mol_id for c in lists["h1"]] == ["a", "b", "e"]
+    assert [c.mol_id for c in lists["h2"]] == ["c", "d"]
+    loads = sorted(sum(c.hours for c in v) for v in lists.values())
+    assert loads == [13, 14]
+    for v in lists.values():
+        assert [c.hours for c in v] == sorted(c.hours for c in v)
+
+
+def test_deal_does_not_depend_on_the_input_order():
+    items = [cand("a", 1), cand("b", 2), cand("c", 3), cand("d", 10), cand("e", 11)]
+    assert W.deal(items, ["h1", "h2"]) == W.deal(list(reversed(items)), ["h1", "h2"])
 
 
 def test_deal_tie_goes_to_the_host_listed_first():
@@ -39,6 +47,19 @@ def test_candidates_are_ordered_by_rule_hours_then_atoms_then_id():
     got = [c.mol_id for c in W.candidates(plan, smiles)]
     assert got == ["X3", "X2", "X1"]   # pyridine: 11 atoms, 109 functions; benzene: 12 atoms, 114 functions
     assert {c.context for c in W.candidates(plan, smiles)} == {"single", "fused"}
+
+
+def test_candidates_refuse_plan_ids_missing_from_the_corpus_rows_by_name():
+    with pytest.raises(SystemExit, match="X9"):
+        W.candidates({"chosen": {"single": ["X2", "X9"]}}, {"X2": "c1ccccc1"})
+
+
+@pytest.mark.parametrize(("status", "geometry", "ready"), [
+    ("done", True, True), ("pending", True, False), ("done", False, False), ("failed", True, False)])
+def test_is_ready_needs_a_done_row_and_its_geometry(tmp_path, status, geometry, ready):
+    if geometry:
+        (tmp_path / "geometry.json").write_text("{}")
+    assert W.is_ready(status, tmp_path) is ready
 
 
 def test_wave_line_is_what_anchor_wave_reads():
