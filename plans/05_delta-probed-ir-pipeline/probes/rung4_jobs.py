@@ -23,15 +23,11 @@ SERVER_ROOT = "/root/labels/rung4/molecules"
 
 
 def job(row: dict, deck: dict, server_root: str) -> dict:
-    """One psi4_worker job: optimise from the corpus start geometry at the deck's low functional, no Hessians."""
-    from run_corpus import start_geometry
-    xyz, optimise = start_geometry({**row, "qm9_label": ""})
-    if not optimise:
-        raise ValueError(f"{row['id']}: start_geometry would not optimise this row")
-    return {"id": row["id"], "layer": row["layer"], "xyz_angstrom": [[s, float(x), float(y), float(z)] for s, x, y, z in xyz], "deck": deck,
-            "out_dir": f"{server_root}/{row['id']}", "optimise": True, "grid_check": False, "hessians": False,
-            "source": {"list": os.path.basename(CSV), "family": row["family"], "name": row["name"], "smiles": row["smiles"],
-                       "test_family": int(row["test_family"]), "curve_rank": int(row["curve_rank"])}}
+    """One psi4_worker job for a rung 4 row (`corpus_opt_jobs.opt_job`), its source naming the row's family and curve rank."""
+    from corpus_opt_jobs import opt_job
+    return opt_job(row, deck, f"{server_root}/{row['id']}",
+                   {"list": os.path.basename(CSV), "family": row["family"], "name": row["name"], "smiles": row["smiles"],
+                    "test_family": int(row["test_family"]), "curve_rank": int(row["curve_rank"])})
 
 
 def main():
@@ -43,15 +39,18 @@ def main():
     ap.add_argument("--memory-gb", type=int, default=24)
     ap.add_argument("--deck", default=DECK)
     a = ap.parse_args()
-    deck = dict(json.load(open(a.deck, encoding="utf-8")), threads=a.threads, memory_gb=a.memory_gb)
-    rows = list(csv.DictReader(open(a.csv, encoding="utf-8")))
+    with open(a.deck, encoding="utf-8") as fh:
+        deck = dict(json.load(fh), threads=a.threads, memory_gb=a.memory_gb)
+    with open(a.csv, encoding="utf-8") as fh:
+        rows = list(csv.DictReader(fh))
     ids, test = [], []
     for r in rows:
         j = job(r, deck, a.server_root)
         if len(j["xyz_angstrom"]) != int(r["n_atoms"]):
             raise ValueError(f"{r['id']}: {len(j['xyz_angstrom'])} atoms embedded, the list says {r['n_atoms']}")
         os.makedirs(os.path.join(a.staging_dir, r["id"]), exist_ok=True)
-        json.dump(j, open(os.path.join(a.staging_dir, r["id"], "job.json"), "w", encoding="utf-8"), indent=1)
+        with open(os.path.join(a.staging_dir, r["id"], "job.json"), "w", encoding="utf-8") as fh:
+            json.dump(j, fh, indent=1)
         ids.append(r["id"])
         if r["test_family"] == "1":
             test.append(r["id"])

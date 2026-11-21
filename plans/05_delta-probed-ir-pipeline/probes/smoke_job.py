@@ -1,7 +1,7 @@
 """A psi4_worker job for a smoke molecule (25 Oct 2026, TASKS 49): lever 5's job (`probes/large_pah_jobs.py`: the corpus deck's
 optimisation without FD Hessians) for a geometry.json (symbols, coords_bohr), so a deploy's smoke runs the batch runner's psi4 step and
 leaves the analytic-only result.json that chain 42's wait reads. The job's id is the folder's name, which the batch runner's ids file uses.
-out_dir is written as given and must be absolute: a job for a server is built on the laptop too (bootstrap_psi4_ccx53.sh).
+out_dir is written as given and must be absolute: a job for a server is built on the laptop too (the deploy smokes of probes/deploy_lib.sh).
 
     python probes/smoke_job.py <geometry.json> <out_dir> [--deck …/deck_v1.json] [--job-file <path>]   → <out_dir>/job.json or <path>
 """
