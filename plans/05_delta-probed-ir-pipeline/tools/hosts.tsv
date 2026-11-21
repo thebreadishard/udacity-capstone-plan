@@ -2,6 +2,3 @@
 # The machine-id (/etc/machine-id) is pinned: Hetzner hands a deleted server's IP — and often its name — to the next server, so a script that
 # reaches the right IP may be talking to the wrong machine (157.180.32.149 was hel1-23 on 30 Sep and is the CCX53 now). tools/hosts.sh refuses
 # a machine whose id differs. Columns are TAB-separated: name, ip, machine-id, what it is.
-night20	2.29.174.114	a33f792fe4954ad095aaf9733674d0f9	CCX53 ubuntu-128gb-hel1-2, created 20 Nov 2026 by the user for one night: TASKS 218 sample, 211 part B, 215, 164
-night21	2.29.223.93	8034dca28d934cc79c395b81507735b8	CCX53 ubuntu-128gb-hel1-3, created 20 Nov 2026 by the user for one night: TASKS 215 lanes
-night22	95.217.235.89	d005a1e5494a41cca78e0d070748707c	CCX53 ubuntu-128gb-hel1-4, created 20 Nov 2026 by the user for one night: TASKS 215 lanes
