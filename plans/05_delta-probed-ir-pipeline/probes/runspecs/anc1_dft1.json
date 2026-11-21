@@ -1,0 +1,25 @@
+{
+ "name": "anc1_dft1",
+ "purpose": "TASKS 291: the DFT step for 25 molecules of the anchor plan without a corpus row — psi4 deck v1 optimisation, then analytic B3LYP/ωB97X labels (pyscf 2.15.1) — so they can become CC anchors; batch probes/results_m1/anchor_dft_2026-11-21/anc1 (probes/corpus_opt_jobs.py, cheapest first), deployed by probes/deploy_opt_batch.sh. One lane of 4 threads at normal priority beside the CC wave (nice 19 would starve it behind 16 CC threads), each label under an 8 GB cap so the CC runs keep their memory. The wait condition is the batch's own ids.txt header: the run starts at once.",
+ "host": "anc1",
+ "workdir": "/root/dft1",
+ "command": "CODE=/root/dft1/modules/05_support_predictor/corpus LANES=1 THREADS=4 CAP_MB=8192 LABEL_ARGS='--max-memory 6000' bash probes/labels_batch_ccx53.sh /root/dft1 AD /root/dft1/ids.txt '^#'",
+ "sources": [
+  {
+   "local": "probes/labels_batch_ccx53.sh",
+   "remote": "/root/dft1/probes/labels_batch_ccx53.sh"
+  }
+ ],
+ "progress": {
+  "regex": "^  [A-Za-z0-9_]+ (optimised|labelled|labels started|KILLED|OPTIMISATION FAILED|LABELS FAILED) ",
+  "max_gap_minutes": 120
+ },
+ "marker_regex": "^=== \\(AD\\) ",
+ "end_regex": "^=== \\(AD\\) all done",
+ "dry_run_args": "--dry-run",
+ "threads": 4,
+ "estimate": {
+  "hours": 48,
+  "basis": "not measured beside a CC wave: ≈ 1–2 h per molecule at 4 shared threads (optimisation + two analytic Hessians for 10–18 atoms), 25–26 molecules per server"
+ }
+}
