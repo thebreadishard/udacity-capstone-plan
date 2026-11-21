@@ -1,0 +1,33 @@
+{
+ "name": "anc3_wave1",
+ "purpose": "New CC anchors (the user, 21 Nov 2026: 'Servers gehuurd. Maak nieuwe ankers.'): CCSD(T)/cc-pVDZ FD Hessian + CC APT for 7 molecules of the anchor plan (count_n167) that already have a corpus geometry, cheapest first; list probes/results_m1/anchor_waves_2026-11-21/anc3/wave.txt (probes/anchor_wave_lists.py); pyscf 2.15.1, gate 1 passed at bootstrap",
+ "host": "anc3",
+ "workdir": "/root/dpir",
+ "command": "bash probes/anchor_wave_progress.sh /root/dpir/wave.txt",
+ "sources": [
+  {
+   "local": "probes/results_m1/anchor_waves_2026-11-21/anc3/wave.txt",
+   "remote": "/root/dpir/wave.txt"
+  },
+  {
+   "local": "probes/anchor_wave_progress.sh",
+   "remote": "/root/dpir/probes/anchor_wave_progress.sh"
+  },
+  {
+   "local": "probes/anchor_wave.sh",
+   "remote": "/root/dpir/probes/anchor_wave.sh"
+  }
+ ],
+ "progress": {
+  "regex": "^=== \\(AS3W\\) progress: ",
+  "max_gap_minutes": 120
+ },
+ "marker_regex": "^=== \\(AS3W\\) wave",
+ "end_regex": "^=== \\(AS3W\\) wave done",
+ "dry_run_args": "--dry-run",
+ "threads": 16,
+ "estimate": {
+  "hours": 171,
+  "basis": "probes/anchor_plan.py's hour rule (4.6 gradients/h on a CPX62 at 175 cc-pVDZ functions, scaled by (functions/175)^5, plane symmetry only); summed over the list in plan.md"
+ }
+}

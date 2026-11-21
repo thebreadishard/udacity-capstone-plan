@@ -2,3 +2,9 @@
 # The machine-id (/etc/machine-id) is pinned: Hetzner hands a deleted server's IP — and often its name — to the next server, so a script that
 # reaches the right IP may be talking to the wrong machine (157.180.32.149 was hel1-23 on 30 Sep and is the CCX53 now). tools/hosts.sh refuses
 # a machine whose id differs. Columns are TAB-separated: name, ip, machine-id, what it is.
+
+anc1	95.217.235.89	74bfa0491df54b2aa9a76ea376fbdf41	CPX62 Helsinki (ubuntu-32gb-hel1-1), new CC anchors from 21 Nov 2026 (the user rented it: 'Servers gehuurd. Maak nieuwe ankers.')
+anc2	2.29.174.114	d361d7bd76ba487fbbe53a88b16c988b	CPX62 Helsinki (ubuntu-32gb-hel1-2), new CC anchors from 21 Nov 2026 (the user rented it: 'Servers gehuurd. Maak nieuwe ankers.')
+anc3	2.29.223.93	ce9b5fb29e3743e4b1959ba9408ba7cc	CPX62 Helsinki (ubuntu-32gb-hel1-3), new CC anchors from 21 Nov 2026 (the user rented it: 'Servers gehuurd. Maak nieuwe ankers.')
+anc4	65.108.148.116	0dd7317480774d19b19673def18e95cb	CPX62 Helsinki (ubuntu-32gb-hel1-4), new CC anchors from 21 Nov 2026 (the user rented it: 'Servers gehuurd. Maak nieuwe ankers.')
+anc5	77.42.39.98	a73b0c4272ed40d194610902c597a9d0	CPX62 Helsinki (ubuntu-32gb-hel1-5), new CC anchors from 21 Nov 2026 (the user rented it: 'Servers gehuurd. Maak nieuwe ankers.')
