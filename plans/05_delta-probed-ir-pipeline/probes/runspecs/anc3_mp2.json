@@ -1,0 +1,29 @@
+{
+ "name": "anc3_mp2",
+ "purpose": "TASKS 291: the MP2 basis step of the composite anchors — DF-MP2 Hessian rows at cc-pVDZ and cc-pVTZ (psi4 1.11, check W passed on the server at deploy: 4.9e-9 / 4.9e-8 Eh/bohr against 1e-6) for this server's molecules, the CC wave's first, then the DFT batch's that are done without an imaginary mode; list made at deploy by probes/deploy_dfmp2_lane.sh. One lane of 4 threads under an 8 GB cap; it waits for the server's DFT lane to end and then takes its core share.",
+ "host": "anc3",
+ "workdir": "/root/mp2b",
+ "command": "WAIT_PGREP='[l]abels_batch_ccx53.sh /root/dft1' bash probes/dfmp2_lane.sh /root/mp2b MP /root/dft1/anc3_dft1.log '=== \\(AD\\) all done'",
+ "sources": [
+  {
+   "local": "probes/dfmp2_lane.sh",
+   "remote": "/root/mp2b/probes/dfmp2_lane.sh"
+  },
+  {
+   "local": "probes/dfmp2_rows.py",
+   "remote": "/root/mp2b/probes/dfmp2_rows.py"
+  }
+ ],
+ "progress": {
+  "regex": "^(=== \\(MP\\) waiting|  [A-Za-z0-9_]+ (ccpv[dt]z|SKIPPED) )",
+  "max_gap_minutes": 120
+ },
+ "marker_regex": "^=== \\(MP\\) (armed|start|STOPPED|all done)",
+ "end_regex": "^=== \\(MP\\) all done",
+ "dry_run_args": "--dry-run",
+ "threads": 4,
+ "estimate": {
+  "hours": 60,
+  "basis": "not measured on these servers: about 31–33 molecules of 10–18 atoms at two bases, 4 threads beside a CC wave; the 20 Oct laptop rows of 16–20-atom anchors took 1–4 h per molecule"
+ }
+}
