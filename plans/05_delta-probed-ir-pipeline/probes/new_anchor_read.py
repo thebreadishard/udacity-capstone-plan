@@ -126,6 +126,8 @@ def decide(curves: dict[str, dict[int, Point]], proxy_as_is: dict[str, float], n
     """The outcome of one read (rules in the registration's order); n_train is the length of the frozen training order, from which
     `decide` itself works out whether a next milestone can exist (the last k + STEP ≤ n_train)."""
     reason = unreadable(curves, proxy_as_is, n_test)
+    if not reason and max(next(iter(curves.values()))) > n_train:
+        reason = f"a milestone beyond the {n_train} training anchors of the order"
     if reason:
         return Outcome("NO READING", None, {}, reason)
     states = {f: family_state(curves[f], proxy_as_is[f]) for f in FAMILIES}
