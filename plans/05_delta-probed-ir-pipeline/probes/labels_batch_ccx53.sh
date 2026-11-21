@@ -74,10 +74,14 @@ opt() {
   local t0; t0=$(date +%s)
   # under the same cap as the labels (21 Nov 2026): beside a CC wave an uncapped psi4 that grows would meet the kernel's OOM killer, which
   # takes the largest process — the CC run, not psi4
+  # the /usr/bin/time format names the molecule in the scope's journal entry, which is how cation_oom_check.sh finds the scope
   cmd=("$QC" "$CODE/psi4_worker.py" "molecules/$id/job.json")
-  [ -n "$CAP_MB" ] && cmd=(env CAP_SCOPE=system bash "$CAPPED" "$CAP_MB" -- "${cmd[@]}")
+  [ -n "$CAP_MB" ] && cmd=(env CAP_SCOPE=system bash "$CAPPED" "$CAP_MB" -- /usr/bin/time -f "($TAG) $id max RSS %M kB, wall %e s (optimisation)" "${cmd[@]}")
   if OMP_NUM_THREADS=$THREADS "${cmd[@]}" > "molecules/$id/worker.log" 2>&1; then
     echo "  $id optimised $(( $(date +%s) - t0 )) s"
+  elif [ -n "$CAP_MB" ] && OOM_TAG=$TAG OOM_JOURNAL=system bash "$OOM_CHECK" "$id" >> "molecules/$id/worker.log" 2>&1; then
+    echo "  $id KILLED at the cap of $CAP_MB MB $(( $(date +%s) - t0 )) s, in the optimisation (molecules/$id/worker.log)"
+    echo "$id killed at the cap (optimisation)" >> "$STATUS"
   else
     echo "  $id OPTIMISATION FAILED $(( $(date +%s) - t0 )) s (molecules/$id/worker.log)"; echo "$id optimisation failed" >> "$STATUS"
   fi
