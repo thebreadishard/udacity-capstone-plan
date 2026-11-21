@@ -66,6 +66,11 @@ def test_at_the_line_only_at_the_last_milestone_is_unconfirmed():
     assert out.verdict == "AT THE LINE UNCONFIRMED" and "no next milestone exists" in out.reason
 
 
+def test_a_milestone_beyond_the_training_order_is_no_reading():
+    out = decide(table([2.5, 2.4, 2.3]), n_train=50)
+    assert out.verdict == "NO READING" and "beyond the 50 training anchors" in out.reason
+
+
 def test_other_falling_keeps_the_waves_going():
     out = decide(table([2.5, 2.4, 2.3], other=[4.6, 4.2, 3.8]))
     assert out.verdict == "FALLING" and out.families["other"] == "falling" and out.families["CH-oop"] == "at the line"
