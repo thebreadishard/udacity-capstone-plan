@@ -31,9 +31,15 @@ $S "test -x $QC" < /dev/null || { echo "NO PSI4 ENV on $NAME (tools/bootstrap_ps
 deploy_code "MP2 lane" || exit 1
 
 echo "[$(t) $NAME] 2. list.txt from the server's own wave and DFT batch"
-$S "cd $DEST && { cut -d'|' -f1,2 /root/dpir/wave.txt; grep -v '^#' /root/dft1/ids.txt | sed '/^\$/d; s#.*#&|/root/dft1/molecules/&/geometry.json#'; } > list.txt \
-    && test -s list.txt && ! cut -d'|' -f1 list.txt | sort | uniq -d | grep -q . && echo \"\$(wc -l < list.txt) molecules\"" < /dev/null \
-  || { echo "LIST FAILED on $NAME (no wave or DFT batch there, or a molecule listed twice)"; exit 1; }
+$S "test -s /root/dpir/wave.txt && test -s /root/dft1/ids.txt" < /dev/null \
+  || { echo "LIST FAILED on $NAME: /root/dpir/wave.txt or /root/dft1/ids.txt is missing or empty"; exit 1; }
+# a DFT-batch line carries its result.json as third field: the lane computes it only when that record is done without an imaginary mode
+$S "cd $DEST && cut -d'|' -f1,2 /root/dpir/wave.txt > list_wave.txt \
+    && grep -v '^#' /root/dft1/ids.txt | sed '/^\$/d; s#.*#&|/root/dft1/molecules/&/geometry.json|/root/dft1/molecules/&/result.json#' > list_dft.txt \
+    && test -s list_wave.txt && test -s list_dft.txt && cat list_wave.txt list_dft.txt > list.txt \
+    && ! cut -d'|' -f1 list.txt | sort | uniq -d | grep -q . \
+    && echo \"\$(wc -l < list_wave.txt) molecules of the CC wave, \$(wc -l < list_dft.txt) of the DFT batch\"" < /dev/null \
+  || { echo "LIST FAILED on $NAME (an empty part, or a molecule listed twice)"; exit 1; }
 
 echo "[$(t) $NAME] 3. check W (water, DF-MP2 analytic gradient against finite differences) under a 2048 MB cap"
 $S "mkdir -p $DEST/check_w /root/psi4_scratch && cd $DEST && PSI_SCRATCH=/root/psi4_scratch OMP_NUM_THREADS=2 CAP_SCOPE=system \
