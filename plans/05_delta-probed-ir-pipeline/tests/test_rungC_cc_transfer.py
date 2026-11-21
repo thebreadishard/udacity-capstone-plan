@@ -398,7 +398,7 @@ def test_r2_switches_are_refused_when_r2_does_not_run_or_out_of_range(extra, say
 
 
 def test_early_stop_refuses_bad_settings():
-    for bad in ({"max_epochs": 0}, {"patience": 0}, {"val": 0.0}, {"val": 1.0}):
+    for bad in ({"max_epochs": 0}, {"patience": 0}, {"val": 0.0}, {"val": 0.5}, {"val": 1.0}):
         with pytest.raises(ValueError, match="an early stop needs"):
             RT_T.EarlyStop(**bad)
 
@@ -432,6 +432,60 @@ def test_fit_recipe_sends_r2_to_the_early_stop_and_the_rest_to_the_fixed_epochs(
     monkeypatch.setattr(RT_T, "finetune_es", lambda *args, **kw: calls.append(("es", args[3])) or {"final_loss": 1.0})
     monkeypatch.setattr(RT_T, "finetune", lambda model, loss, train, mode, settings, log=print: calls.append(("fixed", mode)) or [2.0, 1.5])
     a = RT_T.build_parser().parse_args([*BASE3, "--modes", "body1_es"])
-    assert RT_T.fit_recipe(None, RT.LossSettings(), {"a": 1, "b": 2}, "body1_es", a) == {"final_loss": 1.0}
+    r2 = RT_T.fit_recipe(None, RT.LossSettings(), {"a": 1, "b": 2}, "body1_es", a)
+    assert r2 == {"final_loss": 1.0, "val_ids": RT.inner_split(["a", "b"], 0, 0.15)[0]} and len(r2["val_ids"]) == 1
     assert RT_T.fit_recipe(None, RT.LossSettings(), {"a": 1, "b": 2}, "head_all", a) == {"final_loss": 1.5}
     assert calls == [("es", "body1_es"), ("fixed", "head_all")]
+
+
+@pytest.mark.parametrize(("argv", "says"), [
+    (["m", "x.pt", "out", "--anchor", "a=1", "--anchor", "b=2", "--modes", "body1_es"], "at least 2 training anchors"),   # a fold trains on one
+    (["m", "x.pt", "out", "--anchor", "a=1", "--predict", "x", "--fit-mode", "body1_es"], "at least 2 training anchors"),
+    ([*BASE3, "--fit-mode", "body1_es"], "nothing reads the fit mode"),
+])
+def test_r2_is_refused_before_loading_with_too_few_anchors_or_an_unread_fit_mode(argv, says):
+    a = RT_T.build_parser().parse_args(argv)
+    with pytest.raises(SystemExit, match=says):
+        RT_T.check_switches(a, dict(s.split("=", 1) for s in a.anchor))
+
+
+def test_r2_with_two_anchors_passes_for_the_fit_on_all_and_in_sample_folds():
+    two = ["m", "x.pt", "out", "--anchor", "a=1", "--anchor", "b=2"]
+    for extra in (["--predict", "x", "--fit-mode", "body1_es", "--skip-folds"], ["--modes", "body1_es", "--in-sample"]):
+        a = RT_T.build_parser().parse_args([*two, *extra])
+        RT_T.check_switches(a, {"a": "1", "b": "2"})
+
+
+def test_early_stop_split_refuses_fewer_than_two_anchors_and_is_inner_split():
+    es = RT_T.EarlyStop(seed=4)
+    with pytest.raises(ValueError, match="at least 2 training anchors"):
+        es.split(["a"])
+    ids = [f"m{i}" for i in range(10)]
+    assert es.split(ids) == RT.inner_split(ids, 4, 0.15)
+
+
+def test_a_prediction_keeps_the_early_stop_record_only_for_an_early_stopped_fit(tmp_path):
+    z = np.zeros((3, 3))
+    plain = RT_T.Prediction(z, z, "lo.npz", "head_all", ["a", "b"], "model.pt", 0.5).save(tmp_path / "plain.npz")
+    assert "early_stop" not in np.load(plain).files                       # the fixed-epoch modes' files as before
+    rec = {"final_loss": 0.4, "best_epoch": 7, "val_ids": ["b"]}
+    stopped = RT_T.Prediction(z, z, "lo.npz", "body1_es", ["a", "b"], "model.pt", 0.4, early_stop=rec).save(tmp_path / "es.npz")
+    import json
+    assert json.loads(str(np.load(stopped)["early_stop"])) == rec
+
+
+def test_a_fold_in_r2_records_the_stop_and_the_validation_anchors(monkeypatch):
+    from types import SimpleNamespace
+    six = {"final_loss": 0.4, "best_epoch": 7, "epochs_run": 17, "val_loss": 0.6, "n_fit": 2, "n_val": 1}
+    monkeypatch.setattr(RT_T, "finetune_es", lambda *args, **kw: dict(six))
+    monkeypatch.setattr(RT_T, "read", lambda an, held, tr, dF_of: {"corrected_freq_rms": 1.0})
+    monkeypatch.setattr(RT_T, "alpha_scaling_baseline", lambda *args: None)
+    monkeypatch.setattr(RT_T, "predictor", lambda model, tensors, mols: None)
+    ids = ["a", "b", "c", "d"]
+    an = SimpleNamespace(ids=ids, tensors={i: {} for i in ids}, mols={i: {"F_low": np.zeros((2, 2))} for i in ids})
+    a = RT_T.build_parser().parse_args(["m", "x.pt", "out", *[x for i in ids for x in ("--anchor", f"{i}=1")], "--modes", "body1_es"])
+    fold = RT_T.run_fold(an, "d", None, RT.LossSettings(), a)
+    assert fold["train"] == ["a", "b", "c"] and list(fold) == ["train", "zero_rule", "alpha_scaling", "network_body1_es"]
+    got = fold["network_body1_es"]
+    assert got["corrected_freq_rms"] == 1.0 and {k: got[k] for k in six} == six
+    assert got["val_ids"] == RT.inner_split(["a", "b", "c"], 0, 0.15)[0] and "d" not in got["val_ids"]

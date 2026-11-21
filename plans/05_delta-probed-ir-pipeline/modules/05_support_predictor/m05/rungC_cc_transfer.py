@@ -141,10 +141,12 @@ class Prediction:
     model: str
     final_loss: float | None
     held: str | None = None
+    early_stop: dict | None = None   # an early-stopped fit's record (best_epoch, val_ids, …): `anchors` holds its validation anchors too
 
     def save(self, path: Path) -> Path:
+        extra = {} if self.early_stop is None else {"early_stop": json.dumps(self.early_stop)}   # absent for the fixed-epoch modes
         np.savez(path, dH_pred=self.dH_pred, H_low=self.H_low, low_level=self.low_level, mode=self.mode, anchors=np.array(self.anchors),
-                 model=self.model, final_loss=(np.nan if self.final_loss is None else self.final_loss), held=(self.held or ""))
+                 model=self.model, final_loss=(np.nan if self.final_loss is None else self.final_loss), held=(self.held or ""), **extra)
         return path
 
 
@@ -307,6 +309,7 @@ def finetune_early_stopped(model, loss_cfg: LossSettings, anchors: tuple[dict, d
 
 
 EARLY_STOPPED = {"head_all_es": "head_all", "body1_es": "head_all_body1"}   # recipe → the fine-tune it early-stops (decision 51)
+MIN_ES_TRAIN = 2       # one anchor to fit and one to validate on
 
 
 @dataclass(frozen=True)
@@ -321,8 +324,14 @@ class EarlyStop:
     seed: int = 0
 
     def __post_init__(self) -> None:
-        if self.max_epochs < 1 or self.patience < 1 or not 0 < self.val < 1:
-            raise ValueError(f"an early stop needs max_epochs ≥ 1, patience ≥ 1 and 0 < val < 1, not {self}")
+        if self.max_epochs < 1 or self.patience < 1 or not 0 < self.val < 0.5:
+            raise ValueError(f"an early stop needs max_epochs ≥ 1, patience ≥ 1 and 0 < val < 0.5, not {self}")
+
+    def split(self, train_ids: list[str]) -> tuple[list[str], list[str]]:
+        """(validation ids, fit ids) of the training anchors; fewer than two anchors leave nothing to fit or to validate on."""
+        if len(train_ids) < MIN_ES_TRAIN:
+            raise ValueError(f"an early-stopped fine-tune needs at least {MIN_ES_TRAIN} training anchors, not {len(train_ids)}")
+        return inner_split(list(train_ids), self.seed, self.val)
 
 
 @dataclass(frozen=True)
@@ -341,9 +350,7 @@ def finetune_es(model, loss_cfg: LossSettings, train: dict, recipe: str, run: Es
     if recipe not in EARLY_STOPPED:
         raise ValueError(f"{recipe!r} is not an early-stopped recipe (of {sorted(EARLY_STOPPED)})")
     es = run.es
-    val_ids, fit_ids = inner_split(list(train), es.seed, es.val)
-    if not fit_ids:
-        raise ValueError(f"{len(train)} training anchors leave none to fit after the validation share {es.val}")
+    val_ids, fit_ids = es.split(list(train))
     stopped = finetune_early_stopped(model, loss_cfg, ({i: train[i] for i in fit_ids}, {i: train[i] for i in val_ids}), EARLY_STOPPED[recipe],
                                      FinetuneSettings(es.max_epochs, run.lr, run.aux_weight, patience=es.patience), log=log)
     return {"final_loss": stopped.hist[stopped.best_epoch - 1], "best_epoch": stopped.best_epoch, "epochs_run": len(stopped.hist),
@@ -352,9 +359,11 @@ def finetune_es(model, loss_cfg: LossSettings, train: dict, recipe: str, run: Es
 
 def fit_recipe(model, loss_cfg: LossSettings, train: dict, mode: str, a, log=print) -> dict:
     """A fold's or a fit's fine-tune in `mode` on `train` (id → tensors): an early-stopped recipe with the run's EarlyStop, or a
-    fixed-epoch mode (`finetune`). Returns the record entries ('final_loss' always)."""
+    fixed-epoch mode (`finetune`). Returns the record entries ('final_loss' always; for an early-stopped recipe also 'val_ids', the
+    anchors that only decided the stop, so the split can be audited without recomputing it)."""
     if mode in EARLY_STOPPED:
-        return finetune_es(model, loss_cfg, train, mode, EsRun(early_stop(a), a.lr, a.aux_weight), log=log)
+        es = early_stop(a)
+        return {**finetune_es(model, loss_cfg, train, mode, EsRun(es, a.lr, a.aux_weight), log=log), "val_ids": es.split(list(train))[0]}
     hist = finetune(model, loss_cfg, train, mode, FinetuneSettings(a.epochs, a.lr, a.aux_weight, a.head_l2, a.lora_rank), log=log)
     return {"final_loss": hist[-1] if hist else None}
 
@@ -362,6 +371,11 @@ def fit_recipe(model, loss_cfg: LossSettings, train: dict, mode: str, a, log=pri
 def early_stop(a) -> EarlyStop:
     """The run's EarlyStop from its switches."""
     return EarlyStop(a.es_max_epochs, a.es_val, a.es_patience, a.es_seed)
+
+
+def es_record(fitted: dict) -> dict | None:
+    """The entries of `fit_recipe` when the fit was early-stopped, else None."""
+    return fitted if "val_ids" in fitted else None
 
 
 def family_freq_rms(m: dict, K_pred: np.ndarray) -> dict:
@@ -540,7 +554,7 @@ def run_fold(an: Anchors, held: str, model0, loss_cfg: LossSettings, a) -> dict:
             fold["oop_fit_subsets"] = oop_subset_reads(an, held, tr, predictor(model, an.tensors, an.mols), a.oop_fit_sizes)
         if a.save_fold_predictions and mode == a.fit_mode:
             pred = Prediction(predict_cartesian(model, an.tensors[held]), an.mols[held]["H_low"], an.mols[held]["low_file"], mode, tr, a.model,
-                              fitted["final_loss"], held=held)
+                              fitted["final_loss"], held=held, early_stop=es_record(fitted))
             fold["saved_prediction"] = str(pred.save(Path(f"{a.out_prefix}_fold_{held}.npz")))
     return fold
 
@@ -582,8 +596,8 @@ def fit_and_predict(an: Anchors, mdir: Path, model0, loss_cfg: LossSettings, cfg
             RR.substitute(an.mols[i], d)
         t = molecule_tensors(i, loaded_molecule(d, an.mols[i]), an.mols[i], d, cfg, Path(a.out_prefix).parent / "ls_targets")
         path = Prediction(predict_cartesian(model, t), np.load(lo)["H_projected"], lo.name, mode, an.ids, a.model,
-                          fitted["final_loss"]).save(Path(f"{a.out_prefix}_predict_{i}.npz"))
-        out[i] = dict(file=str(path), low_level=lo.name, mode=mode)
+                          fitted["final_loss"], early_stop=es_record(fitted)).save(Path(f"{a.out_prefix}_predict_{i}.npz"))
+        out[i] = dict(file=str(path), low_level=lo.name, mode=mode, **({"fit": fitted} if es_record(fitted) else {}))
         print(f"predicted {i} ({lo.name}, fit on {len(an.ids)} anchors, {mode}) → {path}", flush=True)
     return out
 
@@ -679,16 +693,23 @@ def check_switches(a, anchors: dict[str, str]) -> None:
     fit_switches = [s for s, on in (("--save-fold-predictions", a.save_fold_predictions), ("--oop-fit-sizes", a.oop_fit_sizes)) if on]
     if fit_switches and a.fit_mode not in fold_modes(a):
         raise SystemExit(f"{' and '.join(fit_switches)} read the fit mode {a.fit_mode}, which --modes leaves out")
-    check_early_stop_switches(a)
+    check_early_stop_switches(a, len(anchors))
 
 
-def check_early_stop_switches(a) -> None:
-    """R2's switches: in range when R2 runs, left at their defaults when it does not (they would be ignored)."""
+def check_early_stop_switches(a, n_anchors: int) -> None:
+    """R2's switches: in range and with enough training anchors when R2 runs; left at their defaults when it does not (they would be
+    ignored); and --fit-mode body1_es only where something reads the fit mode."""
+    reads_fit_mode = bool(a.predict) or a.save_fold_predictions or bool(a.oop_fit_sizes)
+    if a.fit_mode in EARLY_STOPPED and not reads_fit_mode:
+        raise SystemExit(f"--fit-mode {a.fit_mode}: nothing reads the fit mode (give --predict, --save-fold-predictions or --oop-fit-sizes; "
+                         f"a fold runs it with --modes {a.fit_mode})")
     if uses_early_stop(a):
+        in_folds = any(m in EARLY_STOPPED for m in fold_modes(a)) and not a.skip_folds
+        smallest = n_anchors - (1 if in_folds and not a.in_sample else 0)
         try:
-            early_stop(a)
+            early_stop(a).split([str(k) for k in range(smallest)])
         except ValueError as e:
-            raise SystemExit(f"--es-*: {e}") from e
+            raise SystemExit(f"--es-* / the anchors: {e}") from e
     elif es_switches_set(a):
         raise SystemExit("--es-max-epochs, --es-val, --es-patience and --es-seed set the early-stopped recipe R2 (body1_es), which neither "
                          "--modes nor --fit-mode names")
