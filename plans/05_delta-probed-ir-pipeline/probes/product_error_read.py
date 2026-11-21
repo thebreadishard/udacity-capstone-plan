@@ -146,13 +146,38 @@ def molecule_read(folder: Path, models: tuple[Path, ...]) -> MoleculeRead:
         raise SystemExit(f"{folder.name}: {len(record_family)} finite-difference modes, {len(family)} analytic ones")
     dH, dH_seeds = P.correction(models, folder)
     first = np.array([molecule_features(folder, lo=lo, hi=lo + d)["target"] - truth["target"] for d in dH_seeds], float)
-    _, w_low, V_low, _ = normal_modes(lo, masses)
-    _, w_ref, V_ref, _ = normal_modes(hi, masses)
-    _, w_net, V_net, _ = normal_modes(lo + dH, masses)
-    if np.abs(w_low - np.asarray(truth["freq"])).max() > 1e-6:
+    bands = corrected_bands(Hessians(lo, hi, masses), dH, family)
+    if np.abs(bands.low_freq - np.asarray(truth["freq"])).max() > 1e-6:
         raise SystemExit(f"{folder.name}: the family rule's modes are not the B3LYP normal modes")
-    band = w_net - w_ref[RINT.match_modes(V_net, V_ref)]
-    return MoleculeRead(record_family, family, first, family[RINT.match_modes(V_net, V_low)], band, np.asarray(truth["freq"], float))
+    return MoleculeRead(record_family, family, first, bands.family, bands.error, np.asarray(truth["freq"], float))
+
+
+@dataclass(frozen=True)
+class Hessians:
+    """A molecule's low-level and reference Hessians (projected, Cartesian, one frame) and its masses in amu."""
+
+    lo: np.ndarray
+    hi: np.ndarray
+    masses: np.ndarray
+
+
+@dataclass(frozen=True)
+class CorrectedBands:
+    """Per band of the corrected Hessian: its distance from its reference band (cm⁻¹) and its low-level partner's family; and the
+    low-level frequencies, in the order of the family labels given."""
+
+    error: np.ndarray
+    family: np.ndarray
+    low_freq: np.ndarray
+
+
+def corrected_bands(h: Hessians, dH: np.ndarray, family: np.ndarray) -> CorrectedBands:
+    """The product's quantity for one molecule: lo + dH diagonalised, each band paired to its reference band by mode overlap
+    (`rungC_intensities.match_modes`) and counted in the family of its low-level partner. `family` labels the low-level modes."""
+    _, w_low, V_low, _ = normal_modes(h.lo, h.masses)
+    _, w_ref, V_ref, _ = normal_modes(h.hi, h.masses)
+    _, w_net, V_net, _ = normal_modes(h.lo + dH, h.masses)
+    return CorrectedBands(w_net - w_ref[RINT.match_modes(V_net, V_ref)], family[RINT.match_modes(V_net, V_low)], w_low)
 
 
 def peak_memory_gb() -> float:
