@@ -17,7 +17,8 @@
 # non-zero when N > 0. Resumable: dfmp2_rows.py keeps every finished row; a basis counts as finished when its file exists and the log
 # of its last attempt (rewritten per attempt) ends with dfmp2_rows.py's own end line.
 # Settings (environment, checked before the wait): QC (the psi4 python) /root/miniforge3/envs/qc/bin/python, THREADS 4, MEMORY_GB 6,
-#   CAP_MB 8192, WAIT_S 600, WAIT_PGREP (none), CAPPED and OOM_CHECK (beside this script). WAIT_PGREP is a regex for `pgrep -f`:
+#   CAP_MB 8192, WAIT_S 600, BEAT_S 600 (how often a running basis is looked at for a progress line), WAIT_PGREP (none), CAPPED and
+#   OOM_CHECK (beside this script). WAIT_PGREP is a regex for `pgrep -f`:
 #   bracket its first letter, so that a launcher whose command line carries this setting as text never matches it.
 #   WAIT_PGREP='[l]abels_batch_ccx53.sh /root/dft1' bash probes/dfmp2_lane.sh /root/mp2b MP /root/dft1/anc1_dft1.log '=== \(AD\) all done'
 set -u
@@ -27,13 +28,13 @@ HERE=$(cd "$(dirname "$0")" && pwd)
 cd "$BATCH" || exit 1
 BATCH=$(pwd)
 QC=${QC:-/root/miniforge3/envs/qc/bin/python}
-THREADS=${THREADS:-4}; MEMORY_GB=${MEMORY_GB:-6}; CAP_MB=${CAP_MB:-8192}; WAIT_S=${WAIT_S:-600}; WAIT_PGREP=${WAIT_PGREP:-}
+THREADS=${THREADS:-4}; MEMORY_GB=${MEMORY_GB:-6}; CAP_MB=${CAP_MB:-8192}; WAIT_S=${WAIT_S:-600}; WAIT_PGREP=${WAIT_PGREP:-}; BEAT_S=${BEAT_S:-600}
 CAPPED=${CAPPED:-$HERE/wsl_capped.sh}; OOM_CHECK=${OOM_CHECK:-$HERE/cation_oom_check.sh}
 BASES=(cc-pvdz cc-pvtz)
 STATUS=$BATCH/status_$TAG.log
 export PSI_SCRATCH=${PSI_SCRATCH:-/root/psi4_scratch} PYTHONUNBUFFERED=1
 mark() { echo "=== ($TAG) $* $(date '+%F %T')"; }
-for v in THREADS MEMORY_GB CAP_MB WAIT_S; do
+for v in THREADS MEMORY_GB CAP_MB WAIT_S BEAT_S; do
   [[ ${!v} =~ ^[1-9][0-9]*$ ]] || { mark "STOPPED: $v must be a positive integer, not '${!v}'"; exit 1; }
 done
 [ $((MEMORY_GB * 1024)) -lt "$CAP_MB" ] || { mark "STOPPED: MEMORY_GB $MEMORY_GB does not fit under the cap of $CAP_MB MB"; exit 1; }
@@ -84,9 +85,18 @@ for line in "${LINES[@]}"; do
     t0=$(date +%s)
     # a log per attempt, so an earlier attempt's end line cannot vouch for this one's file; the earlier log is kept beside it
     [ -f "$log" ] && mv "$log" "$log.$(ls "$log".* 2>/dev/null | wc -l)"
-    if OMP_NUM_THREADS=$THREADS env CAP_SCOPE=system bash "$CAPPED" "$CAP_MB" -- /usr/bin/time -f "($TAG) $id max RSS %M kB, wall %e s ($short)" \
+    OMP_NUM_THREADS=$THREADS env CAP_SCOPE=system bash "$CAPPED" "$CAP_MB" -- /usr/bin/time -f "($TAG) $id max RSS %M kB, wall %e s ($short)" \
          "$QC" "$HERE/dfmp2_rows.py" rows --geometry "$geom" --basis "$b" --out "rows/$id/dfmp2_rows_$short.npz" \
-         --threads "$THREADS" --memory-gb "$MEMORY_GB" > "$log" 2>&1 && finished "$id" "$short"; then
+         --threads "$THREADS" --memory-gb "$MEMORY_GB" > "$log" 2>&1 &
+    job=$!
+    # a basis can take hours: a line whenever its row count has grown, so a stalled one prints nothing and the run's progress gap sees it
+    seen=0
+    while kill -0 "$job" 2>/dev/null; do
+      sleep "$BEAT_S" & wait $!
+      n=$(grep -ac 'df-mp2 .* k=' "$log" 2>/dev/null); n=${n:-0}
+      if [ "$n" -gt "$seen" ] && kill -0 "$job" 2>/dev/null; then echo "  $id $short progress: $n rows"; seen=$n; fi
+    done
+    if wait "$job" && finished "$id" "$short"; then
       echo "  $id $short rows done $(( $(date +%s) - t0 )) s - $(grep -a "($TAG) $id max RSS" "$log" | tail -n 1)"
     elif OOM_TAG=$TAG OOM_JOURNAL=system bash "$OOM_CHECK" "$id" >> "$log" 2>&1; then
       echo "  $id $short KILLED at the cap of $CAP_MB MB $(( $(date +%s) - t0 )) s ($log)"; echo "$id $short killed at the cap" >> "$STATUS"

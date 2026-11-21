@@ -19,7 +19,8 @@ FAKE_QC = """#!/usr/bin/env bash
 # line — unless the geometry's folder is 'bad' (fails) or 'big' (writes a partial file and dies, as a kill at the cap leaves it)
 if [ "$1" = -c ]; then echo 1.11; exit 0; fi
 while [ $# -gt 0 ]; do case "$1" in --geometry) g=$2 ;; --basis) b=$2 ;; --out) o=$2 ;; esac; shift; done
-case "$g" in */bad/*) echo "psi4 failed"; exit 3 ;; */big/*) echo partial > "$o"; exit 137 ;; esac
+case "$g" in */bad/*) echo "psi4 failed"; exit 3 ;; */big/*) echo partial > "$o"; exit 137 ;;
+  */slow/*) for k in 0 1 2; do echo "[00:00:00] df-mp2 $b k=$k: H_kk +0.5 (1 s)"; sleep 1.5; done ;; esac
 echo "$b" > "$o"; echo "=== DF ROWS DONE $o (1 rows)"
 """
 FAKE_CAPPED = """#!/usr/bin/env bash
@@ -38,7 +39,7 @@ def batch(tmp_path):
     for name, text in (("qc", FAKE_QC), ("capped.sh", FAKE_CAPPED), ("oom.sh", FAKE_OOM)):
         (tmp_path / name).write_text(text, newline="\n")
         (tmp_path / name).chmod(0o755)
-    for mol in ("m1", "m2", "bad", "big"):
+    for mol in ("m1", "m2", "bad", "big", "slow"):
         (tmp_path / "geoms" / mol).mkdir(parents=True)
         (tmp_path / "geoms" / mol / "geometry.json").write_text('{"symbols": ["H"]}')
     (tmp_path / "ready.log").write_text("READY\n")
@@ -48,7 +49,7 @@ def batch(tmp_path):
 def run(batch, lines, *extra, env=None, wait_log="ready.log"):
     (batch / "list.txt").write_text("".join(line + "\n" for line in lines), newline="\n")
     full = {**os.environ, "QC": str(batch / "qc"), "CAPPED": str(batch / "capped.sh"), "OOM_CHECK": str(batch / "oom.sh"),
-            "PSI_SCRATCH": str(batch / "scratch"), "WAIT_S": "1", **(env or {})}
+            "PSI_SCRATCH": str(batch / "scratch"), "WAIT_S": "1", "BEAT_S": "1", **(env or {})}
     return subprocess.run([BASH, str(PLAN / "probes" / "dfmp2_lane.sh"), str(batch), "MP", str(batch / wait_log), "READY", *extra],
                           capture_output=True, text=True, env=full, check=False, timeout=60)
 
@@ -165,3 +166,13 @@ def test_the_deploy_list_is_closed_and_tracked():
     assert closure.returncode == 0, closure.stdout + closure.stderr
     tracked = subprocess.run(["git", "ls-files", "--error-unmatch", *files], cwd=PLAN, capture_output=True, text=True, check=False)
     assert tracked.returncode == 0, tracked.stderr
+
+
+@needs_time
+def test_a_long_basis_prints_a_line_when_its_row_count_has_grown(batch):
+    done = run(batch, [geom(batch, "slow")])
+    assert done.returncode == 0, done.stdout
+    beats = [line.strip() for line in done.stdout.splitlines() if "progress:" in line]
+    assert beats and all(b.startswith("slow ccpv") and b.endswith("rows") for b in beats)
+    counts = [int(b.split("progress: ")[1].split()[0]) for b in beats if b.startswith("slow ccpvdz")]
+    assert counts == sorted(set(counts)) and "slow ccpvtz rows done" in done.stdout          # each count once, growing
