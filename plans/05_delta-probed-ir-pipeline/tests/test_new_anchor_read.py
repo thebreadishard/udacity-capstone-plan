@@ -22,8 +22,8 @@ def table(base, half=0.05, **per_family):
     return {f: pts(per_family.get(f.replace("-", "_").lower(), base), half) for f in R.FAMILIES}
 
 
-def decide(curves, proxy=PROXY, n_test=N, left=True):
-    return R.decide(curves, proxy, n_test, left)
+def decide(curves, proxy=PROXY, n_test=N, n_train=122):
+    return R.decide(curves, proxy, n_test, n_train)
 
 
 # split and milestones
@@ -62,8 +62,8 @@ def test_a_later_rise_undoes_reached():
 def test_at_the_line_only_at_the_last_milestone_is_unconfirmed():
     out = decide(table([3.5, 3.2, 2.9]))
     assert out.verdict == "AT THE LINE UNCONFIRMED" and "next milestone" in out.reason
-    out = decide(table([3.5, 3.2, 2.9]), left=False)
-    assert out.verdict == "AT THE LINE UNCONFIRMED" and "no training anchor is left" in out.reason
+    out = decide(table([3.5, 3.2, 3.1, 3.1, 3.05, 2.9]), n_train=122)                # k = 120 of 122: no 140
+    assert out.verdict == "AT THE LINE UNCONFIRMED" and "no next milestone exists" in out.reason
 
 
 def test_other_falling_keeps_the_waves_going():
@@ -107,7 +107,7 @@ def test_no_learning_only_for_a_family_above_the_line():
     (lambda: (table([2.5]), N), "two are needed"),
     (lambda: ({**table([2.5, 2.4]), "ring-ip": {20: R.Point(2, 1.9, 2.1), 40: R.Point(math.nan, 1, 2)}}, N), "not finite"),
     (lambda: ({**table([2.5, 2.4]), "ring-ip": {20: R.Point(-1, -2, 0), 40: R.Point(2, 1.9, 2.1)}}, N), "negative"),
-    (lambda: ({**table([2.5, 2.4]), "ring-ip": {20: R.Point(2, 2.1, 2.2), 40: R.Point(2, 1.9, 2.1)}}, N), "does not hold"),
+    (lambda: ({**table([2.5, 2.4]), "ring-ip": {20: R.Point(2, 2.2, 2.1), 40: R.Point(2, 1.9, 2.1)}}, N), "lower end lies above"),
 ])
 def test_no_reading(make, reason):
     curves, n_test = make()

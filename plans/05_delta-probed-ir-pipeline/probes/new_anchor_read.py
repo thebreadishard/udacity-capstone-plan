@@ -81,12 +81,13 @@ def shape_problem(curves: dict[str, dict[int, Point]], proxy_as_is: dict[str, fl
 
 
 def value_problem(curves: dict[str, dict[int, Point]], proxy_as_is: dict[str, float]) -> str | None:
-    """A value negative or not finite, or an interval that does not hold its mean; else None."""
+    """A value negative or not finite, or an interval whose lower end lies above its upper end; else None. (A percentile bootstrap of
+    an rms may, on a skewed sample, leave the point value outside its interval; that is reported, not refused.)"""
     numbers = [x for f in FAMILIES for p in curves[f].values() for x in (p.mean, p.lo, p.hi)] + list(proxy_as_is.values())
     if not all(math.isfinite(x) and x >= 0 for x in numbers):
         return "a value is negative or not finite"
-    if any(not (p.lo <= p.mean <= p.hi) for f in FAMILIES for p in curves[f].values()):
-        return "an interval does not hold its mean"
+    if any(p.lo > p.hi for f in FAMILIES for p in curves[f].values()):
+        return "an interval's lower end lies above its upper end"
     return None
 
 
@@ -121,8 +122,9 @@ def reached_from(curves: dict[str, dict[int, Point]]) -> int | None:
     return run[-1] if len(run) >= 2 else None
 
 
-def decide(curves: dict[str, dict[int, Point]], proxy_as_is: dict[str, float], n_test: int, anchors_left: bool) -> Outcome:
-    """The outcome of one read (rules in the registration's order)."""
+def decide(curves: dict[str, dict[int, Point]], proxy_as_is: dict[str, float], n_test: int, n_train: int) -> Outcome:
+    """The outcome of one read (rules in the registration's order); n_train is the length of the frozen training order, from which
+    `decide` itself works out whether a next milestone can exist (the last k + STEP ≤ n_train)."""
     reason = unreadable(curves, proxy_as_is, n_test)
     if reason:
         return Outcome("NO READING", None, {}, reason)
@@ -131,7 +133,8 @@ def decide(curves: dict[str, dict[int, Point]], proxy_as_is: dict[str, float], n
     if k is not None:
         return Outcome("REACHED", k, states, f"every family ≤ {LINE_CM} cm⁻¹ from k = {k} through the last milestone")
     if all(s == "at the line" for s in states.values()):
-        what = "the next milestone confirms or not" if anchors_left else "no training anchor is left to confirm it"
+        next_exists = max(next(iter(curves.values()))) + STEP <= n_train
+        what = "the next milestone confirms or not" if next_exists else "no next milestone exists to confirm it"
         return Outcome("AT THE LINE UNCONFIRMED", None, states, f"every family at the line at the last milestone only; {what}")
     if any(s == "no learning" for s in states.values()):
         return Outcome("NO LEARNING", None, states, "a family above the line is not below the proxy model as it is")

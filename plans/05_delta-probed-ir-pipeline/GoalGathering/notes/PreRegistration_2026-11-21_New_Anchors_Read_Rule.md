@@ -31,6 +31,8 @@ order, so the sets of a curve are nested and every read sees the same sets.
 finished out of order waits until the ones before it are done. **Every read recomputes every milestone** with one test set (every test
 anchor finished at that time) and one network, so a curve never mixes test sets or networks; the read names how many of the 49 test
 anchors it holds, and names any carried test anchor left out for a missing MP2 step. No verdict is taken on fewer than 30 test anchors.
+The last milestone is 120: the two most expensive training anchors (121 and 122 of the order) are in no read; they join the release
+model's training data.
 
 **Network and fine-tune.** The carried measurement networks at read time (v1.4 today, three seeds; decision 66: measurement networks
 measure), read from `modules/MODELS.md`, never from memory. The fine-tune is R2 (`body1_es`: the whole head, α and the body's last
@@ -53,11 +55,12 @@ the proxy's size test (7.9 cm⁻¹ on four molecules of 36–60 atoms).
 Checked in this order:
 
 - **NO READING** — fewer than 30 test anchors; a family missing; the families read at different milestones, at milestones other than
-  20, 40, … or at fewer than two; a value negative or not finite; an interval that does not hold its mean.
+  20, 40, … or at fewer than two; a value negative or not finite; an interval whose lower end lies above its upper end.
 - **REACHED at k** — every family ≤ 3.0 cm⁻¹ from milestone k through the last milestone, over two milestones or more: a family that
   touches the line and rises again does not count.
-- **AT THE LINE UNCONFIRMED** — every family ≤ 3.0 cm⁻¹ at the last milestone only; the next milestone confirms or not, and when no
-  training anchor is left, the read says so and the outcome stays unconfirmed.
+- **AT THE LINE UNCONFIRMED** — every family ≤ 3.0 cm⁻¹ at the last milestone only; the next milestone confirms or not. Whether a next
+  milestone can exist is worked out from the training order's length (the last k + 20 ≤ 122); at k = 120 none can, the read says so
+  and the outcome stays unconfirmed.
 - **NO LEARNING** — a family above the line whose last value is not below the proxy model as it is, read on the same test anchors (a
   family already at the line is never judged on this).
 - **FLAT** — every family above the line has stopped falling: over its last two milestone steps it gained less than 0.1 cm⁻¹ or less than
@@ -72,7 +75,7 @@ gain is larger than the noise.
 - **REACHED at k:** the anchors needed are the k cheapest training anchors. New waves stop; the anchors already running finish (their
   cost is spent) and join the release model's training data; they are not a reason to read again. The price of the goal is the CC and MP2
   cost of those k, from the servers' logs.
-- **AT THE LINE UNCONFIRMED:** the waves continue to the next milestone; with no training anchor left, the user decides on it.
+- **AT THE LINE UNCONFIRMED:** the waves continue to the next milestone; at k = 120, where none can follow, the user decides on it.
 - **FALLING:** the waves continue in the plan's order; the next read at the next milestone.
 - **FLAT:** more anchors of this kind do not buy the remaining families; the waves stop after the running molecules, and the lever is the
   network's input for those vibrations (TASKS on the 'other' family), not more CC.
