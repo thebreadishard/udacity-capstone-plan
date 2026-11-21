@@ -168,15 +168,26 @@ def test_training_head_is_cut_to_a_milestone_and_names_what_holds_the_order():
     assert head == order and info["order_held_by"] is None
 
 
-def test_verify_files_refuses_an_anchor_file_changed_since_it_was_registered(tmp_path):
+def registered(tmp_path, status="VALID"):
+    """A carried registry entry for anchor 'a' with its Hessian file under tmp_path."""
     import anchor_registry as AR
     f = tmp_path / "p" / "a.npz"
-    f.parent.mkdir()
-    f.write_bytes(b"first")
-    e = {**entry("a"), "sha16": AR.sha16(f)}
+    f.parent.mkdir(exist_ok=True)
+    np.savez(f, H_raw=np.eye(3), H_projected=np.eye(3), status=status)
+    return f, {**entry("a"), "name": "a", "kind": "composite", "date": "2026-11-21", "checks": "—", "note": "", "sha16": AR.sha16(f)}
+
+
+def test_verify_files_refuses_an_anchor_file_changed_since_it_was_registered(tmp_path):
+    f, e = registered(tmp_path)
     T.verify_files({"a": e}, [e], root=tmp_path)
-    f.write_bytes(b"fetched again")
+    np.savez(f, H_raw=2 * np.eye(3), H_projected=2 * np.eye(3), status="VALID")       # fetched again over the registered file
     with pytest.raises(SystemExit, match="changed since it was registered"):
+        T.verify_files({"a": e}, [e], root=tmp_path)
+
+
+def test_verify_files_refuses_an_anchor_whose_own_verdict_is_not_valid(tmp_path):
+    _, e = registered(tmp_path, status="IMAGINARY")
+    with pytest.raises(SystemExit, match="own verdict is IMAGINARY"):
         T.verify_files({"a": e}, [e], root=tmp_path)
 
 

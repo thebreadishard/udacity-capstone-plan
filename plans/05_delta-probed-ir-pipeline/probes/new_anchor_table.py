@@ -73,9 +73,13 @@ def finished_anchors(ids: list[str], entries: list[dict]) -> tuple[dict[str, dic
 
 
 def verify_files(used: dict[str, dict], entries: list[dict], root: Path = PLAN) -> None:
-    """Every anchor file read is its molecule's carried entry and unchanged since it was registered (`AR.require_carried_anchor`
-    refuses otherwise): a file re-fetched over a registered one must not be read under the registry's old hash."""
+    """Every anchor file read is its molecule's carried entry (`AR.require_carried_anchor`) and passes the registry's own check of
+    it (`AR.check_entry`): unchanged since it was registered — a file re-fetched over a registered one must not be read under the old
+    hash — and with the file's own verdict VALID, as the registration asks ('a check that failed is not read')."""
     for i, e in used.items():
+        problems = AR.check_entry(e, root)
+        if problems:
+            raise SystemExit(f"anchor {i} is not read: " + "; ".join(problems))
         AR.require_carried_anchor(i, root / e["path"], entries=entries, root=root)
 
 
