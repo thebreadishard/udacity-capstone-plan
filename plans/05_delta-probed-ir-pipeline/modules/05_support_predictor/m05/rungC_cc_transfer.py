@@ -8,6 +8,10 @@ uses `--fit-mode`: by default the whole head (set three's diagnosis, 21 Oct 2026
 layer with the λ = 1 pull, three seeds; the proxy check of 22 Oct agrees); that λ = 1 standard of 7 Oct is the preset `--fit-mode head_l2`.
 Beside it: the zero rule, the proxy model as it is (no fine-tune), and a per-class α scaling fitted on the training anchors (the SQM-like
 transfer, no network). Every number traces to the anchor files named on the command line.
+R2 (`body1_es`, 21 Nov 2026): the CC step's recipe chosen by the anchor count of 29 Oct — the whole head, α and the body's last
+interaction block, fitted on 85 % of the training anchors and stopped by the loss on the other 15 % (patience 10, cap 120, decision 51)
+— runs in a fold when --modes names it and in the fit on all anchors with --fit-mode body1_es; `finetune_es` is the one implementation,
+which `proxy_transfer_check.py` uses too.
 Pinned by `tests/test_rungC_cc_transfer_regression.py`.
 
     python m05/rungC_cc_transfer.py corpus/molecules <model.pt> <out_prefix> --anchor A_8448043181=<hessian_ccsd_t.npz> [--anchor ...] \\
@@ -24,7 +28,7 @@ import json
 import os
 import sys
 import time
-from dataclasses import dataclass, replace
+from dataclasses import asdict, dataclass, replace
 from datetime import datetime
 from pathlib import Path
 
@@ -45,6 +49,7 @@ from rungC_train import (
     LossSettings,
     _terms,
     freeze_for_transfer,
+    inner_split,
     load_hybrid_model,
     loss_settings,
     molecule_tensors,
@@ -143,7 +148,7 @@ class Prediction:
         return path
 
 
-FIT_MODES = ("head_all", "head", "head_l2")   # the modes a fit on all anchors may use; the first is the default
+FIT_MODES = ("head_all", "head", "head_l2", "body1_es")   # the modes a fit on all anchors may use; the first is the default
 
 
 def loaded_molecule(mol_dir: Path, m: dict) -> dict:
@@ -301,6 +306,64 @@ def finetune_early_stopped(model, loss_cfg: LossSettings, anchors: tuple[dict, d
     return EarlyStopped(hist, val_hist, best_ep + 1)
 
 
+EARLY_STOPPED = {"head_all_es": "head_all", "body1_es": "head_all_body1"}   # recipe → the fine-tune it early-stops (decision 51)
+
+
+@dataclass(frozen=True)
+class EarlyStop:
+    """How an early-stopped recipe splits and stops: the epoch cap, the share of the training anchors it validates on, the patience
+    and the seed of the split (`rungC_train.inner_split`). The CC step's recipe R2 of the anchor count (29 Oct 2026): cap 120, 15 %,
+    patience 10."""
+
+    max_epochs: int = 120
+    val: float = 0.15
+    patience: int = 10
+    seed: int = 0
+
+    def __post_init__(self) -> None:
+        if self.max_epochs < 1 or self.patience < 1 or not 0 < self.val < 1:
+            raise ValueError(f"an early stop needs max_epochs ≥ 1, patience ≥ 1 and 0 < val < 1, not {self}")
+
+
+@dataclass(frozen=True)
+class EsRun:
+    """An early-stopped recipe's run: its stop, and the learning rate and auxiliary weight of the fine-tune it stops."""
+
+    es: EarlyStop
+    lr: float
+    aux_weight: float
+
+
+def finetune_es(model, loss_cfg: LossSettings, train: dict, recipe: str, run: EsRun, log=print) -> dict:
+    """An early-stopped recipe (`EARLY_STOPPED`) on the training anchors `train` (id → tensors, in order): the split by `inner_split`,
+    `finetune_early_stopped` on it. Returns the record entries: the kept epoch's training and validation loss, the epochs run and the
+    split's sizes."""
+    if recipe not in EARLY_STOPPED:
+        raise ValueError(f"{recipe!r} is not an early-stopped recipe (of {sorted(EARLY_STOPPED)})")
+    es = run.es
+    val_ids, fit_ids = inner_split(list(train), es.seed, es.val)
+    if not fit_ids:
+        raise ValueError(f"{len(train)} training anchors leave none to fit after the validation share {es.val}")
+    stopped = finetune_early_stopped(model, loss_cfg, ({i: train[i] for i in fit_ids}, {i: train[i] for i in val_ids}), EARLY_STOPPED[recipe],
+                                     FinetuneSettings(es.max_epochs, run.lr, run.aux_weight, patience=es.patience), log=log)
+    return {"final_loss": stopped.hist[stopped.best_epoch - 1], "best_epoch": stopped.best_epoch, "epochs_run": len(stopped.hist),
+            "val_loss": stopped.val_hist[stopped.best_epoch - 1], "n_fit": len(fit_ids), "n_val": len(val_ids)}
+
+
+def fit_recipe(model, loss_cfg: LossSettings, train: dict, mode: str, a, log=print) -> dict:
+    """A fold's or a fit's fine-tune in `mode` on `train` (id → tensors): an early-stopped recipe with the run's EarlyStop, or a
+    fixed-epoch mode (`finetune`). Returns the record entries ('final_loss' always)."""
+    if mode in EARLY_STOPPED:
+        return finetune_es(model, loss_cfg, train, mode, EsRun(early_stop(a), a.lr, a.aux_weight), log=log)
+    hist = finetune(model, loss_cfg, train, mode, FinetuneSettings(a.epochs, a.lr, a.aux_weight, a.head_l2, a.lora_rank), log=log)
+    return {"final_loss": hist[-1] if hist else None}
+
+
+def early_stop(a) -> EarlyStop:
+    """The run's EarlyStop from its switches."""
+    return EarlyStop(a.es_max_epochs, a.es_val, a.es_patience, a.es_seed)
+
+
 def family_freq_rms(m: dict, K_pred: np.ndarray) -> dict:
     """The corrected-ω error (as `e7_t2_sqm.basis_free`: Ω² + 2√(ω_i ω_j) K, K_pred against K_true, modes paired in sorted order) split by
     family — each corrected mode takes the family of the uncorrected mode it overlaps most. T3's line reads the 'ring-ip' entry."""
@@ -431,13 +494,15 @@ def scale_last_layer(model, c: float) -> None:
 
 
 def enabled_modes(a) -> tuple[str, ...]:
-    """The fine-tune modes the switches make available."""
-    return ("none", "alpha", "head") + (("head_l2",) if a.head_l2 > 0 else ()) + (("lora",) if a.lora_rank > 0 else ()) + ("head_all",)
+    """The fine-tune modes the switches make available; the early-stopped recipe R2 (body1_es) always."""
+    return (("none", "alpha", "head") + (("head_l2",) if a.head_l2 > 0 else ()) + (("lora",) if a.lora_rank > 0 else ())
+            + ("head_all", "body1_es"))
 
 
 def fold_modes(a) -> tuple[str, ...]:
-    """The modes a fold runs: every enabled one, or those --modes names."""
-    return tuple(m for m in enabled_modes(a) if not a.modes or m in a.modes)
+    """The modes a fold runs: those --modes names, or every enabled fixed-epoch mode — an early-stopped recipe only when named, so a
+    run without --modes reads what it read before R2 was added."""
+    return tuple(m for m in enabled_modes(a) if (m in a.modes if a.modes else m not in EARLY_STOPPED))
 
 
 def training_anchors(ids: list[str], held: str, in_sample: bool) -> list[str]:
@@ -460,14 +525,13 @@ def run_fold(an: Anchors, held: str, model0, loss_cfg: LossSettings, a) -> dict:
         coef = oop_shift_coefficients(an, tr)
         fold["oop_model_coef"] = [float(c) for c in coef]
         fold["oop_model_only"] = read(an, held, tr, oop_model_predictor(an, zero(an), coef))
-    settings = FinetuneSettings(a.epochs, a.lr, a.aux_weight, a.head_l2, a.lora_rank)
     for mode in fold_modes(a):
         model = copy.deepcopy(model0)
         if a.init_scale != 1.0:
             scale_last_layer(model, a.init_scale)
         tag = f"[{held} {mode}]"
-        hist = finetune(model, loss_cfg, {i: an.tensors[i] for i in tr}, mode, settings, log=lambda s, tag=tag: print(f"  {tag} {s}", flush=True))
-        fold[f"network_{mode}"] = {**read(an, held, tr, predictor(model, an.tensors, an.mols)), "final_loss": (hist[-1] if hist else None)}
+        fitted = fit_recipe(model, loss_cfg, {i: an.tensors[i] for i in tr}, mode, a, log=lambda s, tag=tag: print(f"  {tag} {s}", flush=True))
+        fold[f"network_{mode}"] = {**read(an, held, tr, predictor(model, an.tensors, an.mols)), **fitted}
         if a.oop_couplings_low and mode in ("head", "head_l2"):
             fold[f"network_{mode}_ooplow"] = read(an, held, tr, oop_low_predictor(an, predictor(model, an.tensors, an.mols)))
         if coef is not None and mode in ("head", "head_l2"):
@@ -476,7 +540,7 @@ def run_fold(an: Anchors, held: str, model0, loss_cfg: LossSettings, a) -> dict:
             fold["oop_fit_subsets"] = oop_subset_reads(an, held, tr, predictor(model, an.tensors, an.mols), a.oop_fit_sizes)
         if a.save_fold_predictions and mode == a.fit_mode:
             pred = Prediction(predict_cartesian(model, an.tensors[held]), an.mols[held]["H_low"], an.mols[held]["low_file"], mode, tr, a.model,
-                              hist[-1] if hist else None, held=held)
+                              fitted["final_loss"], held=held)
             fold["saved_prediction"] = str(pred.save(Path(f"{a.out_prefix}_fold_{held}.npz")))
     return fold
 
@@ -509,8 +573,7 @@ def fit_and_predict(an: Anchors, mdir: Path, model0, loss_cfg: LossSettings, cfg
         raise SystemExit(f"--predict {clash}: anchors are read leave-one-out, not predicted from a fit that saw them")
     model = copy.deepcopy(model0)
     mode = a.fit_mode
-    settings = FinetuneSettings(a.epochs, a.lr, a.aux_weight, a.head_l2)
-    hist = finetune(model, loss_cfg, {i: an.tensors[i] for i in an.ids}, mode, settings, log=lambda s: print(f"  [fit all {mode}] {s}", flush=True))
+    fitted = fit_recipe(model, loss_cfg, {i: an.tensors[i] for i in an.ids}, mode, a, log=lambda s: print(f"  [fit all {mode}] {s}", flush=True))
     out = {}
     for i in a.predict:
         d = mdir / i
@@ -519,7 +582,7 @@ def fit_and_predict(an: Anchors, mdir: Path, model0, loss_cfg: LossSettings, cfg
             RR.substitute(an.mols[i], d)
         t = molecule_tensors(i, loaded_molecule(d, an.mols[i]), an.mols[i], d, cfg, Path(a.out_prefix).parent / "ls_targets")
         path = Prediction(predict_cartesian(model, t), np.load(lo)["H_projected"], lo.name, mode, an.ids, a.model,
-                          hist[-1] if hist else None).save(Path(f"{a.out_prefix}_predict_{i}.npz"))
+                          fitted["final_loss"]).save(Path(f"{a.out_prefix}_predict_{i}.npz"))
         out[i] = dict(file=str(path), low_level=lo.name, mode=mode)
         print(f"predicted {i} ({lo.name}, fit on {len(an.ids)} anchors, {mode}) → {path}", flush=True)
     return out
@@ -535,6 +598,7 @@ def table_columns(a) -> list[tuple[str, str]]:
     if a.lora_rank > 0:
         cols.append(("network_lora", f"α + rank-{a.lora_rank} adapter"))
     cols.append(("network_head_all", "network, whole head tuned"))
+    cols.append(("network_body1_es", "network, R2: whole head + last body block, early-stopped"))
     if a.oop_couplings_low:
         cols.append(("network_head_ooplow", "head tuned, oop couplings from the low level"))
         if a.head_l2 > 0:
@@ -615,6 +679,30 @@ def check_switches(a, anchors: dict[str, str]) -> None:
     fit_switches = [s for s, on in (("--save-fold-predictions", a.save_fold_predictions), ("--oop-fit-sizes", a.oop_fit_sizes)) if on]
     if fit_switches and a.fit_mode not in fold_modes(a):
         raise SystemExit(f"{' and '.join(fit_switches)} read the fit mode {a.fit_mode}, which --modes leaves out")
+    check_early_stop_switches(a)
+
+
+def check_early_stop_switches(a) -> None:
+    """R2's switches: in range when R2 runs, left at their defaults when it does not (they would be ignored)."""
+    if uses_early_stop(a):
+        try:
+            early_stop(a)
+        except ValueError as e:
+            raise SystemExit(f"--es-*: {e}") from e
+    elif es_switches_set(a):
+        raise SystemExit("--es-max-epochs, --es-val, --es-patience and --es-seed set the early-stopped recipe R2 (body1_es), which neither "
+                         "--modes nor --fit-mode names")
+
+
+def uses_early_stop(a) -> bool:
+    """Whether a fold or the fit runs an early-stopped recipe."""
+    return any(m in EARLY_STOPPED for m in fold_modes(a)) or (bool(a.predict) and a.fit_mode in EARLY_STOPPED)
+
+
+def es_switches_set(a) -> bool:
+    """Whether any --es-* switch differs from its default (the switches of a recipe that is not run would be ignored)."""
+    d = EarlyStop()
+    return (a.es_max_epochs, a.es_val, a.es_patience, a.es_seed) != (d.max_epochs, d.val, d.patience, d.seed)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -647,8 +735,13 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--init-scale", type=float, default=1.0, help="diagnosis: multiply the head's last layer by this before each fold's "
                     "fine-tune (0: no proxy knowledge in it; negative: the proxy's direction reversed); the L2 pull goes toward the scaled weights")
     ap.add_argument("--fit-mode", choices=FIT_MODES, default=FIT_MODES[0], help="the mode of a fit on all anchors (--predict, the saved "
-                    "fold predictions, the out-of-plane subset fits): the whole head (default), the last layer, or the λ standard of 7 Oct "
-                    "(head_l2, with --head-l2)")
+                    "fold predictions, the out-of-plane subset fits): the whole head (default), the last layer, the λ standard of 7 Oct "
+                    "(head_l2, with --head-l2), or R2 (body1_es: the whole head and the body's last block, early-stopped)")
+    es = EarlyStop()
+    ap.add_argument("--es-max-epochs", type=int, default=es.max_epochs, help="R2 (body1_es): the epoch cap")
+    ap.add_argument("--es-val", type=float, default=es.val, help="R2: the share of the training anchors it validates on")
+    ap.add_argument("--es-patience", type=int, default=es.patience, help="R2: epochs without a better validation loss before it stops")
+    ap.add_argument("--es-seed", type=int, default=es.seed, help="R2: the seed of the fit/validation split (rungC_train.inner_split)")
     ap.add_argument("--held", action="append", default=[], help="anchor set three's R-A: only these anchors are held out, one fold each; "
                     "the other anchors stay in every fold's fine-tune pool (default: every anchor is a fold)")
     ap.add_argument("--oop-fit-sizes", type=_sizes, default=[], help="with --oop-diagonal-model, arm M along the anchor count: per fold also "
@@ -688,6 +781,8 @@ def main() -> int:
     used = (("held", sorted(a.held)), ("oop_fit_sizes", a.oop_fit_sizes), ("modes", a.modes), ("in_sample", a.in_sample),
             ("fit_mode", a.fit_mode), ("init_scale", None if a.init_scale == 1.0 else a.init_scale))
     res.update({k: v for k, v in used if v is not None and v is not False and v != []})   # only when used (0.0 is a value): the pin's record stays
+    if uses_early_stop(a):
+        res["early_stop"] = asdict(early_stop(a))
     folds = [] if a.skip_folds else (sorted(a.held) or an.ids)
     for held in folds:
         res["folds"][held] = run_fold(an, held, model0, loss_cfg, a)

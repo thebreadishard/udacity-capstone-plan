@@ -38,7 +38,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import e7_t2_posthoc as PH
 import model_registry as MR
 import rungC_intensities as RI
-from rungC_cc_transfer import KEPT, FinetuneSettings, family_freq_rms, finetune, finetune_early_stopped
+from rungC_cc_transfer import EARLY_STOPPED, KEPT, EarlyStop, EsRun, FinetuneSettings, family_freq_rms, finetune, finetune_es
 from rungC_config import TrainConfig, config_from_argv
 from rungC_train import (
     inner_split,
@@ -54,8 +54,7 @@ from rungC_train import (
     train_one,
 )
 
-MODES = ("head_l2", "head", "head_all", "scratch", "head_all_es", "body1_es")
-EARLY_STOPPED = {"head_all_es": "head_all", "body1_es": "head_all_body1"}   # the anchor-price follow-up's recipes (decision 51)
+MODES = ("head_l2", "head", "head_all", "scratch", *EARLY_STOPPED)   # the early-stopped recipes: the anchor-price follow-up's (decision 51)
 SUBSET_SEED = 0
 MODEL_NAME = re.compile(r"_model_n\d+_seed(\d+)\.pt$")
 
@@ -169,12 +168,8 @@ def fit(inp: Inputs, mode: str, train: tuple[str, ...], a, seed: int):
         return trained.model, {"final_loss": trained.history[-1] if trained.history else None}
     model = copy.deepcopy(inp.model0)
     if mode in EARLY_STOPPED:
-        val_ids, fit_ids = inner_split(list(train), seed, a.es_val)
-        anchors = ({i: inp.tensors[i] for i in fit_ids}, {i: inp.tensors[i] for i in val_ids})
-        es = finetune_early_stopped(model, inp.loss_cfg, anchors, EARLY_STOPPED[mode],
-                                    FinetuneSettings(a.es_max_epochs, a.lr, a.aux_weight, patience=a.es_patience), log=log)
-        return model, {"final_loss": es.hist[es.best_epoch - 1], "best_epoch": es.best_epoch, "epochs_run": len(es.hist),
-                       "val_loss": es.val_hist[es.best_epoch - 1], "n_fit": len(fit_ids), "n_val": len(val_ids)}
+        run = EsRun(EarlyStop(a.es_max_epochs, a.es_val, a.es_patience, seed), a.lr, a.aux_weight)
+        return model, finetune_es(model, inp.loss_cfg, {i: inp.tensors[i] for i in train}, mode, run, log=log)
     settings = FinetuneSettings(epochs_for(a.steps, len(train)), a.lr, a.aux_weight, a.head_l2 if mode == "head_l2" else 0.0)
     hist = finetune(model, inp.loss_cfg, {i: inp.tensors[i] for i in train}, mode, settings, log=log)
     return model, {"final_loss": hist[-1] if hist else None}

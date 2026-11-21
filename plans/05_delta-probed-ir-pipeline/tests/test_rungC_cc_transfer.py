@@ -272,7 +272,7 @@ def test_oop_subset_reads_fit_on_each_subset_and_keep_the_fold_s_training_anchor
 def test_modes_narrow_the_enabled_ones_and_unknown_modes_are_refused():
     base = ["m", "x.pt", "out", "--anchor", "a=1", "--anchor", "b=2", "--anchor", "c=3"]
     a = RT_T.build_parser().parse_args([*base, "--head-l2", "1", "--modes", "head_l2,head_all"])
-    assert RT_T.enabled_modes(a) == ("none", "alpha", "head", "head_l2", "head_all") and RT_T.fold_modes(a) == ("head_l2", "head_all")
+    assert RT_T.enabled_modes(a) == ("none", "alpha", "head", "head_l2", "head_all", "body1_es") and RT_T.fold_modes(a) == ("head_l2", "head_all")
     RT_T.check_switches(a, dict(s.split("=", 1) for s in a.anchor))
     plain = RT_T.build_parser().parse_args(base)
     assert RT_T.fold_modes(plain) == ("none", "alpha", "head", "head_all")
@@ -314,7 +314,8 @@ def test_the_out_of_plane_switches_add_their_table_columns():
     keys = [k for k, _ in CT.table_columns(a)]
     assert {"network_head_ooplow", "network_head_l2_ooplow", "oop_model_only", "network_head_oopmodel", "network_head_l2_oopmodel"} <= set(keys)
     plain = CT.build_parser().parse_args(["m", "x.pt", "out", "--anchor", "a=b"])
-    assert [k for k, _ in CT.table_columns(plain)] == ["zero_rule", "alpha_scaling", "network_none", "network_alpha", "network_head", "network_head_all"]
+    assert [k for k, _ in CT.table_columns(plain)] == ["zero_rule", "alpha_scaling", "network_none", "network_alpha", "network_head", "network_head_all",
+                                                      "network_body1_es"]   # table_lines keeps only the columns a fold holds
 
 
 def test_head_all_body1_frees_the_head_alpha_and_the_last_body_block_only():
@@ -362,3 +363,75 @@ def test_early_stop_refuses_without_validation_anchors_or_patience(monkeypatch):
         RT_T.finetune_early_stopped(_OneWeight(), RT.LossSettings(), (fit, {}), "head_all", RT_T.FinetuneSettings(5, 0.1, 1.0, patience=2))
     with pytest.raises(ValueError, match="patience"):
         RT_T.finetune_early_stopped(_OneWeight(), RT.LossSettings(), (fit, fit), "head_all", RT_T.FinetuneSettings(5, 0.1, 1.0))
+
+
+# R2 (body1_es), the CC step's recipe of the anchor count (29 Oct 2026), as a mode of this script (21 Nov 2026, TASKS 291)
+
+BASE3 = ["m", "x.pt", "out", "--anchor", "a=1", "--anchor", "b=2", "--anchor", "c=3"]
+ANCHORS3 = {"a": "1", "b": "2", "c": "3"}
+
+
+def test_r2_runs_in_a_fold_only_when_named_so_old_runs_read_what_they_read():
+    plain = RT_T.build_parser().parse_args(BASE3)
+    assert "body1_es" in RT_T.enabled_modes(plain) and "body1_es" not in RT_T.fold_modes(plain)
+    named = RT_T.build_parser().parse_args([*BASE3, "--modes", "head_all,body1_es"])
+    assert RT_T.fold_modes(named) == ("head_all", "body1_es")
+    RT_T.check_switches(named, ANCHORS3)
+
+
+def test_r2_is_a_fit_mode_with_the_count_s_defaults():
+    a = RT_T.build_parser().parse_args([*BASE3, "--predict", "x", "--fit-mode", "body1_es"])
+    RT_T.check_switches(a, ANCHORS3)
+    assert RT_T.uses_early_stop(a)
+    assert RT_T.early_stop(a) == RT_T.EarlyStop(120, 0.15, 10, 0)
+
+
+@pytest.mark.parametrize(("extra", "says"), [
+    (["--es-patience", "5"], "neither --modes nor --fit-mode names"),
+    (["--modes", "body1_es", "--es-val", "1.0"], "--es-"),
+    (["--modes", "body1_es", "--es-max-epochs", "0"], "--es-"),
+])
+def test_r2_switches_are_refused_when_r2_does_not_run_or_out_of_range(extra, says):
+    a = RT_T.build_parser().parse_args([*BASE3, *extra])
+    with pytest.raises(SystemExit, match=says):
+        RT_T.check_switches(a, ANCHORS3)
+
+
+def test_early_stop_refuses_bad_settings():
+    for bad in ({"max_epochs": 0}, {"patience": 0}, {"val": 0.0}, {"val": 1.0}):
+        with pytest.raises(ValueError, match="an early stop needs"):
+            RT_T.EarlyStop(**bad)
+
+
+def test_finetune_es_splits_with_inner_split_and_early_stops_the_recipe_s_fine_tune(monkeypatch):
+    seen = {}
+
+    def fake_es(model, loss_cfg, anchors, mode, settings, log=print):
+        seen.update(fit=sorted(anchors[0]), val=sorted(anchors[1]), mode=mode, settings=settings)
+        return RT_T.EarlyStopped(hist=[3.0, 2.0, 2.5], val_hist=[1.5, 1.0, 1.2], best_epoch=2)
+
+    monkeypatch.setattr(RT_T, "finetune_early_stopped", fake_es)
+    ids = [f"m{i}" for i in range(20)]
+    tensors = {i: {"x": i} for i in ids}
+    es = RT_T.EarlyStop(120, 0.15, 10, 3)
+    out = RT_T.finetune_es(None, RT.LossSettings(), tensors, "body1_es", RT_T.EsRun(es, 1e-3, 1.0), log=lambda s: None)
+    val, fit = RT.inner_split(ids, 3, 0.15)
+    assert (seen["val"], seen["fit"]) == (sorted(val), sorted(fit)) and len(val) == 3
+    assert seen["mode"] == "head_all_body1"
+    assert (seen["settings"].epochs, seen["settings"].patience, seen["settings"].lr) == (120, 10, 1e-3)
+    assert out == {"final_loss": 2.0, "best_epoch": 2, "epochs_run": 3, "val_loss": 1.0, "n_fit": 17, "n_val": 3}
+
+
+def test_finetune_es_refuses_a_recipe_that_is_not_early_stopped():
+    with pytest.raises(ValueError, match="not an early-stopped recipe"):
+        RT_T.finetune_es(None, RT.LossSettings(), {"a": 1, "b": 2}, "head_all", RT_T.EsRun(RT_T.EarlyStop(), 1e-3, 1.0))
+
+
+def test_fit_recipe_sends_r2_to_the_early_stop_and_the_rest_to_the_fixed_epochs(monkeypatch):
+    calls = []
+    monkeypatch.setattr(RT_T, "finetune_es", lambda *args, **kw: calls.append(("es", args[3])) or {"final_loss": 1.0})
+    monkeypatch.setattr(RT_T, "finetune", lambda model, loss, train, mode, settings, log=print: calls.append(("fixed", mode)) or [2.0, 1.5])
+    a = RT_T.build_parser().parse_args([*BASE3, "--modes", "body1_es"])
+    assert RT_T.fit_recipe(None, RT.LossSettings(), {"a": 1, "b": 2}, "body1_es", a) == {"final_loss": 1.0}
+    assert RT_T.fit_recipe(None, RT.LossSettings(), {"a": 1, "b": 2}, "head_all", a) == {"final_loss": 1.5}
+    assert calls == [("es", "body1_es"), ("fixed", "head_all")]
