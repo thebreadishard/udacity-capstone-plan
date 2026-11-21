@@ -17,8 +17,9 @@
 # non-zero when N > 0. Resumable: dfmp2_rows.py keeps every finished row; a basis counts as finished when its file exists and the log
 # of its last attempt (rewritten per attempt) ends with dfmp2_rows.py's own end line.
 # Settings (environment, checked before the wait): QC (the psi4 python) /root/miniforge3/envs/qc/bin/python, THREADS 4, MEMORY_GB 6,
-#   CAP_MB 8192, WAIT_S 600, WAIT_PGREP (none), CAPPED and OOM_CHECK (beside this script).
-#   WAIT_PGREP='labels_batch_ccx53.sh /root/dft1' bash probes/dfmp2_lane.sh /root/mp2a MP /root/dft1/anc1_dft1.log '=== \(AD\) all done'
+#   CAP_MB 8192, WAIT_S 600, WAIT_PGREP (none), CAPPED and OOM_CHECK (beside this script). WAIT_PGREP is a regex for `pgrep -f`:
+#   bracket its first letter, so that a launcher whose command line carries this setting as text never matches it.
+#   WAIT_PGREP='[l]abels_batch_ccx53.sh /root/dft1' bash probes/dfmp2_lane.sh /root/mp2b MP /root/dft1/anc1_dft1.log '=== \(AD\) all done'
 set -u
 # no-set-e: a molecule that fails is reported and the others continue; the end marker counts the failures
 BATCH=${1:?batch dir}; TAG=${2:?tag}; WAIT_LOG=${3:?wait log}; WAIT_RE=${4:?wait regex}; DRY=${5:-}
@@ -81,7 +82,8 @@ for line in "${LINES[@]}"; do
     short=${b//-/}; log=rows/$id/rows_$short.log
     if finished "$id" "$short"; then echo "  $id $short rows found"; continue; fi
     t0=$(date +%s)
-    # the log is rewritten per attempt, so an earlier attempt's end line cannot vouch for this one's file
+    # a log per attempt, so an earlier attempt's end line cannot vouch for this one's file; the earlier log is kept beside it
+    [ -f "$log" ] && mv "$log" "$log.$(ls "$log".* 2>/dev/null | wc -l)"
     if OMP_NUM_THREADS=$THREADS env CAP_SCOPE=system bash "$CAPPED" "$CAP_MB" -- /usr/bin/time -f "($TAG) $id max RSS %M kB, wall %e s ($short)" \
          "$QC" "$HERE/dfmp2_rows.py" rows --geometry "$geom" --basis "$b" --out "rows/$id/dfmp2_rows_$short.npz" \
          --threads "$THREADS" --memory-gb "$MEMORY_GB" > "$log" 2>&1 && finished "$id" "$short"; then

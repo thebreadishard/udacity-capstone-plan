@@ -84,6 +84,7 @@ def test_a_failing_and_a_killed_molecule_are_named_and_counted_and_the_rest_runs
                                                                   "big ccpvtz killed at the cap"]
     again = run(batch, [geom(batch, "big")])                                    # the partial file of the kill is not taken for a finished one
     assert again.stdout.count("KILLED at the cap") == 2 and "rows found" not in again.stdout
+    assert (batch / "rows" / "big" / "rows_ccpvdz.log.0").exists()             # the first attempt's log is kept beside the new one
 
 
 @needs_time
