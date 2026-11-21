@@ -1,4 +1,4 @@
-"""The new anchors' read rule (`probes/new_anchor_read.py`) on synthetic curves with the regime's edge cases, before any anchor is read."""
+"""The new anchors' read rule (`probes/new_anchor_read.py`) on synthetic tables with the regime's edge cases, before any anchor is read."""
 import math
 import sys
 from pathlib import Path
@@ -9,83 +9,115 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "probes"))
 import new_anchor_read as R
 
 PROXY = {f: 30.0 for f in R.FAMILIES}
+N = 40
 
 
-def curves(**per_family):
-    """Every family the same curve unless named: base is a k → value dict."""
-    base = per_family.pop("base")
-    return {f: dict(per_family.get(f.replace("-", "_").lower(), base)) for f in R.FAMILIES}
+def pts(values, half=0.05):
+    """k = 20, 40, … → Point(mean, mean − half, mean + half)."""
+    return {R.STEP * (j + 1): R.Point(v, v - half, v + half) for j, v in enumerate(values)}
 
 
-def test_split_is_fixed_by_the_id_and_keeps_carried_anchors_out_of_training():
+def table(base, half=0.05, **per_family):
+    """Every family the same curve unless named (ring_ip, ch_stretch, ch_oop, other)."""
+    return {f: pts(per_family.get(f.replace("-", "_").lower(), base), half) for f in R.FAMILIES}
+
+
+def decide(curves, proxy=PROXY, n_test=N, left=True):
+    return R.decide(curves, proxy, n_test, left)
+
+
+# split and milestones
+
+def test_split_is_fixed_by_the_id_cheapest_first_and_keeps_carried_out_of_training():
     ids = [f"B_{i:010x}" for i in range(500)]
-    train, test = R.split(ids, carried_before={"A_carried1", ids[3]})
+    hours = {i: float(500 - n) for n, i in enumerate(ids)}
+    train, test = R.split(ids, {"A_carried1", ids[3]}, hours)
     assert "A_carried1" in test and ids[3] in test and ids[3] not in train
     assert set(train).isdisjoint(test)
-    share = sum(R.is_test(i) for i in ids) / len(ids)
-    assert 0.15 < share < 0.25
-    assert R.split(ids, {"A_carried1", ids[3]}) == (train, test)        # the same call gives the same lists
-    assert train == [i for i in ids if i in set(train)]                  # training keeps the given (cheapest-first) order
+    assert [hours[i] for i in train] == sorted(hours[i] for i in train)
+    assert 0.15 < sum(R.is_test(i) for i in ids) / len(ids) < 0.25
+    assert R.split(ids, {"A_carried1", ids[3]}, hours) == (train, test)
 
 
-@pytest.mark.parametrize(("n", "expected"), [(0, []), (19, []), (20, [20]), (45, [20, 40, 45]), (60, [20, 40, 60])])
-def test_milestones(n, expected):
-    assert R.milestones(n) == expected
+def test_milestones_need_the_first_k_of_the_order_finished():
+    order = [f"m{i}" for i in range(70)]
+    assert R.milestones(order, set(order[:45])) == [20, 40]
+    assert R.milestones(order, set(order[:19])) == []
+    assert R.milestones(order, set(order[1:70])) == []          # the cheapest one missing: nothing is read
+    assert R.milestones(order, set(order)) == [20, 40, 60]
 
 
-def test_reached_needs_two_consecutive_milestones_at_the_line():
-    out = R.decide(curves(base={20: 4.0, 40: 2.9, 60: 2.8, 80: 2.7}), PROXY)
+# outcomes
+
+def test_reached_needs_the_line_held_through_the_last_milestone_over_two_milestones():
+    out = decide(table([4.0, 2.9, 2.8, 2.7]))
     assert (out.verdict, out.k) == ("REACHED", 40)
 
 
-def test_one_milestone_at_the_line_then_above_is_not_reached():
-    out = R.decide(curves(base={20: 4.0, 40: 2.9, 60: 3.1}), PROXY)
+def test_a_later_rise_undoes_reached():
+    out = decide(table([2.5, 2.5, 2.5], other=[2.9, 2.9, 5.0]))
     assert out.verdict != "REACHED"
 
 
-def test_reached_already_at_the_first_milestone():
-    out = R.decide(curves(base={20: 2.0, 40: 1.9}), PROXY)
-    assert (out.verdict, out.k) == ("REACHED", 20)
+def test_at_the_line_only_at_the_last_milestone_is_unconfirmed():
+    out = decide(table([3.5, 3.2, 2.9]))
+    assert out.verdict == "AT THE LINE UNCONFIRMED" and "next milestone" in out.reason
+    out = decide(table([3.5, 3.2, 2.9]), left=False)
+    assert out.verdict == "AT THE LINE UNCONFIRMED" and "no training anchor is left" in out.reason
 
 
 def test_other_falling_keeps_the_waves_going():
-    out = R.decide(curves(base={20: 2.5, 40: 2.4, 60: 2.3}, other={20: 4.6, 40: 4.2, 60: 3.8}), PROXY)
+    out = decide(table([2.5, 2.4, 2.3], other=[4.6, 4.2, 3.8]))
     assert out.verdict == "FALLING" and out.families["other"] == "falling" and out.families["CH-oop"] == "at the line"
 
 
 def test_other_flat_above_the_line_stops_the_waves():
-    out = R.decide(curves(base={20: 2.5, 40: 2.4, 60: 2.3}, other={20: 3.30, 40: 3.27, 60: 3.24}), PROXY)
+    out = decide(table([2.5, 2.4, 2.3], other=[3.30, 3.27, 3.24]))
     assert out.verdict == "FLAT" and out.families["other"] == "flat above"
 
 
-def test_flat_needs_three_milestones():
-    out = R.decide(curves(base={20: 2.5, 40: 2.4}, other={20: 3.30, 40: 3.29}), PROXY)
+def test_a_gain_inside_the_noise_is_flat():
+    curves = table([2.5, 2.4, 2.3], other=[4.0, 3.5, 3.6])
+    curves["other"][60] = R.Point(3.6, 3.0, 4.2)                  # gain 0.4, half-width 0.6
+    assert decide(curves).families["other"] == "flat above"
+
+
+def test_flat_is_not_declared_while_another_family_still_falls():
+    out = decide(table([2.5, 2.4, 2.3], other=[3.30, 3.27, 3.24], ch_oop=[4.6, 4.2, 3.8]))
     assert out.verdict == "FALLING"
 
 
-def test_no_learning_when_a_family_is_not_below_the_proxy_model_as_it_is():
-    out = R.decide(curves(base={20: 2.5, 40: 2.4}, ch_oop={20: 31.0, 40: 30.5}), PROXY)
+def test_flat_needs_three_milestones():
+    assert decide(table([2.5, 2.4], other=[3.30, 3.29])).verdict == "FALLING"
+
+
+def test_no_learning_only_for_a_family_above_the_line():
+    out = decide(table([2.5, 2.4], ch_oop=[31.0, 30.5]))
     assert out.verdict == "NO LEARNING" and out.families["CH-oop"] == "no learning"
+    proxy = dict(PROXY, **{"CH-stretch": 2.5})                     # the proxy already at the line; the fine-tune a little worse
+    out = decide(table([2.5, 2.4], ch_stretch=[2.8, 2.8], other=[4.6, 4.2]), proxy=proxy)
+    assert out.verdict == "FALLING" and out.families["CH-stretch"] == "at the line"
 
 
-@pytest.mark.parametrize(("bad", "reason"), [
-    ({"drop": "other"}, "missing"), ({"grid": True}, "different milestones"), ({"single": True}, "two are needed"),
-    ({"nan": True}, "not finite")])
-def test_no_reading(bad, reason):
-    c = curves(base={20: 2.5, 40: 2.4})
-    if "drop" in bad:
-        del c[bad["drop"]]
-    if "grid" in bad:
-        c["other"] = {20: 2.5, 60: 2.4}
-    if "single" in bad:
-        c = curves(base={20: 2.5})
-    if "nan" in bad:
-        c["ring-ip"][40] = math.nan
-    out = R.decide(c, PROXY)
+@pytest.mark.parametrize(("make", "reason"), [
+    (lambda: (table([2.5, 2.4]), 29), "at least 30"),
+    (lambda: ({f: v for f, v in table([2.5, 2.4]).items() if f != "other"}, N), "missing"),
+    (lambda: ({**table([2.5, 2.4]), "other": {20: R.Point(2, 1.9, 2.1), 60: R.Point(2, 1.9, 2.1)}}, N), "different milestones"),
+    (lambda: ({f: {40: R.Point(2, 1.9, 2.1), 80: R.Point(2, 1.9, 2.1)} for f in R.FAMILIES}, N), "are not 20"),
+    (lambda: (table([2.5]), N), "two are needed"),
+    (lambda: ({**table([2.5, 2.4]), "ring-ip": {20: R.Point(2, 1.9, 2.1), 40: R.Point(math.nan, 1, 2)}}, N), "not finite"),
+    (lambda: ({**table([2.5, 2.4]), "ring-ip": {20: R.Point(-1, -2, 0), 40: R.Point(2, 1.9, 2.1)}}, N), "negative"),
+    (lambda: ({**table([2.5, 2.4]), "ring-ip": {20: R.Point(2, 2.1, 2.2), 40: R.Point(2, 1.9, 2.1)}}, N), "does not hold"),
+])
+def test_no_reading(make, reason):
+    curves, n_test = make()
+    out = decide(curves, n_test=n_test)
     assert out.verdict == "NO READING" and reason in out.reason
 
 
-def test_frozen_lists_are_written_once(tmp_path):
+def test_frozen_lists_are_written_once(tmp_path, monkeypatch):
+    import anchor_plan
+    monkeypatch.setattr(anchor_plan, "corpus_cells", lambda: {"B_1": {"hours": 9.0}, "B_2": {"hours": 1.0}, "A_c": {"hours": 5.0}})
     plan = tmp_path / "plan.json"
     plan.write_text('{"chosen": {"single": ["B_1", "B_2", "A_c"]}}')
     registry = tmp_path / "reg.json"
