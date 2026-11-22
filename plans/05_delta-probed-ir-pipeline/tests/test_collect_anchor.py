@@ -184,3 +184,17 @@ def test_the_registry_status_is_given_only_for_an_entry_that_passes_its_check(tm
     np.savez(f, H_raw=2 * np.eye(3), H_projected=2 * np.eye(3), status="VALID")
     with pytest.raises(SystemExit, match="changed since it was registered"):
         CR.status_of("p/composite_a.npz", [e], tmp_path)
+
+
+@linux
+@pytest.mark.parametrize(("log", "code", "says"), [
+    (f"=== (AS3) {ID} hessian DONE a\n=== (AS3) {ID} apt FAIL {{}}\n=== (AS3) {ID} apt PASS {{}}\n", 2, "MP2 rows"),          # a re-run passed
+    (f"=== (AS3) {ID} hessian DONE a\n=== (AS3) {ID} apt FAIL {{}}\n=== (AS3) {ID} apt ACCEPTED by the user\n", 2, "MP2 rows"),
+    (f"=== (AS3) {ID} hessian FAILED (x)\n=== (AS3) {ID} hessian DONE b\n=== (AS3) {ID} apt PASS {{}}\n", 2, "MP2 rows"),      # a relaunch
+    (f"=== (AS3) {ID} hessian DONE a\n=== (AS3) {ID} apt PASS {{}}\n=== (AS3) {ID} apt FAIL {{}}\n", 3, "ended as APT_FAILED"),
+    (f"=== (AS3) {ID} hessian FAILED (x)\n=== (AS3) {ID} hessian DONE b\n", 2, "nothing fetched"),                             # its APT still runs
+])
+def test_the_molecule_s_last_hessian_and_apt_lines_decide(server, log, code, says):
+    (server["cc"] / "anchors.log").write_text(log)
+    done = collect(server)
+    assert done.returncode == code and says in done.stdout, done.stdout + done.stderr

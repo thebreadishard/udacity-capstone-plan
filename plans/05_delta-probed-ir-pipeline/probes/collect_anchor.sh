@@ -23,7 +23,7 @@
 #   /root/mp2b, COLLECT_OUT probes/results_m1/new_anchors_2026-11 (relative to the plan; a registry path must be), CORPUS_MOLECULES
 #   the corpus's molecules; the server is reached through tools/hosts.sh (HOSTS_FILE, HOSTS_SSH).
 #   bash probes/collect_anchor.sh anc3 B_00e041576d
-set -euo pipefail
+set -Eeuo pipefail          # -E: the ERR trap below also names a failure inside a function
 HOST=${1:?host name}; ID=${2:?molecule id}
 exec < /dev/null
 trap 'echo "collect_anchor.sh: stopped at line $LINENO — a command failed"' ERR
@@ -81,12 +81,17 @@ fetch_part() {
 
 echo "[1] CC run folder"
 LOG=$CC_ROOT/anchors.log
-STATE=$(ask "if grep -qF '=== (AS3) $ID hessian IMAGINARY' $LOG; then echo IMAGINARY; \
-  elif grep -qF '=== (AS3) $ID hessian FAILED' $LOG; then echo HESSIAN_FAILED; \
-  elif grep -qF '=== (AS3) $ID apt FAIL' $LOG; then echo APT_FAILED; \
-  elif grep -qF '=== (AS3) $ID hessian DONE' $LOG && grep -qE '=== \(AS3\) $ID apt (PASS|ACCEPTED)' $LOG \
-       && test -f $CC_SRC/hessian_ccsd_t.npz && test -f $CC_SRC/apt_ccsd_t_field.npz; then echo READY; \
-  else echo RUNNING; fi")
+# the log is appended to: a relaunch's 'hessian DONE' after a 'hessian FAILED', a re-run's 'apt PASS' or the user's 'apt ACCEPTED' after
+# an 'apt FAIL' — the molecule's LAST hessian line and LAST apt line decide, never an earlier one
+STATE=$(ask "h=\$(grep -F '=== (AS3) $ID hessian ' $LOG | tail -n 1); a=\$(grep -F '=== (AS3) $ID apt ' $LOG | tail -n 1); \
+  case \"\$h\" in \
+    *'hessian IMAGINARY'*) echo IMAGINARY ;; \
+    *'hessian FAILED'*) echo HESSIAN_FAILED ;; \
+    *'hessian DONE'*) case \"\$a\" in \
+        *'apt PASS'*|*'apt ACCEPTED'*) if test -f $CC_SRC/hessian_ccsd_t.npz && test -f $CC_SRC/apt_ccsd_t_field.npz; then echo READY; else echo RUNNING; fi ;; \
+        *'apt FAIL'*) echo APT_FAILED ;; \
+        *) echo RUNNING ;; esac ;; \
+    *) echo RUNNING ;; esac")
 [ "$STATE" != RUNNING ] || { echo "$ID on $HOST: the wave log has no end for it yet — nothing fetched"; exit 2; }
 mkdir -p "$DST"
 fetch_part cc "$CC_SRC" "$DST/cc"
