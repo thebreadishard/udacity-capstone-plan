@@ -252,7 +252,7 @@ of 13 November, with the two modes VPT2 cannot state excluded
 
 ## Questions for her
 
-- CFOUR (`Supervisor_Brief_CFOUR_2026-10-05.md`) and access to Snellius.
+- Access to Snellius. (CFOUR is off this list since 22 November 2026, the user: without an evident gain we stay with open-source software; it is discussed only if she proposes it herself. The brief `Supervisor_Brief_CFOUR_2026-10-05.md` stays as a record.)
 - The pyrene laboratory truth.
 - The 2015 CCSD(T)/cc-pVTZ naphthalene reference.
 - An open-shell reference for the cations.
