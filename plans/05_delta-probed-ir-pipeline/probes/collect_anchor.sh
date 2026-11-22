@@ -1,0 +1,109 @@
+#!/usr/bin/env bash
+# probes/collect_anchor.sh <host in tools/hosts.tsv> <molecule id> (22 Nov 2026; TASKS 291) — brings one new anchor home and into the
+# anchor registry, in stages that each check their own condition, so that it can be run the moment a stage's input exists and run again
+# later (probes/fetch_anchor.sh did the first stage for anchor set three's one server):
+#   1. CC   — when the server's wave log says '<id> hessian DONE' and '<id> apt PASS': the full run folder
+#             (<CC_ROOT>/probes/results/<id>_ccpvdz: gradients, dipoles, Hessian, both APTs, logs), the geometry it ran at and the wave
+#             log so far, into <out>/<id>/cc and …/server; every file sha256-compared with the server; 'FETCHED <id> cc …' to the
+#             folder's FETCHED.txt and the server's fetched.log. No anchor lives on a server only.
+#   2. MP2  — when the MP2 lane finished both bases there (<MP2_ROOT>/rows/<id>: the row files with dfmp2_rows.py's end line in their
+#             last attempt's log): that folder into …/<id>/mp2, sha256-compared, 'FETCHED <id> mp2 …'.
+#   3. composite — H = CC/DZ + [MP2/TZ − MP2/DZ] by probes/cc_composite_full_check.py build (the anchor's coordinates must be the corpus
+#             geometry's, the rows' the anchor's), into …/<id>/composite_<id>.npz/.md/.json.
+#   4. registry — probes/composite_promote.py promote: carried on tier TZ when the composite is VALID (chain 33c's rule), else
+#             experimental; modules/05_support_predictor/out/ANCHORS_STATUS.json and modules/ANCHORS.md are tracked and committed by hand.
+# A stage whose input is not there yet ends the run with exit 2 and says what it waits for; a stage already done is verified, not
+# repeated (a fetched folder is compared with the server again; a built composite and a registered path are left as they are).
+# Exit 0: the anchor is in the registry. Run from the main checkout (results are not in git).
+# Places (environment; the defaults are the servers' and the plan's, the overrides are for tests): CC_ROOT /root/dpir, MP2_ROOT
+#   /root/mp2b, COLLECT_OUT probes/results_m1/new_anchors_2026-11 (relative to the plan), CORPUS_MOLECULES the corpus's molecules;
+#   the server is reached through tools/hosts.sh (HOSTS_FILE, HOSTS_SSH).
+#   bash probes/collect_anchor.sh anc3 B_00e041576d
+set -euo pipefail
+HOST=${1:?host name}; ID=${2:?molecule id}
+[[ $ID =~ ^[A-Za-z0-9_]+$ ]] || { echo "not a molecule id: $ID"; exit 1; }
+HERE=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+PLAN=$(cd "$HERE/.." && pwd)
+. "$PLAN/tools/hosts.sh"
+IP=$(host_ip "$HOST")
+CC_ROOT=${CC_ROOT:-/root/dpir}; MP2_ROOT=${MP2_ROOT:-/root/mp2b}
+CORPUS_MOLECULES=${CORPUS_MOLECULES:-$PLAN/modules/05_support_predictor/corpus/molecules}
+REL=${COLLECT_OUT:-probes/results_m1/new_anchors_2026-11}/$ID
+DST=$PLAN/$REL
+CC_SRC=$CC_ROOT/probes/results/${ID}_ccpvdz
+MP2_SRC=$MP2_ROOT/rows/$ID
+REGISTRY=modules/05_support_predictor/out/ANCHORS_STATUS.json
+[ -f "$CORPUS_MOLECULES/$ID/geometry.json" ] \
+  || { echo "$ID has no corpus geometry: its DFT row must be merged into the corpus before it can be an anchor"; exit 1; }
+host_ssh "$HOST" 'true' || { echo "WRONG OR UNREACHABLE MACHINE $HOST"; exit 1; }
+
+# a stream from the server (tar, cat) through the ssh command host_ssh uses; the machine was pinned by the host_ssh call above
+remote() { $HOSTS_SSH "root@$IP" "$1" < /dev/null; }
+sums_local() { (cd "$1" && find . -type f -print0 | xargs -0 sha256sum | sed 's/ [ *]/ /' | LC_ALL=C sort); }
+sums_remote() { host_ssh "$HOST" "cd $1 && find . -type f -print0 | xargs -0 sha256sum" | sed 's/ [ *]/ /' | LC_ALL=C sort; }
+
+# fetch_part <stage> <remote folder> <local folder>: copy when the local folder is not there, then compare every file with the server
+fetch_part() {
+  local stage=$1 src=$2 dst=$3 theirs ours n bytes line
+  if [ ! -d "$dst" ]; then
+    rm -rf "$dst.partial"; mkdir -p "$dst.partial"
+    remote "tar cf - -C $src ." | tar xf - -C "$dst.partial"
+    mv "$dst.partial" "$dst"
+  fi
+  theirs=$(sums_remote "$src"); ours=$(sums_local "$dst")
+  if [ -z "$theirs" ] || [ "$theirs" != "$ours" ]; then
+    echo "sha256 MISMATCH between $HOST:$src and $dst"; diff <(echo "$theirs") <(echo "$ours") | head; exit 1
+  fi
+  n=$(echo "$theirs" | wc -l); bytes=$(du -sb "$dst" | cut -f1)
+  if grep -qF "FETCHED $ID $stage $n files $bytes bytes" "$DST/FETCHED.txt" 2>/dev/null; then
+    echo "$stage: verified again ($n files, sha256 equal)"
+  else
+    line="FETCHED $ID $stage $n files $bytes bytes sha256-checked $(date '+%F %T') from $HOST"
+    echo "$line" | tee -a "$DST/FETCHED.txt"
+    host_ssh "$HOST" "echo '$line' >> $CC_ROOT/fetched.log"
+  fi
+}
+
+echo "[1] CC run folder"
+host_ssh "$HOST" "grep -qF '=== (AS3) $ID hessian DONE' $CC_ROOT/anchors.log && grep -qF '=== (AS3) $ID apt PASS' $CC_ROOT/anchors.log \
+                  && test -f $CC_SRC/hessian_ccsd_t.npz && test -f $CC_SRC/apt_ccsd_t_field.npz" \
+  || { echo "$ID on $HOST: no 'hessian DONE' with 'apt PASS' in the wave log yet — nothing fetched"; exit 2; }
+mkdir -p "$DST"
+fetch_part cc "$CC_SRC" "$DST/cc"
+if [ ! -d "$DST/server" ]; then
+  rm -rf "$DST/server.partial"; mkdir -p "$DST/server.partial"
+  remote "cat $CC_ROOT/geoms/$ID/geometry.json" > "$DST/server.partial/geometry.json"
+  remote "cat $CC_ROOT/anchors.log" > "$DST/server.partial/anchors_log_at_fetch.txt"
+  remote "cat $CC_ROOT/COMMIT; /root/miniforge3/envs/qc05/bin/pip freeze 2>/dev/null || true" > "$DST/server.partial/commit_and_qc05_freeze.txt"
+  mv "$DST/server.partial" "$DST/server"
+fi
+cmp -s "$DST/server/geometry.json" "$CORPUS_MOLECULES/$ID/geometry.json" \
+  || { echo "$ID: the geometry the server ran at is not the corpus geometry file"; exit 1; }
+
+echo "[2] MP2 rows"
+host_ssh "$HOST" "for b in ccpvdz ccpvtz; do test -f $MP2_SRC/dfmp2_rows_\$b.npz && grep -qa 'DF ROWS DONE' $MP2_SRC/rows_\$b.log || exit 1; done" \
+  || { echo "$ID on $HOST: the MP2 rows of both bases are not finished yet — the CC folder is home, the composite waits"; exit 2; }
+fetch_part mp2 "$MP2_SRC" "$DST/mp2"
+
+echo "[3] composite"
+OUT=$REL/composite_$ID
+cd "$PLAN"
+if [ -f "$OUT.npz" ] && [ -f "$OUT.json" ]; then
+  echo "composite found: $OUT.npz"
+else
+  PYTHONUTF8=1 python probes/cc_composite_full_check.py build "$REL/cc/hessian_ccsd_t.npz" "$ID" "$REL/mp2/dfmp2_rows_ccpvdz.npz" \
+    "$REL/mp2/dfmp2_rows_ccpvtz.npz" "$OUT.partial" > "$DST/composite_build.log" 2>&1 \
+    || { echo "COMPOSITE BUILD FAILED — see $REL/composite_build.log"; tail -3 "$DST/composite_build.log"; exit 1; }
+  for ext in md json npz; do mv "$OUT.partial.$ext" "$OUT.$ext"; done        # the npz last: its presence means the build is whole
+  tail -6 "$DST/composite_build.log"
+fi
+
+echo "[4] registry"
+if grep -qF "\"path\": \"$OUT.npz\"" "$REGISTRY"; then
+  echo "registered already: $OUT.npz"
+else
+  NAME=$(PYTHONUTF8=1 python probes/collect_anchor_name.py "$ID")
+  PYTHONUTF8=1 python probes/composite_promote.py promote "$OUT.npz" "$ID" "$NAME" "$(date +%F)"
+fi
+grep -qF "\"path\": \"$OUT.npz\"" "$REGISTRY" || { echo "NOT REGISTERED: $OUT.npz"; exit 1; }
+echo "COLLECTED $ID from $HOST: $OUT.npz is in the anchor registry"
