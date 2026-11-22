@@ -17,9 +17,11 @@ Each source is `<host>=<fetched batch folder>` with the batch's `ids.txt` and `m
 status done, the server's name, the deck hash, the note extended. Folders first: a folder whose row still says pending is seen by the
 loader either way, while a row saying done without its folder would be wrong; a second run finishes an interrupted one.
 
-Two guards on `--write`, looked for among this machine's processes, WSL's included:
+Two guards on `--write`, looked for among this machine's python processes, those of every running WSL distribution included (a
+stopped WSL is not started for it):
 - another writer of the manifest (`run_corpus.py`, which holds it in memory and rewrites it per molecule, or a merge; corpus.lock):
-  refused, always — the rows written here would be lost, and a runner taking such a row removes its folder;
+  refused, always — the rows written here would be lost, and a runner taking such a row removes its folder. The merge holds
+  corpus.lock itself, in the runner's format, while it writes, so a runner started meanwhile leaves at once;
 - a reader of corpus/molecules (a chain, a training, an evaluation or a fine-tune: they take every folder, so the pool of whatever
   starts after the merge changes, every size cut of a hashed pool included): refused unless `--beside-training "<why>"` names why
   that is right. Say in the ledger which runs started before and after a merge.
@@ -33,11 +35,14 @@ import csv
 import json
 import os
 import shutil
+import socket
 import subprocess
 import sys
 import time
 import zipfile
 from collections import Counter
+from collections.abc import Iterator
+from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -108,7 +113,18 @@ def geometry_connectivity(geometry: dict) -> str:
 
 def smiles_connectivity(smiles: str) -> str:
     from rdkit import Chem
-    return connectivity(Chem.AddHs(Chem.MolFromSmiles(smiles)))
+    mol = Chem.MolFromSmiles(smiles)
+    if mol is None:
+        raise ValueError(f"RDKit cannot read the SMILES {smiles!r}")
+    return connectivity(Chem.AddHs(mol))
+
+
+def same_molecule(geometry: dict, smiles: str) -> bool:
+    """Whether a geometry is the SMILES's molecule; a geometry or SMILES RDKit cannot take is a ValueError with the reason."""
+    try:
+        return geometry_connectivity(geometry) == smiles_connectivity(smiles)
+    except (KeyError, TypeError, RuntimeError) as e:        # a missing key, an unknown element symbol (Boost's ArgumentError)
+        raise ValueError(f"its geometry or SMILES cannot be read ({type(e).__name__}: {str(e).splitlines()[0][:120]})") from e
 
 
 def check_molecule(mol_id: str, folder: Path, row: dict, deck_file: Path) -> str:
@@ -116,17 +132,21 @@ def check_molecule(mol_id: str, folder: Path, row: dict, deck_file: Path) -> str
     else is refused by name."""
     if not (folder / "job.json").is_file():
         raise ValueError(f"{mol_id}: no job.json in {folder}")
-    job = json.loads((folder / "job.json").read_text(encoding="utf-8"))
-    if job["id"] != mol_id or job["source"]["smiles"] != row["smiles"]:
-        raise ValueError(f"{mol_id}: its job is {job['id']} {job['source']['smiles']!r}, the manifest row is {row['smiles']!r}")
     try:
-        deck = LM.deck_hash(job["deck"], deck_file)
+        job = json.loads((folder / "job.json").read_text(encoding="utf-8"))
+        job_id, job_smiles, job_deck = job["id"], job["source"]["smiles"], job["deck"]
+    except (KeyError, TypeError, ValueError) as e:
+        raise ValueError(f"{mol_id}: its job.json cannot be read ({type(e).__name__}: {e})") from e
+    if job_id != mol_id or job_smiles != row["smiles"]:
+        raise ValueError(f"{mol_id}: its job is {job_id} {job_smiles!r}, the manifest row is {row['smiles']!r}")
+    try:
+        deck = LM.deck_hash(job_deck, deck_file)
+        if (folder / "geometry.json").exists():
+            geometry = json.loads((folder / "geometry.json").read_text(encoding="utf-8"))
+            if not same_molecule(geometry, row["smiles"]):
+                raise ValueError(f"the optimised geometry is not the molecule {row['smiles']} (other atoms, or bonded otherwise)")
     except ValueError as e:
         raise ValueError(f"{mol_id}: {e}") from e
-    if (folder / "geometry.json").exists():
-        geometry = json.loads((folder / "geometry.json").read_text(encoding="utf-8"))
-        if geometry_connectivity(geometry) != smiles_connectivity(row["smiles"]):
-            raise ValueError(f"{mol_id}: the optimised geometry is not the molecule {row['smiles']} (other atoms, or bonded otherwise)")
     return deck
 
 
@@ -210,29 +230,68 @@ def update_manifest(items: tuple[Item, ...], manifest: Path) -> Path:
     return backup
 
 
-def command_lines() -> list[str]:
-    """The command lines of this machine's other processes: Windows' (or this system's) by psutil, and WSL's where there is one —
-    a job started inside WSL shows here only as its shell."""
-    import psutil
-    lines = [" ".join(p.info["cmdline"] or []) for p in psutil.process_iter(["pid", "cmdline"]) if p.info["pid"] != os.getpid()]
+def wsl_text(args: list[str]) -> str:
+    """The output of one wsl.exe call, its NUL bytes dropped (wsl.exe's own messages are UTF-16, a distribution's output is not)."""
+    try:
+        done = subprocess.run(args, capture_output=True, timeout=60, check=False)
+    except (OSError, subprocess.TimeoutExpired) as e:
+        raise RuntimeError(f"{' '.join(args[1:])} gave no answer ({type(e).__name__})") from e
+    out, err = (raw.replace(b"\x00", b"").decode("utf-8", errors="replace") for raw in (done.stdout, done.stderr))
+    if done.returncode != 0:
+        raise RuntimeError(f"{' '.join(args[1:])} failed ({(err or out).strip()[:120]})")
+    return out
+
+
+def wsl_command_lines() -> list[str]:
+    """The command lines inside every running WSL distribution — a job started there shows on Windows only as its shell. The list
+    of running distributions is asked first: that call starts nothing, while `wsl -e` would boot a stopped WSL beside the runs. No
+    wsl.exe, or none running (wsl.exe then answers with an error and names none): no lines."""
     wsl = shutil.which("wsl.exe")
-    if wsl:
-        inside = subprocess.run([wsl, "-e", "ps", "-eo", "args"], capture_output=True, text=True, timeout=60, check=False)
-        if inside.returncode != 0:
-            raise RuntimeError(f"WSL's process list could not be read ({inside.stderr.strip()[:120]}); the guards cannot see its jobs")
-        lines += inside.stdout.replace("\x00", "").splitlines()
+    if not wsl:
+        return []
+    try:
+        running = [name.strip() for name in wsl_text([wsl, "-l", "--running", "-q"]).splitlines() if name.strip()]
+    except RuntimeError:
+        return []
+    lines = []
+    for name in running:
+        lines += wsl_text([wsl, "-d", name, "-e", "ps", "-eww", "-o", "args"]).splitlines()
     return lines
 
 
+def command_lines() -> list[str]:
+    """The command lines of this machine's other processes: this system's by psutil, and those inside a running WSL."""
+    import psutil
+    lines = [" ".join(p.info["cmdline"] or []) for p in psutil.process_iter(["pid", "cmdline"]) if p.info["pid"] != os.getpid()]
+    return lines + wsl_command_lines()
+
+
 def at_work(marks: tuple[str, ...], lines: list[str]) -> list[str]:
-    return [line[:160] for line in lines if any(mark in line for mark in marks)]
+    """The python command lines that name one of the scripts; an editor or a `tail` on such a file is not a run."""
+    return [line[:300] for line in lines if "python" in line.lower() and any(mark in line for mark in marks)]
 
 
-def refuse_unsafe_write(corpus: Path, beside_training: str) -> list[str]:
+@contextmanager
+def corpus_lock(corpus: Path) -> Iterator[None]:
+    """corpus.lock held in `run_corpus.py`'s own format while the merge writes; an existing lock is another runner's and refuses."""
+    lock = corpus / "corpus.lock"
+    try:
+        with lock.open("x", encoding="utf-8") as f:
+            f.write(f"{socket.gethostname()} {time.strftime('%Y-%m-%d %H:%M')} pid {os.getpid()}")
+    except FileExistsError:
+        raise SystemExit(f"refused, nothing written: {lock} — a corpus runner holds the manifest") from None
+    try:
+        yield
+    finally:
+        lock.unlink(missing_ok=True)
+
+
+def refuse_unsafe_write(beside_training: str) -> list[str]:
     """Stop when the manifest has another writer, or the corpus a reader without a stated reason; the readers found are returned."""
-    if (corpus / "corpus.lock").exists():
-        raise SystemExit(f"refused, nothing written: {corpus / 'corpus.lock'} — a corpus runner holds the manifest")
-    lines = command_lines()
+    try:
+        lines = command_lines()
+    except RuntimeError as e:
+        raise SystemExit(f"refused, nothing written: the guards cannot see this machine's jobs — {e}") from e
     writers = at_work(MANIFEST_WRITERS, lines)
     if writers:
         raise SystemExit(f"refused, nothing written: another writer of the manifest runs here: {writers[0]}")
@@ -273,13 +332,14 @@ def main(argv: list[str] | None = None) -> int:
     print(f"{len(p.copy)} folders to copy, {len(p.rows)} rows to bring up to date, {len(p.not_ready)} molecules left out")
     if not a.write:
         return 0
-    readers = refuse_unsafe_write(a.corpus, a.beside_training)
-    copy_folders(p.copy, a.corpus)
-    print(f"copied {len(p.copy)} folders into {a.corpus / 'molecules'}")
-    if p.rows:
-        backup = update_manifest(p.rows, a.corpus / "manifest.csv")
-        print(f"{len(p.rows)} manifest rows are done; the previous manifest kept as {backup.name}"
-              + (f"; merged beside a running reader of the corpus: {a.beside_training}" if readers else ""))
+    with corpus_lock(a.corpus):
+        readers = refuse_unsafe_write(a.beside_training)
+        copy_folders(p.copy, a.corpus)
+        print(f"copied {len(p.copy)} folders into {a.corpus / 'molecules'}")
+        if p.rows:
+            backup = update_manifest(p.rows, a.corpus / "manifest.csv")
+            print(f"{len(p.rows)} manifest rows are done; the previous manifest kept as {backup.name}"
+                  + (f"; merged beside a running reader of the corpus: {a.beside_training}" if readers else ""))
     return 0
 
 

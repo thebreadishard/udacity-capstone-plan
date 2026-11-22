@@ -37,8 +37,10 @@ def molecule(folder: Path, mol_id: str, **vary) -> None:
     geom = vary.get("geometry") or geometry(own_smiles)
     folder.mkdir(parents=True)
     if vary.get("job", True):
-        (folder / "job.json").write_text(json.dumps({"id": mol_id, "deck": vary.get("deck", JOB_DECK),
-                                                     "source": {"smiles": vary.get("smiles", own_smiles), "name": name}}))
+        job = {"id": mol_id, "deck": vary.get("deck", JOB_DECK), "source": {"smiles": vary.get("smiles", own_smiles), "name": name}}
+        if job["deck"] is None:                                                 # a job file cut short of its source and deck
+            job = {"id": mol_id}
+        (folder / "job.json").write_text(json.dumps(job))
     (folder / "geometry.json").write_text(json.dumps(geom))
     (folder / "result.json").write_text(json.dumps({"status": "done", "labels": "analytic_only"}))
     if vary.get("labelled", True):
@@ -133,6 +135,8 @@ def test_a_label_file_that_cannot_be_read_leaves_the_molecule_out_by_name(world,
     ({"geometry": geometry("c1ccccc1")}, "is not the molecule c1ccncc1"),
     ({"geometry": geometry(PYRIDINE_OPEN_ISOMER)}, "is not the molecule c1ccncc1"),
     ({"job": False}, "B_p1: no job.json in"),
+    ({"geometry": {"symbols": ["Xx", "C"], "coords_bohr": [[0, 0, 0], [0, 0, 2.5]]}}, "B_p1: its geometry or SMILES cannot be read"),
+    ({"deck": None}, "B_p1: its job.json cannot be read"),
 ])
 def test_a_molecule_that_is_not_the_row_s_at_the_corpus_deck_is_refused(world, kwargs, says):
     molecule(world["batch"] / "molecules" / "B_p1", "B_p1", **kwargs)
@@ -200,12 +204,39 @@ def test_writing_is_refused_beside_another_writer_of_the_manifest_whatever_the_r
     assert M.main(world["argv"]) == 0                                           # the plan alone is still given
 
 
-def test_writing_is_refused_while_the_corpus_lock_exists(world):
+def test_writing_is_refused_while_the_corpus_lock_exists_and_another_s_lock_is_left_alone(world):
     both(world)
-    (world["corpus"] / "corpus.lock").write_text("1234")
+    (world["corpus"] / "corpus.lock").write_text("laptop 2026-11-22 09:00 pid 1234")
     with pytest.raises(SystemExit, match=r"corpus\.lock"):
         M.main([*world["argv"], "--write", "--beside-training", "x"])
     assert not (world["corpus"] / "molecules" / "B_p1").exists()
+    assert (world["corpus"] / "corpus.lock").read_text() == "laptop 2026-11-22 09:00 pid 1234"
+
+
+def test_the_merge_holds_the_corpus_lock_in_the_runner_s_format_while_it_writes_and_frees_it(world, monkeypatch):
+    both(world)
+    seen = []
+    copy = M.copy_folders
+    monkeypatch.setattr(M, "copy_folders", lambda *a: (seen.append((world["corpus"] / "corpus.lock").read_text()), copy(*a)))
+    assert M.main([*world["argv"], "--write"]) == 0
+    host, day, clock, word, pid = seen[0].split()                               # run_corpus.py reads parts[0] and parts[-1]
+    assert (host, word, pid) == (M.socket.gethostname(), "pid", str(M.os.getpid())) and len(day) == 10 and len(clock) == 5
+    assert not (world["corpus"] / "corpus.lock").exists()
+    monkeypatch.setattr(M, "command_lines", lambda: ["python run_corpus.py"])    # a refusal frees the lock too
+    with pytest.raises(SystemExit, match="another writer"):
+        M.main([*world["argv"], "--write"])
+    assert not (world["corpus"] / "corpus.lock").exists()
+
+
+def test_a_process_list_that_cannot_be_read_refuses_the_write_by_name(world, monkeypatch):
+    both(world)
+
+    def fail() -> list[str]:
+        raise RuntimeError("-d Ubuntu -e ps -eww -o args gave no answer (TimeoutExpired)")
+    monkeypatch.setattr(M, "command_lines", fail)
+    with pytest.raises(SystemExit, match="the guards cannot see this machine's jobs"):
+        M.main([*world["argv"], "--write"])
+    assert manifest(world)["B_p1"]["status"] == "pending" and not (world["corpus"] / "corpus.lock").exists()
 
 
 def test_the_previous_manifest_s_copy_is_never_written_over(world, monkeypatch):
@@ -229,11 +260,41 @@ def test_bad_sources_and_a_reason_without_write_are_refused(world, tmp_path):
         M.main([*world["argv"], "--beside-training", "x"])
 
 
-def test_command_lines_reads_the_process_table_and_marks_are_found_in_it(monkeypatch):
-    monkeypatch.undo()
+def test_command_lines_reads_the_process_table_and_only_python_lines_count_as_runs(monkeypatch):
+    monkeypatch.setattr(M, "wsl_command_lines", lambda: ["/usr/bin/python3 probes/chain_runner.py b.json"])
     lines = M.command_lines()
-    assert lines and all(isinstance(line, str) for line in lines)
-    assert M.at_work(("chain_runner.py",), ["x", "python probes/chain_runner.py a.json"]) == ["python probes/chain_runner.py a.json"]
+    assert len(lines) > 1 and lines[-1] == "/usr/bin/python3 probes/chain_runner.py b.json"
+    seen = ["x", "python probes/chain_runner.py a.json", "tail -f chain_runner.py.log", "code.exe probes/chain_runner.py"]
+    assert M.at_work(("chain_runner.py",), seen) == ["python probes/chain_runner.py a.json"]
+
+
+def test_wsl_is_asked_only_for_its_running_distributions(monkeypatch):
+    calls = []
+
+    def answer(args: list[str]) -> str:
+        calls.append(args[1:])
+        return "Ubuntu\n\nDebian\n" if "--running" in args else f"python job_in_{args[2]}.py\n"
+    monkeypatch.setattr(M.shutil, "which", lambda name: "wsl.exe")
+    monkeypatch.setattr(M, "wsl_text", answer)
+    assert M.wsl_command_lines() == ["python job_in_Ubuntu.py", "python job_in_Debian.py"]
+    assert calls[0] == ["-l", "--running", "-q"] and calls[1][:3] == ["-d", "Ubuntu", "-e"]
+
+    def none_running(args: list[str]) -> str:
+        raise RuntimeError("-l --running -q failed (There are no running distributions.)")
+    monkeypatch.setattr(M, "wsl_text", none_running)
+    assert M.wsl_command_lines() == []
+    monkeypatch.setattr(M.shutil, "which", lambda name: None)
+    assert M.wsl_command_lines() == []
+
+
+def test_wsl_text_drops_utf16_nul_bytes_and_names_a_failed_call(monkeypatch):
+    class Done:
+        returncode, stdout, stderr = 0, "Ubuntu\r\n".encode("utf-16-le"), b""
+    monkeypatch.setattr(M.subprocess, "run", lambda *a, **k: Done)
+    assert M.wsl_text(["wsl.exe", "-l", "--running", "-q"]).split() == ["Ubuntu"]
+    Done.returncode, Done.stderr = 1, "no such distribution".encode("utf-16-le")
+    with pytest.raises(RuntimeError, match=r"-d Nope failed \(no such distribution\)"):
+        M.wsl_text(["wsl.exe", "-d", "Nope"])
 
 
 def test_psi4_s_capital_element_symbols_are_the_smiles_s_atoms(tmp_path):
