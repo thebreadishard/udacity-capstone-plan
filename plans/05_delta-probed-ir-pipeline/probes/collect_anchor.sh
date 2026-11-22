@@ -26,7 +26,7 @@
 set -Eeuo pipefail          # -E: the ERR trap below also names a failure inside a function
 HOST=${1:?host name}; ID=${2:?molecule id}
 exec < /dev/null
-trap 'echo "collect_anchor.sh: stopped at line $LINENO — a command failed"' ERR
+trap 'echo "collect_anchor.sh: stopped at line $LINENO — a command failed" >&2' ERR
 [[ $ID =~ ^[A-Za-z0-9_]+$ ]] || { echo "not a molecule id: $ID"; exit 1; }
 HERE=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 PLAN=$(cd "$HERE/.." && pwd)
@@ -92,7 +92,13 @@ STATE=$(ask "h=\$(grep -F '=== (AS3) $ID hessian ' $LOG | tail -n 1); a=\$(grep 
         *'apt FAIL'*) echo APT_FAILED ;; \
         *) echo RUNNING ;; esac ;; \
     *) echo RUNNING ;; esac")
-[ "$STATE" != RUNNING ] || { echo "$ID on $HOST: the wave log has no end for it yet — nothing fetched"; exit 2; }
+# a relaunch or an APT re-run writes no line when it starts: a failure in the log with a process at work on the molecule's folder is a
+# run in progress, and its live folder is not fetched. (The id's first letter is bracketed so that this command does not match itself.)
+if [ "$STATE" = HESSIAN_FAILED ] || [ "$STATE" = APT_FAILED ]; then
+  BUSY=$(ask "pgrep -f '(e8_cc_hessian_fd|cc_apt_field)[.]py .*/[${ID:0:1}]${ID:1}_ccpvdz' > /dev/null && echo BUSY || echo IDLE")
+  [ "$BUSY" = IDLE ] || STATE=RUNNING
+fi
+[ "$STATE" != RUNNING ] || { echo "$ID on $HOST: the wave log has no end for it yet, or a re-run is at work — nothing fetched"; exit 2; }
 mkdir -p "$DST"
 fetch_part cc "$CC_SRC" "$DST/cc"
 if [ ! -d "$DST/server" ]; then

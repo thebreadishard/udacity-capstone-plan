@@ -198,3 +198,17 @@ def test_the_molecule_s_last_hessian_and_apt_lines_decide(server, log, code, say
     (server["cc"] / "anchors.log").write_text(log)
     done = collect(server)
     assert done.returncode == code and says in done.stdout, done.stdout + done.stderr
+
+
+@linux
+def test_a_failure_in_the_log_with_a_re_run_at_work_is_not_fetched(server):
+    (server["cc"] / "anchors.log").write_text(f"=== (AS3) {ID} hessian FAILED (x) 2026-11-22\n")
+    title = f"python e8_cc_hessian_fd.py geom /root/dpir/probes/results/{ID}_ccpvdz --threads 8"
+    rerun = subprocess.Popen([BASH, "-c", f"exec -a '{title}' sleep 30"])
+    try:
+        done = collect(server)
+        assert done.returncode == 2 and "a re-run is at work" in done.stdout and not server["out"].exists(), done.stdout + done.stderr
+    finally:
+        rerun.kill()
+        rerun.wait()
+    assert collect(server).returncode == 3                                       # nothing at work any more: the failed run comes home
