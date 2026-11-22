@@ -207,10 +207,22 @@ def test_writing_is_refused_beside_another_writer_of_the_manifest_whatever_the_r
 def test_writing_is_refused_while_the_corpus_lock_exists_and_another_s_lock_is_left_alone(world):
     both(world)
     (world["corpus"] / "corpus.lock").write_text("laptop 2026-11-22 09:00 pid 1234")
-    with pytest.raises(SystemExit, match=r"corpus\.lock"):
+    with pytest.raises(SystemExit, match=r"corpus\.lock is held: 'laptop 2026-11-22 09:00 pid 1234'$"):
         M.main([*world["argv"], "--write", "--beside-training", "x"])
     assert not (world["corpus"] / "molecules" / "B_p1").exists()
     assert (world["corpus"] / "corpus.lock").read_text() == "laptop 2026-11-22 09:00 pid 1234"
+
+
+def test_a_lock_left_on_this_host_says_whether_its_process_is_gone(world, monkeypatch):
+    import psutil
+    both(world)
+    lock = world["corpus"] / "corpus.lock"
+    lock.write_text(f"{M.socket.gethostname()} 2026-11-22 09:00 pid {M.os.getpid()}")
+    assert M.lock_holder(lock).endswith("that process runs on this host")
+    monkeypatch.setattr(psutil, "pid_exists", lambda pid: False)
+    with pytest.raises(SystemExit, match=r"no such process on this host any more: look at .*opt_batch_merge_staging, then remove"):
+        M.main([*world["argv"], "--write"])
+    assert lock.exists() and manifest(world)["B_p1"]["status"] == "pending"
 
 
 def test_the_merge_holds_the_corpus_lock_in_the_runner_s_format_while_it_writes_and_frees_it(world, monkeypatch):
@@ -279,10 +291,14 @@ def test_wsl_is_asked_only_for_its_running_distributions(monkeypatch):
     assert M.wsl_command_lines() == ["python job_in_Ubuntu.py", "python job_in_Debian.py"]
     assert calls[0] == ["-l", "--running", "-q"] and calls[1][:3] == ["-d", "Ubuntu", "-e"]
 
-    def none_running(args: list[str]) -> str:
-        raise RuntimeError("-l --running -q failed (There are no running distributions.)")
-    monkeypatch.setattr(M, "wsl_text", none_running)
+    monkeypatch.setattr(M, "wsl_text", lambda args: "\r\n")                    # a stopped WSL: exit 0, no names
     assert M.wsl_command_lines() == []
+
+    def no_answer(args: list[str]) -> str:
+        raise RuntimeError("-l --running -q gave no answer (TimeoutExpired)")
+    monkeypatch.setattr(M, "wsl_text", no_answer)
+    with pytest.raises(RuntimeError, match="gave no answer"):                   # not read as 'none running'
+        M.wsl_command_lines()
     monkeypatch.setattr(M.shutil, "which", lambda name: None)
     assert M.wsl_command_lines() == []
 

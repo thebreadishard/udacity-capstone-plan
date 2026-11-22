@@ -245,14 +245,12 @@ def wsl_text(args: list[str]) -> str:
 def wsl_command_lines() -> list[str]:
     """The command lines inside every running WSL distribution — a job started there shows on Windows only as its shell. The list
     of running distributions is asked first: that call starts nothing, while `wsl -e` would boot a stopped WSL beside the runs. No
-    wsl.exe, or none running (wsl.exe then answers with an error and names none): no lines."""
+    wsl.exe, or none running (wsl.exe then answers with no names): no lines. A call that fails raises — WSL busy with a job is
+    when it is likeliest to, and that is when its lines matter."""
     wsl = shutil.which("wsl.exe")
     if not wsl:
         return []
-    try:
-        running = [name.strip() for name in wsl_text([wsl, "-l", "--running", "-q"]).splitlines() if name.strip()]
-    except RuntimeError:
-        return []
+    running = [name.strip() for name in wsl_text([wsl, "-l", "--running", "-q"]).splitlines() if name.strip()]
     lines = []
     for name in running:
         lines += wsl_text([wsl, "-d", name, "-e", "ps", "-eww", "-o", "args"]).splitlines()
@@ -271,15 +269,28 @@ def at_work(marks: tuple[str, ...], lines: list[str]) -> list[str]:
     return [line[:300] for line in lines if "python" in line.lower() and any(mark in line for mark in marks)]
 
 
+def lock_holder(lock: Path) -> str:
+    """What an existing corpus.lock says, and whether its holder — a runner, or a merge that was killed — is gone from this host."""
+    import psutil
+    held = lock.read_text(encoding="utf-8", errors="replace").strip()
+    parts = held.split()
+    if len(parts) >= 4 and parts[-2] == "pid" and parts[-1].isdigit() and parts[0] == socket.gethostname():
+        if not psutil.pid_exists(int(parts[-1])):
+            return f"'{held}' — no such process on this host any more: look at {lock.parent / STAGING}, then remove the lock"
+        return f"'{held}' — that process runs on this host"
+    return f"'{held}'"
+
+
 @contextmanager
 def corpus_lock(corpus: Path) -> Iterator[None]:
-    """corpus.lock held in `run_corpus.py`'s own format while the merge writes; an existing lock is another runner's and refuses."""
+    """corpus.lock held in `run_corpus.py`'s own format while the merge writes; an existing lock is another's and refuses. Start no
+    corpus runner on this machine during a merge: on Windows its liveness probe of the lock's pid ends the merge (TASKS 292)."""
     lock = corpus / "corpus.lock"
     try:
         with lock.open("x", encoding="utf-8") as f:
             f.write(f"{socket.gethostname()} {time.strftime('%Y-%m-%d %H:%M')} pid {os.getpid()}")
     except FileExistsError:
-        raise SystemExit(f"refused, nothing written: {lock} — a corpus runner holds the manifest") from None
+        raise SystemExit(f"refused, nothing written: {lock} is held: {lock_holder(lock)}") from None
     try:
         yield
     finally:
