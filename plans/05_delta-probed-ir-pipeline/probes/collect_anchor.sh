@@ -19,6 +19,8 @@
 # path are left as they are). Exit: 0 the anchor is carried in the registry; 2 a stage's input is not there yet (the message says what
 # it waits for); 3 the CC run ended in a failure, fetched; 4 registered but not carried (experimental); 1 anything else, the server
 # unreachable included — never reported as 'wait'. stdin is not read, so the script can run inside `while read … done < list`.
+# Accepted limit: a failed run fetched before its relaunch reaches the molecule again is a true copy of that moment; the re-run then
+# shows as a sha256 MISMATCH (exit 1), and the local cc folder is moved aside by hand before it is fetched anew.
 # Places (environment; the defaults are the servers' and the plan's, the overrides are for tests): CC_ROOT /root/dpir, MP2_ROOT
 #   /root/mp2b, COLLECT_OUT probes/results_m1/new_anchors_2026-11 (relative to the plan; a registry path must be), CORPUS_MOLECULES
 #   the corpus's molecules; the server is reached through tools/hosts.sh (HOSTS_FILE, HOSTS_SSH).
