@@ -1,5 +1,5 @@
 """`probes/opt_batch_merge.py` on a small stand-in corpus and fetched batch: what it merges, what it leaves out, what it refuses, the
-manifest it writes, a second run, and the guard against merging under a running training."""
+manifest it writes, a second run, and the guards against merging beside another writer of the manifest or a reader of the corpus."""
 import csv
 import json
 import sys
@@ -9,29 +9,41 @@ import numpy as np
 import pytest
 
 pytest.importorskip("rdkit")
+from rdkit import Chem
+from rdkit.Chem import AllChem
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "probes"))
 import opt_batch_merge as M
 
 FIELDS = ["id", "layer", "priority", "name", "smiles", "qm9_label", "n_heavy", "n_atoms", "status", "machine", "deck", "note"]
 DECK = {"low_functional": "B3LYP", "basis": "6-31G*", "threads": 8, "memory_gb": 12}
-PYRIDINE = ["C"] * 5 + ["N"] + ["H"] * 5
-MOLS = {"B_p1": ("pyridine", "c1ccncc1", PYRIDINE), "B_b1": ("benzene", "c1ccccc1", ["C"] * 6 + ["H"] * 6)}
+JOB_DECK = dict(DECK, threads=4, memory_gb=6)
+MOLS = {"B_p1": ("pyridine", "c1ccncc1"), "B_b1": ("benzene", "c1ccccc1")}
+PYRIDINE_OPEN_ISOMER = "C#CC=CC=N"                                               # C5H5N as well, bonded otherwise
+
+
+def geometry(smiles: str, seed: int = 7) -> dict:
+    """A force-field geometry of the SMILES in the corpus's geometry.json form."""
+    mol = Chem.AddHs(Chem.MolFromSmiles(smiles))
+    AllChem.EmbedMolecule(mol, randomSeed=seed)
+    AllChem.MMFFOptimizeMolecule(mol)
+    return {"symbols": [a.GetSymbol() for a in mol.GetAtoms()], "coords_bohr": (mol.GetConformer().GetPositions() / M.BOHR).tolist()}
 
 
 def molecule(folder: Path, mol_id: str, **vary) -> None:
-    """A fetched molecule folder; vary: imaginary, labelled (bool), deck (dict), smiles (str), symbols (list) instead of the molecule's own."""
-    name, own_smiles, own_symbols = MOLS[mol_id]
-    symbols = vary.get("symbols", own_symbols)
-    imaginary, labelled = vary.get("imaginary", False), vary.get("labelled", True)
+    """A fetched molecule folder; vary: imaginary, labelled, job (bool), deck (dict), smiles (str), geometry (dict) instead of the
+    molecule's own."""
+    name, own_smiles = MOLS[mol_id]
+    geom = vary.get("geometry") or geometry(own_smiles)
     folder.mkdir(parents=True)
-    job_deck = vary.get("deck", dict(DECK, threads=4, memory_gb=6))
-    (folder / "job.json").write_text(json.dumps({"id": mol_id, "deck": job_deck,
-                                                 "source": {"smiles": vary.get("smiles", own_smiles), "name": name}}))
-    (folder / "geometry.json").write_text(json.dumps({"symbols": symbols, "coords_bohr": [[0, 0, float(k)] for k in range(len(symbols))]}))
+    if vary.get("job", True):
+        (folder / "job.json").write_text(json.dumps({"id": mol_id, "deck": vary.get("deck", JOB_DECK),
+                                                     "source": {"smiles": vary.get("smiles", own_smiles), "name": name}}))
+    (folder / "geometry.json").write_text(json.dumps(geom))
     (folder / "result.json").write_text(json.dumps({"status": "done", "labels": "analytic_only"}))
-    if labelled:
-        freq = np.concatenate([np.zeros(6), np.linspace(400.0, 3200.0, 3 * len(symbols) - 6)])
-        if imaginary:
+    if vary.get("labelled", True):
+        freq = np.concatenate([np.zeros(6), np.linspace(400.0, 3200.0, 3 * len(geom["symbols"]) - 6)])
+        if vary.get("imaginary", False):
             freq[6] = -55.0
         for tag in ("b3lyp", "wb97x"):
             np.savez(folder / f"hessian_{tag}_analytic.npz", freq_cm=freq)
@@ -39,7 +51,8 @@ def molecule(folder: Path, mol_id: str, **vary) -> None:
 
 
 @pytest.fixture
-def world(tmp_path):
+def world(tmp_path, monkeypatch):
+    monkeypatch.setattr(M, "command_lines", list)                               # no other process, unless a test names one
     corpus = tmp_path / "corpus"
     (corpus / "molecules").mkdir(parents=True)
     (corpus / "decks").mkdir()
@@ -48,13 +61,19 @@ def world(tmp_path):
         w = csv.DictWriter(f, fieldnames=FIELDS, lineterminator="\n")
         w.writeheader()
         w.writerow(dict.fromkeys(FIELDS, "") | {"id": "A_old", "layer": "A", "smiles": "C", "status": "done", "deck": "abc", "note": "kept"})
-        for mol_id, (name, smiles, symbols) in MOLS.items():
-            w.writerow(dict.fromkeys(FIELDS, "") | {"id": mol_id, "layer": "B", "name": name, "smiles": smiles, "n_atoms": len(symbols),
-                                                   "status": "pending", "note": "rehash-2026-09-28"})
+        for mol_id, (name, smiles) in MOLS.items():
+            w.writerow(dict.fromkeys(FIELDS, "") | {"id": mol_id, "layer": "B", "name": name, "smiles": smiles,
+                                                   "n_atoms": len(geometry(smiles)["symbols"]), "status": "pending",
+                                                   "note": "rehash-2026-09-28"})
     batch = tmp_path / "fetch" / "anc1" / "dft1"
     (batch / "molecules").mkdir(parents=True)
     (batch / "ids.txt").write_text("# header\nB_p1\nB_b1\n")
     return {"corpus": corpus, "batch": batch, "argv": ["--source", f"anc1={batch}", "--corpus", str(corpus)]}
+
+
+def both(world) -> None:
+    for mol_id in MOLS:
+        molecule(world["batch"] / "molecules" / mol_id, mol_id)
 
 
 def manifest(world) -> dict[str, dict]:
@@ -62,8 +81,16 @@ def manifest(world) -> dict[str, dict]:
         return {r["id"]: r for r in csv.DictReader(f)}
 
 
-def test_a_ready_molecule_is_merged_and_one_with_an_imaginary_mode_is_named_and_left_out(world, monkeypatch, capsys):
-    monkeypatch.setattr(M, "training_at_work", list)
+def set_row(world, mol_id: str, **values) -> None:
+    rows = manifest(world)
+    rows[mol_id].update(values)
+    with (world["corpus"] / "manifest.csv").open("w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=FIELDS, lineterminator="\n")
+        w.writeheader()
+        w.writerows(rows.values())
+
+
+def test_a_ready_molecule_is_merged_and_one_with_an_imaginary_mode_is_named_and_left_out(world, capsys):
     molecule(world["batch"] / "molecules" / "B_p1", "B_p1")
     molecule(world["batch"] / "molecules" / "B_b1", "B_b1", imaginary=True)
     before = (world["corpus"] / "manifest.csv").read_text()
@@ -92,10 +119,20 @@ def test_a_molecule_optimised_but_not_labelled_yet_is_left_out(world, capsys):
     assert "left out  B_p1: no hessian_b3lyp_analytic.npz" in capsys.readouterr().out
 
 
+def test_a_label_file_that_cannot_be_read_leaves_the_molecule_out_by_name(world, capsys):
+    both(world)
+    (world["batch"] / "molecules" / "B_p1" / "hessian_b3lyp_analytic.npz").write_bytes(b"PK\x03\x04 cut short")
+    assert M.main([*world["argv"], "--write"]) == 0
+    assert "left out  B_p1: unreadable (" in capsys.readouterr().out
+    assert manifest(world)["B_p1"]["status"] == "pending" and manifest(world)["B_b1"]["status"] == "done"
+
+
 @pytest.mark.parametrize(("kwargs", "says"), [
     ({"smiles": "c1ccccc1"}, "the manifest row is 'c1ccncc1'"),
     ({"deck": dict(DECK, basis="cc-pVDZ")}, "differs from deck_v1.json in basis"),
-    ({"symbols": ["C"] * 6 + ["H"] * 5}, "are not those of c1ccncc1"),
+    ({"geometry": geometry("c1ccccc1")}, "is not the molecule c1ccncc1"),
+    ({"geometry": geometry(PYRIDINE_OPEN_ISOMER)}, "is not the molecule c1ccncc1"),
+    ({"job": False}, "B_p1: no job.json in"),
 ])
 def test_a_molecule_that_is_not_the_row_s_at_the_corpus_deck_is_refused(world, kwargs, says):
     molecule(world["batch"] / "molecules" / "B_p1", "B_p1", **kwargs)
@@ -106,8 +143,7 @@ def test_a_molecule_that_is_not_the_row_s_at_the_corpus_deck_is_refused(world, k
 
 
 def test_an_id_without_a_row_or_listed_in_two_sources_is_refused(world, tmp_path):
-    for mol_id in MOLS:
-        molecule(world["batch"] / "molecules" / mol_id, mol_id)
+    both(world)
     other = tmp_path / "fetch" / "anc2" / "dft1"
     (other / "molecules").mkdir(parents=True)
     (other / "ids.txt").write_text("B_p1\n")
@@ -120,23 +156,68 @@ def test_an_id_without_a_row_or_listed_in_two_sources_is_refused(world, tmp_path
 
 
 def test_another_folder_already_in_the_corpus_under_the_id_is_refused(world):
-    molecule(world["batch"] / "molecules" / "B_p1", "B_p1")
-    molecule(world["batch"] / "molecules" / "B_b1", "B_b1")
-    molecule(world["corpus"] / "molecules" / "B_p1", "B_p1", symbols=list(reversed(PYRIDINE)))
+    both(world)
+    molecule(world["corpus"] / "molecules" / "B_p1", "B_p1", geometry=geometry("c1ccncc1", seed=11))
     with pytest.raises(SystemExit, match="exists and is not this batch's ready folder"):
         M.main(world["argv"])
 
 
-def test_writing_is_refused_while_a_training_runs_unless_a_reason_is_given(world, monkeypatch, capsys):
-    for mol_id in MOLS:
-        molecule(world["batch"] / "molecules" / mol_id, mol_id)
-    monkeypatch.setattr(M, "training_at_work", lambda: ["python chain_runner.py probes/runs/v14_stage1.json"])
-    with pytest.raises(SystemExit, match="a chain or training runs here"):
+def test_a_row_already_done_at_the_deck_without_its_folder_gets_the_folder_and_the_note(world, capsys):
+    both(world)
+    deck_hash = M.LM.deck_hash(JOB_DECK, world["corpus"] / "decks" / "deck_v1.json")
+    set_row(world, "B_p1", status="done", deck=deck_hash, machine="elsewhere")
+    assert M.main([*world["argv"], "--write"]) == 0
+    assert "2 folders to copy, 2 rows to bring up to date" in capsys.readouterr().out
+    row = manifest(world)["B_p1"]
+    assert row["machine"] == "anc1" and M.NOTE_MARK in row["note"] and (world["corpus"] / "molecules" / "B_p1").is_dir()
+
+
+def test_a_row_done_at_another_deck_is_refused(world):
+    both(world)
+    set_row(world, "B_p1", status="done", deck="0123456789ab")
+    with pytest.raises(SystemExit, match="its manifest row is 'done' with deck '0123456789ab'"):
+        M.main(world["argv"])
+
+
+def test_writing_is_refused_while_a_reader_of_the_corpus_runs_unless_a_reason_is_given(world, monkeypatch, capsys):
+    both(world)
+    monkeypatch.setattr(M, "command_lines", lambda: ["bash", "python m05/rungC_eval_saved.py --run v14"])
+    with pytest.raises(SystemExit, match="a chain, training or evaluation runs here"):
         M.main([*world["argv"], "--write"])
     assert not (world["corpus"] / "molecules" / "B_p1").exists() and manifest(world)["B_p1"]["status"] == "pending"
     assert M.main([*world["argv"], "--write", "--beside-training", "the chain's last step has loaded its pool"]) == 0
-    assert "merged beside a running training: the chain's last step has loaded its pool" in capsys.readouterr().out
+    assert "merged beside a running reader of the corpus: the chain's last step has loaded its pool" in capsys.readouterr().out
     assert manifest(world)["B_b1"]["status"] == "done"
+
+
+@pytest.mark.parametrize("writer", ["python run_corpus.py --layer B", "python corpus/merge_shards.py shard1"])
+def test_writing_is_refused_beside_another_writer_of_the_manifest_whatever_the_reason(world, monkeypatch, writer):
+    both(world)
+    monkeypatch.setattr(M, "command_lines", lambda: [writer])
+    with pytest.raises(SystemExit, match="another writer of the manifest runs here"):
+        M.main([*world["argv"], "--write", "--beside-training", "a reason does not help here"])
+    assert manifest(world)["B_p1"]["status"] == "pending" and not (world["corpus"] / "molecules" / "B_p1").exists()
+    assert M.main(world["argv"]) == 0                                           # the plan alone is still given
+
+
+def test_writing_is_refused_while_the_corpus_lock_exists(world):
+    both(world)
+    (world["corpus"] / "corpus.lock").write_text("1234")
+    with pytest.raises(SystemExit, match=r"corpus\.lock"):
+        M.main([*world["argv"], "--write", "--beside-training", "x"])
+    assert not (world["corpus"] / "molecules" / "B_p1").exists()
+
+
+def test_the_previous_manifest_s_copy_is_never_written_over(world, monkeypatch):
+    both(world)
+    monkeypatch.setattr(M.time, "strftime", lambda fmt: "2026-11-22_101500")
+    item = M.Item("B_p1", "anc1", world["batch"] / "molecules" / "B_p1", "0123456789ab")
+    backup = M.update_manifest((item,), world["corpus"] / "manifest.csv")
+    kept = backup.read_text()
+    assert "pending" in kept
+    with pytest.raises(FileExistsError, match="pre_opt_batch_merge_2026-11-22_101500"):
+        M.update_manifest((item,), world["corpus"] / "manifest.csv")
+    assert backup.read_text() == kept
 
 
 def test_bad_sources_and_a_reason_without_write_are_refused(world, tmp_path):
@@ -148,16 +229,21 @@ def test_bad_sources_and_a_reason_without_write_are_refused(world, tmp_path):
         M.main([*world["argv"], "--beside-training", "x"])
 
 
-def test_training_at_work_reads_the_process_table():
-    assert isinstance(M.training_at_work(), list)
+def test_command_lines_reads_the_process_table_and_marks_are_found_in_it(monkeypatch):
+    monkeypatch.undo()
+    lines = M.command_lines()
+    assert lines and all(isinstance(line, str) for line in lines)
+    assert M.at_work(("chain_runner.py",), ["x", "python probes/chain_runner.py a.json"]) == ["python probes/chain_runner.py a.json"]
 
 
 def test_psi4_s_capital_element_symbols_are_the_smiles_s_atoms(tmp_path):
     """Found on the first real batch (22 Nov 2026): 2-chloropyrimidine's geometry.json lists 'CL'."""
     folder = tmp_path / "B_c1"
     folder.mkdir()
+    geom = geometry("Clc1ncccn1")
+    geom["symbols"] = [s.upper() for s in geom["symbols"]]
     (folder / "job.json").write_text(json.dumps({"id": "B_c1", "deck": dict(DECK, threads=4), "source": {"smiles": "Clc1ncccn1"}}))
-    (folder / "geometry.json").write_text(json.dumps({"symbols": ["CL", "C", "N", "C", "C", "C", "N", "H", "H", "H"]}))
+    (folder / "geometry.json").write_text(json.dumps(geom))
     deck_file = tmp_path / "deck_v1.json"
     deck_file.write_text(json.dumps(DECK))
     assert len(M.check_molecule("B_c1", folder, {"smiles": "Clc1ncccn1"}, deck_file)) == 12
