@@ -1,0 +1,39 @@
+{
+ "name": "v14_stage2",
+ "purpose": "v1.4 stage 2: the third seed for the best four and the control, then read2",
+ "host": "laptop",
+ "workdir": "probes/results_m1",
+ "command": "python ../chain_runner.py probes/runs/v14_stage2.json",
+ "sources": [
+  {
+   "local": "probes/chain_runner.py"
+  },
+  {
+   "local": "probes/v14_search.py"
+  },
+  {
+   "local": "probes/promotion_read.py"
+  },
+  {
+   "local": "modules/05_support_predictor/m05/rungC_train.py"
+  }
+ ],
+ "progress": {
+  "regex": "^=== \\(V14S2\\) progress: |^\\(V14S2\\) .* done ",
+  "max_gap_minutes": 120,
+  "start_regex": "^=== \\(V14S2\\) starting: "
+ },
+ "marker_regex": "^=== \\(V14S2\\) (armed|starting|resuming|RUN FAILED|run done)",
+ "end_regex": "^=== \\(V14S2\\) run done",
+ "fail_regex": "^=== \\(V14S2\\) RUN FAILED",
+ "dry_run_args": "--dry-run",
+ "resumable": true,
+ "memory": {
+  "peak_gb": 7.7,
+  "basis": "chain 41's trainer peak (7.7 GB at n = 972-978, 19 Oct 2026); v1.4's pool ≈ 1,200"
+ },
+ "estimate": {
+  "hours": 13.0,
+  "basis": "≈ 2 h per constant-rate training, ≈ 3.5 h per cosine, one seed each"
+ }
+}
