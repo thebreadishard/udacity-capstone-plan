@@ -70,7 +70,11 @@ def earlier_lists(folders: list[Path]) -> list[Path]:
     for folder in folders:
         if folder.name.endswith(".partial"):
             raise SystemExit(f"--earlier {folder}: a staging folder of a run that did not finish, not a dealt wave")
-        lists = sorted(p for p in folder.glob("*/wave*.txt") if LIST_NAME_PATTERN.fullmatch(p.name))
+        lists = sorted(folder.glob("*/wave*.txt"))
+        odd = [p.as_posix() for p in lists if not LIST_NAME_PATTERN.fullmatch(p.name)]
+        if odd:
+            raise SystemExit(f"--earlier {folder}: not the name of a wave list, so its molecules would be dealt again — rename or "
+                             f"remove: {odd}")
         if not lists:
             raise SystemExit(f"--earlier {folder}: no <host>/wave*.txt in it")
         found += lists
@@ -175,6 +179,8 @@ def write_lists(out: Path, lists: dict[str, list[Candidate]], corpus_molecules: 
 def checked_request(args: argparse.Namespace) -> tuple[list[str], list[Path], Path]:
     """The hosts, the earlier waves' lists and the staging folder of a request, each refused here before any data is read."""
     hosts = [h for h in args.hosts.split(",") if h]
+    if not hosts:
+        raise SystemExit("--hosts names no host")
     if len(set(hosts)) != len(hosts):
         raise SystemExit(f"a host is named twice: {hosts}")
     if args.out.exists():

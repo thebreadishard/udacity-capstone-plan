@@ -202,3 +202,27 @@ def test_main_refuses_a_staging_folder_left_by_a_failed_run(small_plan, tmp_path
     (tmp_path / "wave2.partial").mkdir()
     with pytest.raises(SystemExit, match="failed earlier run"):
         W.main(["--hosts", "h1", "--out", str(tmp_path / "wave2"), "--plan", str(plan)])
+
+
+def test_earlier_lists_refuse_an_oddly_named_list_beside_a_valid_one(tmp_path):
+    folder = wave_folder(tmp_path / "w1", {"h1": ["M1"], "h2": ["M2"]})
+    (folder / "h2" / "wave.txt").rename(folder / "h2" / "wave.old.txt")
+    with pytest.raises(SystemExit, match=r"not the name of a wave list.*wave\.old\.txt"):
+        W.earlier_lists([folder])
+
+
+def test_two_earlier_waves_are_both_left_out_and_both_names_are_taken(small_plan, tmp_path):
+    plan, wave1 = small_plan
+    wave2 = wave_folder(tmp_path / "wave2", {"h1": ["R1"]}, name="wave2.txt")
+    request = ["--hosts", "h1", "--plan", str(plan), "--earlier", str(wave1), "--earlier", str(wave2)]
+    with pytest.raises(SystemExit, match="would replace a list a wave is reading"):
+        W.main([*request, "--out", str(tmp_path / "wave3"), "--list-name", "wave2.txt"])
+    assert W.main([*request, "--out", str(tmp_path / "wave3"), "--list-name", "wave3.txt"]) == 0
+    assert (tmp_path / "wave3" / "h1" / "wave3.txt").read_text() == ""
+
+
+def test_main_refuses_a_request_without_a_host_before_reading_data(small_plan, tmp_path, monkeypatch):
+    plan, _ = small_plan
+    monkeypatch.setattr(W.A, "corpus_cells", lambda: pytest.fail("data was read before the request was checked"))
+    with pytest.raises(SystemExit, match="names no host"):
+        W.main(["--hosts", ",", "--out", str(tmp_path / "wave2"), "--plan", str(plan)])
