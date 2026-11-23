@@ -127,12 +127,11 @@ should pay for.
 - **The two coronene modes**: +179.2 cm⁻¹ on the mode at 807.1 and +66.3 on the one at 642.9. Checked: the diagonal quartic
   constant on two integration grids agrees within 0.7 %; the deperturbed and the resonance-treated results are equal for these
   modes; the one near-resonant triple has a zero cubic constant by symmetry. That does not exclude a missed resonance or an error
-  in the force field; say the checks and stop (rule 8). In our set 28 of 2,244 vibrations shift by more than 5 % of their frequency.
-- **The provisional anharmonic correction in the pipeline**: GVPT2 on the molecule's own xTB force field, with a shift model
-  fitted on B3LYP VPT2 results of 37 molecules; its error against B3LYP VPT2 on the two molecules held out of that fit, coronene
-  and tetracene, is 3.4–8.4 cm⁻¹ per kind of vibration; on benzonitrile the CH stretch is 17.8. How it treats the CH-stretch
-  polyads with combination bands beyond the Fermi treatment above is **not known to the assistant: say so**. Not compared with
-  experiment.
+  in the force field; say the checks and stop (rule 8); see also 'beyond second order' below. In our set 28 of 2,244 vibrations shift by more than 5 % of their frequency.
+- **The provisional anharmonic correction in the pipeline**: a fitted shift per fundamental that uses GVPT2 on the molecule's own
+  xTB force field as one of its inputs (details under 'More facts'); its error against B3LYP VPT2 on the two molecules held out
+  of the fit, coronene and tetracene, is 3.4–8.4 cm⁻¹ per kind of vibration; on benzonitrile the CH stretch is 17.8. Not compared
+  with experiment.
 - **Her group's published spectra and software**: never described from memory (rule 7).
 
 ## More facts, asked in the second rehearsal
@@ -181,15 +180,38 @@ should pay for.
   than her B97-1/TZ2P. The coronene result (harmonic, deperturbed and resonance-treated fundamentals) is in a file; the force
   field with its cubic and quartic constants is stored too, but where and in which format was not checked: check before promising
   to send it.
+- **What the provisional anharmonic correction is, exactly** (`probes/anharmonic_step.py`): for each B3LYP mode a shift from a
+  kernel ridge regression on five inputs — the kind of vibration, the harmonic frequency, the share of hydrogen motion, the share
+  of out-of-plane motion, and the anharmonic shift of the matched mode from GVPT2 on the molecule's own GFN2-xTB quartic force
+  field. It was fitted to the B3LYP GVPT2 fundamentals of 37 molecules, so the Fermi treatment of those references (window
+  200 cm⁻¹, minimum interaction 1 cm⁻¹) is what it imitates. It gives a shift for fundamentals only: **no combination bands and
+  no polyad of its own**, so in the CH-stretch region it cannot reproduce the structure she means. A mode gets no shift, with the
+  reason printed, when it is a large-amplitude mode, has no xTB partner, or lies where nothing was measured. No accuracy claim is
+  made for the anharmonic position. CH stretch: 6.2 cm⁻¹ against B3LYP GVPT2 on the two held-out molecules, 9.0 leaving one ring
+  system out at a time, 17.8 on benzonitrile.
+- **The two coronene modes, beyond second order** (13 November, afternoon; this is newer than the notes of slides 13 and 19):
+  the pair was also solved without perturbation theory, by diagonalising the two modes together in a product basis on the same
+  quartic force field. The shifts stay large: +162.3 cm⁻¹ instead of +179.1 for the mode at 807, +38.5 instead of +66.2 for the
+  one at 643. The mixed quartic constants of the pair are not zero (−189 and −437 cm⁻¹), so our earlier symmetry argument for them
+  was wrong. So within our B3LYP/6-31G* force field the large positive shift is not an artefact of second-order perturbation
+  theory; whether the force field itself is right (basis, grid, the step) is the open question, and hers to judge. Three other
+  molecules of our set with such modes could not be solved this way.
+- **Coronene's force field on disk**: per molecule a file with the cubic and semi-diagonal quartic constants in reduced normal
+  coordinates (cm⁻¹) and one with the full semi-diagonal quartic tensor, beside the displaced Hessians; the exact folder of
+  coronene's was not located on 23 November. Find it before promising to send it.
+- **Cations in the training set, what is on record**: 50 radical cations with ωB97X targets. No error for the cations taken apart
+  is in the release's records. One thing was seen (17 November): with the benzene cation in the training, the network gave
+  neutral benzene part of the cation's correction (CH out-of-plane 8.7 cm⁻¹ against 1.6 without the cations); the test molecules'
+  cations were then taken out of the measuring networks' training. Whether the B3LYP Hessians of these cations break symmetry
+  has not been looked at: nothing in our records.
 
 ## Not known to the assistant on 23 November — look these up before Wednesday, or say 'not known'
 
 1. Which single mode carries the composite's largest deviation of 8.5 cm⁻¹ on benzene.
 2. The signed error against CCSD(T) per mode on all eleven (only the ratio per kind of vibration on nine is on record).
-3. Where the stored force field of coronene is and in which format, so that its cubic and quartic constants can be sent.
-4. What the provisional anharmonic correction does with the CH-stretch polyads, and how the shift model relates to the xTB run.
-5. Whether the B3LYP Hessians of the cations in the training set break symmetry.
-6. The error of the network on the 50 cations taken apart.
+3. The folder that holds coronene's force field (its format is known, see above).
+4. Whether the B3LYP Hessians of the cations in the training set break symmetry: not looked at by anyone; a small check.
+5. The error of the network on the 50 cations taken apart: not computed; a read on stored results.
 
 Where to look for more: the speaker notes of the slides (`C:\\Users\\thebr\\Documents\\CapstoneDeck_2026-11-25\\deck3\\project\\slides`, the text
 in each file's `<aside>`), the task board through `probes/state.sh`, and the design notes of 23 November. Look there before
