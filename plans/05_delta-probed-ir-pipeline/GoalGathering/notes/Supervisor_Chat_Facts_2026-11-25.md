@@ -96,6 +96,15 @@ Every number here has its source in the project's records as found on 23 Novembe
   in-plane −1.39, CH stretch −0.79; CH out-of-plane 0.02 for a single ring, −0.45 for fused rings, −0.90 with a five-membered
   ring. A negative ratio means opposite sign. This agrees with her likely suspicion that the stand-in corrects the wrong way, and
   it is why the ωB97X-trained network is further from CCSD(T) than B3LYP. Per molecule and per mode it was not tabulated.
+- **The same on today's 18 reference Hessians** (23 November, labels only, no network run; per molecule in
+  `probes/results_m1/supervisor_facts_2026-11-23/``anchor_sign.json`). Mean shift of B3LYP's modes under the composite / under ωB97X, median over the molecules, cm⁻¹:
+  ring in-plane −14.6 / +10.6, CH stretch −34.8 / +43.3, 'other' −12.1 / +9.6, CH out-of-plane −7.2 / +21.8. The two means
+  have opposite sign in 17 of 18 molecules for ring in-plane, 18 of 18 for CH stretch, 17 of 18 for 'other', 11 of 18 for CH
+  out-of-plane. So B3LYP's harmonic frequencies are too high against the composite and ωB97X's are higher still. The eleven
+  older molecules reproduce the 27 October ratios (−1.42, −0.79, −1.45). The seven new ones, all substituted single rings but
+  indole, differ in two kinds: 'other' has ratio −0.25 instead of −1.45 and its pattern within a molecule now follows ωB97X
+  (correlation +0.65 against −0.35), and CH out-of-plane has a composite mean near zero or positive (+0.8 against −9.4).
+  Seven molecules: a description, not a finding.
 - **Our VPT2 force fields**: B3LYP/6-31G* in PySCF, integration grid (75, 302) unpruned, each molecule at its own minimum at
   that setting, analytic Hessians displaced ± along every normal coordinate with a step of 0.10 in reduced (dimensionless)
   coordinates, our own code with a check that two routes to the same constants agree; Fermi window 200 cm⁻¹. So a smaller basis
@@ -124,15 +133,30 @@ Every number here has its source in the project's records as found on 23 Novembe
 - **Cations in the training set, what is on record**: 50 radical cations with ωB97X targets. No error for the cations taken apart
   is in the release's records; the search for the training settings read, on its own selection molecules, 6.1 cm⁻¹ for cations against 2.6 for neutrals (corrected harmonic frequencies against ωB97X, 33 and 474 reads, 23 November). One thing was seen (17 November): with the benzene cation in the training, the network gave
   neutral benzene part of the cation's correction (CH out-of-plane 8.7 cm⁻¹ against 1.6 without the cations); the test molecules'
-  cations were then taken out of the measuring networks' training. Whether the B3LYP Hessians of these cations break symmetry
-  has not been looked at: nothing in our records.
+  cations were then taken out of the measuring networks' training.
+- **Do the cations' Hessians break symmetry?** Checked on 23 November for the 60 computed cations of the pool against their
+  neutral parents (`probes/results_m1/supervisor_facts_2026-11-23/``cation_symmetry.json`). (a) At the 38 cations whose geometry has a symmetry operation, the B3LYP
+  and ωB97X Hessians obey it as well as the neutrals' do (largest violation over the largest element: median 1.3e-3 for
+  cations and for parents, the level of the finite-difference noise): no sign of a symmetry-broken wavefunction in the
+  Hessian. (b) 11 of 60 cations sit at a less symmetric minimum than the parent. Benzene⁺ went from D6h to D2h (24 operations
+  to 8), the expected Jahn–Teller distortion; fluoranthene⁺ lost its two-fold axis (atoms up to 0.2 bohr from the symmetric
+  place), which was not expected and is not explained; nine substituted ones lost an operation, four of them by less than
+  0.05 bohr. (c) 5 of 60 cation labels have an imaginary B3LYP mode and 4 an imaginary ωB97X mode (−53 to −161 cm⁻¹ for the
+  three looked at), so those are not minima or the finite-difference Hessian is noisy there; whether the training uses them
+  was not checked. Not looked at: ⟨S²⟩ (it is not in the stored records).
+- **The network's error on cations taken apart** (23 November, the settings search's selection molecules, three seeds, corrected
+  harmonic frequencies against ωB97X; `probes/results_m1/supervisor_facts_2026-11-23/``cation_error.txt`): 11 cations 6.5 cm⁻¹ against 2.9 for 158 neutrals (rms over
+  molecules of the seed mean; 6.1 against 2.6 counted per read). It is not one outlier: the eleven lie between 4.7 and 12.5
+  (worst fluoranthene⁺ with CONH2), 5.5 without the worst. None of the eleven has a distorted geometry or an imaginary mode.
+  All eleven are three- and four-ring cations, so size and charge are mixed in this number. The released network's own records
+  have no cation figure.
 
 ## Not known to the assistant on 23 November — look these up before Wednesday, or say 'not known'
 
 1. Which single mode carries the composite's largest deviation of 8.5 cm⁻¹ on benzene.
-2. The signed error against CCSD(T) per mode on all eleven (only the ratio per kind of vibration on nine is on record).
-4. Whether the B3LYP Hessians of the cations in the training set break symmetry: not looked at by anyone; a small check.
-5. The error of the network on the 50 cations taken apart: not computed; a read on stored results.
+2. The signed error against CCSD(T) per single mode (per kind of vibration and per molecule it is known, on 18).
+3. ⟨S²⟩ of the cations' B3LYP wavefunctions, and why fluoranthene⁺ lost its two-fold axis.
+4. The network's error on cations of one and two rings (the eleven read are three- and four-ring cations).
 
 Where to look for more: the speaker notes of the slides (`C:\\Users\\thebr\\Documents\\CapstoneDeck_2026-11-25\\deck3\\project\\slides`, the text
 in each file's `<aside>`), the task board through `probes/state.sh`, and the design notes of 23 November. Look there before
