@@ -93,9 +93,20 @@ Every number here has its source in the project's records as found on 23 Novembe
   Its label is a2u, the infrared-active CH wag in which all six hydrogens move to the same side: odd under inversion (−1.00),
   even under the six-fold rotation (+1.00), fully out of plane (`probes/results_m1/supervisor_facts_2026-11-23/benzene_mode_label.txt`). The
   other single out-of-plane mode, b2g (even under inversion, odd under the six-fold rotation), is at 674 cm⁻¹ in our
-  CCSD(T)/cc-pVTZ Hessian. So in our harmonic reference a2u lies above b2g (709 / 674), while the measured fundamentals are
-  the other way round (a2u 673, b2g 707, from memory): not explained, and not checked against published harmonic CCSD(T)
-  values. If she raises it: it was seen on 23 November and is being looked at; do not defend the order. All six out-of-plane modes come out too low in the composite: −8.5, −7.8 (a pair),
+  CCSD(T)/cc-pVTZ Hessian, so a2u lies above b2g there (709 / 674), against published CCSD(T) harmonics near the basis-set
+  limit (a2u 683.6, b2g 712.4 with ano-pV5Z; Semidalas & Martin, Mol. Phys. 2023, doi 10.1080/00268976.2023.2263593, Table 5). Two known causes, both looked up on 23 November:
+  (1) our reference Hessians are taken at the B3LYP geometry (C–H 1.0871 Å, where the CCSD(T) gradient is 3e-3 Eh/bohr), not
+  at the CCSD(T) minimum: that puts the four C–H stretches 31–37 cm⁻¹ and a2u +25 away from the published values. It was
+  found on 22 September; the first-order geometry term through the B3LYP cubic constants brings a2u to +2 and the C–H
+  stretches back, and was validated on 18 molecules on 1 November — but it is not yet a step of the pipeline. (2) The two b2g
+  ring-puckering modes are 38 and 31 cm⁻¹ too low, and the geometry term does not repair them. That is a published basis-set
+  effect: Martin, Taylor and Lee (Chem. Phys. Lett. 275, 414, 1997) found these two modes hypersensitive to the basis set at
+  CCSD(T), traced to intramolecular basis-set superposition error and cured by atomic-natural-orbital basis sets; the 2023
+  paper has them 17 and 14 cm⁻¹ low even with an explicitly correlated triple-zeta basis and 4 and 6 low with ano-pVTZ. The
+  other in-plane modes of our Hessian are within 8 cm⁻¹ of the published values, except one (b1u at 1010, −15). So the
+  composite's 4.6 cm⁻¹ on benzene is agreement with a cc-pVTZ reference that itself has this deficiency in the two b2g
+  modes. If she raises it: yes, known for these two modes, with the references; whether an ANO basis in the MP2 step repairs
+  it for our composite has not been tried. All six out-of-plane modes come out too low in the composite: −8.5, −7.8 (a pair),
   −7.3 (a pair), −4.9. The largest in-plane deviations are +5.7 at 1336 and −5.1 at 1378. On her point
   about MP2 and out-of-plane modes: anthracene's CCSD(T)/cc-pVDZ Hessian came out with an imaginary out-of-plane mode (−51 cm⁻¹,
   B3LYP 92), the small-basis arene artefact, so from three rings on the out-of-plane basis step is a repair, not a refinement;
@@ -162,8 +173,8 @@ Every number here has its source in the project's records as found on 23 Novembe
 
 ## Not known to the assistant on 23 November — look these up before Wednesday, or say 'not known'
 
-1. Why our CCSD(T)/cc-pVTZ harmonic Hessian of benzene has a2u (709) above b2g (674), against the order of the measured
-   fundamentals, and what published harmonic CCSD(T) values say.
+1. Whether an atomic-natural-orbital basis in the composite's MP2 step repairs the two b2g modes of benzene, and how large the
+   same deficiency is in the ring-puckering modes of the larger reference molecules.
 2. The signed error against CCSD(T) per single mode (per kind of vibration and per molecule it is known, on 18).
 3. ⟨S²⟩ of the cations' B3LYP wavefunctions, and why fluoranthene⁺ lost its two-fold axis.
 4. The network's error on cations of one and two rings (the eleven read are three- and four-ring cations).
