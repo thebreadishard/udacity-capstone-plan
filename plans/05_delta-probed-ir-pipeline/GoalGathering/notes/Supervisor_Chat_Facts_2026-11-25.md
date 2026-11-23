@@ -120,7 +120,7 @@ Every number here has its source in the project's records as found on 23 Novembe
   coordinates (cm⁻¹) and one with the full semi-diagonal quartic tensor, beside the displaced Hessians; the exact folder of
   coronene's was not located on 23 November. Find it before promising to send it.
 - **Cations in the training set, what is on record**: 50 radical cations with ωB97X targets. No error for the cations taken apart
-  is in the release's records. One thing was seen (17 November): with the benzene cation in the training, the network gave
+  is in the release's records; the search for the training settings read, on its own selection molecules, 6.1 cm⁻¹ for cations against 2.6 for neutrals (corrected harmonic frequencies against ωB97X, 33 and 474 reads, 23 November). One thing was seen (17 November): with the benzene cation in the training, the network gave
   neutral benzene part of the cation's correction (CH out-of-plane 8.7 cm⁻¹ against 1.6 without the cations); the test molecules'
   cations were then taken out of the measuring networks' training. Whether the B3LYP Hessians of these cations break symmetry
   has not been looked at: nothing in our records.
