@@ -87,7 +87,11 @@ Every number here has its source in the project's records as found on 23 Novembe
 - **Where the composite's 4.6 cm⁻¹ on benzene sits** (rms against full CCSD(T)/cc-pVTZ, per kind of vibration; record of
   6 October, `modules/05_support_predictor/out/composite_test2_benzene_2026-10-06.md`): ring in-plane 3.3, CH stretch 4.4, CH
   out-of-plane 7.3, 'other' 3.3. For comparison CCSD(T)/cc-pVDZ alone: 24.9 / 137.9 / 69.6 / 40.8, and B3LYP: 14.1 / 38.7 / 14.9 /
-  13.3. So the largest part is in the CH out-of-plane modes; which single mode carries the 8.5 is not in the record. On her point
+  13.3. So the largest part is in the CH out-of-plane modes. The single largest deviation, 8.5 cm⁻¹, is the out-of-plane mode at 709
+  cm⁻¹ in CCSD(T)/cc-pVTZ, which the composite puts at 700 (23 November, both stored Hessians diagonalised and paired by mode
+  overlap: rms 4.61 over the 30 modes, the same per kind; `probes/results_m1/supervisor_facts_2026-11-23/benzene_mode.txt`).
+  Its symmetry label was not determined. All six out-of-plane modes come out too low in the composite: −8.5, −7.8 (a pair),
+  −7.3 (a pair), −4.9. The largest in-plane deviations are +5.7 at 1336 and −5.1 at 1378. On her point
   about MP2 and out-of-plane modes: anthracene's CCSD(T)/cc-pVDZ Hessian came out with an imaginary out-of-plane mode (−51 cm⁻¹,
   B3LYP 92), the small-basis arene artefact, so from three rings on the out-of-plane basis step is a repair, not a refinement;
   whether MP2's own small-basis artefact contaminates that step was checked on benzene only.
@@ -153,7 +157,7 @@ Every number here has its source in the project's records as found on 23 Novembe
 
 ## Not known to the assistant on 23 November — look these up before Wednesday, or say 'not known'
 
-1. Which single mode carries the composite's largest deviation of 8.5 cm⁻¹ on benzene.
+1. The symmetry label of the benzene mode at 709 cm⁻¹ that carries the composite's largest deviation.
 2. The signed error against CCSD(T) per single mode (per kind of vibration and per molecule it is known, on 18).
 3. ⟨S²⟩ of the cations' B3LYP wavefunctions, and why fluoranthene⁺ lost its two-fold axis.
 4. The network's error on cations of one and two rings (the eleven read are three- and four-ring cations).
