@@ -4,7 +4,8 @@ The plan is `out/anchor_plan/count_<n>.json` (`probes/anchor_plan.py count`): pe
 
 - a molecule that already has a carried anchor in the registry (`out/ANCHORS_STATUS.json`) is left out — it is not computed twice;
 - a molecule an earlier wave dealt to a server (`--earlier <that wave's output folder>`, repeatable) is left out too: it is being
-  computed, or waits in that server's list, and has no carried anchor yet;
+  computed, waits in that server's list, or ended there without a carried anchor — the report gives the registry's status beside
+  such a molecule, and it is dealt again only through a list of its own. An earlier id that this plan does not hold is refused;
 - a molecule is ready only when its manifest row is `done` and its corpus geometry exists (`corpus/molecules/<id>/geometry.json`, the
   B3LYP/6-31G* minimum every label is computed at): a geometry left by an interrupted DFT run is not a finished one. The others are
   listed under 'needs its DFT row first' and in `needs_dft.txt`, never guessed;
@@ -15,17 +16,23 @@ The plan is `out/anchor_plan/count_<n>.json` (`probes/anchor_plan.py count`): pe
 Output, per server, the folder `<out>/<host>/` with `wave.txt` in the format `probes/anchor_wave.sh` reads
 (`name|geometry|workers|threads|mem_mb`, the geometry under `/root/dpir/geoms/<id>/`) and `geoms/<id>/geometry.json`; beside them `plan.md`
 and `needs_dft.txt`. The folder is built beside the target and renamed into place at the end, so a failure leaves no half list; an existing
-output folder is refused, so a list a server is already working on is never rewritten. Each `<out>/<host>/` is copied to `/root/dpir/`.
+output folder is refused, so a list a server is already working on is never rewritten. Each `<out>/<host>/` is copied to `/root/dpir/`,
+where a running wave reads its own list: a later wave therefore takes a list name of its own (`--list-name wave2.txt`), and the name
+of an earlier wave's list is refused. The dealing starts every server at zero hours: what a server still has to do of an earlier
+wave is not counted.
 
     python probes/anchor_wave_lists.py --hosts anc1,anc2,anc3,anc4,anc5 --out probes/results_m1/anchor_waves_2026-11-21
-    python probes/anchor_wave_lists.py --hosts … --out <wave 2's folder> --earlier probes/results_m1/anchor_waves_2026-11-21
+    python probes/anchor_wave_lists.py --hosts … --out <wave 2's folder> --earlier probes/results_m1/anchor_waves_2026-11-21 \
+        --list-name wave2.txt
 """
 from __future__ import annotations
 
 import argparse
 import json
+import re
 import shutil
 import sys
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -34,6 +41,8 @@ import anchor_plan as A
 PLAN_FILE = A.OUT / "count_n167.json"
 REGISTRY = A.M05 / "out" / "ANCHORS_STATUS.json"
 REMOTE_GEOMS = "/root/dpir/geoms"
+LIST_NAME = "wave.txt"
+LIST_NAME_PATTERN = re.compile(r"wave[A-Za-z0-9_-]*\.txt")
 WORKERS, THREADS, MEM_MB = 2, 8, 10000      # two partial runs of 8 threads: the CPX62 setting anchor set three measured (12 Oct 2026)
 
 
@@ -46,23 +55,55 @@ class Candidate:
     hours: float
 
 
-def carried_ids(registry: Path = REGISTRY) -> set[str]:
-    """Molecules with a carried anchor."""
-    entries = json.loads(registry.read_text(encoding="utf-8"))["anchors"]
-    return {e["mol_id"] for e in entries if e["status"] == "carried"}
+def registry_statuses(registry: Path = REGISTRY) -> dict[str, list[str]]:
+    """Every status the anchor registry holds per molecule, in the registry's order."""
+    out: dict[str, list[str]] = {}
+    for entry in json.loads(registry.read_text(encoding="utf-8"))["anchors"]:
+        out.setdefault(entry["mol_id"], []).append(entry["status"])
+    return out
 
 
-def earlier_wave_ids(folders: list[Path]) -> set[str]:
-    """Molecules an earlier wave dealt to a server: the first field of every line of `<folder>/<host>/wave.txt`. A folder without
-    such a list is refused, so that a mistyped path does not read as 'nothing was dealt'."""
-    ids: set[str] = set()
+def earlier_lists(folders: list[Path]) -> list[Path]:
+    """The wave lists of earlier waves: every `<folder>/<host>/wave*.txt`. A folder without one is refused, so that a mistyped path
+    does not read as 'nothing was dealt', and so is a `.partial` folder: what a failed run left is not a dealt wave."""
+    found: list[Path] = []
     for folder in folders:
-        waves = sorted(folder.glob("*/wave.txt"))
-        if not waves:
-            raise SystemExit(f"--earlier {folder}: no <host>/wave.txt in it")
-        for wave in waves:
-            ids.update(line.split("|", 1)[0] for line in wave.read_text(encoding="utf-8").splitlines() if line.strip())
-    return ids
+        if folder.name.endswith(".partial"):
+            raise SystemExit(f"--earlier {folder}: a staging folder of a run that did not finish, not a dealt wave")
+        lists = sorted(p for p in folder.glob("*/wave*.txt") if LIST_NAME_PATTERN.fullmatch(p.name))
+        if not lists:
+            raise SystemExit(f"--earlier {folder}: no <host>/wave*.txt in it")
+        found += lists
+    return found
+
+
+def wave_ids(lists: list[Path]) -> set[str]:
+    """The molecules of wave lists: the first field of every line."""
+    return {line.split("|", 1)[0] for wave in lists for line in wave.read_text(encoding="utf-8").splitlines() if line.strip()}
+
+
+@dataclass(frozen=True)
+class Partition:
+    """The plan's molecules by what happens to them in this wave."""
+
+    carried: list[str]
+    in_earlier: list[str]
+    ready: list[Candidate]
+    needs_dft: list[Candidate]
+
+
+def partition(all_candidates: list[Candidate], carried: set[str], earlier: set[str], ready_of: Callable[[Candidate], bool]) -> Partition:
+    """Carried molecules and those an earlier wave holds are left out (a carried one counts as carried only); the rest is ready or
+    needs its DFT row. An earlier id the plan does not hold is refused by name: another plan's wave, or a list that was edited."""
+    unknown = sorted(earlier - {c.mol_id for c in all_candidates})
+    if unknown:
+        raise SystemExit(f"{len(unknown)} ids of an earlier wave are not in this plan (another plan's wave, or an edited list): {unknown}")
+    open_ = [c for c in all_candidates if c.mol_id not in carried and c.mol_id not in earlier]
+    ready = [c for c in open_ if ready_of(c)]
+    ready_ids = {c.mol_id for c in ready}
+    return Partition(carried=[c.mol_id for c in all_candidates if c.mol_id in carried],
+                     in_earlier=[c.mol_id for c in all_candidates if c.mol_id in earlier and c.mol_id not in carried],
+                     ready=ready, needs_dft=[c for c in open_ if c.mol_id not in ready_ids])
 
 
 def cheapest_first(items: list[Candidate]) -> list[Candidate]:
@@ -102,8 +143,7 @@ def wave_line(c: Candidate) -> str:
     return f"{c.mol_id}|{REMOTE_GEOMS}/{c.mol_id}/geometry.json|{WORKERS}|{THREADS}|{MEM_MB}"
 
 
-def report(lists: dict[str, list[Candidate]], skipped_carried: list[str], needs_dft: list[Candidate],
-           in_earlier: list[str] | None = None) -> str:
+def report(lists: dict[str, list[Candidate]], part: Partition, statuses: dict[str, list[str]]) -> str:
     lines = ["# Anchor waves — molecules per server", "",
              f"Plan: `{PLAN_FILE.relative_to(A.PLAN).as_posix()}`. Hours by `anchor_plan.anchor_hours` (CPX62, plane symmetry only).", "",
              "| server | molecules | rule hours | first | last |", "|---|---|---|---|---|"]
@@ -112,14 +152,16 @@ def report(lists: dict[str, list[Candidate]], skipped_carried: list[str], needs_
             lines.append(f"| {host} | {len(items)} | {sum(c.hours for c in items):,.0f} | {items[0].mol_id} | {items[-1].mol_id} |")
         else:
             lines.append(f"| {host} | 0 | 0 | — | — |")
-    lines += ["", f"Left out, carried anchor already: {len(skipped_carried)} ({', '.join(skipped_carried) or 'none'}).",
-              f"Left out, dealt in an earlier wave and not carried yet: {len(in_earlier or [])} "
-              f"({', '.join(in_earlier or []) or 'none'}).",
-              f"Needs its DFT row first (no corpus geometry): {len(needs_dft)}, rule hours {sum(c.hours for c in needs_dft):,.0f}."]
+    earlier = [f"{i} [{'/'.join(statuses[i])}]" if i in statuses else i for i in part.in_earlier]
+    lines += ["", f"Left out, carried anchor already: {len(part.carried)} ({', '.join(part.carried) or 'none'}).",
+              f"Left out, dealt in an earlier wave and not carried: {len(earlier)} ({', '.join(earlier) or 'none'}). A status in "
+              "brackets is the registry's: that molecule ended there without a carried anchor.",
+              f"Needs its DFT row first (no corpus geometry): {len(part.needs_dft)}, rule hours "
+              f"{sum(c.hours for c in part.needs_dft):,.0f}."]
     return "\n".join(lines) + "\n"
 
 
-def write_lists(out: Path, lists: dict[str, list[Candidate]], corpus_molecules: Path) -> None:
+def write_lists(out: Path, lists: dict[str, list[Candidate]], corpus_molecules: Path, list_name: str) -> None:
     for host, items in lists.items():
         folder = out / host
         (folder / "geoms").mkdir(parents=True)
@@ -127,7 +169,27 @@ def write_lists(out: Path, lists: dict[str, list[Candidate]], corpus_molecules: 
             target = folder / "geoms" / c.mol_id
             target.mkdir()
             shutil.copy2(corpus_molecules / c.mol_id / "geometry.json", target / "geometry.json")
-        (folder / "wave.txt").write_text("".join(wave_line(c) + "\n" for c in items), encoding="utf-8", newline="\n")
+        (folder / list_name).write_text("".join(wave_line(c) + "\n" for c in items), encoding="utf-8", newline="\n")
+
+
+def checked_request(args: argparse.Namespace) -> tuple[list[str], list[Path], Path]:
+    """The hosts, the earlier waves' lists and the staging folder of a request, each refused here before any data is read."""
+    hosts = [h for h in args.hosts.split(",") if h]
+    if len(set(hosts)) != len(hosts):
+        raise SystemExit(f"a host is named twice: {hosts}")
+    if args.out.exists():
+        raise SystemExit(f"{args.out} exists — a list a server may be working on is not rewritten")
+    staging = args.out.with_name(args.out.name + ".partial")
+    if staging.exists():
+        raise SystemExit(f"{staging} exists — a failed earlier run left it; look at it and remove it by hand")
+    if not LIST_NAME_PATTERN.fullmatch(args.list_name):
+        raise SystemExit(f"--list-name {args.list_name}: a name like wave.txt or wave2.txt (letters, digits, _ and - after 'wave')")
+    earlier = earlier_lists(args.earlier)
+    taken = sorted({p.name for p in earlier})
+    if args.list_name in taken:
+        raise SystemExit(f"--list-name {args.list_name} is the name of an earlier wave's list ({', '.join(taken)}): copied to the "
+                         "server it would replace a list a wave is reading — give this wave its own, such as wave2.txt")
+    return hosts, earlier, staging
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -137,32 +199,21 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--plan", type=Path, default=PLAN_FILE)
     ap.add_argument("--earlier", type=Path, action="append", default=[],
                     help="the output folder of an earlier wave (repeatable): its molecules are not dealt again")
+    ap.add_argument("--list-name", default=LIST_NAME, help="the list's file name in every host folder; a later wave needs its own")
     args = ap.parse_args(argv)
-    hosts = [h for h in args.hosts.split(",") if h]
-    if len(set(hosts)) != len(hosts):
-        raise SystemExit(f"a host is named twice: {hosts}")
-    if args.out.exists():
-        raise SystemExit(f"{args.out} exists — a list a server may be working on is not rewritten")
+    hosts, earlier, staging = checked_request(args)
     plan = json.loads(args.plan.read_text(encoding="utf-8"))
     rows = A.corpus_cells()
-    carried = carried_ids()
-    earlier = earlier_wave_ids(args.earlier)
+    statuses = registry_statuses()
     corpus_molecules = A.CORPUS / "molecules"
     all_candidates = candidates(plan, {i: r["smiles"] for i, r in rows.items()})
-    skipped = [c.mol_id for c in all_candidates if c.mol_id in carried]
-    in_earlier = [c.mol_id for c in all_candidates if c.mol_id in earlier and c.mol_id not in carried]
-    open_ = [c for c in all_candidates if c.mol_id not in carried and c.mol_id not in earlier]
-    ready = [c for c in open_ if is_ready(rows[c.mol_id]["status"], corpus_molecules / c.mol_id)]
-    ready_ids = {c.mol_id for c in ready}
-    needs_dft = [c for c in open_ if c.mol_id not in ready_ids]
-    lists = deal(ready, hosts)
-    text = report(lists, skipped, needs_dft, in_earlier)
-    staging = args.out.with_name(args.out.name + ".partial")
-    if staging.exists():
-        raise SystemExit(f"{staging} exists — a failed earlier run left it; look at it and remove it by hand")
+    part = partition(all_candidates, {i for i, held in statuses.items() if "carried" in held}, wave_ids(earlier),
+                     lambda c: is_ready(rows[c.mol_id]["status"], corpus_molecules / c.mol_id))
+    lists = deal(part.ready, hosts)
+    text = report(lists, part, statuses)
     staging.mkdir(parents=True)
-    write_lists(staging, lists, corpus_molecules)
-    (staging / "needs_dft.txt").write_text("".join(c.mol_id + "\n" for c in needs_dft), encoding="utf-8", newline="\n")
+    write_lists(staging, lists, corpus_molecules, args.list_name)
+    (staging / "needs_dft.txt").write_text("".join(c.mol_id + "\n" for c in part.needs_dft), encoding="utf-8", newline="\n")
     (staging / "plan.md").write_text(text, encoding="utf-8", newline="\n")
     staging.rename(args.out)
     sys.stdout.write(text)
