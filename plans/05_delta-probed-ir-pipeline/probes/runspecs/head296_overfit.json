@@ -1,0 +1,33 @@
+{
+ "name": "head296_overfit",
+ "purpose": "TASKS 296: the benzene overfit test of the Cartesian head (two learning rates) and the hybrid head (carried recipe), before any comparison of the two heads on the pool: a head that cannot fit one molecule needs a repair, not a run",
+ "host": "laptop",
+ "workdir": "probes/results_m1",
+ "command": "python ../chain_runner.py probes/runs/head296_overfit.json",
+ "sources": [
+  {
+   "local": "probes/chain_runner.py"
+  },
+  {
+   "local": "modules/05_support_predictor/m05/rungC_train.py"
+  }
+ ],
+ "progress": {
+  "regex": "^=== \\(H296\\) progress: |^\\(H296\\) .* done ",
+  "max_gap_minutes": 120,
+  "start_regex": "^=== \\(H296\\) starting: "
+ },
+ "marker_regex": "^=== \\(H296\\) (armed|starting|resuming|RUN FAILED|run done)",
+ "end_regex": "^=== \\(H296\\) run done",
+ "fail_regex": "^=== \\(H296\\) RUN FAILED",
+ "dry_run_args": "--dry-run",
+ "resumable": true,
+ "memory": {
+  "peak_gb": 7.7,
+  "basis": "the trainer loads the whole corpus before it keeps benzene (chain 41's peak, 19 Oct 2026); so not beside another training"
+ },
+ "estimate": {
+  "hours": 1.0,
+  "basis": "not measured: three trainings of 5,000 one-molecule steps and three corpus loads of about a minute each"
+ }
+}
