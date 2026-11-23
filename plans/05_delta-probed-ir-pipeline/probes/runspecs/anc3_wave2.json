@@ -1,0 +1,33 @@
+{
+ "name": "anc3_wave2",
+ "purpose": "TASKS 291, wave 2 of the anchor plan (count_n167): CCSD(T)/cc-pVDZ FD Hessian + CC APT for 24 molecules whose DFT rows were written into the corpus on 23 Nov 2026, cheapest first; list probes/results_m1/anchor_waves_2026-11-23/anc3/wave2.txt (probes/anchor_wave_lists.py --earlier <wave 1> --home <the DFT batch>: every molecule on the server that holds its MP2 rows, /root/mp2b/rows). Launch only after this server's wave 1 has printed 'wave done': two waves at once exceed the server's cores and memory, and a wave that waits prints no progress line. Not launched on the day it was written; paid compute, the user's word first.",
+ "host": "anc3",
+ "workdir": "/root/dpir",
+ "command": "bash probes/anchor_wave_progress.sh /root/dpir/wave2.txt",
+ "sources": [
+  {
+   "local": "probes/results_m1/anchor_waves_2026-11-23/anc3/wave2.txt",
+   "remote": "/root/dpir/wave2.txt"
+  },
+  {
+   "local": "probes/anchor_wave_progress.sh",
+   "remote": "/root/dpir/probes/anchor_wave_progress.sh"
+  },
+  {
+   "local": "probes/anchor_wave.sh",
+   "remote": "/root/dpir/probes/anchor_wave.sh"
+  }
+ ],
+ "progress": {
+  "regex": "^=== \\(AS3W\\) progress: ",
+  "max_gap_minutes": 120
+ },
+ "marker_regex": "^=== \\(AS3W\\) wave",
+ "end_regex": "^=== \\(AS3W\\) wave done",
+ "dry_run_args": "--dry-run",
+ "threads": 16,
+ "estimate": {
+  "hours": 457,
+  "basis": "probes/anchor_plan.py's hour rule (4.6 gradients/h on a CPX62 at 175 cc-pVDZ functions, scaled by (functions/175)^5, plane symmetry only); summed over the list in plan.md"
+ }
+}
