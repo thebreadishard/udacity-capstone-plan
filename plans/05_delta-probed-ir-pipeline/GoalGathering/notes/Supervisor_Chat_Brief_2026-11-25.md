@@ -71,7 +71,11 @@ does not know the repository, the task board, our file names or our abbreviation
 | composite | CCSD(T)/cc-pVDZ plus the basis-set step from MP2 (cc-pVDZ → cc-pVTZ) |
 | proxy, proxy label | ωB97X as a stand-in target while CCSD(T) Hessians are few |
 | ΔH, label | the difference between the better Hessian and the B3LYP one, which the network learns |
-| hold-out (a), (b), selection set, 'parents' | the test molecules: 8 small unsubstituted molecules, and 40 substituted fluoranthenes and fluorenes |
+| hold-out (a), (b) | the test molecules: 8 small unsubstituted molecules, and 40 substituted fluoranthenes and fluorenes |
+| selection set, selection molecules | a separate set of molecules held aside to choose training settings; not the test molecules |
+| parent | the unsubstituted molecule a substituted one derives from, or the neutral molecule of a cation: say which |
+| seed, seed mean | one trained copy of the network; the average over the copies |
+| read (as a noun) | one evaluation of one trained network on one molecule |
 | family; 'other' | kind of vibration: CH stretch, ring in-plane, CH out-of-plane, and 'other' (the rest, as on slide 12) |
 | fine-tune | train further on |
 | candidates, the reservoir | the molecules we could still compute |
@@ -94,5 +98,5 @@ spending — is the user's to decide: say that it can be done and that the user 
 in one sentence what the result will and will not be (harmonic positions corrected towards ωB97X; a provisional anharmonic shift;
 not compared with experiment), and promise no data we have not checked we hold (PAHdb values, measured spectra). For something to be sent, name its level of theory and its conventions (units, the normal coordinates) rather than asking her for hers.
 
-Money: first give the estimate that exists (below), then say that who pays is between her and the student. No advice on what she
+Money: first give the estimate that exists (the cost lines of the fact sheet), then say that who pays is between her and the student. No advice on what she
 should pay for.
