@@ -163,13 +163,30 @@ should pay for.
 - **Why four substituents do not transfer** (CH₃, OCH₃, SH, CONH₂; 4.1–7.5 cm⁻¹): not established. What was seen: OH, NH₂, CHO
   and CF₃ also have a torsion and do transfer (2.2–2.6 cm⁻¹). The ωB97X gradient at the B3LYP geometry for these four was not
   looked at.
+- **Where the composite's 4.6 cm⁻¹ on benzene sits** (rms against full CCSD(T)/cc-pVTZ, per kind of vibration; record of
+  6 October, `modules/05_support_predictor/out/composite_test2_benzene_2026-10-06.md`): ring in-plane 3.3, CH stretch 4.4, CH
+  out-of-plane 7.3, 'other' 3.3. For comparison CCSD(T)/cc-pVDZ alone: 24.9 / 137.9 / 69.6 / 40.8, and B3LYP: 14.1 / 38.7 / 14.9 /
+  13.3. So the largest part is in the CH out-of-plane modes; which single mode carries the 8.5 is not in the record. On her point
+  about MP2 and out-of-plane modes: anthracene's CCSD(T)/cc-pVDZ Hessian came out with an imaginary out-of-plane mode (−51 cm⁻¹,
+  B3LYP 92), the small-basis arene artefact, so from three rings on the out-of-plane basis step is a repair, not a refinement;
+  whether MP2's own small-basis artefact contaminates that step was checked on benzene only.
+- **The direction of the correction: ωB97X and CCSD(T) point opposite ways.** On nine reference Hessians (27 October), the mean
+  shift from B3LYP to the composite divided by the mean shift from B3LYP to ωB97X, median over the molecules: 'other' −1.45, ring
+  in-plane −1.39, CH stretch −0.79; CH out-of-plane 0.02 for a single ring, −0.45 for fused rings, −0.90 with a five-membered
+  ring. A negative ratio means opposite sign. This agrees with her likely suspicion that the stand-in corrects the wrong way, and
+  it is why the ωB97X-trained network is further from CCSD(T) than B3LYP. Per molecule and per mode it was not tabulated.
+- **Our VPT2 force fields**: B3LYP/6-31G* in PySCF, integration grid (75, 302) unpruned, each molecule at its own minimum at
+  that setting, analytic Hessians displaced ± along every normal coordinate with a step of 0.10 in reduced (dimensionless)
+  coordinates, our own code with a check that two routes to the same constants agree; Fermi window 200 cm⁻¹. So a smaller basis
+  than her B97-1/TZ2P. The coronene result (harmonic, deperturbed and resonance-treated fundamentals) is in a file; the force
+  field with its cubic and quartic constants is stored too, but where and in which format was not checked: check before promising
+  to send it.
 
 ## Not known to the assistant on 23 November — look these up before Wednesday, or say 'not known'
 
-1. Where the composite's 4.6 cm⁻¹ on benzene sits: the rms per kind of vibration and the mode that carries the largest 8.5.
-2. The sign of the error against CCSD(T) per kind of vibration, for B3LYP and for the ωB97X-trained network, on the eleven.
-3. The basis set, step size and integration grid of our VPT2 force fields (the brief says only 'B3LYP'; she will compare with
-   B97-1/TZ2P), and whether the cubic constants of the two coronene modes are in our files in a form that can be sent.
+1. Which single mode carries the composite's largest deviation of 8.5 cm⁻¹ on benzene.
+2. The signed error against CCSD(T) per mode on all eleven (only the ratio per kind of vibration on nine is on record).
+3. Where the stored force field of coronene is and in which format, so that its cubic and quartic constants can be sent.
 4. What the provisional anharmonic correction does with the CH-stretch polyads, and how the shift model relates to the xTB run.
 5. Whether the B3LYP Hessians of the cations in the training set break symmetry.
 6. The error of the network on the 50 cations taken apart.
