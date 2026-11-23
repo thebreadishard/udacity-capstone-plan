@@ -226,3 +226,54 @@ def test_main_refuses_a_request_without_a_host_before_reading_data(small_plan, t
     monkeypatch.setattr(W.A, "corpus_cells", lambda: pytest.fail("data was read before the request was checked"))
     with pytest.raises(SystemExit, match="names no host"):
         W.main(["--hosts", ",", "--out", str(tmp_path / "wave2"), "--plan", str(plan)])
+
+
+def home_folder(root, ids_of):
+    for host, lines in ids_of.items():
+        (root / host).mkdir(parents=True)
+        (root / host / "ids.txt").write_text("".join(line + "\n" for line in lines), encoding="utf-8")
+    return root
+
+
+def test_home_hosts_read_the_first_field_and_skip_comments(tmp_path):
+    folder = home_folder(tmp_path / "dft", {"h1": ["# cheapest first", "M1", ""], "h2": ["M2|extra", " M3 "]})
+    assert W.home_hosts(folder, ["h1", "h2"]) == {"M1": "h1", "M2": "h2", "M3": "h2"}
+
+
+def test_home_hosts_refuse_a_host_without_ids_and_a_molecule_on_two_hosts(tmp_path):
+    folder = home_folder(tmp_path / "dft", {"h1": ["M1"], "h2": ["M1"]})
+    with pytest.raises(SystemExit, match=r"no h3/ids\.txt"):
+        W.home_hosts(folder, ["h1", "h3"])
+    with pytest.raises(SystemExit, match="M1 is listed for h1 and for h2"):
+        W.home_hosts(folder, ["h1", "h2"])
+
+
+def test_stay_home_puts_every_molecule_on_its_host_cheapest_first():
+    items = [cand("a", 9.0), cand("b", 1.0), cand("c", 5.0)]
+    lists = W.stay_home(items, ["h1", "h2", "h3"], {"a": "h2", "b": "h2", "c": "h1", "unused": "h3"})
+    assert {h: [c.mol_id for c in v] for h, v in lists.items()} == {"h1": ["c"], "h2": ["b", "a"], "h3": []}
+
+
+def test_stay_home_refuses_a_molecule_without_a_home():
+    with pytest.raises(SystemExit, match=r"no server holds their MP2 rows: \['b'\]"):
+        W.stay_home([cand("a", 1.0), cand("b", 2.0)], ["h1"], {"a": "h1"})
+
+
+def test_main_with_home_keeps_a_molecule_on_its_own_server(small_plan, tmp_path):
+    plan, wave1 = small_plan
+    home = home_folder(tmp_path / "dft", {"h1": ["D1"], "h2": ["R1"]})
+    request = ["--hosts", "h1,h2", "--plan", str(plan), "--earlier", str(wave1), "--list-name", "wave2.txt"]
+    W.main([*request, "--out", str(tmp_path / "by_hours")])
+    W.main([*request, "--out", str(tmp_path / "by_home"), "--home", str(home)])
+    assert (tmp_path / "by_hours" / "h1" / "wave2.txt").read_text().startswith("R1|")     # by hours: the first host
+    assert (tmp_path / "by_home" / "h1" / "wave2.txt").read_text() == ""
+    assert (tmp_path / "by_home" / "h2" / "wave2.txt").read_text().startswith("R1|")
+    assert (tmp_path / "by_home" / "h2" / "geoms" / "R1" / "geometry.json").is_file()
+
+
+def test_main_refuses_a_home_folder_without_a_hosts_ids_before_reading_data(small_plan, tmp_path, monkeypatch):
+    plan, _ = small_plan
+    home = home_folder(tmp_path / "dft", {"h1": ["R1"]})
+    monkeypatch.setattr(W.A, "corpus_cells", lambda: pytest.fail("data was read before the request was checked"))
+    with pytest.raises(SystemExit, match=r"no h2/ids\.txt"):
+        W.main(["--hosts", "h1,h2", "--out", str(tmp_path / "wave2"), "--plan", str(plan), "--home", str(home)])

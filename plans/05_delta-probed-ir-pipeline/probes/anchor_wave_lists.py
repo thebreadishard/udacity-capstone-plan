@@ -20,6 +20,9 @@ output folder is refused, so a list a server is already working on is never rewr
 where a running wave reads its own list: a later wave therefore takes a list name of its own (`--list-name wave2.txt`), and the name
 of an earlier wave's list is refused. The dealing starts every server at zero hours: what a server still has to do of an earlier
 wave is not counted.
+With `--home <a DFT batch's folder>` nothing is dealt by hours: every molecule goes to the server whose `<folder>/<host>/ids.txt`
+lists it — the server that optimised it and computes its MP2 rows, so that `probes/collect_anchor.sh <host> <id>` finds the CC run
+and the rows together. A molecule no such list holds is refused.
 
     python probes/anchor_wave_lists.py --hosts anc1,anc2,anc3,anc4,anc5 --out probes/results_m1/anchor_waves_2026-11-21
     python probes/anchor_wave_lists.py --hosts … --out <wave 2's folder> --earlier probes/results_m1/anchor_waves_2026-11-21 \
@@ -143,6 +146,32 @@ def deal(items: list[Candidate], hosts: list[str]) -> dict[str, list[Candidate]]
     return {h: cheapest_first(items_h) for h, items_h in lists.items()}
 
 
+def home_hosts(folder: Path, hosts: list[str]) -> dict[str, str]:
+    """Molecule → the host whose `<folder>/<host>/ids.txt` lists it (first field of a line; `#` lines and empty lines skipped).
+    A host without that file and a molecule listed for two hosts are refused."""
+    homes: dict[str, str] = {}
+    for host in hosts:
+        ids = folder / host / "ids.txt"
+        if not ids.is_file():
+            raise SystemExit(f"--home {folder}: no {host}/ids.txt in it")
+        for line in ids.read_text(encoding="utf-8").splitlines():
+            mol_id = line.split("|", 1)[0].strip()
+            if not mol_id or mol_id.startswith("#"):
+                continue
+            if mol_id in homes:
+                raise SystemExit(f"--home {folder}: {mol_id} is listed for {homes[mol_id]} and for {host}")
+            homes[mol_id] = host
+    return homes
+
+
+def stay_home(items: list[Candidate], hosts: list[str], homes: dict[str, str]) -> dict[str, list[Candidate]]:
+    """Every molecule on its home host, each host's list cheapest first; a molecule without a home is refused by name."""
+    homeless = sorted(c.mol_id for c in items if c.mol_id not in homes)
+    if homeless:
+        raise SystemExit(f"{len(homeless)} molecules are in no host's ids.txt of --home, so no server holds their MP2 rows: {homeless}")
+    return {h: [c for c in cheapest_first(items) if homes[c.mol_id] == h] for h in hosts}
+
+
 def wave_line(c: Candidate) -> str:
     return f"{c.mol_id}|{REMOTE_GEOMS}/{c.mol_id}/geometry.json|{WORKERS}|{THREADS}|{MEM_MB}"
 
@@ -176,8 +205,9 @@ def write_lists(out: Path, lists: dict[str, list[Candidate]], corpus_molecules: 
         (folder / list_name).write_text("".join(wave_line(c) + "\n" for c in items), encoding="utf-8", newline="\n")
 
 
-def checked_request(args: argparse.Namespace) -> tuple[list[str], list[Path], Path]:
-    """The hosts, the earlier waves' lists and the staging folder of a request, each refused here before any data is read."""
+def checked_request(args: argparse.Namespace) -> tuple[list[str], list[Path], Path, dict[str, str] | None]:
+    """The hosts, the earlier waves' lists, the staging folder and the molecules' home hosts (None without `--home`) of a
+    request, each refused here before any data is read."""
     hosts = [h for h in args.hosts.split(",") if h]
     if not hosts:
         raise SystemExit("--hosts names no host")
@@ -195,7 +225,8 @@ def checked_request(args: argparse.Namespace) -> tuple[list[str], list[Path], Pa
     if args.list_name in taken:
         raise SystemExit(f"--list-name {args.list_name} is the name of an earlier wave's list ({', '.join(taken)}): copied to the "
                          "server it would replace a list a wave is reading — give this wave its own, such as wave2.txt")
-    return hosts, earlier, staging
+    homes = home_hosts(args.home, hosts) if args.home is not None else None
+    return hosts, earlier, staging, homes
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -206,8 +237,10 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--earlier", type=Path, action="append", default=[],
                     help="the output folder of an earlier wave (repeatable): its molecules are not dealt again")
     ap.add_argument("--list-name", default=LIST_NAME, help="the list's file name in every host folder; a later wave needs its own")
+    ap.add_argument("--home", type=Path,
+                    help="a DFT batch's folder: each molecule goes to the host whose <folder>/<host>/ids.txt lists it, not by hours")
     args = ap.parse_args(argv)
-    hosts, earlier, staging = checked_request(args)
+    hosts, earlier, staging, homes = checked_request(args)
     plan = json.loads(args.plan.read_text(encoding="utf-8"))
     rows = A.corpus_cells()
     statuses = registry_statuses()
@@ -215,7 +248,7 @@ def main(argv: list[str] | None = None) -> int:
     all_candidates = candidates(plan, {i: r["smiles"] for i, r in rows.items()})
     part = partition(all_candidates, {i for i, held in statuses.items() if "carried" in held}, wave_ids(earlier),
                      lambda c: is_ready(rows[c.mol_id]["status"], corpus_molecules / c.mol_id))
-    lists = deal(part.ready, hosts)
+    lists = deal(part.ready, hosts) if homes is None else stay_home(part.ready, hosts, homes)
     text = report(lists, part, statuses)
     staging.mkdir(parents=True)
     write_lists(staging, lists, corpus_molecules, args.list_name)
