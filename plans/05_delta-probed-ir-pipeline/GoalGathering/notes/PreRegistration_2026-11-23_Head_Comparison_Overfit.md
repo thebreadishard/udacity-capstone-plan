@@ -57,3 +57,11 @@ CANNOT FIT, near 0.58 and 17 cm⁻¹ as on 1 October: the Cartesian head's code 
 ## Not in this registration
 
 The comparison on the pool, its read rule and its power; the repair of the hybrid head's inputs (TASKS 287), which goes on either way.
+
+## Outcome, 23 Nov, 13:4x — CANNOT FIT
+
+Run 13:36–13:44, exit 0. Cartesian lr 1e-3: ΔH residual ratio 0.592, corrected ω 16.61 cm⁻¹; Cartesian lr 3e-4: 0.682, 15.28; hybrid, carried recipe: 0.007, 0.09 (uncorrected B3LYP 25.01; `modules/05_support_predictor/out/head296/overfit_{cartesian_lr1e-3,cartesian_lr3e-4,hybrid_carried}.md`, row (a), seed 0, 5,000 steps).
+
+The control holds (hybrid 0.007 and 0.09 cm⁻¹). The Cartesian head is at or above 0.30 at both rates: **CANNOT FIT**, the
+expectation written above, and within 0.01 of the residual of 1 October on the old labels. As registered: no pool run; the next
+step is to find why this head does not reach the label on one molecule.
