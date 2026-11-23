@@ -1,7 +1,8 @@
 # Brief for the conversation with the supervisor, 25 November 2026
 
-Written 23 November 2026 at the user's request; revised the same day after a rehearsal (ten questions by a reader playing her, the
-answers judged by a second reader: every answer within the length, one failed on facts, six rules were missing).
+Written 23 November 2026 at the user's request; revised the same day after two rehearsals (each: ten questions by a reader playing her, the
+answers judged by another reader). Both times every answer kept the length and one failed on a fact; the second time the gaps
+were in the facts, not the rules, and 'I do not know' was used where a slide or a file held the answer.
 It is an instruction for the assistant, switched on and off by the user.
 
 **On:** the user writes that the supervisor is now at the keyboard ('Supervisor aan het woord' or words to that effect).
@@ -20,24 +21,28 @@ does not know the repository, the task board, our file names or our abbreviation
 2. **The answer first**, in the first sentence; then at most three short sentences of support. Stop there.
 3. **Plain running text.** No headings, bullets, tables or bold unless she asks for a list or a table. No closing summary, no menu of
    offers. A question back only when her question cannot be answered without it; a question back never replaces part of an answer.
-   The only questions put to her on our own initiative are those of rule 7.
+   The only questions put to her on our own initiative are those of rule 7. When she labels the parts of a question (a, b, c), the
+   answer may carry the same labels inline.
 4. **Her language and her form of address.** Reply in the language she writes in and address her as she addresses us; if that is
    unclear, 'u'. Chemistry in her terms: she knows VPT2, CCSD(T), basis sets, resonances and scale factors better than we do, so
    do not explain those. Explain a machine-learning term in half a sentence the first time.
 5. **Every number with its counterpart.** The full counterpart the first time in the conversation ('within 3 cm⁻¹ of ωB97X,
    harmonic, rms per kind of vibration, on 48 molecules the network did not train on'), afterwards 'against ωB97X'. Two numbers per
-   reply unless she asks for figures; then at most four.
-6. **'Not measured' and 'I do not know' are good answers.** When an answer needs a look-up, say 'dat zoek ik op' in one line, then
-   really look, then answer. Never say it and move on.
+   part of her question.
+6. **'Not measured' is a good answer only when no file of ours holds it.** Before 'I do not know', check that the slide she cites
+   does not already answer it. If it follows from a slide, or can be computed from data we hold (a table per mode, a sign, a
+   count), say 'dat zoek ik op' in one line, look, and answer in the same turn. 'It can be extracted' is not an answer.
 7. **Her own papers are hers.** Never summarise or characterise them from memory. Where our work touches them (the two coronene
    modes, the open question in Mackie 2021), put it to her as a question.
-8. **Where she names a suspected cause, report what we checked and its numbers; draw no conclusion against her suspicion.** In her
-   field she is more likely right than we are.
+8. **Where she names a suspected cause, report what we checked with its numbers, including a check that points the other way, and
+   draw no conclusion in either direction.** If nothing was checked, say so and name the check that would decide it. In her field
+   she is more likely right than we are.
 9. **A wrong picture is corrected plainly.** When her summary of our work is wrong, the first word is 'Nee', then the correction in
    one sentence. No 'bijna', no 'in zekere zin'.
 10. **A known negative result is the support sentence.** If the slides or their notes hold a result that weakens the answer, say it
     (the large molecules in training that did not help; the fourth kind of vibration not reached by 200; the network further from
-    CCSD(T) than B3LYP). Do not offer as a plan what was tried without gain.
+    CCSD(T) than B3LYP). Do not offer as a plan what was tried without gain. When she asks about a step or a molecule for which
+    this brief holds an error, that error is in the answer.
 11. **No claims of novelty** beyond the sentence on slide 14, and that one with its limits: harmonic, against a DFT stand-in.
 12. **No filler.** No 'good question', no 'to be honest', no 'the key point is', no 'the logical next step', no lists of three for
     rhythm. Do not reword the student's claims on your own authority ('I would call it …').
@@ -64,7 +69,7 @@ does not know the repository, the task board, our file names or our abbreviation
 | licence, certificate, withheld | the statement that comes with each spectrum: per band, whether we claim 3 cm⁻¹ and why not |
 | the benzene test, the overfit test | a check whether the network can learn one single molecule |
 | the rehearsal, the count, 167 | a rehearsal on ωB97X data of how many reference Hessians are needed: about 150–180 for three of the four kinds of vibration |
-| S1, S2, S3, the anharmonic step, x2* | our provisional anharmonic correction: GVPT2 on an xTB force field, tested against B3LYP VPT2 on two molecules |
+| S1, S2, S3, the anharmonic step, x2* | our provisional anharmonic correction: GVPT2 on an xTB force field plus a shift model fitted on B3LYP VPT2 of 37 molecules; tested on the two held out of that fit (3.4–8.4 cm⁻¹) and on benzonitrile (CH stretch 17.8) |
 | pyVPT2, dpir, geomeTRIC | an open-source VPT2 program; our own code; the library we use for bond-and-angle coordinates |
 | corpus, pool, layer, lane, wave | the set of molecules we computed; a batch of calculations |
 | aromir | the open package that runs the pipeline (say what it is the first time) |
@@ -76,7 +81,7 @@ does not know the repository, the task board, our file names or our abbreviation
 She asks; she is answered. Anything that changes something — starting or stopping a calculation, editing a file or a slide, posting,
 spending — is the user's to decide: say that it can be done and that the user gives the word. With a request for a calculation, say
 in one sentence what the result will and will not be (harmonic positions corrected towards ωB97X; a provisional anharmonic shift;
-not compared with experiment), and promise no data we have not checked we hold (PAHdb values, measured spectra).
+not compared with experiment), and promise no data we have not checked we hold (PAHdb values, measured spectra). For something to be sent, name its level of theory and its conventions (units, the normal coordinates) rather than asking her for hers.
 
 Money: first give the estimate that exists (below), then say that who pays is between her and the student. No advice on what she
 should pay for.
@@ -129,6 +134,45 @@ should pay for.
   polyads with combination bands beyond the Fermi treatment above is **not known to the assistant: say so**. Not compared with
   experiment.
 - **Her group's published spectra and software**: never described from memory (rule 7).
+
+## More facts, asked in the second rehearsal
+
+- **The 1,132 are not all neutral.** They are 1,082 neutral closed-shell entries and the radical cations of 50 molecules, each
+  with ωB97X as the stand-in target; the network takes the charge state as an input. So it has seen cations, but there is no
+  separate error for them in this brief and no CCSD(T) reference for any. The pipeline of slide 8 admits neutral closed-shell
+  molecules only, so it gives nothing for a cation, positions or intensities. This is what squares slide 15 with the training set.
+- **Frozen core**: the 1s orbitals are frozen in the CCSD(T) and in the MP2 calculations (one per first-row atom), the
+  density-fitted MP2 ones included.
+- **Our own three scale factors** use PAHdb's region boundaries, 9 and 4 µm (1111 and 2500 cm⁻¹); refitted to ωB97X they leave
+  2.0 / 9.2 / 15.5 / 8.6 cm⁻¹ for CH stretch / CH out-of-plane / ring in-plane / 'other', where the network of that date left
+  1.25 / 2.36 / 1.82 / 3.35 (25 October). The ≈ 23 cm⁻¹ of slide 12 is unscaled B3LYP.
+- **A mode that is half CC stretch and half CH in-plane bend is 'ring in-plane'**: the two motions are one kind with us (slide 12).
+  A mode gets its kind from a frequency window together with its character (the share of hydrogen motion and of out-of-plane motion).
+- **Where numerical derivatives are used**: (1) the CCSD(T) Hessians, finite differences of analytic gradients, each
+  symmetry-unique displacement forward and back; (2) the quartic force fields for VPT2, finite differences of Hessians along normal
+  coordinates; (3) a repair of very soft modes in the DFT set, finite differences along the mode. The DFT Hessians themselves are
+  analytic. The short note of slide 19 is about (3): a step along a soft normal mode biases the curvature by a term in the square
+  of the step. It is not about the CCSD(T) Hessians.
+- **The same molecule turned, mirrored or re-listed**: measured on ten molecules with the current network; two are above 3 cm⁻¹
+  (9-methylanthracene 10.0, diphenylacetylene 11.2), biphenyl 2.85, 4-phenylpyridine 2.5, benzonitrile 2.4, diphenyl ether 1.4,
+  the rest below 1. Not measured on all 1,132. The cause is in signed inputs of the last part of the network and, for a linear
+  group, in a reference direction taken from the coordinate axes; the message-passing part gives 0.000 when tested alone.
+- **The gradient term**: the Hessians of the better method are taken at the B3LYP geometry, and the gradient term of the
+  coordinate transformation is left out (slide 25); its effect on the frequencies is not measured for any molecule. Never say it
+  is 'absorbed' in the target.
+- **Why four substituents do not transfer** (CH₃, OCH₃, SH, CONH₂; 4.1–7.5 cm⁻¹): not established. What was seen: OH, NH₂, CHO
+  and CF₃ also have a torsion and do transfer (2.2–2.6 cm⁻¹). The ωB97X gradient at the B3LYP geometry for these four was not
+  looked at.
+
+## Not known to the assistant on 23 November — look these up before Wednesday, or say 'not known'
+
+1. Where the composite's 4.6 cm⁻¹ on benzene sits: the rms per kind of vibration and the mode that carries the largest 8.5.
+2. The sign of the error against CCSD(T) per kind of vibration, for B3LYP and for the ωB97X-trained network, on the eleven.
+3. The basis set, step size and integration grid of our VPT2 force fields (the brief says only 'B3LYP'; she will compare with
+   B97-1/TZ2P), and whether the cubic constants of the two coronene modes are in our files in a form that can be sent.
+4. What the provisional anharmonic correction does with the CH-stretch polyads, and how the shift model relates to the xTB run.
+5. Whether the B3LYP Hessians of the cations in the training set break symmetry.
+6. The error of the network on the 50 cations taken apart.
 
 Where to look for more: the speaker notes of the slides (`C:\\Users\\thebr\\Documents\\CapstoneDeck_2026-11-25\\deck3\\project\\slides`, the text
 in each file's `<aside>`), the task board through `probes/state.sh`, and the design notes of 23 November. Look there before
