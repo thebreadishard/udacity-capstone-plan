@@ -96,3 +96,30 @@ def test_main_refuses_an_existing_out_folder(tmp_path):
 def test_main_refuses_a_host_named_twice(tmp_path):
     with pytest.raises(SystemExit, match="named twice"):
         W.main(["--hosts", "h1,h1", "--out", str(tmp_path / "new")])
+
+
+def test_earlier_wave_ids_are_the_first_fields_of_every_hosts_wave(tmp_path):
+    for host, names in (("h1", ["M1", "M2"]), ("h2", ["M3"])):
+        (tmp_path / host).mkdir()
+        (tmp_path / host / "wave.txt").write_text("".join(W.wave_line(cand(n, 1.0)) + "\n" for n in names), encoding="utf-8")
+    (tmp_path / "plan.md").write_text("not a wave", encoding="utf-8")
+    assert W.earlier_wave_ids([tmp_path]) == {"M1", "M2", "M3"}
+    assert W.earlier_wave_ids([]) == set()
+
+
+def test_earlier_wave_ids_refuse_a_folder_without_a_wave_list(tmp_path):
+    (tmp_path / "h1").mkdir()
+    with pytest.raises(SystemExit, match=r"no <host>/wave\.txt"):
+        W.earlier_wave_ids([tmp_path])
+
+
+def test_an_empty_wave_list_of_a_host_counts_as_a_list(tmp_path):
+    (tmp_path / "h1").mkdir()
+    (tmp_path / "h1" / "wave.txt").write_text("", encoding="utf-8")
+    assert W.earlier_wave_ids([tmp_path]) == set()
+
+
+def test_report_names_what_an_earlier_wave_holds():
+    text = W.report({"h1": [cand("M9", 2.0)]}, ["C1"], [], ["M1", "M2"])
+    assert "dealt in an earlier wave and not carried yet: 2 (M1, M2)" in text
+    assert "dealt in an earlier wave and not carried yet: 0 (none)" in W.report({"h1": []}, [], [])
