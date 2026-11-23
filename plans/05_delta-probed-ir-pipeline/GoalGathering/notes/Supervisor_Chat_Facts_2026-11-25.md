@@ -162,8 +162,9 @@ Every number here has its source in the project's records as found on 23 Novembe
   to 8), the expected Jahn–Teller distortion; fluoranthene⁺ lost its two-fold axis (atoms up to 0.2 bohr from the symmetric
   place), which was not expected and is not explained; nine substituted ones lost an operation, four of them by less than
   0.05 bohr. (c) 5 of 60 cation labels have an imaginary B3LYP mode and 4 an imaginary ωB97X mode (−53 to −161 cm⁻¹ for the
-  three looked at), so those are not minima or the finite-difference Hessian is noisy there; whether the training uses them
-  was not checked. Not looked at: ⟨S²⟩ (it is not in the stored records).
+  three looked at), so those are not minima or the finite-difference Hessian is noisy there. The training does not use them:
+  the loader leaves out every molecule with an imaginary mode at either level, 7 of the 60 cations (read in the
+  code on 23 November). Not looked at: ⟨S²⟩ (it is not in the stored records).
 - **The network's error on cations taken apart** (23 November, the settings search's selection molecules, three seeds, corrected
   harmonic frequencies against ωB97X; `probes/results_m1/supervisor_facts_2026-11-23/``cation_error.txt`): 11 cations 6.5 cm⁻¹ against 2.9 for 158 neutrals (rms over
   molecules of the seed mean; 6.1 against 2.6 counted per read). It is not one outlier: the eleven lie between 4.7 and 12.5
