@@ -172,6 +172,13 @@ def stay_home(items: list[Candidate], hosts: list[str], homes: dict[str, str]) -
     return {h: [c for c in cheapest_first(items) if homes[c.mol_id] == h] for h in hosts}
 
 
+def request_line(args: argparse.Namespace) -> str:
+    """How the lists were made, for plan.md: two folders of the same molecules differ in this line."""
+    how = "by rule hours" if args.home is None else f"by home (each molecule on the host of `{args.home.as_posix()}/<host>/ids.txt`)"
+    earlier = ", ".join(f"`{p.as_posix()}`" for p in args.earlier) or "none"
+    return f"Dealt {how}; list name `{args.list_name}`; earlier waves left out: {earlier}.\n"
+
+
 def wave_line(c: Candidate) -> str:
     return f"{c.mol_id}|{REMOTE_GEOMS}/{c.mol_id}/geometry.json|{WORKERS}|{THREADS}|{MEM_MB}"
 
@@ -249,7 +256,7 @@ def main(argv: list[str] | None = None) -> int:
     part = partition(all_candidates, {i for i, held in statuses.items() if "carried" in held}, wave_ids(earlier),
                      lambda c: is_ready(rows[c.mol_id]["status"], corpus_molecules / c.mol_id))
     lists = deal(part.ready, hosts) if homes is None else stay_home(part.ready, hosts, homes)
-    text = report(lists, part, statuses)
+    text = report(lists, part, statuses) + request_line(args)
     staging.mkdir(parents=True)
     write_lists(staging, lists, corpus_molecules, args.list_name)
     (staging / "needs_dft.txt").write_text("".join(c.mol_id + "\n" for c in part.needs_dft), encoding="utf-8", newline="\n")

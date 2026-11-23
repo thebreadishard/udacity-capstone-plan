@@ -269,6 +269,8 @@ def test_main_with_home_keeps_a_molecule_on_its_own_server(small_plan, tmp_path)
     assert (tmp_path / "by_home" / "h1" / "wave2.txt").read_text() == ""
     assert (tmp_path / "by_home" / "h2" / "wave2.txt").read_text().startswith("R1|")
     assert (tmp_path / "by_home" / "h2" / "geoms" / "R1" / "geometry.json").is_file()
+    assert "Dealt by rule hours; list name `wave2.txt`; earlier waves left out: `" in (tmp_path / "by_hours" / "plan.md").read_text()
+    assert f"Dealt by home (each molecule on the host of `{home.as_posix()}/<host>/ids.txt`)" in (tmp_path / "by_home" / "plan.md").read_text()
 
 
 def test_main_refuses_a_home_folder_without_a_hosts_ids_before_reading_data(small_plan, tmp_path, monkeypatch):
