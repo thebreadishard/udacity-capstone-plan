@@ -14,7 +14,9 @@ Every number here has its source in the project's records as found on 23 Novembe
 - Beyond the training sizes: 7.9 cm⁻¹ rms over all modes on four molecules of 36–60 atoms (24–42 carbon atoms: coronene,
   peropyrene, ovalene, hexabenzocoronene); B3LYP 22.8. Adding five large molecules to the training left it at 7.8. Nothing tested
   reaches 50 carbon atoms (slides 12, 15).
-- CCSD(T) reference Hessians: 11 done (benzene full CCSD(T)/cc-pVTZ, ten composite), 32 running on five rented servers, 167
+- CCSD(T) reference Hessians: the slides say 11 done (benzene full CCSD(T)/cc-pVTZ, ten composite) and 32 running on five rented
+  servers. **Since the PDF was sent, seven of those 32 have finished and passed their checks: 18 on 23 November**, and the DFT
+  step for the remaining molecules of the plan is done (122 of 128 usable; six have an imaginary mode and are redone). 167
   planned, about 300 as an estimate with 'other' and first cations (slides 10, 11, 20, 21).
 - The 167: from a rehearsal on ωB97X data, a simpler task than the real step; CH out-of-plane crosses 3 cm⁻¹ at 167 (153–177);
   'other' does not by 200 (3.6); the priced 167 are the cheapest molecules, not the random draw of the rehearsal. The first read
@@ -117,8 +119,8 @@ Every number here has its source in the project's records as found on 23 Novembe
   theory; whether the force field itself is right (basis, grid, the step) is the open question, and hers to judge. Three other
   molecules of our set with such modes could not be solved this way.
 - **Coronene's force field on disk**: per molecule a file with the cubic and semi-diagonal quartic constants in reduced normal
-  coordinates (cm⁻¹) and one with the full semi-diagonal quartic tensor, beside the displaced Hessians; the exact folder of
-  coronene's was not located on 23 November. Find it before promising to send it.
+  coordinates (cm⁻¹) and one with the full semi-diagonal quartic tensor, beside the displaced Hessians; coronene's is
+  `probes/results_m1/routea_server_2026-11-10/routea/coronene/G/qff_report.npz` (found 23 November); its contents were not opened, so check the arrays before promising to send them.
 - **Cations in the training set, what is on record**: 50 radical cations with ωB97X targets. No error for the cations taken apart
   is in the release's records; the search for the training settings read, on its own selection molecules, 6.1 cm⁻¹ for cations against 2.6 for neutrals (corrected harmonic frequencies against ωB97X, 33 and 474 reads, 23 November). One thing was seen (17 November): with the benzene cation in the training, the network gave
   neutral benzene part of the cation's correction (CH out-of-plane 8.7 cm⁻¹ against 1.6 without the cations); the test molecules'
@@ -129,7 +131,6 @@ Every number here has its source in the project's records as found on 23 Novembe
 
 1. Which single mode carries the composite's largest deviation of 8.5 cm⁻¹ on benzene.
 2. The signed error against CCSD(T) per mode on all eleven (only the ratio per kind of vibration on nine is on record).
-3. The folder that holds coronene's force field (its format is known, see above).
 4. Whether the B3LYP Hessians of the cations in the training set break symmetry: not looked at by anyone; a small check.
 5. The error of the network on the 50 cations taken apart: not computed; a read on stored results.
 

@@ -286,6 +286,97 @@
    "checks": "MP2 row symmetry spread 2.7e-05 / 4.1e-05; basis step rms 6.4e-03; softest 157, 204 cm⁻¹",
    "note": "chain 33c promotion rule: VALID",
    "sha16": "f010282656477ac9"
+  },
+  {
+   "mol_id": "A_76e053ce6a",
+   "name": "indole",
+   "path": "probes/results_m1/new_anchors_2026-11/A_76e053ce6a/composite_A_76e053ce6a.npz",
+   "level": "CCSD(T)/cc-pVDZ + [DF-MP2 psi4 1.11 (cc-pvtz-jkfit / cc-pvtz-ri, frozen 9): cc-pVTZ − cc-pVDZ]",
+   "tier": "TZ",
+   "kind": "composite",
+   "status": "carried",
+   "date": "2026-11-23",
+   "checks": "MP2 row symmetry spread 5.2e-05 / 4.8e-05; basis step rms 6.4e-03; softest 210, 234 cm⁻¹",
+   "note": "chain 33c promotion rule: VALID",
+   "sha16": "9c33aaf9a2e05a56"
+  },
+  {
+   "mol_id": "B_0a7c8c539f",
+   "name": "pyridine+F+F",
+   "path": "probes/results_m1/new_anchors_2026-11/B_0a7c8c539f/composite_B_0a7c8c539f.npz",
+   "level": "CCSD(T)/cc-pVDZ + [DF-MP2 psi4 1.11 (cc-pvtz-jkfit / cc-pvtz-ri, frozen 8): cc-pVTZ − cc-pVDZ]",
+   "tier": "TZ",
+   "kind": "composite",
+   "status": "carried",
+   "date": "2026-11-23",
+   "checks": "MP2 row symmetry spread 2.3e-05 / 2.1e-05; basis step rms 7.4e-03; softest 215, 252 cm⁻¹",
+   "note": "chain 33c promotion rule: VALID",
+   "sha16": "d58de52c0eb7104f"
+  },
+  {
+   "mol_id": "B_0d3f41fdd7",
+   "name": "pyridine+F+F",
+   "path": "probes/results_m1/new_anchors_2026-11/B_0d3f41fdd7/composite_B_0d3f41fdd7.npz",
+   "level": "CCSD(T)/cc-pVDZ + [DF-MP2 psi4 1.11 (cc-pvtz-jkfit / cc-pvtz-ri, frozen 8): cc-pVTZ − cc-pVDZ]",
+   "tier": "TZ",
+   "kind": "composite",
+   "status": "carried",
+   "date": "2026-11-23",
+   "checks": "MP2 row symmetry spread 2.9e-05 / 2.8e-05; basis step rms 7.2e-03; softest 220, 244 cm⁻¹",
+   "note": "chain 33c promotion rule: VALID",
+   "sha16": "138b7dd303e42e22"
+  },
+  {
+   "mol_id": "B_119d605f16",
+   "name": "pyridine+F+Cl",
+   "path": "probes/results_m1/new_anchors_2026-11/B_119d605f16/composite_B_119d605f16.npz",
+   "level": "CCSD(T)/cc-pVDZ + [DF-MP2 psi4 1.11 (cc-pvtz-jkfit / cc-pvtz-ri, frozen 12): cc-pVTZ − cc-pVDZ]",
+   "tier": "TZ",
+   "kind": "composite",
+   "status": "carried",
+   "date": "2026-11-23",
+   "checks": "MP2 row symmetry spread 1.4e-05 / 1.2e-05; basis step rms 7.0e-03; softest 161, 220 cm⁻¹",
+   "note": "chain 33c promotion rule: VALID",
+   "sha16": "43617ab3bb4a9eca"
+  },
+  {
+   "mol_id": "B_00e041576d",
+   "name": "pyridine+SH",
+   "path": "probes/results_m1/new_anchors_2026-11/B_00e041576d/composite_B_00e041576d.npz",
+   "level": "CCSD(T)/cc-pVDZ + [DF-MP2 psi4 1.11 (cc-pvtz-jkfit / cc-pvtz-ri, frozen 11): cc-pVTZ − cc-pVDZ]",
+   "tier": "TZ",
+   "kind": "composite",
+   "status": "carried",
+   "date": "2026-11-23",
+   "checks": "MP2 row symmetry spread 1.4e-05 / 1.4e-05; basis step rms 6.6e-03; softest 170, 275 cm⁻¹",
+   "note": "chain 33c promotion rule: VALID",
+   "sha16": "3c7874e83e5e330f"
+  },
+  {
+   "mol_id": "B_1ed01fda1b",
+   "name": "benzene+Cl",
+   "path": "probes/results_m1/new_anchors_2026-11/B_1ed01fda1b/composite_B_1ed01fda1b.npz",
+   "level": "CCSD(T)/cc-pVDZ + [DF-MP2 psi4 1.11 (cc-pvtz-jkfit / cc-pvtz-ri, frozen 11): cc-pVTZ − cc-pVDZ]",
+   "tier": "TZ",
+   "kind": "composite",
+   "status": "carried",
+   "date": "2026-11-23",
+   "checks": "MP2 row symmetry spread 1.3e-05 / 1.0e-05; basis step rms 7.0e-03; softest 189, 289 cm⁻¹",
+   "note": "chain 33c promotion rule: VALID",
+   "sha16": "ef56b05bbf7494ae"
+  },
+  {
+   "mol_id": "B_02d75f732a",
+   "name": "pyridine+OH",
+   "path": "probes/results_m1/new_anchors_2026-11/B_02d75f732a/composite_B_02d75f732a.npz",
+   "level": "CCSD(T)/cc-pVDZ + [DF-MP2 psi4 1.11 (cc-pvtz-jkfit / cc-pvtz-ri, frozen 7): cc-pVTZ − cc-pVDZ]",
+   "tier": "TZ",
+   "kind": "composite",
+   "status": "carried",
+   "date": "2026-11-23",
+   "checks": "MP2 row symmetry spread 2.4e-05 / 2.2e-05; basis step rms 6.8e-03; softest 214, 412 cm⁻¹",
+   "note": "chain 33c promotion rule: VALID",
+   "sha16": "64f00db190c3d558"
   }
  ]
 }
