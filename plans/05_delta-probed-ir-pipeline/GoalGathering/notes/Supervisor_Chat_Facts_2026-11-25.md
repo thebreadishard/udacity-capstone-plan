@@ -90,7 +90,12 @@ Every number here has its source in the project's records as found on 23 Novembe
   13.3. So the largest part is in the CH out-of-plane modes. The single largest deviation, 8.5 cm⁻¹, is the out-of-plane mode at 709
   cm⁻¹ in CCSD(T)/cc-pVTZ, which the composite puts at 700 (23 November, both stored Hessians diagonalised and paired by mode
   overlap: rms 4.61 over the 30 modes, the same per kind; `probes/results_m1/supervisor_facts_2026-11-23/benzene_mode.txt`).
-  Its symmetry label was not determined. All six out-of-plane modes come out too low in the composite: −8.5, −7.8 (a pair),
+  Its label is a2u, the infrared-active CH wag in which all six hydrogens move to the same side: odd under inversion (−1.00),
+  even under the six-fold rotation (+1.00), fully out of plane (`probes/results_m1/supervisor_facts_2026-11-23/benzene_mode_label.txt`). The
+  other single out-of-plane mode, b2g (even under inversion, odd under the six-fold rotation), is at 674 cm⁻¹ in our
+  CCSD(T)/cc-pVTZ Hessian. So in our harmonic reference a2u lies above b2g (709 / 674), while the measured fundamentals are
+  the other way round (a2u 673, b2g 707, from memory): not explained, and not checked against published harmonic CCSD(T)
+  values. If she raises it: it was seen on 23 November and is being looked at; do not defend the order. All six out-of-plane modes come out too low in the composite: −8.5, −7.8 (a pair),
   −7.3 (a pair), −4.9. The largest in-plane deviations are +5.7 at 1336 and −5.1 at 1378. On her point
   about MP2 and out-of-plane modes: anthracene's CCSD(T)/cc-pVDZ Hessian came out with an imaginary out-of-plane mode (−51 cm⁻¹,
   B3LYP 92), the small-basis arene artefact, so from three rings on the out-of-plane basis step is a repair, not a refinement;
@@ -157,7 +162,8 @@ Every number here has its source in the project's records as found on 23 Novembe
 
 ## Not known to the assistant on 23 November — look these up before Wednesday, or say 'not known'
 
-1. The symmetry label of the benzene mode at 709 cm⁻¹ that carries the composite's largest deviation.
+1. Why our CCSD(T)/cc-pVTZ harmonic Hessian of benzene has a2u (709) above b2g (674), against the order of the measured
+   fundamentals, and what published harmonic CCSD(T) values say.
 2. The signed error against CCSD(T) per single mode (per kind of vibration and per molecule it is known, on 18).
 3. ⟨S²⟩ of the cations' B3LYP wavefunctions, and why fluoranthene⁺ lost its two-fold axis.
 4. The network's error on cations of one and two rings (the eleven read are three- and four-ring cations).
