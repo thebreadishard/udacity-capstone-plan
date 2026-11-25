@@ -11,7 +11,8 @@
          with --frozen-core <n>, that many frozen orbitals instead of the plan's (0: all electrons, for a core-valence term).
          with --only-row <k> (repeatable), those of the plan's rows only; the end line is then '=== DF ROWS PARTIAL' unless the
          file is complete, and the exit code is 0 either way — a caller reads the end line.
-         with --theory scf, the DF-SCF gradient's rows instead (a basis-set-limit recipe extrapolates the correlation part alone).
+         with --theory scf, the DF-SCF gradient's rows instead (a basis-set-limit recipe extrapolates the correlation part alone);
+         such a file keeps the plan's frozen count as every row file does, though SCF has no use for it.
          A basis psi4 does not ship is a file in a folder named in the environment's PSIPATH, called as psi4 looks for it: the
          name in lower case with + as p and * as s, then .gbs; its fitting sets must then always be named.
          A file that holds rows of another level, plan, state, step or geometry than the call's is refused, and so is an
@@ -20,7 +21,8 @@
          (its symmetry-unique displacements, frozen core by the element rule, the anchors' step 0.005 bohr, spherical functions):
              python probes/dfmp2_rows.py rows --geometry <corpus geometry.json> --basis cc-pvtz --out <df.npz>
   water  check W: the analytic DF-MP2 gradient (frozen 1s) against 5-point finite differences of the DF-MP2 energy, cc-pVDZ and cc-pVTZ, at
-         a stretched water; line max |Δg| ≤ 1e-6 Eh/bohr on both. Exit 1 when it fails.
+         a stretched water; line max |Δg| ≤ 1e-6 Eh/bohr on both. Exit 1 when it fails. With --theory scf, the same for the DF-SCF
+         gradient.
              python probes/dfmp2_rows.py water --out <result.json>
 
 Both modes take --charge and --multiplicity (default 0 and 1). An open shell (multiplicity > 1) runs UHF DF-MP2 through psi4's DFOCC

@@ -44,6 +44,6 @@ $S "cd $DEST && cut -d'|' -f1,2 /root/dpir/wave.txt > list_wave.txt \
 echo "[$(t) $NAME] 3. check W (water, DF-MP2 analytic gradient against finite differences) under a 2048 MB cap"
 $S "mkdir -p $DEST/check_w /root/psi4_scratch && cd $DEST && PSI_SCRATCH=/root/psi4_scratch OMP_NUM_THREADS=2 CAP_SCOPE=system \
     bash probes/wsl_capped.sh 2048 -- $QC probes/dfmp2_rows.py water --out check_w/water.json --threads 2 --memory-gb 1 > check_w/water.log 2>&1; \
-    grep -a 'water cc-pv\\|WATER CHECK' check_w/water.log; grep -qa '=== WATER CHECK PASS' check_w/water.log" < /dev/null \
+    grep -a 'water .*cc-pv\\|WATER CHECK' check_w/water.log; grep -qa '=== WATER CHECK PASS' check_w/water.log" < /dev/null \
   || { echo "CHECK W FAILED on $NAME — see $DEST/check_w/water.log; no MP2 rows are computed there"; exit 1; }
 echo "[$(t) $NAME] DEPLOY DONE"

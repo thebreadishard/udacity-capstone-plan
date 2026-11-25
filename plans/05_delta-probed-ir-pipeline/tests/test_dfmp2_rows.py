@@ -406,3 +406,30 @@ def test_check_w_runs_for_the_theory_named(tmp_path, monkeypatch, theory):
     assert R.main(["water", "--out", str(out), "--theory", theory]) == 0
     result = json.loads(out.read_text(encoding="utf-8"))
     assert set(names) == {theory} and result["theory"] == theory and result["passed"] is True
+
+
+def test_an_open_shell_file_resumes_and_is_refused_for_the_neutral(tmp_path, monkeypatch):
+    fake = FakePsi4()
+    like, geom, out = setup(tmp_path, monkeypatch, fake)
+    argv = ["rows", "--like", str(like), "--symbols-from", str(geom), "--out", str(out)]
+    cation = [*argv, "--charge", "1", "--multiplicity", "2"]
+    assert R.main([*cation, "--only-row", "0"]) == 0
+    with pytest.raises(SystemExit, match="holds rows of"):
+        R.main(argv)
+    assert R.main(cation) == 0 and fake.calls == 6
+
+
+def test_the_scf_rows_take_a_named_fitting_set(tmp_path, monkeypatch):
+    fake = FakePsi4()
+    monkeypatch.setitem(sys.modules, "psi4", fake)
+    out = tmp_path / "scf.npz"
+    argv = ["rows", "--geometry", str(water_geometry(tmp_path)), "--basis", "ano-pvqz", "--out", str(out), "--theory", "scf"]
+    assert R.main([*argv, "--df-basis-scf", "cc-pvqz-jkfit"]) == 0
+    assert fake.options["df_basis_scf"] == "cc-pvqz-jkfit" and str(np.load(out)["method"]) == "DF-SCF psi4 fake (cc-pvqz-jkfit)"
+
+
+def test_check_w_prints_the_theory_and_the_basis(tmp_path, monkeypatch, capsys):
+    monkeypatch.setitem(sys.modules, "psi4", FakePsi4())
+    assert R.main(["water", "--out", str(tmp_path / "w.json"), "--theory", "scf"]) == 0
+    said = capsys.readouterr().out
+    assert "water scf cc-pvdz: max |analytic - findif|" in said and "water scf cc-pvtz:" in said and "WATER CHECK PASS" in said
