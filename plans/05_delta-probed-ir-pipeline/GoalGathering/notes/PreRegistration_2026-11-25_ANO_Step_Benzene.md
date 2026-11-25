@@ -104,3 +104,29 @@ the read cannot choose afterwards:
   for later work — psi4's open-shell route reads the fitting set from another option than the one we set. No reviewer ran psi4:
   the run's own smoke (check W on water for the MP2 and the SCF gradient) is the first real call.
 - **Still to write before the launch:** the read script, with its test on synthetic records.
+
+## Amendment 3 (25 Nov 22:50, before any run): what the read script fixes where the text above is silent
+
+The read is `probes/ano_step_read.py` (merged 52dfdc47; two independent reviewers, 26 findings, all fixed or answered; 37 tests
+on synthetic records, `tests/test_ano_step_read.py`). No row of this test has been computed. Run on what we hold it repeats 25
+November: the conventional composite 7.64 / 30.22 / 8.93, the full CCSD(T)/cc-pVTZ Hessian 3.70 / 27.04 / 6.11. Where the
+registration leaves a reading open, the script takes these, and prints each with the outcome:
+
+- **The lines are compared on unrounded values**; the rms table is printed to two decimals.
+- **The control** (recipe 1) is compared with the conventional composite as this script reads it (7.64 / 30.22 / 8.93), per
+  group, line 0.5; a control that fails gives CONTROL FAILED and no outcome.
+- **The fitting line** is judged on the largest change of any element of the row (the stricter reading); the change of the
+  row's largest element is printed beside it. A check over its line does not remove the recipe: it is said with the outcome.
+- **A recipe that cannot be read** — an imaginary mode, modes that do not pair inside their symmetry species, a Newton step
+  beyond 0.05 bohr (25 November: 0.0062) — is named with its reason; it forbids NO GAIN and BETWEEN, which speak about every
+  recipe, and not PASS or USEFUL of another recipe. Missing or unfinished row files give PARTIAL (`--partial`) and no outcome.
+- **Recipe 4** is named in every report as not in the run.
+- **Modes:** a1g and a2g, and b1u and b2u, are not told apart by the three characters used and are matched by order across the
+  two, as on 25 November.
+- **Row files** are refused unless basis, kind, fitting sets, frozen count, step and spherical functions are the lane's; the
+  psi4 version is printed, not judged.
+- **The diagnostic uses the conventional MP2 Hessians we hold** ('from the Hessians we hold'), as computed, without the
+  geometry term. **Its result is therefore known before the run:** [CCSD(T) − MP2] changes from cc-pVDZ to cc-pVTZ by −1.6
+  cm⁻¹ on ω4, +7.1 on ω5 and +8.1 on ω17. The line of 5 is crossed on ω5 and ω17: the artefact sits in the coupled-cluster
+  part as well there, and every outcome of this test will carry that sentence. The test is still run: it measures how much of
+  the 30 cm⁻¹ another target of the MP2 step does remove.
