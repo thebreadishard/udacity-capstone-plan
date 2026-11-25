@@ -145,3 +145,66 @@ is Fleming et al., and 'Barone 2026, JCP 164, 114309' is right.
   steps and cheap to test.
 - The geometry route (a high-level Hessian at the cheap geometry, corrected in first order) is treated in none of them. Our own
   check against Martin, Taylor & Lee is, so far, its only outside confirmation.
+
+## The learning points, by where they touch the project (25 Nov 18:07)
+
+The list given to the user in the chat that evening, kept here in full. The user found it too long to share with the supervisor
+as it is: a version of five to seven points for her is still to be made (TASKS 308). First-hand: Martin, Taylor & Lee; the rest
+second-hand until checked in the PDF.
+
+**The reference Hessian**
+- Our geometry term is confirmed from outside: our CCSD(T)/cc-pVTZ Hessian of benzene, corrected to its own minimum, lies 1–5
+  cm⁻¹ from the published cc-pVTZ values on six modes; our corrected C–H length is 1.0838 Å against their 1.0831. [Martin, Taylor & Lee 1997](https://doi.org/10.1016/s0009-2614(97)00735-5)
+- An ANO basis of the size of cc-pVTZ cures benzene's ring puckering and C–H wag at the CCSD(T) level (709 and 1009 cm⁻¹ against
+  677 and 972); the authors' cause is basis-set superposition. [Martin, Taylor & Lee 1997](https://doi.org/10.1016/s0009-2614(97)00735-5)
+- The fault is not benzene's alone: correlated methods without carbon f functions give too low or imaginary out-of-plane modes
+  for planar aromatics, naphthalene, anthracene and pyridine included; Hartree–Fock and DFT do not. [Moran et al. 2006](https://doi.org/10.1021/ja0630285)
+- Our recipe differs from every recommended one in three ways: the CCSD(T) part is never below cc-pVTZ there, the basis set is
+  extrapolated, and a core-valence term is added. The last two are MP2 steps, cheap to try. [Puzzarini et al. 2019](https://doi.org/10.1021/acs.chemrev.9b00007)
+- A double hybrid is a serious alternative as the reference: used for the harmonics of PAHs up to 33 atoms, without CCSD(T). [Barone et al. 2026](https://doi.org/10.1063/5.0313437)
+- Our route — a high-level Hessian at a cheaper method's geometry, corrected afterwards — is in none of the ten papers; each
+  level sits at its own minimum.
+
+**The goal of 2 cm⁻¹**
+- Nobody shows it at our size: 1–2 cm⁻¹ only for four- and five-atom molecules at CBS-level CCSD(T); 4–7 for the best cases of
+  seven to ten atoms. [Puzzarini et al. 2019](https://doi.org/10.1021/acs.chemrev.9b00007)
+- For PAH-sized molecules 5–10 cm⁻¹ is the state of the art, up to 20. [Barone et al. 2026](https://doi.org/10.1063/5.0313437)
+- Even variational calculations on a CCSD(T) surface miss experiment by up to 30 cm⁻¹ on low modes of a ten-atom system. [Qu et al. 2026](https://doi.org/10.1063/5.0320718)
+
+**The anharmonic step**
+- Our Fermi thresholds (200 cm⁻¹, 1 cm⁻¹) are the literature's. [Bloino 2015](https://doi.org/10.1021/jp509985u)
+- Coronene's two modes are not a Darling–Dennison 1-1 resonance by the usual definition (164 cm⁻¹ apart against 2). [Bloino 2015](https://doi.org/10.1021/jp509985u)
+- Our coronene shifts (+179, +66) are outliers: in comparable molecules every out-of-plane anharmonic shift is small and
+  negative, −2 to −25 cm⁻¹. Our force field or treatment is the first suspect. [Barone et al. 2026](https://doi.org/10.1063/5.0313437)
+- Perturbation theory is for semirigid molecules; low modes need a variational treatment of a few modes as the check. [Bloino et al. 2012](https://doi.org/10.1021/ct200814m) [Qu et al. 2026](https://doi.org/10.1063/5.0320718)
+- HDCPT2 is a threshold-free variant within 3 cm⁻¹ of GVPT2: a second route beside ours. [Bloino et al. 2012](https://doi.org/10.1021/ct200814m)
+- Our handling of degenerate modes is not backed by anything: we average over the pair, the literature lowers the symmetry by
+  a small mass change; leaving a resonance at a degenerate pair deperturbed is the truncation warned against. [Bloino et al. 2012](https://doi.org/10.1021/ct200814m)
+- Combination bands and overtones need second and third dipole derivatives, which we do not compute. [Bloino 2015](https://doi.org/10.1021/jp509985u)
+- The hybrid we use — harmonic part at a high level, anharmonic part from B3LYP in a small basis — is the common one.
+
+**Large molecules**
+- A cheap geometry can be corrected per fragment: with benzene alone as template, naphthalene's and anthracene's rotational
+  constants go from −0.9 % to within 0.06 %. The geometry analogue of our learned correction, and a way to supply the shift to
+  the better minimum for an unseen molecule. A database of accurate structures (benzene, naphthalene, anthracene, fluorene,
+  pyrazine, quinoline) to score our corrected geometries against. [Di Grande et al. 2024](https://doi.org/10.1021/acs.jctc.4c00900)
+- Nobody treats more than 33 atoms spectroscopically; none of the ten covers the carry to 30–80 carbon atoms. [Barone et al. 2026](https://doi.org/10.1063/5.0313437)
+
+**Kinds of vibration and satellite bands**
+- A mode has no sharp character: local modes split each normal mode over bonds, angles and torsions, from what we already
+  hold — a continuous alternative to our four kinds by window. [Fleming et al. 2026](https://doi.org/10.1063/5.0331629)
+- Bands are often not one mode: near 6.2 µm in indene many are combination bands and overtones borrowing intensity. To be
+  excluded before the 6.0 µm satellite is put down to carbonyl. Indene's 'aliphatic' 3.4 µm band is 45 % aromatic. [Fleming et al. 2026](https://doi.org/10.1063/5.0331629)
+
+**Test molecules and data**
+- Indene, azulene and acenaphthylene are references of ours and are in Barone's tables with gas-phase data and GVPT2
+  positions. [Barone et al. 2026](https://doi.org/10.1063/5.0313437) Indene and 2-ethynyltoluene have measured gas-phase spectra and lie outside our training families. [Fleming et al. 2026](https://doi.org/10.1063/5.0331629)
+
+**The baseline**
+- Scale factors may follow a power law instead of three regional constants (14.0 against 16.2 cm⁻¹ on small molecules): a
+  preprint, no aromatics, not our basis set, one table apparently shifted. At most a second baseline after our own refit. [Hanson-Heine 2026](https://doi.org/10.26434/chemrxiv.15000348/v1)
+
+**Beside the content**
+- Slide 19 names the wrong author: 'Mackie 2026, JCP 165, 034104' is Fleming, Esposito, Fortenberry, Quintano & Kraka.
+- Fleming et al. call coupled-cluster frequencies for PAHs 'computationally intractable': how the field will receive our
+  reference Hessians.
