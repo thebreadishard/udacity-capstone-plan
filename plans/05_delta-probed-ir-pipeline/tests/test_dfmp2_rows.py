@@ -193,3 +193,74 @@ def test_a_multiplicity_below_one_is_refused():
         R.main(["water", "--out", "x.json", "--multiplicity", "0"])
     with pytest.raises(ValueError, match="out of range"):
         R.Level("cc-pvdz", 1, False, multiplicity=0)
+
+
+def test_the_fitting_sets_can_be_named_and_the_file_says_which(tmp_path, monkeypatch):
+    """An ANO basis has no JKFIT/RI set of its own name: the call names them, each alone or both."""
+    fake = FakePsi4()
+    like, geom, out = setup(tmp_path, monkeypatch, fake)
+    argv = ["rows", "--like", str(like), "--symbols-from", str(geom), "--other-basis", "ano-pvqz", "--out", str(out)]
+    assert R.main([*argv, "--df-basis-scf", "cc-pvqz-jkfit", "--df-basis-mp2", "cc-pvqz-ri"]) == 0
+    assert fake.options == {**CLOSED_SHELL_OPTIONS, "basis": "ano-pvqz", "df_basis_scf": "cc-pvqz-jkfit", "df_basis_mp2": "cc-pvqz-ri"}
+    z = np.load(out)
+    assert str(z["basis"]) == "ano-pvqz" and "(cc-pvqz-jkfit / cc-pvqz-ri, frozen 1)" in str(z["method"])
+    assert set(z.files) == CLOSED_SHELL_KEYS
+    one = R.Fitting.named_after("cc-pwcvtz", scf="cc-pvtz-jkfit")
+    assert (one.scf, one.mp2) == ("cc-pvtz-jkfit", "cc-pwcvtz-ri")
+
+
+def test_the_frozen_count_can_be_set_to_all_electrons(tmp_path, monkeypatch):
+    fake = FakePsi4()
+    like, geom, out = setup(tmp_path, monkeypatch, fake)
+    assert R.main(["rows", "--like", str(like), "--symbols-from", str(geom), "--out", str(out), "--frozen-core", "0"]) == 0
+    z = np.load(out)
+    assert fake.options["num_frozen_docc"] == 0 and int(z["frozen"]) == 0 and "frozen 0)" in str(z["method"])
+    with pytest.raises(SystemExit):
+        R.main(["rows", "--like", str(like), "--symbols-from", str(geom), "--out", str(tmp_path / "y.npz"), "--frozen-core", "-1"])
+
+
+def test_only_the_named_rows_are_computed_and_the_rest_follow_on_a_second_call(tmp_path, monkeypatch, capsys):
+    fake = FakePsi4()
+    like, geom, out = setup(tmp_path, monkeypatch, fake)
+    argv = ["rows", "--like", str(like), "--symbols-from", str(geom), "--out", str(out)]
+    assert R.main([*argv, "--only-row", "3"]) == 0
+    assert fake.calls == 2 and sorted(k for k in np.load(out).files if k.startswith("row_")) == ["row_03"]
+    said = capsys.readouterr().out
+    assert "DF ROWS PARTIAL" in said and "(1 of 3 rows" in said and "DF ROWS DONE" not in said
+    assert R.main(argv) == 0
+    assert fake.calls == 6 and "DF ROWS DONE" in capsys.readouterr().out
+    with pytest.raises(SystemExit, match="not among the plan's displacements"):
+        R.main([*argv, "--only-row", "5"])
+
+
+@pytest.mark.parametrize("change", [
+    ["--df-basis-mp2", "cc-pv5z-ri"],        # another fitting set
+    ["--df-basis-scf", "cc-pv5z-jkfit"],
+    ["--frozen-core", "0"],                  # another correlation space
+    ["--other-basis", "cc-pvtz"],            # another orbital basis
+])
+def test_a_file_made_at_another_level_is_not_resumed(tmp_path, monkeypatch, change):
+    fake = FakePsi4()
+    like, geom, out = setup(tmp_path, monkeypatch, fake)
+    argv = ["rows", "--like", str(like), "--symbols-from", str(geom), "--out", str(out)]
+    assert R.main([*argv, "--only-row", "0"]) == 0
+    before = out.read_bytes()
+    with pytest.raises(SystemExit, match="holds rows of"):
+        R.main([*argv, *change])
+    assert fake.calls == 2 and out.read_bytes() == before
+
+
+def test_a_file_at_another_geometry_or_step_is_not_resumed(tmp_path, monkeypatch):
+    fake = FakePsi4()
+    like, geom, out = setup(tmp_path, monkeypatch, fake)
+    argv = ["rows", "--like", str(like), "--symbols-from", str(geom), "--out", str(out)]
+    assert R.main([*argv, "--only-row", "0"]) == 0
+    for moved in ({"coords_bohr": X0 + 0.01}, {"step": 0.01}):
+        z = dict(np.load(like))
+        np.savez(like, **{**z, **moved})
+        geom.write_text(json.dumps({"symbols": ["o", "h", "h"], "coords_bohr": np.asarray(moved.get("coords_bohr", X0)).tolist()}),
+                        encoding="utf-8")
+        with pytest.raises(SystemExit, match="holds rows of"):
+            R.main(argv)
+        np.savez(like, **z)
+    assert fake.calls == 2
