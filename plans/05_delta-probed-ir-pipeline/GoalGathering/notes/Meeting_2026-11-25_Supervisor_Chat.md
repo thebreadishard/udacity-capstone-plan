@@ -95,3 +95,11 @@ The goal (2 cm⁻¹ on three kinds, the AIB range, neutrals first), the re-selec
 pure PAHs in, weights by interstellar presence), an error per spectral region, the literature to find, and the practical
 points (one paper and a dataset DOI, Slack, SURF, SPECTRO): TASKS 305–309. Wave 2 as staged holds 68 halogen molecules of 122
 and should not be launched as it stands.
+
+## After the chat, the same afternoon (25 Nov 12:55)
+
+- The user: stop the halogen molecules of wave 1. Four were still waiting and were taken out of their servers' lists
+  without stopping anything (naphthalene+F twice, naphthalene+Cl, quinoline+Cl); the fifth, isoquinoline+F, had already
+  finished and was collected, which makes 24 reference Hessians.
+- The supervisor's addition, through the user: graphene and fullerenes are in scope too.
+- The user: every request for papers carries a clickable DOI link per paper.

@@ -442,6 +442,19 @@
    "checks": "MP2 row symmetry spread 1.9e-05 / 1.8e-05; basis step rms 6.3e-03; softest 99, 173 cm⁻¹",
    "note": "chain 33c promotion rule: VALID",
    "sha16": "fbc385cc15cbe057"
+  },
+  {
+   "mol_id": "B_0d3c79f4c4",
+   "name": "isoquinoline+F",
+   "path": "probes/results_m1/new_anchors_2026-11/B_0d3c79f4c4/composite_B_0d3c79f4c4.npz",
+   "level": "CCSD(T)/cc-pVDZ + [DF-MP2 psi4 1.11 (cc-pvtz-jkfit / cc-pvtz-ri, frozen 11): cc-pVTZ − cc-pVDZ]",
+   "tier": "TZ",
+   "kind": "composite",
+   "status": "carried",
+   "date": "2026-11-25",
+   "checks": "MP2 row symmetry spread 3.0e-05 / 2.1e-05; basis step rms 6.1e-03; softest 144, 168 cm⁻¹",
+   "note": "chain 33c promotion rule: VALID",
+   "sha16": "9f8cf10d93e68877"
   }
  ]
 }
