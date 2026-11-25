@@ -229,7 +229,8 @@ Wat we uit de tien artikelen halen, in zes punten.
    [Puzzarini en collega's (2019)](https://doi.org/10.1021/acs.chemrev.9b00007) houdt CCSD(T) in een triple-zeta-basis aan en
    gebruikt MP2 voor de extrapolatie naar de basissetlimiet en voor de kern-valentieterm; voor spectroscopische nauwkeurigheid
    noemt het die twee verplicht. Wij hebben CCSD(T) in double-zeta, geen extrapolatie en geen kern-valentieterm. De laatste
-   twee kunnen wij goedkoop toevoegen; het eerste is de prijs.
+   twee kunnen wij goedkoop toevoegen. CCSD(T) in een triple-zeta-basis is het dure deel: voor honderden moleculen kunnen
+   wij dat niet betalen.
 4. **2 cm⁻¹ is scherper dan wat de literatuur voor deze grootte laat zien.** Het overzichtsartikel noemt 0,5 tot 1,7 cm⁻¹ voor
    formaldehyde en 1,3 voor difluormethaan, moleculen van vier en vijf atomen, met CCSD(T) in zeer grote bases.
    [Barone en collega's (2026)](https://doi.org/10.1063/5.0313437) melden voor PAK's tot 33 atomen afwijkingen van gewoonlijk
