@@ -7,9 +7,10 @@
 # The ANO sets have no fitting sets of their own name and take cc-pVQZ's; one row of each is repeated with cc-pV5Z's as the check on the
 # fitting, right after that set's own rows. Check W on water (both theories) is the smoke. The read is a separate script on Windows.
 # Markers '=== (ANO) …', a failure as '=== (ANO) FAILED: …'; the end line '=== (ANO) all done'.
-# Resumable: a label whose log ends with dfmp2_rows.py's end line is skipped (so its time file keeps the peak memory of the launch that
-# computed it); an unfinished one continues from its row file, which dfmp2_rows.py refuses when it was made at another level. That
-# refusal does not see the content of <basis dir>: the start line carries the basis file's sha256, and a changed file needs a new run dir.
+# Resumable: a label whose row file exists and whose log ends with dfmp2_rows.py's end line is skipped (so its time file keeps the peak
+# memory of the launch that computed it); an unfinished one continues from its row file, which dfmp2_rows.py refuses when it was made at
+# another level. A finished label is not looked at again, and no refusal sees the content of <basis dir> (the start line carries the basis
+# file's sha256): a changed option in this script or a changed basis file needs a new run dir.
 #   bash probes/ano_step_benzene.sh probes/results_m1/ano_step_benzene_2026-11-25/rows probes/results_m1/ano_step_benzene_2026-11-25/basis/psi
 set -euo pipefail
 RUN=${1:?run dir for the row files}
@@ -33,7 +34,7 @@ mkdir -p "$PSI_SCRATCH" "$RUN"
 rows() {
   local label=$1 basis=$2 log="$RUN/rows_$1.log"
   shift 2
-  if [ -f "$log" ] && tail -n 1 "$log" | grep -qa '^=== DF ROWS '; then
+  if [ -f "$RUN/rows_$label.npz" ] && [ -f "$log" ] && tail -n 1 "$log" | grep -qa '^=== DF ROWS '; then
     mark "$label already finished in an earlier launch"
     return 0
   fi
