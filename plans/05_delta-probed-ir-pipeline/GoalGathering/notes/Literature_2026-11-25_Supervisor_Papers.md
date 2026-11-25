@@ -88,8 +88,10 @@ is Fleming et al., and 'Barone 2026, JCP 164, 114309' is right.
 - The Fermi criteria of the 2015 paper are a 200 cm⁻¹ frequency window and a Martin parameter of at least 1 cm⁻¹: **identical
   to ours**. DVPT2 drops the resonant terms, GVPT2 puts them back variationally (the reference method). HDCPT2 is a
   threshold-free mix of VPT2 and a degeneracy-corrected form (α = 1.0, β = 5.0e5); on toluene it is within 3 cm⁻¹ of GVPT2.
-- A '1-1' Darling–Dennison resonance in the 2015 paper is for modes within 2 cm⁻¹ of each other; our coronene pair is 164 cm⁻¹
-  apart, so by that definition it is not one. Neither paper describes our pattern; both say VPT2 is for semirigid systems and
+- The 2015 paper's '1-1' test (modes within 2 cm⁻¹ of each other) is a test for the **transition intensities**, not for the
+  energies (checked first-hand, 25 Nov 18:16): it says nothing on whether our coronene pair, 164 cm⁻¹ apart, is a Darling–Dennison
+  resonance in the energies. An earlier version of this note, the ledger entry of that afternoon and the first short list
+  drew that conclusion; it is withdrawn. Neither paper describes our pattern; both say VPT2 is for semirigid systems and
   that low-frequency anharmonic contributions are not reproduced well by perturbation theory.
 - Degenerate modes: the 2012 paper lowers the symmetry by changing one atom's mass by about 1e-3 amu and uses asymmetric-top
   formulas; the 2015 paper excludes them. Our averaging of quartic constants over a degenerate pair is neither endorsed nor
@@ -173,7 +175,7 @@ second-hand until checked in the PDF.
 
 **The anharmonic step**
 - Our Fermi thresholds (200 cm⁻¹, 1 cm⁻¹) are the literature's. [Bloino 2015](https://doi.org/10.1021/jp509985u)
-- Coronene's two modes are not a Darling–Dennison 1-1 resonance by the usual definition (164 cm⁻¹ apart against 2). [Bloino 2015](https://doi.org/10.1021/jp509985u)
+- Withdrawn: 'coronene's two modes are not a Darling–Dennison resonance by the usual definition'. The 2 cm⁻¹ test of Bloino 2015 is for intensities; for the energies the paper gives no such criterion.
 - Our coronene shifts (+179, +66) are outliers: in comparable molecules every out-of-plane anharmonic shift is small and
   negative, −2 to −25 cm⁻¹. Our force field or treatment is the first suspect. [Barone et al. 2026](https://doi.org/10.1063/5.0313437)
 - Perturbation theory is for semirigid molecules; low modes need a variational treatment of a few modes as the check. [Bloino et al. 2012](https://doi.org/10.1021/ct200814m) [Qu et al. 2026](https://doi.org/10.1063/5.0320718)
@@ -209,7 +211,10 @@ second-hand until checked in the PDF.
 - Fleming et al. call coupled-cluster frequencies for PAHs 'computationally intractable': how the field will receive our
   reference Hessians.
 
-## The short list for the supervisor (25 Nov 18:11; Dutch, for the user to send — not sent by the assistant)
+## The short list for the supervisor (25 Nov 18:16; Dutch, for the user to send — not sent by the assistant)
+
+Second version: points 3 to 6 were checked first-hand in the papers' text on 25 November; point 5 lost its sentence on
+Darling–Dennison (see section 6), points 3, 4 and 6 are worded more exactly.
 
 Wat we uit de tien artikelen halen, in zes punten.
 
@@ -219,19 +224,33 @@ Wat we uit de tien artikelen halen, in zes punten.
 2. **De trillingen uit het vlak vragen een andere basis.** Hetzelfde artikel laat zien dat cc-pVTZ de ringplooiing en de CH-wip
    van benzeen 30 tot 40 cm⁻¹ te laag geeft en dat een ANO-basis van dezelfde grootte dat herstelt;
    [Moran en collega's (2006)](https://doi.org/10.1021/ja0630285) laten zien dat het voor aromaten algemeen is. Wij zien het in
-   onze eigen referentie en gaan een ANO-basis proeven.
-3. **Ons recept is zuiniger dan wat wordt aanbevolen.** In het overzichtsartikel van
-   [Puzzarini en collega's (2019)](https://doi.org/10.1021/acs.chemrev.9b00007) staat het CCSD(T)-deel nooit onder cc-pVTZ, met
-   extrapolatie en een kern-valentieterm erbij. De laatste twee kunnen wij goedkoop toevoegen; het eerste is de prijs.
-4. **2 cm⁻¹ is scherper dan wat de literatuur voor deze grootte laat zien.** Het overzichtsartikel haalt 1 tot 2 cm⁻¹ voor
-   moleculen van vier en vijf atomen; [Barone en collega's (2026)](https://doi.org/10.1063/5.0313437) melden 5 tot 10 cm⁻¹ voor
-   PAK's tot 33 atomen. Graag horen we waartegen de 2 cm⁻¹ voor u moet gelden: CCSD(T) bij de basissetlimiet, of experiment.
-5. **Onze twee coroneentrillingen zijn uitschieters.** Bij Barone zijn alle anharmonische verschuivingen uit het vlak klein en
-   negatief; de onze zijn +179 en +66 cm⁻¹. Volgens de definitie van [Bloino (2015)](https://doi.org/10.1021/jp509985u) is het
-   geen Darling–Dennison-resonantie. We leggen ons VPT2 naast dat van Barone voor indeen, azuleen en acenaftyleen, die wij ook
-   hebben.
-6. **Satellietbanden kunnen combinatiebanden zijn.** [Fleming en collega's (2026)](https://doi.org/10.1063/5.0331629) laten dat
-   zien voor indeen rond 6,2 µm. Dat sluiten we uit voordat we de band bij 6,0 µm aan carbonyl toeschrijven; onze huidige
+   onze eigen referentie en gaan een ANO-basis proberen.
+3. **Ons recept is zuiniger dan wat wordt aanbevolen.** Het zuinige recept in het overzichtsartikel van
+   [Puzzarini en collega's (2019)](https://doi.org/10.1021/acs.chemrev.9b00007) houdt CCSD(T) in een triple-zeta-basis aan en
+   gebruikt MP2 voor de extrapolatie naar de basissetlimiet en voor de kern-valentieterm; voor spectroscopische nauwkeurigheid
+   noemt het die twee verplicht. Wij hebben CCSD(T) in double-zeta, geen extrapolatie en geen kern-valentieterm. De laatste
+   twee kunnen wij goedkoop toevoegen; het eerste is de prijs.
+4. **2 cm⁻¹ is scherper dan wat de literatuur voor deze grootte laat zien.** Het overzichtsartikel noemt 0,5 tot 1,7 cm⁻¹ voor
+   formaldehyde en 1,3 voor difluormethaan, moleculen van vier en vijf atomen, met CCSD(T) in zeer grote bases.
+   [Barone en collega's (2026)](https://doi.org/10.1063/5.0313437) melden voor PAK's tot 33 atomen afwijkingen van gewoonlijk
+   5 tot 10 cm⁻¹, gemiddeld ongeveer 5 en hoogstens ongeveer 20. Graag horen we waartegen de 2 cm⁻¹ voor u moet gelden:
+   CCSD(T) bij de basissetlimiet, of experiment.
+5. **Onze twee coroneentrillingen zijn uitschieters.** In de tabel van Barone voor indeen zijn alle anharmonische
+   verschuivingen van de trillingen uit het vlak klein en negatief, −3 tot −21 cm⁻¹; de onze voor coroneen zijn +179 en +66.
+   We leggen ons VPT2 naast dat van Barone voor indeen, azuleen en acenaftyleen, die wij ook hebben.
+6. **Satellietbanden kunnen combinatiebanden zijn.** [Fleming en collega's (2026)](https://doi.org/10.1063/5.0331629) laten
+   voor indeen zien dat enkele van de absorptiebanden die samen de band bij 6,2 µm vormen, voor meer dan 85 procent uit
+   combinatiebanden bestaan. Dat sluiten we uit voordat we de band bij 6,0 µm aan carbonyl toeschrijven; onze huidige
    anharmonische stap geeft alleen fundamentelen en kan het nog niet laten zien.
 
 Eén correctie op dia 19: het artikel in JCP 165, 034104 is van Fleming en collega's, niet van Mackie.
+
+Checked first-hand for this version (the extracted text of each PDF): Puzzarini 2019 — the definition of the 'cheap' scheme
+(eq 2: CCSD(T)/VTZ + Δ(MP2/CBS) + Δ(MP2/CV)), 'extrapolation to the CBS limit together with the account of core correlation are
+mandatory', 13.8 cm⁻¹ for frozen-core CCSD(T)/cc-pVTZ harmonics of two- to four-atom molecules, formaldehyde 0.5 (DVR) and 1.7
+(VPT2), difluoromethane 1.3; Barone 2026 — 'typical deviations of 5–10 cm⁻¹', mean unsigned and maximum errors 'of the order of
+5 and 20', sumanene 33 atoms, Fermi and Darling–Dennison resonances treated variationally, Table I's thirteen A″ modes of
+indene below 1000 cm⁻¹ (shifts −2.9 to −20.7); Bloino 2015 — Fermi criteria 200 cm⁻¹ and Martin parameter ≥ 1 cm⁻¹ for the
+energies, the 1-1 and 1-3 tests for the intensities only; Fleming 2026 — bands y and z of indene's 6.2 µm group have ≳ 85 %
+character contributions from combination bands, band A prominent ones. Not checked first-hand: azulene's and acenaphthylene's
+tables, Di Grande 2024, Bloino 2012, Qu 2026, Hanson-Heine 2026, Moran 2006.
