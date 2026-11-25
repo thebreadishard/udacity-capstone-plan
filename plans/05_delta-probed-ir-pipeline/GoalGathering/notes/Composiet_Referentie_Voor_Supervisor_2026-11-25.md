@@ -182,9 +182,12 @@ elke beweging loodrecht op de binding schijnbaar stijver. De correctie haalt dat
 
 **Wat overblijft is de basisset, en die is erger dan de ruwe getallen lieten zien.** Na correctie liggen in onze volledige
 cc-pVTZ te laag: de ringplooiing ω4 (b2g) 38 cm⁻¹, de CH-wip ω5 (b2g) 45, en ω17 (e2u) 28. De composiet volgt dat (37, 50
-en 36); het gebrek zit dus in cc-pVTZ zelf en niet in de MP2-stap. Dit zijn precies de drie trillingen die volgens
-Semidalas en Martin door Martin, Taylor en Lee (1997) als overgevoelig voor de basisset zijn beschreven: ω4 en ω5, en in
-mindere mate ω17. Zij kozen daarom voor atomaire natuurlijke orbitalen; het artikel uit 1997 hebben wij zelf niet gelezen.
+en 36); het gebrek zit dus in cc-pVTZ zelf en niet in de MP2-stap. Dit zijn precies de drie trillingen die Martin, Taylor en Lee (1997) beschrijven als pathologisch gevoelig voor de
+basisset, door basisset-superpositie: ω4 en ω5, en in mindere mate ω17. Hun CCSD(T)-waarden op het eigen minimum zijn,
+voor cc-pVTZ en voor een ANO-basis van dezelfde grootte: ω4 677 en 709, ω5 972 en 1009. Onze gecorrigeerde cc-pVTZ geeft
+674 en 967, en ook voor ω10, ω11, ω12 en ω16 liggen we binnen 3 cm⁻¹ van hun cc-pVTZ-waarden. Dat is een onafhankelijke
+bevestiging van onze Hessiaan en van de geometriecorrectie, en het laat zien dat een ANO-basis het op CCSD(T)-niveau
+herstelt.
 In het artikel van 2023 liggen ω4 en ω5 met ano-pVTZ nog 4,0 en 5,6 te laag, en met een expliciet gecorreleerde
 triple-zeta-basis 17 en 14. Een F12-basis van triple-zeta-kwaliteit lost het dus niet op; daarom vragen we in vraag 2 alleen
 naar ANO. Moran en collega's (2006) beschrijven hetzelfde verschijnsel voor gecorreleerde methoden in kleine bases, tot en

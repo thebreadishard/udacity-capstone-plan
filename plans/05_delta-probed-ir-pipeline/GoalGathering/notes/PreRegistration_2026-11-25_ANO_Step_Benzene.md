@@ -64,3 +64,18 @@ the supervisor accepts it (TASKS 310); anything about the network.
   its dry run; on the laptop, free.
 - The read is a script that takes the row files and prints the table and the outcome by the lines above; it is run on the
   control first.
+
+## Amendment 1 (25 Nov 16:14, before any run): what the supervisor's papers add
+
+Read the same day (`Literature_2026-11-25_Supervisor_Papers.md`); nothing of this test had been computed.
+
+- **A second reference beside ano-pV5Z:** Martin, Taylor & Lee's CCSD(T)/ANO4321′ values of 1997 (ω4 708.8, ω5 1008.8, ω10
+  865.1, ω11 687.2, ω16 405.8) are printed beside the published ano-pV5Z ones in the read; the lines stay on ano-pV5Z.
+- **Two more recipes, both MP2 only:** 6. the step's target extrapolated to the basis-set limit from cc-pVTZ and cc-pVQZ (the
+  review's 'cheap' scheme: Hartree–Fock and MP2 correlation separately, the latter by n⁻³); 7. recipe 6 plus an MP2
+  core-valence term (all electrons minus frozen core in cc-pwCVTZ). Same lines.
+- **One diagnostic, not a recipe:** [CCSD(T) − MP2] on ω4, ω5 and ω17 from the Hessians we hold, in cc-pVDZ and in cc-pVTZ
+  (full CCSD(T)/cc-pVTZ minus MP2/cc-pVTZ). If that difference changes by more than 5 cm⁻¹ between the two basis sets on any of
+  the three modes, the artefact sits in the coupled-cluster part as well and no MP2 step can remove it: said with the outcome.
+- **The ano-pVTZ file** fetched on 25 November has a double-zeta shape and is not used; recipe 4 runs only with a file that has
+  carbon f functions (C [4s3p2d1f], H [3s2p1d]), from a source checked against a second one.
