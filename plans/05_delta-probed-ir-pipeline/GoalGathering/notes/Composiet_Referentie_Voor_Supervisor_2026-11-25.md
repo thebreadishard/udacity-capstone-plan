@@ -17,21 +17,29 @@ CCSD(T)/ano-pV5Z-frequenties (Semidalas en Martin, tabel 5), rms over de 20 vers
 |---|---|---|---|---|
 | onze volledige CCSD(T)/cc-pVTZ | 20,6 | 34,3 | 23,8 | 6,2 |
 | onze composiet | 19,6 | 29,9 | 23,9 | 8,0 |
+| onze volledige CCSD(T)/cc-pVTZ, met geometriecorrectie | 15,5 | 3,7 | 27,0 | 6,1 |
+| onze composiet, met geometriecorrectie | 18,0 | 7,6 | 30,2 | 8,9 |
 | B3LYP/6-31G*, ongeschaald, op zijn eigen minimum | 13,2 | 4,6 | 9,6 | 16,9 |
 
-Zoals hij nu is, ligt onze referentie voor benzeen in de CH-strekken en in de trillingen uit het vlak verder van die
-gepubliceerde waarden dan ongeschaalde B3LYP, en alleen in de overige tien dichterbij. Dat zijn juist de banden bij 3,3 µm en
-bij 11 tot 14 µm. Wij denken dat het grootste deel hiervan komt doordat de Hessiaan op de B3LYP-geometrie staat en niet op het
-CCSD(T)-minimum, en dat een eerste-orde-correctie dat herstelt. **Die correctie is op deze composiet nog niet toegepast.**
-Vraag 1 hieronder is daarom pas goed te beantwoorden als die berekening er is; dat is ons eerstvolgende werk. De andere drie
-vragen kunnen nu al.
+Zonder correctie ligt onze referentie voor benzeen in de CH-strekken en in de trillingen uit het vlak verder van die
+gepubliceerde waarden dan ongeschaalde B3LYP. Dat komt voor een deel doordat de Hessiaan op de B3LYP-geometrie staat en niet
+op het CCSD(T)-minimum. De eerste-orde-correctie daarvoor hebben we op 25 november op benzeen toegepast (derde en vierde
+regel van de tabel). Ze doet wat we verwachtten voor de CH-strekken: van 34 naar 3,7 cm⁻¹ voor de volledige cc-pVTZ, en van
+30 naar 7,6 voor de composiet. **Maar de trillingen uit het vlak worden er slechter van: 27 en 30 cm⁻¹, tegen 9,6 voor
+ongeschaalde B3LYP.** De correctie haalt een schijnbare versteviging weg die van de restkracht op de waterstofatomen kwam,
+en legt daarmee bloot dat cc-pVTZ deze trillingen tientallen cm⁻¹ te laag geeft. Dat zijn de banden bij 11 tot 14 µm.
+
+Onze eigen conclusie, die we graag door u getoetst zien: met cc-pVTZ als doel van de basissetstap is deze composiet goed
+genoeg voor de CH-strekken en voor de gewone trillingen in het vlak (6 tot 9 cm⁻¹), en niet voor de trillingen uit het
+vlak. Of een basis van atomaire natuurlijke orbitalen in de MP2-stap dat herstelt, is onze eerstvolgende proef; die raakt
+alleen het goedkope deel.
 
 ## De vier vragen
 
 1. Is CCSD(T)/cc-pVDZ met een MP2-stap naar cc-pVTZ voor u aanvaardbaar als referentie, als de geometriecorrectie erbij komt?
    En waartegen moet de 2 cm⁻¹ gelden die u noemde: harmonisch tegen CCSD(T) bij de basissetlimiet, of fundamentelen tegen
-   experiment? Onze eigen cijfers zeggen nu al dat de composiet 4,6 cm⁻¹ van de volledige cc-pVTZ ligt en in de beste groep 8
-   van de gepubliceerde waarden; 2 cm⁻¹ haalt hij zo niet.
+   experiment? Onze eigen cijfers zeggen dat de composiet 4,6 cm⁻¹ van de volledige cc-pVTZ ligt, en na de geometriecorrectie 8 tot 9
+   van de gepubliceerde waarden in de CH-strekken en de gewone trillingen in het vlak; 2 cm⁻¹ haalt hij zo niet.
 2. Zou u in de MP2-stap een basis van atomaire natuurlijke orbitalen gebruiken (ano-pVTZ of ano-pVQZ), gezien de twee
    b2g-trillingen hieronder?
 3. Aanvaardt u Hessianen op de B3LYP-geometrie met een eerste-orde-geometriecorrectie, of moet elk molecuul naar zijn eigen
@@ -125,33 +133,65 @@ symmetriesoort op volgorde gekoppeld; een ontaard paar telt één keer.
 | ω19 | e1u | 1511,3 | −4,7 | +1,0 | −2,0 | +19,8 |  |
 | ω20 | e1u | 3195,1 | +5,6 | −33,0 | −28,6 | +4,3 |  |
 
-### Wat we denken dat de afwijkingen verklaart
+### De geometriecorrectie, toegepast op benzeen (25 november)
 
-Dit zijn hypothesen. Alleen het tweede punt is door ons op deze Hessianen nagegaan.
+De correctie is Δω_i = ½ Σ_k φ_iik Δq_k. Daarin is φ het kubische krachtveld van B3LYP/6-31G* in gereduceerde
+normaalcoördinaten, en Δq de Newton-stap van de B3LYP-geometrie naar het minimum van de betere methode, uit de opgeslagen
+CCSD(T)/cc-pVTZ-gradiënt en de Hessiaan die gecorrigeerd wordt. Voor benzeen is die stap klein: de grootste
+atoomverplaatsing is 0,0033 Å, vrijwel geheel langs de symmetrische CH-strek (Δq = −0,09; de C–H-binding wordt korter) en
+een weinig langs de ringademhaling (+0,02). Voor beide kolommen is de cc-pVTZ-gradiënt gebruikt; voor de andere moleculen,
+waar geen volledige cc-pVTZ bestaat, moet dat de gradiënt van de composiet worden. De kubische constanten van B3LYP staan
+hier voor die van CCSD(T): dat is een benadering.
 
-**De geometrie (hypothese).** De vier CH-strekken liggen 27 tot 37 cm⁻¹ te laag (composiet 27 tot 33, volledige cc-pVTZ 31 tot
-37). Dat past bij een C–H-afstand die op de B3LYP-geometrie te lang is. De a2u-trilling ligt 17 (composiet) en 25 (cc-pVTZ) te
-hoog. Dat is waarschijnlijk geen kromming maar een gevolg van het niet-stationaire punt: de restkracht langs de bindingen
-werkt door in de buiging uit het vlak, en de uitkomst hangt dan af van de coördinaatkeuze en van de projectie. Wij corrigeren
-dit in eerste orde: de verschuiving naar het minimum van de betere methode, vermenigvuldigd met de kubische constanten van
-B3LYP. In een eerdere proef op benzeen, met krommingen langs afzonderlijke normaalcoördinaten in plaats van een volledige
-Hessiaan, bracht dat de a2u-trilling op +2 cm⁻¹ van de gepubliceerde waarde en de CH-strekken van gemiddeld 52 naar 14 cm⁻¹
-afwijking. Buiten benzeen is de correctie alleen tussen twee DFT-methoden getoetst (ωB97X als de betere), op 18 moleculen:
-verschuivingen van 11,0 cm⁻¹ rms worden tot op 2,4 gereproduceerd. Die 2,4 is al meer dan uw 2 cm⁻¹. De correctie vraagt de
-gradiënt van de composiet en een kubisch B3LYP-krachtveld per molecuul; dat laatste hebben we nu voor 37 moleculen.
+Controles: de ongecorrigeerde kolommen hieronder zijn dezelfde getallen als in de tabel hierboven, langs een andere
+rekenweg; en het krachtveld en de Hessianen staan op twee B3LYP-geometrieën uit twee programma's, die 0,0003 bohr van
+elkaar liggen en waarvan de B3LYP-frequenties hoogstens 2,6 cm⁻¹ verschillen.
 
-**De basisset, in de twee b2g-trillingen (nagegaan).** De ringplooiing (ω4, puckering) en de CH-wip (ω5, wag) liggen in onze
-volledige cc-pVTZ 38,5 en 31,0 cm⁻¹ te laag. De composiet volgt dat: hij verschilt op deze twee +1,6 en −4,9 van onze
-cc-pVTZ. Het gebrek zit dus in cc-pVTZ zelf en niet in de MP2-stap. Volgens Semidalas en Martin beschreven Martin, Taylor en
-Lee (1997) dat juist deze twee trillingen bij CCSD(T) overgevoelig zijn voor de basisset, en kozen zij daarom voor atomaire
-natuurlijke orbitalen; het artikel uit 1997 hebben wij zelf niet gelezen. In het artikel van 2023 liggen ze met ano-pVTZ nog
-4,0 en 5,6 te laag, en met een expliciet gecorreleerde triple-zeta-basis 17 en 14. Een F12-basis van triple-zeta-kwaliteit
-lost het dus niet op; daarom vragen we in vraag 2 alleen naar ANO. Moran en collega's (2006) beschrijven hetzelfde verschijnsel
-voor gecorreleerde methoden in kleine bases, tot en met imaginaire frequenties voor vlakke aromaten. Of de geometriecorrectie
-deze twee trillingen ook raakt, hebben we op deze composiet niet nagegaan.
+| trilling | symmetrie | CCSD(T)/ano-pV5Z, gepubliceerd | onze cc-pVTZ, ruw − 5Z | onze cc-pVTZ, gecorrigeerd − 5Z | onze composiet, ruw − 5Z | onze composiet, gecorrigeerd − 5Z |
+|---|---|---|---|---|---|---|
+| ω1 | a1g | 1006,6 | −0,3 | −2,0 | −1,1 | −2,8 |
+| ω2 | a1g | 3204,3 | −31,2 | +5,7 | −26,8 | +10,0 |
+| ω3 | a2g | 1380,5 | −2,8 | −10,7 | −7,9 | −15,8 |
+| ω4 | b2g | 712,4 | −38,5 | −38,3 | −36,9 | −36,7 |
+| ω5 | b2g | 1012,4 | −31,0 | −45,1 | −35,9 | −49,9 |
+| ω6 | e2g | 611,5 | −2,5 | −4,3 | −5,4 | −7,2 |
+| ω7 | e2g | 3179,6 | −35,4 | +2,1 | −31,0 | +6,3 |
+| ω8 | e2g | 1639,3 | +2,4 | −2,1 | +0,7 | −3,8 |
+| ω9 | e2g | 1191,8 | +5,4 | −1,5 | +1,9 | −5,1 |
+| ω10 | e1g | 863,4 | +10,2 | −7,4 | +2,4 | −15,1 |
+| ω11 | a2u | 683,6 | +25,3 | +1,1 | +16,8 | −7,4 |
+| ω12 | b1u | 1024,6 | −14,6 | −14,1 | −18,3 | −17,8 |
+| ω13 | b1u | 3169,9 | −37,2 | +0,4 | −32,8 | +4,7 |
+| ω14 | b2u | 1328,6 | +7,0 | +0,4 | +12,7 | +6,1 |
+| ω15 | b2u | 1158,4 | +8,1 | −0,3 | +5,9 | −2,5 |
+| ω16 | e2u | 406,3 | −2,9 | −5,1 | −7,2 | −9,5 |
+| ω17 | e2u | 987,0 | −13,9 | −28,3 | −21,2 | −35,6 |
+| ω18 | e1u | 1057,2 | +2,2 | −3,0 | −0,5 | −5,7 |
+| ω19 | e1u | 1511,3 | +1,0 | −4,5 | −2,0 | −7,5 |
+| ω20 | e1u | 3195,1 | −33,0 | +4,2 | −28,6 | +8,4 |
 
-**Niet verklaard.** Twee trillingen vallen buiten beide verklaringen: ω12 (b1u), 14,6 en 18,3 te laag, en ω17 (e2u), 13,9 en
-21,2 te laag.
+Wat we hieruit lezen.
+
+**De CH-strekken komen goed.** Van 31 tot 37 cm⁻¹ te laag naar 0,4 tot 5,7 te hoog voor de volledige cc-pVTZ; voor de
+composiet 4,7 tot 10,0 te hoog. De hypothese over de geometrie klopt hier.
+
+**De a2u-trilling ook, en om dezelfde reden gaan de andere CH-trillingen uit het vlak omlaag.** a2u gaat van +25 naar +1
+(cc-pVTZ). Op de B3LYP-geometrie trekt de CCSD(T)-kracht elk waterstofatoom naar zijn koolstofatoom; die restkracht maakt
+elke beweging loodrecht op de binding schijnbaar stijver. De correctie haalt dat weg, bij a2u en evenzeer bij de CH-wip ω5
+(b2g, −14), bij ω10 (e1g, −18) en bij ω17 (e2u, −14).
+
+**Wat overblijft is de basisset, en die is erger dan de ruwe getallen lieten zien.** Na correctie liggen in onze volledige
+cc-pVTZ te laag: de ringplooiing ω4 (b2g) 38 cm⁻¹, de CH-wip ω5 (b2g) 45, en ω17 (e2u) 28. De composiet volgt dat (37, 50
+en 36); het gebrek zit dus in cc-pVTZ zelf en niet in de MP2-stap. Dit zijn precies de drie trillingen die volgens
+Semidalas en Martin door Martin, Taylor en Lee (1997) als overgevoelig voor de basisset zijn beschreven: ω4 en ω5, en in
+mindere mate ω17. Zij kozen daarom voor atomaire natuurlijke orbitalen; het artikel uit 1997 hebben wij zelf niet gelezen.
+In het artikel van 2023 liggen ω4 en ω5 met ano-pVTZ nog 4,0 en 5,6 te laag, en met een expliciet gecorreleerde
+triple-zeta-basis 17 en 14. Een F12-basis van triple-zeta-kwaliteit lost het dus niet op; daarom vragen we in vraag 2 alleen
+naar ANO. Moran en collega's (2006) beschrijven hetzelfde verschijnsel voor gecorreleerde methoden in kleine bases, tot en
+met imaginaire frequenties voor vlakke aromaten.
+
+**Niet verklaard.** In het vlak blijven twee trillingen meer dan 10 cm⁻¹ te laag, ook na correctie: ω12 (b1u), 14 en 18,
+en ω3 (a2g), 11 en 16.
 
 **Antraceen, als waarschuwing.** De CCSD(T)/cc-pVDZ-Hessiaan van antraceen heeft een imaginaire trilling uit het vlak: de zes
 laagste zijn −51, 7, 180, 209, 224 en 332 cm⁻¹. Met de MP2-stap worden ze 86, 115, 227, 229, 261 en 373; B3LYP geeft 92, 124,
@@ -161,8 +201,11 @@ trillingen hebben we niet.
 
 ## Wat niet gedaan is
 
-- De geometriecorrectie toepassen op deze composiet en de tabel opnieuw maken. Dit is het eerstvolgende.
-- Een ANO-basis in de MP2-stap proberen.
+- Een ANO-basis in de MP2-stap proberen (ano-pVTZ of ano-pVQZ), op benzeen, tegen de gepubliceerde waarden. Dit is het
+  eerstvolgende; het vraagt alleen MP2-berekeningen.
+- De geometriecorrectie op een ander molecuul dan benzeen, met de gradiënt van de composiet in plaats van die van de
+  volledige cc-pVTZ. Ze vraagt per molecuul een kubisch B3LYP-krachtveld; dat hebben we nu voor 37 moleculen.
+- De correctie inbouwen in de rekenketen, zodat ze ook voor een nieuw molecuul wordt gemaakt.
 - Dezelfde vergelijking voor een tweede molecuul. Boese en Martin geven CCSD(T)-frequenties voor benzeen en s-tetrazine, voor
   pyridine alleen DFT en gemeten fundamentelen; een gepubliceerd harmonisch CCSD(T)-krachtveld voor pyridine of naftaleen hebben
   we met een korte zoektocht niet gevonden.
