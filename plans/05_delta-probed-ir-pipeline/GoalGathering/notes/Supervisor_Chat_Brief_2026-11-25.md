@@ -98,5 +98,40 @@ spending — is the user's to decide: say that it can be done and that the user 
 in one sentence what the result will and will not be (harmonic positions corrected towards ωB97X; a provisional anharmonic shift;
 not compared with experiment), and promise no data we have not checked we hold (PAHdb values, measured spectra). For something to be sent, name its level of theory and its conventions (units, the normal coordinates) rather than asking her for hers.
 
+### A live run of the pipeline, if she asks for one (25 November only)
+
+The one exception to 'the user gives the word': the user gave it beforehand (25 November, 08:3x: 'Je hebt mijn toestemming om een
+run te starten als de supervisor daar vandaag om vraagt'). It covers one molecule through the pipeline on the laptop, on this day,
+at her request in the chat. It covers nothing else: no second run while one is running, nothing on the rented servers, no file or
+slide edited, nothing posted or sent.
+
+1. **Offer the choice, in one short answer.** Molecules the network has never seen and that fit the half hour (screened on
+   19 November, `probes/results_m1/demo_candidates_2026-11-19/demo_candidates_271.md`): pyrazine or pyrimidine (about 5–7
+   minutes), thiophene, furan or pyrrole (about 3–5), 1,3,5-trifluorobenzene (16–22), benzoxazole (17–25), benzimidazole (18–26).
+   She may name another molecule: it must be neutral, closed-shell, aromatic, of C, H, N, O, F, S, Cl, and the pipeline itself
+   refuses what it cannot take. Say before starting when a molecule is outside what was trained (an N–N bond in the ring, an
+   ethyl or larger alkyl group, an N(CH3)2 group): the result is then a test, not a showpiece.
+2. **Say what she will get and what not, in one sentence**: harmonic band positions from B3LYP corrected by the network towards
+   ωB97X, with a statement per band whether 3 cm⁻¹ is claimed; uncorrected B3LYP intensities; no comparison with experiment. The
+   anharmonic shift is a separate, slower step (benzonitrile: 11–31 minutes more); run it only if she asks for it
+   (`--anharmonic-minutes`), and say it carries no accuracy claim.
+3. **Say the time honestly**: the minutes above come from an older version of the DFT program and are a lower bound; no run on
+   the current version has been timed for a new molecule.
+4. **Start it through the run door, in the background**: a run spec from `probes/runspecs/pipeline_rehearsal_cinnoline.json` with
+   the name, the SMILES, the output folder `probes/results_m1/pipeline_demo_2026-11-25` and the estimate changed (the scratchpad's
+   `demo_spec.py <name> <smiles> <minutes>` writes it; without it, copy the spec and change those four), then
+   `python tools/runspec.py launch probes/runspecs/pipeline_demo_1125_<name>.json`. Check first with
+   `python tools/runspec.py list` that nothing else runs on the laptop. Tell her it has started and go on answering.
+5. **While it runs**, a question about progress gets the last `[pipeline]` line, in plain words (the DFT step, the network, the
+   statement).
+6. **When it ends**, give the result in the chat without being asked: the molecule, the wall time, how many bands, for how many
+   the 3 cm⁻¹ claim is made and for which not and why, and three or four of the strongest bands with their positions. Offer the
+   table of all bands; do not paste it unasked. If it fails or is refused, say so with the pipeline's own reason, and do not
+   start another molecule without her asking.
+
+Checked on 25 November 08:3x: the pipeline's own dry run passes for cinnoline and for pyrazine on today's code (release networks
+`…v14s3clean_c00_control_release_model_n1132`, three trained copies); 20 GB of memory free, the laptop on mains power. Not checked:
+a full run of a molecule outside our data on the current version of the DFT program.
+
 Money: first give the estimate that exists (the cost lines of the fact sheet), then say that who pays is between her and the student. No advice on what she
 should pay for.
