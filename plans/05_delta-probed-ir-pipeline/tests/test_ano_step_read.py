@@ -63,6 +63,24 @@ def test_every_recipe_names_row_files_the_lane_writes():
     assert [len(v) for v in A.GROUPS.values()] == [4, 6, 10]
 
 
+def test_the_lane_table_here_is_the_lane_script():
+    script = (PLAN / "probes" / "ano_step_benzene.sh").read_text(encoding="utf-8")
+    arrays = {name: options.split() for name, options in re.findall(r"^(\w+_FIT)=\((.*)\)$", script, re.MULTILINE)}
+    lane = {}
+    for line in script.splitlines():
+        words = line.split("#")[0].split()
+        if len(words) < 3 or words[0] not in ("rows", "with_fit_check") or words[1].startswith('"'):
+            continue
+        options = arrays["QZ_FIT"] if words[0] == "with_fit_check" else words[3:]
+        given = dict(zip(options[::2], options[1::2], strict=True))
+        frozen = given.get("--frozen-core")
+        lane[words[1]] = (words[2], given.get("--theory", "mp2"), given.get("--df-basis-scf"), given.get("--df-basis-mp2"),
+                          None if frozen is None else int(frozen))
+    assert lane == LANE
+    assert arrays["FIVEZ_FIT"] == ["--df-basis-scf", "cc-pv5z-jkfit", "--df-basis-mp2", "cc-pv5z-ri"]
+    assert 'rows "$1" "$2" "${QZ_FIT[@]}"' in script and 'rows "$1_fit5z" "$2" "${FIVEZ_FIT[@]}" --only-row "$k"' in script
+
+
 @pytest.mark.parametrize(("recipe", "word"), [
     (rms(2.0, 2.0, 2.0), "PASS"),                 # at the line is under it
     (rms(2.0, 2.5, 2.0), "USEFUL"),
@@ -100,7 +118,10 @@ def test_control_line_at_its_edge():
 def test_verdict_without_a_control_that_repeats_and_with_rows_missing():
     conventional, good = rms(7.5, 30.0, 9.0), rms(1.0, 1.0, 1.0)
     word, sentence = A.verdict({"2": good}, conventional, {"1": "no row file for mp2_ccpvtz"}, {})
-    assert word == "NO OUTCOME" and "no row file for mp2_ccpvtz" in sentence
+    assert word == "PARTIAL" and "no row file for mp2_ccpvtz" in sentence
+    assert A.verdict({"2": good}, conventional, {}, {"1": "imaginary"})[0] == "NO OUTCOME"
+    with pytest.raises(ValueError, match="nothing to judge"):
+        A.outcome({"1": CONTROL}, {})
     assert A.verdict({"1": rms(7.5, 30.75, 9.0), "2": good}, conventional, {}, {})[0] == "CONTROL FAILED"
     assert A.verdict({"1": rms(8.0, 30.5, 9.25), "2": good}, conventional, {}, {})[0] == "PASS"
     assert A.verdict({"1": CONTROL, "2": good}, conventional, {"5": "no row file"}, {})[0] == "PARTIAL"
@@ -188,7 +209,8 @@ def test_rows_of_the_conventional_step_repeat_it(held, tmp_path):
     assert re.search(r"corrected rms per group: [+-]0\.00 / [+-]0\.00 / [+-]0\.00", text) and "compared on unrounded values" in text
     # ω5 and ω17: +7.1 and +8.1 between the two basis sets, from what we hold — said with the outcome (amendment 1)
     assert record["diagnostic_fired"] and "on ω5, ω17: the artefact sits in the coupled-cluster part" in record["sentence"]
-    assert "line 5.0 cm⁻¹, crossed." in text
+    assert "line 5.0 cm⁻¹, crossed." in text and "- Recipe 4 not in the run: ano-pVTZ" in text
+    assert "- psi4 that made the rows: 1.11 (every file read)." in text and record["sentence"].count("recipe 4 of the registration") == 1
     quiet = copy.deepcopy(record) | {"diagnostic_fired": False}
     assert "line 5.0 cm⁻¹, not crossed." in A.report(quiet)
 
@@ -306,6 +328,28 @@ def test_fitting_check_over_its_line_is_said_with_the_outcome(held, tmp_path):
     assert not check["under_line"] and record["fitting"]["mp2_roosanotz"]["under_line"]
     assert record["outcome"] == "NO GAIN" and "fitting check of mp2_anopvqz (recipe 5) is over its line" in record["sentence"]
     assert "largest change of any element is 1.0e-05 E_h/bohr² (NOT under" in A.report(record)
+
+
+@needs_held
+def test_fitting_check_judges_the_largest_change_of_any_element(held, tmp_path):
+    _, _, mp2 = held
+    run = write_run(tmp_path / "rows", mp2)
+    x0 = lane_file("mp2_anopvqz")[0].coords_bohr
+    small = int(np.argmin(np.abs(mp2["tz"][0])))
+    moved = mp2["tz"].copy()
+    moved[0, small] += 2e-6                                          # the row's smallest element moves, its largest does not
+    write_rows(run, "mp2_anopvqz_fit5z", moved)
+    check = A.fitting_change(run, "mp2_anopvqz", x0)
+    assert check["largest_change"] == pytest.approx(2e-6) and check["change_of_largest_element"] == 0.0 and not check["under_line"]
+    zeroed, at_line = mp2["tz"].copy(), mp2["tz"].copy()
+    zeroed[0, small], at_line[0, small] = 0.0, A.FITTING_LINE        # a change of exactly the line is not under it
+    write_rows(run, "mp2_anopvqz", zeroed)
+    write_rows(run, "mp2_anopvqz_fit5z", at_line)
+    check = A.fitting_change(run, "mp2_anopvqz", x0)
+    assert check["largest_change"] == A.FITTING_LINE and not check["under_line"]
+    write_rows(run, "mp2_anopvqz_fit5z", zeroed, coords_bohr=x0 + 0.1)
+    with pytest.raises(SystemExit, match="other coordinates"):
+        A.fitting_change(run, "mp2_anopvqz", x0)
 
 
 @needs_held

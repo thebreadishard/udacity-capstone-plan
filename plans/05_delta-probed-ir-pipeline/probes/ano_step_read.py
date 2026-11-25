@@ -106,6 +106,7 @@ EXPECTED = {"mp2_ccpvdz": RowLevel("cc-pvdz", "mp2", "cc-pvdz-jkfit", "cc-pvdz-r
             "mp2_ccpwcvtz_fc": RowLevel("cc-pwcvtz", "mp2", "cc-pvtz-jkfit", "cc-pwcvtz-ri"),
             "mp2_ccpwcvtz_ae": RowLevel("cc-pwcvtz", "mp2", "cc-pvtz-jkfit", "cc-pwcvtz-ri", frozen=0)}
 FITTING_CHECKED = ("mp2_anopvqz", "mp2_roosanotz")
+NOT_RUN = {"4": "ano-pVTZ — no file of the registered shape (amendment 2)"}
 
 
 class Unreadable(Exception):
@@ -125,6 +126,7 @@ def with_core_valence(M: dict[str, np.ndarray]) -> np.ndarray:
 
 @dataclass(frozen=True)
 class Recipe:
+    """A target of the MP2 step: its name in the report, the row files it needs, the target Hessian from them."""
     name: str
     labels: tuple[str, ...]
     target: Callable[[dict[str, np.ndarray]], np.ndarray]
@@ -331,33 +333,36 @@ def file_problem(run: Path, label: str) -> str | None:
     return None if held == wanted else f"{path.name} holds rows {held}, the read needs {wanted}"
 
 
-def check_row_file(path: Path, level: RowLevel) -> None:
-    """Refuse a row file that is not what its label says: basis, kind of calculation, fitting sets, frozen orbitals, step, functions."""
+def check_row_file(path: Path, level: RowLevel) -> str:
+    """Refuse a row file that is not what its label says: basis, kind of calculation, fitting sets, frozen orbitals, step, functions.
+    Returns the psi4 version that made it, which is reported and not judged."""
     with np.load(path) as z:
         if "method" not in z.files:
             raise SystemExit(f"{path}: no 'method' key — not a row file of dfmp2_rows.py")
         basis, method, step, cart = str(z["basis"]).lower(), str(z["method"]), float(z["step"]), bool(z["cart"])
-    kind, _, level_text = D.method_parts(method)
+    kind, version, level_text = D.method_parts(method)
     if (basis, kind, level_text.lower(), step, cart) != (level.basis, KIND[level.theory], level.level_text(), D.ANCHOR_STEP, False):
         raise SystemExit(f"{path}: holds {method} at {basis}, step {step}, cartesian {cart}; expected {KIND[level.theory]} "
                          f"{level.level_text()} at {level.basis}, step {D.ANCHOR_STEP}, spherical")
+    return version
 
 
-def hessians(run: Path, labels: list[str], sym: list[str], x0: np.ndarray) -> tuple[dict[str, np.ndarray], dict[str, float]]:
-    """label → symmetrised Hessian from its rows, and label → symmetry spread."""
-    M, spread = {}, {}
+def hessians(run: Path, labels: list[str], sym: list[str], x0: np.ndarray) -> tuple[dict[str, np.ndarray], dict[str, float], dict[str, str]]:
+    """label → symmetrised Hessian from its rows, label → symmetry spread, label → psi4 version."""
+    M, spread, psi4 = {}, {}, {}
     for label in labels:
-        check_row_file(row_path(run, label), EXPECTED[label])
+        psi4[label] = check_row_file(row_path(run, label), EXPECTED[label])
         M[label], _, spread[label] = CCF.rows_in_frame(str(row_path(run, label)), None, sym, x0)
-    return M, spread
+    return M, spread, psi4
 
 
-def fitting_change(run: Path, label: str) -> dict[str, float | bool]:
+def fitting_change(run: Path, label: str, x0: np.ndarray) -> dict[str, float | bool]:
     """The plan's first row recomputed with cc-pV5Z fitting sets against the same row of the label's own file, E_h/bohr²: the largest
     change of any element, which is judged against the line, and the change of the row's largest element (the registration's wording
     read literally; never the larger of the two)."""
     again = row_path(run, label + FIT_SUFFIX)
     check_row_file(again, EXPECTED[label].five_zeta())
+    CCF.check_rows_coordinates((str(again),), x0, "corpus")
     with np.load(row_path(run, label)) as a, np.load(again) as b:
         name = f"row_{int(b['ks'][0]):02d}"
         ours, theirs = np.asarray(a[name], float), np.asarray(b[name], float)
@@ -391,6 +396,8 @@ def outcome(rms: dict[str, dict[str, float]], unread: dict[str, str]) -> tuple[s
     The control is not a candidate. A recipe that could not be read forbids NO GAIN and BETWEEN, which speak about every recipe."""
     control = rms[CONTROL]
     others = {k: v for k, v in rms.items() if k != CONTROL}
+    if not others:
+        raise ValueError("no recipe beside the control: nothing to judge")
     passed = [k for k, v in others.items() if all(v[g] <= PASS_LINE for g in GROUPS)]
     useful = [k for k, v in others.items() if v["out of plane"] <= USEFUL_OOP_LINE
               and all(v[g] <= control[g] + USEFUL_OTHER_MARGIN for g in GROUPS if g != "out of plane")]
@@ -401,14 +408,15 @@ def outcome(rms: dict[str, dict[str, float]], unread: dict[str, str]) -> tuple[s
         return "USEFUL", (f"recipe(s) {', '.join(useful)}: out of plane at or under {USEFUL_OOP_LINE} cm⁻¹ and no other group more than "
                           f"{USEFUL_OTHER_MARGIN} above the control's; the same test follows on a second molecule before anything is "
                           f"adopted{left}")
-    if unread:
-        return "NO OUTCOME", f"recipe(s) {', '.join(sorted(unread))} not read, and no recipe that was read reaches USEFUL"
     best = min(v["out of plane"] for v in others.values())
+    span = f"out of plane: control {control['out of plane']:.2f} → best recipe read {best:.2f} cm⁻¹"
+    if unread:
+        return "NO OUTCOME", f"recipe(s) {', '.join(sorted(unread))} not read, and no recipe that was read reaches USEFUL ({span})"
+    not_run = f"; recipe {', '.join(NOT_RUN)} of the registration is not in the run"
     if control["out of plane"] - best < GAIN_LINE:
-        return "NO GAIN", (f"no recipe lowers the out-of-plane group by {GAIN_LINE} cm⁻¹ or more below the control "
-                           f"({control['out of plane']:.2f} → best {best:.2f}): MP2 does not carry the basis-set effect on these modes")
-    return "BETWEEN", (f"the best recipe lowers the out-of-plane group from {control['out of plane']:.2f} to {best:.2f} cm⁻¹: "
-                       "between USEFUL and NO GAIN, reported as measured, no verdict")
+        return "NO GAIN", (f"no recipe lowers the out-of-plane group by {GAIN_LINE} cm⁻¹ or more below the control ({span}): MP2 does "
+                           f"not carry the basis-set effect on these modes{not_run}")
+    return "BETWEEN", f"{span}: between USEFUL and NO GAIN, reported as measured, no verdict{not_run}"
 
 
 def verdict(rms: dict[str, dict[str, float]], conventional: dict[str, float], absent: dict[str, str],
@@ -416,7 +424,7 @@ def verdict(rms: dict[str, dict[str, float]], conventional: dict[str, float], ab
     """The outcome by the registered lines, or why there is none. `absent`: recipes whose row files are missing or unfinished
     (--partial); `failed`: recipes whose Hessian could not be read."""
     if CONTROL not in rms:
-        return "NO OUTCOME", f"the control (recipe {CONTROL}) was not read: {(absent | failed)[CONTROL]}"
+        return "PARTIAL" if CONTROL in absent else "NO OUTCOME", f"the control (recipe {CONTROL}) was not read: {(absent | failed)[CONTROL]}"
     if not control_holds(rms[CONTROL], conventional):
         return "CONTROL FAILED", (f"the DF-MP2 control differs from the conventional composite by more than {CONTROL_LINE} cm⁻¹ in a "
                                   "group: no outcome until that is understood")
@@ -429,8 +437,11 @@ def verdict(rms: dict[str, dict[str, float]], conventional: dict[str, float], ab
 
 def diagnostic(frame: Frame, cc: dict[str, np.ndarray], mp2: dict[str, np.ndarray]) -> dict[str, dict[str, float]]:
     """Amendment 1: [CCSD(T) − MP2] per registered mode in cc-pVDZ and in cc-pVTZ, as computed (no geometry term), and its change."""
-    w = {(level, basis): named(own_modes(frame, H)[0], frame.keys)
-         for level, by_basis in (("cc", cc), ("mp2", mp2)) for basis, H in by_basis.items()}
+    try:
+        w = {(level, basis): named(own_modes(frame, H)[0], frame.keys)
+             for level, by_basis in (("cc", cc), ("mp2", mp2)) for basis, H in by_basis.items()}
+    except Unreadable as why:
+        raise SystemExit(f"the diagnostic: a Hessian we hold cannot be read ({why})") from why
     out = {}
     for mode in DIAGNOSTIC_MODES:
         dz, tz = w["cc", "dz"][mode] - w["mp2", "dz"][mode], w["cc", "tz"][mode] - w["mp2", "tz"][mode]
@@ -503,15 +514,15 @@ def read(run: Path, inputs: Inputs, partial: bool) -> dict:
     conventional = _entry(conventional_reading(frame, cc, mp2))
     keys, absent = available(run, partial)
     labels = sorted({STEP_FROM, *(lab for k in keys for lab in RECIPES[k].labels)})
-    M, spread = hessians(run, labels, sym, x0)
+    M, spread, psi4 = hessians(run, labels, sym, x0)
     done, failed = read_recipes(frame, cc["dz"], M, keys)
     recipes = {k: {"name": RECIPES[k].name, **_entry(r)} for k, r in done.items()}
-    fitting = {lab: fitting_change(run, lab) for lab in FITTING_CHECKED if lab in labels}
+    fitting = {lab: fitting_change(run, lab, x0) for lab in FITTING_CHECKED if lab in labels}
     changes = diagnostic(frame, cc, mp2)
     word, sentence = verdict({k: r["rms"] for k, r in recipes.items()}, conventional["rms"], absent, failed)
     return {"date": CCF.stamp(), "run": str(run), "map_worst_bohr": frame.map_worst_bohr, "outcome": word,
             "sentence": "; ".join([sentence, *caveats(fitting, changes)]), "conventional": conventional, "recipes": recipes,
-            "unread": absent | failed, "spread": spread, "fitting": fitting, "diagnostic": changes,
+            "unread": absent | failed, "not_run": NOT_RUN, "spread": spread, "psi4": psi4, "fitting": fitting, "diagnostic": changes,
             "diagnostic_fired": any(abs(d["change"]) > DIAGNOSTIC_LINE for d in changes.values())}
 
 
@@ -532,6 +543,7 @@ def _table(record: dict) -> list[str]:
 def _checks(record: dict) -> list[str]:
     """The bullets under the tables: what was not read, the control, the steps, the fitting check, the spreads, the diagnostic."""
     lines = [f"- Recipe {k} not read: {why}." for k, why in sorted(record["unread"].items())]
+    lines += [f"- Recipe {k} not in the run: {why}." for k, why in record["not_run"].items()]
     if CONTROL in record["recipes"]:
         control, conventional = record["recipes"][CONTROL]["rms"], record["conventional"]["rms"]
         lines.append("- Control: DF-MP2 minus conventional MP2 in the cc-pVTZ step, corrected rms per group: "
@@ -542,6 +554,9 @@ def _checks(record: dict) -> list[str]:
     lines += [f"- Fitting check, {lab}: with cc-pV5Z fitting sets the first row's largest change of any element is {c['largest_change']:.1e} "
               f"E_h/bohr² ({'under' if c['under_line'] else 'NOT under'} the line {FITTING_LINE:.0e}; this is what is judged), the change of "
               f"its largest element {c['change_of_largest_element']:.1e}." for lab, c in record["fitting"].items()]
+    versions = sorted(set(record["psi4"].values()))
+    lines.append("- psi4 that made the rows: " + (f"{versions[0]} (every file read)" if len(versions) == 1 else
+                                                  ", ".join(f"{lab} {v}" for lab, v in record["psi4"].items()) + " — the files differ") + ".")
     lines.append("- Symmetry spread of the rows (a.u.): " + ", ".join(f"{lab} {v:.1e}" for lab, v in record["spread"].items()) + ".")
     lines.append("- Diagnostic [CCSD(T) − MP2], cc-pVDZ → cc-pVTZ (the conventional MP2 Hessians we hold, as computed): "
                  + "; ".join(f"{m} {d['dz']:+.1f} → {d['tz']:+.1f} (change {d['change']:+.1f})" for m, d in record["diagnostic"].items())
