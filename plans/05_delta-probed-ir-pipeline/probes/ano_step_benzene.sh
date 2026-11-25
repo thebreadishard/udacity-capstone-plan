@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+# probes/ano_step_benzene.sh <run dir> <basis dir> (TASKS 300; GoalGathering/notes/PreRegistration_2026-11-25_ANO_Step_Benzene.md with its
+# amendment 1) — runs in WSL under probes/wsl_capped.sh. Benzene's MP2 Hessian rows at the corpus geometry by psi4's DF-MP2 gradient, on the
+# plan of its own symmetry, for every target basis of the registration: cc-pVDZ (the step's lower end), cc-pVTZ (the control), cc-pVQZ,
+# roos-ano-tz, ano-pVQZ (a file in <basis dir>, found through PSIPATH), cc-pwCVTZ with the frozen core and with all electrons (the
+# core-valence term), and the DF-SCF rows at cc-pVTZ and cc-pVQZ that the basis-set-limit recipe takes apart from the correlation part.
+# The ANO sets have no fitting sets of their own name and take cc-pVQZ's; one row of each is repeated with cc-pV5Z's as the check on the
+# fitting. Check W on water (both theories) is the smoke. The read is a separate script on Windows. Markers '=== (ANO) …'; the end line
+# '=== (ANO) all done'. Resumable: dfmp2_rows.py keeps every finished row and refuses a file made at another level.
+#   bash probes/ano_step_benzene.sh probes/results_m1/ano_step_benzene_2026-11-25/rows probes/results_m1/ano_step_benzene_2026-11-25/basis/psi
+set -euo pipefail
+RUN=${1:?run dir for the row files}
+BASIS_DIR=${2:?folder with ano-pvqz.gbs}
+HERE=$(cd "$(dirname "$0")" && pwd)
+PY=${PY:-$HOME/miniforge3/envs/vpt2/bin/python}
+export PSI_SCRATCH=$HOME/psi4_scratch   # not /tmp: WSL clears it when idle (19 Oct 2026)
+export PSIPATH=$BASIS_DIR
+GEOM=$HERE/../modules/05_support_predictor/corpus/molecules/A_8448043181/geometry.json
+THREADS=${THREADS:-8}
+MEMORY_GB=${MEMORY_GB:-8}
+QZ_FIT=(--df-basis-scf cc-pvqz-jkfit --df-basis-mp2 cc-pvqz-ri)
+FIVEZ_FIT=(--df-basis-scf cc-pv5z-jkfit --df-basis-mp2 cc-pv5z-ri)
+mark() { echo "=== (ANO) $* $(date '+%F %T')"; }
+for needed in "$GEOM" "$BASIS_DIR/ano-pvqz.gbs" "$HERE/dfmp2_rows.py"; do
+  [ -f "$needed" ] || { mark "refusing to start: $needed missing"; exit 1; }
+done
+mkdir -p "$PSI_SCRATCH" "$RUN"
+
+# rows <label> <basis> [options of dfmp2_rows.py]: one row file, its log (appended over resumes) and its peak memory
+rows() {
+  local label=$1 basis=$2
+  shift 2
+  /usr/bin/time -v -o "$RUN/time_$label.txt" "$PY" "$HERE/dfmp2_rows.py" rows --geometry "$GEOM" --basis "$basis" --threads "$THREADS" \
+    --memory-gb "$MEMORY_GB" --out "$RUN/rows_$label.npz" "$@" 2>&1 | tee -a "$RUN/rows_$label.log"
+  mark "$label done, peak RSS $(grep 'Maximum resident' "$RUN/time_$label.txt" | awk '{print $NF}') kB"
+}
+
+# first_row <label>: the first displacement of the plan, from the log of that label's rows
+first_row() {
+  local k
+  k=$(grep -a -m1 -o ' k=[0-9]*' "$RUN/rows_$1.log" | cut -d= -f2)
+  [ -n "$k" ] || { mark "FAILED: no row in $RUN/rows_$1.log to repeat"; exit 1; }
+  echo "$k"
+}
+
+mark "start: psi4 $("$PY" -c 'import psi4; print(psi4.__version__)'),$THREADS threads, psi4 memory $MEMORY_GB GB, PSIPATH $PSIPATH"
+for theory in mp2 scf; do
+  if ! "$PY" "$HERE/dfmp2_rows.py" water --theory "$theory" --out "$RUN/water_check_$theory.json" --threads "$THREADS" --memory-gb "$MEMORY_GB"; then
+    mark "smoke: FAILED (check W on water, $theory)"
+    exit 1
+  fi
+done
+mark "smoke: check W passed for mp2 and scf"
+
+rows mp2_ccpvdz cc-pvdz
+rows mp2_anopvqz ano-pvqz "${QZ_FIT[@]}"          # early: the one basis psi4 does not ship fails here, not after an hour
+rows mp2_roosanotz roos-ano-tz "${QZ_FIT[@]}"
+rows mp2_ccpvtz cc-pvtz
+rows scf_ccpvtz cc-pvtz --theory scf
+rows mp2_ccpwcvtz_fc cc-pwcvtz --df-basis-scf cc-pvtz-jkfit
+rows mp2_ccpwcvtz_ae cc-pwcvtz --df-basis-scf cc-pvtz-jkfit --frozen-core 0
+rows mp2_ccpvqz cc-pvqz
+rows scf_ccpvqz cc-pvqz --theory scf
+K=$(first_row mp2_anopvqz)       # its own statement: a failure inside $(…) used as an argument would not stop the script
+rows mp2_anopvqz_fit5z ano-pvqz "${FIVEZ_FIT[@]}" --only-row "$K"
+K=$(first_row mp2_roosanotz)
+rows mp2_roosanotz_fit5z roos-ano-tz "${FIVEZ_FIT[@]}" --only-row "$K"
+mark "all done"

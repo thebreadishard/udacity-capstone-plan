@@ -165,6 +165,7 @@ def test_the_closed_shell_path_is_pinned(tmp_path, monkeypatch):
     assert fake.options == CLOSED_SHELL_OPTIONS
     assert set(headers) == {"0 1"}
     assert set(np.load(out).files) == CLOSED_SHELL_KEYS
+    assert str(np.load(out)["method"]) == "DF-MP2 psi4 fake (cc-pvdz-jkfit / cc-pvdz-ri, frozen 1)"
 
 
 def test_an_open_shell_runs_uhf_through_dfocc_and_says_so_in_the_file(tmp_path, monkeypatch):
@@ -175,7 +176,7 @@ def test_an_open_shell_runs_uhf_through_dfocc_and_says_so_in_the_file(tmp_path, 
     like, geom, out = setup(tmp_path, monkeypatch, fake)
     argv = ["rows", "--like", str(like), "--symbols-from", str(geom), "--out", str(out), "--charge", "1", "--multiplicity", "2"]
     assert R.main(argv) == 0
-    assert fake.options == {**CLOSED_SHELL_OPTIONS, "reference": "uhf", "qc_module": "occ"}
+    assert fake.options == {**CLOSED_SHELL_OPTIONS, "reference": "uhf", "qc_module": "occ", "df_basis_cc": "cc-pvdz-ri"}
     assert set(headers) == {"1 2"}
     z = np.load(out)
     assert set(z.files) == CLOSED_SHELL_KEYS | {"charge", "multiplicity"} and (int(z["charge"]), int(z["multiplicity"])) == (1, 2)
@@ -255,12 +256,153 @@ def test_a_file_at_another_geometry_or_step_is_not_resumed(tmp_path, monkeypatch
     like, geom, out = setup(tmp_path, monkeypatch, fake)
     argv = ["rows", "--like", str(like), "--symbols-from", str(geom), "--out", str(out)]
     assert R.main([*argv, "--only-row", "0"]) == 0
-    for moved in ({"coords_bohr": X0 + 0.01}, {"step": 0.01}):
+    for moved, said in (({"coords_bohr": X0 + 0.01}, "at another geometry"), ({"step": 0.01}, r"0\.005.*this call is.*0\.01")):
         z = dict(np.load(like))
         np.savez(like, **{**z, **moved})
         geom.write_text(json.dumps({"symbols": ["o", "h", "h"], "coords_bohr": np.asarray(moved.get("coords_bohr", X0)).tolist()}),
                         encoding="utf-8")
-        with pytest.raises(SystemExit, match="holds rows of"):
+        with pytest.raises(SystemExit, match=said):
             R.main(argv)
         np.savez(like, **z)
     assert fake.calls == 2
+
+
+def recording(fake):
+    """The theories psi4.gradient was asked for, in order."""
+    names = []
+    gradient = fake.gradient
+    fake.gradient = lambda name, molecule, dertype=None: names.append(name) or gradient(name, molecule, dertype)
+    return names
+
+
+def water_geometry(tmp_path):
+    geom = tmp_path / "water.json"
+    geom.write_text(json.dumps({"symbols": ["o", "h", "h"], "coords_bohr": X0.tolist(), "masses_amu": [15.995, 1.008, 1.008]}), encoding="utf-8")
+    return geom
+
+
+def test_an_open_shell_gets_its_named_fitting_set_through_dfocc(tmp_path, monkeypatch):
+    """psi4's DFOCC gradient builds its fitting set from df_basis_cc (upstream dfmp2-grad2, dfmp2-grad4), not from df_basis_mp2."""
+    fake = FakePsi4()
+    like, geom, out = setup(tmp_path, monkeypatch, fake)
+    argv = ["rows", "--like", str(like), "--symbols-from", str(geom), "--out", str(out), "--charge", "1", "--multiplicity", "2"]
+    assert R.main([*argv, "--df-basis-mp2", "cc-pvqz-ri"]) == 0
+    assert fake.options["df_basis_cc"] == "cc-pvqz-ri" and fake.options["df_basis_mp2"] == "cc-pvqz-ri"
+    assert "(cc-pvdz-jkfit / cc-pvqz-ri, frozen 1, UHF via DFOCC" in str(np.load(out)["method"])
+
+
+def test_the_geometry_mode_takes_the_fitting_sets_and_the_frozen_count(tmp_path, monkeypatch):
+    fake = FakePsi4()
+    monkeypatch.setitem(sys.modules, "psi4", fake)
+    out = tmp_path / "df.npz"
+    argv = ["rows", "--geometry", str(water_geometry(tmp_path)), "--basis", "cc-pwcvtz", "--out", str(out)]
+    assert R.main([*argv, "--df-basis-scf", "cc-pvtz-jkfit", "--frozen-core", "0"]) == 0
+    assert (fake.options["df_basis_scf"], fake.options["df_basis_mp2"], fake.options["num_frozen_docc"]) == ("cc-pvtz-jkfit", "cc-pwcvtz-ri", 0)
+    assert str(np.load(out)["method"]) == "DF-MP2 psi4 fake (cc-pvtz-jkfit / cc-pwcvtz-ri, frozen 0)" and int(np.load(out)["frozen"]) == 0
+
+
+def test_a_row_named_twice_or_already_there_is_computed_once(tmp_path, monkeypatch):
+    fake = FakePsi4()
+    like, geom, out = setup(tmp_path, monkeypatch, fake)
+    argv = ["rows", "--like", str(like), "--symbols-from", str(geom), "--out", str(out)]
+    assert R.main([*argv, "--only-row", "3", "--only-row", "3"]) == 0 and fake.calls == 2
+    assert R.main([*argv, "--only-row", "3", "--only-row", "8"]) == 0 and fake.calls == 4
+    assert sorted(k for k in np.load(out).files if k.startswith("row_")) == ["row_03", "row_08"]
+
+
+def test_a_fitting_set_without_a_name_is_refused(tmp_path, monkeypatch):
+    like, geom, out = setup(tmp_path, monkeypatch, FakePsi4())
+    for option in ("--df-basis-scf", "--df-basis-mp2"):
+        with pytest.raises(SystemExit):
+            R.main(["rows", "--like", str(like), "--symbols-from", str(geom), "--out", str(out), option, ""])
+    with pytest.raises(ValueError, match="without a name"):
+        R.Fitting.named_after("cc-pvdz", mp2="")
+    assert not out.exists()
+
+
+def test_a_file_of_another_state_or_plan_is_not_resumed(tmp_path, monkeypatch):
+    """Charge at multiplicity 1 is not in the method text, and the plan is not either: both are compared from the file's own keys."""
+    fake = FakePsi4()
+    like, geom, out = setup(tmp_path, monkeypatch, fake)
+    argv = ["rows", "--like", str(like), "--symbols-from", str(geom), "--out", str(out)]
+    assert R.main([*argv, "--only-row", "0"]) == 0
+    before = out.read_bytes()
+    with pytest.raises(SystemExit, match="holds rows of"):
+        R.main([*argv, "--charge", "2"])
+    z = dict(np.load(like))
+    for changed in ({"ks": np.array([0, 4])}, {"cart": True}, {"reps": np.array([0, 2])}):
+        np.savez(like, **{**z, **changed})
+        with pytest.raises(SystemExit, match="holds rows of"):
+            R.main(argv)
+    assert fake.calls == 2 and out.read_bytes() == before
+
+
+def test_a_file_that_names_no_method_is_refused(tmp_path, monkeypatch):
+    like, geom, _ = setup(tmp_path, monkeypatch, FakePsi4())
+    with pytest.raises(SystemExit, match="not a row file of this script"):
+        R.main(["rows", "--like", str(like), "--symbols-from", str(geom), "--out", str(like)])
+
+
+def test_another_psi4_version_stops_an_unfinished_file_and_leaves_a_finished_one(tmp_path, monkeypatch):
+    like, geom, out = setup(tmp_path, monkeypatch, FakePsi4())
+    argv = ["rows", "--like", str(like), "--symbols-from", str(geom), "--out", str(out)]
+    assert R.main([*argv, "--only-row", "0"]) == 0
+    newer = FakePsi4()
+    newer.__version__ = "fake-2"
+    monkeypatch.setitem(sys.modules, "psi4", newer)
+    with pytest.raises(SystemExit, match="unfinished and was made with psi4 fake; this is psi4 fake-2"):
+        R.main(argv)
+    monkeypatch.setitem(sys.modules, "psi4", FakePsi4())
+    assert R.main(argv) == 0
+    finished = out.read_bytes()
+    monkeypatch.setitem(sys.modules, "psi4", newer)
+    assert R.main(argv) == 0 and newer.calls == 0 and out.read_bytes() == finished
+
+
+def test_the_scf_rows_ask_psi4_for_the_scf_gradient_and_say_so(tmp_path, monkeypatch, capsys):
+    fake = FakePsi4()
+    names = recording(fake)
+    monkeypatch.setitem(sys.modules, "psi4", fake)
+    out = tmp_path / "scf.npz"
+    argv = ["rows", "--geometry", str(water_geometry(tmp_path)), "--basis", "cc-pvqz", "--out", str(out), "--theory", "scf"]
+    assert R.main(argv) == 0
+    z = np.load(out)
+    assert set(names) == {"scf"} and str(z["method"]) == "DF-SCF psi4 fake (cc-pvqz-jkfit)"
+    for k in (int(k) for k in z["ks"]):
+        assert np.allclose(z[f"row_{k:02d}"], H_TRUE[k], atol=1e-12)
+    assert "df-scf cc-pvqz k=" in capsys.readouterr().out
+    with pytest.raises(SystemExit, match="holds rows of"):             # the MP2 rows do not go into the SCF file
+        R.main(argv[:-2])
+
+
+def test_the_default_theory_is_mp2(tmp_path, monkeypatch):
+    fake = FakePsi4()
+    names = recording(fake)
+    like, geom, out = setup(tmp_path, monkeypatch, fake)
+    assert R.main(["rows", "--like", str(like), "--symbols-from", str(geom), "--out", str(out)]) == 0
+    assert set(names) == {"mp2"}
+
+
+@pytest.mark.parametrize("extra", [["--frozen-core", "0"], ["--df-basis-mp2", "cc-pvqz-ri"], ["--multiplicity", "2", "--charge", "1"]])
+def test_what_does_not_go_with_the_scf_rows_is_refused(tmp_path, monkeypatch, extra):
+    fake = FakePsi4()
+    monkeypatch.setitem(sys.modules, "psi4", fake)
+    out = tmp_path / "scf.npz"
+    with pytest.raises(SystemExit):
+        R.main(["rows", "--geometry", str(water_geometry(tmp_path)), "--basis", "cc-pvtz", "--out", str(out), "--theory", "scf", *extra])
+    assert fake.calls == 0 and not out.exists()
+    with pytest.raises(ValueError, match="closed shells only"):
+        R.Level("cc-pvdz", 1, False, multiplicity=2, theory="scf")
+    with pytest.raises(ValueError, match="out of range"):
+        R.Level("cc-pvdz", 1, False, theory="ccsd")
+
+
+@pytest.mark.parametrize("theory", ["mp2", "scf"])
+def test_check_w_runs_for_the_theory_named(tmp_path, monkeypatch, theory):
+    fake = FakePsi4()
+    names = recording(fake)
+    monkeypatch.setitem(sys.modules, "psi4", fake)
+    out = tmp_path / "water.json"
+    assert R.main(["water", "--out", str(out), "--theory", theory]) == 0
+    result = json.loads(out.read_text(encoding="utf-8"))
+    assert set(names) == {theory} and result["theory"] == theory and result["passed"] is True

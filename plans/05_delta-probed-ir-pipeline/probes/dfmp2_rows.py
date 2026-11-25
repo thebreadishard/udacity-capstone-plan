@@ -6,11 +6,16 @@
          already in it are skipped.
              python probes/dfmp2_rows.py rows --like <conventional.npz> --symbols-from <corpus geometry.json> --out <df.npz>
          with --other-basis <basis>, the same plan at another basis (TASKS 184 (b): the QZ rows on a TZ file's plan).
-         with --df-basis-scf / --df-basis-mp2, these fitting sets instead of <basis>-jkfit / <basis>-ri (an ANO or core-valence
-         basis has no sets of its own name); with --frozen-core <n>, that many frozen orbitals instead of the plan's (0: all
-         electrons, for a core-valence term); with --only-row <k> (repeatable), those of the plan's rows only. A basis psi4 does
-         not ship is a <name>.gbs file in a folder named in the environment's PSIPATH. A file that holds rows of another level,
-         step or geometry than the call's is refused.
+         with --df-basis-scf / --df-basis-mp2, these fitting sets instead of <basis>-jkfit / <basis>-ri: an ANO basis has neither
+         set of its own name; cc-pwCVTZ has its own -ri set, which is the one for correlating the core, and lacks only -jkfit.
+         with --frozen-core <n>, that many frozen orbitals instead of the plan's (0: all electrons, for a core-valence term).
+         with --only-row <k> (repeatable), those of the plan's rows only; the end line is then '=== DF ROWS PARTIAL' unless the
+         file is complete, and the exit code is 0 either way — a caller reads the end line.
+         with --theory scf, the DF-SCF gradient's rows instead (a basis-set-limit recipe extrapolates the correlation part alone).
+         A basis psi4 does not ship is a file in a folder named in the environment's PSIPATH, called as psi4 looks for it: the
+         name in lower case with + as p and * as s, then .gbs; its fitting sets must then always be named.
+         A file that holds rows of another level, plan, state, step or geometry than the call's is refused, and so is an
+         unfinished file made with another psi4 version.
          or, for a molecule without a conventional file, planned from the geometry itself as cc_composite_full_check.compute plans it
          (its symmetry-unique displacements, frozen core by the element rule, the anchors' step 0.005 bohr, spherical functions):
              python probes/dfmp2_rows.py rows --geometry <corpus geometry.json> --basis cc-pvtz --out <df.npz>
@@ -23,8 +28,10 @@ module; a row file of an open shell also stores its charge and multiplicity (a c
 
 psi4's own output goes to <out>.psi4.log beside the result. Upstream tests making the same calls: psi4 tests/dfmp2-grad1 (gradient('mp2'),
 scf_type df, mp2_type df), tests/dfmp2-grad5 (the analytic gradient against findif with 5 points), and for the open shell
-tests/dfmp2-grad2 and dfmp2-grad4 (NO radical, reference uhf, qc_module occ, mp2_type df); for fitting sets not named after the orbital
-basis and a basis file found through PSIPATH, tests/psithon2 (basis sto-3g with df_basis_scf cc-pVDZ-JKFIT and df_basis_mp2 cc-pVDZ-RI).
+tests/dfmp2-grad2 and dfmp2-grad4 (NO radical, reference uhf, qc_module occ, mp2_type df, the fitting set as df_basis_cc); for the SCF
+gradient tests/cbs-xtpl-gradient (gradient('SCF/cc-pVDZ')). tests/psithon2 shows that PSIPATH is honoured for an orbital basis and a
+fitting set, in an SCF energy. No upstream test makes a DF-MP2 gradient with a fitting set of another name than the orbital basis's: a
+run that does so carries its own check (a row repeated with larger fitting sets).
 """
 from __future__ import annotations
 
@@ -50,6 +57,7 @@ WATER_BASES = ("cc-pvdz", "cc-pvtz")
 WATER = (("O", (0.0, 0.0, -0.13)), ("H", (0.0, 1.52, 1.07)), ("H", (0.0, -1.43, 0.98)))   # bohr; stretched and asymmetric on purpose
 CONVERGENCE = 1e-10
 ANCHOR_STEP = 0.005                   # bohr: the composite rows' step since 7 Oct (probes/results_m1/composite_rows_2026-10-07)
+THEORIES = ("mp2", "scf")
 
 
 @dataclass(frozen=True)
@@ -61,13 +69,17 @@ class Fitting:
     @classmethod
     def named_after(cls, basis: str, scf: str | None = None, mp2: str | None = None) -> Fitting:
         """Return the sets named after the orbital basis, each replaced by the one given."""
-        return cls(scf or f"{basis}-jkfit", mp2 or f"{basis}-ri")
+        return cls(f"{basis}-jkfit" if scf is None else scf, f"{basis}-ri" if mp2 is None else mp2)
+
+    def __post_init__(self) -> None:
+        if not self.scf or not self.mp2:
+            raise ValueError(f"a fitting set without a name: {self}")
 
 
 @dataclass(frozen=True)
 class Level:
     """The DF-MP2 level of one row file: the conventional file's basis, frozen count and spherical/Cartesian choice; the machine's share;
-    the electronic state; the fitting sets, named after the basis when none are given."""
+    the electronic state; the fitting sets, named after the basis when none are given; the theory whose gradient is taken."""
     basis: str
     frozen: int
     cart: bool
@@ -76,10 +88,13 @@ class Level:
     charge: int = 0
     multiplicity: int = 1
     fitting: Fitting | None = None
+    theory: str = "mp2"
 
     def __post_init__(self) -> None:
-        if self.frozen < 0 or self.threads < 1 or self.memory_gb <= 0 or self.multiplicity < 1:
+        if self.frozen < 0 or self.threads < 1 or self.memory_gb <= 0 or self.multiplicity < 1 or self.theory not in THEORIES:
             raise ValueError(f"level out of range: {self}")
+        if self.theory == "scf" and self.multiplicity > 1:
+            raise ValueError("the SCF rows are built for closed shells only")
 
 
 def configure(psi4: Any, level: Level, log_path: Path) -> None:
@@ -91,7 +106,8 @@ def configure(psi4: Any, level: Level, log_path: Path) -> None:
                       "mp2_type": "df", "num_frozen_docc": level.frozen, "puream": not level.cart, "guess": "sad",
                       "e_convergence": CONVERGENCE, "d_convergence": CONVERGENCE})
     if level.multiplicity > 1:
-        psi4.set_options({"reference": "uhf", "qc_module": "occ"})     # the default DFMP2 module has no UHF gradient
+        # the default DFMP2 module has no UHF gradient; DFOCC takes its correlation fitting set from df_basis_cc, not df_basis_mp2
+        psi4.set_options({"reference": "uhf", "qc_module": "occ", "df_basis_cc": fitting.mp2})
 
 
 def molecule(psi4: Any, symbols: list[str], coords_bohr: np.ndarray, charge: int = 0, multiplicity: int = 1) -> Any:
@@ -100,10 +116,11 @@ def molecule(psi4: Any, symbols: list[str], coords_bohr: np.ndarray, charge: int
     return psi4.geometry("\n".join([f"{charge} {multiplicity}", *atoms, "units bohr", "symmetry c1", "no_reorient", "no_com"]))
 
 
-def gradient(psi4: Any, symbols: list[str], coords_bohr: np.ndarray, dertype: int | None = None, state: tuple[int, int] = (0, 1)) -> np.ndarray:
-    """The DF-MP2 gradient in the (charge, multiplicity) `state`; analytic, or by psi4's finite differences with dertype=0."""
+def gradient(psi4: Any, symbols: list[str], coords_bohr: np.ndarray, dertype: int | None = None, state: tuple[int, int] = (0, 1),
+             theory: str = "mp2") -> np.ndarray:
+    """Return the DF gradient of `theory` in the (charge, multiplicity) `state`; analytic, or by psi4's finite differences with dertype=0."""
     mol = molecule(psi4, symbols, coords_bohr, *state)
-    g = psi4.gradient("mp2", molecule=mol) if dertype is None else psi4.gradient("mp2", molecule=mol, dertype=dertype)
+    g = psi4.gradient(theory, molecule=mol) if dertype is None else psi4.gradient(theory, molecule=mol, dertype=dertype)
     psi4.core.clean()
     return np.asarray(g).ravel()
 
@@ -157,18 +174,43 @@ def save_rows(out: Path, plan: RowsPlan, rows: dict[int, np.ndarray], method: st
     os.replace(tmp, out)
 
 
+def method_text(version: str, plan: RowsPlan, fitting: Fitting, theory: str) -> str:
+    """Return what made the rows, as the file keeps it: '<theory> psi4 <version> (<level>)'."""
+    if theory == "scf":
+        return f"DF-SCF psi4 {version} ({fitting.scf})"
+    shell = "" if plan.multiplicity == 1 else f", UHF via DFOCC, charge {plan.charge}, multiplicity {plan.multiplicity}"
+    return f"DF-MP2 psi4 {version} ({fitting.scf} / {fitting.mp2}, frozen {plan.frozen}{shell})"
+
+
+def method_parts(method: str) -> tuple[str, str, str]:
+    """Split a file's method text into theory, psi4 version and level."""
+    theory, _, rest = method.partition(" psi4 ")
+    version, _, level = rest.partition(" ")
+    return theory, version, level
+
+
 def stored_rows(out: Path, plan: RowsPlan, method: str) -> dict[int, np.ndarray]:
-    """Return the rows already in `out`; a file made at another level, step or geometry than this call's is refused."""
+    """Return the rows already in `out`; a file of another level, plan, state, step or geometry than this call's is refused, and so
+    is an unfinished file of another psi4 version (a finished one is left as it is: nothing is added to it)."""
     if not out.exists():
         return {}
     with np.load(out) as z:
-        was = (str(z["method"]), str(z["basis"]), int(z["frozen"]), float(z["step"]))
+        if "method" not in z.files:
+            raise SystemExit(f"{out} is not a row file of this script (it names no method); give another --out")
+        theory_was, version_was, level_was = method_parts(str(z["method"]))
+        was = (theory_was, level_was, str(z["basis"]), int(z["frozen"]), float(z["step"]), bool(z["cart"]),
+               tuple(int(k) for k in z["ks"]), tuple(int(r) for r in z["reps"]),
+               int(z["charge"]) if "charge" in z.files else 0, int(z["multiplicity"]) if "multiplicity" in z.files else 1)
         same_place = z["coords_bohr"].shape == plan.coords_bohr.shape and np.array_equal(z["coords_bohr"], plan.coords_bohr)
         rows = {int(k[4:]): z[k] for k in z.files if k.startswith("row_")}
-    now = (method, plan.basis, plan.frozen, plan.step)
+    theory_now, version_now, level_now = method_parts(method)
+    now = (theory_now, level_now, plan.basis, plan.frozen, plan.step, plan.cart, plan.ks, plan.reps, plan.charge, plan.multiplicity)
     if was != now or not same_place:
         where = "" if same_place else ", at another geometry"
         raise SystemExit(f"{out} holds rows of {was}{where}; this call is {now}. Give another --out, or the options the file was made with.")
+    if version_was != version_now and set(plan.ks) - set(rows):
+        raise SystemExit(f"{out} is unfinished and was made with psi4 {version_was}; this is psi4 {version_now}. Finish it with that "
+                         "version, or give another --out.")
     return rows
 
 
@@ -188,11 +230,10 @@ def run_rows(a: argparse.Namespace) -> int:
     plan = replace(plan, charge=a.charge, multiplicity=a.multiplicity, frozen=plan.frozen if a.frozen_core is None else a.frozen_core)
     todo = rows_to_run(plan.ks, a.only_row)
     fitting = Fitting.named_after(plan.basis, a.df_basis_scf, a.df_basis_mp2)
-    shell = "" if plan.multiplicity == 1 else f", UHF via DFOCC, charge {plan.charge}, multiplicity {plan.multiplicity}"
-    method = f"DF-MP2 psi4 {psi4.__version__} ({fitting.scf} / {fitting.mp2}, frozen {plan.frozen}{shell})"
+    method = method_text(psi4.__version__, plan, fitting, a.theory)
     out = Path(a.out)
     rows = stored_rows(out, plan, method)
-    level = Level(plan.basis, plan.frozen, plan.cart, a.threads, a.memory_gb, plan.charge, plan.multiplicity, fitting)
+    level = Level(plan.basis, plan.frozen, plan.cart, a.threads, a.memory_gb, plan.charge, plan.multiplicity, fitting, a.theory)
     configure(psi4, level, out.with_suffix(".psi4.log"))
     print(f"[{time.strftime('%H:%M:%S')}] {len(todo)} rows of {plan.source} at {plan.basis}, {len(rows)} already done", flush=True)
     for k in todo:
@@ -203,10 +244,10 @@ def run_rows(a: argparse.Namespace) -> int:
         for sign in (+1, -1):
             x = plan.coords_bohr.ravel().copy()
             x[k] += sign * plan.step
-            g.append(gradient(psi4, list(plan.symbols), x, state=(plan.charge, plan.multiplicity)))
+            g.append(gradient(psi4, list(plan.symbols), x, state=(plan.charge, plan.multiplicity), theory=a.theory))
         rows[k] = central_row(g[0], g[1], plan.step)
         save_rows(out, plan, rows, method)
-        print(f"[{time.strftime('%H:%M:%S')}] df-mp2 {plan.basis} k={k}: H_kk {rows[k][k]:+.6f} ({time.time() - t0:.0f} s)", flush=True)
+        print(f"[{time.strftime('%H:%M:%S')}] df-{a.theory} {plan.basis} k={k}: H_kk {rows[k][k]:+.6f} ({time.time() - t0:.0f} s)", flush=True)
     if set(plan.ks) - set(rows):
         print(f"=== DF ROWS PARTIAL {out} ({len(rows)} of {len(plan.ks)} rows; --only-row)", flush=True)
     else:
@@ -221,14 +262,15 @@ def run_water(a: argparse.Namespace) -> int:
     x = np.array([c for _, c in WATER], float)
     res = {}
     for basis in WATER_BASES:
-        configure(psi4, Level(basis, 1, False, a.threads, a.memory_gb, a.charge, a.multiplicity), out.with_suffix(".psi4.log"))
-        analytic = gradient(psi4, symbols, x, state=(a.charge, a.multiplicity))
+        configure(psi4, Level(basis, 1, False, a.threads, a.memory_gb, a.charge, a.multiplicity, theory=a.theory), out.with_suffix(".psi4.log"))
+        analytic = gradient(psi4, symbols, x, state=(a.charge, a.multiplicity), theory=a.theory)
         psi4.set_options({"points": 5})
-        findif = gradient(psi4, symbols, x, dertype=0, state=(a.charge, a.multiplicity))
+        findif = gradient(psi4, symbols, x, dertype=0, state=(a.charge, a.multiplicity), theory=a.theory)
         res[basis] = {"max_abs_diff": float(np.abs(analytic - findif).max()), "analytic": analytic.tolist(), "findif": findif.tolist()}
-        print(f"[{time.strftime('%H:%M:%S')}] water {basis}: max |analytic - findif| {res[basis]['max_abs_diff']:.2e} Eh/bohr", flush=True)
+        print(f"[{time.strftime('%H:%M:%S')}] water {a.theory} {basis}: max |analytic - findif| {res[basis]['max_abs_diff']:.2e} Eh/bohr", flush=True)
     passed = all(v["max_abs_diff"] <= WATER_LINE for v in res.values())
-    out.write_text(json.dumps({"line": WATER_LINE, "passed": passed, "psi4": psi4.__version__, "charge": a.charge, "multiplicity": a.multiplicity,
+    out.write_text(json.dumps({"line": WATER_LINE, "passed": passed, "psi4": psi4.__version__, "theory": a.theory, "charge": a.charge,
+                               "multiplicity": a.multiplicity,
                                "bases": res}, indent=1), encoding="utf-8")
     print(f"=== WATER CHECK {'PASS' if passed else 'FAIL'} (line {WATER_LINE:g} Eh/bohr)", flush=True)
     return 0 if passed else 1
@@ -256,6 +298,7 @@ def main(argv: list[str] | None = None) -> int:
         p.add_argument("--memory-gb", type=float, default=4.0)
         p.add_argument("--charge", type=int, default=0)
         p.add_argument("--multiplicity", type=int, default=1, help="2S+1; above 1 runs UHF DF-MP2 through psi4's DFOCC")
+        p.add_argument("--theory", choices=THEORIES, default="mp2", help="whose DF gradient: mp2, or scf (closed shells)")
     a = ap.parse_args(argv)
     if a.mode == "rows" and a.like and (a.basis or not a.symbols_from):
         ap.error("--like takes its basis from the file and needs --symbols-from")
@@ -265,6 +308,12 @@ def main(argv: list[str] | None = None) -> int:
         ap.error("--geometry needs --basis and takes its symbols from the geometry")
     if a.mode == "rows" and a.frozen_core is not None and a.frozen_core < 0:
         ap.error("--frozen-core is a number of orbitals, at least 0")
+    if a.mode == "rows" and "" in (a.df_basis_scf, a.df_basis_mp2):
+        ap.error("a fitting set needs a name; leave the option out for the set named after the basis")
+    if a.mode == "rows" and a.theory == "scf" and (a.frozen_core is not None or a.df_basis_mp2 is not None):
+        ap.error("--theory scf has no correlation part: --frozen-core and --df-basis-mp2 do not apply")
+    if a.theory == "scf" and a.multiplicity > 1:
+        ap.error("--theory scf is built for closed shells only")
     if a.multiplicity < 1:
         ap.error("--multiplicity is 2S+1, at least 1")
     return run_rows(a) if a.mode == "rows" else run_water(a)
