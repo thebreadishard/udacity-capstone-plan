@@ -208,3 +208,30 @@ second-hand until checked in the PDF.
 - Slide 19 names the wrong author: 'Mackie 2026, JCP 165, 034104' is Fleming, Esposito, Fortenberry, Quintano & Kraka.
 - Fleming et al. call coupled-cluster frequencies for PAHs 'computationally intractable': how the field will receive our
   reference Hessians.
+
+## The short list for the supervisor (25 Nov 18:11; Dutch, for the user to send — not sent by the assistant)
+
+Wat we uit de tien artikelen halen, in zes punten.
+
+1. **Onze correctie voor de geometrie klopt.** Onze CCSD(T)/cc-pVTZ-Hessiaan van benzeen staat op de B3LYP-geometrie; na een
+   eerste-orde-correctie naar het eigen minimum ligt hij voor zes trillingen 1 tot 5 cm⁻¹ van de cc-pVTZ-waarden van
+   [Martin, Taylor en Lee (1997)](https://doi.org/10.1016/s0009-2614(97)00735-5).
+2. **De trillingen uit het vlak vragen een andere basis.** Hetzelfde artikel laat zien dat cc-pVTZ de ringplooiing en de CH-wip
+   van benzeen 30 tot 40 cm⁻¹ te laag geeft en dat een ANO-basis van dezelfde grootte dat herstelt;
+   [Moran en collega's (2006)](https://doi.org/10.1021/ja0630285) laten zien dat het voor aromaten algemeen is. Wij zien het in
+   onze eigen referentie en gaan een ANO-basis proeven.
+3. **Ons recept is zuiniger dan wat wordt aanbevolen.** In het overzichtsartikel van
+   [Puzzarini en collega's (2019)](https://doi.org/10.1021/acs.chemrev.9b00007) staat het CCSD(T)-deel nooit onder cc-pVTZ, met
+   extrapolatie en een kern-valentieterm erbij. De laatste twee kunnen wij goedkoop toevoegen; het eerste is de prijs.
+4. **2 cm⁻¹ is scherper dan wat de literatuur voor deze grootte laat zien.** Het overzichtsartikel haalt 1 tot 2 cm⁻¹ voor
+   moleculen van vier en vijf atomen; [Barone en collega's (2026)](https://doi.org/10.1063/5.0313437) melden 5 tot 10 cm⁻¹ voor
+   PAK's tot 33 atomen. Graag horen we waartegen de 2 cm⁻¹ voor u moet gelden: CCSD(T) bij de basissetlimiet, of experiment.
+5. **Onze twee coroneentrillingen zijn uitschieters.** Bij Barone zijn alle anharmonische verschuivingen uit het vlak klein en
+   negatief; de onze zijn +179 en +66 cm⁻¹. Volgens de definitie van [Bloino (2015)](https://doi.org/10.1021/jp509985u) is het
+   geen Darling–Dennison-resonantie. We leggen ons VPT2 naast dat van Barone voor indeen, azuleen en acenaftyleen, die wij ook
+   hebben.
+6. **Satellietbanden kunnen combinatiebanden zijn.** [Fleming en collega's (2026)](https://doi.org/10.1063/5.0331629) laten dat
+   zien voor indeen rond 6,2 µm. Dat sluiten we uit voordat we de band bij 6,0 µm aan carbonyl toeschrijven; onze huidige
+   anharmonische stap geeft alleen fundamentelen en kan het nog niet laten zien.
+
+Eén correctie op dia 19: het artikel in JCP 165, 034104 is van Fleming en collega's, niet van Mackie.
