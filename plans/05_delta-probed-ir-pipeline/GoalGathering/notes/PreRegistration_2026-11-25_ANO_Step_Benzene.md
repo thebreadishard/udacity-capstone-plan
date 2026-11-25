@@ -79,3 +79,28 @@ Read the same day (`Literature_2026-11-25_Supervisor_Papers.md`); nothing of thi
   the three modes, the artefact sits in the coupled-cluster part as well and no MP2 step can remove it: said with the outcome.
 - **The ano-pVTZ file** fetched on 25 November has a double-zeta shape and is not used; recipe 4 runs only with a file that has
   carbon f functions (C [4s3p2d1f], H [3s2p1d]), from a source checked against a second one.
+
+## Amendment 2 (25 Nov 19:00, before any run): what the preparation fixed
+
+Approved for preparation by the user on 25 November ('Ja, bereid voor'); no row of this test has been computed. Fixed here so that
+the read cannot choose afterwards:
+
+- **Recipe 6, written out:** the step's target is E(HF/cc-pVQZ) + the MP2 correlation part extrapolated from cc-pVTZ and cc-pVQZ
+  by n⁻³, corr(∞) = (64·corr(QZ) − 27·corr(TZ)) / 37, applied to the Hessians; the correlation part of a Hessian is its DF-MP2
+  rows minus its DF-SCF rows in the same basis and with the same fitting sets. Hartree–Fock is taken at cc-pVQZ without
+  extrapolation — psi4's own two-point default (`xtpl_highest_1` with `corl_xtpl_helgaker_2`).
+- **Recipe 7, written out:** recipe 6 plus [MP2(all electrons) − MP2(frozen 1s)] in cc-pwCVTZ, both with cc-pVTZ-JKFIT for the
+  SCF (the same in both, so it cancels) and cc-pwCVTZ's own RI set.
+- **roos-ano-tz as psi4 ships it** has 414 functions on benzene (C 46, H 23: [5s4p3d2f] / [4s3p2d]), not the 264 of a
+  [4s3p2d1f] / [3s2p1d] set. It is run as it is and reported under that shape; it is larger than a triple-zeta set.
+- **ano-pVQZ** is the Basis Set Exchange file (sha256 5bf9efb1…, `basis/SOURCE.md`), given to psi4 through PSIPATH; psi4 builds
+  510 functions on benzene from it, cc-pVQZ's count (`basis_parse_check.py`, no calculation). It has not been compared with a
+  second source; the published paper's supporting information is that source and is the user's download to approve.
+- **Recipe 4 (ano-pVTZ) is not in the run**: no file of the right shape. It is added when one is in hand.
+- **The fitting check** runs for both ANO sets, on the plan's first row, right after that set's rows.
+- **Code:** `probes/dfmp2_rows.py` got `--df-basis-scf`, `--df-basis-mp2`, `--frozen-core`, `--only-row` and `--theory scf`, and
+  refuses to resume a file of another level; the lane is `probes/ano_step_benzene.sh`, the run spec
+  `probes/runspecs/ano_step_benzene.json` (valid). Two independent reviewers, 22 findings, all fixed or answered; one was real
+  for later work — psi4's open-shell route reads the fitting set from another option than the one we set. No reviewer ran psi4:
+  the run's own smoke (check W on water for the MP2 and the SCF gradient) is the first real call.
+- **Still to write before the launch:** the read script, with its test on synthetic records.
