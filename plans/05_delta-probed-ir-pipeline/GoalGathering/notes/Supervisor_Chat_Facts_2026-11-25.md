@@ -16,7 +16,7 @@ Every number here has its source in the project's records as found on 23 Novembe
   peropyrene, ovalene, hexabenzocoronene); B3LYP 22.8. Adding five large molecules to the training left it at 7.8. Nothing tested
   reaches 50 carbon atoms (slides 12, 15).
 - CCSD(T) reference Hessians: the slides say 11 done (benzene full CCSD(T)/cc-pVTZ, ten composite) and 32 running on five rented
-  servers. **Since the PDF was sent, seven of those 32 have finished and passed their checks: 18 on 23 November**, and the DFT
+  servers. **Since the PDF was sent, twelve of those 32 have finished and passed their checks: 23 reference Hessians on the morning of 25 November** (the newest five: quinazoline, indene, fluoro-indole, fluoro- and chloro-quinoxaline; the other 20 are still being computed, none has failed), and the DFT
   step for the remaining molecules of the plan is done (122 of 128 usable; six have an imaginary mode and are redone). 167
   in the plan (seven of the first 11 are among them), about 300 as an estimate with 'other' and first cations (slides 10, 11, 20, 21).
 - The 167: from a rehearsal on ωB97X data, a simpler task than the real step; CH out-of-plane crosses 3 cm⁻¹ at 167 (153–177);

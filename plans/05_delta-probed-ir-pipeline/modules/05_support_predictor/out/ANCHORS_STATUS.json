@@ -377,6 +377,71 @@
    "checks": "MP2 row symmetry spread 2.4e-05 / 2.2e-05; basis step rms 6.8e-03; softest 214, 412 cm⁻¹",
    "note": "chain 33c promotion rule: VALID",
    "sha16": "64f00db190c3d558"
+  },
+  {
+   "mol_id": "A2_06067133dc",
+   "name": "quinoxaline+F",
+   "path": "probes/results_m1/new_anchors_2026-11/A2_06067133dc/composite_A2_06067133dc.npz",
+   "level": "CCSD(T)/cc-pVDZ + [DF-MP2 psi4 1.11 (cc-pvtz-jkfit / cc-pvtz-ri, frozen 11): cc-pVTZ − cc-pVDZ]",
+   "tier": "TZ",
+   "kind": "composite",
+   "status": "carried",
+   "date": "2026-11-25",
+   "checks": "MP2 row symmetry spread 2.2e-05 / 2.0e-05; basis step rms 6.2e-03; softest 130, 179 cm⁻¹",
+   "note": "chain 33c promotion rule: VALID",
+   "sha16": "c9fecc9b12591dd0"
+  },
+  {
+   "mol_id": "B_172a24dc77",
+   "name": "indole+F",
+   "path": "probes/results_m1/new_anchors_2026-11/B_172a24dc77/composite_B_172a24dc77.npz",
+   "level": "CCSD(T)/cc-pVDZ + [DF-MP2 psi4 1.11 (cc-pvtz-jkfit / cc-pvtz-ri, frozen 10): cc-pVTZ − cc-pVDZ]",
+   "tier": "TZ",
+   "kind": "composite",
+   "status": "carried",
+   "date": "2026-11-25",
+   "checks": "MP2 row symmetry spread 8.5e-05 / 7.3e-05; basis step rms 6.3e-03; softest 184, 205 cm⁻¹",
+   "note": "chain 33c promotion rule: VALID",
+   "sha16": "1deeeebd5f512d45"
+  },
+  {
+   "mol_id": "A_d295f2fa80",
+   "name": "quinazoline",
+   "path": "probes/results_m1/new_anchors_2026-11/A_d295f2fa80/composite_A_d295f2fa80.npz",
+   "level": "CCSD(T)/cc-pVDZ + [DF-MP2 psi4 1.11 (cc-pvtz-jkfit / cc-pvtz-ri, frozen 10): cc-pVTZ − cc-pVDZ]",
+   "tier": "TZ",
+   "kind": "composite",
+   "status": "carried",
+   "date": "2026-11-25",
+   "checks": "MP2 row symmetry spread 6.1e-05 / 5.4e-05; basis step rms 6.3e-03; softest 164, 176 cm⁻¹",
+   "note": "chain 33c promotion rule: VALID",
+   "sha16": "0d4d2ce795b283a2"
+  },
+  {
+   "mol_id": "A_90df3e4aa9",
+   "name": "indene",
+   "path": "probes/results_m1/new_anchors_2026-11/A_90df3e4aa9/composite_A_90df3e4aa9.npz",
+   "level": "CCSD(T)/cc-pVDZ + [DF-MP2 psi4 1.11 (cc-pvtz-jkfit / cc-pvtz-ri, frozen 9): cc-pVTZ − cc-pVDZ]",
+   "tier": "TZ",
+   "kind": "composite",
+   "status": "carried",
+   "date": "2026-11-25",
+   "checks": "MP2 row symmetry spread 3.2e-05 / 3.1e-05; basis step rms 6.0e-03; softest 192, 212 cm⁻¹",
+   "note": "chain 33c promotion rule: VALID",
+   "sha16": "e8ccfcc10b2f5b00"
+  },
+  {
+   "mol_id": "A2_2f5e215666",
+   "name": "quinoxaline+Cl",
+   "path": "probes/results_m1/new_anchors_2026-11/A2_2f5e215666/composite_A2_2f5e215666.npz",
+   "level": "CCSD(T)/cc-pVDZ + [DF-MP2 psi4 1.11 (cc-pvtz-jkfit / cc-pvtz-ri, frozen 15): cc-pVTZ − cc-pVDZ]",
+   "tier": "TZ",
+   "kind": "composite",
+   "status": "carried",
+   "date": "2026-11-25",
+   "checks": "MP2 row symmetry spread 1.9e-05 / 1.8e-05; basis step rms 6.3e-03; softest 99, 173 cm⁻¹",
+   "note": "chain 33c promotion rule: VALID",
+   "sha16": "fbc385cc15cbe057"
   }
  ]
 }
