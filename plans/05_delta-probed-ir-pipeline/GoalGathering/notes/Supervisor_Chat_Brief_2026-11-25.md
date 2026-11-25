@@ -106,8 +106,9 @@ at her request in the chat. It covers nothing else: no second run while one is r
 slide edited, nothing posted or sent.
 
 1. **Offer the choice, in one short answer.** Molecules the network has never seen and that fit the half hour (screened on
-   19 November, `probes/results_m1/demo_candidates_2026-11-19/demo_candidates_271.md`): pyrazine or pyrimidine (about 5–7
-   minutes), thiophene, furan or pyrrole (about 3–5), 1,3,5-trifluorobenzene (16–22), benzoxazole (17–25), benzimidazole (18–26).
+   19 November, `probes/results_m1/demo_candidates_2026-11-19/demo_candidates_271.md`): pyrazine or pyrimidine (about 10–12
+   minutes), thiophene or pyrrole (about 6–8), 1,3,5-trifluorobenzene (about 35), benzoxazole and benzimidazole (about 35–40,
+   so over the half hour: say so). Furan was run as the rehearsal this morning and is no longer new to us.
    She may name another molecule: it must be neutral, closed-shell, aromatic, of C, H, N, O, F, S, Cl, and the pipeline itself
    refuses what it cannot take. Say before starting when a molecule is outside what was trained (an N–N bond in the ring, an
    ethyl or larger alkyl group, an N(CH3)2 group): the result is then a test, not a showpiece.
@@ -115,8 +116,9 @@ slide edited, nothing posted or sent.
    ωB97X, with a statement per band whether 3 cm⁻¹ is claimed; uncorrected B3LYP intensities; no comparison with experiment. The
    anharmonic shift is a separate, slower step (benzonitrile: 11–31 minutes more); run it only if she asks for it
    (`--anharmonic-minutes`), and say it carries no accuracy claim.
-3. **Say the time honestly**: the minutes above come from an older version of the DFT program and are a lower bound; no run on
-   the current version has been timed for a new molecule.
+3. **Say the time honestly**: the minutes above are the 19 November estimates doubled, because the one run timed on the current
+   version of the DFT program (furan, this morning) took 6.4 minutes against an estimate of 3. One measurement: the larger
+   molecules may take longer still.
 4. **Start it through the run door, in the background**: a run spec from `probes/runspecs/pipeline_rehearsal_cinnoline.json` with
    the name, the SMILES, the output folder `probes/results_m1/pipeline_demo_2026-11-25` and the estimate changed (the scratchpad's
    `demo_spec.py <name> <smiles> <minutes>` writes it; without it, copy the spec and change those four), then
@@ -130,8 +132,12 @@ slide edited, nothing posted or sent.
    start another molecule without her asking.
 
 Checked on 25 November 08:3x: the pipeline's own dry run passes for cinnoline and for pyrazine on today's code (release networks
-`…v14s3clean_c00_control_release_model_n1132`, three trained copies); 20 GB of memory free, the laptop on mains power. Not checked:
-a full run of a molecule outside our data on the current version of the DFT program.
+`…v14s3clean_c00_control_release_model_n1132`, three trained copies); 20 GB of memory free, the laptop on mains power. **A full
+run was made at 08:32–08:39 on furan** through the run door (`probes/runspecs/pipeline_demo_1125_furan.json`): 382 s, 21 bands,
+the 3 cm⁻¹ claim made for all 21, result in `probes/results_m1/pipeline_demo_2026-11-25/furan/certificate.md`. That file is
+written in our own terms (hold-out, seeds, licence): translate with the table above before quoting from it. Note for a
+five-membered ring without substituents (thiophene, pyrrole): none was in the training, only substituted ones, and furan's
+out-of-plane C–H bands were moved by 34–40 cm⁻¹ from B3LYP — say that such a result is a test.
 
 Money: first give the estimate that exists (the cost lines of the fact sheet), then say that who pays is between her and the student. No advice on what she
 should pay for.
