@@ -41,6 +41,7 @@ RISE_LINE = 20.0                # TRANSFERS: the key mode rises by at least this
 NO_RISE_LINE = 10.0             # NO TRANSFER: it rises by less than this
 CONTROL_PINS = {("B2g", 770.0): -33.0, ("B2g", 980.0): -17.1, ("Au", 970.0): -15.6}    # the read of 19 Nov, harmonic minus fundamental
 CONTROL_LINE = 0.5              # the DF-MP2 control repeats each pin this well (the DF swap of 20 Oct: largest change 0.46)
+OVERLAP_LINE = 0.5              # a judged pair whose control and ano-pVQZ mode vectors overlap² less is named: not the same mode
 HELD_LEVELS = {"dz": A.RowLevel("cc-pvdz", "mp2", "cc-pvdz-jkfit", "cc-pvdz-ri", frozen=N_FROZEN),
                "tz": A.RowLevel("cc-pvtz", "mp2", "cc-pvtz-jkfit", "cc-pvtz-ri", frozen=N_FROZEN)}
 ANO_LEVEL = A.RowLevel("ano-pvqz", "mp2", "cc-pvqz-jkfit", "cc-pvqz-ri", frozen=N_FROZEN)
@@ -76,7 +77,7 @@ def load_held(inputs: Inputs) -> Held:
     """The corpus geometry, the CCSD(T)/cc-pVDZ Hessian at it and the two DF-MP2 Hessians we hold; a file that is not what its
     place says (level, frozen orbitals, geometry, an invalid CC Hessian) is refused."""
     sym, x0, masses = CCF.load_geometry(inputs.corpus / "geometry.json")
-    with np.load(inputs.cc_dz, allow_pickle=True) as z:
+    with np.load(inputs.cc_dz) as z:
         cc, at = np.asarray(z["H_raw"], float), np.asarray(z["coords_bohr"], float).reshape(-1, 3)
         told = (str(z["status"]), str(z["basis"]).lower(), int(z["frozen"]))
     if told != ("VALID", "cc-pvdz", N_FROZEN) or np.abs(at - x0).max() > CCF.FRAME_TOL_BOHR:
@@ -98,10 +99,22 @@ def experiment() -> dict[Key, F.Exp]:
     return out
 
 
-def harmonic(held: Held, mp2_large: np.ndarray) -> dict[Key, tuple[float, bool]]:
-    """(species, measured wavenumber) → (the composite's harmonic frequency, possible-crossing flag). Raises `A.Unreadable` for an
-    imaginary mode and for modes that do not sort into naphthalene's species."""
-    H = CCF.project_tr(held.cc_dz + mp2_large - held.mp2_dz, held.masses, held.x0)[0]
+@dataclass(frozen=True)
+class Named:
+    """One composite's modes by (species, measured wavenumber): harmonic frequency, columns of V, possible-crossing flag."""
+    freq: dict[Key, float]
+    idx: dict[Key, tuple[int, ...]]
+    crossing: dict[Key, bool]
+    V: np.ndarray
+
+
+def harmonic(held: Held, mp2_large: np.ndarray) -> Named:
+    """The composite's modes named by the measured fundamentals. Raises `A.Unreadable` for an imaginary mode and for modes that
+    do not sort into naphthalene's species; a Hessian with a value that is not finite is refused outright."""
+    H = held.cc_dz + mp2_large - held.mp2_dz
+    if not np.isfinite(H).all():
+        raise SystemExit("a composite Hessian holds a value that is not finite: a damaged row file")
+    H = CCF.project_tr(H, held.masses, held.x0)[0]
     _, freq, V, _ = F.normal_modes(H, held.masses)
     if freq.min() <= 0.0:
         raise A.Unreadable(f"an imaginary mode ({freq.min():.1f} cm⁻¹)")
@@ -110,18 +123,25 @@ def harmonic(held: Held, mp2_large: np.ndarray) -> dict[Key, tuple[float, bool]]
         pairs = F.pair_by_irrep(F.groups(freq, labels), list(experiment().values()))
     except ValueError as why:
         raise A.Unreadable(str(why)) from why
-    return {(e.irrep, e.nu): (g.freq, flag) for g, e, flag in pairs}
+    keys = [(e.irrep, e.nu) for _, e, _ in pairs]
+    return Named(dict(zip(keys, (g.freq for g, _, _ in pairs), strict=True)), dict(zip(keys, (g.idx for g, _, _ in pairs), strict=True)),
+                 dict(zip(keys, (bool(flag) for _, _, flag in pairs), strict=True)), V)
 
 
-def mode_rows(control: dict[Key, tuple[float, bool]], ano: dict[Key, tuple[float, bool]] | None) -> list[dict]:
-    """One row per measured fundamental: harmonic minus fundamental for the control and for the ano-pVQZ step, and the rise."""
+def mode_rows(control: Named, ano: Named | None) -> list[dict]:
+    """One row per measured fundamental: harmonic minus fundamental for the control and for the ano-pVQZ step, the rise, and the
+    overlap² of the two recipes' mode vectors — pairing by order names a mode in each recipe apart, the overlap says whether the
+    two are one mode."""
     rows = []
-    for (irrep, nu), (w_control, flag) in sorted(control.items(), key=lambda item: item[0][1]):
-        w_ano, flag_ano = ano[(irrep, nu)] if ano else (None, False)
-        oop = irrep in OUT_OF_PLANE
-        rows.append({"irrep": irrep, "nu": nu, "out_of_plane": oop, "judged": oop and nu > JUDGED_ABOVE_CM,
-                     "control": w_control - nu, "ano": None if w_ano is None else w_ano - nu,
-                     "rise": None if w_ano is None else w_ano - w_control, "crossing": bool(flag or flag_ano)})
+    for irrep, nu in sorted(control.freq, key=lambda key: key[1]):
+        key, oop = (irrep, nu), irrep in OUT_OF_PLANE
+        row = {"irrep": irrep, "nu": nu, "out_of_plane": oop, "judged": oop and nu > JUDGED_ABOVE_CM,
+               "control": control.freq[key] - nu, "ano": None, "rise": None, "overlap": None, "crossing": control.crossing[key]}
+        if ano is not None:
+            row |= {"ano": ano.freq[key] - nu, "rise": ano.freq[key] - control.freq[key],
+                    "overlap": F.subspace_overlap(control.V, control.idx[key], ano.V, ano.idx[key]),
+                    "crossing": control.crossing[key] or ano.crossing[key]}
+        rows.append(row)
     return rows
 
 
@@ -137,9 +157,10 @@ def outcome(rows: list[dict]) -> tuple[str, str]:
     judged = [r for r in rows if r["judged"]]
     if not judged or any(r["ano"] is None for r in judged):
         raise ValueError("no ano-pVQZ reading of the judged modes: there is nothing to judge")
-    rise = next(r["rise"] for r in rows if (r["irrep"], r["nu"]) == KEY_MODE)
-    lowest = min(judged, key=lambda r: r["ano"])
-    what = (f"the {KEY_MODE[0]} mode at {KEY_MODE[1]:.0f} rises by {rise:+.1f} cm⁻¹; the lowest judged out-of-plane harmonic is "
+    key = next(r for r in rows if (r["irrep"], r["nu"]) == KEY_MODE)
+    rise, lowest = key["rise"], min(judged, key=lambda r: r["ano"])
+    what = (f"the {KEY_MODE[0]} mode at {KEY_MODE[1]:.0f} rises by {rise:+.1f} cm⁻¹ (overlap² of its two mode vectors "
+            f"{key['overlap']:.2f}); the lowest judged out-of-plane harmonic is "
             f"{lowest['ano']:+.1f} from its fundamental ({lowest['irrep']} {lowest['nu']:.0f})")
     if rise < NO_RISE_LINE:
         return "NO TRANSFER", f"{what}; a rise under {NO_RISE_LINE} is not benzene's effect"
@@ -153,6 +174,10 @@ def caveats(rows: list[dict], fitting: dict | None) -> list[str]:
     out = [GEOMETRY_NOTE]
     if fitting is not None and not fitting["under_line"]:
         out.append(f"the fitting check is over its line of {A.FITTING_LINE:.0e} E_h/bohr² ({fitting['largest_change']:.1e})")
+    other = [f"{r['irrep']} {r['nu']:.0f} ({r['overlap']:.2f})" for r in rows if r["judged"] and r["overlap"] < OVERLAP_LINE]
+    if other:
+        out.append(f"the two recipes' mode vectors overlap² under {OVERLAP_LINE} — the rise there compares two different modes: "
+                   + ", ".join(other))
     crossed = [f"{r['irrep']} {r['nu']:.0f}" for r in rows if r["judged"] and r["crossing"]]
     if crossed:
         out.append("possible crossings inside a species (neighbours within "
@@ -186,7 +211,10 @@ def read(run: Path, inputs: Inputs, partial: bool) -> dict:
     """The whole read as one record."""
     held = load_held(inputs)
     absent = run_files(run, partial)
-    control = harmonic(held, held.mp2_tz)
+    try:
+        control = harmonic(held, held.mp2_tz)
+    except A.Unreadable as why:
+        raise SystemExit(f"the control composite cannot be read: {why}") from why
     ano, unread, fitting = None, None, None
     spread, psi4 = dict(held.spread), dict(held.psi4)
     if not absent:
@@ -228,8 +256,10 @@ def report(record: dict) -> str:
              f"Rows from `{record['run']}`. Registration: `GoalGathering/notes/PreRegistration_2026-11-26_ANO_Step_Naphthalene.md`. "
              "Harmonic frequency of the composite minus the measured fundamental, cm⁻¹, as computed (no geometry term). The lines "
              "are compared on unrounded values.", "",
-             "| species | measured | control (cc-pVTZ step) | ano-pVQZ step | rise | judged | flag |", "|---|---|---|---|---|---|---|"]
+             "| species | measured | control (cc-pVTZ step) | ano-pVQZ step | rise | overlap² | judged | flag |",
+             "|---|---|---|---|---|---|---|---|"]
     lines += [f"| {r['irrep']} | {r['nu']:.0f} | {_cell(r['control'])} | {_cell(r['ano'])} | {_cell(r['rise'])} | "
+              f"{'—' if r['overlap'] is None else format(r['overlap'], '.2f')} | "
               f"{'yes' if r['judged'] else 'no'} | {'crossing?' if r['crossing'] else ''} |" for r in record["modes"] if r["out_of_plane"]]
     lines += ["", *_shift_summary(record["modes"])]
     pins = {f"{i} {nu:.0f}": pin for (i, nu), pin in CONTROL_PINS.items()}

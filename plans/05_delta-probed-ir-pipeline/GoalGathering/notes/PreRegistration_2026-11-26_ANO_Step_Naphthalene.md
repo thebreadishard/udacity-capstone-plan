@@ -17,7 +17,7 @@ on a fused-ring molecule?
   frozen orbitals) and the DF-MP2 rows in cc-pVDZ and cc-pVTZ (`dfmp2_composite_2026-10-19/`, psi4 1.10.2, 15 rows).
 - Run: the 15 DF-MP2 rows in ano-pVQZ (the Basis Set Exchange file the benzene test used, cc-pVQZ fitting sets, 10 frozen
   orbitals, step 0.005 bohr, psi4 through `probes/dfmp2_rows.py`), and the plan's first row once more with cc-pV5Z fitting sets.
-  Lane `probes/ano_step_naphthalene.sh`; check W on water is its smoke. Upstream calls are those of the benzene run: psi4's
+  Lane `probes/ano_step_naphthalene.sh` (the cc-pV5Z-fitting row first: it needs the most memory); check W on water is its smoke. Upstream calls are those of the benzene run: psi4's
   tests/dfmp2-grad1 and dfmp2-grad5 (DF-MP2 gradient against finite differences) and tests/psithon2 (PSIPATH).
 - Two recipes are read: the control (X = cc-pVTZ, held rows) and the ano-pVQZ step. The other recipes of the benzene test did not
   reach its USEFUL line and are not repeated.
@@ -33,7 +33,7 @@ cannot show 2 cm⁻¹, and it is not read as if it could.
 Frequencies are read **as computed**, without the first-order geometry term: there is no force field of naphthalene at the corpus
 level and no CCSD(T)/cc-pVTZ gradient. On benzene that term moves a C–H wag down by up to about 20 cm⁻¹, so here a C–H wag's place
 above its fundamental is flattered; the rise of a mode between the two recipes is not affected to first order. Every outcome
-carries this sentence.
+by the lines (TRANSFERS, NO TRANSFER, BETWEEN) carries this sentence.
 
 Modes are named by D2h species from the mode vectors and paired with the measured ones by frequency order inside a species (the
 method of `probes/fundamentals_vs_experiment.py`, registered 25 Oct); a pair with a neighbour of its species within 15 cm⁻¹ is
@@ -67,13 +67,17 @@ and the geometry convention), which hides a basis-set effect of that size. On be
 
 Checks reported under any outcome: the fitting check (largest change of any element of the repeated row, line 1e-6 E_h/bohr²; on
 benzene it was 2.2e-5, at the size of the rows' own symmetry spread — over the line, said, not blocking); the rows' symmetry
-spread; the psi4 version; possible crossings among the judged modes.
+spread; the psi4 version; possible crossings among the judged modes; and, for every out-of-plane mode, the overlap² of its mode
+vector in the control with its mode vector in the ano-pVQZ composite — pairing by order names a mode in each recipe apart, so a
+judged pair under 0.5 is named as two different modes, and the key mode's overlap² stands in the outcome sentence (added on the
+independent review, before any ano-pVQZ row exists; the lines are unchanged).
 
 ## The read
 
 `probes/ano_step_read_naphthalene.py <run dir> <out prefix>` (tests: `tests/test_ano_step_read_naphthalene.py`, the lines at their
 edges on made-up rows and the read through row files built from the held Hessians: control's own rows read as NO TRANSFER with
-zero rise, a 2 % stiffer composite reads as its √1.02, an imaginary mode gives NO OUTCOME, wrong files are refused).
+zero rise, a 2 % stiffer composite reads as its √1.02, a lift of the key mode alone reads as BETWEEN and with the two other low modes as
+TRANSFERS, an imaginary mode gives NO OUTCOME, wrong files are refused).
 
 ## What follows
 

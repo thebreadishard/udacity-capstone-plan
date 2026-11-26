@@ -2,7 +2,9 @@
 # probes/ano_step_naphthalene.sh <run dir> <basis dir> <geometry.json> (TASKS 300;
 # GoalGathering/notes/PreRegistration_2026-11-26_ANO_Step_Naphthalene.md). Naphthalene's MP2 Hessian rows at the corpus geometry by
 # psi4's DF-MP2 gradient in ano-pVQZ (a file in <basis dir>, found through PSIPATH) with cc-pVQZ's fitting sets, on the plan of the
-# molecule's own symmetry (15 rows), then the plan's first row again with cc-pV5Z's fitting sets as the check on the fitting.
+# molecule's own symmetry (15 rows), after the plan's first row (displacement 0) with cc-pV5Z's fitting sets, the check on the
+# fitting: that row needs the most memory, so it runs first and fails in the first hours if it fails. THREADS and MEMORY_GB (psi4's
+# memory) are the launch's to state; there is no default that fits every machine.
 # The cc-pVDZ and cc-pVTZ rows of the composite are held from 19 Oct and are not recomputed. Check W on water is the smoke.
 # Markers '=== (ANO2) …', a failure as '=== (ANO2) FAILED: …'; the end line '=== (ANO2) all done'.
 # Resumable as probes/ano_step_benzene.sh is: a label whose row file exists and whose log ends with dfmp2_rows.py's end line is
@@ -17,11 +19,11 @@ HERE=$(cd "$(dirname "$0")" && pwd)
 PY=${PY:-$HOME/miniforge3/envs/vpt2/bin/python}
 export PSI_SCRATCH=${PSI_SCRATCH:-$HOME/psi4_scratch}   # not /tmp: WSL clears it when idle (19 Oct 2026)
 export PSIPATH=$BASIS_DIR
-THREADS=${THREADS:-8}
-MEMORY_GB=${MEMORY_GB:-8}
+THREADS=${THREADS:?threads for psi4}
+MEMORY_GB=${MEMORY_GB:?GB of memory for psi4}
 LABEL=mp2_anopvqz
 mark() { echo "=== (ANO2) $* $(date '+%F %T')"; }
-for needed in "$GEOM" "$BASIS_DIR/ano-pvqz.gbs" "$HERE/dfmp2_rows.py"; do
+for needed in "$GEOM" "$BASIS_DIR/ano-pvqz.gbs" "$HERE/dfmp2_rows.py" /usr/bin/time "$PY"; do
   [ -f "$needed" ] || { mark "refusing to start: $needed missing"; exit 1; }
 done
 mkdir -p "$PSI_SCRATCH" "$RUN"
@@ -50,8 +52,8 @@ if ! "$PY" "$HERE/dfmp2_rows.py" water --theory mp2 --out "$RUN/water_check_mp2.
 fi
 mark "smoke: check W passed"
 
+# displacement 0 is the plan's first row (dfmp2_rows.py refuses a row the plan does not have; the read refuses a fit file whose
+# row is not its plan's first)
+rows "${LABEL}_fit5z" --df-basis-scf cc-pv5z-jkfit --df-basis-mp2 cc-pv5z-ri --only-row 0
 rows "$LABEL" --df-basis-scf cc-pvqz-jkfit --df-basis-mp2 cc-pvqz-ri
-K=$(grep -a -m1 -o ' k=[0-9]*' "$RUN/rows_$LABEL.log" | cut -d= -f2) || true
-[ -n "$K" ] || { mark "FAILED: no row in $RUN/rows_$LABEL.log to repeat"; exit 1; }
-rows "${LABEL}_fit5z" --df-basis-scf cc-pv5z-jkfit --df-basis-mp2 cc-pv5z-ri --only-row "$K"
 mark "all done"

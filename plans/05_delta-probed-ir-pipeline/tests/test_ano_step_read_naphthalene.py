@@ -17,29 +17,26 @@ sys.path.insert(0, str(PLAN / "probes"))
 import ano_step_read as A  # noqa: E402
 import ano_step_read_naphthalene as N  # noqa: E402
 import dfmp2_rows as D  # noqa: E402
+import learning_curve_layerA as L  # noqa: E402  (on the path through fundamentals_vs_experiment)
 
 INPUTS = N.Inputs()
 GEOMETRY = str(INPUTS.corpus / "geometry.json")
 HELD = all(p.exists() for p in (INPUTS.corpus / "geometry.json", INPUTS.cc_dz, INPUTS.mp2_dz, INPUTS.mp2_tz))
 needs_held = pytest.mark.skipif(not HELD, reason="naphthalene's held Hessians (git-ignored data) are not in this checkout")
+KEY, AU_970, B2G_980, B2G_876 = N.KEY_MODE, ("Au", 970.0), ("B2g", 980.0), ("B2g", 876.0)
 
 
 def rows(key_rise: float = 25.0, lowest: float = 0.0, key_ano: float | None = None, **changes) -> list[dict]:
     """Made-up mode rows: the key mode (from the control's −33 unless `key_ano` places it), two more judged out-of-plane modes,
     a butterfly mode far below its fundamental and an in-plane mode far below — the last two must never be judged."""
     out = [{"irrep": "B2g", "nu": 770.0, "out_of_plane": True, "judged": True, "control": -33.0,
-            "ano": -33.0 + key_rise if key_ano is None else key_ano,
-            "rise": key_rise, "crossing": False},
-           {"irrep": "Au", "nu": 970.0, "out_of_plane": True, "judged": True, "control": -15.6, "ano": lowest, "rise": lowest + 15.6,
-            "crossing": False},
-           {"irrep": "B2g", "nu": 980.0, "out_of_plane": True, "judged": True, "control": -17.1, "ano": 9.0, "rise": 26.1,
-            "crossing": False},
-           {"irrep": "B3u", "nu": 176.0, "out_of_plane": True, "judged": False, "control": -9.0, "ano": -40.0, "rise": -31.0,
-            "crossing": False},
-           {"irrep": "Ag", "nu": 758.0, "out_of_plane": False, "judged": False, "control": 7.0, "ano": -40.0, "rise": -47.0,
-            "crossing": False}]
+            "ano": -33.0 + key_rise if key_ano is None else key_ano, "rise": key_rise},
+           {"irrep": "Au", "nu": 970.0, "out_of_plane": True, "judged": True, "control": -15.6, "ano": lowest, "rise": lowest + 15.6},
+           {"irrep": "B2g", "nu": 980.0, "out_of_plane": True, "judged": True, "control": -17.1, "ano": 9.0, "rise": 26.1},
+           {"irrep": "B3u", "nu": 176.0, "out_of_plane": True, "judged": False, "control": -9.0, "ano": -40.0, "rise": -31.0},
+           {"irrep": "Ag", "nu": 758.0, "out_of_plane": False, "judged": False, "control": 7.0, "ano": -40.0, "rise": -47.0}]
     for row in out:
-        row.update(changes.get(f"{row['irrep']}_{row['nu']:.0f}", {}))
+        row |= {"crossing": False, "overlap": 0.95} | changes.get(f"{row['irrep']}_{row['nu']:.0f}", {})
     return out
 
 
@@ -69,9 +66,12 @@ def test_outcome_refuses_rows_without_an_ano_reading():
         N.outcome(rows(Au_970={"ano": None, "rise": None}))
 
 
+def test_the_outcome_sentence_names_the_key_modes_overlap():
+    assert "overlap² of its two mode vectors 0.31" in N.outcome(rows(key_rise=30.0, B2g_770={"overlap": 0.31}))[1]
+
+
 def test_control_line_at_its_edge():
-    held = rows()
-    assert N.control_misses(held) == {}
+    assert N.control_misses(rows()) == {}
     assert N.control_misses(rows(B2g_770={"control": -33.5})) == {}
     assert N.control_misses(rows(B2g_770={"control": -33.51})) == {"B2g 770": -33.51}
     assert N.control_misses(rows(Au_970={"control": -15.0})) == {"Au 970": -15.0}
@@ -86,29 +86,35 @@ def test_verdict_puts_the_control_first_then_missing_files_then_an_unread_hessia
     assert word == "NO OUTCOME" and "imaginary" in said
 
 
-def test_every_outcome_carries_the_geometry_note_and_what_else_stands_under_it():
+def test_an_outcome_by_the_lines_carries_the_geometry_note_and_what_else_stands_under_it():
     fitting = {"largest_change": 3e-5, "under_line": False}
-    word, said = N.verdict(rows(key_rise=30.0, Au_970={"crossing": True}), None, None, fitting)
+    word, said = N.verdict(rows(key_rise=30.0, Au_970={"crossing": True}, B2g_980={"overlap": 0.49}), None, None, fitting)
     assert word == "TRANSFERS"
-    assert "without the geometry term" in said and "fitting check is over its line" in said and "Au 970" in said
-    quiet = N.verdict(rows(key_rise=30.0, B3u_176={"crossing": True}), None, None, {"largest_change": 1e-7, "under_line": True})[1]
-    assert "fitting" not in quiet and "crossings" not in quiet and "without the geometry term" in quiet
+    assert "without the geometry term" in said and "fitting check is over its line" in said
+    assert "crossings" in said and "Au 970" in said and "two different modes: B2g 980 (0.49)" in said
+    quiet = N.verdict(rows(key_rise=30.0, B3u_176={"crossing": True, "overlap": 0.1}, B2g_980={"overlap": 0.5}), None, None,
+                      {"largest_change": 1e-7, "under_line": True})[1]
+    assert "fitting" not in quiet and "crossings" not in quiet and "different modes" not in quiet and "without the geometry term" in quiet
 
 
 def test_mode_rows_judge_out_of_plane_modes_above_the_butterfly_pair_only():
-    control = {("B3u", 176.0): (167.0, False), ("B2g", 770.0): (737.0, False), ("Ag", 758.0): (765.0, True)}
-    ano = {("B3u", 176.0): (170.0, False), ("B2g", 770.0): (772.5, True), ("Ag", 758.0): (760.0, False)}
-    made = {(r["irrep"], r["nu"]): r for r in N.mode_rows(control, ano)}
-    assert [r["judged"] for r in N.mode_rows(control, ano)] == [False, False, True]          # by measured wavenumber: 176, 758, 770
-    assert made[("B2g", 770.0)]["rise"] == pytest.approx(35.5) and made[("B2g", 770.0)]["ano"] == pytest.approx(2.5)
-    assert made[("B2g", 770.0)]["crossing"] and made[("Ag", 758.0)]["crossing"] and not made[("B3u", 176.0)]["crossing"]
-    alone = N.mode_rows(control, None)
-    assert all(r["ano"] is None and r["rise"] is None for r in alone)
+    keys = [("B3u", 176.0), ("B2g", 770.0), ("Ag", 758.0)]
+    idx = {key: (i,) for i, key in enumerate(keys)}
+    control = N.Named(dict(zip(keys, (167.0, 737.0, 765.0), strict=True)), idx, dict(zip(keys, (False, False, True), strict=True)), np.eye(3))
+    turned = np.array([[1.0, 0.0, 0.0], [0.0, 0.6, 0.8], [0.0, 0.8, -0.6]])
+    ano = N.Named(dict(zip(keys, (170.0, 772.5, 760.0), strict=True)), idx, dict(zip(keys, (False, True, False), strict=True)), turned)
+    listed = N.mode_rows(control, ano)
+    made = {(r["irrep"], r["nu"]): r for r in listed}
+    assert [r["judged"] for r in listed] == [False, False, True]          # by measured wavenumber: 176, 758, 770
+    assert made[KEY]["rise"] == pytest.approx(35.5) and made[KEY]["ano"] == pytest.approx(2.5)
+    assert made[KEY]["overlap"] == pytest.approx(0.36) and made[("B3u", 176.0)]["overlap"] == pytest.approx(1.0)
+    assert made[KEY]["crossing"] and made[("Ag", 758.0)]["crossing"] and not made[("B3u", 176.0)]["crossing"]
+    assert all(r["ano"] is None and r["rise"] is None and r["overlap"] is None for r in N.mode_rows(control, None))
 
 
 def test_the_measured_list_names_every_mode_once_and_holds_the_pinned_ones():
     measured = N.experiment()
-    assert len(measured) == 48 and set(N.CONTROL_PINS) | {N.KEY_MODE} <= set(measured)
+    assert len(measured) == 48 and set(N.CONTROL_PINS) | {KEY} <= set(measured)
     assert sum(irrep in N.OUT_OF_PLANE for irrep, _ in measured) == 15
 
 
@@ -126,7 +132,7 @@ def write_rows(run: Path, label: str, H: np.ndarray, *, ks: tuple[int, ...] | No
     plan = replace(D.plan_from_geometry(GEOMETRY, "ano-pvqz"), **plan_fields)
     if label.endswith(A.FIT_SUFFIX):
         fit, ks = ("cc-pv5z-jkfit", "cc-pv5z-ri"), ks or plan.ks[:1]
-    method = D.method_text("1.10.2", plan, D.Fitting.named_after(plan.basis, *fit), "mp2")
+    method = D.method_text("1.11", plan, D.Fitting.named_after(plan.basis, *fit), "mp2")
     D.save_rows(run / f"rows_{label}.npz", plan, {k: H[k] for k in ks or plan.ks}, method)
 
 
@@ -137,6 +143,23 @@ def write_run(run: Path, H: np.ndarray, fit_row: np.ndarray | None = None) -> Pa
     return run
 
 
+def lifted(held: N.Held, lifts: dict[N.Key, float], mixed: tuple[N.Key, N.Key] | None = None) -> np.ndarray:
+    """An MP2 target whose composite is the control's with the named modes lifted by the given cm⁻¹ and nothing else moved; `mixed`
+    couples two modes of different species instead, so that neither keeps a species."""
+    control = N.harmonic(held, held.mp2_tz)
+    root_mass = np.sqrt(np.repeat(held.masses * L.AMU2AU, 3))
+    column = {key: root_mass * control.V[:, control.idx[key][0]] for key in control.freq}
+    H = held.mp2_tz.copy()
+    for key, lift in lifts.items():
+        w = control.freq[key]
+        H += ((w + lift) ** 2 - w ** 2) / L.HARTREE2CM ** 2 * np.outer(column[key], column[key])
+    if mixed:
+        a, b = mixed
+        gap = abs(control.freq[a] ** 2 - control.freq[b] ** 2) / L.HARTREE2CM ** 2
+        H += gap * (np.outer(column[a], column[b]) + np.outer(column[b], column[a]))
+    return H
+
+
 @needs_held
 def test_the_control_repeats_the_read_of_19_november(tmp_path):
     record = N.read(tmp_path, INPUTS, partial=True)
@@ -144,6 +167,7 @@ def test_the_control_repeats_the_read_of_19_november(tmp_path):
     by_key = {(r["irrep"], r["nu"]): r["control"] for r in record["modes"]}
     for key, pin in N.CONTROL_PINS.items():
         assert by_key[key] == pytest.approx(pin, abs=N.CONTROL_LINE)
+    assert [by_key[k] for k in (KEY, AU_970, B2G_980)] == pytest.approx([-32.55, -15.55, -17.06], abs=0.01)     # drift shows before the line
     assert sum(r["judged"] for r in record["modes"]) == 13
 
 
@@ -152,16 +176,40 @@ def test_rows_of_the_cc_pvtz_step_read_as_no_transfer(held, tmp_path):
     record = N.read(write_run(tmp_path / "run", held.mp2_tz), INPUTS, partial=False)
     assert record["outcome"] == "NO TRANSFER"
     assert max(abs(r["rise"]) for r in record["modes"]) < 0.05           # the rows are the control's own Hessian, symmetrised
-    assert record["fitting"]["under_line"]
+    assert min(r["overlap"] for r in record["modes"]) > 0.99 and record["fitting"]["under_line"]
 
 
 @needs_held
 def test_a_stiffer_step_moves_the_key_mode_up_and_is_read(held, tmp_path):
-    lifted = held.mp2_tz + 0.02 * (held.cc_dz + held.mp2_tz - held.mp2_dz)     # the whole composite 2 % stiffer: every ω × √1.02
-    record = N.read(write_run(tmp_path / "run", lifted), INPUTS, partial=False)
-    key = next(r for r in record["modes"] if (r["irrep"], r["nu"]) == N.KEY_MODE)
+    stiffer = held.mp2_tz + 0.02 * (held.cc_dz + held.mp2_tz - held.mp2_dz)     # the whole composite 2 % stiffer: every ω × √1.02
+    record = N.read(write_run(tmp_path / "run", stiffer), INPUTS, partial=False)
+    key = next(r for r in record["modes"] if (r["irrep"], r["nu"]) == KEY)
     assert key["rise"] == pytest.approx(737.4 * (np.sqrt(1.02) - 1), abs=0.3)
     assert record["outcome"] == "NO TRANSFER"                            # 7.3 cm⁻¹: under the 10 line
+
+
+@needs_held
+def test_a_lift_of_the_key_mode_alone_is_between_and_moves_no_other_mode(held, tmp_path):
+    record = N.read(write_run(tmp_path / "run", lifted(held, {KEY: 34.0})), INPUTS, partial=False)
+    by_key = {(r["irrep"], r["nu"]): r for r in record["modes"]}
+    assert by_key[KEY]["rise"] == pytest.approx(34.0, abs=0.1) and by_key[KEY]["overlap"] > 0.99
+    assert max(abs(r["rise"]) for key, r in by_key.items() if key != KEY) < 0.1
+    assert record["outcome"] == "BETWEEN" and "-17.1 from its fundamental (B2g 980)" in record["sentence"]
+
+
+@needs_held
+def test_lifting_the_three_low_modes_transfers(held, tmp_path):
+    record = N.read(write_run(tmp_path / "run", lifted(held, {KEY: 34.0, AU_970: 16.0, B2G_980: 18.0})), INPUTS, partial=False)
+    assert record["outcome"] == "TRANSFERS" and "different modes" not in record["sentence"]
+
+
+@needs_held
+def test_a_mode_lifted_past_its_neighbour_is_named_as_another_mode(held, tmp_path):
+    record = N.read(write_run(tmp_path / "run", lifted(held, {KEY: 150.0})), INPUTS, partial=False)     # 737 → 887, above the 872 mode
+    by_key = {(r["irrep"], r["nu"]): r for r in record["modes"]}
+    assert by_key[KEY]["rise"] == pytest.approx(872.3 - 737.5, abs=0.5)        # by order it is now paired with the old 876 mode
+    assert by_key[KEY]["overlap"] < 0.05 and by_key[B2G_876]["overlap"] < 0.05
+    assert "two different modes: B2g 770 (0.00), B2g 876 (0.00)" in record["sentence"]
 
 
 @needs_held
@@ -169,6 +217,28 @@ def test_an_ano_hessian_with_an_imaginary_mode_gives_no_outcome(held, tmp_path):
     soft = held.mp2_tz - 1.2 * (held.cc_dz + held.mp2_tz - held.mp2_dz)
     record = N.read(write_run(tmp_path / "run", soft), INPUTS, partial=False)
     assert record["outcome"] == "NO OUTCOME" and "imaginary" in record["sentence"]
+
+
+@needs_held
+def test_modes_that_keep_no_species_are_unreadable_and_a_damaged_hessian_is_refused(held):
+    with pytest.raises(A.Unreadable, match="away from ±1"):
+        N.harmonic(held, lifted(held, {}, mixed=(KEY, ("Au", 841.0))))
+    damaged = held.mp2_tz.copy()
+    damaged[3, 3] = np.nan
+    with pytest.raises(SystemExit, match="not finite"):
+        N.harmonic(held, damaged)
+
+
+@needs_held
+@pytest.mark.parametrize("change", [{"status": "INVALID"}, {"frozen": 6}, {"basis": "cc-pvtz"}, {"coords_bohr": 1e-3}])
+def test_a_cc_hessian_that_is_not_the_held_one_is_refused(tmp_path, change):
+    with np.load(INPUTS.cc_dz) as z:
+        content = {name: z[name] for name in z.files}
+    for name, value in change.items():
+        content[name] = content[name] + value if name == "coords_bohr" else np.array(value)
+    np.savez(tmp_path / "cc.npz", **content)
+    with pytest.raises(SystemExit, match="expected a VALID cc-pvdz Hessian"):
+        N.load_held(replace(INPUTS, cc_dz=tmp_path / "cc.npz"))
 
 
 @needs_held
@@ -199,10 +269,19 @@ def test_a_row_file_of_another_level_is_refused(held, tmp_path, change, said):
 
 
 @needs_held
+@pytest.mark.parametrize("label", [N.ANO, N.ANO + A.FIT_SUFFIX])
+def test_rows_at_another_geometry_are_refused(held, tmp_path, label):
+    run = write_run(tmp_path / "run", held.mp2_tz)
+    write_rows(run, label, held.mp2_tz, coords_bohr=held.x0 + 1e-3)
+    with pytest.raises(SystemExit, match="other coordinates"):
+        N.read(run, INPUTS, partial=False)
+
+
+@needs_held
 def test_a_fit_file_with_the_rows_own_fitting_sets_is_refused(held, tmp_path):
     run = write_run(tmp_path / "run", held.mp2_tz)
     plan = D.plan_from_geometry(GEOMETRY, "ano-pvqz")
-    method = D.method_text("1.10.2", plan, D.Fitting.named_after("ano-pvqz", "cc-pvqz-jkfit", "cc-pvqz-ri"), "mp2")
+    method = D.method_text("1.11", plan, D.Fitting.named_after("ano-pvqz", "cc-pvqz-jkfit", "cc-pvqz-ri"), "mp2")
     D.save_rows(run / f"rows_{N.ANO}{A.FIT_SUFFIX}.npz", plan, {plan.ks[0]: held.mp2_tz[plan.ks[0]]}, method)
     with pytest.raises(SystemExit, match="cc-pv5z"):
         N.read(run, INPUTS, partial=False)
