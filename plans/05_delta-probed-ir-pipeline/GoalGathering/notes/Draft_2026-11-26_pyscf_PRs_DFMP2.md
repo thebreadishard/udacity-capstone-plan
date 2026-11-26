@@ -55,6 +55,11 @@ correlation part), on a laptop with 8 threads; PySCF `max_memory` 7000 MB, Psi4 
 | benzene, ano-pVQZ | 510 | 4.4e-08 | 3.9e-10 | 167 s, 3.5 GB | 764 s |
 | naphthalene, ano-pVQZ | 790 | 2.7e-07 (rms 9.2e-08) | 1.5e-09 | 830 s, 7.7 GB | 2108 s |
 
+Units and limits of this table (from the independent review of our comparison scripts): the memory figures are the peak of
+PySCF's process in GiB (2^30 bytes; the cap of 12288 MB is 12 GiB in the same unit) and were printed as 'GB' by the scripts of
+that run; Psi4's peak was not measured in these runs, so no memory comparison between the two programs is claimed; Psi4's time
+is its whole gradient call (SCF, MP2, gradient), compared with the sum of PySCF's three stages. In the pull request, give GiB.
+
 The requirement of the design note — naphthalene in ano-pVQZ finished under a 12 GB cap and equal to psi4's — is met: 7.7 GB,
 and 2.7e-07 Eh/bohr at worst against a largest element of 3.8e-03 (in a Hessian row with our 0.005 bohr step that is 2.7e-05
 E_h/bohr², the size of the rows' own symmetry spread). Before the block-wise vhf1 term the first draft peaked at 10.5 GB on
