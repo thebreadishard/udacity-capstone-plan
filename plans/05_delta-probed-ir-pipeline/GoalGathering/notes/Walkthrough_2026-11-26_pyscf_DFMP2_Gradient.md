@@ -79,7 +79,7 @@ the orbital basis centres, with respect to the auxiliary basis centres, and the 
 - Against finite differences (water, cc-pVDZ, five settings): 1.7e-7 Eh/Bohr at worst — the noise floor of a 1e-3 Bohr step;
   3426 reports 1.4e-7.
 - Against Psi4, same fitting sets: benzene cc-pVTZ 6.2e-8 Eh/Bohr; benzene ano-pVQZ 4.4e-8, 167 s against Psi4's 764 s, peak
-  3.5 GB. *Naphthalene in ano-pVQZ: from the run, to be filled in.*
+  3.5 GB. naphthalene ano-pVQZ (790 functions) 2.7e-7, 830 s against 2108 s, peak 7.7 GB under a 12 GB cap. The first draft peaked at 10.5 GB on benzene; that is why `_contract_dfvhf1` exists.
 - What it does not do: open shells; a calculation without `t2` in memory.
 
 ### Honest answers to 'how was this made'
