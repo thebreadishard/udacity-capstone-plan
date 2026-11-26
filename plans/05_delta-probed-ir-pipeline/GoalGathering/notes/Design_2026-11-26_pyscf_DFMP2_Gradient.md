@@ -12,6 +12,15 @@ in style, like what is already in the repository — **as if that team had writt
 must check exactly that. The same question decides the design: not 'what serves our run' but 'what would this team want in
 their package'.
 
+And the user, 26 Nov 08:41: **the proposal is made so that it solves our problems** — 'als wij blokken nodig hebben, omdat we
+het anders niet kunnen runnen, dan blokken'. The two rules do not pull apart: what we need decides *what* the code must be able
+to do, the team's habits decide *how it is written*. A contribution we cannot run on our own case is not worth our days,
+however well it blends in.
+
+**What it must be able to do (the requirement):** the composite's MP2 step for our anchors — naphthalene in ano-pVQZ (790
+functions) as the stated case, larger anchors after it — on the machines we have: within the laptop's 13 GB budget for all
+runs, or a 30 GB server. That is measured in the validation and stated in the pull request.
+
 So for this pull request:
 
 - **pyscf's rules replace ours inside pyscf's tree.** Our own Python rules (type hints on every public function, our function-size
@@ -136,6 +145,18 @@ never in the pull request).
   four-index file. pyscf's style guide: 'If broader reuse is needed, explicitly generalize the function's contract'. So the
   honest options are a small generalisation of `df/grad/ccsd.py` (the contraction takes the three arrays as arguments; the CCSD
   path unchanged in behaviour and covered by its six tests) or a copy with a comment saying why — the maintainers' call.
+- **Block-wise from the start — decided by the requirement, not a question for the maintainers.** 3426 keeps three arrays of
+  (auxiliary functions × basis-function pairs) in memory; written that way the MP2 gradient could not run our case (15 GB at
+  two thousand auxiliary functions, before anything else). So the fitted density and the solved integrals are built and
+  contracted one block of auxiliary shells at a time, with what must persist between the passes kept in the
+  occupied–virtual basis (the size of `ovL`) in memory or in an `lib.H5TmpFile`, as `ovL` itself is. This is not a foreign
+  style in pyscf: `dfmp2.py`, the class the gradient belongs to, is written exactly so — block sizes from `max_memory`,
+  `lib.prange` over occupied blocks, `balance_partition` over auxiliary shells, an in-core and an out-of-core path chosen by
+  available memory. The neighbour for the gradient's *assembly* stays `df/grad/ccsd.py`; the neighbour for its *memory
+  handling* is `dfmp2.py`. The issue says this plainly, with the sizes, as the reason the module is not a line-for-line
+  sibling of 3426. It also settles the reuse question below towards a contraction of our own that works on blocks (with a
+  comment saying why 3426's in-memory one is not reused — pyscf's checklist asks for exactly that comment), unless the
+  maintainers prefer 3426's function generalised to blocks.
 - **Points that are the maintainers' call, to put in the issue rather than decide ourselves:**
   - *Generalise 3426's contraction, or copy it?* (above)
   - *The reference.* 3426 refuses a reference that is not density fitted, with a test and a reason in its comments (the
@@ -145,9 +166,6 @@ never in the pull request).
   - *Two fitting sets.* A density-fitted reference in a JKFIT set with the correlation part in an RI set (through
     `mp.with_df`) is standard practice and what psi4 does; the gradient then carries two auxiliary responses. 3426's `_auxmol`
     already reads `with_df` from the method object first — the same here.
-  - *Memory of the first version.* 3426 keeps three arrays of (auxiliary functions × basis-function pairs) in memory. Written
-    the same way, the MP2 gradient inherits that; a block-wise version is possible but would no longer read like its neighbour.
-    Same as the neighbour first, or block-wise from the start?
   - *Amplitudes.* `t2` in memory, as `make_rdm1` and `make_rdm2` require today; a calculation run with `with_t2 = False` gets
     an informative error. Rebuilding the amplitudes block by block from `ovL` is a later improvement, said as such.
 - **Stated limits**, each an informative error and never a silent fallback (pyscf's checklist): closed-shell RHF in this pull
@@ -163,7 +181,10 @@ Naphthalene in ano-pVQZ: 790 functions, 34 occupied of which 10 frozen, 756 virt
 - Amplitudes: 24² × 756² × 8 bytes = 2.6 GB.
 - Each (auxiliary × pairs) array: 2.5 GB per thousand auxiliary functions; the neighbour's way holds three, 7.5 GB per
   thousand. How many auxiliary functions our fitting sets have on naphthalene is not looked up here; with two thousand it is
-  15 GB — more than psi4 needed on benzene (6.9 GB), and the reason the memory question above is a real one for us.
+  15 GB — more than psi4 needed on benzene (6.9 GB), and the reason the gradient is block-wise from the start.
+- Block-wise: the amplitudes, two occupied–virtual × auxiliary arrays (0.15 GB each per thousand auxiliary functions,
+  in memory or on disk) and one block of auxiliary shells at a time (2.5 GB per thousand functions in the block, set by
+  `max_memory`).
 - Copying 3426's CCSD route literally (route A): 780 GB.
 
 ## Tests and example, in pyscf's manner
@@ -187,17 +208,19 @@ By our own rules (two routes for every derived quantity; 'validated' only with n
 3. against psi4's DF-MP2 gradient with identical fitting sets on benzene in cc-pVTZ and on naphthalene, element by element;
 4. one composite step through it: naphthalene's cc-pVTZ rows by the new gradient against the psi4 rows we hold, in cm⁻¹
    (the swap test of 20 Oct, line 0.5);
-5. time and peak memory against psi4 on the same machine — reported in the pull request only as measured.
+5. time and peak memory against psi4 on the same machine — reported in the pull request only as measured;
+6. the requirement itself: naphthalene's gradient in ano-pVQZ under a 13 GB cap (`max_memory` set accordingly), finished
+   and equal to psi4's.
 
 Then the independent review, twice over: correctness, and the style brief above.
 
 ## Order of work
 
 1. Done on 26 Nov: the three reads (section above).
-2. Draft the issue: what is missing (3426's own 'Not addressed' names it), the proposed place and interface, the five
-   questions above. The user makes it his own and posts it — on his word only.
+2. Draft the issue: what is missing (3426's own 'Not addressed' names it), the proposed place and interface, why it is
+   block-wise, the four questions above. The user makes it his own and posts it — on his word only.
 3. On the maintainers' answer (or after a reasonable wait, the user decides): the module, its tests and example in a worktree
-   of pyscf's master; the five validations; the two reviews.
+   of pyscf's master; the six validations; the two reviews.
 4. The user reads it until he can explain it; he opens the pull request with its `Notes` section.
 
 ## What it is worth to us, and what it costs
@@ -207,7 +230,7 @@ Then the independent review, twice over: correctness, and the style brief above.
 - It does not shorten the run that is on the server now, and psi4 keeps working. This is `[LATER]` work: a contribution that
   fits the package, done when it does not take time from the proof.
 - Size, estimated and not measured: a module of the size of `df/grad/ccsd.py` (about 330 lines) with tests and example;
-  several working days including the five validations, before review rounds upstream.
+  several working days including the six validations, before review rounds upstream.
 
 ## Questions for the user
 
