@@ -356,12 +356,13 @@ def hessians(run: Path, labels: list[str], sym: list[str], x0: np.ndarray) -> tu
     return M, spread, psi4
 
 
-def fitting_change(run: Path, label: str, x0: np.ndarray) -> dict[str, float | bool]:
+def fitting_change(run: Path, label: str, x0: np.ndarray, level: RowLevel | None = None) -> dict[str, float | bool]:
     """The plan's first row recomputed with cc-pV5Z fitting sets against the same row of the label's own file, E_h/bohr²: the largest
     change of any element, which is judged against the line, and the change of the row's largest element (the registration's wording
-    read literally; never the larger of the two)."""
+    read literally; never the larger of the two). `level` is the label's own row level where it is not benzene's (another
+    molecule's frozen orbitals)."""
     again = row_path(run, label + FIT_SUFFIX)
-    check_row_file(again, EXPECTED[label].five_zeta())
+    check_row_file(again, (level or EXPECTED[label]).five_zeta())
     CCF.check_rows_coordinates((str(again),), x0, "corpus")
     with np.load(row_path(run, label)) as a, np.load(again) as b:
         name = f"row_{int(b['ks'][0]):02d}"
