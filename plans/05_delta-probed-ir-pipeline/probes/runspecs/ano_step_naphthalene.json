@@ -1,0 +1,28 @@
+{
+ "name": "ano_step_naphthalene",
+ "purpose": "TASKS 300, GoalGathering/notes/PreRegistration_2026-11-26_ANO_Step_Naphthalene.md (the user, 26 Nov 2026: 'Naftaleen', 'Alles, server', 'Server staat klaar'): naphthalene's 15 DF-MP2 Hessian rows in ano-pVQZ at the corpus geometry (cc-pVQZ fitting sets, 10 frozen orbitals) on the server ano1 (CCX33, psi4 1.11), after the plan's first row with cc-pV5Z fitting sets; check W on water is the smoke. The basis file is the benzene run's (sha256 5bf9efb1…7a68, the same on the server). Upstream calls as in the benzene run: psi4 tests/dfmp2-grad1 and dfmp2-grad5 (DF-MP2 gradient against finite differences), tests/psithon2 (PSIPATH). psi4 is given 20 GB under a system-scope cap of 28000 MB on a 30 GB machine. Paid compute on the user's word.",
+ "host": "ano1",
+ "workdir": "/root/ano2",
+ "command": "PY=/root/miniforge3/envs/qc/bin/python PSI_SCRATCH=/root/psi4_scratch THREADS=8 MEMORY_GB=20 CAP_SCOPE=system bash probes/wsl_capped.sh 28000 -- bash probes/ano_step_naphthalene.sh /root/ano2/rows /root/ano2/basis/psi /root/ano2/geom/A_01f3186607/geometry.json",
+ "sources": [
+  {"local": "probes/ano_step_naphthalene.sh", "remote": "/root/ano2/probes/ano_step_naphthalene.sh"},
+  {"local": "probes/dfmp2_rows.py", "remote": "/root/ano2/probes/dfmp2_rows.py"},
+  {"local": "probes/cc_composite_full_check.py", "remote": "/root/ano2/probes/cc_composite_full_check.py"},
+  {"local": "probes/dfmp2_swap_check.py", "remote": "/root/ano2/probes/dfmp2_swap_check.py"},
+  {"local": "probes/qc_common.py", "remote": "/root/ano2/probes/qc_common.py"},
+  {"local": "probes/e8_symmetry.py", "remote": "/root/ano2/probes/e8_symmetry.py"},
+  {"local": "probes/wsl_capped.sh", "remote": "/root/ano2/probes/wsl_capped.sh"}
+ ],
+ "progress": {
+  "regex": "^\\[[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\] (df-mp2|water) |^=== \\(ANO2\\) ",
+  "max_gap_minutes": 120,
+  "heartbeat_glob": "rows/*.psi4.log"
+ },
+ "marker_regex": "^=== \\(ANO2\\) .*(FAILED|refusing)|Traceback|KILLED",
+ "end_regex": "^=== \\(ANO2\\) all done",
+ "threads": 8,
+ "estimate": {
+  "hours": 45,
+  "basis": "scaled, not measured: benzene's ano-pVQZ rows took 24 min each on the laptop (26 Nov); naphthalene's cc-pVTZ rows took 6.5 times benzene's (136 s against 21 s per row), so about 2.6 h per row, 15 rows and one more with cc-pV5Z fitting sets; another machine and psi4 1.11. The first row's time line corrects it."
+ }
+}
